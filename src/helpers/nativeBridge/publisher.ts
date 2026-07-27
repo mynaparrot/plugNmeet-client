@@ -11,8 +11,17 @@ import {
 } from 'plugnmeet-protocol-js';
 
 import { nativeBridge } from './bridge';
-import { emit, emptySources } from './subscriber';
+import { emit } from './subscriber';
 import { stopNativeHeartbeat } from './heartbeat';
+import { store } from '../../store';
+import {
+  updateIsActiveMicrophone,
+  updateIsActiveScreenshare,
+  updateIsActiveWebcam,
+  updateIsMicMuted,
+  updateIsWebcamMuted,
+} from '../../store/slices/bottomIconsActivitySlice';
+import { updateScreenSharing } from '../../store/slices/sessionSlice';
 
 // ---- outbound messages ----
 const send = (
@@ -81,5 +90,12 @@ export const sendHeartbeatPing = (): void =>
 export const teardownNativePublisher = (): void => {
   stopNativeHeartbeat();
   send(NativeBridgeActions.TEARDOWN_NATIVE_PUBLISHER);
-  emit({ sources: emptySources(), available: true, lastError: undefined });
+  emit({ available: true, lastError: undefined });
+  // Reset media flags that may have been set from native events.
+  store.dispatch(updateIsActiveMicrophone(false));
+  store.dispatch(updateIsMicMuted(false));
+  store.dispatch(updateIsActiveWebcam(false));
+  store.dispatch(updateIsWebcamMuted(false));
+  store.dispatch(updateIsActiveScreenshare(false));
+  store.dispatch(updateScreenSharing({ isActive: false, sharedBy: '' }));
 };

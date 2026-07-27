@@ -33,7 +33,7 @@ import {
   publishNativeMedia,
   muteNativeMedia,
   unmuteNativeMedia,
-  useNativePublisherStatus,
+  useNativePublisherAvailable,
 } from '../../../helpers/nativeBridge';
 
 const MicrophoneIcon = () => {
@@ -70,10 +70,7 @@ const MicrophoneIcon = () => {
   );
 
   const hybrid = isHybridMode();
-  const nativeStatus = useNativePublisherStatus();
-  const nativeMic = nativeStatus.sources[NativeMediaSource.MIC];
-  const isActiveMic = hybrid ? nativeMic.active : isActiveMicrophone;
-  const isMicMutedEffective = hybrid ? nativeMic.muted : isMicMuted;
+  const nativeAvailable = useNativePublisherAvailable();
 
   const { showMutedTooltip, onDismissTooltip, muteOnStartRef } =
     useMicrophoneActivity(currentRoom, isMicMuted);
@@ -127,10 +124,10 @@ const MicrophoneIcon = () => {
 
   const manageMic = useCallback(async () => {
     if (hybrid) {
-      if (isLocked || !nativeStatus.available) return;
-      if (!nativeMic.active) {
+      if (isLocked || !nativeAvailable) return;
+      if (!isActiveMicrophone) {
         publishNativeMedia(NativeMediaSource.MIC);
-      } else if (nativeMic.muted) {
+      } else if (isMicMuted) {
         unmuteNativeMedia(NativeMediaSource.MIC);
       } else {
         muteNativeMedia(NativeMediaSource.MIC);
@@ -151,28 +148,27 @@ const MicrophoneIcon = () => {
     }
   }, [
     isActiveMicrophone,
+    isMicMuted,
     isLocked,
     dispatch,
     muteUnmuteMic,
     hybrid,
-    nativeStatus.available,
-    nativeMic.active,
-    nativeMic.muted,
+    nativeAvailable,
   ]);
 
   const getTooltipText = () => {
-    if (hybrid && !nativeStatus.available) {
+    if (hybrid && !nativeAvailable) {
       return t('footer.icons.native-publisher-unavailable');
     }
-    if (!isActiveMic && !isLocked) {
+    if (!isActiveMicrophone && !isLocked) {
       return t('footer.icons.start-microphone-sharing');
-    } else if (!isActiveMic && isLocked) {
+    } else if (!isActiveMicrophone && isLocked) {
       return t('footer.icons.microphone-locked');
     }
 
-    if (isActiveMic && !isMicMutedEffective) {
+    if (isActiveMicrophone && !isMicMuted) {
       return t('footer.menus.mute-microphone');
-    } else if (isActiveMic && isMicMutedEffective) {
+    } else if (isActiveMicrophone && isMicMuted) {
       return t('footer.menus.unmute-microphone');
     }
   };
@@ -233,9 +229,9 @@ const MicrophoneIcon = () => {
   const wrapperClasses = clsx(
     'relative footer-icon cursor-pointer min-w-10 md:min-w-11 3xl:min-w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[20px] border-[3px] 3xl:border-4',
     {
-      'border-Red-100!': isMicMutedEffective && isActiveMic,
-      'border-[rgba(124,206,247,0.25)]': isActiveMic,
-      'border-transparent': !isActiveMic,
+      'border-Red-100!': isMicMuted && isActiveMicrophone,
+      'border-[rgba(124,206,247,0.25)]': isActiveMicrophone,
+      'border-transparent': !isActiveMicrophone,
       'border-Red-100! dark:!border-Red-600 cursor-not-allowed': isLocked,
     },
   );
@@ -243,7 +239,7 @@ const MicrophoneIcon = () => {
   const micWrapClasses = clsx(
     'footer-icon-bg microphone-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 dark:border-Gray-700 rounded-[12px] 3xl:rounded-2xl h-full w-full flex items-center justify-center transition-all duration-300 hover:bg-gray-100 dark:hover:bg-Gray-700 text-Gray-950 dark:text-white bg-white dark:bg-Gray-800',
     {
-      'border-Red-200!': isMicMutedEffective && isActiveMic,
+      'border-Red-200!': isMicMuted && isActiveMicrophone,
       'border-Red-200! dark:!border-Red-400 text-Red-400': isLocked,
     },
   );
@@ -252,8 +248,7 @@ const MicrophoneIcon = () => {
     'w-[32px] md:w-[36px] 3xl:w-[42px] h-full relative flex items-center justify-center cursor-pointer',
     {
       'has-tooltip': showTooltip,
-      'cursor-not-allowed opacity-50':
-        hybrid && !nativeStatus.available && !isLocked,
+      'cursor-not-allowed opacity-50': hybrid && !nativeAvailable && !isLocked,
     },
   );
 
@@ -281,7 +276,7 @@ const MicrophoneIcon = () => {
             <span className="tooltip tooltip-left -left-3 rtl:microphone-rtl-left">
               {getTooltipText()}
             </span>
-            {!isActiveMic ? (
+            {!isActiveMicrophone ? (
               <>
                 <Microphone classes={'h-4 3xl:h-5 w-auto'} />
                 <span className="add absolute -top-1.5 md:-top-2 -right-1.5 md:-right-2 z-10">
@@ -293,18 +288,18 @@ const MicrophoneIcon = () => {
                 </span>
               </>
             ) : null}
-            {!isMicMutedEffective && isActiveMic && (
+            {!isMicMuted && isActiveMicrophone && (
               <Microphone classes={'h-4 3xl:h-5 w-auto'} />
             )}
-            {isMicMutedEffective && isActiveMic && (
+            {isMicMuted && isActiveMicrophone && (
               <MicrophoneOff classes={'h-4 3xl:h-5 w-auto'} />
             )}
           </button>
-          {isActiveMic && (
+          {isActiveMicrophone && (
             <MicMenu
               currentRoom={currentRoom}
-              isActiveMicrophone={isActiveMic}
-              isMicMuted={isMicMutedEffective}
+              isActiveMicrophone={isActiveMicrophone}
+              isMicMuted={isMicMuted}
               hybrid={hybrid}
             />
           )}

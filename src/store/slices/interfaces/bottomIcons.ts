@@ -17,6 +17,8 @@ export interface IBottomIconsSlice {
   activeSidePanel: SidePanelType;
 
   isMicMuted: boolean;
+  /** Hybrid: native cam mute while track stays published. Web unused (empty-stream mute). */
+  isWebcamMuted: boolean;
   screenWidth: number;
   screenHeight: number;
   deviceOrientation: DeviceOrientation;

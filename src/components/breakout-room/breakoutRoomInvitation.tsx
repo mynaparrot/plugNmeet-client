@@ -19,6 +19,7 @@ import { useJoinRoomMutation } from '../../store/services/breakoutRoomApi';
 import {
   updateIsActiveWebcam,
   updateIsMicMuted,
+  updateIsWebcamMuted,
   updateVirtualBackground,
 } from '../../store/slices/bottomIconsActivitySlice';
 import { updateSelectedVideoDevice } from '../../store/slices/roomSettingsSlice';
@@ -54,6 +55,7 @@ const BreakoutRoomInvitation = () => {
             true,
           );
           dispatch(updateIsActiveWebcam(false));
+          dispatch(updateIsWebcamMuted(false));
           dispatch(updateSelectedVideoDevice(''));
           dispatch(
             updateVirtualBackground({

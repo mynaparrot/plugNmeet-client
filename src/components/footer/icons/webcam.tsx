@@ -7,6 +7,7 @@ import { NativeMediaSource } from 'plugnmeet-protocol-js';
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import {
   updateIsActiveWebcam,
+  updateIsWebcamMuted,
   updateShowVideoShareModal,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import ShareWebcamModal from '../modals/webcam';
@@ -24,7 +25,7 @@ import {
   publishNativeMedia,
   unmuteNativeMedia,
   unpublishNativeMedia,
-  useNativePublisherStatus,
+  useNativePublisherAvailable,
 } from '../../../helpers/nativeBridge';
 
 const WebcamIcon = () => {
@@ -58,12 +59,15 @@ const WebcamIcon = () => {
   const isActiveWebcam = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveWebcam,
   );
+  const isWebcamMuted = useAppSelector(
+    (state) => state.bottomIconsActivity.isWebcamMuted,
+  );
 
   const hybrid = isHybridMode();
-  const nativeStatus = useNativePublisherStatus();
-  const nativeCam = nativeStatus.sources[NativeMediaSource.WEBCAM];
-  const isActiveCam = hybrid ? nativeCam.active : isActiveWebcam;
-  const isMuted = hybrid ? nativeCam.muted : !isActiveWebcam;
+  const nativeAvailable = useNativePublisherAvailable();
+  // Web: empty-stream mute keeps track published but sets isActiveWebcam=false.
+  // Hybrid: track stays published; mute is tracked via isWebcamMuted.
+  const isMuted = hybrid ? isWebcamMuted : !isActiveWebcam;
 
   const isWebcamLock = useAppSelector(
     (state) => state.session.currentUser?.metadata?.lockSettings?.lockWebcam,
@@ -94,6 +98,7 @@ const WebcamIcon = () => {
     const closeWebcamOnLock = async (cameraTrack: LocalTrack) => {
       await currentRoom.localParticipant.unpublishTrack(cameraTrack, true);
       dispatch(updateIsActiveWebcam(false));
+      dispatch(updateIsWebcamMuted(false));
     };
 
     if (isWebcamLocked) {
@@ -194,10 +199,10 @@ const WebcamIcon = () => {
 
   const toggleWebcam = useCallback(async () => {
     if (hybrid) {
-      if (isWebcamLocked || !nativeStatus.available) return;
-      if (!nativeCam.active) {
+      if (isWebcamLocked || !nativeAvailable) return;
+      if (!isActiveWebcam) {
         publishNativeMedia(NativeMediaSource.WEBCAM);
-      } else if (nativeCam.muted) {
+      } else if (isWebcamMuted) {
         unmuteNativeMedia(NativeMediaSource.WEBCAM);
       } else {
         muteNativeMedia(NativeMediaSource.WEBCAM);
@@ -205,70 +210,71 @@ const WebcamIcon = () => {
       return;
     }
 
-    if (isWebcamLocked) {
+    if (isWebcamLocked || !currentRoom) {
       return;
     }
 
     if (!isActiveWebcam) {
-      if (!currentRoom) return;
       if (selectedVideoDevice !== '') {
         await onSelectedDevice(selectedVideoDevice);
       } else {
-        dispatch(updateShowVideoShareModal(!isActiveWebcam));
+        dispatch(updateShowVideoShareModal(true));
       }
-    } else if (isActiveWebcam) {
-      // we'll replace it by empty Stream
-      if (!currentRoom) return;
-      const emptyStream = createEmptyVideoStreamTrack(
-        currentRoom.localParticipant.name ?? 'User',
-      );
-
-      if (virtualBackground.type == 'none') {
-        await replaceTrack(emptyStream);
-      } else {
-        await publishNewTrack('', emptyStream);
-      }
-      dispatch(updateIsActiveWebcam(false));
+      return;
     }
-    //oxlint-disable-next-line
+
+    // we'll replace it by empty Stream
+    if (!currentRoom) return;
+    const emptyStream = createEmptyVideoStreamTrack(
+      currentRoom.localParticipant.name ?? 'User',
+    );
+
+    if (virtualBackground.type == 'none') {
+      await replaceTrack(emptyStream);
+    } else {
+      await publishNewTrack('', emptyStream);
+    }
+    dispatch(updateIsActiveWebcam(false));
   }, [
     hybrid,
     isWebcamLocked,
-    nativeStatus.available,
-    nativeCam.active,
-    nativeCam.muted,
+    nativeAvailable,
     isActiveWebcam,
+    isWebcamMuted,
     selectedVideoDevice,
     currentRoom,
     onSelectedDevice,
     virtualBackground,
+    dispatch,
+    replaceTrack,
+    publishNewTrack,
   ]);
 
   const getTooltipText = () => {
-    if (hybrid && !nativeStatus.available) {
+    if (hybrid && !nativeAvailable) {
       return t('footer.icons.native-publisher-unavailable');
     }
-    if (!isActiveCam && isWebcamLocked) {
+    if (!isActiveWebcam && isWebcamLocked) {
       return t('footer.icons.webcam-locked');
     }
-    if (!isActiveCam && !isWebcamLocked) {
+    if (!isActiveWebcam && !isWebcamLocked) {
       return t('footer.icons.start-webcam');
     }
-    if (isActiveCam && isMuted) {
+    if (isActiveWebcam && isMuted) {
       return t('footer.icons.start-webcam');
     }
-    if (isActiveCam && !isMuted) {
+    if (isActiveWebcam && !isMuted) {
       return t('footer.icons.turn-off-webcam');
     }
     return ''; // Fallback
   };
 
   const renderIcon = () => {
-    if (!isActiveCam) {
+    if (!isActiveWebcam) {
       // Webcam is not active at all
       const showPlusIcon =
         isWebcamLocked ||
-        (hybrid && !nativeCam.active) ||
+        (hybrid && !isActiveWebcam) ||
         (!hybrid && selectedVideoDevice === '');
 
       if (showPlusIcon) {
@@ -308,12 +314,12 @@ const WebcamIcon = () => {
       'border-Red-100! dark:!border-Red-600 cursor-not-allowed': isWebcamLocked,
       'border-Red-100!':
         !isWebcamLocked &&
-        ((isActiveCam && isMuted) ||
-          (!isActiveCam && selectedVideoDevice !== '')),
+        ((isActiveWebcam && isMuted) ||
+          (!isActiveWebcam && selectedVideoDevice !== '')),
       'border-[rgba(124,206,247,0.25)]':
-        !isWebcamLocked && isActiveCam && !isMuted,
+        !isWebcamLocked && isActiveWebcam && !isMuted,
       'border-transparent':
-        !isWebcamLocked && !isActiveCam && selectedVideoDevice === '',
+        !isWebcamLocked && !isActiveWebcam && selectedVideoDevice === '',
     },
   );
 
@@ -323,8 +329,8 @@ const WebcamIcon = () => {
       'border-Red-200! dark:!border-Red-400 text-Red-400': isWebcamLocked,
       'border-Red-200!':
         !isWebcamLocked &&
-        ((isActiveCam && isMuted) ||
-          (!isActiveCam && selectedVideoDevice !== '')),
+        ((isActiveWebcam && isMuted) ||
+          (!isActiveWebcam && selectedVideoDevice !== '')),
     },
   );
 
@@ -333,7 +339,7 @@ const WebcamIcon = () => {
     {
       'has-tooltip': showTooltip,
       'cursor-not-allowed opacity-50':
-        hybrid && !nativeStatus.available && !isWebcamLocked,
+        hybrid && !nativeAvailable && !isWebcamLocked,
     },
   );
 
@@ -349,7 +355,7 @@ const WebcamIcon = () => {
             <span className="tooltip">{getTooltipText()}</span>
             {renderIcon()}
           </button>
-          {isActiveCam && (
+          {isActiveWebcam && (
             <WebcamMenu
               currentRoom={currentRoom}
               isHybrid={hybrid}

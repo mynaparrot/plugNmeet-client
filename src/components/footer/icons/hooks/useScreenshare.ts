@@ -17,7 +17,7 @@ import {
   isHybridMode,
   publishNativeMedia,
   unpublishNativeMedia,
-  useNativePublisherStatus,
+  useNativePublisherAvailable,
 } from '../../../../helpers/nativeBridge';
 
 export interface UseScreenshareReturn {
@@ -25,8 +25,7 @@ export interface UseScreenshareReturn {
   isMobileOrTablet: boolean;
   showTooltip: boolean;
   hybrid: boolean;
-  nativeStatus: ReturnType<typeof useNativePublisherStatus>;
-  nativeShare: { active: boolean };
+  nativeAvailable: boolean;
   isActiveShare: boolean;
   isLocked: boolean;
   toggleScreenShare: () => Promise<void>;
@@ -65,9 +64,7 @@ const useScreenshare = (): UseScreenshareReturn => {
   );
 
   const hybrid = isHybridMode();
-  const nativeStatus = useNativePublisherStatus();
-  const nativeShare = nativeStatus.sources[NativeMediaSource.SCREENSHARE];
-  const isActiveShare = hybrid ? nativeShare.active : isActiveScreenshare;
+  const nativeAvailable = useNativePublisherAvailable();
 
   const isLocked = useMemo(
     () => !!(isScreenshareLock && !isAdmin),
@@ -75,6 +72,12 @@ const useScreenshare = (): UseScreenshareReturn => {
   );
 
   const endScreenShare = useCallback(async () => {
+    if (hybrid) {
+      if (isActiveScreenshare) {
+        unpublishNativeMedia(NativeMediaSource.SCREENSHARE);
+      }
+      return;
+    }
     if (isActiveScreenshare && currentRoom) {
       for (const publication of currentRoom.localParticipant.trackPublications.values()) {
         if (
@@ -96,7 +99,7 @@ const useScreenshare = (): UseScreenshareReturn => {
         }),
       );
     }
-  }, [isActiveScreenshare, dispatch, currentRoom]);
+  }, [hybrid, isActiveScreenshare, dispatch, currentRoom]);
 
   // for change in lock setting
   useEffect(() => {
@@ -112,6 +115,7 @@ const useScreenshare = (): UseScreenshareReturn => {
 
   // for special case when user cancels sharing from browser directly
   useEffect(() => {
+    if (hybrid) return;
     if (!sessionScreenSharing.isActive && isActiveScreenshare) {
       dispatch(updateIsActiveScreenshare(false));
     }
@@ -124,8 +128,8 @@ const useScreenshare = (): UseScreenshareReturn => {
     }
 
     if (hybrid) {
-      if (!nativeStatus.available) return;
-      if (!nativeShare.active) {
+      if (!nativeAvailable) return;
+      if (!isActiveScreenshare) {
         publishNativeMedia(NativeMediaSource.SCREENSHARE);
       } else {
         unpublishNativeMedia(NativeMediaSource.SCREENSHARE);
@@ -194,8 +198,7 @@ const useScreenshare = (): UseScreenshareReturn => {
   }, [
     isLocked,
     hybrid,
-    nativeStatus.available,
-    nativeShare.active,
+    nativeAvailable,
     isActiveScreenshare,
     sessionScreenSharing,
     currentRoom,
@@ -209,9 +212,8 @@ const useScreenshare = (): UseScreenshareReturn => {
     isMobileOrTablet,
     showTooltip,
     hybrid,
-    nativeStatus,
-    nativeShare,
-    isActiveShare,
+    nativeAvailable,
+    isActiveShare: isActiveScreenshare,
     isLocked,
     toggleScreenShare,
     endScreenShare,

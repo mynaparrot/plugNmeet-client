@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import {
   InsightsTranscriptionFeatures,
   InsightsUserSessionAction,
-  NativeMediaSource,
 } from 'plugnmeet-protocol-js';
 import { toast } from 'react-toastify';
 
@@ -19,10 +18,7 @@ import {
   startOrStopUserSession,
 } from '../helpers/apiConnections';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
-import {
-  isHybridMode,
-  useNativePublisherStatus,
-} from '../../../helpers/nativeBridge';
+import { isHybridMode } from '../../../helpers/nativeBridge';
 import { updateSelectedSubtitleLang } from '../../../store/slices/speechServicesSlice';
 import SettingsSwitch from '../../../helpers/ui/settingsSwitch';
 
@@ -45,8 +41,13 @@ const SpeechSettingsModal = ({
   const isActiveDisplayOptionsModal = useAppSelector(
     (state) => state.bottomIconsActivity.showSpeechSettingOptionsModal,
   );
+  const isActiveMicrophone = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveMicrophone,
+  );
+  const isMicMuted = useAppSelector(
+    (state) => state.bottomIconsActivity.isMicMuted,
+  );
   const hybrid = isHybridMode();
-  const nativeStatus = useNativePublisherStatus();
   const selectedSubtitleLang = useAppSelector(
     (state) => state.speechServices.selectedSubtitleLang,
   );
@@ -59,26 +60,38 @@ const SpeechSettingsModal = ({
     useState<boolean>(true);
 
   useEffect(() => {
-    if (isActiveDisplayOptionsModal) {
-      if (hybrid) {
-        const nativeMic = nativeStatus.sources[NativeMediaSource.MIC];
-        setReadyToStart(nativeMic?.active);
-      } else if (mediaServerConn) {
-        setReadyToStart(mediaServerConn.localParticipant.isMicrophoneEnabled);
-      }
-      getUserTaskStatus().then((res) => {
-        if (res.isActive) {
-          setIsServiceActive(true);
-        }
-        if (res.spokenLang) {
-          setSelectedSpeechLang(res.spokenLang);
-        }
-        if (typeof res.allowedTranscriptionStorage !== 'undefined') {
-          setAllowTranscriptionStorage(res.allowedTranscriptionStorage);
-        }
-      });
+    if (!isActiveDisplayOptionsModal) {
+      return;
     }
-    // oxlint-disable-next-line exhaustive-deps
+    if (hybrid) {
+      // Mic published and not muted — same readiness as web isMicrophoneEnabled.
+      setReadyToStart(isActiveMicrophone && !isMicMuted);
+    } else if (mediaServerConn) {
+      setReadyToStart(mediaServerConn.localParticipant.isMicrophoneEnabled);
+    }
+  }, [
+    isActiveDisplayOptionsModal,
+    hybrid,
+    isActiveMicrophone,
+    isMicMuted,
+    mediaServerConn,
+  ]);
+
+  useEffect(() => {
+    if (!isActiveDisplayOptionsModal) {
+      return;
+    }
+    getUserTaskStatus().then((res) => {
+      if (res.isActive) {
+        setIsServiceActive(true);
+      }
+      if (res.spokenLang) {
+        setSelectedSpeechLang(res.spokenLang);
+      }
+      if (typeof res.allowedTranscriptionStorage !== 'undefined') {
+        setAllowTranscriptionStorage(res.allowedTranscriptionStorage);
+      }
+    });
   }, [isActiveDisplayOptionsModal]);
 
   const setSelectedSubtitleLang = useCallback(

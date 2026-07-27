@@ -13,5 +13,5 @@ export {
   getNativePublisherStatus,
   subscribeNativePublisherStatus,
 } from './subscriber';
-export type { NativePublisherStatus, NativeSourceStatus } from './subscriber';
-export { useNativePublisherStatus } from './hooks';
+export type { NativePublisherStatus } from './subscriber';
+export { useNativePublisherAvailable } from './hooks';

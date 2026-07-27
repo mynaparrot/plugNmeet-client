@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../../../store';
 import { updateSelectedVideoDevice } from '../../../../store/slices/roomSettingsSlice';
 import {
   updateIsActiveWebcam,
+  updateIsWebcamMuted,
   updateVirtualBackground,
 } from '../../../../store/slices/bottomIconsActivitySlice';
 import { CheckMarkIcon } from '../../../../assets/Icons/CheckMarkIcon';
@@ -34,6 +35,9 @@ const WebcamMenuItems = ({
   const selectedVideoDevice = useAppSelector(
     (state) => state.roomSettings.selectedVideoDevice,
   );
+  const isWebcamMuted = useAppSelector(
+    (state) => state.bottomIconsActivity.isWebcamMuted,
+  );
 
   const handleDeviceChange = useCallback(
     (deviceId: string) => {
@@ -57,6 +61,7 @@ const WebcamMenuItems = ({
           true,
         );
         dispatch(updateIsActiveWebcam(false));
+        dispatch(updateIsWebcamMuted(false));
         dispatch(updateSelectedVideoDevice(''));
         dispatch(
           updateVirtualBackground({
@@ -109,7 +114,9 @@ const WebcamMenuItems = ({
               onClick={toggleWebcam}
             >
               <CameraOff classes={'h-4 w-auto'} />
-              {t('footer.icons.turn-off-webcam')}
+              {isWebcamMuted
+                ? t('footer.icons.start-webcam')
+                : t('footer.icons.turn-off-webcam')}
             </p>
           )}
         </MenuItem>

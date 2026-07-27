@@ -2,6 +2,7 @@ import { Room, Track } from 'livekit-client';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useTranslation } from 'react-i18next';
 import {
+  NativeMediaSource,
   NatsMsgClientToServerEvents,
   NatsMsgClientToServerSchema,
 } from 'plugnmeet-protocol-js';
@@ -14,6 +15,7 @@ import {
   updateIsActiveWebcam,
   updateIsActiveWhiteboard,
   updateIsMicMuted,
+  updateIsWebcamMuted,
   updateShowLockSettingsModal,
   updateShowMicrophoneModal,
   updateShowVideoShareModal,
@@ -25,6 +27,14 @@ import {
   updateShowRoomSettingsModal,
 } from '../../store/slices/roomSettingsSlice';
 import { getNatsConn } from '../nats';
+import {
+  getNativePublisherStatus,
+  isHybridMode,
+  muteNativeMedia,
+  publishNativeMedia,
+  unmuteNativeMedia,
+  unpublishNativeMedia,
+} from '../nativeBridge';
 
 const useKeyboardShortcuts = (currentRoom?: Room) => {
   const dispatch = useAppDispatch();
@@ -32,6 +42,19 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
 
   // muteUnmute start (ctrl+option+m)
   const muteUnmute = (currentRoom: Room) => {
+    if (isHybridMode()) {
+      const { isActiveMicrophone, isMicMuted } =
+        store.getState().bottomIconsActivity;
+      if (!isActiveMicrophone || !getNativePublisherStatus().available) {
+        return;
+      }
+      if (isMicMuted) {
+        unmuteNativeMedia(NativeMediaSource.MIC);
+      } else {
+        muteNativeMedia(NativeMediaSource.MIC);
+      }
+      return;
+    }
     if (currentRoom) {
       currentRoom.localParticipant.audioTrackPublications.forEach(
         async (publication) => {
@@ -76,16 +99,27 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
     }
 
     const bottomIconsActivity = store.getState().bottomIconsActivity;
-    if (
-      !bottomIconsActivity.isActiveMicrophone &&
-      !bottomIconsActivity.showMicrophoneModal
-    ) {
+    if (bottomIconsActivity.isActiveMicrophone) {
+      return;
+    }
+
+    if (isHybridMode()) {
+      if (!getNativePublisherStatus().available) return;
+      publishNativeMedia(NativeMediaSource.MIC);
+      return;
+    }
+
+    if (!bottomIconsActivity.showMicrophoneModal) {
       dispatch(updateShowMicrophoneModal(true));
     }
   });
 
   // leaveMic start (ctrl+alt+o)
   const leaveMic = (currentRoom: Room) => {
+    if (isHybridMode()) {
+      unpublishNativeMedia(NativeMediaSource.MIC);
+      return;
+    }
     currentRoom.localParticipant.audioTrackPublications.forEach(
       async (publication) => {
         if (publication.track && publication.kind === Track.Kind.Audio) {
@@ -124,16 +158,27 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
     }
 
     const bottomIconsActivity = store.getState().bottomIconsActivity;
-    if (
-      !bottomIconsActivity.isActiveWebcam &&
-      !bottomIconsActivity.showVideoShareModal
-    ) {
+    if (bottomIconsActivity.isActiveWebcam) {
+      return;
+    }
+
+    if (isHybridMode()) {
+      if (!getNativePublisherStatus().available) return;
+      publishNativeMedia(NativeMediaSource.WEBCAM);
+      return;
+    }
+
+    if (!bottomIconsActivity.showVideoShareModal) {
       dispatch(updateShowVideoShareModal(true));
     }
   });
 
   // start close video (ctrl+alt+x)
   const leaveWebcam = (currentRoom: Room) => {
+    if (isHybridMode()) {
+      unpublishNativeMedia(NativeMediaSource.WEBCAM);
+      return;
+    }
     currentRoom.localParticipant.videoTrackPublications.forEach(
       async (publication) => {
         if (
@@ -148,6 +193,7 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
       },
     );
     dispatch(updateIsActiveWebcam(false));
+    dispatch(updateIsWebcamMuted(false));
     dispatch(updateSelectedVideoDevice(''));
     dispatch(
       updateVirtualBackground({

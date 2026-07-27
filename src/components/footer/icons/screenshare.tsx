@@ -12,14 +12,14 @@ const ScreenshareIcon = () => {
     isMobileOrTablet,
     showTooltip,
     hybrid,
-    nativeStatus,
+    nativeAvailable,
     isActiveShare,
     isLocked,
     toggleScreenShare,
   } = useScreenshare();
 
   const text = () => {
-    if (hybrid && !nativeStatus.available) {
+    if (hybrid && !nativeAvailable) {
       return t('footer.icons.native-publisher-unavailable');
     }
     if (isActiveShare) {
@@ -47,8 +47,7 @@ const ScreenshareIcon = () => {
       'bg-gray-100 dark:bg-Gray-700': isActiveShare,
       'bg-white dark:bg-Gray-800': !isActiveShare,
       '!border-Red-200 dark:!border-Red-400 text-Red-400': isLocked,
-      'cursor-not-allowed opacity-50':
-        hybrid && !nativeStatus.available && !isLocked,
+      'cursor-not-allowed opacity-50': hybrid && !nativeAvailable && !isLocked,
     },
   );
 

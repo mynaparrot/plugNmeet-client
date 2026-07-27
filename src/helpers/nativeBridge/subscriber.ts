@@ -7,60 +7,35 @@ import {
 import { NATIVE_BRIDGE_EVENT } from './bridge';
 import { store } from '../../store';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
+import {
+  updateIsActiveMicrophone,
+  updateIsActiveScreenshare,
+  updateIsActiveWebcam,
+  updateIsMicMuted,
+  updateIsWebcamMuted,
+} from '../../store/slices/bottomIconsActivitySlice';
+import { updateScreenSharing } from '../../store/slices/sessionSlice';
 import { updateLastPongAt } from './heartbeat';
 import i18n from '../i18n';
-
-export interface NativeSourceStatus {
-  active: boolean;
-  muted: boolean;
-}
 
 export interface NativePublisherStatus {
   /** false when heartbeat pongs stopped (native host gone/frozen) */
   available: boolean;
   lastError?: string;
-  sources: Record<NativeMediaSource, NativeSourceStatus>;
 }
-
-export const emptySources = (): Record<
-  NativeMediaSource,
-  NativeSourceStatus
-> => ({
-  [NativeMediaSource.NATIVE_MEDIA_SOURCE_UNSPECIFIED]: {
-    active: false,
-    muted: false,
-  },
-  [NativeMediaSource.MIC]: { active: false, muted: false },
-  [NativeMediaSource.WEBCAM]: { active: false, muted: false },
-  [NativeMediaSource.SCREENSHARE]: { active: false, muted: false },
-});
 
 let status: NativePublisherStatus = {
   available: true,
-  sources: emptySources(),
 };
 const listeners = new Set<() => void>();
 
-/** Update status and notify all subscribers. Internal — only publisher.ts should call this. */
+/** Update status and notify all subscribers. Internal — only publisher/heartbeat should call this. */
 export const emit = (next: Partial<NativePublisherStatus>) => {
   status = {
     ...status,
     ...next,
-    sources: next.sources ?? { ...status.sources },
   };
   listeners.forEach((l) => l());
-};
-
-const setSource = (
-  source: NativeMediaSource,
-  patch: Partial<NativeSourceStatus>,
-) => {
-  emit({
-    sources: {
-      ...status.sources,
-      [source]: { ...status.sources[source], ...patch },
-    },
-  });
 };
 
 export const getNativePublisherStatus = (): NativePublisherStatus => status;
@@ -70,6 +45,38 @@ export const subscribeNativePublisherStatus = (
 ): (() => void) => {
   listeners.add(fn);
   return () => listeners.delete(fn);
+};
+
+/** Sync native media source lifecycle into Redux (single source of truth for UI). */
+const syncSourceToRedux = (
+  source: NativeMediaSource,
+  active: boolean,
+  muted: boolean,
+) => {
+  switch (source) {
+    case NativeMediaSource.MIC:
+      store.dispatch(updateIsActiveMicrophone(active));
+      store.dispatch(updateIsMicMuted(active ? muted : false));
+      break;
+    case NativeMediaSource.WEBCAM:
+      store.dispatch(updateIsActiveWebcam(active));
+      // Hybrid keeps the track published while muted; web uses empty-stream instead.
+      store.dispatch(updateIsWebcamMuted(active ? muted : false));
+      break;
+    case NativeMediaSource.SCREENSHARE: {
+      store.dispatch(updateIsActiveScreenshare(active));
+      const userId = store.getState().session.currentUser?.userId ?? '';
+      store.dispatch(
+        updateScreenSharing({
+          isActive: active,
+          sharedBy: active ? userId : '',
+        }),
+      );
+      break;
+    }
+    default:
+      break;
+  }
 };
 
 // ---- native -> web status tracking (registered once at module load) ----
@@ -87,19 +94,29 @@ window.addEventListener(NATIVE_BRIDGE_EVENT, ((
 
     case NativeBridgeActions.NATIVE_TRACK_PUBLISHED:
       if (msg.payload.case === 'trackState') {
-        setSource(msg.payload.value.source, { active: true, muted: false });
+        syncSourceToRedux(msg.payload.value.source, true, false);
       }
       break;
 
     case NativeBridgeActions.NATIVE_TRACK_UNPUBLISHED:
       if (msg.payload.case === 'trackState') {
-        setSource(msg.payload.value.source, { active: false, muted: false });
+        syncSourceToRedux(msg.payload.value.source, false, false);
       }
       break;
 
     case NativeBridgeActions.NATIVE_MEDIA_MUTED:
       if (msg.payload.case === 'mediaMuted') {
-        setSource(msg.payload.value.source, { muted: msg.payload.value.muted });
+        const { source, muted } = msg.payload.value;
+        // Mute only applies while the source is considered active in Redux.
+        if (source === NativeMediaSource.MIC) {
+          if (store.getState().bottomIconsActivity.isActiveMicrophone) {
+            store.dispatch(updateIsMicMuted(muted));
+          }
+        } else if (source === NativeMediaSource.WEBCAM) {
+          if (store.getState().bottomIconsActivity.isActiveWebcam) {
+            store.dispatch(updateIsWebcamMuted(muted));
+          }
+        }
       }
       break;
 

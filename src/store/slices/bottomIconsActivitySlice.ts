@@ -20,6 +20,7 @@ const initialState: IBottomIconsSlice = {
   activeSidePanel: 'PARTICIPANTS',
 
   isMicMuted: false,
+  isWebcamMuted: false,
   screenWidth: 1024,
   screenHeight: 500,
   deviceOrientation: 'portrait',
@@ -66,6 +67,9 @@ const bottomIconsSlice = createSlice({
     },
     updateIsActiveWebcam: (state, action: PayloadAction<boolean>) => {
       state.isActiveWebcam = action.payload;
+    },
+    updateIsWebcamMuted: (state, action: PayloadAction<boolean>) => {
+      state.isWebcamMuted = action.payload;
     },
     updateIsActiveRaisehand: (state, action: PayloadAction<boolean>) => {
       state.isActiveRaisehand = action.payload;
@@ -187,6 +191,7 @@ export const {
   updateIsActiveMicrophone,
   updateIsMicMuted,
   updateIsActiveWebcam,
+  updateIsWebcamMuted,
   updateIsActiveRaisehand,
   updateIsActiveRecording,
   updateIsActiveScreenshare,

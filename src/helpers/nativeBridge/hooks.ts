@@ -1,13 +1,12 @@
 import { useSyncExternalStore } from 'react';
-import type { NativePublisherStatus } from './subscriber';
 import {
   getNativePublisherStatus,
   subscribeNativePublisherStatus,
 } from './subscriber';
 
-/** Live native publisher status (available / per-source active+muted / lastError). */
-export const useNativePublisherStatus = (): NativePublisherStatus =>
+/** Whether the native publisher host is alive (heartbeat). Hybrid-only concern. */
+export const useNativePublisherAvailable = (): boolean =>
   useSyncExternalStore(
     subscribeNativePublisherStatus,
-    getNativePublisherStatus,
+    () => getNativePublisherStatus().available,
   );
