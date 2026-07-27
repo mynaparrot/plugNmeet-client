@@ -14,6 +14,9 @@ import './style.css';
 import { useAppSelector } from '../../../store';
 import { LoadingIcon } from '../../../assets/Icons/Loading';
 
+/** Hide spinner even if media events never fire (headless Chrome / MediaStream quirks). */
+const LOADED_FALLBACK_MS = 3000;
+
 interface IVideoElmProps {
   track: RemoteTrackPublication | LocalTrackPublication;
 }
@@ -24,22 +27,55 @@ const VideoElm = ({ track }: IVideoElmProps) => {
   const isNatsServerConnected = useAppSelector(
     (state) => state.roomSettings.isNatsServerConnected,
   );
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const self = useMemo(() => track instanceof LocalTrackPublication, [track]);
+
+  const markLoaded = useCallback(() => setIsLoaded(true), []);
 
   useEffect(() => {
     const el = ref.current;
     const videoTrack = track.videoTrack;
-    if (el && videoTrack) {
-      videoTrack.attach(el);
+    if (!el || !videoTrack) {
+      return;
     }
 
-    return () => {
-      if (el && videoTrack) {
-        videoTrack.detach(el);
+    setIsLoaded(false);
+    videoTrack.attach(el);
+
+    const tryMarkLoaded = () => {
+      if (
+        el.videoWidth > 0 ||
+        el.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA
+      ) {
+        markLoaded();
+        return true;
       }
+      return false;
     };
-  }, [track.videoTrack]);
+
+    el.addEventListener('loadeddata', markLoaded);
+    el.addEventListener('loadedmetadata', markLoaded);
+    el.addEventListener('playing', markLoaded);
+
+    tryMarkLoaded();
+
+    const pollId = window.setInterval(() => {
+      if (tryMarkLoaded()) {
+        window.clearInterval(pollId);
+      }
+    }, 200);
+
+    const fallbackId = window.setTimeout(markLoaded, LOADED_FALLBACK_MS);
+
+    return () => {
+      el.removeEventListener('loadeddata', markLoaded);
+      el.removeEventListener('loadedmetadata', markLoaded);
+      el.removeEventListener('playing', markLoaded);
+      window.clearInterval(pollId);
+      window.clearTimeout(fallbackId);
+      videoTrack.detach(el);
+    };
+  }, [track.videoTrack, markLoaded]);
 
   useEffect(() => {
     const el = ref.current;
@@ -52,8 +88,6 @@ const VideoElm = ({ track }: IVideoElmProps) => {
       el.play().catch((e) => console.error('screenshare play failed', e));
     }
   }, [isNatsServerConnected]);
-
-  const onLoadedData = useCallback(() => setIsLoaded(true), []);
 
   const fullScreen = useCallback(() => {
     if (!document.fullscreenElement) {
@@ -88,7 +122,6 @@ const VideoElm = ({ track }: IVideoElmProps) => {
         </button>
       )}
       <video
-        onLoadedData={onLoadedData}
         ref={ref}
         className={clsx('video-player absolute w-full h-full', {
           'self-screen-share !w-auto !h-52 !left-1/2 !top-1/2 !-translate-x-1/2 !-translate-y-1/2':
