@@ -99,7 +99,8 @@
     "encryption-error": "Encryption error: {{error}}",
     "decryption-error": "Decryption error: {{error}}",
     "error-occurred": "Error occurred",
-    "native-bridge-error": "The application reported an error: {{error}}"
+    "native-bridge-error": "The application reported an error: {{error}}",
+    "cannot-lock-admin": "You can't change lock settings for other admin users."
   },
   "room-metadata": {
     "session-recording": "This meeting is being recorded.",
