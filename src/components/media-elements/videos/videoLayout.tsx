@@ -43,8 +43,8 @@ const DESKTOP_PER_PAGE = 24,
   MOBILE_WITH_SIDEBAR_PER_PAGE = 4,
   PC_VERTICAL_PER_PAGE = 5,
   PC_EXTENDED_VERTICAL_PER_PAGE = 10,
-  TABLET_VERTICAL_PER_PAGE = 4,
-  TABLET_VERTICAL_PORTRAIT_WITH_SIDEBAR_PER_PAGE = 3,
+  TABLET_VERTICAL_PORTRAIT_PER_PAGE = 3,
+  TABLET_VERTICAL_LANDSCAPE_PER_PAGE = 6,
   MOBILE_VERTICAL_PORTRAIT_PER_PAGE = 3,
   MOBILE_VERTICAL_LANDSCAPE_PER_PAGE = 4,
   MOBILE_VERTICAL_WITH_SIDEBAR_PER_PAGE = 2;
@@ -112,10 +112,10 @@ const VideoLayout = ({
       }
     } else if (isTablet) {
       if (enabledVerticalViewMode) {
-        perPage =
-          isPortrait && isSidebarOpen
-            ? TABLET_VERTICAL_PORTRAIT_WITH_SIDEBAR_PER_PAGE
-            : TABLET_VERTICAL_PER_PAGE;
+        // Tablet: sidebar doesn't reduce vertical webcam count
+        perPage = isPortrait
+          ? TABLET_VERTICAL_PORTRAIT_PER_PAGE
+          : TABLET_VERTICAL_LANDSCAPE_PER_PAGE;
       } else {
         // default mode
         perPage = isSidebarOpen

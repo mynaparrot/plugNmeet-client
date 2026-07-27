@@ -145,15 +145,20 @@ const VerticalLayout = ({
     };
   }, []);
 
-  const shouldBeAtBottom = isMobile || (isTablet && isPortrait);
+  // Only push to bottom in portrait; landscape has more horizontal space → right-side.
+  const shouldBeAtBottom = (isMobile || isTablet) && isPortrait;
 
-  const wrapperClasses = `vertical-webcams-wrapper group absolute z-20 p-3 transition-all duration-300 bg-Gray-25 dark:bg-dark-primary border-Gray-200 dark:border-Gray-800 ${
+  // Landscape mobile/tablet: narrower right strip than desktop (212px).
+  const rightSideWidth =
+    isMobile || isTablet ? 'w-[140px]' : 'md:w-[212px] w-[212px]';
+
+  const wrapperClasses = `vertical-webcams-wrapper group absolute z-20 transition-all duration-300 bg-Gray-25 dark:bg-dark-primary border-Gray-200 dark:border-Gray-800 ${
     shouldBeAtBottom
-      ? 'vertical-bottom-layout bottom-0 left-0 right-0 h-[126px] border-t w-full flex flex-row justify-center not-extended'
-      : `top-0 right-0 h-full border-l flex flex-col justify-center ${
+      ? 'vertical-bottom-layout bottom-0 left-0 right-0 h-[110px] border-t w-full flex flex-row justify-center items-center px-2 py-1.5 not-extended'
+      : `p-2 top-0 right-0 h-full border-l flex flex-col justify-center ${
           isEnabledExtendedVerticalCamView
             ? 'xl:w-[416px] extended-view-wrap'
-            : 'md:w-[212px] not-extended'
+            : `${rightSideWidth} not-extended`
         }`
   }`;
 
