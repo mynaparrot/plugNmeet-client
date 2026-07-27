@@ -156,10 +156,29 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
       await this.loopPromise;
     }
 
-    this.cleanupSourceStream();
+    // Check if the incoming track is actually new (different from the
+    // current source track). After mute/unmute, LiveKit often passes the
+    // same track. If we call cleanupSourceStream() we'd stop it ourselves,
+    // turning it to "ended" before we can use it.
+    const currentTrack = this.sourceElement.srcObject
+      ? (this.sourceElement.srcObject as MediaStream).getVideoTracks()[0]
+      : null;
+    const isNewTrack =
+      opts.track !== currentTrack && opts.track.readyState === 'live';
 
-    this.sourceElement.srcObject = new MediaStream([opts.track]);
-    await this.sourceElement.play();
+    if (isNewTrack) {
+      try {
+        this.cleanupSourceStream();
+        this.sourceElement.srcObject = new MediaStream([opts.track]);
+        await this.sourceElement.play();
+        await this.initTwilioProcessor();
+      } catch (e) {
+        console.error(
+          'Failed to restart Twilio virtual background processor',
+          e,
+        );
+      }
+    }
 
     this.startProcessingLoop();
   }

@@ -62,9 +62,9 @@ const VideoParticipant = ({
         elements.push(
           <div
             key={userId}
-            className="camera-muted-fallback w-full h-full flex items-center justify-center bg-Gray-900"
+            className="camera-muted-fallback w-full h-full flex items-center justify-center bg-black"
           >
-            <span className="text-xl 3xl:text-2xl font-medium text-white">
+            <span className="text-5xl 3xl:text-7xl font-bold text-white select-none">
               {generateAvatarInitial(participant.name ?? '')}
             </span>
           </div>,

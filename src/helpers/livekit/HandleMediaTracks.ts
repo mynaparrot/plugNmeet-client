@@ -15,7 +15,10 @@ import {
   participantsSelector,
   updateParticipant,
 } from '../../store/slices/participantSlice';
-import { updateIsMicMuted } from '../../store/slices/bottomIconsActivitySlice';
+import {
+  updateIsMicMuted,
+  updateIsWebcamMuted,
+} from '../../store/slices/bottomIconsActivitySlice';
 import {
   ICurrentUser,
   IRoomMetadata,
@@ -77,45 +80,51 @@ export default class HandleMediaTracks {
   };
 
   public trackMuted = (track: TrackPublication, participant: Participant) => {
-    if (track.source !== Track.Source.Microphone) {
-      return;
-    }
     const userId = toPlugNmeetUserIdPrimary(participant.identity);
 
-    store.dispatch(
-      updateParticipant({
-        id: userId,
-        changes: {
-          isMuted: true,
-        },
-      }),
-    );
+    if (track.source === Track.Source.Microphone) {
+      store.dispatch(
+        updateParticipant({
+          id: userId,
+          changes: {
+            isMuted: true,
+          },
+        }),
+      );
 
-    if (userId === this.currentUser?.userId) {
-      store.dispatch(updateIsMicMuted(true));
+      if (userId === this.currentUser?.userId) {
+        store.dispatch(updateIsMicMuted(true));
+      }
+      this.removeSpeaker(track, participant);
+    } else if (track.source === Track.Source.Camera) {
+      if (userId === this.currentUser?.userId) {
+        store.dispatch(updateIsWebcamMuted(true));
+      }
     }
-    this.removeSpeaker(track, participant);
   };
 
   public trackUnmuted = (track: TrackPublication, participant: Participant) => {
-    if (track.source !== Track.Source.Microphone) {
-      return;
-    }
     const userId = toPlugNmeetUserIdPrimary(participant.identity);
 
-    store.dispatch(
-      updateParticipant({
-        id: userId,
-        changes: {
-          isMuted: false,
-        },
-      }),
-    );
+    if (track.source === Track.Source.Microphone) {
+      store.dispatch(
+        updateParticipant({
+          id: userId,
+          changes: {
+            isMuted: false,
+          },
+        }),
+      );
 
-    if (userId === this.currentUser?.userId) {
-      store.dispatch(updateIsMicMuted(false));
+      if (userId === this.currentUser?.userId) {
+        store.dispatch(updateIsMicMuted(false));
+      }
+      this.addSpeaker(track, participant);
+    } else if (track.source === Track.Source.Camera) {
+      if (userId === this.currentUser?.userId) {
+        store.dispatch(updateIsWebcamMuted(false));
+      }
     }
-    this.addSpeaker(track, participant);
   };
 
   public trackSubscriptionFailed = (

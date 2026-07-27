@@ -13,7 +13,7 @@ import {
 import ShareWebcamModal from '../modals/webcam';
 import WebcamMenu from './webcam-menu';
 import { updateSelectedVideoDevice } from '../../../store/slices/roomSettingsSlice';
-import { createEmptyVideoStreamTrack, sleep } from '../../../helpers/utils';
+import { sleep } from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { Camera } from '../../../assets/Icons/Camera';
 import { CameraOff } from '../../../assets/Icons/CameraOff';
@@ -65,9 +65,7 @@ const WebcamIcon = () => {
 
   const hybrid = isHybridMode();
   const nativeAvailable = useNativePublisherAvailable();
-  // Web: empty-stream mute keeps track published but sets isActiveWebcam=false.
-  // Hybrid: track stays published; mute is tracked via isWebcamMuted.
-  const isMuted = hybrid ? isWebcamMuted : !isActiveWebcam;
+  const isMuted = isWebcamMuted;
 
   const isWebcamLock = useAppSelector(
     (state) => state.session.currentUser?.metadata?.lockSettings?.lockWebcam,
@@ -85,7 +83,7 @@ const WebcamIcon = () => {
     [isAdmin, isWebcamLock, defaultLock],
   );
 
-  const { publishNewTrack, replaceTrack } = useWebcamPublisher();
+  const { publishNewTrack } = useWebcamPublisher();
 
   // for change in webcam lock setting
   useEffect(() => {
@@ -223,18 +221,11 @@ const WebcamIcon = () => {
       return;
     }
 
-    // we'll replace it by empty Stream
-    if (!currentRoom) return;
-    const emptyStream = createEmptyVideoStreamTrack(
-      currentRoom.localParticipant.name ?? 'User',
-    );
-
-    if (virtualBackground.type == 'none') {
-      await replaceTrack(emptyStream);
+    if (isWebcamMuted) {
+      await currentRoom.localParticipant.setCameraEnabled(true);
     } else {
-      await publishNewTrack('', emptyStream);
+      await currentRoom.localParticipant.setCameraEnabled(false);
     }
-    dispatch(updateIsActiveWebcam(false));
   }, [
     hybrid,
     isWebcamLocked,
@@ -244,10 +235,7 @@ const WebcamIcon = () => {
     selectedVideoDevice,
     currentRoom,
     onSelectedDevice,
-    virtualBackground,
     dispatch,
-    replaceTrack,
-    publishNewTrack,
   ]);
 
   const getTooltipText = () => {
