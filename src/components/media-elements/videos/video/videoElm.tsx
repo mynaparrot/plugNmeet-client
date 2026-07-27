@@ -14,6 +14,9 @@ import { LoadingIcon } from '../../../../assets/Icons/Loading';
 // @ts-ignore
 import './style.css';
 
+/** Hide spinner even if media events never fire (headless Chrome / MediaStream quirks). */
+const LOADED_FALLBACK_MS = 3000;
+
 interface IVideoElmProps {
   track: RemoteTrackPublication | LocalTrackPublication;
 }
@@ -37,22 +40,58 @@ const VideoElm = forwardRef<HTMLVideoElement, IVideoElmProps>(
       return track.trackName === 'canvas' ? 'contain' : videoObjectFit;
     }, [track.trackName, videoObjectFit]);
 
-    const [loaded, setLoaded] = useState<boolean>();
-    const onLoadedData = useCallback(() => setLoaded(true), []);
+    const [loaded, setLoaded] = useState(false);
+    const markLoaded = useCallback(() => setLoaded(true), []);
 
+    // Attach track and detect first frame via multiple signals.
+    // MediaStream + headless Chrome often skips loadeddata; also check
+    // loadedmetadata/playing and poll videoWidth as a fallback.
     useEffect(() => {
       const el = ref.current;
       const videoTrack = track.videoTrack;
-      if (el && videoTrack) {
-        videoTrack.attach(el);
+      if (!el || !videoTrack) {
+        return;
       }
 
-      return () => {
-        if (el && videoTrack) {
-          videoTrack.detach(el);
+      setLoaded(false);
+      videoTrack.attach(el);
+
+      const tryMarkLoaded = () => {
+        if (
+          el.videoWidth > 0 ||
+          el.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA
+        ) {
+          markLoaded();
+          return true;
         }
+        return false;
       };
-    }, [track.videoTrack]);
+
+      el.addEventListener('loadeddata', markLoaded);
+      el.addEventListener('loadedmetadata', markLoaded);
+      el.addEventListener('playing', markLoaded);
+
+      // Already has frames (e.g. re-attach).
+      tryMarkLoaded();
+
+      const pollId = window.setInterval(() => {
+        if (tryMarkLoaded()) {
+          window.clearInterval(pollId);
+        }
+      }, 200);
+
+      // Last resort: stop showing spinner even if decode never reports dimensions.
+      const fallbackId = window.setTimeout(markLoaded, LOADED_FALLBACK_MS);
+
+      return () => {
+        el.removeEventListener('loadeddata', markLoaded);
+        el.removeEventListener('loadedmetadata', markLoaded);
+        el.removeEventListener('playing', markLoaded);
+        window.clearInterval(pollId);
+        window.clearTimeout(fallbackId);
+        videoTrack.detach(el);
+      };
+    }, [track.videoTrack, markLoaded]);
 
     useEffect(() => {
       if (track instanceof RemoteTrackPublication) {
@@ -84,7 +123,6 @@ const VideoElm = forwardRef<HTMLVideoElement, IVideoElmProps>(
         )}
         <video
           className="camera-video"
-          onLoadedData={onLoadedData}
           ref={ref}
           style={{ objectFit: videoFit }}
         />

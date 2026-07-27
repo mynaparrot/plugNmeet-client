@@ -38,6 +38,7 @@ import { roomConnectionStatus } from '../../components/app/helper';
 import {
   getConfigValue,
   isFirefoxMobile,
+  isUserRecorder,
   toNativeTwinIdentity,
   toPlugNmeetUserId,
 } from '../utils';
@@ -271,12 +272,18 @@ export default class ConnectLivekit
       videoCodec = 'vp8';
     }
 
+    // disable adaptiveStream for recorder
+    const isRecorder = isUserRecorder(this.localUserId);
+    const adaptiveStream = isRecorder
+      ? false
+      : getConfigValue<boolean>(
+          'enableAdaptiveStream',
+          true,
+          'ENABLE_ADAPTIVE_STREAM',
+        );
+
     const roomOptions: RoomOptions = {
-      adaptiveStream: getConfigValue<boolean>(
-        'enableAdaptiveStream',
-        true,
-        'ENABLE_ADAPTIVE_STREAM',
-      ),
+      adaptiveStream,
       dynacast: getConfigValue<boolean>(
         'enableDynacast',
         false,
