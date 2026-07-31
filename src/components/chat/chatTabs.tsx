@@ -149,9 +149,9 @@ const ChatTabs = ({ isRecorder }: ChatTabsProps) => {
                 {selectedTitle}
               </span>
             </p>
-            <span className="pointer-events-none absolute inset-y-0 right-3 3xl:right-5 flex items-center">
+            <span className="pointer-events-none absolute inset-y-0 end-3 3xl:end-5 flex items-center">
               {hasUnreadMessages && (
-                <span className="shake pr-1 -mb-1">
+                <span className="shake pe-1 -mb-1">
                   <i className="pnm-chat shake" />
                 </span>
               )}

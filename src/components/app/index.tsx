@@ -56,7 +56,8 @@ const App = () => {
   useEffect(() => {
     // make sure we're using correct body dir
     document.dir = i18n.dir();
-  }, [i18n, i18n.language]);
+    document.documentElement.lang = i18n.resolvedLanguage ?? i18n.language;
+  }, [i18n, i18n.language, i18n.resolvedLanguage]);
 
   useEffect(() => {
     void verifyToken(
