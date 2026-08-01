@@ -14,4 +14,4 @@ export {
   subscribeNativePublisherStatus,
 } from './subscriber';
 export type { NativePublisherStatus } from './subscriber';
-export { useNativePublisherAvailable } from './hooks';
+export { useNativePublisherStatus, useHybridLockForwarder } from './hooks';

@@ -419,6 +419,8 @@ export default class ConnectLivekit
   private onDisconnected = (reason?: DisconnectReason) => {
     window.removeEventListener('beforeunload', this.onBeforeUnload);
     this.connectionQualityMonitor.stop();
+    // Hybrid mode: tear down native publisher on disconnect (beforeunload fallback removed above)
+    teardownNativePublisher();
 
     // Clear any running timer on disconnect
     if (this.fallbackTimer) {

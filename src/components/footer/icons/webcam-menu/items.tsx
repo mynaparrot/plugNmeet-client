@@ -19,12 +19,14 @@ interface IWebcamMenuItemsProps {
   currentRoom: Room;
   isHybrid: boolean;
   toggleWebcam: () => void;
+  isLocked?: boolean;
 }
 
 const WebcamMenuItems = ({
   toggleWebcam,
   currentRoom,
   isHybrid,
+  isLocked,
 }: IWebcamMenuItemsProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
@@ -47,6 +49,7 @@ const WebcamMenuItems = ({
   );
 
   const leaveWebcam = useCallback(async () => {
+    if (isLocked) return;
     if (isHybrid) {
       unpublishNativeMedia(NativeMediaSource.WEBCAM);
       return;
@@ -70,7 +73,7 @@ const WebcamMenuItems = ({
         );
       }
     }
-  }, [currentRoom, dispatch, isHybrid]);
+  }, [currentRoom, dispatch, isHybrid, isLocked]);
 
   const renderWebMenuItems = () => {
     return (
@@ -107,7 +110,7 @@ const WebcamMenuItems = ({
     >
       {!isHybrid ? renderWebMenuItems() : null}
       <div className="" role="none">
-        <MenuItem>
+        <MenuItem disabled={isLocked}>
           {() => (
             <p
               className="h-8 w-full flex items-center text-sm gap-2 leading-none font-medium text-red-700 px-2 rounded-lg transition-all duration-300 hover:bg-Red-600 hover:text-white"
@@ -122,7 +125,7 @@ const WebcamMenuItems = ({
         </MenuItem>
       </div>
       <div className="" role="none">
-        <MenuItem>
+        <MenuItem disabled={isLocked}>
           {() => (
             <p
               className="group h-8 w-full flex items-center text-sm gap-2 leading-none font-medium text-red-700 px-2 rounded-lg transition-all duration-300 hover:bg-Red-600 hover:text-white"

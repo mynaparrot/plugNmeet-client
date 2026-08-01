@@ -9,12 +9,14 @@ interface IWebcamMenuProps {
   currentRoom: Room;
   isHybrid: boolean;
   toggleWebcam: () => void;
+  isLocked?: boolean;
 }
 
 const WebcamMenu = ({
   currentRoom,
   isHybrid,
   toggleWebcam,
+  isLocked,
 }: IWebcamMenuProps) => {
   return (
     <div className="menu relative">
@@ -22,7 +24,8 @@ const WebcamMenu = ({
         {({ open }) => (
           <>
             <MenuButton
-              className={`footer-icon-bg w-[20px] md:w-[25px] 3xl:w-[30px] h-[34px] md:h-9 3xl:h-11 flex items-center justify-center border-r-0 border overflow-hidden bg-Gray-50 dark:bg-transparent rounded-r-xl 3xl:rounded-r-2xl ${open ? 'border-Gray-100 dark:border-Gray-700 dark:bg-Gray-800!' : 'border-Gray-300 dark:border-Gray-700 dark:border-l-Gray-800'}`}
+              disabled={isLocked}
+              className={`footer-icon-bg w-[20px] md:w-[25px] 3xl:w-[30px] h-[34px] md:h-9 3xl:h-11 flex items-center justify-center border-r-0 border overflow-hidden bg-Gray-50 dark:bg-transparent rounded-r-xl 3xl:rounded-r-2xl disabled:cursor-not-allowed disabled:opacity-50 ${open ? 'border-Gray-100 dark:border-Gray-700 dark:bg-Gray-800!' : 'border-Gray-300 dark:border-Gray-700 dark:border-l-Gray-800'}`}
             >
               <ArrowUp />
             </MenuButton>
@@ -42,6 +45,7 @@ const WebcamMenu = ({
                 currentRoom={currentRoom}
                 isHybrid={isHybrid}
                 toggleWebcam={toggleWebcam}
+                isLocked={isLocked}
               />
             </Transition>
           </>

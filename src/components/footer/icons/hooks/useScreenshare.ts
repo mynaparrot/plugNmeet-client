@@ -17,7 +17,7 @@ import {
   isHybridMode,
   publishNativeMedia,
   unpublishNativeMedia,
-  useNativePublisherAvailable,
+  useNativePublisherStatus,
 } from '../../../../helpers/nativeBridge';
 
 export interface UseScreenshareReturn {
@@ -64,7 +64,7 @@ const useScreenshare = (): UseScreenshareReturn => {
   );
 
   const hybrid = isHybridMode();
-  const nativeAvailable = useNativePublisherAvailable();
+  const { available: nativeAvailable } = useNativePublisherStatus();
 
   const isLocked = useMemo(
     () => !!(isScreenshareLock && !isAdmin),
@@ -103,10 +103,6 @@ const useScreenshare = (): UseScreenshareReturn => {
 
   // for change in lock setting
   useEffect(() => {
-    if (hybrid) {
-      if (isLocked) unpublishNativeMedia(NativeMediaSource.SCREENSHARE);
-      return;
-    }
     if (isLocked) {
       void endScreenShare();
     }

@@ -33,7 +33,7 @@ import {
   publishNativeMedia,
   muteNativeMedia,
   unmuteNativeMedia,
-  useNativePublisherAvailable,
+  useNativePublisherStatus,
 } from '../../../helpers/nativeBridge';
 
 const MicrophoneIcon = () => {
@@ -70,7 +70,7 @@ const MicrophoneIcon = () => {
   );
 
   const hybrid = isHybridMode();
-  const nativeAvailable = useNativePublisherAvailable();
+  const { available: nativeAvailable } = useNativePublisherStatus();
 
   const { showMutedTooltip, onDismissTooltip, muteOnStartRef } =
     useMicrophoneActivity(currentRoom, isMicMuted);
@@ -83,10 +83,6 @@ const MicrophoneIcon = () => {
 
   // for change in mic lock setting
   useEffect(() => {
-    if (hybrid) {
-      if (isLocked) muteNativeMedia(NativeMediaSource.MIC);
-      return;
-    }
     if (!currentRoom) return;
 
     const closeMicOnLock = async (micTrack: LocalTrack) => {
@@ -103,7 +99,7 @@ const MicrophoneIcon = () => {
         closeMicOnLock(mic.track).then();
       }
     }
-  }, [isLocked, currentRoom, dispatch, hybrid]);
+  }, [isLocked, currentRoom, dispatch]);
 
   const muteUnmuteMic = useCallback(async () => {
     if (!currentRoom) {
@@ -301,6 +297,7 @@ const MicrophoneIcon = () => {
               isActiveMicrophone={isActiveMicrophone}
               isMicMuted={isMicMuted}
               hybrid={hybrid}
+              isLocked={isLocked}
             />
           )}
         </div>

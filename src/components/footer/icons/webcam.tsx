@@ -24,8 +24,7 @@ import {
   muteNativeMedia,
   publishNativeMedia,
   unmuteNativeMedia,
-  unpublishNativeMedia,
-  useNativePublisherAvailable,
+  useNativePublisherStatus,
 } from '../../../helpers/nativeBridge';
 
 const WebcamIcon = () => {
@@ -64,7 +63,7 @@ const WebcamIcon = () => {
   );
 
   const hybrid = isHybridMode();
-  const nativeAvailable = useNativePublisherAvailable();
+  const { available: nativeAvailable } = useNativePublisherStatus();
   const isMuted = isWebcamMuted;
 
   const isWebcamLock = useAppSelector(
@@ -87,10 +86,6 @@ const WebcamIcon = () => {
 
   // for change in webcam lock setting
   useEffect(() => {
-    if (hybrid) {
-      if (isWebcamLocked) unpublishNativeMedia(NativeMediaSource.WEBCAM);
-      return;
-    }
     if (!currentRoom) return;
 
     const closeWebcamOnLock = async (cameraTrack: LocalTrack) => {
@@ -107,7 +102,7 @@ const WebcamIcon = () => {
         closeWebcamOnLock(hasCameraTrack.track).then();
       }
     }
-  }, [isWebcamLocked, currentRoom, dispatch, hybrid]);
+  }, [isWebcamLocked, currentRoom, dispatch]);
 
   // this is required during changing webcam device
   useEffect(() => {
@@ -348,6 +343,7 @@ const WebcamIcon = () => {
               currentRoom={currentRoom}
               isHybrid={hybrid}
               toggleWebcam={toggleWebcam}
+              isLocked={isWebcamLocked}
             />
           )}
         </div>

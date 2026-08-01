@@ -23,9 +23,14 @@ import { MicrophoneOff } from '../../../../assets/Icons/MicrophoneOff';
 interface IMicMenuItemsProps {
   currentRoom: Room;
   hybrid?: boolean;
+  isLocked?: boolean;
 }
 
-const MicMenuItems = ({ currentRoom, hybrid }: IMicMenuItemsProps) => {
+const MicMenuItems = ({
+  currentRoom,
+  hybrid,
+  isLocked,
+}: IMicMenuItemsProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
@@ -49,6 +54,7 @@ const MicMenuItems = ({ currentRoom, hybrid }: IMicMenuItemsProps) => {
   );
 
   const muteUnmuteMic = useCallback(async () => {
+    if (isLocked) return;
     if (isHybrid) {
       if (isMicMuted) {
         unmuteNativeMedia(NativeMediaSource.MIC);
@@ -69,9 +75,10 @@ const MicMenuItems = ({ currentRoom, hybrid }: IMicMenuItemsProps) => {
         await currentRoom.localParticipant.setMicrophoneEnabled(false);
       }
     }
-  }, [isHybrid, isMicMuted, currentRoom]);
+  }, [isHybrid, isMicMuted, currentRoom, isLocked]);
 
   const leaveMic = useCallback(async () => {
+    if (isLocked) return;
     if (isHybrid) {
       unpublishNativeMedia(NativeMediaSource.MIC);
       return;
@@ -90,7 +97,7 @@ const MicMenuItems = ({ currentRoom, hybrid }: IMicMenuItemsProps) => {
     dispatch(updateIsActiveMicrophone(false));
     dispatch(updateIsMicMuted(false));
     dispatch(updateSelectedAudioDevice(''));
-  }, [isHybrid, currentRoom, dispatch]);
+  }, [isHybrid, currentRoom, dispatch, isLocked]);
 
   return (
     <MenuItems
@@ -123,7 +130,7 @@ const MicMenuItems = ({ currentRoom, hybrid }: IMicMenuItemsProps) => {
         </>
       )}
       <div className="" role="none">
-        <MenuItem>
+        <MenuItem disabled={isLocked}>
           {() => (
             <p
               className="h-8 w-full flex items-center text-sm gap-2 leading-none font-medium text-red-700 px-2 rounded-lg transition-all duration-300 hover:bg-Red-600 hover:text-white"
@@ -145,7 +152,7 @@ const MicMenuItems = ({ currentRoom, hybrid }: IMicMenuItemsProps) => {
         </MenuItem>
       </div>
       <div className="" role="none">
-        <MenuItem>
+        <MenuItem disabled={isLocked}>
           {() => (
             <p
               className="group h-8 w-full flex items-center text-sm gap-2 leading-none font-medium px-2 rounded-lg transition-all duration-300 hover:bg-Red-600 hover:text-white text-red-700"
