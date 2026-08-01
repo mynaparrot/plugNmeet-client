@@ -17,6 +17,9 @@ import { SelectedIcon } from '../../../assets/Icons/SelectedIcon';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { createAndRegisterOfficeFile } from '../helpers/handleFiles';
 import { sleep } from '../../../helpers/utils';
+import { publishFileAttachmentToChat } from '../../chat/utils';
+import { DownloadIconSVG } from '../../../assets/Icons/DownloadIconSVG';
+import { CheckMarkIconSVG } from '../../../assets/Icons/CheckMarkIconSVG';
 
 interface UploadedFilesListProps {
   roomId: string;
@@ -33,6 +36,9 @@ const UploadedFilesList = ({
 }: UploadedFilesListProps) => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
+  const [linkSentFileIds, setLinkSentFileIds] = useState<Set<string>>(
+    new Set(),
+  );
 
   const whiteboardUploadedOfficeFiles = useAppSelector(
     (state) => state.whiteboard.whiteboardUploadedOfficeFiles,
@@ -87,6 +93,29 @@ const UploadedFilesList = ({
     }
   }, [whiteboardUploadedOfficeFiles, roomId]);
 
+  const handleShareDownloadLink = async (
+    e: React.MouseEvent,
+    file: IWhiteboardOfficeFile,
+  ) => {
+    e.stopPropagation();
+    setLinkSentFileIds((prev) => new Set(prev).add(file.fileId));
+    try {
+      // our file path format: rooSid/fileId ==> rooSid/fileName
+      const mainFilePath = file.filePath.replace(file.fileId, file.fileName);
+      await publishFileAttachmentToChat(mainFilePath, file.fileName);
+    } catch (err) {
+      console.error('Failed to share download link:', err);
+    } finally {
+      setTimeout(() => {
+        setLinkSentFileIds((prev) => {
+          const next = new Set(prev);
+          next.delete(file.fileId);
+          return next;
+        });
+      }, 2000);
+    }
+  };
+
   useEffect(() => {
     if (refresh) {
       void fetchAndUpdateFiles();
@@ -138,9 +167,30 @@ const UploadedFilesList = ({
                 <div className="left">
                   <p className="break-all">{file.fileName}</p>
                 </div>
-                <div className="right">
-                  {isCurrentlyInUse && <SelectedIcon />}
-                </div>
+                {file.fileId !== 'default' && (
+                  <div className="right flex items-center gap-2">
+                    <div
+                      className={`inline-flex items-center justify-center w-7 h-7 rounded-full cursor-pointer transition-all duration-200 [&_path]:stroke-current ${
+                        linkSentFileIds.has(file.fileId)
+                          ? 'bg-Green-100 text-Green-600 pointer-events-none'
+                          : 'bg-Gray-100 dark:bg-Gray-700 text-Gray-600 dark:text-white hover:bg-Gray-200'
+                      }`}
+                      title={
+                        linkSentFileIds.has(file.fileId)
+                          ? t('whiteboard.download-link-sent')
+                          : t('whiteboard.share-download-link')
+                      }
+                      onClick={(e) => handleShareDownloadLink(e, file)}
+                    >
+                      {linkSentFileIds.has(file.fileId) ? (
+                        <CheckMarkIconSVG />
+                      ) : (
+                        <DownloadIconSVG />
+                      )}
+                    </div>
+                    {isCurrentlyInUse && <SelectedIcon />}
+                  </div>
+                )}
               </div>
               <div className="progress-bar flex gap-2 items-center text-xs pt-0.5">
                 {t('whiteboard.total-pages', {

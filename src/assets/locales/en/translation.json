@@ -458,7 +458,9 @@
     "export-pdf-pages": "Pages",
     "export-pdf-select-all": "Select all",
     "export-pdf-clear": "Clear",
-    "export-pdf-exporting": "Exporting..."
+    "export-pdf-exporting": "Exporting...",
+    "share-download-link": "Share download link in public chat",
+    "download-link-sent": "Download link sent to public chat"
   },
   "waiting-room": {
     "modal-title": "Manage Waiting Room",

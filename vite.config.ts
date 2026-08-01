@@ -9,12 +9,12 @@ import cleanPlugin from 'vite-plugin-clean';
 const isProduction = process.env.NODE_ENV === 'production';
 
 export default defineConfig({
-  root: join(__dirname, 'src'),
+  root: join(import.meta.dirname, 'src'),
   base: '',
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.jsx'],
     alias: {
-      '~': resolve(__dirname, 'src'),
+      '~': resolve(import.meta.dirname, 'src'),
     },
   },
   server: {
