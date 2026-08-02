@@ -460,7 +460,7 @@
     "export-pdf-clear": "পরিষ্কার",
     "export-pdf-exporting": "রপ্তানী করা হচ্ছে...",
     "share-download-link": "সর্বজনীন চ্যাটে ডাউনলোড লিঙ্ক শেয়ার করুন",
-    "download-link-sent": "সর্বজনীন চ্যাটে পাঠানো ডাউনলোড লিঙ্ক"
+    "download-link-sent": "পাবলিক চ্যাটে ডাউনলোড লিঙ্ক পাঠানো হয়েছে"
   },
   "waiting-room": {
     "modal-title": "অপেক্ষার রুম পরিচালনা করুন",
