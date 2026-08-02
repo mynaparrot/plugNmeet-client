@@ -5,10 +5,13 @@
   "cancel": "إلغاء",
   "yes": "نعم",
   "no": "لا",
+  "error": "خطأ",
   "join": "انضمام",
   "share": "مشاركة",
   "plugnmeet-server-client-version": "الخادم: v{{server}}، العميل: v{{client}}",
   "open": "فتح",
+  "other": "أخرى",
+  "pip": "صورة داخل الصورة",
   "please-wait": "يرجى الانتظار...",
   "are-you-sure-to-close": "هل أنت متأكد من رغبتك في الإغلاق؟",
   "you-are-about-to-close": "أنت على وشك الإغلاق.",
@@ -92,7 +95,12 @@
     "whiteboard-new-file-added": "الملف الجديد جاهز وتمت إضافته إلى قائمة ملفات السبورة.",
     "private-download-link-ready": "رابط التحميل الخاص بك جاهز. أنت فقط من يستطيع رؤية هذه الرسالة.<br/>{{link}}",
     "local-audio-stuck-fallback": "اكتشفنا مشكلة في ميكروفونك. حاول إطفائها وتشغيلها مرة أخرى.",
-    "local-video-stuck-fallback": "اكتشفنا مشكلة في كاميرتك. حاول إطفائها وتشغيلها مرة أخرى."
+    "local-video-stuck-fallback": "اكتشفنا مشكلة في كاميرتك. حاول إطفائها وتشغيلها مرة أخرى.",
+    "encryption-error": "خطأ في التشفير: {{error}}",
+    "decryption-error": "خطأ في فك التشفير: {{error}}",
+    "error-occurred": "حدث خطأ",
+    "native-bridge-error": "أبلغ التطبيق عن خطأ: {{error}}",
+    "cannot-lock-admin": "You can't change lock settings for other admin users."
   },
   "room-metadata": {
     "session-recording": "يتم تسجيل هذا الاجتماع.",
@@ -216,6 +224,7 @@
     "polls-tab": "الاستطلاعات",
     "breakout-room-tab": "الغرف الجانبية",
     "me": "(أنا)",
+    "search-participant": "Search for Participant",
     "public-chat": "دردشة عامة",
     "private-chat": "دردشة خاصة",
     "select-chat-conversation-title": "اختر محادثة",
@@ -295,6 +304,7 @@
       "stop-screen-sharing": "إيقاف مشاركة الشاشة",
       "start-screen-sharing": "مشاركة الشاشة",
       "screen-sharing-locked": "مشاركة الشاشة مقفلة",
+      "native-publisher-unavailable": "Native publisher unavailable",
       "lower-hand": "خفض اليد",
       "raise-hand": "رفع اليد",
       "reactions": "ردود الفعل",
@@ -348,6 +358,9 @@
       "has-raised-hand": "{{user}} رفع يده.",
       "you-raised-hand": "لقد رفعت يدك.",
       "muted-all-microphone": "تم كتم صوت جميع الميكروفونات.",
+      "no-suitable-track-found": "No suitable track found to mute/unmute.",
+      "failed-to-mute-unmute-track": "Failed to mute/unmute track.",
+      "failed-to-load-participant-info": "Failed to load participant info.",
       "applied-settings": "تم تطبيق إعدادات القفل الجديدة.",
       "rtmp-starting": "البث المباشر سيبدأ. يرجى الانتظار.",
       "rtmp-ending": "البث المباشر سينتهي. يرجى الانتظار.",
@@ -445,7 +458,9 @@
     "export-pdf-pages": "الصفحات",
     "export-pdf-select-all": "اختر الجميع",
     "export-pdf-clear": "واضح",
-    "export-pdf-exporting": "تصدير..."
+    "export-pdf-exporting": "تصدير...",
+    "share-download-link": "Share download link in public chat",
+    "download-link-sent": "Download link sent to public chat"
   },
   "waiting-room": {
     "modal-title": "إدارة غرفة الانتظار",
@@ -489,7 +504,8 @@
     "end-poll-success": "انتهى الاستطلاع.",
     "publish-result": "نشر النتائج",
     "total": "الإجمالي: {{count}}",
-    "not-respondents-total": "لم يجب: {{count}}"
+    "not-respondents-total": "لم يجب: {{count}}",
+    "ask-question": "Ask a question"
   },
   "breakout-room": {
     "modal-title": "إدارة الغرف الجانبية",
@@ -531,6 +547,7 @@
     "join-prompt-mic-locked": "الميكروفون معطل لهذا الاجتماع. يمكنك تمكين الكاميرا أو الانضمام كمستمع.",
     "join-prompt-cam-locked": "الكاميرا معطلة لهذا الاجتماع. يمكنك تمكين الميكروفون أو الانضمام كمستمع.",
     "join-prompt-both-locked": "الميكروفون والكاميرا معطلان لهذا الاجتماع. يرجى الانضمام كمستمع.",
+    "join-prompt-hybrid": "You're all set! You can manage your camera and microphone once you're in the meeting. Click 'Join' to get started.",
     "enable-mic-cam-btn": "تمكين الميكروفون والكاميرا",
     "enable-mic-btn": "تمكين الميكروفون",
     "enable-cam-btn": "تمكين الكاميرا",
@@ -641,7 +658,8 @@
       "allowed-users": "المشاركون المسموح لهم",
       "users-required": "يجب اختيار مشارك واحد على الأقل.",
       "chat-box-placeholder": "اطرح سؤالاً على مساعد الذكاء الاصطناعي...",
-      "responding-placeholder": "مساعد الذكاء الاصطناعي يجيب..."
+      "responding-placeholder": "مساعد الذكاء الاصطناعي يجيب...",
+      "response-timed-out": "The AI assistant is taking too long to respond. Please try again."
     },
     "meeting-summarization": {
       "enable": "تمكين ملخص الاجتماع",
