@@ -100,7 +100,7 @@
     "decryption-error": "Erreur de déchiffrement : {{error}}",
     "error-occurred": "Erreur survenue",
     "native-bridge-error": "La demande a signalé une erreur : {{error}}",
-    "cannot-lock-admin": "You can't change lock settings for other admin users."
+    "cannot-lock-admin": "Vous ne pouvez pas changer les paramètres de verrouillage pour d’autres utilisateurs administrateurs."
   },
   "room-metadata": {
     "session-recording": "Cette réunion est en cours d'enregistrement.",
@@ -224,7 +224,7 @@
     "polls-tab": "Sondages",
     "breakout-room-tab": "Salles de sous-commission",
     "me": "(moi)",
-    "search-participant": "Search for Participant",
+    "search-participant": "Recherche de participant",
     "public-chat": "Chat public",
     "private-chat": "Chat privé",
     "select-chat-conversation-title": "Sélectionner une conversation",
@@ -304,7 +304,7 @@
       "stop-screen-sharing": "Arrêter le partage d'écran",
       "start-screen-sharing": "Partager l'écran",
       "screen-sharing-locked": "Partage d'écran verrouillé",
-      "native-publisher-unavailable": "Native publisher unavailable",
+      "native-publisher-unavailable": "Éditeur natif indisponible",
       "lower-hand": "Baisser la main",
       "raise-hand": "Lever la main",
       "reactions": "Réactions",
@@ -358,9 +358,9 @@
       "has-raised-hand": "{{user}} a levé la main.",
       "you-raised-hand": "Vous avez levé la main.",
       "muted-all-microphone": "Tous les microphones ont été coupés.",
-      "no-suitable-track-found": "No suitable track found to mute/unmute.",
-      "failed-to-mute-unmute-track": "Failed to mute/unmute track.",
-      "failed-to-load-participant-info": "Failed to load participant info.",
+      "no-suitable-track-found": "Aucune piste appropriée n’a été trouvée pour couper le sourd/le désactiver.",
+      "failed-to-mute-unmute-track": "Échec de mettre en sourd/désactiver la piste.",
+      "failed-to-load-participant-info": "Échec de charger les informations du participant.",
       "applied-settings": "Les nouveaux paramètres de verrouillage ont été appliqués.",
       "rtmp-starting": "La diffusion en direct commence. Veuillez patienter.",
       "rtmp-ending": "La diffusion en direct se termine. Veuillez patienter.",
@@ -459,8 +459,8 @@
     "export-pdf-select-all": "Sélectionner tout",
     "export-pdf-clear": "Clair",
     "export-pdf-exporting": "Exporter...",
-    "share-download-link": "Share download link in public chat",
-    "download-link-sent": "Download link sent to public chat"
+    "share-download-link": "Partager le lien de téléchargement dans le chat public",
+    "download-link-sent": "Lien de téléchargement envoyé vers le chat public"
   },
   "waiting-room": {
     "modal-title": "Gérer la salle d'attente",
@@ -505,7 +505,7 @@
     "publish-result": "Publier les résultats",
     "total": "Total : {{count}}",
     "not-respondents-total": "N'ont pas répondu : {{count}}",
-    "ask-question": "Ask a question"
+    "ask-question": "Posez une question"
   },
   "breakout-room": {
     "modal-title": "Gérer les salles de sous-commission",
@@ -547,7 +547,7 @@
     "join-prompt-mic-locked": "Le microphone est désactivé pour cette réunion. Vous pouvez activer votre caméra ou rejoindre en tant qu'auditeur.",
     "join-prompt-cam-locked": "La caméra est désactivée pour cette réunion. Vous pouvez activer votre microphone ou rejoindre en tant qu'auditeur.",
     "join-prompt-both-locked": "Le microphone et la caméra sont désactivés pour cette réunion. Veuillez rejoindre en tant qu'auditeur.",
-    "join-prompt-hybrid": "You're all set! You can manage your camera and microphone once you're in the meeting. Click 'Join' to get started.",
+    "join-prompt-hybrid": "Tout est prêt ! Vous pouvez gérer votre caméra et votre micro une fois en réunion. Cliquez sur « Rejoindre » pour commencer.",
     "enable-mic-cam-btn": "Activer le microphone et la caméra",
     "enable-mic-btn": "Activer le microphone",
     "enable-cam-btn": "Activer la caméra",
@@ -659,7 +659,7 @@
       "users-required": "Au moins un participant doit être sélectionné.",
       "chat-box-placeholder": "Posez une question à l'assistant IA...",
       "responding-placeholder": "L'assistant IA est en train de répondre...",
-      "response-timed-out": "The AI assistant is taking too long to respond. Please try again."
+      "response-timed-out": "L’assistant IA met trop de temps à répondre. Veuillez réessayer."
     },
     "meeting-summarization": {
       "enable": "Activer le résumé de la réunion",
