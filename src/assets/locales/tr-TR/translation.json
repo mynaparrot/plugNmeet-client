@@ -5,10 +5,13 @@
   "cancel": "İptal",
   "yes": "Evet",
   "no": "Hayır",
+  "error": "Hata",
   "join": "Katıl",
   "share": "Paylaş",
   "plugnmeet-server-client-version": "Sunucu: v{{server}}; İstemci: v{{client}}",
   "open": "Aç",
+  "other": "Diğer",
+  "pip": "Resim içinde Fotoğraf",
   "please-wait": "Lütfen bekleyin...",
   "are-you-sure-to-close": "Kapatmak istediğinizden emin misiniz?",
   "you-are-about-to-close": "Kapatmak üzeresiniz.",
@@ -92,7 +95,12 @@
     "whiteboard-new-file-added": "Yeni dosya hazır ve beyaz tahta dosya listesine eklendi.",
     "private-download-link-ready": "İndirme bağlantınız hazır. Bu mesajı sadece sen görebilirsin.<br/>{{link}}",
     "local-audio-stuck-fallback": "Mikrofonunuzda bir sorun tespit ettik. Kapatıp tekrar açmayı dene.",
-    "local-video-stuck-fallback": "Kameranızda bir sorun tespit ettik. Kapatıp tekrar açmayı dene."
+    "local-video-stuck-fallback": "Kameranızda bir sorun tespit ettik. Kapatıp tekrar açmayı dene.",
+    "encryption-error": "Şifreleme hatası: {{error}}",
+    "decryption-error": "Şifre çözme hatası: {{error}}",
+    "error-occurred": "Hata meydana geldi",
+    "native-bridge-error": "Uygulama bir hata bildirdi: {{error}}",
+    "cannot-lock-admin": "Diğer yönetici kullanıcılar için kilit ayarlarını değiştiremezsiniz."
   },
   "room-metadata": {
     "session-recording": "Bu toplantı kaydedilmektedir.",
@@ -216,6 +224,7 @@
     "polls-tab": "Anketler",
     "breakout-room-tab": "Grup Odaları",
     "me": "(Siz)",
+    "search-participant": "Katılımcı Arama",
     "public-chat": "Genel Sohbet",
     "private-chat": "Özel Sohbet",
     "select-chat-conversation-title": "Bir konuşma seçin",
@@ -295,6 +304,7 @@
       "stop-screen-sharing": "Ekran paylaşımını durdur",
       "start-screen-sharing": "Ekranı Paylaş",
       "screen-sharing-locked": "Ekran paylaşımı kilitli",
+      "native-publisher-unavailable": "Yerel yayıncı mevcut değil",
       "lower-hand": "El İndir",
       "raise-hand": "El Kaldır",
       "reactions": "Tepkiler",
@@ -348,6 +358,9 @@
       "has-raised-hand": "{{user}} el kaldırdı.",
       "you-raised-hand": "El kaldırdınız.",
       "muted-all-microphone": "Tüm mikrofonlar sessize alındı.",
+      "no-suitable-track-found": "Ses verip açma için uygun bir iz bulunamadı.",
+      "failed-to-mute-unmute-track": "İzi sessiz/kapatma başarısız oldu.",
+      "failed-to-load-participant-info": "Katılımcı bilgileri yüklenemedi.",
       "applied-settings": "Yeni kilit ayarları uygulandı.",
       "rtmp-starting": "Canlı yayın başlıyor. Lütfen bekleyin.",
       "rtmp-ending": "Canlı yayın sona eriyor. Lütfen bekleyin.",
@@ -445,7 +458,9 @@
     "export-pdf-pages": "Sayfalar",
     "export-pdf-select-all": "Herkesi Seç",
     "export-pdf-clear": "Temiz",
-    "export-pdf-exporting": "İhracat..."
+    "export-pdf-exporting": "İhracat...",
+    "share-download-link": "İndirme bağlantısını kamu sohbetinde paylaş",
+    "download-link-sent": "Halka açık sohbete gönderilen indirme bağlantısı"
   },
   "waiting-room": {
     "modal-title": "Bekleme Odasını Yönet",
@@ -489,7 +504,8 @@
     "end-poll-success": "Anket sona erdi.",
     "publish-result": "Sonuçları Yayınla",
     "total": "Toplam: {{count}}",
-    "not-respondents-total": "Yanıtlamayan: {{count}}"
+    "not-respondents-total": "Yanıtlamayan: {{count}}",
+    "ask-question": "Bir soru sorun"
   },
   "breakout-room": {
     "modal-title": "Grup Odalarını Yönet",
@@ -531,6 +547,7 @@
     "join-prompt-mic-locked": "Bu toplantı için mikrofon devre dışı. Kameranızı etkinleştirebilir veya dinleyici olarak katılabilirsiniz.",
     "join-prompt-cam-locked": "Bu toplantı için kamera devre dışı. Mikrofonunuzu etkinleştirebilir veya dinleyici olarak katılabilirsiniz.",
     "join-prompt-both-locked": "Bu toplantı için mikrofon ve kamera devre dışı. Lütfen dinleyici olarak katılın.",
+    "join-prompt-hybrid": "Her şey hazır! Toplantıya girdikten sonra kameranızı ve mikrofonunuzu yönetebilirsiniz. Başlamak için 'Katıl'a tıklayın.",
     "enable-mic-cam-btn": "Mikrofon ve Kamerayı Etkinleştir",
     "enable-mic-btn": "Mikrofonu Etkinleştir",
     "enable-cam-btn": "Kamerayı Etkinleştir",
@@ -641,7 +658,8 @@
       "allowed-users": "İzin Verilen Katılımcılar",
       "users-required": "En az bir katılımcı seçilmelidir.",
       "chat-box-placeholder": "Yapay Zeka Asistanına bir soru sorun...",
-      "responding-placeholder": "Yapay Zeka Asistanı yanıtlıyor..."
+      "responding-placeholder": "Yapay Zeka Asistanı yanıtlıyor...",
+      "response-timed-out": "Yapay zeka asistanı yanıt vermekte çok geç kalıyor. Lütfen tekrar dene."
     },
     "meeting-summarization": {
       "enable": "Toplantı özetini etkinleştir",
