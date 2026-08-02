@@ -5,10 +5,13 @@
   "cancel": "Anuluj",
   "yes": "Tak",
   "no": "Nie",
+  "error": "Błąd",
   "join": "Dołącz",
   "share": "Udostępnij",
   "plugnmeet-server-client-version": "Serwer: v{{server}}; Klient: v{{client}}",
   "open": "Otwórz",
+  "other": "Inne",
+  "pip": "Obraz w obrazie",
   "please-wait": "Proszę czekać...",
   "are-you-sure-to-close": "Czy na pewno chcesz zamknąć?",
   "you-are-about-to-close": "Za chwilę zamkniesz.",
@@ -92,7 +95,12 @@
     "whiteboard-new-file-added": "Nowy plik jest gotowy i został dodany do listy plików na tablicy.",
     "private-download-link-ready": "Twój link do pobrania jest gotowy. Tylko ty możesz zobaczyć tę wiadomość.<br/>{{link}}",
     "local-audio-stuck-fallback": "Wykryliśmy problem z twoim mikrofonem. Spróbuj go wyłączyć i włączyć ponownie.",
-    "local-video-stuck-fallback": "Wykryliśmy problem z twoją kamerą. Spróbuj go wyłączyć i włączyć ponownie."
+    "local-video-stuck-fallback": "Wykryliśmy problem z twoją kamerą. Spróbuj go wyłączyć i włączyć ponownie.",
+    "encryption-error": "Błąd szyfrowania: {{error}}",
+    "decryption-error": "Błąd deszyfrowania: {{error}}",
+    "error-occurred": "Wystąpił błąd",
+    "native-bridge-error": "Aplikacja zgłosiła błąd: {{error}}",
+    "cannot-lock-admin": "Nie możesz zmieniać ustawień blokad dla innych użytkowników administratorów."
   },
   "room-metadata": {
     "session-recording": "To spotkanie jest nagrywane.",
@@ -216,6 +224,7 @@
     "polls-tab": "Ankiety",
     "breakout-room-tab": "Pokoje podgrup",
     "me": "(ja)",
+    "search-participant": "Wyszukaj Participant",
     "public-chat": "Czat publiczny",
     "private-chat": "Czat prywatny",
     "select-chat-conversation-title": "Wybierz rozmowę",
@@ -295,6 +304,7 @@
       "stop-screen-sharing": "Zatrzymaj udostępnianie ekranu",
       "start-screen-sharing": "Udostępnij ekran",
       "screen-sharing-locked": "Udostępnianie ekranu zablokowane",
+      "native-publisher-unavailable": "Wydawca natywny niedostępny",
       "lower-hand": "Opuść rękę",
       "raise-hand": "Podnieś rękę",
       "reactions": "Reakcje",
@@ -348,6 +358,9 @@
       "has-raised-hand": "{{user}} podniósł rękę.",
       "you-raised-hand": "Podniosłeś rękę.",
       "muted-all-microphone": "Wszystkie mikrofony zostały wyciszone.",
+      "no-suitable-track-found": "Nie znaleziono odpowiedniego ścieżki do wyciszania/odciszania.",
+      "failed-to-mute-unmute-track": "Nie udało się wyciszyć/odcisnąć ścieżki.",
+      "failed-to-load-participant-info": "Nie udało się załadować informacji o uczestniku.",
       "applied-settings": "Zastosowano nowe ustawienia blokady.",
       "rtmp-starting": "Rozpoczyna się transmisja na żywo. Proszę czekać.",
       "rtmp-ending": "Transmisja na żywo dobiega końca. Proszę czekać.",
@@ -445,7 +458,9 @@
     "export-pdf-pages": "Strony",
     "export-pdf-select-all": "Wybierz wszystkie",
     "export-pdf-clear": "Czyste",
-    "export-pdf-exporting": "Eksportuję..."
+    "export-pdf-exporting": "Eksportuję...",
+    "share-download-link": "Udostępnij link do pobrania na czacie publicznym",
+    "download-link-sent": "Link do pobrania wysłany do czatu publicznego"
   },
   "waiting-room": {
     "modal-title": "Zarządzaj poczekalnią",
@@ -489,7 +504,8 @@
     "end-poll-success": "Ankieta została zakończona.",
     "publish-result": "Opublikuj wyniki",
     "total": "Łącznie: {{count}}",
-    "not-respondents-total": "Nie odpowiedziało: {{count}}"
+    "not-respondents-total": "Nie odpowiedziało: {{count}}",
+    "ask-question": "Zadaj pytanie"
   },
   "breakout-room": {
     "modal-title": "Zarządzaj pokojami podgrup",
@@ -531,6 +547,7 @@
     "join-prompt-mic-locked": "Mikrofon jest wyłączony na czas tego spotkania. Możesz włączyć kamerę lub dołączyć jako słuchacz.",
     "join-prompt-cam-locked": "Kamera jest wyłączona na czas tego spotkania. Możesz włączyć mikrofon lub dołączyć jako słuchacz.",
     "join-prompt-both-locked": "Mikrofon i kamera są wyłączone na czas tego spotkania. Dołącz jako słuchacz.",
+    "join-prompt-hybrid": "Wszystko gotowe! Możesz zarządzać kamerą i mikrofonem, gdy już będziesz na spotkaniu. Kliknij 'Dołącz', aby zacząć.",
     "enable-mic-cam-btn": "Włącz mikrofon i kamerę",
     "enable-mic-btn": "Włącz mikrofon",
     "enable-cam-btn": "Włącz kamerę",
@@ -641,7 +658,8 @@
       "allowed-users": "Dozwoleni uczestnicy",
       "users-required": "Należy wybrać co najmniej jednego uczestnika.",
       "chat-box-placeholder": "Zadaj pytanie Asystentowi AI...",
-      "responding-placeholder": "Asystent AI odpowiada..."
+      "responding-placeholder": "Asystent AI odpowiada...",
+      "response-timed-out": "Asystent AI zbyt długo nie odpowiada. Proszę, spróbuj ponownie."
     },
     "meeting-summarization": {
       "enable": "Włącz podsumowanie spotkania",
