@@ -5,10 +5,13 @@
   "cancel": "取消",
   "yes": "是",
   "no": "否",
+  "error": "错误",
   "join": "加入",
   "share": "共享",
   "plugnmeet-server-client-version": "服务器: v{{server}}; 客户端: v{{client}}",
   "open": "打开",
+  "other": "其他",
+  "pip": "画中画",
   "please-wait": "请稍候...",
   "are-you-sure-to-close": "您确定要关闭吗？",
   "you-are-about-to-close": "您即将关闭。",
@@ -92,7 +95,12 @@
     "whiteboard-new-file-added": "新文件已准备好，并已添加到白板文件列表。",
     "private-download-link-ready": "您的下载链接已准备好。只有你能看到这条信息。<br/>{{link}}",
     "local-audio-stuck-fallback": "我们检测到你的麦克风有问题。试着关掉再开机。",
-    "local-video-stuck-fallback": "我们检测到你的摄像头有问题。试着关掉再开机。"
+    "local-video-stuck-fallback": "我们检测到你的摄像头有问题。试着关掉再开机。",
+    "encryption-error": "加密错误： {{error}}",
+    "decryption-error": "解密错误： {{error}}",
+    "error-occurred": "发生错误",
+    "native-bridge-error": "该应用程序报告了一个错误： {{error}}",
+    "cannot-lock-admin": "你不能更改其他管理员用户的锁设置。"
   },
   "room-metadata": {
     "session-recording": "此会议正在录制中。",
@@ -216,6 +224,7 @@
     "polls-tab": "投票",
     "breakout-room-tab": "分组讨论室",
     "me": "（您）",
+    "search-participant": "搜索参与者",
     "public-chat": "公共聊天",
     "private-chat": "私人聊天",
     "select-chat-conversation-title": "选择一个对话",
@@ -295,6 +304,7 @@
       "stop-screen-sharing": "停止屏幕共享",
       "start-screen-sharing": "共享屏幕",
       "screen-sharing-locked": "屏幕共享已锁定",
+      "native-publisher-unavailable": "本地出版商不可用",
       "lower-hand": "放下手",
       "raise-hand": "举手",
       "reactions": "反响",
@@ -348,6 +358,9 @@
       "has-raised-hand": "{{user}} 已举手。",
       "you-raised-hand": "您已举手。",
       "muted-all-microphone": "所有麦克风已被静音。",
+      "no-suitable-track-found": "找不到合适的轨道可以静音或解除静音。",
+      "failed-to-mute-unmute-track": "无法静音/取消静音轨道。",
+      "failed-to-load-participant-info": "未能加载参与者信息。",
       "applied-settings": "新的锁定设置已应用。",
       "rtmp-starting": "直播即将开始，请稍候。",
       "rtmp-ending": "直播即将结束，请稍候。",
@@ -445,7 +458,9 @@
     "export-pdf-pages": "页面",
     "export-pdf-select-all": "全部选择",
     "export-pdf-clear": "清场",
-    "export-pdf-exporting": "正在导出......"
+    "export-pdf-exporting": "正在导出......",
+    "share-download-link": "在公开聊天中分享下载链接",
+    "download-link-sent": "下载链接已发送到公开聊天"
   },
   "waiting-room": {
     "modal-title": "管理等候室",
@@ -489,7 +504,8 @@
     "end-poll-success": "投票已结束。",
     "publish-result": "公布结果",
     "total": "总计: {{count}}",
-    "not-respondents-total": "未回答: {{count}}"
+    "not-respondents-total": "未回答: {{count}}",
+    "ask-question": "提问"
   },
   "breakout-room": {
     "modal-title": "管理分组讨论室",
@@ -531,6 +547,7 @@
     "join-prompt-mic-locked": "此会议已禁用麦克风。您可以开启摄像头或以仅收听模式加入。",
     "join-prompt-cam-locked": "此会议已禁用摄像头。您可以开启麦克风或以仅收听模式加入。",
     "join-prompt-both-locked": "此会议已禁用麦克风和摄像头。请以仅收听模式加入。",
+    "join-prompt-hybrid": "你准备好了！你在会议中可以管理摄像头和麦克风。点击“加入”开始。",
     "enable-mic-cam-btn": "启用麦克风和摄像头",
     "enable-mic-btn": "启用麦克风",
     "enable-cam-btn": "启用摄像头",
@@ -641,7 +658,8 @@
       "allowed-users": "允许的与会者",
       "users-required": "必须至少选择一名与会者。",
       "chat-box-placeholder": "向 AI 助手提问...",
-      "responding-placeholder": "AI 助手正在回应..."
+      "responding-placeholder": "AI 助手正在回应...",
+      "response-timed-out": "AI助手回复太慢了。请再试一次。"
     },
     "meeting-summarization": {
       "enable": "启用会议摘要",
