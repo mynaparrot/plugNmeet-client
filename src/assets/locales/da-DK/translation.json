@@ -100,7 +100,7 @@
     "decryption-error": "Dekrypteringsfejl: {{error}}",
     "error-occurred": "Fejl opstod",
     "native-bridge-error": "Applikationen rapporterede en fejl: {{error}}",
-    "cannot-lock-admin": "You can't change lock settings for other admin users."
+    "cannot-lock-admin": "Du kan ikke ændre låseindstillinger for andre administratorbrugere."
   },
   "room-metadata": {
     "session-recording": "Dette møde er ved at blive optaget.",
@@ -224,7 +224,7 @@
     "polls-tab": "Meningsmålinger",
     "breakout-room-tab": "Breakout værelser",
     "me": "(mig)",
-    "search-participant": "Search for Participant",
+    "search-participant": "Søg efter deltager",
     "public-chat": "Offentlig chat",
     "private-chat": "Privat chat",
     "select-chat-conversation-title": "Vælg en samtale",
@@ -304,7 +304,7 @@
       "stop-screen-sharing": "Stop deling af skærm",
       "start-screen-sharing": "Del skærm",
       "screen-sharing-locked": "Skærmdeling låst",
-      "native-publisher-unavailable": "Native publisher unavailable",
+      "native-publisher-unavailable": "Lokal udgiver ikke tilgængelig",
       "lower-hand": "Nedegående hånd",
       "raise-hand": "Ræk hånden op",
       "reactions": "Reaktioner",
@@ -358,9 +358,9 @@
       "has-raised-hand": "{{user}} har rakt hånden op.",
       "you-raised-hand": "Du har rakt hånden op.",
       "muted-all-microphone": "Alle mikrofoner er slået fra.",
-      "no-suitable-track-found": "No suitable track found to mute/unmute.",
-      "failed-to-mute-unmute-track": "Failed to mute/unmute track.",
-      "failed-to-load-participant-info": "Failed to load participant info.",
+      "no-suitable-track-found": "Der findes ikke noget egnet spor til at mute/unmute.",
+      "failed-to-mute-unmute-track": "Kunne ikke mute/unmute track.",
+      "failed-to-load-participant-info": "Manglende indlæsning af deltagerinformation.",
       "applied-settings": "Nye låseindstillinger er blevet anvendt.",
       "rtmp-starting": "Livestream starter. Vent venligst.",
       "rtmp-ending": "Livestream slutter. Vent venligst.",
@@ -459,8 +459,8 @@
     "export-pdf-select-all": "Vælg alle",
     "export-pdf-clear": "Klart",
     "export-pdf-exporting": "Eksport...",
-    "share-download-link": "Share download link in public chat",
-    "download-link-sent": "Download link sent to public chat"
+    "share-download-link": "Del downloadlink i offentlig chat",
+    "download-link-sent": "Download-link sendt til offentlig chat"
   },
   "waiting-room": {
     "modal-title": "Administrer venteværelse",
@@ -505,7 +505,7 @@
     "publish-result": "Offentliggør resultater",
     "total": "Total: {{count}}",
     "not-respondents-total": "Besvarede ikke: {{count}}",
-    "ask-question": "Ask a question"
+    "ask-question": "Stil et spørgsmål"
   },
   "breakout-room": {
     "modal-title": "Administrer grupperum",
@@ -547,7 +547,7 @@
     "join-prompt-mic-locked": "Mikrofonen er deaktiveret for dette møde. Du kan aktivere dit kamera eller deltage som lytter.",
     "join-prompt-cam-locked": "Kameraet er deaktiveret for dette møde. Du kan aktivere din mikrofon eller deltage som lytter.",
     "join-prompt-both-locked": "Mikrofonen og kameraet er deaktiveret for dette møde. Vær med som lytter.",
-    "join-prompt-hybrid": "You're all set! You can manage your camera and microphone once you're in the meeting. Click 'Join' to get started.",
+    "join-prompt-hybrid": "Du er klar! Du kan styre dit kamera og mikrofon, når du er i mødet. Klik på 'Bliv medlem' for at komme i gang.",
     "enable-mic-cam-btn": "Aktiver mikrofon og kamera",
     "enable-mic-btn": "Aktiver mikrofon",
     "enable-cam-btn": "Aktiver kamera",
@@ -659,7 +659,7 @@
       "users-required": "Mindst én deltager skal udvælges.",
       "chat-box-placeholder": "Stil AI-assistenten et spørgsmål...",
       "responding-placeholder": "AI Assistant reagerer...",
-      "response-timed-out": "The AI assistant is taking too long to respond. Please try again."
+      "response-timed-out": "AI-assistenten tager for lang tid om at svare. Prøv venligst igen."
     },
     "meeting-summarization": {
       "enable": "Aktiver mødeopsummering",
