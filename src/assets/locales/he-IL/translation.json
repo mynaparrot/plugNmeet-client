@@ -5,10 +5,13 @@
   "cancel": "ביטל",
   "yes": "כן",
   "no": "לא",
+  "error": "שגיאה",
   "join": "הצטרף",
   "share": "לשתף",
   "plugnmeet-server-client-version": "שרת: v{{server}}; לקוח: v{{client}}",
   "open": "פתוח",
+  "other": "אחר",
+  "pip": "תמונה בתמונה",
   "please-wait": "חכה בבקשה...",
   "are-you-sure-to-close": "האם אתה בטוח שאתה רוצה לסגור?",
   "you-are-about-to-close": "אתם עומדים לסגור",
@@ -92,7 +95,12 @@
     "whiteboard-new-file-added": "קובץ חדש מוכן ונוסף לרשימת קבצי הלוח הלבן.",
     "private-download-link-ready": "קישור ההורדה שלך מוכן. רק אתה יכול לראות את ההודעה הזו.<br/>{{link}}",
     "local-audio-stuck-fallback": "זיהינו בעיה במיקרופון שלך. נסה לכבות ולהדליק שוב.",
-    "local-video-stuck-fallback": "זיהינו בעיה במצלמה שלך. נסה לכבות ולהדליק שוב."
+    "local-video-stuck-fallback": "זיהינו בעיה במצלמה שלך. נסה לכבות ולהדליק שוב.",
+    "encryption-error": "שגיאת הצפנה: {{error}}",
+    "decryption-error": "שגיאת פענוח: {{error}}",
+    "error-occurred": "אירעה טעות",
+    "native-bridge-error": "האפליקציה דיווחה על שגיאה: {{error}}",
+    "cannot-lock-admin": "אי אפשר לשנות את הגדרות הנעילה עבור משתמשי מנהל אחרים."
   },
   "room-metadata": {
     "session-recording": "פגישה זו מוקלטת.",
@@ -216,6 +224,7 @@
     "polls-tab": "סקרים",
     "breakout-room-tab": "חדרי בריחה",
     "me": "(אני)",
+    "search-participant": "חיפוש משתתף",
     "public-chat": "צ'אט ציבורי",
     "private-chat": "צ'אט פרטי",
     "select-chat-conversation-title": "בחר שיחה",
@@ -295,6 +304,7 @@
       "stop-screen-sharing": "הפסקת שיתוף מסך",
       "start-screen-sharing": "שתף מסך",
       "screen-sharing-locked": "שיתוף מסך נעול",
+      "native-publisher-unavailable": "מוציא לאור מקומי לא זמין",
       "lower-hand": "יד תחתונה",
       "raise-hand": "להרים יד",
       "reactions": "תגובות",
@@ -348,6 +358,9 @@
       "has-raised-hand": "{{user}} הרימו את ידם.",
       "you-raised-hand": "הרמת את ידך.",
       "muted-all-microphone": "כל המיקרופונים הושתקו.",
+      "no-suitable-track-found": "לא נמצא שיר מתאים להשתקה או להסיר את ההשתקה.",
+      "failed-to-mute-unmute-track": "לא הצלחתי להשתיק או להפסיק את הרצועה.",
+      "failed-to-load-participant-info": "נכשלתי בטעינת מידע של משתתפים.",
       "applied-settings": "הגדרות נעילה חדשות הוחלו.",
       "rtmp-starting": "השידור החי מתחיל. חכה בבקשה.",
       "rtmp-ending": "השידור החי מסתיים. חכה בבקשה.",
@@ -445,7 +458,9 @@
     "export-pdf-pages": "עמודים",
     "export-pdf-select-all": "בחר את כולם",
     "export-pdf-clear": "נקי",
-    "export-pdf-exporting": "מייצא..."
+    "export-pdf-exporting": "מייצא...",
+    "share-download-link": "שתפו קישור להורדה בצ'אט ציבורי",
+    "download-link-sent": "הורדת קישור שנשלח לצ'אט הציבורי"
   },
   "waiting-room": {
     "modal-title": "ניהול חדר המתנה",
@@ -489,7 +504,8 @@
     "end-poll-success": "הסקר הסתיים.",
     "publish-result": "פרסום תוצאות",
     "total": "סך: {{count}}",
-    "not-respondents-total": "לא הגיב: {{count}}"
+    "not-respondents-total": "לא הגיב: {{count}}",
+    "ask-question": "שאל שאלה"
   },
   "breakout-room": {
     "modal-title": "ניהול חדרים נפרדים",
@@ -531,6 +547,7 @@
     "join-prompt-mic-locked": "המיקרופון אינו זמין עבור פגישה זו. אתה יכול להפעיל את המצלמה שלך או להצטרף כמאזין.",
     "join-prompt-cam-locked": "המצלמה מושבתת עבור פגישה זו. אתה יכול להפעיל את המיקרופון שלך או להצטרף כמאזין.",
     "join-prompt-both-locked": "המיקרופון והמצלמה מושבתים עבור פגישה זו. אנא הצטרפו כמאזין.",
+    "join-prompt-hybrid": "אתה מוכן! אתה יכול לנהל את המצלמה והמיקרופון שלך ברגע שאתה בפגישה. לחצו על 'הצטרפות' כדי להתחיל.",
     "enable-mic-cam-btn": "אפשר מיקרופון ומצלמה",
     "enable-mic-btn": "הפעל מיקרופון",
     "enable-cam-btn": "הפעל מצלמה",
@@ -641,7 +658,8 @@
       "allowed-users": "משתתפים מורשים",
       "users-required": "לפחות משתתף אחד חייב להיבחר.",
       "chat-box-placeholder": "שאל את עוזר הבינה המלאכותית שאלה...",
-      "responding-placeholder": "עוזר בינה מלאכותית מגיב..."
+      "responding-placeholder": "עוזר בינה מלאכותית מגיב...",
+      "response-timed-out": "העוזר של הבינה המלאכותית לוקח יותר מדי זמן להגיב. אנא נסה שוב."
     },
     "meeting-summarization": {
       "enable": "הפעלת סיכום פגישות",

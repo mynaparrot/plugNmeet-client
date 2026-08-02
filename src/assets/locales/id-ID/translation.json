@@ -5,10 +5,13 @@
   "cancel": "Batal",
   "yes": "Ya",
   "no": "Tidak",
+  "error": "Kesalahan",
   "join": "Gabung",
   "share": "Bagikan",
   "plugnmeet-server-client-version": "Server: v{{server}}; Klien: v{{client}}",
   "open": "Buka",
+  "other": "Lainnya",
+  "pip": "gambar dalam gambar",
   "please-wait": "Harap tunggu...",
   "are-you-sure-to-close": "Anda yakin ingin menutup?",
   "you-are-about-to-close": "Anda akan menutup.",
@@ -92,7 +95,12 @@
     "whiteboard-new-file-added": "File baru sudah siap dan telah ditambahkan ke daftar file papan tulis.",
     "private-download-link-ready": "Tautan unduhan Anda sudah siap. Hanya Anda yang dapat melihat pesan ini.<br/>{{link}}",
     "local-audio-stuck-fallback": "Kami mendeteksi masalah dengan mikrofon Anda. Coba matikan dan hidupkan kembali.",
-    "local-video-stuck-fallback": "Kami mendeteksi masalah dengan kamera Anda. Coba matikan dan hidupkan kembali."
+    "local-video-stuck-fallback": "Kami mendeteksi masalah dengan kamera Anda. Coba matikan dan hidupkan kembali.",
+    "encryption-error": "Kesalahan enkripsi: {{error}}",
+    "decryption-error": "Kesalahan dekripsi: {{error}}",
+    "error-occurred": "Terjadi kesalahan",
+    "native-bridge-error": "Aplikasi melaporkan kesalahan: {{error}}",
+    "cannot-lock-admin": "Anda tidak dapat mengubah pengaturan kunci untuk pengguna admin lain."
   },
   "room-metadata": {
     "session-recording": "Rapat ini sedang direkam.",
@@ -216,6 +224,7 @@
     "polls-tab": "Jajak Pendapat",
     "breakout-room-tab": "Ruang Diskusi",
     "me": "(Anda)",
+    "search-participant": "Cari Peserta",
     "public-chat": "Obrolan Publik",
     "private-chat": "Obrolan Pribadi",
     "select-chat-conversation-title": "Pilih percakapan",
@@ -295,6 +304,7 @@
       "stop-screen-sharing": "Hentikan Berbagi Layar",
       "start-screen-sharing": "Bagikan Layar",
       "screen-sharing-locked": "Berbagi layar terkunci",
+      "native-publisher-unavailable": "Penerbit asli tidak tersedia",
       "lower-hand": "Turunkan Tangan",
       "raise-hand": "Angkat Tangan",
       "reactions": "Reaksi",
@@ -348,6 +358,9 @@
       "has-raised-hand": "{{user}} telah mengangkat tangan.",
       "you-raised-hand": "Anda telah mengangkat tangan.",
       "muted-all-microphone": "Semua mikrofon telah dibisukan.",
+      "no-suitable-track-found": "Tidak ditemukan track yang cocok untuk membisukan/membatalkan bisu.",
+      "failed-to-mute-unmute-track": "Gagal membisukan/membatalkan bisu track.",
+      "failed-to-load-participant-info": "Gagal memuat info peserta.",
       "applied-settings": "Pengaturan kunci baru telah diterapkan.",
       "rtmp-starting": "Streaming langsung dimulai. Harap tunggu.",
       "rtmp-ending": "Streaming langsung akan segera berakhir. Harap tunggu.",
@@ -445,7 +458,9 @@
     "export-pdf-pages": "Halaman",
     "export-pdf-select-all": "Pilih semua",
     "export-pdf-clear": "Jelas",
-    "export-pdf-exporting": "Mengekspor..."
+    "export-pdf-exporting": "Mengekspor...",
+    "share-download-link": "Bagikan tautan unduhan di chat publik",
+    "download-link-sent": "Tautan unduh dikirim ke chat publik"
   },
   "waiting-room": {
     "modal-title": "Kelola Ruang Tunggu",
@@ -489,7 +504,8 @@
     "end-poll-success": "Jajak pendapat telah berakhir.",
     "publish-result": "Publikasikan Hasil",
     "total": "Total: {{count}}",
-    "not-respondents-total": "Tidak menanggapi: {{count}}"
+    "not-respondents-total": "Tidak menanggapi: {{count}}",
+    "ask-question": "Ajukan pertanyaan"
   },
   "breakout-room": {
     "modal-title": "Kelola Ruang Diskusi",
@@ -531,6 +547,7 @@
     "join-prompt-mic-locked": "Mikrofon dinonaktifkan untuk rapat ini. Anda dapat mengaktifkan kamera atau bergabung sebagai pendengar.",
     "join-prompt-cam-locked": "Kamera dinonaktifkan untuk rapat ini. Anda dapat mengaktifkan mikrofon atau bergabung sebagai pendengar.",
     "join-prompt-both-locked": "Mikrofon dan kamera dinonaktifkan untuk rapat ini. Silakan bergabung sebagai pendengar.",
+    "join-prompt-hybrid": "Kamu sudah siap! Anda dapat mengelola kamera dan mikrofon Anda setelah berada dalam rapat. Klik 'Bergabung' untuk memulai.",
     "enable-mic-cam-btn": "Aktifkan Mikrofon dan Kamera",
     "enable-mic-btn": "Aktifkan Mikrofon",
     "enable-cam-btn": "Aktifkan Kamera",
@@ -641,7 +658,8 @@
       "allowed-users": "Peserta yang Diizinkan",
       "users-required": "Setidaknya satu peserta harus dipilih.",
       "chat-box-placeholder": "Ajukan pertanyaan kepada Asisten AI...",
-      "responding-placeholder": "Asisten AI sedang merespons..."
+      "responding-placeholder": "Asisten AI sedang merespons...",
+      "response-timed-out": "Asisten AI terlalu lama untuk merespons. Silakan coba lagi."
     },
     "meeting-summarization": {
       "enable": "Aktifkan ringkasan rapat",

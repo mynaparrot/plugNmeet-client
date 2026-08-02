@@ -5,10 +5,13 @@
   "cancel": "Annuleren",
   "yes": "Ja",
   "no": "Nee",
+  "error": "Fout",
   "join": "Verbinden",
   "share": "Delen",
   "plugnmeet-server-client-version": "Server: v{{server}}; Opdrachtgever: v{{client}}",
   "open": "Openen",
+  "other": "Overig",
+  "pip": "Picture-in-Picture",
   "please-wait": "Een ogenblik geduld...",
   "are-you-sure-to-close": "Weet je zeker dat je wilt sluiten?",
   "you-are-about-to-close": "Je staat op het punt te sluiten",
@@ -92,7 +95,12 @@
     "whiteboard-new-file-added": "Het nieuwe bestand is klaar en is toegevoegd aan de whiteboard-bestandslijst.",
     "private-download-link-ready": "Je downloadlink is klaar. Alleen jij kunt dit bericht zien.<br/>{{link}}",
     "local-audio-stuck-fallback": "We hebben een probleem met uw microfoon gedetecteerd. Probeer hem uit en weer aan te zetten.",
-    "local-video-stuck-fallback": "We hebben een probleem met uw camera gedetecteerd. Probeer hem uit en weer aan te zetten."
+    "local-video-stuck-fallback": "We hebben een probleem met uw camera gedetecteerd. Probeer hem uit en weer aan te zetten.",
+    "encryption-error": "Versleutelfout: {{error}}",
+    "decryption-error": "Decryptiefout: {{error}}",
+    "error-occurred": "Er is een fout opgetreden",
+    "native-bridge-error": "De applicatie meldde een foutmelding: {{error}}",
+    "cannot-lock-admin": "Je kunt de vergrendelingsinstellingen niet wijzigen voor andere beheerders."
   },
   "room-metadata": {
     "session-recording": "Deze vergadering wordt opgenomen.",
@@ -216,6 +224,7 @@
     "polls-tab": "Peilingen",
     "breakout-room-tab": "Breakout Ruimtes",
     "me": "(ik)",
+    "search-participant": "Zoek naar Deelnemer",
     "public-chat": "Openbare chat",
     "private-chat": "Privé chat",
     "select-chat-conversation-title": "Selecteer een gesprek",
@@ -295,6 +304,7 @@
       "stop-screen-sharing": "Scherm niet meer delen",
       "start-screen-sharing": "Scherm delen",
       "screen-sharing-locked": "Scherm delen vergrendeld",
+      "native-publisher-unavailable": "Oorspronkelijke uitgever niet beschikbaar",
       "lower-hand": "Onderste hand",
       "raise-hand": "Hand opsteken",
       "reactions": "Reacties",
@@ -348,6 +358,9 @@
       "has-raised-hand": "{{user}} heeft hun hand opgestoken.",
       "you-raised-hand": "Je hebt je hand opgestoken.",
       "muted-all-microphone": "Alle microfoons zijn gedempt.",
+      "no-suitable-track-found": "Geen geschikte track gevonden om te dempen/ontmuten.",
+      "failed-to-mute-unmute-track": "Niet geslaagd om de track te dempen/unmute.",
+      "failed-to-load-participant-info": "Niet kunnen laden van deelnemersinformatie.",
       "applied-settings": "Er zijn nieuwe vergrendelingsinstellingen toegepast.",
       "rtmp-starting": "De livestream is begonnen. Een ogenblik geduld.",
       "rtmp-ending": "Livestream loopt ten einde. Een ogenblik geduld.",
@@ -445,7 +458,9 @@
     "export-pdf-pages": "Pagina's",
     "export-pdf-select-all": "Selecteer alles",
     "export-pdf-clear": "Vrij",
-    "export-pdf-exporting": "Exporteren..."
+    "export-pdf-exporting": "Exporteren...",
+    "share-download-link": "Deel downloadlink in openbare chat",
+    "download-link-sent": "Download link gestuurd naar de openbare chat"
   },
   "waiting-room": {
     "modal-title": "Wachtkamer beheren",
@@ -489,7 +504,8 @@
     "end-poll-success": "De peiling is afgelopen.",
     "publish-result": "Resultaten publiceren",
     "total": "Totaal: {{count}}",
-    "not-respondents-total": "Niet gereageerd: {{count}}"
+    "not-respondents-total": "Niet gereageerd: {{count}}",
+    "ask-question": "Stel een vraag"
   },
   "breakout-room": {
     "modal-title": "Brainstormruimten beheren",
@@ -531,6 +547,7 @@
     "join-prompt-mic-locked": "De microfoon is uitgeschakeld voor deze vergadering. U kunt uw camera inschakelen of deelnemen als luisteraar.",
     "join-prompt-cam-locked": "De camera is uitgeschakeld voor deze vergadering. U kunt uw microfoon inschakelen of als luisteraar deelnemen.",
     "join-prompt-both-locked": "De microfoon en camera zijn uitgeschakeld voor deze vergadering. Doe mee als luisteraar.",
+    "join-prompt-hybrid": "Je bent er klaar voor! Je kunt je camera en microfoon beheren zodra je in de vergadering zit. Klik op 'Lid worden' om te beginnen.",
     "enable-mic-cam-btn": "Microfoon en camera inschakelen",
     "enable-mic-btn": "Microfoon inschakelen",
     "enable-cam-btn": "Camera inschakelen",
@@ -641,7 +658,8 @@
       "allowed-users": "Toegestane deelnemers",
       "users-required": "Er moet ten minste één deelnemer worden geselecteerd.",
       "chat-box-placeholder": "Stel de AI-assistent een vraag...",
-      "responding-placeholder": "AI Assistant reageert..."
+      "responding-placeholder": "AI Assistant reageert...",
+      "response-timed-out": "De AI-assistent doet er te lang over om te reageren. Probeer het alsjeblieft opnieuw."
     },
     "meeting-summarization": {
       "enable": "Schakel vergaderingssamenvatting in",

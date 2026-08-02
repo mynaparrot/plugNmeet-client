@@ -5,10 +5,13 @@
   "cancel": "Annullere",
   "yes": "Ja",
   "no": "Nei",
+  "error": "Feil",
   "join": "Forene",
   "share": "Aksje",
   "plugnmeet-server-client-version": "Tjener: v{{server}}; Oppdragsgiver: v{{client}}",
   "open": "Åpen",
+  "other": "Annet",
+  "pip": "Bilde-i-bilde",
   "please-wait": "Vent...",
   "are-you-sure-to-close": "Er du sikker på at du vil stenge?",
   "you-are-about-to-close": "Du er i ferd med å stenge",
@@ -92,7 +95,12 @@
     "whiteboard-new-file-added": "Ny fil er klar og har blitt lagt til i listen over whiteboard-filer.",
     "private-download-link-ready": "Nedlastingslenken din er klar. Bare du kan se denne meldingen.<br/>{{link}}",
     "local-audio-stuck-fallback": "Vi oppdaget et problem med mikrofonen din. Prøv å slå den av og på igjen.",
-    "local-video-stuck-fallback": "Vi oppdaget et problem med kameraet ditt. Prøv å slå den av og på igjen."
+    "local-video-stuck-fallback": "Vi oppdaget et problem med kameraet ditt. Prøv å slå den av og på igjen.",
+    "encryption-error": "Krypteringsfeil: {{error}}",
+    "decryption-error": "Dekrypteringsfeil: {{error}}",
+    "error-occurred": "Feil oppsto",
+    "native-bridge-error": "Søknaden rapporterte en feil: {{error}}",
+    "cannot-lock-admin": "Du kan ikke endre låseinnstillinger for andre administratorbrukere."
   },
   "room-metadata": {
     "session-recording": "Dette møtet blir tatt opp.",
@@ -216,6 +224,7 @@
     "polls-tab": "Avstemninger",
     "breakout-room-tab": "Grupperom",
     "me": "(meg)",
+    "search-participant": "Søk etter deltaker",
     "public-chat": "Offentlig chat",
     "private-chat": "Privat chat",
     "select-chat-conversation-title": "Velg en samtale",
@@ -295,6 +304,7 @@
       "stop-screen-sharing": "Slutt å dele skjerm",
       "start-screen-sharing": "Del skjerm",
       "screen-sharing-locked": "Skjermdeling låst",
+      "native-publisher-unavailable": "Innfødt utgiver utilgjengelig",
       "lower-hand": "Nedre hånd",
       "raise-hand": "Rekk opp hånden",
       "reactions": "Reaksjoner",
@@ -348,6 +358,9 @@
       "has-raised-hand": "{{user}} har rakt opp hånden.",
       "you-raised-hand": "Du har rakt opp hånden.",
       "muted-all-microphone": "Alle mikrofoner er dempet.",
+      "no-suitable-track-found": "Ingen egnet spor funnet for mute/unmute.",
+      "failed-to-mute-unmute-track": "Mislyktes i å mute/unmute sporet.",
+      "failed-to-load-participant-info": "Mislyktes i å laste inn deltakerinfo.",
       "applied-settings": "Nye låseinnstillinger er brukt.",
       "rtmp-starting": "Direktesendingen starter. Vent.",
       "rtmp-ending": "Direktesendingen avsluttes. Vent.",
@@ -445,7 +458,9 @@
     "export-pdf-pages": "Sider",
     "export-pdf-select-all": "Velg alle",
     "export-pdf-clear": "Klart",
-    "export-pdf-exporting": "Eksport..."
+    "export-pdf-exporting": "Eksport...",
+    "share-download-link": "Del nedlastingslenke i offentlig chat",
+    "download-link-sent": "Nedlastingslenke sendt til offentlig chat"
   },
   "waiting-room": {
     "modal-title": "Administrer venterom",
@@ -489,7 +504,8 @@
     "end-poll-success": "Avstemningen er avsluttet.",
     "publish-result": "Publiser resultater",
     "total": "Totalt: {{count}}",
-    "not-respondents-total": "Svarte ikke: {{count}}"
+    "not-respondents-total": "Svarte ikke: {{count}}",
+    "ask-question": "Still et spørsmål"
   },
   "breakout-room": {
     "modal-title": "Administrere grupperom",
@@ -531,6 +547,7 @@
     "join-prompt-mic-locked": "Mikrofonen er deaktivert for dette møtet. Du kan aktivere kameraet eller bli med som lytter.",
     "join-prompt-cam-locked": "Kameraet er deaktivert for dette møtet. Du kan aktivere mikrofonen eller bli med som lytter.",
     "join-prompt-both-locked": "Mikrofonen og kameraet er deaktivert for dette møtet. Bli med som lytter.",
+    "join-prompt-hybrid": "Du er klar! Du kan styre kameraet og mikrofonen når du er i møtet. Klikk på 'Bli med' for å komme i gang.",
     "enable-mic-cam-btn": "Aktiver mikrofon og kamera",
     "enable-mic-btn": "Aktiver mikrofon",
     "enable-cam-btn": "Aktiver kamera",
@@ -641,7 +658,8 @@
       "allowed-users": "Tillatte deltakere",
       "users-required": "Minst én deltaker må velges.",
       "chat-box-placeholder": "Still AI-assistenten et spørsmål...",
-      "responding-placeholder": "AI-assistenten svarer..."
+      "responding-placeholder": "AI-assistenten svarer...",
+      "response-timed-out": "AI-assistenten bruker for lang tid på å svare. Vennligst prøv igjen."
     },
     "meeting-summarization": {
       "enable": "Aktiver møteoppsummering",

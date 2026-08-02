@@ -5,10 +5,13 @@
   "cancel": "Cancelar",
   "yes": "Sim",
   "no": "Não",
+  "error": "Erro",
   "join": "Entrar",
   "share": "Partilhar",
   "plugnmeet-server-client-version": "Servidor: v{{server}}; Cliente: v{{client}}",
   "open": "Abrir",
+  "other": "Outros",
+  "pip": "Picture-in-Picture",
   "please-wait": "Por favor, aguarde...",
   "are-you-sure-to-close": "Tem a certeza que deseja fechar?",
   "you-are-about-to-close": "Está prestes a fechar.",
@@ -92,7 +95,12 @@
     "whiteboard-new-file-added": "O novo ficheiro está pronto e foi adicionado à lista de ficheiros do quadro branco.",
     "private-download-link-ready": "O seu link de download está pronto. Só tu podes ver esta mensagem.<br/>{{link}}",
     "local-audio-stuck-fallback": "Detetámos um problema com o teu microfone. Tenta desligar e ligar novamente.",
-    "local-video-stuck-fallback": "Detetámos um problema com a sua câmara. Tenta desligar e ligar novamente."
+    "local-video-stuck-fallback": "Detetámos um problema com a sua câmara. Tenta desligar e ligar novamente.",
+    "encryption-error": "Erro de encriptação: {{error}}",
+    "decryption-error": "Erro de desencriptação: {{error}}",
+    "error-occurred": "Ocorreu um erro",
+    "native-bridge-error": "A aplicação reportou um erro: {{error}}",
+    "cannot-lock-admin": "Não podes alterar as definições de bloqueio para outros utilizadores administradores."
   },
   "room-metadata": {
     "session-recording": "Esta reunião está a ser gravada.",
@@ -103,7 +111,7 @@
   "header": {
     "hide-header": "Ocultar cabeçalho",
     "show-header": "Mostrar cabeçalho",
-    "room-audio-volume": "Áudio da reunião",
+    "room-audio-volume": "Volume da reunião",
     "room-screen-share-audio-volume": "Áudio da partilha de ecrã",
     "menus": {
       "settings": "Definições",
@@ -199,7 +207,7 @@
     "receiving-data": "A receber dados da reunião...",
     "checking": "A verificar...",
     "loading": "A carregar...",
-    "connected": "Ligado",
+    "connected": "Conectado",
     "ready": "Pronto",
     "webcams-per-page": "vídeos por página",
     "require-ssl-title": "É necessária uma ligação segura",
@@ -216,6 +224,7 @@
     "polls-tab": "Sondagens",
     "breakout-room-tab": "Salas de grupo",
     "me": "(Eu)",
+    "search-participant": "Pesquisa por Participante",
     "public-chat": "Chat público",
     "private-chat": "Chat privado",
     "select-chat-conversation-title": "Selecione uma conversa",
@@ -231,7 +240,7 @@
         "share-webcam": "Ligar câmara",
         "stop-webcam": "Desligar câmara",
         "unlock-microphone": "Permitir microfone",
-        "lock-microphone": "Desativar microfone",
+        "lock-microphone": "Bloquear microfone",
         "unlock-webcam": "Permitir câmara",
         "lock-webcam": "Desativar câmara",
         "unlock-screen-sharing": "Permitir partilha de ecrã",
@@ -295,6 +304,7 @@
       "stop-screen-sharing": "Parar partilha de ecrã",
       "start-screen-sharing": "Partilhar ecrã",
       "screen-sharing-locked": "Partilha de ecrã bloqueada",
+      "native-publisher-unavailable": "Editora nativa indisponível",
       "lower-hand": "Baixar mão",
       "raise-hand": "Levantar mão",
       "reactions": "Reações",
@@ -348,6 +358,9 @@
       "has-raised-hand": "{{user}} levantou a mão.",
       "you-raised-hand": "Levantou a mão.",
       "muted-all-microphone": "Todos os microfones foram silenciados.",
+      "no-suitable-track-found": "Não foi encontrada nenhuma faixa adequada para silenciar/desmutar.",
+      "failed-to-mute-unmute-track": "Falhei em silenciar/desmutar a faixa.",
+      "failed-to-load-participant-info": "Falhou o carregamento das informações do participante.",
       "applied-settings": "Foram aplicadas novas definições de bloqueio.",
       "rtmp-starting": "A transmissão em direto está a começar. Por favor, aguarde.",
       "rtmp-ending": "A transmissão em direto está a terminar. Por favor, aguarde.",
@@ -445,7 +458,9 @@
     "export-pdf-pages": "Páginas",
     "export-pdf-select-all": "Selecionar todos",
     "export-pdf-clear": "Limpo",
-    "export-pdf-exporting": "Exportar..."
+    "export-pdf-exporting": "Exportar...",
+    "share-download-link": "Partilhar o link de download em chat público",
+    "download-link-sent": "Link de download enviado para o chat público"
   },
   "waiting-room": {
     "modal-title": "Gerir sala de espera",
@@ -489,7 +504,8 @@
     "end-poll-success": "A sondagem terminou.",
     "publish-result": "Publicar resultados",
     "total": "Total: {{count}}",
-    "not-respondents-total": "Não respondeu: {{count}}"
+    "not-respondents-total": "Não respondeu: {{count}}",
+    "ask-question": "Faça uma pergunta"
   },
   "breakout-room": {
     "modal-title": "Gerir salas de grupo",
@@ -531,6 +547,7 @@
     "join-prompt-mic-locked": "O microfone está desativado para esta reunião. Pode ativar a sua câmara ou entrar como ouvinte.",
     "join-prompt-cam-locked": "A câmara está desativada para esta reunião. Pode ativar o seu microfone ou entrar como ouvinte.",
     "join-prompt-both-locked": "O microfone e a câmara estão desativados para esta reunião. Por favor, entre como ouvinte.",
+    "join-prompt-hybrid": "Está tudo pronto! Pode gerir a sua câmara e microfone assim que estiver na reunião. Clique em 'Entrar' para começar.",
     "enable-mic-cam-btn": "Ativar microfone e câmara",
     "enable-mic-btn": "Ativar microfone",
     "enable-cam-btn": "Ativar câmara",
@@ -641,7 +658,8 @@
       "allowed-users": "Participantes permitidos",
       "users-required": "Pelo menos um participante deve ser selecionado.",
       "chat-box-placeholder": "Faça uma pergunta ao Assistente de IA...",
-      "responding-placeholder": "O Assistente de IA está a responder..."
+      "responding-placeholder": "O Assistente de IA está a responder...",
+      "response-timed-out": "O assistente de IA está a demorar demasiado a responder. Por favor, tente novamente."
     },
     "meeting-summarization": {
       "enable": "Ativar resumo da reunião",
