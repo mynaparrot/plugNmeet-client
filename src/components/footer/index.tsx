@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 
 import { store } from '../../store';
+import { useHybridLockForwarder } from '../../helpers/nativeBridge';
+
 import WebcamIcon from './icons/webcam';
 import MicrophoneIcon from './icons/microphone';
 import ChatIcon from './icons/chat';
@@ -26,6 +28,9 @@ const Footer = () => {
       allowChat: !!currentRoom.metadata?.roomFeatures?.chatFeatures?.isAllow,
     };
   }, []);
+
+  // forwards lock-settings changes to the native host (hybrid mode only)
+  useHybridLockForwarder();
 
   return (
     <footer

@@ -82,6 +82,7 @@ const MicrophoneIcon = () => {
   );
 
   // for change in mic lock setting
+  // NOTE: native lock handled in useHybridLockForwarder (nativeBridge/hooks.ts)
   useEffect(() => {
     if (!currentRoom) return;
 

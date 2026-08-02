@@ -102,6 +102,7 @@ const useScreenshare = (): UseScreenshareReturn => {
   }, [hybrid, isActiveScreenshare, dispatch, currentRoom]);
 
   // for change in lock setting
+  // NOTE: native lock handled in useHybridLockForwarder (nativeBridge/hooks.ts)
   useEffect(() => {
     if (isLocked) {
       void endScreenShare();

@@ -1,7 +1,7 @@
-import { useEffect, useSyncExternalStore } from 'react';
+import { useEffect, useMemo, useSyncExternalStore } from 'react';
 import { NativeMediaSource } from 'plugnmeet-protocol-js';
 
-import { useAppSelector } from '../../store';
+import { store, useAppSelector } from '../../store';
 import {
   getNativePublisherStatus,
   subscribeNativePublisherStatus,
@@ -24,6 +24,21 @@ export const useNativePublisherStatus = (): NativePublisherStatus =>
  * No-op in standard (non-hybrid) mode.
  */
 export const useHybridLockForwarder = (): void => {
+  // defaultLockSettings only matter at initialization time, so read them once.
+  // Runtime changes must not retroactively affect already-joined users, who may
+  // have individual lock overrides.
+  const { defaultLockMic, defaultLockWebcam, defaultLockScreenshare } =
+    useMemo(() => {
+      const defaultLockSettings =
+        store.getState().session.currentRoom?.metadata?.defaultLockSettings;
+      console.log(defaultLockSettings);
+      return {
+        defaultLockMic: !!defaultLockSettings?.lockMicrophone,
+        defaultLockWebcam: !!defaultLockSettings?.lockWebcam,
+        defaultLockScreenshare: !!defaultLockSettings?.lockScreenSharing,
+      };
+    }, []);
+
   const isAdmin = useAppSelector(
     (state) => !!state.session.currentUser?.metadata?.isAdmin,
   );
@@ -38,20 +53,12 @@ export const useHybridLockForwarder = (): void => {
     (state) =>
       state.session.currentUser?.metadata?.lockSettings?.lockScreenSharing,
   );
-  const defaultLockMic = useAppSelector(
-    (state) =>
-      !!state.session.currentRoom?.metadata?.defaultLockSettings
-        ?.lockMicrophone,
-  );
-  const defaultLockWebcam = useAppSelector(
-    (state) =>
-      !!state.session.currentRoom?.metadata?.defaultLockSettings?.lockWebcam,
-  );
 
-  // Resolve effective lock (mirror footer icon logic)
+  // Resolve effective lock
   const micLocked = !isAdmin && (isMicLock ?? defaultLockMic);
   const webcamLocked = !isAdmin && (isWebcamLock ?? defaultLockWebcam);
-  const screenshareLocked = !!(isScreenshareLock && !isAdmin);
+  const screenshareLocked =
+    !isAdmin && (isScreenshareLock ?? defaultLockScreenshare);
 
   useEffect(() => {
     if (!isHybridMode()) return;

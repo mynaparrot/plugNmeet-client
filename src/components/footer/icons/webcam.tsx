@@ -85,6 +85,7 @@ const WebcamIcon = () => {
   const { publishNewTrack } = useWebcamPublisher();
 
   // for change in webcam lock setting
+  // NOTE: native lock handled in useHybridLockForwarder (nativeBridge/hooks.ts)
   useEffect(() => {
     if (!currentRoom) return;
 

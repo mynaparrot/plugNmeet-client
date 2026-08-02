@@ -24,7 +24,6 @@ import { isUserRecorder } from '../../helpers/utils';
 import { startNatsConn } from '../../helpers/nats';
 import { InfoToOpenConn, roomConnectionStatus, verifyToken } from './helper';
 import { setActiveSidePanel } from '../../store/slices/bottomIconsActivitySlice';
-import { useHybridLockForwarder } from '../../helpers/nativeBridge';
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -46,8 +45,6 @@ const App = () => {
   const [isAppReady, setIsAppReady] = useState<boolean>(false);
 
   useKeyboardShortcuts(currentMediaServerConn?.room);
-  // forwards lock-settings changes to the native host (hybrid mode only)
-  useHybridLockForwarder();
   // to handle different customization
   useClientCustomization();
   useWatchVisibilityChange();
