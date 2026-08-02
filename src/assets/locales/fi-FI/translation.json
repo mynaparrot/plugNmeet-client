@@ -5,10 +5,13 @@
   "cancel": "Perua",
   "yes": "Kyllä",
   "no": "Ei",
+  "error": "Virhe",
   "join": "Liittyä",
   "share": "Jakaa",
   "plugnmeet-server-client-version": "Palvelin: v{{server}}; Asiakas: v{{client}}",
   "open": "Avata",
+  "other": "Muut",
+  "pip": "Kuva kuvassa",
   "please-wait": "Ole hyvä ja odota...",
   "are-you-sure-to-close": "Oletko varma, että haluat sulkea?",
   "you-are-about-to-close": "Olet sulkemassa",
@@ -92,7 +95,12 @@
     "whiteboard-new-file-added": "Uusi tiedosto on valmis ja lisätty valkotaulun tiedostolistalle.",
     "private-download-link-ready": "Latauslinkkisi on valmis. Vain sinä näet tämän viestin.<br/>{{link}}",
     "local-audio-stuck-fallback": "Havaitsimme ongelman mikrofonissasi. Kokeile sammuttaa ja käynnistää se takaisin.",
-    "local-video-stuck-fallback": "Havaitsimme ongelman kamerassasi. Kokeile sammuttaa ja käynnistää se takaisin."
+    "local-video-stuck-fallback": "Havaitsimme ongelman kamerassasi. Kokeile sammuttaa ja käynnistää se takaisin.",
+    "encryption-error": "Salausvirhe: {{error}}",
+    "decryption-error": "Purkuvirhe: {{error}}",
+    "error-occurred": "Virhe tapahtui",
+    "native-bridge-error": "Hakemus ilmoitti virheen: {{error}}",
+    "cannot-lock-admin": "Et voi muuttaa lukitusasetuksia muille ylläpitäjille."
   },
   "room-metadata": {
     "session-recording": "Tämä kokous tallennetaan.",
@@ -216,6 +224,7 @@
     "polls-tab": "Gallupit",
     "breakout-room-tab": "Pienryhmähuoneet",
     "me": "(minä)",
+    "search-participant": "Osallistujan etsintä",
     "public-chat": "Julkinen chat",
     "private-chat": "Yksityinen chat",
     "select-chat-conversation-title": "Valitse keskustelu",
@@ -295,6 +304,7 @@
       "stop-screen-sharing": "Lopeta näytön jakaminen",
       "start-screen-sharing": "Jaa näyttö",
       "screen-sharing-locked": "Näytön jakaminen lukittu",
+      "native-publisher-unavailable": "Alkuperäinen julkaisija ei ole saatavilla",
       "lower-hand": "Alempi käsi",
       "raise-hand": "Nosta käsi",
       "reactions": "Reaktiot",
@@ -348,6 +358,9 @@
       "has-raised-hand": "{{user}} on nostanut kätensä.",
       "you-raised-hand": "Olet nostanut kätesi.",
       "muted-all-microphone": "Kaikki mikrofonit on mykistetty.",
+      "no-suitable-track-found": "Sopivaa rataa ei löytynyt mykistykseen tai mykistyksen poistamiseen.",
+      "failed-to-mute-unmute-track": "Ei onnistuttu mykistämään tai poistamaan trackia.",
+      "failed-to-load-participant-info": "Osallistujatietojen lataaminen epäonnistui.",
       "applied-settings": "Uudet lukitusasetukset on otettu käyttöön.",
       "rtmp-starting": "Suoratoisto alkaa. Ole hyvä ja odota.",
       "rtmp-ending": "Suoratoisto on päättymässä. Ole hyvä ja odota.",
@@ -445,7 +458,9 @@
     "export-pdf-pages": "Sivut",
     "export-pdf-select-all": "Valitse kaikki",
     "export-pdf-clear": "Selvä",
-    "export-pdf-exporting": "Vienti..."
+    "export-pdf-exporting": "Vienti...",
+    "share-download-link": "Jaa latauslinkki julkisessa chatissa",
+    "download-link-sent": "Lataa linkki, lähetetään julkiseen chattiin"
   },
   "waiting-room": {
     "modal-title": "Hallinnoi odotushuonetta",
@@ -489,7 +504,8 @@
     "end-poll-success": "Äänestys on päättynyt.",
     "publish-result": "Julkaise tulokset",
     "total": "Koko: {{count}}",
-    "not-respondents-total": "Ei vastannut: {{count}}"
+    "not-respondents-total": "Ei vastannut: {{count}}",
+    "ask-question": "Kysy kysymys"
   },
   "breakout-room": {
     "modal-title": "Pienryhmähuoneiden hallinta",
@@ -531,6 +547,7 @@
     "join-prompt-mic-locked": "Mikrofoni on poistettu käytöstä tässä kokouksessa. Voit ottaa kameran käyttöön tai liittyä kuuntelijaksi.",
     "join-prompt-cam-locked": "Kamera on poistettu käytöstä tässä kokouksessa. Voit ottaa mikrofonin käyttöön tai liittyä kuuntelijaksi.",
     "join-prompt-both-locked": "Mikrofoni ja kamera on poistettu käytöstä tässä kokouksessa. Liity kuuntelijaksi.",
+    "join-prompt-hybrid": "Olet valmis! Voit hallita kameraasi ja mikrofonia, kun olet kokouksessa. Klikkaa 'Liitä' aloittaaksesi.",
     "enable-mic-cam-btn": "Ota mikrofoni ja kamera käyttöön",
     "enable-mic-btn": "Ota mikrofoni käyttöön",
     "enable-cam-btn": "Ota kamera käyttöön",
@@ -641,7 +658,8 @@
       "allowed-users": "Sallitut osallistujat",
       "users-required": "Vähintään yksi osallistuja on valittava.",
       "chat-box-placeholder": "Kysy tekoälyavustajalta kysymys...",
-      "responding-placeholder": "Tekoälyavustaja vastaa..."
+      "responding-placeholder": "Tekoälyavustaja vastaa...",
+      "response-timed-out": "Tekoälyavustaja vastaa liian hitaasti. Ole hyvä ja yritä uudelleen."
     },
     "meeting-summarization": {
       "enable": "Ota käyttöön kokouksen yhteenveto",
