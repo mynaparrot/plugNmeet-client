@@ -100,7 +100,7 @@
     "decryption-error": "Eroare de decriptare: {{error}}",
     "error-occurred": "A avut loc o eroare",
     "native-bridge-error": "Cererea a raportat o eroare: {{error}}",
-    "cannot-lock-admin": "You can't change lock settings for other admin users."
+    "cannot-lock-admin": "Nu poți schimba setările încuietorilor pentru alți utilizatori administratori."
   },
   "room-metadata": {
     "session-recording": "Această întâlnire este înregistrată.",
@@ -224,7 +224,7 @@
     "polls-tab": "Sondaje",
     "breakout-room-tab": "Săli de lucru",
     "me": "(eu)",
-    "search-participant": "Search for Participant",
+    "search-participant": "Căutare Participant",
     "public-chat": "Public Chat",
     "private-chat": "Chat privat",
     "select-chat-conversation-title": "Selectați o conversație",
@@ -304,7 +304,7 @@
       "stop-screen-sharing": "Opriți partajarea ecranului",
       "start-screen-sharing": "Partajare ecran",
       "screen-sharing-locked": "Partajarea ecranului blocată",
-      "native-publisher-unavailable": "Native publisher unavailable",
+      "native-publisher-unavailable": "Editor nativ indisponibil",
       "lower-hand": "Mâna inferioară",
       "raise-hand": "Ridicați mâna",
       "reactions": "Reacții",
@@ -358,9 +358,9 @@
       "has-raised-hand": "{{user}} și-a ridicat mâna.",
       "you-raised-hand": "Ai ridicat mâna.",
       "muted-all-microphone": "Toate microfoanele au fost dezactivate.",
-      "no-suitable-track-found": "No suitable track found to mute/unmute.",
-      "failed-to-mute-unmute-track": "Failed to mute/unmute track.",
-      "failed-to-load-participant-info": "Failed to load participant info.",
+      "no-suitable-track-found": "Nu s-a găsit nicio piesă potrivită pentru a mute/de-mute.",
+      "failed-to-mute-unmute-track": "Nu am reușit să mutez/dezactivez track-ul.",
+      "failed-to-load-participant-info": "Nu s-a încărcat informațiile despre participant.",
       "applied-settings": "Au fost aplicate noi setări de blocare.",
       "rtmp-starting": "Începe fluxul live. Te rog să aştepţi.",
       "rtmp-ending": "Fluxul live se încheie. Te rog să aştepţi.",
@@ -459,8 +459,8 @@
     "export-pdf-select-all": "Selectează toate",
     "export-pdf-clear": "Clar",
     "export-pdf-exporting": "Export...",
-    "share-download-link": "Share download link in public chat",
-    "download-link-sent": "Download link sent to public chat"
+    "share-download-link": "Distribuie linkul de descărcare în chatul public",
+    "download-link-sent": "Link de descărcare trimis către chatul public"
   },
   "waiting-room": {
     "modal-title": "Gestionați sala de așteptare",
@@ -505,7 +505,7 @@
     "publish-result": "Publicați rezultatele",
     "total": "Total: {{count}}",
     "not-respondents-total": "Nu a răspuns: {{count}}",
-    "ask-question": "Ask a question"
+    "ask-question": "Pune o întrebare"
   },
   "breakout-room": {
     "modal-title": "Gestionarea sălilor de lucru",
@@ -547,7 +547,7 @@
     "join-prompt-mic-locked": "Microfonul este dezactivat pentru această întâlnire. Puteți activa camera sau vă puteți alătura ca ascultător.",
     "join-prompt-cam-locked": "Camera este dezactivată pentru această întâlnire. Puteți activa microfonul sau vă puteți alătura ca ascultător.",
     "join-prompt-both-locked": "Microfonul și camera sunt dezactivate pentru această întâlnire. Vă rugăm să vă alăturați ca ascultător.",
-    "join-prompt-hybrid": "You're all set! You can manage your camera and microphone once you're in the meeting. Click 'Join' to get started.",
+    "join-prompt-hybrid": "Ești gata! Poți gestiona camera și microfonul odată ce ești în ședință. Apasă pe 'Alătură-te' pentru a începe.",
     "enable-mic-cam-btn": "Activați microfonul și camera",
     "enable-mic-btn": "Activați microfonul",
     "enable-cam-btn": "Activați camera",
@@ -659,7 +659,7 @@
       "users-required": "Cel puțin un participant trebuie selectat.",
       "chat-box-placeholder": "Pune o întrebare Asistentului AI...",
       "responding-placeholder": "AI Assistant răspunde...",
-      "response-timed-out": "The AI assistant is taking too long to respond. Please try again."
+      "response-timed-out": "Asistentul AI răspunde prea mult. Vă rog să încercați din nou."
     },
     "meeting-summarization": {
       "enable": "Permiterea rezumatizării ședințelor",
