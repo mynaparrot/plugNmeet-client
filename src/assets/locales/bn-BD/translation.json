@@ -22,8 +22,8 @@
     "recording-ended-with-error": "রেকর্ডিং একটি ত্রুটির সাথে শেষ হয়েছে।",
     "local-recording-started": "{{name}} স্থানীয় রেকর্ডিং শুরু করেছেন।",
     "local-recording-ended": "{{name}} স্থানীয় রেকর্ডিং শেষ করেছেন।",
-    "rtmp-started": "লাইভ স্ট্রিমিং শুরু হয়েছে।",
-    "rtmp-ended": "লাইভ স্ট্রিমিং শেষ হয়েছে।",
+    "rtmp-started": "লাইভ স্ট্রিমিং(RTMP) শুরু হয়েছে।",
+    "rtmp-ended": "লাইভ স্ট্রিমিং(RTMP) শেষ হয়েছে।",
     "rtmp-ended-with-error": "লাইভ স্ট্রিমিং একটি ত্রুটির সাথে শেষ হয়েছে।",
     "file-type-not-allow": "'{{filetype}}' ফাইলের প্রকার অনুমোদিত নয়।",
     "max-file-size-exceeds": "ফাইলটি অনুমোদিত সর্বোচ্চ ফাইলের আকার {{size}} মেগাবাইট অতিক্রম করেছে।",
@@ -83,13 +83,13 @@
     "media-only-recording-not-support-e2ee": "এন্ড-টু-এন্ড এনক্রিপশন সক্রিয় থাকলে শুধুমাত্র অডিও এবং ভিডিও রেকর্ডিং উপলব্ধ নয়।",
     "you-are-sharing-screen": "আপনি এখন আপনার স্ক্রিন শেয়ার করছেন। অন্যরা একটি বড় ভিউ দেখতে পাবে।",
     "new-system-message-in-chat": "পাবলিক চ্যাটে একটি নতুন সিস্টেম বার্তা পোস্ট করা হয়েছে।",
-    "queue-holding-messages": "সংযোগের সমস্যা: বার্তাগুলি ধরে রাখা হচ্ছে।",
+    "queue-holding-messages": "সংযোগের সমস্যা: বার্তাগুলি জমা রাখা হচ্ছে।",
     "queue-discarded-message": "একটি বার্তা প্রেরণ করা যায়নি এবং বাতিল করা হয়েছে।",
     "request-submitted-wait": "আপনার অনুরোধ জমা দেওয়া হয়েছে। অনুগ্রহ করে নিশ্চিতকরণের জন্য অপেক্ষা করুন।",
     "wait-other-uploading-to-finish": "অন্য একটি আপলোড চলছে। অনুগ্রহ করে এটি সম্পূর্ণ হওয়ার জন্য অপেক্ষা করুন।",
     "server-not-responding": "সার্ভার প্রতিক্রিয়া জানাচ্ছে না। আপনার সংযোগ অস্থির হতে পারে।",
     "re-routing-connection": "মিটিংয়ের সাথে ইন্টারনেট সংযোগ স্থিতিশীল নয়। আরও ভালো স্থিতিশীলতার জন্য পুনরায় রাউটিং করা হচ্ছে...",
-    "whiteboard-new-file-added": "নতুন ফাইল প্রস্তুত এবং হোয়াইটবোর্ড ফাইল তালিকায় যুক্ত করা হয়েছে।",
+    "whiteboard-new-file-added": "নতুন ফাইলটি প্রস্তুত এবং হোয়াইটবোর্ড ফাইলের তালিকায় যুক্ত করা হয়েছে।",
     "private-download-link-ready": "আপনার ডাউনলোড লিঙ্ক প্রস্তুত। শুধুমাত্র আপনিই এই বার্তাটি দেখতে পাবেন।<br/>{{link}}",
     "local-audio-stuck-fallback": "আমরা আপনার মাইক্রোফোনের সাথে একটি সমস্যা শনাক্ত করেছি। এটি বন্ধ এবং আবার চালু করার চেষ্টা করুন।",
     "local-video-stuck-fallback": "আমরা আপনার ক্যামেরায় একটি সমস্যা শনাক্ত করেছি। এটি বন্ধ এবং আবার চালু করার চেষ্টা করুন।"
@@ -231,17 +231,17 @@
         "share-webcam": "ক্যামেরা চালু করুন",
         "stop-webcam": "ক্যামেরা বন্ধ করুন",
         "unlock-microphone": "মাইক্রোফোন অনুমতি দিন",
-        "lock-microphone": "মাইক্রোফোন নিষ্ক্রিয় করুন",
+        "lock-microphone": "মাইক্রোফোন লক করুন",
         "unlock-webcam": "ক্যামেরা অনুমতি দিন",
-        "lock-webcam": "ক্যামেরা নিষ্ক্রিয় করুন",
+        "lock-webcam": "ক্যামেরা লক করুন",
         "unlock-screen-sharing": "স্ক্রিন শেয়ার করার অনুমতি দিন",
         "lock-screen-sharing": "স্ক্রিন শেয়ার করা নিষ্ক্রিয় করুন",
         "unlock-whiteboard": "হোয়াইটবোর্ড ব্যবহারের অনুমতি দিন",
-        "lock-whiteboard": "হোয়াইটবোর্ড নিষ্ক্রিয় করুন",
+        "lock-whiteboard": "হোয়াইটবোর্ড লক করুন",
         "unlock-shared-notepad": "শেয়ার্ড নোটপ্যাড ব্যবহারের অনুমতি দিন",
         "lock-shared-notepad": "শেয়ার্ড নোটপ্যাড নিষ্ক্রিয় করুন",
         "unlock-chat": "চ্যাটের অনুমতি দিন",
-        "lock-chat": "চ্যাট নিষ্ক্রিয় করুন",
+        "lock-chat": "চ্যাট লক করুন",
         "unlock-send-chat-message": "বার্তা পাঠানোর অনুমতি দিন",
         "lock-send-chat-message": "বার্তা পাঠানো নিষ্ক্রিয় করুন",
         "unlock-send-file": "ফাইল শেয়ার করার অনুমতি দিন",
@@ -330,7 +330,7 @@
       "leave-webcam": "ওয়েবক্যাম বন্ধ করুন",
       "start-external-media-player": "বাহ্যিক ভিডিও প্লে করুন",
       "stop-external-media-player": "বাহ্যিক ভিডিও বন্ধ করুন",
-      "manage-waiting-room": "ওয়েটিং রুম পরিচালনা করুন",
+      "manage-waiting-room": "অপেক্ষার রুম পরিচালনা করুন",
       "manage-breakout-room": "ব্রেকআউট রুম পরিচালনা করুন",
       "start-display-external-link": "বাহ্যিক লিঙ্ক শেয়ার করুন",
       "stop-display-external-link": "লিঙ্ক শেয়ার করা বন্ধ করুন",
@@ -448,10 +448,10 @@
     "export-pdf-exporting": "রপ্তানী করা হচ্ছে..."
   },
   "waiting-room": {
-    "modal-title": "ওয়েটিং রুম পরিচালনা করুন",
-    "update-waiting-message": "ওয়েটিং রুমের বার্তা আপডেট করুন",
+    "modal-title": "অপেক্ষার রুম পরিচালনা করুন",
+    "update-waiting-message": "অপেক্ষার রুমের বার্তা আপডেট করুন",
     "update-msg": "আপডেট করুন",
-    "updated-msg": "ওয়েটিং রুমের বার্তাটি আপডেট করা হয়েছে।",
+    "updated-msg": "অপেক্ষার রুমের বার্তা আপডেট করা হয়েছে।",
     "accept-all": "সবাইকে অনুমোদন করুন",
     "reject-all": "সবাইকে প্রত্যাখ্যান করুন",
     "list-waiting-participants": "যোগদানের জন্য অপেক্ষারত ব্যক্তিরা ({{count}})",
@@ -539,7 +539,7 @@
     "mic-menu-title": "মাইক্রোফোন নির্বাচন করুন",
     "background-filter-title": "পটভূমি এবং ফিল্টার",
     "config-background-btn": "ক্যামেরার পটভূমি কনফিগার করুন",
-    "waiting-for-approval-title": "আপনি ওয়েটিং রুমে আছেন",
+    "waiting-for-approval-title": "আপনি অপেক্ষার রুমে আছেন।",
     "finalizing-app": "মিটিং প্রস্তুত করা হচ্ছে..."
   },
   "external-display-link-display": {
@@ -663,6 +663,6 @@
   "recorder-bot-options": {
     "enable-auto-close-chat-panel": "চ্যাট প্যানেল স্বয়ংক্রিয়ভাবে বন্ধ করা সক্রিয় করুন",
     "duration-after-last-message": "শেষ বার্তার পরে সময়কাল (মিনিটে)",
-    "duration-after-last-message-help": "নিষ্ক্রিয়তার এই সময়কালের পরে চ্যাট প্যানেলটি স্বয়ংক্রিয়ভাবে বন্ধ হবে।"
+    "duration-after-last-message-help": "এই নির্দিষ্ট সময় পর্যন্ত নিষ্ক্রিয় থাকার পর চ্যাট প্যানেলটি স্বয়ংক্রিয়ভাবে বন্ধ হয়ে যাবে।"
   }
 }
