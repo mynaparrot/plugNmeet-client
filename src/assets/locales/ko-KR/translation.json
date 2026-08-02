@@ -5,10 +5,13 @@
   "cancel": "キャンセル",
   "yes": "はい",
   "no": "いいえ",
+  "error": "오류",
   "join": "참여",
   "share": "共有",
   "plugnmeet-server-client-version": "サーバー: v{{server}}; クライアント: v{{client}}",
   "open": "열기",
+  "other": "기타",
+  "pip": "픽처 인 픽처",
   "please-wait": "기다려 주십시오...",
   "are-you-sure-to-close": "닫으시겠습니까?",
   "you-are-about-to-close": "곧 닫힙니다.",
@@ -92,7 +95,12 @@
     "whiteboard-new-file-added": "새 파일이 준비되어 화이트보드 파일 목록에 추가되었습니다.",
     "private-download-link-ready": "다운로드 링크가 준비되었습니다. 이 메시지는 오직 당신만 볼 수 있습니다.<br/>{{link}}",
     "local-audio-stuck-fallback": "마이크에 문제가 감지됐습니다. 꺼버렸다가 다시 켜보세요.",
-    "local-video-stuck-fallback": "카메라에 문제가 감지됐습니다. 꺼버렸다가 다시 켜보세요."
+    "local-video-stuck-fallback": "카메라에 문제가 감지됐습니다. 꺼버렸다가 다시 켜보세요.",
+    "encryption-error": "암호화 오류: {{error}}",
+    "decryption-error": "복호화 오류: {{error}}",
+    "error-occurred": "오류가 발생했습니다",
+    "native-bridge-error": "신청서에는 오류가 보고되었습니다: {{error}}",
+    "cannot-lock-admin": "다른 관리자 사용자에 대해서는 잠금 설정을 변경할 수 없습니다."
   },
   "room-metadata": {
     "session-recording": "이 회의는 녹화되고 있습니다.",
@@ -216,6 +224,7 @@
     "polls-tab": "설문조사",
     "breakout-room-tab": "ブレイクアウトルーム",
     "me": "（あなた）",
+    "search-participant": "참가자 검색",
     "public-chat": "パブリックチャット",
     "private-chat": "プライベートチャット",
     "select-chat-conversation-title": "会話を選択",
@@ -295,6 +304,7 @@
       "stop-screen-sharing": "画面共有を停止",
       "start-screen-sharing": "画面を共有",
       "screen-sharing-locked": "画面共有はロックされています",
+      "native-publisher-unavailable": "네이티브 출판사 이용 불가",
       "lower-hand": "손 내리기",
       "raise-hand": "손들기",
       "reactions": "반응",
@@ -348,6 +358,9 @@
       "has-raised-hand": "{{user}}님이 손을 들었습니다.",
       "you-raised-hand": "손을 들었습니다.",
       "muted-all-microphone": "すべてのマイクがミュートされました。",
+      "no-suitable-track-found": "음소거/음소거 해제가 가능한 적합한 트랙을 찾지 못했습니다.",
+      "failed-to-mute-unmute-track": "트랙을 음소거/음소거 해제하는 데 실패했습니다.",
+      "failed-to-load-participant-info": "참가자 정보 불러오지 않았습니다.",
       "applied-settings": "新しいロック設定が適用されました。",
       "rtmp-starting": "라이브 스트리밍이 시작됩니다. 잠시 기다려 주십시오.",
       "rtmp-ending": "라이브 스트리밍이 종료됩니다. 잠시 기다려 주십시오.",
@@ -445,7 +458,9 @@
     "export-pdf-pages": "페이지",
     "export-pdf-select-all": "모두 선택",
     "export-pdf-clear": "비켜",
-    "export-pdf-exporting": "수출 중..."
+    "export-pdf-exporting": "수출 중...",
+    "share-download-link": "공개 채팅에서 공유 다운로드 링크",
+    "download-link-sent": "공개 채팅으로 전송된 다운로드 링크"
   },
   "waiting-room": {
     "modal-title": "待機室を管理",
@@ -489,7 +504,8 @@
     "end-poll-success": "설문조사가 종료되었습니다.",
     "publish-result": "結果を公開",
     "total": "총계: {{count}}",
-    "not-respondents-total": "응답하지 않음: {{count}}"
+    "not-respondents-total": "응답하지 않음: {{count}}",
+    "ask-question": "질문하세요"
   },
   "breakout-room": {
     "modal-title": "소회의실 관리",
@@ -531,6 +547,7 @@
     "join-prompt-mic-locked": "이 회의에서는 마이크가 비활성화되어 있습니다. 카메라를 활성화하거나 청취자로 참여할 수 있습니다.",
     "join-prompt-cam-locked": "이 회의에서는 카메라가 비활성화되어 있습니다. 마이크를 활성화하거나 청취자로 참여할 수 있습니다.",
     "join-prompt-both-locked": "이 회의에서는 마이크와 카메라가 모두 비활성화되어 있습니다. 청취자로 참여하십시오.",
+    "join-prompt-hybrid": "준비 다 됐어! 회의 중에 카메라와 마이크를 관리할 수 있습니다. '가입'을 클릭하면 시작됩니다.",
     "enable-mic-cam-btn": "マイクとカメラを有効にする",
     "enable-mic-btn": "マイクを有効にする",
     "enable-cam-btn": "カメラを有効にする",
@@ -641,7 +658,8 @@
       "allowed-users": "許可された参加者",
       "users-required": "최소 한 명의 참가자를 선택해야 합니다.",
       "chat-box-placeholder": "AI 어시스턴트에게 질문하기...",
-      "responding-placeholder": "AIアシスタントが応答中です..."
+      "responding-placeholder": "AIアシスタントが応答中です...",
+      "response-timed-out": "AI 비서가 응답하는 데 너무 오래 걸리고 있습니다. 다시 시도해 주세요."
     },
     "meeting-summarization": {
       "enable": "会議の要約を有効にする",
