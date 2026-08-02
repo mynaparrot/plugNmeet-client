@@ -5,10 +5,13 @@
   "cancel": "Отмена",
   "yes": "Да",
   "no": "Нет",
+  "error": "Ошибка",
   "join": "Присоединиться",
   "share": "Поделиться",
   "plugnmeet-server-client-version": "Сервер: v{{server}}; Клиент: v{{client}}",
   "open": "Открыть",
+  "other": "Прочее",
+  "pip": "Картинка в картинке",
   "please-wait": "Подождите...",
   "are-you-sure-to-close": "Вы уверены, что хотите закрыть сделку?",
   "you-are-about-to-close": "Вы собираетесь закрыть",
@@ -92,7 +95,12 @@
     "whiteboard-new-file-added": "Новый файл добавлен в список файлов доски.",
     "private-download-link-ready": "Ваша ссылка для скачивания готова. Только вы можете увидеть это сообщение.<br/>{{link}}",
     "local-audio-stuck-fallback": "Мы обнаружили проблему с вашим микрофоном. Попробуйте выключить и включить снова.",
-    "local-video-stuck-fallback": "Мы обнаружили проблему с вашей камерой. Попробуйте выключить и включить снова."
+    "local-video-stuck-fallback": "Мы обнаружили проблему с вашей камерой. Попробуйте выключить и включить снова.",
+    "encryption-error": "Ошибка шифрования: {{error}}",
+    "decryption-error": "Ошибка расшифровки: {{error}}",
+    "error-occurred": "Произошла ошибка",
+    "native-bridge-error": "В приложении была обнаружена ошибка: {{error}}",
+    "cannot-lock-admin": "Вы не можете изменить настройки замков для других администраторов."
   },
   "room-metadata": {
     "session-recording": "Эта встреча записывается.",
@@ -216,6 +224,7 @@
     "polls-tab": "Опросы",
     "breakout-room-tab": "Сессионные залы",
     "me": "(я)",
+    "search-participant": "Поиск участника",
     "public-chat": "Общий чат",
     "private-chat": "Приватный чат",
     "select-chat-conversation-title": "Выберите беседу",
@@ -295,6 +304,7 @@
       "stop-screen-sharing": "Завершить демонстрацию экрана",
       "start-screen-sharing": "Демонстрация экрана",
       "screen-sharing-locked": "Демонстрация экрана заблокирована",
+      "native-publisher-unavailable": "Родной издатель недоступен",
       "lower-hand": "Опустить руку",
       "raise-hand": "Поднять руку",
       "reactions": "Реакции",
@@ -348,6 +358,9 @@
       "has-raised-hand": "{{user}} поднял руку.",
       "you-raised-hand": "Вы подняли руку.",
       "muted-all-microphone": "Все микрофоны отключены.",
+      "no-suitable-track-found": "Подходящей дорожки для отключения или включения звука не найдено.",
+      "failed-to-mute-unmute-track": "Не удалось заглушить/включить звук дорожки.",
+      "failed-to-load-participant-info": "Не удалось загрузить информацию участника.",
       "applied-settings": "Применены новые настройки блокировки.",
       "rtmp-starting": "Стартует прямая трансляция. Подождите.",
       "rtmp-ending": "Прямая трансляция подходит к концу. Подождите.",
@@ -445,7 +458,9 @@
     "export-pdf-pages": "Страницы",
     "export-pdf-select-all": "Выберите все",
     "export-pdf-clear": "Чисто",
-    "export-pdf-exporting": "Экспорт..."
+    "export-pdf-exporting": "Экспорт...",
+    "share-download-link": "Поделиться ссылкой на скачивание в публичном чате",
+    "download-link-sent": "Ссылка для скачивания отправлена в публичный чат"
   },
   "waiting-room": {
     "modal-title": "Управление залом ожидания",
@@ -489,7 +504,8 @@
     "end-poll-success": "Опрос завершен.",
     "publish-result": "Опубликовать результаты",
     "total": "Итог: {{count}}",
-    "not-respondents-total": "Не ответили: {{count}}"
+    "not-respondents-total": "Не ответили: {{count}}",
+    "ask-question": "Задайте вопрос"
   },
   "breakout-room": {
     "modal-title": "Управление сессионными залами",
@@ -531,6 +547,7 @@
     "join-prompt-mic-locked": "На этой встрече отключен микрофон. Вы можете включить камеру или присоединиться в качестве слушателя.",
     "join-prompt-cam-locked": "На этой встрече отключена камера. Вы можете включить микрофон или присоединиться в качестве слушателя.",
     "join-prompt-both-locked": "На этой встрече отключена камера и микрофон. Вы можете присоединиться в качестве слушателя.",
+    "join-prompt-hybrid": "Всё готово! Вы сможете управлять камерой и микрофоном уже на встрече. Нажмите «Присоединиться», чтобы начать.",
     "enable-mic-cam-btn": "Включить камеру и микрофон",
     "enable-mic-btn": "Включить микрофон",
     "enable-cam-btn": "Включить камеру",
@@ -641,7 +658,8 @@
       "allowed-users": "Разрешённые участники",
       "users-required": "Должен быть выбран как минимум один участник.",
       "chat-box-placeholder": "Задайте вопрос ИИ ассистенту...",
-      "responding-placeholder": "ИИ ассистент отвечает..."
+      "responding-placeholder": "ИИ ассистент отвечает...",
+      "response-timed-out": "ИИ-ассистент слишком долго не отвечает. Пожалуйста, попробуйте ещё раз."
     },
     "meeting-summarization": {
       "enable": "Сводка встречи",
