@@ -5,10 +5,13 @@
   "cancel": "Annullera",
   "yes": "Ja",
   "no": "Nej",
+  "error": "Fel",
   "join": "Ansluta",
   "share": "Aktie",
   "plugnmeet-server-client-version": "Server: v{{server}}; Beställare: v{{client}}",
   "open": "Öppna",
+  "other": "Övrigt",
+  "pip": "Bild-i-bild",
   "please-wait": "Snälla vänta...",
   "are-you-sure-to-close": "Är du säker på att du vill stänga?",
   "you-are-about-to-close": "Du är på väg att stänga",
@@ -92,7 +95,12 @@
     "whiteboard-new-file-added": "Ny fil är redo och har lagts till i whiteboard-fillistan.",
     "private-download-link-ready": "Din nedladdningslänk är redo. Endast du kan se detta meddelande.<br/>{{link}}",
     "local-audio-stuck-fallback": "Vi upptäckte ett problem med din mikrofon. Prova att stänga av och sätta på den igen.",
-    "local-video-stuck-fallback": "Vi upptäckte ett problem med din kamera. Prova att stänga av och sätta på den igen."
+    "local-video-stuck-fallback": "Vi upptäckte ett problem med din kamera. Prova att stänga av och sätta på den igen.",
+    "encryption-error": "Krypteringsfel: {{error}}",
+    "decryption-error": "Dekrypteringsfel: {{error}}",
+    "error-occurred": "Fel uppstod",
+    "native-bridge-error": "Applikationen rapporterade ett fel: {{error}}",
+    "cannot-lock-admin": "Du kan inte ändra låsinställningar för andra administratörsanvändare."
   },
   "room-metadata": {
     "session-recording": "Detta möte spelas in.",
@@ -216,6 +224,7 @@
     "polls-tab": "Omröstningar",
     "breakout-room-tab": "Grupprum",
     "me": "(jag)",
+    "search-participant": "Sök efter deltagare",
     "public-chat": "Offentlig chatt",
     "private-chat": "Privat Chatt",
     "select-chat-conversation-title": "Välj en konversation",
@@ -295,6 +304,7 @@
       "stop-screen-sharing": "Sluta dela skärm",
       "start-screen-sharing": "Dela skärm",
       "screen-sharing-locked": "Skärmdelning låst",
+      "native-publisher-unavailable": "Inhemsk utgivare ej tillgänglig",
       "lower-hand": "Lägre hand",
       "raise-hand": "Räck upp handen",
       "reactions": "Reaktioner",
@@ -348,6 +358,9 @@
       "has-raised-hand": "{{user}} har räckt upp handen.",
       "you-raised-hand": "Ni har räckt upp handen.",
       "muted-all-microphone": "Alla mikrofoner har stängts av.",
+      "no-suitable-track-found": "Ingen lämplig låt hittades för att mute/avmuta.",
+      "failed-to-mute-unmute-track": "Misslyckades med att muta/avmuta spåret.",
+      "failed-to-load-participant-info": "Misslyckades med att ladda deltagarinformation.",
       "applied-settings": "Nya låsinställningar har tillämpats.",
       "rtmp-starting": "Livestreamen startar. Snälla vänta.",
       "rtmp-ending": "Livestreamen är slut. Snälla vänta.",
@@ -445,7 +458,9 @@
     "export-pdf-pages": "Sidor",
     "export-pdf-select-all": "Välj alla",
     "export-pdf-clear": "Klart",
-    "export-pdf-exporting": "Exporterar..."
+    "export-pdf-exporting": "Exporterar...",
+    "share-download-link": "Dela nedladdningslänk i offentlig chatt",
+    "download-link-sent": "Nedladdningslänk skickad till offentlig chatt"
   },
   "waiting-room": {
     "modal-title": "Hantera väntrum",
@@ -489,7 +504,8 @@
     "end-poll-success": "Omröstningen är avslutad.",
     "publish-result": "Publicera resultat",
     "total": "Totalt: {{count}}",
-    "not-respondents-total": "Svarade inte: {{count}}"
+    "not-respondents-total": "Svarade inte: {{count}}",
+    "ask-question": "Ställ en fråga"
   },
   "breakout-room": {
     "modal-title": "Hantera smågrupper",
@@ -531,6 +547,7 @@
     "join-prompt-mic-locked": "Mikrofonen är inaktiverad för det här mötet. Du kan aktivera din kamera eller gå med som lyssnare.",
     "join-prompt-cam-locked": "Kameran är inaktiverad för det här mötet. Du kan aktivera din mikrofon eller gå med som lyssnare.",
     "join-prompt-both-locked": "Mikrofonen och kameran är inaktiverade för det här mötet. Gå gärna med som lyssnare.",
+    "join-prompt-hybrid": "Du är klar! Du kan hantera din kamera och mikrofon när du väl är på mötet. Klicka på 'Gå med' för att komma igång.",
     "enable-mic-cam-btn": "Aktivera mikrofon och kamera",
     "enable-mic-btn": "Aktivera mikrofon",
     "enable-cam-btn": "Aktivera kamera",
@@ -641,7 +658,8 @@
       "allowed-users": "Tillåtna deltagare",
       "users-required": "Minst en deltagare måste väljas.",
       "chat-box-placeholder": "Ställ AI-assistenten en fråga...",
-      "responding-placeholder": "AI-assistenten svarar..."
+      "responding-placeholder": "AI-assistenten svarar...",
+      "response-timed-out": "AI-assistenten tar för lång tid på sig att svara. Försök igen, tack."
     },
     "meeting-summarization": {
       "enable": "Aktivera mötessammanfattning",
