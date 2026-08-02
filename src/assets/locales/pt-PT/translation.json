@@ -103,7 +103,7 @@
   "header": {
     "hide-header": "Ocultar cabeçalho",
     "show-header": "Mostrar cabeçalho",
-    "room-audio-volume": "Áudio da reunião",
+    "room-audio-volume": "Volume da reunião",
     "room-screen-share-audio-volume": "Áudio da partilha de ecrã",
     "menus": {
       "settings": "Definições",
@@ -199,7 +199,7 @@
     "receiving-data": "A receber dados da reunião...",
     "checking": "A verificar...",
     "loading": "A carregar...",
-    "connected": "Ligado",
+    "connected": "Conectado",
     "ready": "Pronto",
     "webcams-per-page": "vídeos por página",
     "require-ssl-title": "É necessária uma ligação segura",
@@ -231,7 +231,7 @@
         "share-webcam": "Ligar câmara",
         "stop-webcam": "Desligar câmara",
         "unlock-microphone": "Permitir microfone",
-        "lock-microphone": "Desativar microfone",
+        "lock-microphone": "Bloquear microfone",
         "unlock-webcam": "Permitir câmara",
         "lock-webcam": "Desativar câmara",
         "unlock-screen-sharing": "Permitir partilha de ecrã",
