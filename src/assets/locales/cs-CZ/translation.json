@@ -5,10 +5,13 @@
   "cancel": "Zrušit",
   "yes": "Ano",
   "no": "Ne",
+  "error": "Chyba",
   "join": "Připojit",
   "share": "Sdílet",
   "plugnmeet-server-client-version": "Server: v{{server}}; Klient: v{{client}}",
   "open": "Otevřený",
+  "other": "Ostatní",
+  "pip": "Obrázek v obraze",
   "please-wait": "Počkejte prosím...",
   "are-you-sure-to-close": "Opravdu chcete zavřít?",
   "you-are-about-to-close": "Chystáte se zavřít",
@@ -92,7 +95,12 @@
     "whiteboard-new-file-added": "Nový soubor je připraven a byl přidán do seznamu souborů na tabuli.",
     "private-download-link-ready": "Váš odkaz ke stažení je připraven. Tuto zprávu vidíš jen ty.<br/>{{link}}",
     "local-audio-stuck-fallback": "Zjistili jsme problém s vaším mikrofonem. Zkuste ho vypnout a znovu zapnout.",
-    "local-video-stuck-fallback": "Zjistili jsme problém s vaší kamerou. Zkuste ho vypnout a znovu zapnout."
+    "local-video-stuck-fallback": "Zjistili jsme problém s vaší kamerou. Zkuste ho vypnout a znovu zapnout.",
+    "encryption-error": "Chyba v šifrování: {{error}}",
+    "decryption-error": "Chyba při dešifrování: {{error}}",
+    "error-occurred": "Došlo k chybě",
+    "native-bridge-error": "Aplikace hlásila chybu: {{error}}",
+    "cannot-lock-admin": "You can't change lock settings for other admin users."
   },
   "room-metadata": {
     "session-recording": "Tato schůzka je nahrávána.",
@@ -216,6 +224,7 @@
     "polls-tab": "Hlasuje",
     "breakout-room-tab": "Dílčí místnosti",
     "me": "(já)",
+    "search-participant": "Search for Participant",
     "public-chat": "Veřejný chat",
     "private-chat": "Soukromý chat",
     "select-chat-conversation-title": "Vyberte konverzaci",
@@ -295,6 +304,7 @@
       "stop-screen-sharing": "Zastavit sdílení obrazovky",
       "start-screen-sharing": "Sdílet obrazovku",
       "screen-sharing-locked": "Sdílení obrazovky uzamčeno",
+      "native-publisher-unavailable": "Native publisher unavailable",
       "lower-hand": "Spodní ruka",
       "raise-hand": "Zvednutí ruky",
       "reactions": "Reakce",
@@ -348,6 +358,9 @@
       "has-raised-hand": "{{user}} zvedl ruku.",
       "you-raised-hand": "Zvedli jste ruku.",
       "muted-all-microphone": "Všechny mikrofony byly ztlumeny.",
+      "no-suitable-track-found": "No suitable track found to mute/unmute.",
+      "failed-to-mute-unmute-track": "Failed to mute/unmute track.",
+      "failed-to-load-participant-info": "Failed to load participant info.",
       "applied-settings": "Bylo použito nové nastavení zámku.",
       "rtmp-starting": "Začíná přímý přenos. Počkejte prosím.",
       "rtmp-ending": "Přímý přenos končí. Počkejte prosím.",
@@ -445,7 +458,9 @@
     "export-pdf-pages": "Stránky",
     "export-pdf-select-all": "Vyberte vše",
     "export-pdf-clear": "Čisté",
-    "export-pdf-exporting": "Export..."
+    "export-pdf-exporting": "Export...",
+    "share-download-link": "Share download link in public chat",
+    "download-link-sent": "Download link sent to public chat"
   },
   "waiting-room": {
     "modal-title": "Správa čekárny",
@@ -489,7 +504,8 @@
     "end-poll-success": "Anketa skončila.",
     "publish-result": "Publikování výsledků",
     "total": "Totální: {{count}}",
-    "not-respondents-total": "Neodpověděl: {{count}}"
+    "not-respondents-total": "Neodpověděl: {{count}}",
+    "ask-question": "Ask a question"
   },
   "breakout-room": {
     "modal-title": "Správa dílčích místností",
@@ -531,6 +547,7 @@
     "join-prompt-mic-locked": "Mikrofon je pro tuto schůzku zakázán. Můžete povolit kameru nebo se připojit jako posluchač.",
     "join-prompt-cam-locked": "Kamera je pro tuto schůzku deaktivována. Můžete povolit mikrofon nebo se připojit jako posluchač.",
     "join-prompt-both-locked": "Mikrofon a kamera jsou pro tuto schůzku zakázány. Prosíme, připojte se jako posluchač.",
+    "join-prompt-hybrid": "You're all set! You can manage your camera and microphone once you're in the meeting. Click 'Join' to get started.",
     "enable-mic-cam-btn": "Povolte mikrofon a kameru",
     "enable-mic-btn": "Povolit mikrofon",
     "enable-cam-btn": "Povolit kameru",
@@ -641,7 +658,8 @@
       "allowed-users": "Povolení účastníci",
       "users-required": "Musí být vybrán alespoň jeden účastník.",
       "chat-box-placeholder": "Zeptejte se AI asistenta na otázku...",
-      "responding-placeholder": "AI Assistant reaguje..."
+      "responding-placeholder": "AI Assistant reaguje...",
+      "response-timed-out": "The AI assistant is taking too long to respond. Please try again."
     },
     "meeting-summarization": {
       "enable": "Umožnit shrnutí schůzky",
