@@ -100,7 +100,7 @@
     "decryption-error": "Error de descifrado: {{error}}",
     "error-occurred": "Se produjo un error",
     "native-bridge-error": "La solicitud informó de un error: {{error}}",
-    "cannot-lock-admin": "You can't change lock settings for other admin users."
+    "cannot-lock-admin": "No puedes cambiar la configuración de bloqueo para otros usuarios administradores."
   },
   "room-metadata": {
     "session-recording": "Esta reunión está siendo grabada.",
@@ -224,7 +224,7 @@
     "polls-tab": "Encuestas",
     "breakout-room-tab": "Salas de grupos",
     "me": "(yo)",
-    "search-participant": "Search for Participant",
+    "search-participant": "Búsqueda de participante",
     "public-chat": "Chat público",
     "private-chat": "Chat privado",
     "select-chat-conversation-title": "Seleccione una conversación",
@@ -304,7 +304,7 @@
       "stop-screen-sharing": "Dejar de compartir pantalla",
       "start-screen-sharing": "Compartir pantalla",
       "screen-sharing-locked": "Compartición de pantalla bloqueada",
-      "native-publisher-unavailable": "Native publisher unavailable",
+      "native-publisher-unavailable": "Editor nativo no disponible",
       "lower-hand": "Bajar la mano",
       "raise-hand": "Levantar la mano",
       "reactions": "Reacciones",
@@ -358,9 +358,9 @@
       "has-raised-hand": "{{user}} ha levantado la mano.",
       "you-raised-hand": "Ha levantado la mano.",
       "muted-all-microphone": "Se han silenciado todos los micrófonos.",
-      "no-suitable-track-found": "No suitable track found to mute/unmute.",
-      "failed-to-mute-unmute-track": "Failed to mute/unmute track.",
-      "failed-to-load-participant-info": "Failed to load participant info.",
+      "no-suitable-track-found": "No se encontró ninguna pista adecuada para silenciar o reactivar el silencio.",
+      "failed-to-mute-unmute-track": "No se pudo silenciar ni desactivar la pista.",
+      "failed-to-load-participant-info": "No se ha podido cargar la información del participante.",
       "applied-settings": "Se han aplicado los nuevos ajustes de bloqueo.",
       "rtmp-starting": "La transmisión en vivo está comenzando. Por favor, espere.",
       "rtmp-ending": "La transmisión en vivo está finalizando. Por favor, espere.",
@@ -459,8 +459,8 @@
     "export-pdf-select-all": "Seleccionar todo",
     "export-pdf-clear": "Borrar",
     "export-pdf-exporting": "Exportando...",
-    "share-download-link": "Share download link in public chat",
-    "download-link-sent": "Download link sent to public chat"
+    "share-download-link": "Compartir enlace de descarga en el chat público",
+    "download-link-sent": "Enlace de descarga enviado al chat público"
   },
   "waiting-room": {
     "modal-title": "Gestionar sala de espera",
@@ -505,7 +505,7 @@
     "publish-result": "Publicar resultados",
     "total": "Total: {{count}}",
     "not-respondents-total": "No respondieron: {{count}}",
-    "ask-question": "Ask a question"
+    "ask-question": "Haz una pregunta"
   },
   "breakout-room": {
     "modal-title": "Gestionar salas de grupos",
@@ -547,7 +547,7 @@
     "join-prompt-mic-locked": "El micrófono está desactivado para esta reunión. Puede activar su cámara o unirse como oyente.",
     "join-prompt-cam-locked": "La cámara está desactivada para esta reunión. Puede activar su micrófono o unirse como oyente.",
     "join-prompt-both-locked": "El micrófono y la cámara están desactivados para esta reunión. Por favor, únase como oyente.",
-    "join-prompt-hybrid": "You're all set! You can manage your camera and microphone once you're in the meeting. Click 'Join' to get started.",
+    "join-prompt-hybrid": "¡Ya estáis listos! Puedes gestionar la cámara y el micrófono una vez que estés en la reunión. Haz clic en 'Unirte' para empezar.",
     "enable-mic-cam-btn": "Activar micrófono y cámara",
     "enable-mic-btn": "Activar micrófono",
     "enable-cam-btn": "Activar cámara",
@@ -659,7 +659,7 @@
       "users-required": "Se debe seleccionar al menos un participante.",
       "chat-box-placeholder": "Haga una pregunta al asistente de IA...",
       "responding-placeholder": "El asistente de IA está respondiendo...",
-      "response-timed-out": "The AI assistant is taking too long to respond. Please try again."
+      "response-timed-out": "El asistente de IA tarda demasiado en responder. Por favor, inténtalo de nuevo."
     },
     "meeting-summarization": {
       "enable": "Activar resumen de la reunión",
