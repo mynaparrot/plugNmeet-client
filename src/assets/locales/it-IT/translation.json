@@ -5,10 +5,13 @@
   "cancel": "Annulla",
   "yes": "Sì",
   "no": "No",
+  "error": "Errore",
   "join": "Partecipa",
   "share": "Condividi",
   "plugnmeet-server-client-version": "Server: v{{server}}; Client: v{{client}}",
   "open": "Apri",
+  "other": "Altro",
+  "pip": "Immagine in immagine",
   "please-wait": "Attendere prego...",
   "are-you-sure-to-close": "È sicuro di voler chiudere?",
   "you-are-about-to-close": "Sta per chiudere.",
@@ -92,7 +95,12 @@
     "whiteboard-new-file-added": "Il nuovo file è pronto ed è stato aggiunto all'elenco dei file della lavagna.",
     "private-download-link-ready": "Il link per il download è pronto. Solo tu puoi vedere questo messaggio.<br/>{{link}}",
     "local-audio-stuck-fallback": "Abbiamo rilevato un problema con il tuo microfono. Prova a spegnerlo e riaccenderlo.",
-    "local-video-stuck-fallback": "Abbiamo rilevato un problema con la tua fotocamera. Prova a spegnerlo e riaccenderlo."
+    "local-video-stuck-fallback": "Abbiamo rilevato un problema con la tua fotocamera. Prova a spegnerlo e riaccenderlo.",
+    "encryption-error": "Errore di crittografia: {{error}}",
+    "decryption-error": "Errore di decrittazione: {{error}}",
+    "error-occurred": "Si è verificato un errore",
+    "native-bridge-error": "L'applicazione ha segnalato un errore: {{error}}",
+    "cannot-lock-admin": "Non puoi cambiare le impostazioni della serratura per altri utenti amministratori."
   },
   "room-metadata": {
     "session-recording": "Questa riunione è in fase di registrazione.",
@@ -216,6 +224,7 @@
     "polls-tab": "Sondaggi",
     "breakout-room-tab": "Sale per sottogruppi",
     "me": "(Lei)",
+    "search-participant": "Ricerca del partecipante",
     "public-chat": "Chat pubblica",
     "private-chat": "Chat privata",
     "select-chat-conversation-title": "Seleziona una conversazione",
@@ -295,6 +304,7 @@
       "stop-screen-sharing": "Interrompi condivisione schermo",
       "start-screen-sharing": "Condividi schermo",
       "screen-sharing-locked": "Condivisione schermo bloccata",
+      "native-publisher-unavailable": "Editore nativo non disponibile",
       "lower-hand": "Abbassa la mano",
       "raise-hand": "Alza la mano",
       "reactions": "Reazioni",
@@ -348,6 +358,9 @@
       "has-raised-hand": "{{user}} ha alzato la mano.",
       "you-raised-hand": "Lei ha alzato la mano.",
       "muted-all-microphone": "Tutti i microfoni sono stati disattivati.",
+      "no-suitable-track-found": "Non è stata trovata una traccia adatta per silenziare o riattivare il silenzio.",
+      "failed-to-mute-unmute-track": "Non sono riuscito a silenziare o disattivare la traccia.",
+      "failed-to-load-participant-info": "Non sono riusciti a caricare le informazioni dei partecipanti.",
       "applied-settings": "Nuove impostazioni di blocco applicate.",
       "rtmp-starting": "La diretta streaming sta per iniziare. Attendere prego.",
       "rtmp-ending": "La diretta streaming sta per terminare. Attendere prego.",
@@ -445,7 +458,9 @@
     "export-pdf-pages": "Pagine",
     "export-pdf-select-all": "Seleziona tutti",
     "export-pdf-clear": "Libero",
-    "export-pdf-exporting": "Esportazione..."
+    "export-pdf-exporting": "Esportazione...",
+    "share-download-link": "Condividi il link per il download nella chat pubblica",
+    "download-link-sent": "Link per il download inviato alla chat pubblica"
   },
   "waiting-room": {
     "modal-title": "Gestisci sala d'attesa",
@@ -489,7 +504,8 @@
     "end-poll-success": "Il sondaggio è terminato.",
     "publish-result": "Pubblica risultati",
     "total": "Totale: {{count}}",
-    "not-respondents-total": "Non hanno risposto: {{count}}"
+    "not-respondents-total": "Non hanno risposto: {{count}}",
+    "ask-question": "Fai una domanda"
   },
   "breakout-room": {
     "modal-title": "Gestisci sale per sottogruppi",
@@ -531,6 +547,7 @@
     "join-prompt-mic-locked": "Il microfono è disabilitato per questa riunione. Può abilitare la videocamera o partecipare come ascoltatore.",
     "join-prompt-cam-locked": "La videocamera è disabilitata per questa riunione. Può abilitare il microfono o partecipare come ascoltatore.",
     "join-prompt-both-locked": "Il microfono e la videocamera sono disabilitati per questa riunione. Partecipi come ascoltatore.",
+    "join-prompt-hybrid": "Sei a posto! Puoi gestire la tua telecamera e il microfono una volta che sei in riunione. Clicca su 'Unisciti' per iniziare.",
     "enable-mic-cam-btn": "Abilita microfono e videocamera",
     "enable-mic-btn": "Abilita microfono",
     "enable-cam-btn": "Abilita videocamera",
@@ -641,7 +658,8 @@
       "allowed-users": "Partecipanti autorizzati",
       "users-required": "È necessario selezionare almeno un partecipante.",
       "chat-box-placeholder": "Faccia una domanda all'Assistente AI...",
-      "responding-placeholder": "L'Assistente AI sta rispondendo..."
+      "responding-placeholder": "L'Assistente AI sta rispondendo...",
+      "response-timed-out": "L'assistente AI sta mettendo troppo tempo a rispondere. Per favore, riprova."
     },
     "meeting-summarization": {
       "enable": "Abilita riassunto della riunione",
