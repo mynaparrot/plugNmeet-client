@@ -5,10 +5,13 @@
   "cancel": "Cancel",
   "yes": "Yes",
   "no": "No",
+  "error": "Error",
   "join": "Join",
   "share": "Share",
   "plugnmeet-server-client-version": "Server: v{{server}}; Client: v{{client}}",
   "open": "Open",
+  "other": "Other",
+  "pip": "Picture-in-Picture",
   "please-wait": "Please wait...",
   "are-you-sure-to-close": "Are you sure you want to close?",
   "you-are-about-to-close": "You are about to close",
@@ -92,7 +95,12 @@
     "whiteboard-new-file-added": "New file is ready and has been added to the whiteboard files list.",
     "private-download-link-ready": "Your download link is ready. Only you can see this message.<br/>{{link}}",
     "local-audio-stuck-fallback": "We detected an issue with your microphone. Try turning it off and back on.",
-    "local-video-stuck-fallback": "We detected an issue with your camera. Try turning it off and back on."
+    "local-video-stuck-fallback": "We detected an issue with your camera. Try turning it off and back on.",
+    "encryption-error": "Encryption error: {{error}}",
+    "decryption-error": "Decryption error: {{error}}",
+    "error-occurred": "Error occurred",
+    "native-bridge-error": "The application reported an error: {{error}}",
+    "cannot-lock-admin": "You can't change lock settings for other admin users."
   },
   "room-metadata": {
     "session-recording": "This meeting is being recorded.",
@@ -216,6 +224,7 @@
     "polls-tab": "Polls",
     "breakout-room-tab": "Breakout Rooms",
     "me": "(me)",
+    "search-participant": "Search for Participant",
     "public-chat": "Public Chat",
     "private-chat": "Private Chat",
     "select-chat-conversation-title": "Select a conversation",
@@ -295,6 +304,7 @@
       "stop-screen-sharing": "Stop Sharing Screen",
       "start-screen-sharing": "Share Screen",
       "screen-sharing-locked": "Screen Sharing Locked",
+      "native-publisher-unavailable": "Native publisher unavailable",
       "lower-hand": "Lower Hand",
       "raise-hand": "Raise Hand",
       "reactions": "Reactions",
@@ -348,6 +358,9 @@
       "has-raised-hand": "{{user}} has raised their hand.",
       "you-raised-hand": "You have raised your hand.",
       "muted-all-microphone": "All microphones have been muted.",
+      "no-suitable-track-found": "No suitable track found to mute/unmute.",
+      "failed-to-mute-unmute-track": "Failed to mute/unmute track.",
+      "failed-to-load-participant-info": "Failed to load participant info.",
       "applied-settings": "New lock settings have been applied.",
       "rtmp-starting": "Live stream is starting. Please wait.",
       "rtmp-ending": "Live stream is ending. Please wait.",
@@ -445,7 +458,9 @@
     "export-pdf-pages": "Pages",
     "export-pdf-select-all": "Select all",
     "export-pdf-clear": "Clear",
-    "export-pdf-exporting": "Exporting..."
+    "export-pdf-exporting": "Exporting...",
+    "share-download-link": "Share download link in public chat",
+    "download-link-sent": "Download link sent to public chat"
   },
   "waiting-room": {
     "modal-title": "Manage Waiting Room",
@@ -489,7 +504,8 @@
     "end-poll-success": "The poll has ended.",
     "publish-result": "Publish Results",
     "total": "Total: {{count}}",
-    "not-respondents-total": "Did not respond: {{count}}"
+    "not-respondents-total": "Did not respond: {{count}}",
+    "ask-question": "Ask a question"
   },
   "breakout-room": {
     "modal-title": "Manage Breakout Rooms",
@@ -531,6 +547,7 @@
     "join-prompt-mic-locked": "The microphone is disabled for this meeting. You can enable your camera or join as a listener.",
     "join-prompt-cam-locked": "The camera is disabled for this meeting. You can enable your microphone or join as a listener.",
     "join-prompt-both-locked": "The microphone and camera are disabled for this meeting. Please join as a listener.",
+    "join-prompt-hybrid": "You're all set! You can manage your camera and microphone once you're in the meeting. Click 'Join' to get started.",
     "enable-mic-cam-btn": "Enable Microphone and Camera",
     "enable-mic-btn": "Enable Microphone",
     "enable-cam-btn": "Enable Camera",
@@ -641,7 +658,8 @@
       "allowed-users": "Allowed Participants",
       "users-required": "At least one participant must be selected.",
       "chat-box-placeholder": "Ask the AI Assistant a question...",
-      "responding-placeholder": "AI Assistant is responding..."
+      "responding-placeholder": "AI Assistant is responding...",
+      "response-timed-out": "The AI assistant is taking too long to respond. Please try again."
     },
     "meeting-summarization": {
       "enable": "Enable meeting summarization",
