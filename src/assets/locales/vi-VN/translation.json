@@ -5,10 +5,13 @@
   "cancel": "Hủy",
   "yes": "Có",
   "no": "Không",
+  "error": "Lỗi",
   "join": "Nối",
   "share": "Chia sẻ",
   "plugnmeet-server-client-version": "Máy chủ: v{{server}}; Khách hàng: v{{client}}",
   "open": "Mở",
+  "other": "Khác",
+  "pip": "hình trong hình",
   "please-wait": "Hãy chờ...",
   "are-you-sure-to-close": "Bạn có chắc chắn muốn đóng cửa không?",
   "you-are-about-to-close": "Bạn sắp đóng cửa",
@@ -92,7 +95,12 @@
     "whiteboard-new-file-added": "Tệp mới đã sẵn sàng và đã được thêm vào danh sách tệp bảng trắng.",
     "private-download-link-ready": "Liên kết tải xuống của bạn đã sẵn sàng. Chỉ bạn mới có thể xem thông báo này.<br/>{{link}}",
     "local-audio-stuck-fallback": "Chúng tôi đã phát hiện ra sự cố với micrô của bạn. Hãy thử tắt và bật lại.",
-    "local-video-stuck-fallback": "Chúng tôi đã phát hiện ra sự cố với máy ảnh của bạn. Hãy thử tắt và bật lại."
+    "local-video-stuck-fallback": "Chúng tôi đã phát hiện ra sự cố với máy ảnh của bạn. Hãy thử tắt và bật lại.",
+    "encryption-error": "Lỗi mã hóa: {{error}}",
+    "decryption-error": "Lỗi giải mã: {{error}}",
+    "error-occurred": "Đã xảy ra lỗi",
+    "native-bridge-error": "Ứng dụng đã báo lỗi: {{error}}",
+    "cannot-lock-admin": "Bạn không thể thay đổi cài đặt khóa cho người dùng quản trị khác."
   },
   "room-metadata": {
     "session-recording": "Cuộc họp này đang được ghi lại.",
@@ -216,6 +224,7 @@
     "polls-tab": "Thăm dò ý kiến",
     "breakout-room-tab": "Phòng họp nhóm",
     "me": "(tôi)",
+    "search-participant": "Tìm kiếm Người tham gia",
     "public-chat": "Trò chuyện công khai",
     "private-chat": "Trò chuyện riêng tư",
     "select-chat-conversation-title": "Chọn một cuộc trò chuyện",
@@ -295,6 +304,7 @@
       "stop-screen-sharing": "Dừng chia sẻ màn hình",
       "start-screen-sharing": "Chia sẻ màn hình",
       "screen-sharing-locked": "Chia sẻ màn hình bị khóa",
+      "native-publisher-unavailable": "Nhà xuất bản gốc không khả dụng",
       "lower-hand": "Hạ tay xuống",
       "raise-hand": "Giơ tay",
       "reactions": "Phản ứng",
@@ -348,6 +358,9 @@
       "has-raised-hand": "{{user}} đã giơ tay lên.",
       "you-raised-hand": "Bạn đã giơ tay lên.",
       "muted-all-microphone": "Tất cả các micrô đã bị tắt tiếng.",
+      "no-suitable-track-found": "Không tìm thấy track phù hợp để tắt tiếng/bật tiếng.",
+      "failed-to-mute-unmute-track": "Không thể tắt tiếng/bật tiếng bản nhạc.",
+      "failed-to-load-participant-info": "Tải thông tin người tham gia thất bại.",
       "applied-settings": "Cài đặt khóa mới đã được áp dụng.",
       "rtmp-starting": "Sự kiện trực tiếp đang bắt đầu. Hãy chờ.",
       "rtmp-ending": "Sự kiện trực tiếp sắp kết thúc. Hãy chờ.",
@@ -445,7 +458,9 @@
     "export-pdf-pages": "Trang",
     "export-pdf-select-all": "Chọn tất cả",
     "export-pdf-clear": "Xóa",
-    "export-pdf-exporting": "Xuất khẩu..."
+    "export-pdf-exporting": "Xuất khẩu...",
+    "share-download-link": "Chia sẻ liên kết tải xuống trong trò chuyện công cộng",
+    "download-link-sent": "Liên kết tải xuống đã gửi đến trò chuyện công cộng"
   },
   "waiting-room": {
     "modal-title": "Quản lý phòng chờ",
@@ -489,7 +504,8 @@
     "end-poll-success": "Cuộc thăm dò đã kết thúc.",
     "publish-result": "Xuất bản kết quả",
     "total": "Tất cả: {{count}}",
-    "not-respondents-total": "Không trả lời: {{count}}"
+    "not-respondents-total": "Không trả lời: {{count}}",
+    "ask-question": "Đặt câu hỏi"
   },
   "breakout-room": {
     "modal-title": "Quản lý phòng họp nhóm",
@@ -531,6 +547,7 @@
     "join-prompt-mic-locked": "Micrô bị tắt cho cuộc họp này. Bạn có thể bật máy ảnh của mình hoặc tham gia với tư cách là người nghe.",
     "join-prompt-cam-locked": "Máy ảnh bị tắt cho cuộc họp này. Bạn có thể bật micrô của mình hoặc tham gia với tư cách là người nghe.",
     "join-prompt-both-locked": "Micrô và máy ảnh bị tắt cho cuộc họp này. Hãy tham gia với tư cách là người nghe.",
+    "join-prompt-hybrid": "Mọi thứ đã sẵn sàng! Bạn có thể quản lý camera và micro khi đã vào cuộc họp. Nhấn 'Tham gia' để bắt đầu.",
     "enable-mic-cam-btn": "Bật micrô và máy ảnh",
     "enable-mic-btn": "Bật micrô",
     "enable-cam-btn": "Bật máy ảnh",
@@ -641,7 +658,8 @@
       "allowed-users": "Người tham gia được phép",
       "users-required": "Ít nhất một người tham gia phải được chọn.",
       "chat-box-placeholder": "Hỏi Trợ lý AI một câu hỏi...",
-      "responding-placeholder": "Trợ lý AI đang phản hồi..."
+      "responding-placeholder": "Trợ lý AI đang phản hồi...",
+      "response-timed-out": "Trợ lý AI phản hồi quá lâu. Vui lòng thử lại."
     },
     "meeting-summarization": {
       "enable": "Bật tính năng tóm tắt cuộc họp",
