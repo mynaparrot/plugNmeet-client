@@ -100,7 +100,7 @@
     "decryption-error": "Entschlüsselungsfehler: {{error}}",
     "error-occurred": "Fehler ist aufgetreten",
     "native-bridge-error": "Die Anwendung meldete einen Fehler: {{error}}",
-    "cannot-lock-admin": "You can't change lock settings for other admin users."
+    "cannot-lock-admin": "Du kannst die Schlosseinstellungen für andere Administratoren nicht ändern."
   },
   "room-metadata": {
     "session-recording": "Dieses Meeting wird aufgezeichnet.",
@@ -224,7 +224,7 @@
     "polls-tab": "Umfragen",
     "breakout-room-tab": "Gruppenräume",
     "me": "(Ich)",
-    "search-participant": "Search for Participant",
+    "search-participant": "Suche nach Teilnehmern",
     "public-chat": "Öffentlicher Chat",
     "private-chat": "Privater Chat",
     "select-chat-conversation-title": "Wählen Sie eine Konversation aus",
@@ -304,7 +304,7 @@
       "stop-screen-sharing": "Bildschirmfreigabe beenden",
       "start-screen-sharing": "Bildschirm freigeben",
       "screen-sharing-locked": "Bildschirmfreigabe gesperrt",
-      "native-publisher-unavailable": "Native publisher unavailable",
+      "native-publisher-unavailable": "Nativer Verlag nicht verfügbar",
       "lower-hand": "Hand senken",
       "raise-hand": "Hand heben",
       "reactions": "Reaktionen",
@@ -358,9 +358,9 @@
       "has-raised-hand": "{{user}} hat die Hand gehoben.",
       "you-raised-hand": "Sie haben die Hand gehoben.",
       "muted-all-microphone": "Alle Mikrofone wurden stummgeschaltet.",
-      "no-suitable-track-found": "No suitable track found to mute/unmute.",
-      "failed-to-mute-unmute-track": "Failed to mute/unmute track.",
-      "failed-to-load-participant-info": "Failed to load participant info.",
+      "no-suitable-track-found": "Keine geeignete Spur gefunden, um stummzuschalten/entstummen.",
+      "failed-to-mute-unmute-track": "Es konnte den Track nicht stummgeschaltet/entmutieren.",
+      "failed-to-load-participant-info": "Teilnehmerinformationen wurden nicht geladen.",
       "applied-settings": "Neue Sperreinstellungen wurden angewendet.",
       "rtmp-starting": "Der Live-Stream wird gestartet. Bitte warten.",
       "rtmp-ending": "Der Live-Stream wird beendet. Bitte warten.",
@@ -459,8 +459,8 @@
     "export-pdf-select-all": "Alle auswählen",
     "export-pdf-clear": "Leeren",
     "export-pdf-exporting": "Exportiere ...",
-    "share-download-link": "Share download link in public chat",
-    "download-link-sent": "Download link sent to public chat"
+    "share-download-link": "Download-Link im öffentlichen Chat teilen",
+    "download-link-sent": "Download-Link zum öffentlichen Chat gesendet"
   },
   "waiting-room": {
     "modal-title": "Warteraum verwalten",
@@ -505,7 +505,7 @@
     "publish-result": "Ergebnisse veröffentlichen",
     "total": "Gesamt: {{count}}",
     "not-respondents-total": "Keine Antwort: {{count}}",
-    "ask-question": "Ask a question"
+    "ask-question": "Stellen Sie eine Frage"
   },
   "breakout-room": {
     "modal-title": "Gruppenräume verwalten",
@@ -547,7 +547,7 @@
     "join-prompt-mic-locked": "Das Mikrofon ist für dieses Meeting deaktiviert. Sie können Ihre Kamera aktivieren oder als Zuhörer beitreten.",
     "join-prompt-cam-locked": "Die Kamera ist für dieses Meeting deaktiviert. Sie können Ihr Mikrofon aktivieren oder als Zuhörer beitreten.",
     "join-prompt-both-locked": "Mikrofon und Kamera sind für dieses Meeting deaktiviert. Bitte treten Sie als Zuhörer bei.",
-    "join-prompt-hybrid": "You're all set! You can manage your camera and microphone once you're in the meeting. Click 'Join' to get started.",
+    "join-prompt-hybrid": "Du bist startklar! Du kannst deine Kamera und dein Mikrofon steuern, sobald du im Meeting bist. Klicken Sie auf 'Beitreten', um loszulegen.",
     "enable-mic-cam-btn": "Mikrofon und Kamera aktivieren",
     "enable-mic-btn": "Mikrofon aktivieren",
     "enable-cam-btn": "Kamera aktivieren",
@@ -659,7 +659,7 @@
       "users-required": "Es muss mindestens ein Teilnehmer ausgewählt werden.",
       "chat-box-placeholder": "Stellen Sie dem KI-Assistenten eine Frage...",
       "responding-placeholder": "KI-Assistent antwortet...",
-      "response-timed-out": "The AI assistant is taking too long to respond. Please try again."
+      "response-timed-out": "Der KI-Assistent braucht zu lange, um zu antworten. Bitte versuchen Sie es erneut."
     },
     "meeting-summarization": {
       "enable": "Meeting-Zusammenfassung aktivieren",
