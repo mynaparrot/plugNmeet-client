@@ -5,10 +5,13 @@
   "cancel": "取消",
   "yes": "是",
   "no": "否",
+  "error": "錯誤",
   "join": "加入",
   "share": "分享",
   "plugnmeet-server-client-version": "伺服器: v{{server}}; 用戶端: v{{client}}",
   "open": "開啟",
+  "other": "其他",
+  "pip": "畫中畫",
   "please-wait": "請稍候...",
   "are-you-sure-to-close": "您確定要關閉嗎？",
   "you-are-about-to-close": "您即將關閉。",
@@ -92,7 +95,12 @@
     "whiteboard-new-file-added": "新檔案已準備好，並已加入白板檔案清單。",
     "private-download-link-ready": "您的下載連結已準備好。只有你能看到這則訊息。<br/>{{link}}",
     "local-audio-stuck-fallback": "我們偵測到你的麥克風有問題。試著關機再開機。",
-    "local-video-stuck-fallback": "我們偵測到你的相機有問題。試著關機再開機。"
+    "local-video-stuck-fallback": "我們偵測到你的相機有問題。試著關機再開機。",
+    "encryption-error": "加密錯誤： {{error}}",
+    "decryption-error": "解密錯誤： {{error}}",
+    "error-occurred": "發生錯誤",
+    "native-bridge-error": "該應用程式報告了一個錯誤： {{error}}",
+    "cannot-lock-admin": "你無法更改其他管理員使用者的鎖定設定。"
   },
   "room-metadata": {
     "session-recording": "此會議正在錄製中。",
@@ -216,6 +224,7 @@
     "polls-tab": "投票",
     "breakout-room-tab": "分組討論室",
     "me": "（您）",
+    "search-participant": "搜尋參與者",
     "public-chat": "公開聊天",
     "private-chat": "私人聊天",
     "select-chat-conversation-title": "選擇一個對話",
@@ -295,6 +304,7 @@
       "stop-screen-sharing": "停止螢幕分享",
       "start-screen-sharing": "分享螢幕",
       "screen-sharing-locked": "螢幕分享已鎖定",
+      "native-publisher-unavailable": "原生出版商無法提供",
       "lower-hand": "放下手",
       "raise-hand": "舉手",
       "reactions": "反應",
@@ -348,6 +358,9 @@
       "has-raised-hand": "{{user}} 已舉手。",
       "you-raised-hand": "您已舉手。",
       "muted-all-microphone": "所有麥克風已被靜音。",
+      "no-suitable-track-found": "找不到合適的靜音/解除靜音軌道。",
+      "failed-to-mute-unmute-track": "無法靜音/解除靜音曲目。",
+      "failed-to-load-participant-info": "未能載入參與者資訊。",
       "applied-settings": "新的鎖定設定已套用。",
       "rtmp-starting": "直播即將開始，請稍候。",
       "rtmp-ending": "直播即將結束，請稍候。",
@@ -445,7 +458,9 @@
     "export-pdf-pages": "頁數",
     "export-pdf-select-all": "全部選擇",
     "export-pdf-clear": "清場",
-    "export-pdf-exporting": "正在輸出......"
+    "export-pdf-exporting": "正在輸出......",
+    "share-download-link": "在公開聊天中分享下載連結",
+    "download-link-sent": "下載連結已發送至公開聊天"
   },
   "waiting-room": {
     "modal-title": "管理等候室",
@@ -489,7 +504,8 @@
     "end-poll-success": "投票已結束。",
     "publish-result": "公佈結果",
     "total": "總計: {{count}}",
-    "not-respondents-total": "未回答: {{count}}"
+    "not-respondents-total": "未回答: {{count}}",
+    "ask-question": "提出問題"
   },
   "breakout-room": {
     "modal-title": "管理分組討論室",
@@ -531,6 +547,7 @@
     "join-prompt-mic-locked": "此會議已停用麥克風。您可以開啟攝影機或以僅聆聽模式加入。",
     "join-prompt-cam-locked": "此會議已停用攝影機。您可以開啟麥克風或以僅聆聽模式加入。",
     "join-prompt-both-locked": "此會議已停用麥克風和攝影機。請以僅聆聽模式加入。",
+    "join-prompt-hybrid": "你準備好了！你在會議中可以管理攝影機和麥克風。點擊「加入」即可開始。",
     "enable-mic-cam-btn": "啟用麥克風和攝影機",
     "enable-mic-btn": "啟用麥克風",
     "enable-cam-btn": "啟用攝影機",
@@ -641,7 +658,8 @@
       "allowed-users": "允許的與會者",
       "users-required": "必須至少選擇一名與會者。",
       "chat-box-placeholder": "向 AI 助理提問...",
-      "responding-placeholder": "AI 助理正在回應..."
+      "responding-placeholder": "AI 助理正在回應...",
+      "response-timed-out": "AI 助理回覆太慢了。請再試一次。"
     },
     "meeting-summarization": {
       "enable": "啟用會議摘要",
