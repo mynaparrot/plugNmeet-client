@@ -5,10 +5,13 @@
   "cancel": "キャンセル",
   "yes": "はい",
   "no": "いいえ",
+  "error": "エラー",
   "join": "参加",
   "share": "共有",
   "plugnmeet-server-client-version": "サーバー: v{{server}}; クライアント: v{{client}}",
   "open": "開く",
+  "other": "その他",
+  "pip": "ピクチャー・イン・ピクチャー",
   "please-wait": "お待ちください...",
   "are-you-sure-to-close": "閉じてもよろしいですか？",
   "you-are-about-to-close": "まもなく閉じます。",
@@ -92,7 +95,12 @@
     "whiteboard-new-file-added": "新しいファイルが準備でき、ホワイトボードのファイルリストに追加されました。",
     "private-download-link-ready": "ダウンロードリンクは準備できています。このメッセージはあなただけが見ることができます。<br/>{{link}}",
     "local-audio-stuck-fallback": "マイクに問題が検出されました。電源を切ってから入れ直してみてください。",
-    "local-video-stuck-fallback": "カメラに問題が発生した。電源を切ってから入れ直してみてください。"
+    "local-video-stuck-fallback": "カメラに問題が発生した。電源を切ってから入れ直してみてください。",
+    "encryption-error": "暗号化エラー: {{error}}",
+    "decryption-error": "復号エラー: {{error}}",
+    "error-occurred": "エラーが発生しました",
+    "native-bridge-error": "申請書にはエラーが報告されました: {{error}}",
+    "cannot-lock-admin": "他の管理者ユーザーのロック設定を変更することはできません。"
   },
   "room-metadata": {
     "session-recording": "この会議は録画されています。",
@@ -216,6 +224,7 @@
     "polls-tab": "投票",
     "breakout-room-tab": "ブレイクアウトルーム",
     "me": "（あなた）",
+    "search-participant": "参加者検索",
     "public-chat": "パブリックチャット",
     "private-chat": "プライベートチャット",
     "select-chat-conversation-title": "会話を選択",
@@ -295,6 +304,7 @@
       "stop-screen-sharing": "画面共有を停止",
       "start-screen-sharing": "画面を共有",
       "screen-sharing-locked": "画面共有はロックされています",
+      "native-publisher-unavailable": "ネイティブ出版社が利用不可",
       "lower-hand": "手を下ろす",
       "raise-hand": "手を挙げる",
       "reactions": "反応",
@@ -348,6 +358,9 @@
       "has-raised-hand": "{{user}} が手を挙げました。",
       "you-raised-hand": "あなたは手を挙げました。",
       "muted-all-microphone": "すべてのマイクがミュートされました。",
+      "no-suitable-track-found": "ミュート/アンミュートできる適切なトラックが見つかりませんでした。",
+      "failed-to-mute-unmute-track": "トラックのミュート解除に失敗しました。",
+      "failed-to-load-participant-info": "参加者情報の読み込みに失敗しました。",
       "applied-settings": "新しいロック設定が適用されました。",
       "rtmp-starting": "ライブ配信を開始しています。お待ちください。",
       "rtmp-ending": "ライブ配信を終了しています。お待ちください。",
@@ -445,7 +458,9 @@
     "export-pdf-pages": "ページ",
     "export-pdf-select-all": "すべて選択",
     "export-pdf-clear": "クリア",
-    "export-pdf-exporting": "輸出中..."
+    "export-pdf-exporting": "輸出中...",
+    "share-download-link": "公開チャットでダウンロードリンクを共有してください",
+    "download-link-sent": "ダウンロードリンクは公開チャットに送信済み"
   },
   "waiting-room": {
     "modal-title": "待機室を管理",
@@ -489,7 +504,8 @@
     "end-poll-success": "投票が終了しました。",
     "publish-result": "結果を公開",
     "total": "合計: {{count}}",
-    "not-respondents-total": "未回答: {{count}}"
+    "not-respondents-total": "未回答: {{count}}",
+    "ask-question": "質問をしてください"
   },
   "breakout-room": {
     "modal-title": "ブレイクアウトルームを管理",
@@ -531,6 +547,7 @@
     "join-prompt-mic-locked": "この会議ではマイクが無効になっています。カメラを有効にするか、視聴のみで参加できます。",
     "join-prompt-cam-locked": "この会議ではカメラが無効になっています。マイクを有効にするか、視聴のみで参加できます。",
     "join-prompt-both-locked": "この会議ではマイクとカメラが無効になっています。視聴のみで参加してください。",
+    "join-prompt-hybrid": "準備はできた!会議中にカメラとマイクを管理すればいいですよ。「参加」をクリックして始めましょう。",
     "enable-mic-cam-btn": "マイクとカメラを有効にする",
     "enable-mic-btn": "マイクを有効にする",
     "enable-cam-btn": "カメラを有効にする",
@@ -641,7 +658,8 @@
       "allowed-users": "許可された参加者",
       "users-required": "少なくとも1人の参加者を選択する必要があります。",
       "chat-box-placeholder": "AIアシスタントに質問してください...",
-      "responding-placeholder": "AIアシスタントが応答中です..."
+      "responding-placeholder": "AIアシスタントが応答中です...",
+      "response-timed-out": "AIアシスタントの返信が遅すぎます。もう一度お試しください。"
     },
     "meeting-summarization": {
       "enable": "会議の要約を有効にする",
