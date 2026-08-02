@@ -103,7 +103,7 @@
   "header": {
     "hide-header": "Nascondi intestazione",
     "show-header": "Mostra intestazione",
-    "room-audio-volume": "Audio della riunione",
+    "room-audio-volume": "Volume della riunione",
     "room-screen-share-audio-volume": "Audio della condivisione schermo",
     "menus": {
       "settings": "Impostazioni",
@@ -150,12 +150,12 @@
       "title": "Scorciatoie da tastiera",
       "key-comb": "Combinazione di tasti",
       "actions": "Azioni",
-      "mute-unmute": "Disattiva/Riattiva audio",
+      "mute-unmute": "Disattiva/Riattiva microfono",
       "start-audio": "Attiva microfono",
       "leave-audio": "Disattiva microfono",
       "start-webcam": "Attiva videocamera",
       "leave-webcam": "Disattiva videocamera",
-      "show-hide-user-list": "Mostra/Nascondi elenco partecipanti",
+      "show-hide-user-list": "Mostra/Nascondi lista partecipanti",
       "show-hide-chat": "Mostra/Nascondi chat",
       "show-hide-lock-settings": "Mostra/Nascondi impostazioni di blocco",
       "show-hide-settings": "Mostra/Nascondi impostazioni",
