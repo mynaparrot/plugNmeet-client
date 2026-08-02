@@ -100,7 +100,7 @@
     "decryption-error": "خطأ في فك التشفير: {{error}}",
     "error-occurred": "حدث خطأ",
     "native-bridge-error": "أبلغ التطبيق عن خطأ: {{error}}",
-    "cannot-lock-admin": "You can't change lock settings for other admin users."
+    "cannot-lock-admin": "لا يمكنك تغيير إعدادات القفل لمستخدمي المسؤولين الآخرين."
   },
   "room-metadata": {
     "session-recording": "يتم تسجيل هذا الاجتماع.",
@@ -224,7 +224,7 @@
     "polls-tab": "الاستطلاعات",
     "breakout-room-tab": "الغرف الجانبية",
     "me": "(أنا)",
-    "search-participant": "Search for Participant",
+    "search-participant": "ابحث عن مشارك",
     "public-chat": "دردشة عامة",
     "private-chat": "دردشة خاصة",
     "select-chat-conversation-title": "اختر محادثة",
@@ -304,7 +304,7 @@
       "stop-screen-sharing": "إيقاف مشاركة الشاشة",
       "start-screen-sharing": "مشاركة الشاشة",
       "screen-sharing-locked": "مشاركة الشاشة مقفلة",
-      "native-publisher-unavailable": "Native publisher unavailable",
+      "native-publisher-unavailable": "الناشر الأصلي غير متوفر",
       "lower-hand": "خفض اليد",
       "raise-hand": "رفع اليد",
       "reactions": "ردود الفعل",
@@ -358,9 +358,9 @@
       "has-raised-hand": "{{user}} رفع يده.",
       "you-raised-hand": "لقد رفعت يدك.",
       "muted-all-microphone": "تم كتم صوت جميع الميكروفونات.",
-      "no-suitable-track-found": "No suitable track found to mute/unmute.",
-      "failed-to-mute-unmute-track": "Failed to mute/unmute track.",
-      "failed-to-load-participant-info": "Failed to load participant info.",
+      "no-suitable-track-found": "لم يتم العثور على مسار مناسب لكتم الصوت أو إلغاء الكتم.",
+      "failed-to-mute-unmute-track": "فشل في كتم أو إلغاء كتم المسار.",
+      "failed-to-load-participant-info": "فشل في تحميل معلومات المشاركين.",
       "applied-settings": "تم تطبيق إعدادات القفل الجديدة.",
       "rtmp-starting": "البث المباشر سيبدأ. يرجى الانتظار.",
       "rtmp-ending": "البث المباشر سينتهي. يرجى الانتظار.",
@@ -459,8 +459,8 @@
     "export-pdf-select-all": "اختر الجميع",
     "export-pdf-clear": "واضح",
     "export-pdf-exporting": "تصدير...",
-    "share-download-link": "Share download link in public chat",
-    "download-link-sent": "Download link sent to public chat"
+    "share-download-link": "شارك رابط التحميل في الدردشة العامة",
+    "download-link-sent": "تحميل الرابط الذي أرسل إلى الدردشة العامة"
   },
   "waiting-room": {
     "modal-title": "إدارة غرفة الانتظار",
@@ -505,7 +505,7 @@
     "publish-result": "نشر النتائج",
     "total": "الإجمالي: {{count}}",
     "not-respondents-total": "لم يجب: {{count}}",
-    "ask-question": "Ask a question"
+    "ask-question": "اطرح سؤالا"
   },
   "breakout-room": {
     "modal-title": "إدارة الغرف الجانبية",
@@ -547,7 +547,7 @@
     "join-prompt-mic-locked": "الميكروفون معطل لهذا الاجتماع. يمكنك تمكين الكاميرا أو الانضمام كمستمع.",
     "join-prompt-cam-locked": "الكاميرا معطلة لهذا الاجتماع. يمكنك تمكين الميكروفون أو الانضمام كمستمع.",
     "join-prompt-both-locked": "الميكروفون والكاميرا معطلان لهذا الاجتماع. يرجى الانضمام كمستمع.",
-    "join-prompt-hybrid": "You're all set! You can manage your camera and microphone once you're in the meeting. Click 'Join' to get started.",
+    "join-prompt-hybrid": "أنت جاهز! يمكنك إدارة كاميرتك وميكروفونك بمجرد دخولك الاجتماع. انقر على 'انضمام' للبدء.",
     "enable-mic-cam-btn": "تمكين الميكروفون والكاميرا",
     "enable-mic-btn": "تمكين الميكروفون",
     "enable-cam-btn": "تمكين الكاميرا",
@@ -659,7 +659,7 @@
       "users-required": "يجب اختيار مشارك واحد على الأقل.",
       "chat-box-placeholder": "اطرح سؤالاً على مساعد الذكاء الاصطناعي...",
       "responding-placeholder": "مساعد الذكاء الاصطناعي يجيب...",
-      "response-timed-out": "The AI assistant is taking too long to respond. Please try again."
+      "response-timed-out": "مساعد الذكاء الاصطناعي يستغرق وقتا طويلا للرد. يرجى المحاولة مرة أخرى."
     },
     "meeting-summarization": {
       "enable": "تمكين ملخص الاجتماع",
