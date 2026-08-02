@@ -5,10 +5,13 @@
   "cancel": "Érvénytelenít",
   "yes": "Igen",
   "no": "Nem",
+  "error": "Hiba",
   "join": "Csatlakozik",
   "share": "Részvény",
   "plugnmeet-server-client-version": "Szerver: v{{server}}; Ügyfél: v{{client}}",
   "open": "Nyitott",
+  "other": "Egyéb",
+  "pip": "Kép a képben",
   "please-wait": "Várj, kérlek...",
   "are-you-sure-to-close": "Biztos benne, hogy be akar zárni?",
   "you-are-about-to-close": "Hamarosan bezár",
@@ -92,7 +95,12 @@
     "whiteboard-new-file-added": "Az új fájl készen áll, és felkerült a fehértábla fájllistára.",
     "private-download-link-ready": "A letöltési linked készen áll. Csak te láthatod ezt az üzenetet.<br/>{{link}}",
     "local-audio-stuck-fallback": "Problémát észleltünk a mikrofonoddal. Próbáld ki és újra bekapcsolni.",
-    "local-video-stuck-fallback": "Problémát észleltünk a kamerájával. Próbáld ki és újra bekapcsolni."
+    "local-video-stuck-fallback": "Problémát észleltünk a kamerájával. Próbáld ki és újra bekapcsolni.",
+    "encryption-error": "Titkosítási hiba: {{error}}",
+    "decryption-error": "Fejtési hiba: {{error}}",
+    "error-occurred": "Hiba történt",
+    "native-bridge-error": "A kérelem hibát jelentett: {{error}}",
+    "cannot-lock-admin": "Nem lehet más adminisztrátor felhasználók számára lock beállításokat változtatni."
   },
   "room-metadata": {
     "session-recording": "Ezt a találkozót rögzítik.",
@@ -216,6 +224,7 @@
     "polls-tab": "Szavazások",
     "breakout-room-tab": "Szekciószobák",
     "me": "(én)",
+    "search-participant": "Résztvevő keresése",
     "public-chat": "Nyilvános csevegés",
     "private-chat": "Privát csevegés",
     "select-chat-conversation-title": "Beszélgetés kiválasztása",
@@ -295,6 +304,7 @@
       "stop-screen-sharing": "Képernyőmegosztás leállítása",
       "start-screen-sharing": "Képernyő megosztása",
       "screen-sharing-locked": "Képernyőmegosztás zárolva",
+      "native-publisher-unavailable": "Native kiadó nem elérhető",
       "lower-hand": "Alsó kéz",
       "raise-hand": "Kéz felemelése",
       "reactions": "Reakciók",
@@ -348,6 +358,9 @@
       "has-raised-hand": "{{user}} felemelte a kezét.",
       "you-raised-hand": "Felemelted a kezed.",
       "muted-all-microphone": "Minden mikrofon el van némítva.",
+      "no-suitable-track-found": "Nem találtak megfelelő sávot a némításra vagy visszakapcsolásra.",
+      "failed-to-mute-unmute-track": "Nem sikerült némítani vagy visszavenni a tracket.",
+      "failed-to-load-participant-info": "Nem sikerült betölteni a résztvevői adatokat.",
       "applied-settings": "Új zárolási beállításokat alkalmaztunk.",
       "rtmp-starting": "Elindul az élő közvetítés. Várj, kérlek.",
       "rtmp-ending": "Az élő közvetítés véget ér. Várj, kérlek.",
@@ -445,7 +458,9 @@
     "export-pdf-pages": "Oldalak",
     "export-pdf-select-all": "Válassz ki mindenkit",
     "export-pdf-clear": "Tiszta",
-    "export-pdf-exporting": "Export..."
+    "export-pdf-exporting": "Export...",
+    "share-download-link": "Megosztás letöltési linkje nyilvános csevegésben",
+    "download-link-sent": "Letöltési link, amelyet nyilvános csevegésbe küldtek"
   },
   "waiting-room": {
     "modal-title": "Váróterem kezelése",
@@ -489,7 +504,8 @@
     "end-poll-success": "A szavazás véget ért.",
     "publish-result": "Eredmények közzététele",
     "total": "Teljes: {{count}}",
-    "not-respondents-total": "Nem válaszolt: {{count}}"
+    "not-respondents-total": "Nem válaszolt: {{count}}",
+    "ask-question": "Tegyél fel egy kérdést"
   },
   "breakout-room": {
     "modal-title": "Szekciószobák kezelése",
@@ -531,6 +547,7 @@
     "join-prompt-mic-locked": "A mikrofon le van tiltva erre az értekezletre. Engedélyezheti a kamerát, vagy csatlakozhat hallgatóként.",
     "join-prompt-cam-locked": "A kamera le van tiltva erre az értekezletre. Engedélyezheti a mikrofont, vagy csatlakozhat hallgatóként.",
     "join-prompt-both-locked": "A mikrofon és a kamera le van tiltva erre az értekezletre. Kérjük, csatlakozzon hallgatóként.",
+    "join-prompt-hybrid": "Minden készen áll! A kamerádat és a mikrofonodat is kezelheted, ha már a megbeszélésen vagy. Kattints a 'Csatlakozás' gombra a kezdéshez.",
     "enable-mic-cam-btn": "Mikrofon és kamera engedélyezése",
     "enable-mic-btn": "Mikrofon engedélyezése",
     "enable-cam-btn": "Kamera engedélyezése",
@@ -641,7 +658,8 @@
       "allowed-users": "Engedélyezett résztvevők",
       "users-required": "Legalább egy résztvevőt ki kell választani.",
       "chat-box-placeholder": "Kérdezz egy kérdést az MI asszisztensnek...",
-      "responding-placeholder": "Az MI asszisztens válaszol..."
+      "responding-placeholder": "Az MI asszisztens válaszol...",
+      "response-timed-out": "Az MI asszisztens túl sokáig tart a válaszadással. Kérlek, próbáld meg újra."
     },
     "meeting-summarization": {
       "enable": "Engedélyezze a találkozók összefoglalását",
