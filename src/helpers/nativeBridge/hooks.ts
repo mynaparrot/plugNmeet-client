@@ -31,7 +31,6 @@ export const useHybridLockForwarder = (): void => {
     useMemo(() => {
       const defaultLockSettings =
         store.getState().session.currentRoom?.metadata?.defaultLockSettings;
-      console.log(defaultLockSettings);
       return {
         defaultLockMic: !!defaultLockSettings?.lockMicrophone,
         defaultLockWebcam: !!defaultLockSettings?.lockWebcam,
