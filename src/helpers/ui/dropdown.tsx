@@ -85,7 +85,7 @@ const Dropdown = ({
                   disabled ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
-                <div className="flex flex-wrap truncate pe-5">
+                <div className="flex truncate pe-5">
                   {displayValue || (
                     <span className="text-Gray-500">{/* Placeholder */}</span>
                   )}
