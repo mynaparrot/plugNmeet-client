@@ -100,12 +100,12 @@ const VolumeControl = () => {
           >
             <MenuItems
               unmount={false}
-              className="volume-popup-wrapper origin-top-right z-10 absolute ltr:right-0 top-6 rtl:left-0 mt-2 w-64 py-5 px-2 rounded-md shadow-lg bg-white dark:bg-dark-primary border-Gray-100 dark:border-Gray-700 border"
+              className="volume-popup-wrapper ltr:origin-top-right rtl:origin-top-left z-10 absolute end-0 top-6 mt-2 w-64 py-5 px-2 rounded-md shadow-lg bg-white dark:bg-dark-primary border-Gray-100 dark:border-Gray-700 border"
             >
               <p className="text-sm text-Gray-950 dark:text-white">
                 {t('header.room-audio-volume')}
               </p>
-              <section className="flex items-center pl-3">
+              <section className="flex items-center ps-3">
                 <RangeSlider
                   min={0}
                   max={100}
@@ -114,7 +114,7 @@ const VolumeControl = () => {
                   thumbSize={20}
                   trackHeight={8}
                 />
-                <p className="w-10 text-center text-sm text-Gray-950 dark:text-white ml-3">
+                <p className="w-10 text-center text-sm text-Gray-950 dark:text-white ms-3">
                   {Math.round(localRoomVolume * 100)}
                 </p>
                 <button className="w-5 h-5">
@@ -128,7 +128,7 @@ const VolumeControl = () => {
               <p className="text-sm mt-2 text-Gray-950 dark:text-white">
                 {t('header.room-screen-share-audio-volume')}
               </p>
-              <section className="flex items-center pl-3">
+              <section className="flex items-center ps-3">
                 <RangeSlider
                   min={0}
                   max={100}
@@ -137,7 +137,7 @@ const VolumeControl = () => {
                   thumbSize={20}
                   trackHeight={8}
                 />
-                <p className="w-10 text-center text-sm text-Gray-950 dark:text-white ml-3">
+                <p className="w-10 text-center text-sm text-Gray-950 dark:text-white ms-3">
                   {Math.round(localScreenShareVolume * 100)}
                 </p>
                 <button className="w-5 h-5">

@@ -28,7 +28,7 @@ const RoomItem = ({ room, setMessage }: RoomItemProps) => {
       {({ open }) => (
         <div className="bg-Gray-50 dark:bg-dark-primary rounded-xl border border-gray-300 dark:border-gray-800 overflow-hidden w-full">
           <DisclosureButton
-            className={`flex items-center justify-between gap-3 w-full pl-[14px] pr-2 bg-white dark:bg-dark-secondary3 h-9 rounded-xl shadow-button-shadow dark:shadow-none transition-all duration-300 cursor-pointer ${
+            className={`flex items-center justify-between gap-3 w-full ps-[14px] pe-2 bg-white dark:bg-dark-secondary3 h-9 rounded-xl shadow-button-shadow dark:shadow-none transition-all duration-300 cursor-pointer ${
               open ? 'border-b border-gray-300 dark:border-gray-800' : ''
             }`}
           >

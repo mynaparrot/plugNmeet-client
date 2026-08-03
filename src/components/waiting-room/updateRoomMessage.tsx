@@ -99,6 +99,7 @@ const UpdateRoomMessage = () => {
         {t('waiting-room.update-waiting-message')}
       </p>
       <textarea
+        dir="auto"
         value={message}
         onChange={(e) => setMessage(e.currentTarget.value)}
         disabled={isUpdating}

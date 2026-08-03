@@ -102,7 +102,7 @@ const MicMenuItems = ({
   return (
     <MenuItems
       static
-      className="menu origin-top-right z-10 absolute ltr:-left-8 md:ltr:left-0 rtl:right-0 bottom-12 border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary shadow-lg rounded-2xl overflow-hidden p-2 w-max"
+      className="menu ltr:origin-top-right rtl:origin-top-left z-10 absolute ltr:-left-8 md:ltr:left-0 rtl:right-0 bottom-12 border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary shadow-lg rounded-2xl overflow-hidden p-2 w-max"
     >
       {!isHybrid && (
         <>
@@ -120,13 +120,13 @@ const MicMenuItems = ({
                   } h-8 w-full flex items-center justify-between text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2`}
                   onClick={() => handleDeviceChange(device.id)}
                 >
-                  {device.label}
+                  <span dir="ltr">{device.label}</span>
                   {selectedAudioDevice === device.id ? <CheckMarkIcon /> : ''}
                 </p>
               )}
             </MenuItem>
           ))}
-          <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ml-3 my-1"></div>
+          <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ms-3 my-1"></div>
         </>
       )}
       <div className="" role="none">

@@ -130,7 +130,7 @@ const SubtitleHistoryPanel = ({
 
   return (
     <PopoverPanel
-      className="SpeechHistory absolute left-5 z-10 bottom-28 w-full max-w-[330px] bg-Gray-950/85 h-ful rounded-lg border border-Gray-50 dark:border-Gray-800"
+      className="SpeechHistory absolute start-5 z-10 bottom-28 w-full max-w-[330px] bg-Gray-950/85 h-ful rounded-lg border border-Gray-50 dark:border-Gray-800"
       static={showPopover}
     >
       <h2 className="relative text-sm font-medium leading-6 text-white px-4 flex items-center h-10 justify-between border-b border-white/15">
@@ -172,7 +172,7 @@ const SubtitleHistoryPanel = ({
                 <span>{t.from}</span>
                 <span className="font-normal">{t.time}</span>
               </p>
-              <p className="message-content w-full p-2 border border-white/10 bg-white/10 rounded-[15px] rounded-tl-none">
+              <p className="message-content w-full p-2 border border-white/10 bg-white/10 rounded-[15px] rounded-ss-none">
                 {t.text}
               </p>
             </div>

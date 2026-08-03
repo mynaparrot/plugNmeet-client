@@ -31,10 +31,10 @@ const RaisedHand = ({ userId }: RaisedHandProps) => {
   }
 
   return (
-    <div className="raised-hand absolute bottom-0 right-4 cursor-pointer w-7 h-7 rounded-full bg-Blue2-500 flex items-center justify-center">
+    <div className="raised-hand absolute bottom-0 end-4 cursor-pointer w-7 h-7 rounded-full bg-Blue2-500 flex items-center justify-center">
       <HandsIconSVG classes="h-4 w-auto" />
       {showNumber && (
-        <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 px-1 rounded-full bg-white text-Blue2-500 text-[10px] leading-4 font-semibold text-center">
+        <span className="absolute -top-1.5 -end-1.5 min-w-[16px] h-4 px-1 rounded-full bg-white text-Blue2-500 text-[10px] leading-4 font-semibold text-center">
           {position}
         </span>
       )}

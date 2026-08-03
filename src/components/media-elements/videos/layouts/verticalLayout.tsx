@@ -154,8 +154,8 @@ const VerticalLayout = ({
 
   const wrapperClasses = `vertical-webcams-wrapper group absolute z-20 transition-all duration-300 bg-Gray-25 dark:bg-dark-primary border-Gray-200 dark:border-Gray-800 ${
     shouldBeAtBottom
-      ? 'vertical-bottom-layout bottom-0 left-0 right-0 h-[110px] border-t w-full flex flex-row justify-center items-center px-2 py-1.5 not-extended'
-      : `p-2 top-0 right-0 h-full border-l flex flex-col justify-center ${
+      ? 'vertical-bottom-layout bottom-0 start-0 end-0 h-[110px] border-t w-full flex flex-row justify-center items-center px-2 py-1.5 not-extended'
+      : `p-2 top-0 end-0 h-full border-s flex flex-col justify-center ${
           isEnabledExtendedVerticalCamView
             ? 'xl:w-[416px] extended-view-wrap'
             : `${rightSideWidth} not-extended`
@@ -194,7 +194,7 @@ const VerticalLayout = ({
         {isDocumentPipSupported && (
           <button
             type="button"
-            className="cam-pip cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center absolute top-2 right-2 z-50 opacity-0 group-hover:opacity-100 transition-all duration-300"
+            className="cam-pip cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center absolute top-2 end-2 z-50 opacity-0 group-hover:opacity-100 transition-all duration-300"
             onPointerDown={(event) => {
               event.stopPropagation();
             }}
@@ -230,10 +230,10 @@ const VerticalLayout = ({
           <button
             type="button"
             onClick={toggleExtendedVerticalCamView}
-            className="extend-button cursor-pointer absolute top-1/2 -translate-y-1/2 left-0 w-4 h-6 rounded-l-full bg-DarkBlue hidden xl:flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:-left-4"
+            className="extend-button cursor-pointer absolute top-1/2 -translate-y-1/2 start-0 w-4 h-6 rounded-s-full bg-DarkBlue hidden xl:flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:-start-4"
           >
             <span
-              className={`${
+              className={`rtl:-scale-x-100 ${
                 isEnabledExtendedVerticalCamView ? '' : 'rotate-180'
               }`}
             >

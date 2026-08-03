@@ -1,5 +1,5 @@
 import React, { ReactElement, useMemo } from 'react';
-import { Menu, MenuButton, MenuItems, Transition } from '@headlessui/react';
+import { Menu, MenuButton, MenuItems } from '@headlessui/react';
 
 import MicMenuItem from './menu-items/mic';
 import WebcamMenuItem from './menu-items/webcam';
@@ -85,30 +85,16 @@ const MenuIcon = ({
   return (
     <IconWrapper>
       <Menu as="div" className="flex items-center">
-        {({ open }) => (
-          <>
-            <MenuButton className="relative shrink-0 cursor-pointer dark:text-white">
-              <ParticipantsMenuIconSVG />
-            </MenuButton>
-            <Transition
-              show={open}
-              enter="transition duration-100 ease-out"
-              enterFrom="transform scale-95 opacity-0"
-              enterTo="transform scale-100 opacity-100 z-10"
-              leave="transition duration-75 ease-out"
-              leaveFrom="transform scale-100 opacity-100"
-              leaveTo="transform scale-95 opacity-0"
-            >
-              <MenuItems
-                static
-                anchor="bottom end"
-                className="z-10 w-60 border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-secondary3 shadow-lg rounded-2xl p-2 max-h-[80vh] overflow-y-auto [--anchor-gap:8px]"
-              >
-                {menuItems}
-              </MenuItems>
-            </Transition>
-          </>
-        )}
+        <MenuButton className="relative shrink-0 cursor-pointer dark:text-white">
+          <ParticipantsMenuIconSVG />
+        </MenuButton>
+        <MenuItems
+          anchor="bottom end"
+          transition
+          className="z-10 w-60 border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-secondary3 shadow-lg rounded-2xl p-2 max-h-[80vh] overflow-y-auto [--anchor-gap:8px] transition ease-out data-closed:scale-95 data-closed:opacity-0 data-enter:duration-100 data-leave:duration-75"
+        >
+          {menuItems}
+        </MenuItems>
       </Menu>
     </IconWrapper>
   );

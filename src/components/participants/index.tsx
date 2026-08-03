@@ -92,9 +92,9 @@ const ParticipantsComponent = () => {
   );
 
   return (
-    <div className="side-panel-bg-color relative z-10 w-full bg-Gray-25 dark:bg-dark-primary border-l border-Gray-200 dark:border-Gray-800 h-full">
+    <div className="side-panel-bg-color relative z-10 w-full bg-Gray-25 dark:bg-dark-primary border-s border-Gray-200 dark:border-Gray-800 h-full">
       <div
-        className="inline-block absolute z-50 right-3 3xl:right-5 top-[10px] text-Gray-600 dark:text-white cursor-pointer"
+        className="inline-block absolute z-50 end-3 3xl:end-5 top-[10px] text-Gray-600 dark:text-white cursor-pointer"
         onClick={closePanel}
       >
         <CloseIconSVG />
@@ -109,15 +109,16 @@ const ParticipantsComponent = () => {
         </div>
         <div className="search-participants-wrap h-[55px] flex items-center px-3 3xl:px-5 border-y border-Gray-200 dark:border-Gray-800">
           <div className="w-full relative">
-            <div className="search-icon text-Gray-600 dark:text-white absolute top-1/2 -translate-y-1/2 left-3 3xl:left-4 pointer-events-none">
+            <div className="search-icon text-Gray-600 dark:text-white absolute top-1/2 -translate-y-1/2 start-3 3xl:start-4 pointer-events-none">
               <SearchIconSVG />
             </div>
             <input
+              dir="auto"
               type="text"
               name="search-participants"
               id="search-participants"
               placeholder={t('left-panel.search-participant')}
-              className="text-Gray-950 dark:text-white placeholder:text-Gray-600 dark:placeholder:text-white h-9 rounded-lg 3xl:rounded-[15px] bg-white dark:bg-dark-primary border border-Gray-200 dark:border-Gray-800 w-full pl-8 3xl:pl-10 outline-hidden text-xs 3xl:text-sm"
+              className="text-Gray-950 dark:text-white placeholder:text-Gray-600 dark:placeholder:text-white h-9 rounded-lg 3xl:rounded-[15px] bg-white dark:bg-dark-primary border border-Gray-200 dark:border-Gray-800 w-full ps-8 3xl:ps-10 outline-hidden text-xs 3xl:text-sm"
               onChange={(e) => setSearchParticipant(e.target.value)}
             />
           </div>

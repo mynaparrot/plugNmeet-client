@@ -14,6 +14,7 @@ export const SystemMessage = memo(({ message }: { message: string }) => {
     <div className="content w-full system flex items-center gap-2 text-center my-2">
       <div className="flex-1 border-t border-dashed border-Gray-300 dark:border-Gray-800" />
       <p
+        dir="auto"
         className="message-content text-xs text-Gray-600 dark:text-dark-text px-2"
         dangerouslySetInnerHTML={{ __html: cleanHtmlForChat(message) }}
       />
@@ -27,7 +28,7 @@ export const MyMessage = memo(
   ({ message, sentAt }: { message: string; sentAt: string }) => {
     const { t } = useTranslation();
     return (
-      <div className="content me w-[calc(100%-36px)] 3xl:w-[calc(100%-48px)] ml-auto">
+      <div className="content me w-[calc(100%-36px)] 3xl:w-[calc(100%-48px)] ms-auto">
         <div className="name min-h-5 flex items-center text-xs 3xl:text-sm text-Gray-800 dark:text-white font-medium pb-1.5 capitalize justify-between">
           <p>{t('right-panel.you')}</p>
           <p className="time text-xs text-Gray-600 dark:text-dark-text">
@@ -35,7 +36,8 @@ export const MyMessage = memo(
           </p>
         </div>
         <p
-          className="message-content py-2 px-2.5 border border-Gray-200 dark:border-Gray-700 rounded-lg overflow-hidden rounded-br-none text-sm text-Gray-950 dark:text-white break-words"
+          dir="auto"
+          className="message-content py-2 px-2.5 border border-Gray-200 dark:border-Gray-700 rounded-lg overflow-hidden rounded-ee-none text-sm text-Gray-950 dark:text-white break-words"
           dangerouslySetInnerHTML={{ __html: cleanHtmlForChat(message) }}
         />
       </div>
@@ -66,7 +68,8 @@ export const OtherUserMessage = memo(({ body }: { body: ChatMessage }) => {
           </p>
         </div>
         <p
-          className="message-content py-2 px-2.5 border border-Gray-200 dark:border-Gray-700 rounded-lg overflow-hidden text-sm text-Gray-950 dark:text-white break-words rounded-tl-none bg-Gray-50 dark:bg-Gray-800"
+          dir="auto"
+          className="message-content py-2 px-2.5 border border-Gray-200 dark:border-Gray-700 rounded-lg overflow-hidden text-sm text-Gray-950 dark:text-white break-words rounded-ss-none bg-Gray-50 dark:bg-Gray-800"
           dangerouslySetInnerHTML={{ __html: cleanHtmlForChat(body.message) }}
         />
       </div>
@@ -101,13 +104,14 @@ export const AIMessage = memo(
               {formatDate(sentAt)}
             </p>
           </div>
-          <div className="message-content py-2 px-2.5 border border-Gray-200 dark:border-Gray-700 rounded-lg overflow-hidden text-sm text-Gray-950 dark:text-white break-words rounded-tl-none bg-Gray-50 dark:bg-Gray-800">
+          <div className="message-content py-2 px-2.5 border border-Gray-200 dark:border-Gray-700 rounded-lg overflow-hidden text-sm text-Gray-950 dark:text-white break-words rounded-ss-none bg-Gray-50 dark:bg-Gray-800">
             <div
+              dir="auto"
               className="break-words"
               dangerouslySetInnerHTML={{ __html: cleanHtmlForChat(message) }}
             />
             {isStreaming && (
-              <span className="blinking-cursor inline-block h-4 w-0.5 ml-1 bg-gray-900" />
+              <span className="blinking-cursor inline-block h-4 w-0.5 ms-1 bg-gray-900" />
             )}
           </div>
         </div>

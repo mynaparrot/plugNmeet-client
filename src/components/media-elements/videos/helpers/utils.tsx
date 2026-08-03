@@ -272,7 +272,7 @@ export const formatNextPreButton = (
   const shortNameElms = participantsToShow.map((p) => (
     <span
       key={getParticipantKey(p, 'short')}
-      className="inline-flex items-center justify-center order-1 pr-1 bg-[#003C59] rounded-[13px] border-2 border-Gray-900 w-8 md:w-10 h-8 md:h-10 -ml-2 overflow-hidden"
+      className="inline-flex items-center justify-center order-1 pe-1 bg-[#003C59] rounded-[13px] border-2 border-Gray-900 w-8 md:w-10 h-8 md:h-10 -ms-2 overflow-hidden"
     >
       {sliceFirstLetterOfText(p.props.participant.name)}
     </span>
@@ -281,7 +281,7 @@ export const formatNextPreButton = (
   const fullNameElms = participantsToShow.map((p, index) => (
     <span
       key={getParticipantKey(p, 'full')}
-      className="inline-block order-1 pr-1 capitalize"
+      className="inline-block order-1 pe-1 capitalize"
     >
       {p.props.participant.name}
       {index < participantsToShow.length - 1 ? ', ' : ''}
@@ -292,7 +292,7 @@ export const formatNextPreButton = (
     shortNameElms.push(
       <span
         key="more-users-short"
-        className="inline-flex items-center justify-center order-2 pr-1 bg-[rgba(0,102,153,1)] rounded-[13px] border-2 border-Gray-900 w-8 md:w-10 h-8 md:h-10 -ml-2 overflow-hidden"
+        className="inline-flex items-center justify-center order-2 pe-1 bg-[rgba(0,102,153,1)] rounded-[13px] border-2 border-Gray-900 w-8 md:w-10 h-8 md:h-10 -ms-2 overflow-hidden"
       >
         {remainingCount}+
       </span>,
@@ -309,7 +309,7 @@ export const formatNextPreButton = (
       <div className="middle-area flex text-xs md:text-base font-medium">
         {shortNameElms}
       </div>
-      <div className="bottom-area flex flex-wrap text-sm font-medium absolute bottom-4 left-4">
+      <div className="bottom-area flex flex-wrap text-sm font-medium absolute bottom-4 start-4">
         {fullNameElms}
       </div>
     </>

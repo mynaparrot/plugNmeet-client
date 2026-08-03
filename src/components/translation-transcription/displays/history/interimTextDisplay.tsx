@@ -31,7 +31,7 @@ const InterimTextDisplay = ({ scrollToBottom }: IInterimTextDisplayProps) => {
           <span>{interimText.from}</span>
           <span className="font-normal">{interimText.time}</span>
         </p>
-        <p className="message-content w-full p-2 border border-white/10 bg-white/10 rounded-[15px] rounded-tl-none">
+        <p className="message-content w-full p-2 border border-white/10 bg-white/10 rounded-[15px] rounded-ss-none">
           {interimText.text}
         </p>
       </div>

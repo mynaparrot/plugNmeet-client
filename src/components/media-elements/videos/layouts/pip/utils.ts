@@ -1,6 +1,7 @@
 import { ReactElement } from 'react';
 import { Track, VideoTrack } from 'livekit-client';
 import { VideoParticipantProps } from '../../videoParticipant';
+import i18n from '../../../../../helpers/i18n';
 
 export const MAX_NUM_WEBCAMS_PIP = 5;
 export const PIP_WINDOW_HEIGHT = 600;
@@ -51,6 +52,8 @@ export const getPipItems = (
 };
 
 export const injectPipStyles = (win: Window) => {
+  win.document.documentElement.dir = i18n.dir();
+  win.document.documentElement.lang = i18n.language;
   win.document.documentElement.style.height = '100%';
   win.document.body.style.height = '100%';
   win.document.body.style.margin = '0';

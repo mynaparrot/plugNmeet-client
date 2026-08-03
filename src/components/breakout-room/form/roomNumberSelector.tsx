@@ -25,7 +25,7 @@ const RoomNumberSelector = ({
   }));
 
   return (
-    <div className="numbers-of-room w-full sm:w-56 mb-2 sm:ltr:mr-10 sm:rtl:ml-10">
+    <div className="numbers-of-room w-full sm:w-56 mb-2 sm:me-10">
       <Dropdown
         id="breakout-room-number"
         label={t('breakout-room.num-rooms')}

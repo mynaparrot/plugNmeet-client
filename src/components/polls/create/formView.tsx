@@ -91,6 +91,7 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
           {t('polls.enter-question')}
         </label>
         <input
+          dir="auto"
           type="text"
           name="question"
           value={question}
@@ -103,7 +104,7 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
       </div>
       <OptionsView options={options} setOptions={setOptions} />
       {isLoading && (
-        <div className="absolute text-center top-1/2 -translate-y-1/2 z-999 left-0 right-0 m-auto">
+        <div className="absolute text-center top-1/2 -translate-y-1/2 z-999 start-0 end-0 m-auto">
           <LoadingIcon
             className={'inline w-10 h-10 me-3 text-Gray-200 animate-spin'}
             fillColor={'#004D90'}

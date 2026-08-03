@@ -191,7 +191,7 @@ const FromElems = ({
         </div>
       </div>
       <div className="row flex flex-wrap justify-between items-end">
-        <div className="room-welcome-messages w-full sm:max-w-122 mb-4 sm:ltr:mr-10 sm:rtl:ml-10">
+        <div className="room-welcome-messages w-full sm:max-w-122 mb-4 sm:me-10">
           <label
             className="block text-sm font-medium text-Gray-800 dark:text-white mb-1"
             htmlFor="breakout-room-welcome"
@@ -199,15 +199,16 @@ const FromElems = ({
             {t('breakout-room.welcome-msg')}
           </label>
           <textarea
+            dir="auto"
             className="h-20 rounded-[15px] text-Gray-800 dark:text-white border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-transparent shadow-input w-full px-3 py-2 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
             id="breakout-room-welcome"
             onChange={(e) => setWelcomeMsg(e.currentTarget.value)}
             value={welcomeMsg}
           ></textarea>
         </div>
-        <div className="random-room-select mb-4 rtl:ml-6">
+        <div className="random-room-select mb-4">
           <button
-            className="primary-button h-9 w-auto ml-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+            className="primary-button h-9 w-auto ms-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
             onClick={randomSelection}
           >
             {t('breakout-room.random-selection')}

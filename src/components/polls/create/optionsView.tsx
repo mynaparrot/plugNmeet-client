@@ -62,6 +62,7 @@ const OptionsView = ({ options, setOptions }: OptionsProps) => {
             <div className="form-inline" key={elm.id}>
               <div className="input-wrapper w-full flex items-center gap-2">
                 <input
+                  dir="auto"
                   type="text"
                   required={true}
                   name={`opt_${elm.id}`}

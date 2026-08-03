@@ -47,7 +47,7 @@ const Dropdown = ({
           .map((text) => (
             <span
               key={text}
-              className="inline-block bg-Gray-100 dark:bg-dark-secondary2 text-Gray-800 dark:text-white text-xs font-medium mr-2 mb-1 px-2.5 py-1 rounded-full"
+              className="inline-block bg-Gray-100 dark:bg-dark-secondary2 text-Gray-800 dark:text-white text-xs font-medium me-2 mb-1 px-2.5 py-1 rounded-full"
             >
               {text}
             </span>
@@ -65,7 +65,7 @@ const Dropdown = ({
           {label && label !== '' && (
             <Label
               htmlFor={id}
-              className="pb-2 sm:pb-0 sm:pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right dark:text-white"
+              className="pb-2 sm:pb-0 sm:pe-4 flex-1 text-sm text-Gray-950 text-start dark:text-white"
             >
               {label}
             </Label>
@@ -77,20 +77,20 @@ const Dropdown = ({
             multiple={multiple}
           >
             <div
-              className={`relative w-full ${label ? 'max-w-full sm:max-w-[250px]' : ''}`}
+              className={`relative w-full ${label ? 'max-w-full sm:max-w-[300px]' : ''}`}
             >
               <ListboxButton
                 id={id}
-                className={`min-h-10 full cursor-pointer rounded-[8px] border border-Gray-300 dark:border-Gray-800 bg-white shadow-input w-full px-3 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm dark:bg-transparent dark:text-white ${
+                className={`min-h-10 full cursor-pointer rounded-[8px] border border-Gray-300 dark:border-Gray-800 bg-white shadow-input w-full px-3 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-start text-sm dark:bg-transparent dark:text-white ${
                   disabled ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
-                <div className="flex flex-wrap">
+                <div className="flex truncate pe-5">
                   {displayValue || (
                     <span className="text-Gray-500">{/* Placeholder */}</span>
                   )}
                 </div>
-                <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+                <span className="pointer-events-none absolute inset-y-0 end-4 flex items-center">
                   <DropdownIconSVG />
                 </span>
               </ListboxButton>
@@ -102,7 +102,7 @@ const Dropdown = ({
               >
                 <ListboxOptions
                   static
-                  className="absolute z-20 mt-1 max-h-60 w-72 ltr:right-0 rtl:left-0 overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdown-menu border border-Gray-100 dark:border-Gray-800 focus:outline-hidden scrollBar scrollBar2 grid gap-0.5 dark:bg-dark-secondary"
+                  className="absolute z-20 mt-1 max-h-60 w-72 end-0 overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdown-menu border border-Gray-100 dark:border-Gray-800 focus:outline-hidden scrollBar scrollBar2 grid gap-0.5 dark:bg-dark-secondary"
                 >
                   {options.map((option) => (
                     <ListboxOption
@@ -122,7 +122,7 @@ const Dropdown = ({
                             {option.text}
                           </span>
                           {selected && (
-                            <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-Blue2-500 dark:text-white">
+                            <span className="absolute inset-y-0 end-0 flex items-center pe-3 text-Blue2-500 dark:text-white">
                               <CheckMarkIcon />
                             </span>
                           )}
@@ -145,7 +145,7 @@ const Dropdown = ({
       {label && label !== '' && (
         <Label
           htmlFor={id}
-          className="w-full text-sm font-medium text-Gray-800 ltr:text-left rtl:text-right mb-2 block dark:text-white"
+          className="w-full text-sm font-medium text-Gray-800 text-start mb-2 block dark:text-white"
         >
           {label}
         </Label>
@@ -159,7 +159,7 @@ const Dropdown = ({
         <div className="relative w-full">
           <ListboxButton
             id={id}
-            className={`min-h-10 full cursor-pointer rounded-[8px] border border-Gray-300 dark:border-Gray-800 bg-white shadow-input w-full px-3 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-left text-sm dark:bg-transparent dark:text-white ${
+            className={`min-h-10 full cursor-pointer rounded-[8px] border border-Gray-300 dark:border-Gray-800 bg-white shadow-input w-full px-3 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-start text-sm dark:bg-transparent dark:text-white ${
               disabled ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
@@ -168,7 +168,7 @@ const Dropdown = ({
                 <span className="text-Gray-500">{/* Placeholder */}</span>
               )}
             </div>
-            <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+            <span className="pointer-events-none absolute inset-y-0 end-4 flex items-center">
               <DropdownIconSVG />
             </span>
           </ListboxButton>
@@ -180,7 +180,7 @@ const Dropdown = ({
           >
             <ListboxOptions
               static
-              className="absolute z-20 mt-1 max-h-60 w-full ltr:right-0 rtl:left-0 overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdown-menu border border-Gray-100 dark:border-Gray-800 focus:outline-hidden scrollBar scrollBar2 grid gap-0.5 dark:bg-dark-secondary"
+              className="absolute z-20 mt-1 max-h-60 w-full end-0 overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdown-menu border border-Gray-100 dark:border-Gray-800 focus:outline-hidden scrollBar scrollBar2 grid gap-0.5 dark:bg-dark-secondary"
             >
               {options.map((option) => (
                 <ListboxOption
@@ -198,7 +198,7 @@ const Dropdown = ({
                     <>
                       <span className={`block truncate`}>{option.text}</span>
                       {selected && (
-                        <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-Blue2-500 dark:text-white">
+                        <span className="absolute inset-y-0 end-0 flex items-center pe-3 text-Blue2-500 dark:text-white">
                           <CheckMarkIcon />
                         </span>
                       )}

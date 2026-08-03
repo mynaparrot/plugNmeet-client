@@ -171,6 +171,7 @@ const BreakoutRoomInvitation = () => {
                     </label>
                     <div className="wrap flex items-center gap-1">
                       <input
+                        dir="auto"
                         type="text"
                         readOnly={true}
                         value={joinLink}
@@ -178,7 +179,7 @@ const BreakoutRoomInvitation = () => {
                       />
                       <button
                         onClick={copyUrl}
-                        className="primary-button h-7 ml-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+                        className="primary-button h-7 ms-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
                       >
                         {copyText}
                       </button>
@@ -188,7 +189,7 @@ const BreakoutRoomInvitation = () => {
 
                 <div className="button-section flex items-center justify-start mt-4">
                   <button
-                    className="primary-button h-7 ml-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="primary-button h-7 ms-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={join}
                     disabled={isLoading}
                   >

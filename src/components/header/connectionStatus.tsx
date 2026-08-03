@@ -117,7 +117,7 @@ const ConnectionStatus = () => {
             afterLeave={() => setIsPolling(false)}
           >
             <MenuItems
-              className="absolute z-10 mt-2 w-72 right-0 rtl:left-0
+              className="absolute z-10 mt-2 w-72 end-0
               rounded-2xl shadow-2xl p-4
               bg-white dark:bg-dark-primary
               border border-gray-200 dark:border-Gray-700"

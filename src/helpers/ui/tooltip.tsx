@@ -13,7 +13,7 @@ const Tooltip = ({
     <div className="relative group inline-flex">
       {children}
       <div
-        className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2
+        className="absolute bottom-full mb-2 start-1/2 ltr:-translate-x-1/2 rtl:translate-x-1/2
         hidden group-hover:block z-50
         w-max max-w-[260px]
         px-3 py-1.5
@@ -24,7 +24,7 @@ const Tooltip = ({
       >
         {text}
 
-        <div className="absolute left-1/2 -translate-x-1/2 top-full w-2 h-2 bg-Gray-50 dark:bg-dark-secondary2 rotate-45 border-r border-b border-gray-200 dark:border-Gray-700" />
+        <div className="absolute start-1/2 ltr:-translate-x-1/2 rtl:translate-x-1/2 top-full w-2 h-2 bg-Gray-50 dark:bg-dark-secondary2 rotate-45 border-r border-b border-gray-200 dark:border-Gray-700" />
       </div>
     </div>
   );

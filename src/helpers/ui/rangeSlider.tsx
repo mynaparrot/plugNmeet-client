@@ -5,6 +5,7 @@ import React, {
   useCallback,
   useMemo,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 import { throttle } from 'es-toolkit';
 
 interface RangeSliderProps {
@@ -30,6 +31,7 @@ const RangeSlider = ({
   emptyColor = 'rgba(225, 237, 250, 1)',
   thumbColor = '#fff',
 }: RangeSliderProps) => {
+  const { i18n } = useTranslation();
   const [internalValue, setInternalValue] = useState<number>(propValue);
   const [isDragging, setIsDragging] = useState(false);
   const sliderRef = useRef<HTMLDivElement>(null);
@@ -43,7 +45,10 @@ const RangeSlider = ({
       if (!sliderRef.current) return;
 
       const rect = sliderRef.current.getBoundingClientRect();
-      let position = (clientX - rect.left) / rect.width;
+      const isRtl = i18n.dir() === 'rtl';
+      let position = isRtl
+        ? (rect.right - clientX) / rect.width
+        : (clientX - rect.left) / rect.width;
       position = Math.max(0, Math.min(1, position)); // Clamp between 0-1
 
       const newValue = Math.round(min + position * (max - min));
@@ -54,7 +59,7 @@ const RangeSlider = ({
         setInternalValue(newValue);
       }
     },
-    [min, max, onChange, setInternalValue],
+    [min, max, onChange, setInternalValue, i18n],
   );
 
   const throttledUpdate = useMemo(
@@ -126,11 +131,11 @@ const RangeSlider = ({
           ref={thumbRef}
           className="custom-range-thumb"
           style={{
-            left: `${fillPercentage}%`,
+            insetInlineStart: `${fillPercentage}%`,
             width: `${thumbSize}px`,
             height: `${thumbSize}px`,
             backgroundColor: thumbColor,
-            marginLeft: `-${thumbSize / 2}px`,
+            marginInlineStart: `-${thumbSize / 2}px`,
             marginTop: `-${thumbSize / 2}px`,
             borderWidth: 2,
             borderColor: '#0088CC',

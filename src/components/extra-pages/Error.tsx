@@ -12,7 +12,7 @@ const ErrorPage = ({ title, text }: IErrorPageProps) => {
       className="error-page h-screen w-full flex items-center justify-center relative p-4 bg-Gray-100 dark:bg-dark-primary"
     >
       <div
-        className="overlay absolute w-full h-full top-0 left-0 bg-center dark:opacity-10"
+        className="overlay absolute w-full h-full top-0 start-0 bg-center dark:opacity-10"
         style={{
           backgroundImage: `url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100%25" height="100%25"%3E%3Cpattern id="bg" patternUnits="userSpaceOnUse" width="20" height="20"%3E%3Cg opacity="0.7"%3E%3Crect x="10" y="10" width="4" height="4" rx="2" fill="%23C2DAF2" /%3E%3C/g%3E%3C/pattern%3E%3Crect width="100%25" height="100%25" fill="url(%23bg)" /%3E%3C/svg%3E')`,
         }}
