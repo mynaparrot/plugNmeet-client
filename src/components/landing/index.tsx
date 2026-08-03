@@ -186,7 +186,7 @@ const Landing = ({
         className={`absolute w-full join-the-audio-popup bg-Gray-100 dark:bg-dark-primary min-h-full flex items-center justify-center p-5 scrollBar`}
       >
         <div className="inner m-auto bg-Gray-50 dark:bg-dark-primary border border-Gray-300 dark:border-Gray-700 overflow-hidden rounded-2xl w-full max-w-4xl 3xl:max-w-5xl">
-          <div className="head bg-white dark:bg-dark-secondary  h-[50px] 3xl:h-[60px] px-3 sm:px-5 flex justify-center sm:justify-start text-center sm:text-left items-center text-Gray-950 dark:text-white text-sm sm:text-base 3xl:text-lg font-medium border-b border-Gray-200 dark:border-Gray-700">
+          <div className="head bg-white dark:bg-dark-secondary  h-[50px] 3xl:h-[60px] px-3 sm:px-5 flex justify-center sm:justify-start text-center sm:text-start items-center text-Gray-950 dark:text-white text-sm sm:text-base 3xl:text-lg font-medium border-b border-Gray-200 dark:border-Gray-700">
             {t('landing.modal-title')}
           </div>
           <div className="wrapper bg-Gray-50 dark:bg-dark-secondary  pt-4 sm:pt-8 3xl:pt-11 pb-4 sm:pb-10 3xl:pb-14 px-4 sm:px-8 3xl:px-12 flex flex-wrap">
@@ -214,7 +214,7 @@ const Landing = ({
                     {lockMicrophone ? (
                       <div className="microphone-wrap relative cursor-not-allowed shadow-IconBox border border-Red-200 rounded-2xl h-11 w-11 flex items-center justify-center transition-all duration-300 text-Gray-950">
                         <MicrophoneOff classes="h-6 w-6 text-red-200" />
-                        <i className="pnm-lock absolute -top-1 -right-1 z-10 text-red-500"></i>
+                        <i className="pnm-lock absolute -top-1 -end-1 z-10 text-red-500"></i>
                       </div>
                     ) : (
                       <MicrophoneIcon
@@ -228,7 +228,7 @@ const Landing = ({
                     {lockWebcam || !isWebcamAllowed ? (
                       <div className="cam-wrap relative cursor-not-allowed shadow-IconBox border border-Red-200 rounded-2xl h-11 w-11 flex items-center justify-center transition-all duration-300 text-Gray-950">
                         <CameraOff classes="h-6 w-6 text-red-200" />
-                        <i className="pnm-lock absolute -top-1 -right-1 z-10 text-red-500" />
+                        <i className="pnm-lock absolute -top-1 -end-1 z-10 text-red-500" />
                       </div>
                     ) : (
                       <WebcamIcon
@@ -243,11 +243,11 @@ const Landing = ({
                 )}
               </div>
             </div>
-            <div className="right w-full md:w-1/2 md:pl-8 3xl:pl-16 sm:py-8 flex items-center">
+            <div className="right w-full md:w-1/2 md:ps-8 3xl:ps-16 sm:py-8 flex items-center">
               {showLoadingMsg ? (
                 <div className="inner waiting-room-contents relative md:-mt-10 w-full">
                   {waitForApproval ? (
-                    <div className="texts text-center md:text-left">
+                    <div className="texts text-center md:text-start">
                       <h3 className="font-bold text-lg md:text-xl 3xl:text-2xl text-Gray-950 dark:text-white leading-snug pb-2 flex items-center justify-center md:justify-start gap-2">
                         <LoadingIcon
                           className={
@@ -257,13 +257,13 @@ const Landing = ({
                         />
                         {t('landing.waiting-for-approval-title')}
                       </h3>
-                      <p className="text-sm 3xl:text-base text-Gray-800 dark:text-white/90 md:pl-7">
+                      <p className="text-sm 3xl:text-base text-Gray-800 dark:text-white/90 md:ps-7">
                         {waitingRoomMessage ||
                           t('notifications.waiting-for-approval')}
                       </p>
                     </div>
                   ) : (
-                    <div className="texts text-center md:text-left">
+                    <div className="texts text-center md:text-start">
                       <h3 className="font-bold text-lg md:text-xl 3xl:text-2xl text-Gray-950 dark:text-white leading-snug pb-2 flex items-center justify-center md:justify-start gap-2">
                         <LoadingIcon
                           className={
@@ -278,7 +278,7 @@ const Landing = ({
                 </div>
               ) : (
                 <div className="inner relative w-full">
-                  <div className="texts text-center md:text-left">
+                  <div className="texts text-center md:text-start">
                     <h3 className="font-bold text-xl 3xl:text-2xl text-Gray-950 dark:text-white leading-snug pb-2">
                       {t('landing.ready-to-join')}
                     </h3>

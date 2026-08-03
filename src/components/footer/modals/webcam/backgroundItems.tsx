@@ -145,7 +145,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
           </svg>
         </button>
         <input
-          className="absolute left-0 top-0 opacity-0 w-full h-full cursor-pointer"
+          className="absolute start-0 top-0 opacity-0 w-full h-full cursor-pointer"
           ref={customFileRef}
           type="file"
           onChange={customBgImage}

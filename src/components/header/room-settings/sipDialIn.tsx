@@ -130,7 +130,7 @@ const SipDialIn = () => {
           readOnly={true}
         />
         <div className="flex flex-wrap items-start justify-between my-5">
-          <label className="pb-2 sm:pb-0 sm:pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right dark:text-dark-text">
+          <label className="pb-2 sm:pb-0 sm:pe-4 flex-1 text-sm text-Gray-950 text-start dark:text-dark-text">
             {t('sip-dial-in-features.phone-numbers', 'Phone numbers')}
           </label>
           {sipDialInFeatures?.phoneNumbers &&

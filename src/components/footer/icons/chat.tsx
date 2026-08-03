@@ -54,7 +54,7 @@ const ChatIcon = () => {
         </span>
         <ChatIconSVG />
         {!isActiveChatPanel && totalUnreadChatMsgs > 0 && (
-          <div className="unseen-message-count bg-secondary-color w-4 3xl:w-5 h-4 3xl:h-5 rounded-full text-[10px] 3xl:text-xs text-white absolute -top-2 -right-1 flex justify-center items-center">
+          <div className="unseen-message-count bg-secondary-color w-4 3xl:w-5 h-4 3xl:h-5 rounded-full text-[10px] 3xl:text-xs text-white absolute -top-2 -end-1 flex justify-center items-center">
             {totalUnreadChatMsgs}
           </div>
         )}

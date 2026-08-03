@@ -127,7 +127,7 @@ const UploadFile = ({
             id="media-file"
             accept={ALLOWED_FILE_TYPES.map((type) => '.' + type).join(',')}
             onChange={onChange}
-            className="absolute left-0 w-full h-full top-0 opacity-0 cursor-pointer"
+            className="absolute start-0 w-full h-full top-0 opacity-0 cursor-pointer"
             disabled={isPlayBtnLoading}
           />
           <label
@@ -166,7 +166,7 @@ const UploadFile = ({
             <div className="progress-bar flex gap-2 items-center">
               <div className="bar h-2 w-full relative bg-Gray-25 rounded-full overflow-hidden">
                 <div
-                  className="inner gradient absolute w-full h-full top-0 left-0"
+                  className="inner gradient absolute w-full h-full top-0 start-0"
                   style={{ width: `${uploadingProgress}%` }}
                 ></div>
               </div>

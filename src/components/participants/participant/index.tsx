@@ -43,7 +43,7 @@ const ParticipantComponent = ({
           isCurrentUser={currentUser?.userId === participant.userId}
         />
       </div>
-      <div className="right flex-auto flex items-center justify-end ml-2">
+      <div className="right flex-auto flex items-center justify-end ms-2">
         <div className="icon-group flex items-center justify-center gap-1">
           <ConnectionQualityIcon userId={participant.userId} />
           <RaiseHandIcon userId={participant.userId} />

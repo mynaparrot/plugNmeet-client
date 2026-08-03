@@ -250,10 +250,10 @@ const VideoLayout = ({
           className="video-camera-item webcam-next-page order-3 relative bg-Gray-900 text-white cursor-pointer flex items-center justify-between"
           onClick={nextPage}
         >
-          <div className="left flex-1 flex justify-center items-center absolute top-0 left-0 w-full h-full">
+          <div className="left flex-1 flex justify-center items-center absolute top-0 start-0 w-full h-full">
             {formatNextPreButton(potentialNextItems)}
           </div>
-          <div className="right pb-4 -rotate-90 absolute top-[calc(50%-12px)] right-0">
+          <div className="right pb-4 ltr:-rotate-90 rtl:rotate-90 absolute top-[calc(50%-12px)] end-0">
             <AngleDown />
           </div>
         </button>,
@@ -273,10 +273,10 @@ const VideoLayout = ({
           className="video-camera-item webcam-prev-page order-1 relative bg-Gray-900 text-white cursor-pointer flex items-center justify-between"
           onClick={prePage}
         >
-          <div className="right rotate-90 absolute top-[calc(50%-12px)] left-3">
+          <div className="right ltr:rotate-90 rtl:-rotate-90 absolute top-[calc(50%-12px)] start-3">
             <AngleDown />
           </div>
-          <div className="left flex-1 flex justify-center items-center absolute top-0 left-0 w-full h-full">
+          <div className="left flex-1 flex justify-center items-center absolute top-0 start-0 w-full h-full">
             {formatNextPreButton(prevItems)}
           </div>
         </button>,

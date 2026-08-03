@@ -55,7 +55,31 @@ const App = () => {
 
   useEffect(() => {
     // make sure we're using correct body dir
-    document.dir = i18n.dir();
+    document.body.dir = i18n.dir();
+    document.documentElement.lang = i18n.language;
+  }, [i18n, i18n.language]);
+
+  useEffect(() => {
+    // Guard against external code (e.g., Excalidraw or future deps) changing
+    // the document direction or language. Restore our desired values.
+    const desiredDir = i18n.dir();
+    const desiredLang = i18n.language;
+
+    const observer = new MutationObserver(() => {
+      if (document.documentElement.dir !== desiredDir) {
+        document.documentElement.dir = desiredDir;
+      }
+      if (document.documentElement.lang !== desiredLang) {
+        document.documentElement.lang = desiredLang;
+      }
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['dir', 'lang'],
+    });
+
+    return () => observer.disconnect();
   }, [i18n, i18n.language]);
 
   useEffect(() => {

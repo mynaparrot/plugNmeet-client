@@ -63,9 +63,10 @@
 }
 .custom-range-fill {
   position: absolute;
-  left: 0;
+  inset-inline-start: 0;
   top: 0;
-  border-radius: 10px 0 0 10px;
+  border-start-start-radius: 10px;
+  border-end-start-radius: 10px;
   pointer-events: none;
 }
 .custom-range-thumb {

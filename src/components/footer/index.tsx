@@ -39,8 +39,8 @@ const Footer = () => {
         isRecorder ? 'hidden' : ''
       }`}
     >
-      <div className="footer-inner flex items-center justify-between w-full rtl:flex-row-reverse">
-        <div className="footer-left w-[155px] lg:w-72 flex items-center gap-1 3xl:gap-2 relative z-50 rtl:justify-end">
+      <div className="footer-inner flex items-center justify-between w-full">
+        <div className="footer-left w-[155px] lg:w-72 flex items-center gap-1 3xl:gap-2 relative z-50">
           <MicrophoneIcon />
           <WebcamIcon />
         </div>

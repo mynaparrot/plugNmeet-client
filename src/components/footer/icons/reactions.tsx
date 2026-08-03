@@ -176,7 +176,7 @@ const ReactionsIcon = () => {
         leaveFrom="transform opacity-100 scale-100 translate-y-0"
         leaveTo="transform opacity-0 scale-95 translate-y-2"
       >
-        <PopoverPanel className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 z-50">
+        <PopoverPanel className="absolute bottom-full start-1/2 ltr:-translate-x-1/2 rtl:translate-x-1/2 mb-3 z-50">
           <div className="flex flex-col gap-2 p-2 rounded-2xl bg-white dark:bg-dark-primary border border-Gray-100 dark:border-Gray-700 shadow-lg">
             {canReact && (
               <div className="flex items-center gap-1">

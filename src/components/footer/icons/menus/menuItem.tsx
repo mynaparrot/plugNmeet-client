@@ -25,7 +25,7 @@ const FooterMenuItem = ({
         </span>
         {text}
         {isActive && (
-          <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 dark:bg-Blue2-500 absolute top-1/2 -translate-y-1/2 right-3" />
+          <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 dark:bg-Blue2-500 absolute top-1/2 -translate-y-1/2 end-3" />
         )}
       </button>
     </MenuItem>

@@ -265,7 +265,7 @@ const WebcamIcon = () => {
         return (
           <>
             <Camera classes={'h-4 3xl:h-5 w-auto'} />
-            <span className="add absolute -top-2 -right-2 z-10">
+            <span className="add absolute -top-2 -end-2 z-10">
               {isWebcamLocked ? (
                 <i className="pnm-lock primaryColor" />
               ) : (

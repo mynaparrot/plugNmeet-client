@@ -146,6 +146,7 @@ const MeetingSummarization = ({
                   )}
                 </label>
                 <textarea
+                  dir="auto"
                   name="summarizationPrompt"
                   id="summarizationPrompt"
                   className="w-full outline-none text-xs 3xl:text-sm text-Gray-900 dark:text-white p-2 border border-Gray-200 dark:border-Gray-800 rounded-lg resize-y"

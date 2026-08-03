@@ -62,7 +62,7 @@ const TranslationTranscription = () => {
   return (
     transcriptionFeatures &&
     transcriptionFeatures.isEnabled && (
-      <div className="speechService absolute bottom-0 w-full z-20 left-0">
+      <div className="speechService absolute bottom-0 w-full z-20 start-0">
         <div className="wrap">
           <SpeechSettingsModal
             transcriptionFeatures={transcriptionFeatures}

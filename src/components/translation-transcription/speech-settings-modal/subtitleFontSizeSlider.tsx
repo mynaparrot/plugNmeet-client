@@ -36,7 +36,7 @@ const SubtitleFontSizeSlider = () => {
       <div className="top flex justify-between items-center mb-3">
         <label
           htmlFor="transcription-size"
-          className="w-full text-sm font-medium text-Gray-800 dark:text-white ltr:text-left rtl:text-right block"
+          className="w-full text-sm font-medium text-Gray-800 dark:text-white text-start block"
         >
           {t('speech-services.subtitle-font-size')}
         </label>

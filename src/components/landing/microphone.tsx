@@ -37,7 +37,7 @@ const MicrophoneIcon = ({
         {audioDevices.length === 0 ? (
           <>
             <Microphone classes={'h-5 w-auto'} />
-            <span className="add absolute -top-2 -right-2 z-10">
+            <span className="add absolute -top-2 -end-2 z-10">
               <PlusIcon />
             </span>
           </>
@@ -51,7 +51,7 @@ const MicrophoneIcon = ({
             {({ open }) => (
               <>
                 <MenuButton
-                  className={`w-[30px] h-11 flex items-center justify-center border border-Gray-300  rounded-r-2xl ${open ? 'bg-Gray-100 dark:bg-Gray-800' : 'bg-Gray-50 dark:bg-Gray-700'}`}
+                  className={`w-[30px] h-11 flex items-center justify-center border border-Gray-300  rounded-e-2xl ${open ? 'bg-Gray-100 dark:bg-Gray-800' : 'bg-Gray-50 dark:bg-Gray-700'}`}
                 >
                   <ArrowUp />
                 </MenuButton>
@@ -65,7 +65,7 @@ const MicrophoneIcon = ({
                   leaveFrom="transform scale-100 opacity-100"
                   leaveTo="transform scale-95 opacity-0"
                 >
-                  <div className="menu origin-top-right z-10 absolute ltr:-left-32 md:ltr:left-0 rtl:right-0 bottom-12 border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary shadow-lg rounded-2xl overflow-hidden p-2 w-max">
+                  <div className="menu ltr:origin-top-right rtl:origin-top-left z-10 absolute ltr:-left-32 md:ltr:left-0 rtl:right-0 bottom-12 border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary shadow-lg rounded-2xl overflow-hidden p-2 w-max">
                     <div className="title h-9 w-full flex items-center text-xs leading-none text-Gray-700 dark:text-dark-text px-2 uppercase">
                       {t('landing.mic-menu-title')}
                     </div>
@@ -79,7 +79,7 @@ const MicrophoneIcon = ({
                         <MenuItem>
                           {() => (
                             <p className="min-h-9 w-full flex items-center justify-between text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2">
-                              {device.label}
+                              <span dir="ltr">{device.label}</span>
                               {selectedAudioDevice === device.id ? (
                                 <CheckMarkIcon />
                               ) : (

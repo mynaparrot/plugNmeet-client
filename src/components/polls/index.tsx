@@ -14,9 +14,9 @@ const PollsComponent = () => {
   const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
 
   return (
-    <div className="side-panel-bg-color relative z-10 w-full bg-Gray-25 dark:bg-dark-primary border-l border-Gray-200 dark:border-Gray-800 h-full">
+    <div className="side-panel-bg-color relative z-10 w-full bg-Gray-25 dark:bg-dark-primary border-s border-Gray-200 dark:border-Gray-800 h-full">
       <div
-        className="inline-block absolute z-50 right-3 3xl:right-5 top-[10px] 3xl:top-[18px] text-Gray-600 dark:text-white cursor-pointer"
+        className="inline-block absolute z-50 end-3 3xl:end-5 top-[10px] 3xl:top-[18px] text-Gray-600 dark:text-white cursor-pointer"
         onClick={() => dispatch(setActiveSidePanel(null))}
       >
         <CloseIconSVG />

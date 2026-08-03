@@ -705,101 +705,103 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           />
         </>
       )}
-      <Excalidraw
-        onInitialize={onInitializeSetExcalidrawAPI}
-        onChange={handleCanvasChange}
-        onPointerUpdate={onPointerUpdate}
-        viewModeEnabled={viewModeEnabled}
-        isCollaborating={true}
-        initialState={initialStateViewport}
-        theme={theme}
-        name="plugNmeet whiteboard"
-        UIOptions={{
-          canvasActions: {
-            loadScene: false,
-            export: false,
-            saveAsImage: !isRecorder,
-          },
-          tools: {
-            image: true,
-          },
-          getFormFactor: (width) => {
-            // Use mobile UI on screens smaller than 768px
-            if (width < 768) {
-              return 'phone';
-            }
-            // Force 'tablet' on larger screens for a compact desktop layout
-            return 'tablet';
-          },
-        }}
-        langCode={i18n.languages[0]}
-        renderTopRightUI={renderTopRightUI}
-      >
-        <MainMenu>
-          <MainMenu.DefaultItems.SaveAsImage />
-          {isPresenter && excalidrawAPI && (
-            <>
+      <div dir="ltr" className="h-full w-full">
+        <Excalidraw
+          onInitialize={onInitializeSetExcalidrawAPI}
+          onChange={handleCanvasChange}
+          onPointerUpdate={onPointerUpdate}
+          viewModeEnabled={viewModeEnabled}
+          isCollaborating={true}
+          initialState={initialStateViewport}
+          theme={theme}
+          name="plugNmeet whiteboard"
+          UIOptions={{
+            canvasActions: {
+              loadScene: false,
+              export: false,
+              saveAsImage: !isRecorder,
+            },
+            tools: {
+              image: true,
+            },
+            getFormFactor: (width) => {
+              // Use mobile UI on screens smaller than 768px
+              if (width < 768) {
+                return 'phone';
+              }
+              // Force 'tablet' on larger screens for a compact desktop layout
+              return 'tablet';
+            },
+          }}
+          langCode={i18n.languages[0]}
+          renderTopRightUI={renderTopRightUI}
+        >
+          <MainMenu>
+            <MainMenu.DefaultItems.SaveAsImage />
+            {isPresenter && excalidrawAPI && (
+              <>
+                <div
+                  className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
+                  onClick={() => setIsOpenExportPdfUI(true)}
+                  role="button"
+                >
+                  <div className="dropdown-menu-item__icon">
+                    <PdfIcon className="w-[13px] h-[13px]" />
+                  </div>
+                  <div className="dropdown-menu-item__text">
+                    {t('whiteboard.export-pdf-title')}
+                  </div>
+                </div>
+                <div
+                  className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
+                  onClick={() => {
+                    setIsOpenManageFilesUI(true);
+                  }}
+                  role="button"
+                >
+                  <div className="dropdown-menu-item__icon">
+                    <i className="pnm-attachment text-[13px]" />
+                  </div>
+                  <div className="dropdown-menu-item__text">
+                    {t('whiteboard.manage-files-menu-title')}
+                  </div>
+                </div>
+                <div
+                  className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
+                  onClick={handleSwitchPageOrDocument}
+                  role="button"
+                >
+                  <div className="dropdown-menu-item__icon">
+                    <RefreshIcon />
+                  </div>
+                  <div className="dropdown-menu-item__text">
+                    {t('whiteboard.force-sync')}
+                  </div>
+                </div>
+              </>
+            )}
+            {!viewModeEnabled && (
               <div
                 className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
-                onClick={() => setIsOpenExportPdfUI(true)}
+                onClick={() => setIsToolbarHidden(!isToolbarHidden)}
                 role="button"
               >
                 <div className="dropdown-menu-item__icon">
-                  <PdfIcon className="w-[13px] h-[13px]" />
+                  <ToolbarBar className="w-[13px] h-[13px]" />
                 </div>
                 <div className="dropdown-menu-item__text">
-                  {t('whiteboard.export-pdf-title')}
+                  {isToolbarHidden
+                    ? t('whiteboard.show-toolbar')
+                    : t('whiteboard.hide-toolbar')}
                 </div>
               </div>
-              <div
-                className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
-                onClick={() => {
-                  setIsOpenManageFilesUI(true);
-                }}
-                role="button"
-              >
-                <div className="dropdown-menu-item__icon">
-                  <i className="pnm-attachment text-[13px]" />
-                </div>
-                <div className="dropdown-menu-item__text">
-                  {t('whiteboard.manage-files-menu-title')}
-                </div>
-              </div>
-              <div
-                className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
-                onClick={handleSwitchPageOrDocument}
-                role="button"
-              >
-                <div className="dropdown-menu-item__icon">
-                  <RefreshIcon />
-                </div>
-                <div className="dropdown-menu-item__text">
-                  {t('whiteboard.force-sync')}
-                </div>
-              </div>
-            </>
-          )}
-          {!viewModeEnabled && (
-            <div
-              className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
-              onClick={() => setIsToolbarHidden(!isToolbarHidden)}
-              role="button"
-            >
-              <div className="dropdown-menu-item__icon">
-                <ToolbarBar className="w-[13px] h-[13px]" />
-              </div>
-              <div className="dropdown-menu-item__text">
-                {isToolbarHidden
-                  ? t('whiteboard.show-toolbar')
-                  : t('whiteboard.hide-toolbar')}
-              </div>
-            </div>
-          )}
-          <MainMenu.DefaultItems.Help />
-          {screenWidth <= 767 && renderFooter}
-        </MainMenu>
-        {screenWidth > 767 && <Footer>{renderFooter}</Footer>}
-      </Excalidraw>
+            )}
+            <MainMenu.DefaultItems.Help />
+            {screenWidth <= 767 && renderFooter}
+          </MainMenu>
+          {screenWidth > 767 && <Footer>{renderFooter}</Footer>}
+        </Excalidraw>
+      </div>
     </div>
   );
 };

@@ -60,7 +60,7 @@ const Header = () => {
               {title}
             </h2>
           </div>
-          <div className="right flex items-center justify-end relative -right-3 shrink-0 gap-0.5 z-30 order-3">
+          <div className="right flex items-center justify-end relative -end-3 shrink-0 gap-0.5 z-30 order-3">
             <DurationView />
             <UserNotifications />
             <ConnectionStatus />

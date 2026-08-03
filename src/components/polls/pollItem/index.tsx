@@ -164,7 +164,7 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
             </div>
           )}
         </div>
-        <div className="menu relative -mr-4">
+        <div className="menu relative -me-4">
           {isAdmin && pollDataWithOption && (
             <PollActionsMenu
               isRunning={item.isRunning}
@@ -179,7 +179,7 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
           {({ open }) => (
             <>
               <DisclosureButton className="flex items-center justify-between gap-3 w-full cursor-pointer">
-                <span className="text-sm text-Gray-800 dark:text-white font-medium block text-left">
+                <span className="text-sm text-Gray-800 dark:text-white font-medium block text-start">
                   {item.question}
                 </span>
                 <motion.div

@@ -69,7 +69,7 @@ const ScreenshareIcon = () => {
         <span className="tooltip">{text()}</span>
         <ShareScreenIconSVG classes="w-auto h-4 3xl:h-5" />
         {!isActiveShare && (
-          <span className="add absolute -top-2 -right-2 z-10">
+          <span className="add absolute -top-2 -end-2 z-10">
             {isLocked ? <i className="pnm-lock primaryColor" /> : null}
           </span>
         )}

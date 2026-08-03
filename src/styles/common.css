@@ -47,7 +47,7 @@ input.default-input {
 }
 
 input.polls-checkbox::before {
-  @apply absolute top-0 left-0 h-full w-full bg-center bg-no-repeat bg-contain opacity-0;
+  @apply absolute top-0 start-0 h-full w-full bg-center bg-no-repeat bg-contain opacity-0;
   content: '';
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABLSURBVHgBzY3RCQAgCEStCRuhjRqhNmsUU1CIEK6/OjgU7p0SfSFm7uKme76BZVRxQqxfVo0zaP4SwhYOCzuEg9KEcFDC8FYq9FQL/ZxgpQrzp40AAAAASUVORK5CYII=);
 }
@@ -102,7 +102,7 @@ input.polls-checkbox:checked:before {
 } */
 
 .all-webcam-wrapper.total-cam-2 .total-items-2 .video-camera-item.its-me {
-  @apply absolute bottom-10 right-10 w-40 md:w-52 xl:w-80 h-[86px] md:h-[130px] xl:h-[180px] z-30;
+  @apply absolute bottom-10 end-10 w-40 md:w-52 xl:w-80 h-[86px] md:h-[130px] xl:h-[180px] z-30;
 }
 .all-webcam-wrapper.total-cam-2
   .all-webcam-wrapper-inner
@@ -363,10 +363,10 @@ input.polls-checkbox:checked:before {
 }
 
 .select-camera-number {
-  @apply flex items-center absolute left-6 text-xs top-0;
+  @apply flex items-center absolute start-6 text-xs top-0;
 }
 .select-camera-number select#select-camera-num {
-  @apply bg-transparent border border-solid border-[#333] mr-[5px] outline-hidden;
+  @apply bg-transparent border border-solid border-[#333] me-[5px] outline-hidden;
 }
 
 .video-camera-item {
@@ -393,13 +393,13 @@ input.polls-checkbox:checked:before {
   @apply relative;
 }
 #main-area.fullWidthMainArea .all-webcam-wrapper {
-  @apply absolute w-[212px] h-full block py-[30px] px-0 z-2 right-0 bg-white;
+  @apply absolute w-[212px] h-full block py-[30px] px-0 z-2 end-0 bg-white;
 }
 #main-area.fullWidthMainArea .all-webcam-wrapper .video-camera-item::after {
   @apply bg-transparent opacity-100;
 }
 #main-area.fullWidthMainArea .all-webcam-wrapper .video-camera-item .name {
-  @apply opacity-100 top-auto left-3;
+  @apply opacity-100 top-auto start-3;
 }
 #main-area.fullWidthMainArea
   .all-webcam-wrapper
@@ -414,10 +414,10 @@ input.polls-checkbox:checked:before {
   @apply flex;
 }
 #main-area.fullWidthMainArea .all-webcam-wrapper button.previous-cam {
-  @apply top-0 w-full left-0 rotate-0;
+  @apply top-0 w-full start-0 rotate-0;
 }
 #main-area.fullWidthMainArea .all-webcam-wrapper button.next-cam {
-  @apply absolute w-full left-0 rotate-0 bottom-0 top-auto;
+  @apply absolute w-full start-0 rotate-0 bottom-0 top-auto;
 }
 #main-area.fullWidthMainArea .all-webcam-wrapper .all-webcam-wrapper-inner {
   @apply block py-0 px-[5px];
@@ -427,12 +427,12 @@ input.polls-checkbox:checked:before {
 }
 
 .middle-fullscreen-wrapper.verticalsWebcamsActivated {
-  @apply pb-[110px] md:pb-0 md:pr-[212px] transition-all duration-300;
+  @apply pb-[110px] md:pb-0 md:pe-[212px] transition-all duration-300;
 }
 
 /* Force bottom space instead of right space when in portrait orientation */
 .portrait-device .middle-fullscreen-wrapper.verticalsWebcamsActivated {
-  @apply pb-[110px]! pr-0! md:pb-[110px]! md:pr-0!;
+  @apply pb-[110px]! pe-0! md:pb-[110px]! md:pe-0!;
 }
 
 /* Landscape on mobile/tablet: narrower right strip than desktop */
@@ -440,11 +440,11 @@ input.polls-checkbox:checked:before {
   .middle-fullscreen-wrapper.verticalsWebcamsActivated,
 .landscape-device.is-tablet
   .middle-fullscreen-wrapper.verticalsWebcamsActivated {
-  @apply pr-[140px] pb-0;
+  @apply pe-[140px] pb-0;
 }
 
 .middle-fullscreen-wrapper.verticalsWebcamsActivated.extendedVerticalCamView {
-  @apply xl:pr-[416px];
+  @apply xl:pe-[416px];
 }
 
 /* .SpeechHistory::before {
@@ -467,7 +467,7 @@ body.dark .micro-muted-tooltip::before {
 .tooltip::after,
 .micro-muted-tooltip::after {
   content: '';
-  @apply absolute h-2 w-full bg-Gray-50 left-0 bottom-0 rounded-lg;
+  @apply absolute h-2 w-full bg-Gray-50 start-0 bottom-0 rounded-lg;
 }
 body.dark .tooltip::after,
 body.dark .micro-muted-tooltip::after {
@@ -475,21 +475,21 @@ body.dark .micro-muted-tooltip::after {
 }
 
 .tooltip-left::before {
-  left: 24px !important;
-  right: auto !important;
+  inset-inline-start: 24px !important;
+  inset-inline-end: auto !important;
 }
 
 .tooltip-right::before {
-  right: 24px !important;
-  left: auto !important;
+  inset-inline-end: 24px !important;
+  inset-inline-start: auto !important;
 }
 
-html[dir='rtl'] span.tooltip.tooltip-left {
+body[dir='rtl'] span.tooltip.tooltip-left {
   right: -34px !important;
   left: auto !important;
 }
 
-html[dir='rtl'] span.tooltip.tooltip-left::before {
+body[dir='rtl'] span.tooltip.tooltip-left::before {
   left: auto !important;
   right: 45px !important;
 }
@@ -523,14 +523,14 @@ html[dir='rtl'] span.tooltip.tooltip-left::before {
 .share-screen-wrapper.is-share-screen-running
   .screen-share-video
   video.video-player {
-  @apply h-[calc(100%-30px)] w-[calc(100%-30px)] top-[15px] left-[15px];
+  @apply h-[calc(100%-30px)] w-[calc(100%-30px)] top-[15px] start-[15px];
 }
 
 .footer-podcast-button {
   @apply relative;
 }
 .footer-podcast-button .lds-ripple {
-  @apply absolute w-[30px] h-[30px] left-2;
+  @apply absolute w-[30px] h-[30px] start-2;
 }
 .footer-podcast-button .lds-ripple div {
   @apply border-2 border-solid border-[rgb(0,77,144)];
@@ -555,10 +555,10 @@ html[dir='rtl'] span.tooltip.tooltip-left::before {
   @apply overflow-hidden !pb-[56.25%] relative !w-full !h-0;
 }
 .media-player-inner > div > div .video-js {
-  @apply !absolute !w-full !h-full left-0 top-0;
+  @apply !absolute !w-full !h-full start-0 top-0;
 }
 .media-player-inner iframe {
-  @apply left-0 top-0 h-full w-full absolute;
+  @apply start-0 top-0 h-full w-full absolute;
 }
 
 .is-pc .media-player-inner > div {
@@ -607,7 +607,7 @@ html[dir='rtl'] span.tooltip.tooltip-left::before {
   border-color: #fff;
   color: #fff;
   border-radius: 8px;
-  margin-left: 5px;
+  margin-inline-start: 5px;
 }
 
 .react-js-player-wrap .video-js {
@@ -616,7 +616,7 @@ html[dir='rtl'] span.tooltip.tooltip-left::before {
 .react-js-player-wrap .video-js button.vjs-big-play-button {
   position: absolute;
   top: 50%;
-  left: 50%;
+  inset-inline-start: 50%;
   transform: translate(-50%, -50%);
 }
 
@@ -959,7 +959,7 @@ aside {
   cursor: unset;
 }
 
-html[dir='rtl'] .rtl\:microphone-rtl-left::before {
+body[dir='rtl'] .rtl\:microphone-rtl-left::before {
   left: 26px;
   margin-left: 0;
 }
@@ -970,7 +970,7 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
 }
 
 .webcam-prev-page .icon {
-  right: auto;
+  inset-inline-end: auto;
   transform: rotate(180deg);
   top: calc(50% - 8px);
 }
@@ -1028,7 +1028,7 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
 .portrait-device .vertical-webcams-wrapper .video-camera-item.its-me {
   position: relative !important;
   bottom: auto !important;
-  right: auto !important;
+  inset-inline-end: auto !important;
 }
 
 .vertical-webcams-wrapper.not-extended
@@ -1043,7 +1043,7 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
   @apply hidden;
 }
 .vertical-webcams-wrapper.not-extended .webcam-next-page .middle-area {
-  @apply pl-5;
+  @apply ps-5;
 }
 .vertical-webcams-wrapper.not-extended .webcam-next-page .middle-area span {
   @apply h-9 w-9 text-sm;
@@ -1058,13 +1058,13 @@ html[dir='rtl'] .rtl\:microphone-rtl-left::before {
   @apply hidden;
 }
 .vertical-webcams-wrapper.not-extended .webcam-prev-page .middle-area {
-  @apply pl-5;
+  @apply ps-5;
 }
 .vertical-webcams-wrapper.not-extended .webcam-prev-page .middle-area span {
   @apply h-9 w-9 text-sm;
 }
 .vertical-webcams-wrapper.not-extended .webcam-prev-page .icon {
-  @apply left-auto right-4;
+  @apply start-auto end-4;
 }
 .vertical-webcams-wrapper.not-extended .webcam-prev-page .icon svg {
   @apply rotate-90;

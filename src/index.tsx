@@ -12,6 +12,7 @@ import './styles/index.css';
 import './helpers/i18n';
 
 import { store } from './store';
+import i18n from './helpers/i18n';
 import App from './components/app';
 import Loading from './components/extra-pages/Loading';
 
@@ -26,7 +27,7 @@ if (container) {
           <Suspense fallback={<Loading text="" />}>
             <App />
           </Suspense>
-          <ToastContainer />
+          <ToastContainer rtl={i18n.dir() === 'rtl'} />
         </DndProvider>
       </ReduxProvider>
     </StrictMode>,

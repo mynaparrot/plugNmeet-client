@@ -38,7 +38,7 @@ const PollActionsMenu = ({
     <Menu as="div">
       {({ open }) => (
         <>
-          <MenuButton className="relative shrink-0 p-2 mr-2 cursor-pointer">
+          <MenuButton className="relative shrink-0 p-2 me-2 cursor-pointer">
             <div className="">
               <FooterMenuIconSVG />
             </div>
@@ -55,7 +55,7 @@ const PollActionsMenu = ({
           >
             <MenuItems
               static
-              className="origin-top-right z-20 absolute ltr:right-0 rtl:-left-4 mt-2 w-[244px] shadow-dropdown-menu rounded-[15px] overflow-hidden border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary p-2 ring-0 focus:outline-hidden"
+              className="ltr:origin-top-right rtl:origin-top-left z-20 absolute end-0 mt-2 w-[244px] shadow-dropdown-menu rounded-[15px] overflow-hidden border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary p-2 ring-0 focus:outline-hidden"
             >
               <MenuItem>
                 <button
@@ -65,7 +65,7 @@ const PollActionsMenu = ({
                   {t('polls.view-details')}
                 </button>
               </MenuItem>
-              <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ml-3 my-0.5"></div>
+              <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ms-3 my-0.5"></div>
               {isRunning ? (
                 <MenuItem>
                   <button

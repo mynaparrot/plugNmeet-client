@@ -138,7 +138,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
             className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-button-shadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
           />
           <label
-            className="text-sm text-Gray-900 dark:text-white w-full h-full pl-7 z-10 flex items-center cursor-pointer"
+            className="text-sm text-Gray-900 dark:text-white w-full h-full ps-7 z-10 flex items-center cursor-pointer"
             htmlFor={`option-${pollDataWithOption.pollId}-${o.id}`}
           >
             {o.text}
@@ -146,13 +146,13 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
           {canViewPercentage() && (
             <>
               <div
-                className="shape absolute top-0 left-0 h-full bg-[rgba(0,161,242,0.2)]"
+                className="shape absolute top-0 start-0 h-full bg-[rgba(0,161,242,0.2)]"
                 style={{
                   width: `${o.responsesPercentage}%`,
                   backgroundColor: barColor,
                 }}
               ></div>
-              <div className="per absolute top-1/2 -translate-y-1/2 right-4 text-xs text-Gray-700 dark:text-white">
+              <div className="per absolute top-1/2 -translate-y-1/2 end-4 text-xs text-Gray-700 dark:text-white">
                 {o.responsesPercentage + '%'}
               </div>
             </>
@@ -172,7 +172,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
     >
       {pollOption}
       {isLoading && (
-        <div className="absolute text-center top-1/2 -translate-y-1/2 z-999 left-0 right-0 m-auto">
+        <div className="absolute text-center top-1/2 -translate-y-1/2 z-999 start-0 end-0 m-auto">
           <LoadingIcon
             className={
               'inline w-10 h-10 me-3 text-Gray-200 dark:text-Gray-800 animate-spin'

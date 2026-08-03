@@ -253,14 +253,14 @@ const MicrophoneIcon = () => {
     <>
       <div className={wrapperClasses}>
         {showMutedTooltip && (
-          <div className="micro-muted-tooltip tooltip-left absolute -left-3 rtl:microphone-rtl-left bottom-[48px] 3xl:bottom-[55px]">
-            <div className="inner w-max bg-Gray-50 dark:bg-dark-secondary2 rounded-lg shadow-lg px-4 pr-6 py-4 flex items-center gap-2 relative">
+          <div className="micro-muted-tooltip tooltip-left absolute -start-3 rtl:microphone-rtl-left bottom-[48px] 3xl:bottom-[55px]">
+            <div className="inner w-max bg-Gray-50 dark:bg-dark-secondary2 rounded-lg shadow-lg px-4 pe-6 py-4 flex items-center gap-2 relative">
               <MicrophoneOff classes={'h-4 3xl:h-5 w-auto text-Red-600'} />
               <p className="text-sm text-gray-900 dark:text-white">
                 {t('footer.icons.you-are-muted')}
               </p>
               <button
-                className="text-gray-950 dark:text-white absolute cursor-pointer top-1 right-1"
+                className="text-gray-950 dark:text-white absolute cursor-pointer top-1 end-1"
                 onClick={onDismissTooltip}
               >
                 <CloseIconSVG />
@@ -270,13 +270,13 @@ const MicrophoneIcon = () => {
         )}
         <div className={micWrapClasses}>
           <button type="button" className={iconDivClasses} onClick={manageMic}>
-            <span className="tooltip tooltip-left -left-3 rtl:microphone-rtl-left">
+            <span className="tooltip tooltip-left -start-3 rtl:microphone-rtl-left">
               {getTooltipText()}
             </span>
             {!isActiveMicrophone ? (
               <>
                 <Microphone classes={'h-4 3xl:h-5 w-auto'} />
-                <span className="add absolute -top-1.5 md:-top-2 -right-1.5 md:-right-2 z-10">
+                <span className="add absolute -top-1.5 md:-top-2 -end-1.5 md:-end-2 z-10">
                   {isLocked ? (
                     <i className="pnm-lock primaryColor" />
                   ) : (

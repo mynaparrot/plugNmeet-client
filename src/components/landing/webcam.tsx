@@ -55,7 +55,7 @@ const WebcamIcon = ({
         {videoDevices.length === 0 ? (
           <>
             <Camera classes={'h-5 w-auto'} />
-            <span className="add absolute -top-2 -right-2 z-10">
+            <span className="add absolute -top-2 -end-2 z-10">
               <PlusIcon />
             </span>
           </>
@@ -69,7 +69,7 @@ const WebcamIcon = ({
             {({ open }) => (
               <>
                 <MenuButton
-                  className={`w-[30px] h-11 flex items-center justify-center border border-Gray-300 rounded-r-2xl ${open ? 'bg-Gray-100 dark:bg-Gray-800' : 'bg-Gray-50 dark:bg-Gray-700'}`}
+                  className={`w-[30px] h-11 flex items-center justify-center border border-Gray-300 rounded-e-2xl ${open ? 'bg-Gray-100 dark:bg-Gray-800' : 'bg-Gray-50 dark:bg-Gray-700'}`}
                 >
                   <ArrowUp />
                 </MenuButton>
@@ -83,7 +83,7 @@ const WebcamIcon = ({
                   leaveFrom="transform scale-100 opacity-100"
                   leaveTo="transform scale-95 opacity-0"
                 >
-                  <div className="menu origin-top-right z-10 absolute ltr:left-auto md:ltr:left-0 ltr:-right-16 md:rtl:right-0 bottom-12 border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary shadow-lg rounded-2xl overflow-hidden p-2 w-max">
+                  <div className="menu ltr:origin-top-right rtl:origin-top-left z-10 absolute ltr:left-auto md:ltr:left-0 ltr:-right-16 md:rtl:right-0 bottom-12 border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary shadow-lg rounded-2xl overflow-hidden p-2 w-max">
                     <div className="title h-9 w-full flex items-center text-xs leading-none text-Gray-700 dark:text-dark-text px-2 uppercase">
                       {t('landing.webcam-menu-title')}
                     </div>
@@ -95,7 +95,7 @@ const WebcamIcon = ({
                               className={`min-h-9 w-full flex items-center justify-between text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2`}
                               onClick={() => setSelectedVideoDevice(device.id)}
                             >
-                              {device.label}
+                              <span dir="ltr">{device.label}</span>
                               {selectedVideoDevice === device.id ? (
                                 <CheckMarkIcon />
                               ) : (
@@ -109,7 +109,7 @@ const WebcamIcon = ({
 
                     {isSupported && (
                       <>
-                        <div className="divider w-[calc(100%+16px)] relative -left-2 h-1 bg-Gray-50 dark:bg-Gray-700 mt-2"></div>
+                        <div className="divider w-[calc(100%+16px)] relative -start-2 h-1 bg-Gray-50 dark:bg-Gray-700 mt-2"></div>
                         <div className="title h-9 w-full flex items-center text-xs leading-none text-Gray-700 dark:text-dark-text px-2 uppercase">
                           {t('landing.background-filter-title')}
                         </div>

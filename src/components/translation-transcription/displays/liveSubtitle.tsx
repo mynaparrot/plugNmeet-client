@@ -111,7 +111,7 @@ const LiveSubtitle = () => {
     selectedSubtitleLang !== '' && // only show if user has selected a lang
     (lastFinalText || interimText) && (
       <div
-        className="sub-title w-11/12 absolute bottom-4  left-1/2 -translate-x-1/2 pointer-events-none px-10 flex items-center"
+        className="sub-title w-11/12 absolute bottom-4  start-1/2 ltr:-translate-x-1/2 rtl:translate-x-1/2 pointer-events-none px-10 flex items-center"
         style={{ fontSize: subtitleFontSize }}
       >
         <div className="inline-block p-2 bg-Gray-950/70 text-white m-auto break-words text-center whitespace-pre-wrap border border-white/15 rounded-lg overflow-hidden shadow-virtual-item">

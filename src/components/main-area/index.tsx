@@ -132,16 +132,16 @@ const MainArea = () => {
 
   const mainAreaClasses = `plugNmeet-app-main-area overflow-hidden relative flex flex-1 w-full ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition}`;
   const middleAreaClasses = `middle-area relative transition-all duration-300 w-full ${
-    activeSidePanel ? 'pb-[300px] md:pb-0 md:pr-[300px] 3xl:pr-[340px]' : ''
+    activeSidePanel ? 'pb-[300px] md:pb-0 md:pe-[300px] 3xl:pe-[340px]' : ''
   }`;
 
   return (
     <div id="main-area" className={mainAreaClasses}>
-      <div className="inner flex justify-between rtl:flex-row-reverse flex-1">
+      <div className="inner flex justify-between flex-1">
         <div className={middleAreaClasses}>
           {isNatsServerConnected && (
             <>
-              <div className="absolute top-2 left-1/2 -translate-x-1/2 z-[9999] pointer-events-none w-full">
+              <div className="absolute top-2 start-1/2 ltr:-translate-x-1/2 rtl:translate-x-1/2 z-[9999] pointer-events-none w-full">
                 <ActiveSpeakers activeSidePanel={activeSidePanel} />
               </div>
               <MainView

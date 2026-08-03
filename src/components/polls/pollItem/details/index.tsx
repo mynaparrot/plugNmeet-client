@@ -58,7 +58,7 @@ const DetailsModal = ({
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <div className="inline-block w-full max-w-2xl my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-dark-primary rounded-2xl border border-Gray-200 dark:border-Gray-800">
+            <div className="inline-block w-full max-w-2xl my-8 overflow-hidden text-start align-middle transition-all transform bg-white dark:bg-dark-primary rounded-2xl border border-Gray-200 dark:border-Gray-800">
               <div className="top flex items-center justify-between py-4 px-6">
                 <DialogTitle
                   as="h3"

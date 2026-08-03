@@ -38,7 +38,7 @@ const FormattedInputField = ({
         {label ? (
           <Label
             htmlFor={id}
-            className="pb-2 sm:pb-0 sm:pr-4 flex-1 text-sm text-Gray-950 ltr:text-left rtl:text-right dark:text-dark-text"
+            className="pb-2 sm:pb-0 sm:pe-4 flex-1 text-sm text-Gray-950 text-start dark:text-dark-text"
           >
             {label}
           </Label>

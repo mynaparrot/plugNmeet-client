@@ -22,7 +22,7 @@ const RadioOptions = ({
   onChange,
 }: IRadioOptionsProps) => {
   return (
-    <div className="mt-4 pl-2 space-y-4">
+    <div className="mt-4 ps-2 space-y-4">
       {options.map((option) => (
         <div
           key={option.id}
@@ -40,14 +40,14 @@ const RadioOptions = ({
               className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-button-shadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
             />
             <label
-              className="flex-1 text-sm text-Gray-900 dark:text-white w-full h-full z-10 pl-2 cursor-pointer"
+              className="flex-1 text-sm text-Gray-900 dark:text-white w-full h-full z-10 ps-2 cursor-pointer"
               htmlFor={option.id}
             >
               {option.label}
             </label>
           </div>
           {option.description && (
-            <p className="text-xs text-Red-400 pl-[26px]">
+            <p className="text-xs text-Red-400 ps-[26px]">
               {option.description}
             </p>
           )}

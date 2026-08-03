@@ -199,6 +199,7 @@ const TextBoxArea = () => {
         />
       )}
       <textarea
+        dir="auto"
         name="message-textarea"
         id="message-textarea"
         className="flex-1 outline-hidden text-xs 3xl:text-sm text-Gray-600 dark:text-white font-normal h-10 mr-2 overflow-hidden"

@@ -51,7 +51,7 @@ export const getFormatedRespondents = (respondents: Respondents[]) => {
   respondentChunks.forEach((users, i) => {
     elms.push(
       <div
-        className="grid gap-2 content-start border-r border-Gray-300 dark:border-Gray-800 py-2 w-max last:border-none"
+        className="grid gap-2 content-start border-e border-Gray-300 dark:border-Gray-800 py-2 w-max last:border-none"
         key={`chunk-${i}`}
       >
         {users.map((user) => (
@@ -92,7 +92,7 @@ export const publishPollResultByChat = async (
           count: pollDataWithOption.totalRespondents,
         })}
       </p>
-      <ul style={{ margin: '4px 0 0 0', paddingLeft: '20px' }}>
+      <ul style={{ margin: '4px 0 0 0', paddingInlineStart: '20px' }}>
         {formattedOptions}
       </ul>
     </div>,

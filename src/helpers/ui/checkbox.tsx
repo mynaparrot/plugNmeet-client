@@ -26,7 +26,7 @@ const Checkbox = ({
         className="border cursor-pointer border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus mt-1 dark:bg-dark-secondary dark:border-dark-text"
       />
     </div>
-    <div className="text-base w-full pl-2 sm:pl-4">
+    <div className="text-base w-full ps-2 sm:ps-4">
       <label
         htmlFor={id}
         className="text-sm 3xl:text-base font-medium text-Gray-950 dark:text-dark-text cursor-pointer"

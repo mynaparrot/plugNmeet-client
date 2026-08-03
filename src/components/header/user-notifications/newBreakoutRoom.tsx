@@ -118,6 +118,7 @@ const NewBreakoutRoom = ({
               {t('breakout-room.join-text-label')}
             </label>
             <input
+              dir="auto"
               type="text"
               readOnly={true}
               value={joinLink}

@@ -93,7 +93,7 @@ const EndMeetingButton = () => {
     <>
       <div className={buttonClasses} onClick={open}>
         <div className={innerDivClasses}>
-          <span className="tooltip tooltip-right right-0">
+          <span className="tooltip tooltip-right end-0">
             {isAdmin ? t('header.menus.end') : t('header.menus.logout')}
           </span>
           <EndMeetingIconSVG />
