@@ -447,6 +447,20 @@ input.polls-checkbox:checked:before {
   @apply xl:pe-[416px];
 }
 
+/*
+ * `.speechService` is absolutely positioned against its wrapper, so its
+ * containing block is that wrapper's *padding* box - which still includes the
+ * strip reserved for the vertical webcams (see the rules above). Mirroring the
+ * wrapper's inline padding shrinks the overlay's content box down to the area
+ * that is actually visible, keeping the live subtitle centred there. Using
+ * `inherit` means every responsive/orientation variant above is picked up
+ * automatically.
+ */
+.speechService {
+  padding-inline: inherit;
+  transition: padding 300ms;
+}
+
 /* .SpeechHistory::before {
   content: '';
   @apply absolute h-[12px] w-[12px] bg-white dark:bg-dark-primary bottom-[-6px] left-14 rotate-45 border border-solid border-dark-primary/40;

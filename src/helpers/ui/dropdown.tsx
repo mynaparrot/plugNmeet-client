@@ -77,7 +77,7 @@ const Dropdown = ({
             multiple={multiple}
           >
             <div
-              className={`relative w-full ${label ? 'max-w-full sm:max-w-[250px]' : ''}`}
+              className={`relative w-full ${label ? 'max-w-full sm:max-w-[300px]' : ''}`}
             >
               <ListboxButton
                 id={id}
@@ -85,7 +85,7 @@ const Dropdown = ({
                   disabled ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
-                <div className="flex flex-wrap">
+                <div className="flex flex-wrap truncate pe-5">
                   {displayValue || (
                     <span className="text-Gray-500">{/* Placeholder */}</span>
                   )}

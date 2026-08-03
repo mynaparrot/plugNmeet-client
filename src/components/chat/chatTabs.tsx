@@ -22,6 +22,7 @@ import { setActiveSidePanel } from '../../store/slices/bottomIconsActivitySlice'
 import { CheckMarkIcon } from '../../assets/Icons/CheckMarkIcon';
 import i18n from '../../helpers/i18n';
 import ChatTranslation from './chatTranslation';
+import { DropdownIconSVG } from '../../assets/Icons/DropdownIconSVG';
 
 interface IChatOption {
   id: string;
@@ -149,27 +150,13 @@ const ChatTabs = ({ isRecorder }: ChatTabsProps) => {
                 {selectedTitle}
               </span>
             </p>
-            <span className="pointer-events-none absolute inset-y-0 right-3 3xl:right-5 flex items-center">
+            <span className="pointer-events-none absolute inset-y-0 end-3 3xl:end-5 flex items-center">
               {hasUnreadMessages && (
-                <span className="shake pr-1 -mb-1">
+                <span className="shake pe-1 -mb-1">
                   <i className="pnm-chat shake" />
                 </span>
               )}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 16 16"
-                fill="none"
-                className="h-auto w-3 3xl:w-4"
-              >
-                <path d="M12 6L8 10L4 6" fill="#4D6680" />
-                <path
-                  d="M12 6L8 10L4 6H12Z"
-                  stroke="#4D6680"
-                  strokeWidth="1.67"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <DropdownIconSVG />
             </span>
           </ListboxButton>
           <Transition
@@ -178,7 +165,7 @@ const ChatTabs = ({ isRecorder }: ChatTabsProps) => {
             leaveFrom="opacity-100 z-90"
             leaveTo="opacity-0"
           >
-            <ListboxOptions className="absolute max-h-60 w-[calc(100%-8px)] left-1 border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary shadow-lg rounded-2xl overflow-hidden p-2">
+            <ListboxOptions className="absolute max-h-60 w-[calc(100%-8px)] start-1 border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary shadow-lg rounded-2xl overflow-hidden p-2">
               <div className="title h-8 w-full flex items-center text-xs leading-none text-Gray-700 dark:text-dark-text px-3 uppercase">
                 {t('left-panel.select-chat-conversation-title')}
               </div>
@@ -197,13 +184,13 @@ const ChatTabs = ({ isRecorder }: ChatTabsProps) => {
                       <span>
                         {option.title}
                         {option.hasUnread && (
-                          <span className="shake pl-2">
+                          <span className="shake ps-2">
                             <i className="pnm-chat shake" />
                           </span>
                         )}
                       </span>
                       {selected && (
-                        <span className="right absolute right-3">
+                        <span className="end absolute end-3">
                           <CheckMarkIcon />
                         </span>
                       )}

@@ -4,6 +4,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
+import { useTranslation } from 'react-i18next';
 
 // @ts-ignore
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,9 +13,13 @@ import './styles/index.css';
 import './helpers/i18n';
 
 import { store } from './store';
-import i18n from './helpers/i18n';
 import App from './components/app';
 import Loading from './components/extra-pages/Loading';
+
+const ToastWrapper = () => {
+  const { i18n } = useTranslation();
+  return <ToastContainer rtl={i18n.dir() === 'rtl'} key={i18n.language} />;
+};
 
 const container = document.getElementById('plugNmeet-app');
 
@@ -27,7 +32,7 @@ if (container) {
           <Suspense fallback={<Loading text="" />}>
             <App />
           </Suspense>
-          <ToastContainer rtl={i18n.dir() === 'rtl'} />
+          <ToastWrapper />
         </DndProvider>
       </ReduxProvider>
     </StrictMode>,

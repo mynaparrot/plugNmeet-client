@@ -110,39 +110,47 @@ const LiveSubtitle = () => {
   return (
     selectedSubtitleLang !== '' && // only show if user has selected a lang
     (lastFinalText || interimText) && (
-      <div
-        className="sub-title w-11/12 absolute bottom-4  start-1/2 ltr:-translate-x-1/2 rtl:translate-x-1/2 pointer-events-none px-10 flex items-center"
-        style={{ fontSize: subtitleFontSize }}
-      >
-        <div className="inline-block p-2 bg-Gray-950/70 text-white m-auto break-words text-center whitespace-pre-wrap border border-white/15 rounded-lg overflow-hidden shadow-virtual-item">
-          {/* Line 1 */}
-          <div
-            className={`line-1 transition-opacity duration-300 ease-in-out ${
-              line1?.isInterim ? 'opacity-70' : 'opacity-100'
-            }`}
-          >
-            {line1 ? (
-              <>
-                <span className="font-bold">{line1.from}:</span>{' '}
-                <span key={line1.isInterim ? 'interim' : 'final'}>
-                  {line1.text}
-                </span>
-              </>
-            ) : (
-              // Use a non-breaking space to maintain height
-              <>&nbsp;</>
-            )}
-          </div>
-          {/* Line 2: Only show if there's content for it */}
-          {line2 && (
+      /*
+       * Zero-height, in-flow wrapper: it is sized by the *content* box of
+       * `.speechService` (which mirrors the layout wrapper's inline padding),
+       * so the subtitle stays centred on the visible video area when a side
+       * panel or the vertical webcam strip is open.
+       */
+      <div className="sub-title-wrapper relative w-full h-0">
+        <div
+          className="sub-title w-11/12 absolute bottom-4 start-1/2 ltr:-translate-x-1/2 rtl:translate-x-1/2 pointer-events-none px-10 flex items-center"
+          style={{ fontSize: subtitleFontSize }}
+        >
+          <div className="inline-block p-2 bg-Gray-950/70 text-white m-auto break-words text-center whitespace-pre-wrap border border-white/15 rounded-lg overflow-hidden shadow-virtual-item">
+            {/* Line 1 */}
             <div
-              className={`line-2 transition-opacity duration-500 ease-in-out ${
-                isLine2FadingOut ? 'opacity-0' : 'opacity-70'
+              className={`line-1 transition-opacity duration-300 ease-in-out ${
+                line1?.isInterim ? 'opacity-70' : 'opacity-100'
               }`}
             >
-              <span className="font-bold">{line2.from}:</span> {line2.text}
+              {line1 ? (
+                <>
+                  <span className="font-bold">{line1.from}:</span>{' '}
+                  <span key={line1.isInterim ? 'interim' : 'final'}>
+                    {line1.text}
+                  </span>
+                </>
+              ) : (
+                // Use a non-breaking space to maintain height
+                <>&nbsp;</>
+              )}
             </div>
-          )}
+            {/* Line 2: Only show if there's content for it */}
+            {line2 && (
+              <div
+                className={`line-2 transition-opacity duration-500 ease-in-out ${
+                  isLine2FadingOut ? 'opacity-0' : 'opacity-70'
+                }`}
+              >
+                <span className="font-bold">{line2.from}:</span> {line2.text}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     )
