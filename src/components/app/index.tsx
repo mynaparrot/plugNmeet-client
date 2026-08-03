@@ -56,6 +56,7 @@ const App = () => {
   useEffect(() => {
     // make sure we're using correct body dir
     document.body.dir = i18n.dir();
+    document.documentElement.dir = i18n.dir();
     document.documentElement.lang = i18n.language;
   }, [i18n, i18n.language]);
 
