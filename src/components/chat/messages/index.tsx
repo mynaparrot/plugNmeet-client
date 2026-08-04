@@ -38,7 +38,7 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
     selectMessagesByKeyValue(state, messageKey),
   );
 
-  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLUListElement>(null);
   const currentUser = store.getState().session.currentUser;
   const [autoScrollToBottom, setAutoScrollToBottom] = useState<boolean>(true);
 
@@ -95,8 +95,8 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
   };
 
   return (
-    <div
-      className="relative h-full overflow-auto scrollBar messages-item-wrap px-3 3xl:px-5"
+    <ul
+      className="relative h-full overflow-auto scrollBar messages-item-wrap px-3 3xl:px-5 list-none"
       ref={messagesContainerRef}
       onScroll={handleScroll}
       tabIndex={0}
@@ -105,11 +105,15 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
       aria-live="polite"
     >
       {chatMessages.map((message) => (
-        <div key={message.id} className="message-item py-2">
+        <li
+          key={message.id}
+          className="message-item py-2 focus:outline-hidden focus:bg-Gray-50 dark:focus:bg-dark-secondary2 rounded"
+          tabIndex={0}
+        >
           <Message body={message} currentUser={currentUser} />
-        </div>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 };
 

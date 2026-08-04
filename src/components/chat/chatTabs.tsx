@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Listbox,
@@ -115,6 +115,14 @@ const ChatTabs = ({ isRecorder }: ChatTabsProps) => {
     dispatch(setActiveSidePanel(null));
   };
 
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      closeBtnRef.current?.focus();
+    }, 350);
+    return () => clearTimeout(timer);
+  }, []);
+
   if (isRecorder) {
     return (
       <div className="h-full">
@@ -137,6 +145,7 @@ const ChatTabs = ({ isRecorder }: ChatTabsProps) => {
           <ChatTranslation />
         </div>
         <button
+          ref={closeBtnRef}
           type="button"
           aria-label={t('close').toString()}
           className="text-Gray-600 cursor-pointer focus-ring"

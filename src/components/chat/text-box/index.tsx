@@ -199,9 +199,6 @@ const TextBoxArea = () => {
         />
       )}
       <textarea
-        // focus the message box when the chat panel opens
-        // eslint-disable-next-line jsx-a11y/no-autofocus
-        autoFocus
         dir="auto"
         name="message-textarea"
         id="message-textarea"

@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import useVirtual from 'react-cool-virtual';
 
@@ -70,6 +76,14 @@ const ParticipantsComponent = () => {
     dispatch(setActiveSidePanel(null));
   };
 
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      closeBtnRef.current?.focus();
+    }, 350);
+    return () => clearTimeout(timer);
+  }, []);
+
   const renderParticipant = useCallback(
     (index: number) => {
       if (!participants.length || typeof participants[index] === 'undefined') {
@@ -94,6 +108,7 @@ const ParticipantsComponent = () => {
   return (
     <div className="side-panel-bg-color relative z-10 w-full bg-Gray-25 dark:bg-dark-primary border-s border-Gray-200 dark:border-Gray-800 h-full">
       <button
+        ref={closeBtnRef}
         type="button"
         aria-label={t('close').toString()}
         className="inline-block absolute z-50 end-3 3xl:end-5 top-[10px] text-Gray-600 dark:text-white cursor-pointer focus-ring"
@@ -115,9 +130,6 @@ const ParticipantsComponent = () => {
               <SearchIconSVG />
             </div>
             <input
-              // focus the search field when the participants panel opens
-              // eslint-disable-next-line jsx-a11y/no-autofocus
-              autoFocus
               dir="auto"
               type="text"
               name="search-participants"
@@ -135,8 +147,8 @@ const ParticipantsComponent = () => {
           tabIndex={0}
           aria-label="Participants list"
         >
-          <div
-            className="all-participants-wrap px-2 xl:px-3 3xl:px-5"
+          <ul
+            className="all-participants-wrap px-2 xl:px-3 3xl:px-5 list-none"
             ref={innerRef as any}
           >
             {items.map(({ index, measureRef }) => (
@@ -148,7 +160,7 @@ const ParticipantsComponent = () => {
                 {renderParticipant(index)}
               </li>
             ))}
-          </div>
+          </ul>
         </div>
       </div>
 
