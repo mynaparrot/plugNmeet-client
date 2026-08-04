@@ -102,13 +102,13 @@ const VolumeControl = () => {
           <p className="w-10 text-center text-sm text-Gray-950 dark:text-white ms-3">
             {Math.round(localRoomVolume * 100)}
           </p>
-          <button className="w-5 h-5 focus-ring">
+          <span aria-hidden="true" className="w-5 h-5">
             {localRoomVolume > 0 ? (
               <i className="pnm-speaker text-Gray-950 dark:text-white" />
             ) : (
               <i className="pnm-speaker-muted  text-Gray-950 dark:text-white" />
             )}
-          </button>
+          </span>
         </section>
         <p className="text-sm mt-2 text-Gray-950 dark:text-white">
           {t('header.room-screen-share-audio-volume')}
@@ -125,13 +125,13 @@ const VolumeControl = () => {
           <p className="w-10 text-center text-sm text-Gray-950 dark:text-white ms-3">
             {Math.round(localScreenShareVolume * 100)}
           </p>
-          <button className="w-5 h-5 focus-ring">
+          <span aria-hidden="true" className="w-5 h-5">
             {localScreenShareVolume > 0 ? (
               <i className="pnm-speaker text-Gray-950 dark:text-white" />
             ) : (
               <i className="pnm-speaker-muted text-Gray-950 dark:text-white" />
             )}
-          </button>
+          </span>
         </section>
       </PopoverPanel>
     </Popover>
