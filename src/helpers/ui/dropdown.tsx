@@ -80,7 +80,7 @@ const Dropdown = ({
             >
               <ListboxButton
                 id={id}
-                className={`min-h-10 full cursor-pointer rounded-[8px] border border-Gray-300 dark:border-Gray-800 bg-white shadow-input w-full px-3 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-start text-sm dark:bg-transparent dark:text-white ${
+                className={`min-h-10 full cursor-pointer rounded-[8px] border border-Gray-300 dark:border-Gray-800 bg-white shadow-input w-full px-3 py-1 outline-hidden focus-ring focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-start text-sm dark:bg-transparent dark:text-white ${
                   disabled ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
@@ -149,7 +149,7 @@ const Dropdown = ({
         <div className="relative w-full">
           <ListboxButton
             id={id}
-            className={`min-h-10 full cursor-pointer rounded-[8px] border border-Gray-300 dark:border-Gray-800 bg-white shadow-input w-full px-3 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-start text-sm dark:bg-transparent dark:text-white ${
+            className={`min-h-10 full cursor-pointer rounded-[8px] border border-Gray-300 dark:border-Gray-800 bg-white shadow-input w-full px-3 py-1 outline-hidden focus-ring focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-start text-sm dark:bg-transparent dark:text-white ${
               disabled ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >

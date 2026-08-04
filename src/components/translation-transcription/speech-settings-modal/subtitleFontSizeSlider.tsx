@@ -34,12 +34,9 @@ const SubtitleFontSizeSlider = () => {
   return (
     <div className="font-size px-5 pb-6">
       <div className="top flex justify-between items-center mb-3">
-        <label
-          htmlFor="transcription-size"
-          className="w-full text-sm font-medium text-Gray-800 dark:text-white text-start block"
-        >
+        <span className="w-full text-sm font-medium text-Gray-800 dark:text-white text-start block">
           {t('speech-services.subtitle-font-size')}
-        </label>
+        </span>
         <div className="count text-xs text-Gray-800 dark:text-white font-medium bg-Gray-25 dark:bg-dark-secondary2 border border-Gray-300 dark:border-Gray-800 shadow-Icon-box rounded-[7px] py-0.5 px-2">
           {localFontSize}
         </div>
@@ -51,6 +48,7 @@ const SubtitleFontSizeSlider = () => {
         onChange={handleOnChange}
         thumbSize={20}
         trackHeight={8}
+        label={t('speech-services.subtitle-font-size').toString()}
       />
     </div>
   );

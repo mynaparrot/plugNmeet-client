@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo } from 'react';
-import { Field, Label, Switch } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 import { InsightsTranscriptionFeatures } from 'plugnmeet-protocol-js';
+
+import SettingsSwitch from '../../../helpers/ui/settingsSwitch';
 
 import { speechLangsMap } from '../helpers/supportedLangs';
 import Dropdown from '../../../helpers/ui/dropdown';
@@ -45,54 +46,26 @@ const SpeechInputSettings = ({
 
   return (
     <>
-      <Field className="-mt-4 px-4 py-4 bg-Gray-25 dark:bg-dark-primary border-y border-dotted border-Gray-100 dark:border-Gray-800">
-        <div className="flex items-center cursor-pointer justify-between shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary">
-          <Label className="pe-4 w-full text-sm text-Gray-800 dark:text-white font-medium cursor-pointer">
-            {t('speech-services.enable-speech-to-text')}
-          </Label>
-          <Switch
-            checked={enableSpeech}
-            onChange={setEnableSpeech}
-            disabled={isServiceActive}
-            className={`${
-              enableSpeech ? 'bg-Blue2-500' : 'bg-Gray-200'
-            } relative outline-none inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden cursor-pointer`}
-          >
-            <span
-              className={`${
-                enableSpeech
-                  ? 'ltr:translate-x-5 rtl:-translate-x-5'
-                  : 'ltr:translate-x-1 rtl:-translate-x-1'
-              } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
-            />
-          </Switch>
-        </div>
-      </Field>
+      <div className="-mt-4 px-4 py-4 bg-Gray-25 dark:bg-dark-primary border-y border-dotted border-Gray-100 dark:border-Gray-800">
+        <SettingsSwitch
+          label={t('speech-services.enable-speech-to-text')}
+          enabled={enableSpeech}
+          onChange={setEnableSpeech}
+          disabled={isServiceActive}
+          customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
+        />
+      </div>
       {enableSpeech && (
         <>
-          <Field className="grid gap-4 bg-white dark:bg-dark-primary py-4 px-4">
-            <div className="flex items-center cursor-pointer justify-between shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary">
-              <Label className="pe-4 w-full text-sm text-Gray-800 dark:text-white font-medium cursor-pointer">
-                {t('speech-services.allow-transcription-storage')}
-              </Label>
-              <Switch
-                checked={allowTranscriptionStorage}
-                onChange={setAllowTranscriptionStorage}
-                disabled={isServiceActive}
-                className={`${
-                  allowTranscriptionStorage ? 'bg-Blue2-500' : 'bg-Gray-200'
-                } relative outline-none inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden cursor-pointer`}
-              >
-                <span
-                  className={`${
-                    allowTranscriptionStorage
-                      ? 'ltr:translate-x-5 rtl:-translate-x-5'
-                      : 'ltr:translate-x-1 rtl:-translate-x-1'
-                  } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
-                />
-              </Switch>
-            </div>
-          </Field>
+          <div className="grid gap-4 bg-white dark:bg-dark-primary py-4 px-4">
+            <SettingsSwitch
+              label={t('speech-services.allow-transcription-storage')}
+              enabled={allowTranscriptionStorage}
+              onChange={setAllowTranscriptionStorage}
+              disabled={isServiceActive}
+              customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
+            />
+          </div>
           <div className="grid gap-4 bg-white dark:bg-dark-primary py-4 px-6">
             <Dropdown
               id="speech-lang"

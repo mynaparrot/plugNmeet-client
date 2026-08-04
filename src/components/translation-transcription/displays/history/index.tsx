@@ -30,7 +30,8 @@ const SubtitleTextsHistory = ({ isOpenPopover }: SubtitleTextsHistoryProps) => {
   return (
     <Popover className="subtitleTextsHistory relative">
       <button
-        className="absolute start-5 bottom-14"
+        aria-label={t('speech-services.subtitle-history-modal-title')}
+        className="focus-ring absolute start-5 bottom-14"
         onClick={() => setShowPopover(!showPopover)}
       >
         <div className="chat-history-icon relative h-11 w-11 rounded-full bg-Gray-950/70 cursor-pointer has-tooltip border-4 border-white/5 dark:border-Gray-700 shadow-virtual-item flex items-center justify-center">
