@@ -2,7 +2,6 @@ import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { store, useAppDispatch, useAppSelector } from '../../../../store';
-import FooterMenuItem from './menuItem';
 import {
   setActiveSidePanel,
   updateDisplaySpeechSettingOptionsModal,
@@ -17,6 +16,7 @@ import { SpeechIconSVG } from '../../../../assets/Icons/SpeechIconSVG';
 import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
 import { ShareScreenIconSVG } from '../../../../assets/Icons/ShareScreenIconSVG';
 import useScreenshare from '../hooks/useScreenshare';
+import MenuItemHelper from './menuItemHelper';
 
 const IconsInMenu = () => {
   const { t } = useTranslation();
@@ -96,21 +96,21 @@ const IconsInMenu = () => {
   return (
     <>
       {roomFeatures?.whiteboardFeatures?.isAllow && (
-        <FooterMenuItem
+        <MenuItemHelper
           onClick={toggleWhiteboard}
-          isActive={isActiveWhiteboard}
           icon={<WhiteBoardIconSVG />}
           text={
             isActiveWhiteboard
               ? t('footer.icons.hide-whiteboard')
               : t('footer.icons.show-whiteboard')
           }
+          isActive={isActiveWhiteboard}
+          customClass="md:hidden"
         />
       )}
       {isScreenShareAllowed && !(isMobileOrTablet && !hybrid) && (
-        <FooterMenuItem
+        <MenuItemHelper
           onClick={toggleScreenShare}
-          isActive={isActiveShare}
           icon={<ShareScreenIconSVG classes="w-auto h-4" />}
           text={
             isScreenShareLocked
@@ -119,54 +119,60 @@ const IconsInMenu = () => {
                 ? t('footer.icons.stop-screen-sharing')
                 : t('footer.icons.start-screen-sharing')
           }
+          isActive={isActiveShare}
+          customClass="md:hidden"
         />
       )}
       {roomFeatures?.sharedNotePadFeatures?.isActive && (
-        <FooterMenuItem
+        <MenuItemHelper
           onClick={toggleSharedNotePad}
-          isActive={isActiveSharedNotePad}
           icon={<SharedNotepadIconSVG />}
           text={
             isActiveSharedNotePad
               ? t('footer.icons.hide-shared-notepad')
               : t('footer.icons.show-shared-notepad')
           }
+          isActive={isActiveSharedNotePad}
+          customClass="md:hidden"
         />
       )}
       {isActivePoll && (
-        <FooterMenuItem
+        <MenuItemHelper
           onClick={togglePollsPanel}
-          isActive={isActivePollsPanel}
           icon={<PollsIconSVG classes="" />}
           text={
             isActivePollsPanel
               ? t('footer.icons.hide-polls-panel')
               : t('footer.icons.show-polls-panel')
           }
+          isActive={isActivePollsPanel}
+          customClass="md:hidden"
         />
       )}
       {isEnabledTranscription && (
-        <FooterMenuItem
+        <MenuItemHelper
           onClick={toggleSpeechSettingOptionsModal}
-          isActive={isActiveDisplaySpeechSettingOptionsModal}
           icon={<SpeechIconSVG classes="w-auto" />}
           text={
             isActiveDisplaySpeechSettingOptionsModal
               ? t('footer.icons.hide-translation-settings')
               : t('footer.icons.show-translation-settings')
           }
+          isActive={isActiveDisplaySpeechSettingOptionsModal}
+          customClass="md:hidden"
         />
       )}
       {isEnabledAiTextChat && (
-        <FooterMenuItem
+        <MenuItemHelper
           onClick={toggleAiTextChatPanel}
-          isActive={isActiveAiTextChat}
           icon={<AiIconSVG classes="w-auto" />}
           text={
             isActiveAiTextChat
               ? t('footer.icons.hide-ai-chat-panel')
               : t('footer.icons.show-ai-chat-panel')
           }
+          isActive={isActiveAiTextChat}
+          customClass="md:hidden"
         />
       )}
     </>

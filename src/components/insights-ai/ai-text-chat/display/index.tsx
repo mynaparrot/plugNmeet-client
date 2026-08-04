@@ -82,6 +82,17 @@ const InsightsAiTextChat = () => {
     dispatch(updateIsActiveInsightsAiTextChat(false));
   }, [dispatch]);
 
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (isActive && closeBtnRef.current) {
+      const timer = setTimeout(() => {
+        closeBtnRef.current?.focus();
+      }, 350);
+      return () => clearTimeout(timer);
+    }
+  }, [isActive]);
+
   const handleScroll = useCallback(() => {
     const container = scrollRef.current;
     if (container) {
@@ -138,15 +149,18 @@ const InsightsAiTextChat = () => {
                 <div className="flex items-center space-x-2">
                   {showScrollDownBtn && (
                     <button
-                      className="cursor-pointer relative z-30 transition-opacity"
+                      className="cursor-pointer focus-ring relative z-30 transition-opacity"
                       onClick={forceScrollToBottom}
+                      aria-label="Scroll to bottom"
                     >
                       <ScrollToBottomIconSVG />
                     </button>
                   )}
                   <button
-                    className="cursor-pointer relative z-30 hidden md:inline"
+                    ref={closeBtnRef}
+                    className="cursor-pointer focus-ring relative z-30 hidden md:inline"
                     onClick={close}
+                    aria-label="Close"
                   >
                     <PopupCloseSVGIcon classes="text-Gray-600" />
                   </button>

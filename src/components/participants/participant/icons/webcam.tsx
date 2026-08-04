@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useAppSelector } from '../../../../store';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
@@ -10,6 +11,7 @@ interface WebcamIconProps {
 }
 
 const WebcamIcon = ({ userId }: WebcamIconProps) => {
+  const { t } = useTranslation();
   const videoTracks = useAppSelector(
     (state) => participantsSelector.selectById(state, userId)?.videoTracks,
   );
@@ -18,6 +20,7 @@ const WebcamIcon = ({ userId }: WebcamIconProps) => {
     videoTracks > 0 && (
       <IconWrapper>
         <Camera classes={'h-3 3xl:h-4 w-auto dark:text-white'} />
+        <span className="sr-only">{t('participant-webcam-on')}</span>
       </IconWrapper>
     )
   );

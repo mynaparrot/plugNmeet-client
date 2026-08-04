@@ -59,6 +59,7 @@ const VideoComponent = ({
             <button
               className="cam-fullscreen cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center"
               onClick={fullScreen}
+              aria-label="Fullscreen"
             >
               <i className="icon pnm-fullscreen text[14px] text-white" />
             </button>
@@ -66,6 +67,7 @@ const VideoComponent = ({
               <button
                 className="cam-pip cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center"
                 onClick={pictureInPicture}
+                aria-label="Picture in picture"
               >
                 <i className="icon pnm-pip text-[14px] text-white" />
               </button>

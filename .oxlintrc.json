@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "unicorn", "typescript", "oxc"],
+  "plugins": ["react", "unicorn", "typescript", "oxc", "jsx_a11y"],
   "ignorePatterns": [
     "dist/",
     "**/node_modules/",
@@ -30,7 +30,25 @@
         "no-array-reverse": "off",
         "no-array-index-key": "off",
         "no-shadow": "off",
-        "no-underscore-dangle": "off"
+        "no-underscore-dangle": "off",
+        "jsx_a11y/alt-text": "error",
+        "jsx_a11y/anchor-has-content": "error",
+        "jsx_a11y/aria-props": "error",
+        "jsx_a11y/aria-role": "error",
+        "jsx_a11y/aria-unsupported-elements": "error",
+        "jsx_a11y/click-events-have-key-events": "error",
+        "jsx_a11y/heading-has-content": "error",
+        "jsx_a11y/iframe-has-title": "error",
+        "jsx_a11y/label-has-associated-control": "error",
+        "jsx_a11y/no-noninteractive-element-interactions": "error",
+        "jsx_a11y/no-redundant-roles": "error",
+        "jsx_a11y/no-static-element-interactions": "error",
+        "jsx_a11y/role-has-required-aria-props": "error",
+        "jsx_a11y/tabindex-no-positive": "error",
+        "jsx_a11y/control-has-associated-label": "warn",
+        "jsx_a11y/media-has-caption": "off",
+        "jsx_a11y/no-noninteractive-tabindex": "off",
+        "jsx_a11y/prefer-tag-over-role": "off"
       }
     }
   ]

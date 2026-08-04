@@ -87,30 +87,35 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
 
   return (
     <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1 md:h-[175px] overflow-auto scrollBar">
-      <div
-        className={`wrap overflow-hidden rounded-2xl h-20 ${selectedBg.type === 'none' ? 'border-4 border-[rgba(124,206,247,0.25)]' : 'border-4 border-transparent'}`}
+      <button
+        type="button"
+        className={`wrap overflow-hidden rounded-2xl h-20 focus-ring ${selectedBg.type === 'none' ? 'border-4 border-[rgba(124,206,247,0.25)]' : 'border-4 border-transparent'}`}
         onClick={() => handleOnClick('none', '')}
+        aria-label="No background"
       >
         <div
           className={`cursor-pointer w-full h-full flex items-center justify-center bg-Gray-50 dark:bg-transparent overflow-hidden ${selectedBg.type === 'none' ? 'border border-Blue dark:border-none shadow-virtual-item dark:shadow-none rounded-xl' : 'rounded-2xl dark:border dark:border-Gray-700'}`}
         >
           <i className="pnm-ban-solid dark:text-white" />
         </div>
-      </div>
-      <div
-        className={`wrap overflow-hidden rounded-2xl h-20 ${selectedBg.type === 'blur' ? 'border-4 border-[rgba(124,206,247,0.25)]' : 'border-4 border-transparent'}`}
+      </button>
+      <button
+        type="button"
+        className={`wrap overflow-hidden rounded-2xl h-20 focus-ring ${selectedBg.type === 'blur' ? 'border-4 border-[rgba(124,206,247,0.25)]' : 'border-4 border-transparent'}`}
         onClick={() => handleOnClick('blur', '')}
+        aria-label="Blur background"
       >
         <div
           className={`cursor-pointer w-full h-full flex items-center justify-center bg-Gray-50 dark:bg-transparent overflow-hidden ${selectedBg.type === 'blur' ? 'border border-Blue dark:border-none shadow-virtual-item dark:shadow-none rounded-xl' : 'rounded-2xl dark:border dark:border-Gray-700'}`}
         >
           <i className="pnm-blur dark:text-white" />
         </div>
-      </div>
+      </button>
       {bgImgs.map((imageUrl, i) => {
         return (
-          <div
-            className={`wrap overflow-hidden rounded-2xl h-20 transition-all duration-200 ${selectedBg.url === imageUrl ? 'border-4 border-[rgba(124,206,247,0.25)]' : 'border-4 border-transparent'}`}
+          <button
+            type="button"
+            className={`wrap overflow-hidden rounded-2xl h-20 transition-all duration-200 focus-ring ${selectedBg.url === imageUrl ? 'border-4 border-[rgba(124,206,247,0.25)]' : 'border-4 border-transparent'}`}
             onClick={() => handleOnClick('image', imageUrl)}
             key={imageUrl}
           >
@@ -123,11 +128,14 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
                 className={`object-cover w-full h-full`}
               />
             </div>
-          </div>
+          </button>
         );
       })}
       <div className="upload-btn-wrap relative border-4 border-transparent">
-        <button className="cursor-pointer h-18 w-full border border-dashed border-Blue rounded-2xl flex items-center justify-center bg-Gray-50 dark:bg-transparent overflow-hidden">
+        <button
+          className="cursor-pointer h-18 w-full border border-dashed border-Blue rounded-2xl flex items-center justify-center bg-Gray-50 dark:bg-transparent overflow-hidden"
+          aria-label="Upload background"
+        >
           <svg
             width="16"
             height="16"

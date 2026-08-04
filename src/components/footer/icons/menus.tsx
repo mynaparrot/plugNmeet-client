@@ -1,5 +1,6 @@
-import React, { Fragment } from 'react';
-import { Menu, MenuButton, MenuItems, Transition } from '@headlessui/react';
+import React from 'react';
+import { Menu, MenuButton, MenuItems } from '@headlessui/react';
+import { useTranslation } from 'react-i18next';
 
 import { useAppSelector } from '../../../store';
 import LockSettingsModal from '../modals/lockSettingsModal';
@@ -19,6 +20,7 @@ interface MenusIconProps {
 }
 
 const MenusIcon = ({ isAdmin }: MenusIconProps) => {
+  const { t } = useTranslation();
   const showRtmpModal = useAppSelector(
     (state) => state.bottomIconsActivity.showRtmpModal,
   );
@@ -51,7 +53,10 @@ const MenusIcon = ({ isAdmin }: MenusIconProps) => {
         <Menu>
           {({ open }) => (
             <div>
-              <MenuButton>
+              <MenuButton
+                aria-label={t('footer.icons.menu').toString()}
+                className="focus-ring"
+              >
                 <div
                   className={`footer-menu relative footer-icon cursor-pointer w-10 md:w-11 3xl:w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 ${open ? 'border-[rgba(124,206,247,0.25)] dark:border-Gray-800' : 'border-transparent'}`}
                 >
@@ -62,34 +67,17 @@ const MenusIcon = ({ isAdmin }: MenusIconProps) => {
                   </div>
                 </div>
               </MenuButton>
-              <Transition
-                as={Fragment}
-                show={open}
-                enter="transition ease-out duration-200"
-                enterFrom="transform opacity-0 scale-95 translate-y-2"
-                enterTo="transform opacity-100 scale-100 translate-y-0"
-                leave="transition ease-in duration-150"
-                leaveFrom="transform opacity-100 scale-100 translate-y-0"
-                leaveTo="transform opacity-0 scale-95 translate-y-2"
+              <MenuItems
+                unmount={false}
+                anchor="top end"
+                transition
+                className="z-9999 w-[300px] shadow-dropdown-menu rounded-[15px] border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary p-2 focus:outline-hidden focus-ring [--anchor-gap:8px] transition ease-out data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150"
+                id="footer-menu"
               >
-                <MenuItems
-                  static={false}
-                  className="ltr:origin-bottom-left rtl:origin-bottom-right -end-11 lg:start-0 z-9999 absolute mt-2 w-[300px] bottom-14 shadow-dropdown-menu rounded-[15px] overflow-hidden border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary p-2"
-                  id="footer-menu"
-                >
-                  <div className="inner">
-                    {isAdmin && (
-                      <>
-                        <AdminMenus />
-                      </>
-                    )}
-                    <div className="mobile-menu-icons block md:hidden">
-                      <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ms-3 my-0.5 last-one"></div>
-                      <IconsInMenu />
-                    </div>
-                  </div>
-                </MenuItems>
-              </Transition>
+                {isAdmin && <AdminMenus />}
+                <div className="divider block md:hidden h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ms-3 my-0.5 last-one"></div>
+                <IconsInMenu />
+              </MenuItems>
             </div>
           )}
         </Menu>

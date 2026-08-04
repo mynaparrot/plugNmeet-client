@@ -37,7 +37,7 @@ const RadioOptions = ({
               disabled={option.disabled}
               checked={checked === option.value}
               onChange={() => onChange(option.value)}
-              className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-button-shadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
+              className="polls-checkbox relative appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-button-shadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600 focus-ring"
             />
             <label
               className="flex-1 text-sm text-Gray-900 dark:text-white w-full h-full z-10 ps-2 cursor-pointer"

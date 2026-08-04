@@ -23,7 +23,7 @@ const Checkbox = ({
         type="checkbox"
         checked={checked}
         onChange={onChange}
-        className="border cursor-pointer border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus mt-1 dark:bg-dark-secondary dark:border-dark-text"
+        className="border cursor-pointer border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus focus-ring mt-1 dark:bg-dark-secondary dark:border-dark-text"
       />
     </div>
     <div className="text-base w-full ps-2 sm:ps-4">

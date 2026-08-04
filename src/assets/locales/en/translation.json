@@ -11,11 +11,15 @@
   "plugnmeet-server-client-version": "Server: v{{server}}; Client: v{{client}}",
   "open": "Open",
   "other": "Other",
+  "participant-menu": "Participant options",
+  "participant-volume": "Adjust participant volume",
+  "participant-webcam-on": "Camera is on",
   "pip": "Picture-in-Picture",
   "please-wait": "Please wait...",
   "are-you-sure-to-close": "Are you sure you want to close?",
   "you-are-about-to-close": "You are about to close",
   "notifications": {
+    "title": "Notifications",
     "room-not-active": "This room is not active.",
     "recording-already-running": "Recording is already in progress.",
     "recording-not-running": "Recording is not in progress.",
@@ -109,6 +113,7 @@
     "rtmp-stopped": "This meeting is no longer being live-streamed."
   },
   "header": {
+    "aria-label": "Meeting header",
     "hide-header": "Hide header",
     "show-header": "Show header",
     "room-audio-volume": "Meeting Audio",
@@ -116,6 +121,8 @@
     "menus": {
       "settings": "Settings",
       "keyboard-shortcuts": "Keyboard Shortcuts",
+      "menu": "Menu",
+      "toggle-theme": "Toggle theme",
       "logout": "Leave Meeting",
       "end": "End meeting",
       "alert": {
@@ -171,6 +178,7 @@
       "show-hide-hand": "Raise/Lower Hand"
     },
     "connection-status": {
+      "title": "Connection quality",
       "overall-quality": "Overall Experience",
       "score": "Connection Score",
       "upload": "Sending Quality",
@@ -284,6 +292,7 @@
     "sending-message": "Please wait, sending..."
   },
   "footer": {
+    "aria-label": "Meeting controls",
     "hide-footer": "Hide footer",
     "show-footer": "Show footer",
     "icons": {
@@ -327,7 +336,8 @@
       "hide-translation-settings": "Hide Transcription Settings",
       "promote-presenter": "Make Presenter",
       "demote-presenter": "Remove as Presenter",
-      "you-are-muted": "No one can hear you. You're muted."
+      "you-are-muted": "No one can hear you. You're muted.",
+      "menu": "More options"
     },
     "menus": {
       "mute-all-users": "Mute Everyone",
@@ -433,6 +443,9 @@
     "export-pdf-button-count": "Export ({{count}})",
     "export-pdf-all-pages": "All Pages ({{count}})",
     "export-pdf-current-page": "Current page: {{page}}",
+    "previous-page": "Previous page",
+    "next-page": "Next page",
+    "take-over-presenter": "Take over as presenter",
     "export-pdf-selected-pages": "Selected Pages",
     "export-pdf-selected-pages-count": "Selected ({{count}})",
     "export-pdf-select-pages-label": "Select pages to export:",
@@ -460,7 +473,8 @@
     "export-pdf-clear": "Clear",
     "export-pdf-exporting": "Exporting...",
     "share-download-link": "Share download link in public chat",
-    "download-link-sent": "Download link sent to public chat"
+    "download-link-sent": "Download link sent to public chat",
+    "whiteboard-area": "Whiteboard area"
   },
   "waiting-room": {
     "modal-title": "Manage Waiting Room",
@@ -629,6 +643,8 @@
     "enable-translation-warning": "You have selected more than one spoken language, but translation is disabled.",
     "select-one-lang": "Select a language",
     "subtitle-history-modal-title": "Caption History",
+    "scroll-to-bottom": "Scroll to bottom",
+    "download-transcript": "Download transcript",
     "azure-error": "Microsoft Azure service error: {{error}}",
     "speech-to-text-stopped": "Transcription service has stopped.",
     "enable-transcription": "Enable Transcription",

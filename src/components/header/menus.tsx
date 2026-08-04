@@ -7,7 +7,6 @@ import {
   updateShowKeyboardShortcutsModal,
   updateShowRoomSettingsModal,
 } from '../../store/slices/roomSettingsSlice';
-// import DarkThemeSwitcher from './darkThemeSwitcher';
 
 interface IHeaderMenusProps {
   onOpenAlert(task: string): void;
@@ -20,15 +19,14 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
   return (
     <MenuItems
       unmount={false}
-      className="HeaderSettingMenu ltr:origin-top-right rtl:origin-top-left z-50 bg-white dark:bg-dark-primary absolute end-0 mt-2 w-[244px] shadow-dropdown-menu rounded-[15px] overflow-hidden border border-Gray-100 dark:border-Gray-700 p-2 ring-0 focus:outline-hidden"
+      anchor="bottom end"
+      transition
+      className="HeaderSettingMenu z-50 bg-white dark:bg-dark-primary w-[244px] shadow-dropdown-menu rounded-[15px] overflow-hidden border border-Gray-100 dark:border-Gray-700 p-2 ring-0 focus:outline-hidden focus-ring [--anchor-gap:8px] transition ease-out data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150"
     >
-      {/* <div className="dark-mode block md:hidden pt-1 pb-2">
-        <DarkThemeSwitcher />
-      </div>
-      <div className="divider block md:hidden h-1 w-[110%] bg-Gray-50 -ml-3 my-0.5"></div> */}
       <MenuItem>
         <button
-          className="h-9 md:h-10 w-full cursor-pointer flex items-center hover:bg-Gray-50 dark:hover:bg-dark-secondary2 text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 md:px-3 rounded-lg transition-all duration-300 relative"
+          type="button"
+          className="h-9 md:h-10 w-full cursor-pointer flex items-center hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 md:px-3 rounded-lg transition-all duration-300 relative"
           onClick={() => dispatch(updateShowRoomSettingsModal(true))}
         >
           <i className="pnm-settings text-primary-color dark:text-Blue2-500 text-base me-2 transition ease-in" />
@@ -38,7 +36,8 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
 
       <MenuItem>
         <button
-          className="h-9 md:h-10 w-full cursor-pointer flex items-center hover:bg-Gray-50 dark:hover:bg-dark-secondary2 text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 md:px-3 rounded-lg transition-all duration-300 relative"
+          type="button"
+          className="h-9 md:h-10 w-full cursor-pointer flex items-center hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 md:px-3 rounded-lg transition-all duration-300 relative"
           onClick={() => dispatch(updateShowKeyboardShortcutsModal(true))}
         >
           <i className="pnm-keyboard text-primary-color dark:text-Blue2-500 text-lg me-2 transition ease-in" />
@@ -48,7 +47,8 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
 
       <MenuItem>
         <button
-          className="h-9 md:h-10 w-full cursor-pointer flex items-center hover:bg-Gray-50 dark:hover:bg-dark-secondary2 text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 md:px-3 rounded-lg transition-all duration-300 relative"
+          type="button"
+          className="h-9 md:h-10 w-full cursor-pointer flex items-center hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 md:px-3 rounded-lg transition-all duration-300 relative"
           onClick={() => onOpenAlert('logout')}
         >
           <i className="pnm-logout text-primary-color dark:text-Blue2-500 text-lg me-2 transition ease-in" />
@@ -59,4 +59,4 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
   );
 };
 
-export default React.memo(HeaderMenus);
+export default HeaderMenus;

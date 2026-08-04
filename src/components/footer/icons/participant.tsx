@@ -29,6 +29,7 @@ const ParticipantIcon = () => {
   const wrapperClasses = clsx(
     'participants relative footer-icon cursor-pointer w-10 md:w-11 3xl:w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4',
     {
+      'focus-ring': true,
       'border-[rgba(124,206,247,0.25)] dark:border-Gray-800':
         isActiveParticipantsPanel,
       'border-transparent': !isActiveParticipantsPanel,
@@ -44,18 +45,19 @@ const ParticipantIcon = () => {
     },
   );
 
+  const tooltipText = isActiveParticipantsPanel
+    ? t('footer.icons.hide-users-list')
+    : t('footer.icons.show-users-list');
+
   return (
     <button
       type="button"
       className={wrapperClasses}
       onClick={toggleParticipantsPanel}
+      aria-label={tooltipText.toString()}
     >
       <div className={innerDivClasses}>
-        <span className="tooltip">
-          {isActiveParticipantsPanel
-            ? t('footer.icons.hide-users-list')
-            : t('footer.icons.show-users-list')}
-        </span>
+        <span className="tooltip">{tooltipText}</span>
         <ParticipantsIconSVG />
         {!isActiveParticipantsPanel && (
           <div className="unseen-message-count bg-secondary-color w-4 3xl:w-5 h-4 3xl:h-5 rounded-full text-[10px] 3xl:text-xs text-white absolute -top-2 -end-1 flex justify-center items-center">

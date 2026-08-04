@@ -143,19 +143,19 @@ const WaitingParticipantItem = ({
           <>
             <button
               onClick={handleApprove}
-              className="primary-button py-1 px-3 flex cursor-pointer items-center justify-center rounded-xl text-xs font-semibold text-white hover:text-Gray-950 bg-Blue hover:bg-white border border-[#0088CC] transition-all duration-300 shadow-button-shadow"
+              className="primary-button focus-ring py-1 px-3 flex cursor-pointer items-center justify-center rounded-xl text-xs font-semibold text-white hover:text-Gray-950 bg-Blue hover:bg-white border border-[#0088CC] transition-all duration-300 shadow-button-shadow"
             >
               {t('left-panel.approve')}
             </button>
             <button
               onClick={() => handleReject(false)}
-              className="py-1 px-3 flex cursor-pointer items-center justify-center rounded-xl text-xs font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow"
+              className="focus-ring py-1 px-3 flex cursor-pointer items-center justify-center rounded-xl text-xs font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow"
             >
               {t('left-panel.reject')}
             </button>
             <button
               onClick={() => handleReject(true)}
-              className="py-1 px-3 flex cursor-pointer items-center justify-center rounded-xl text-xs font-semibold text-white bg-Red-600 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow"
+              className="focus-ring py-1 px-3 flex cursor-pointer items-center justify-center rounded-xl text-xs font-semibold text-white bg-Red-600 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow"
             >
               {t('waiting-room.reject-and-block-user')}
             </button>

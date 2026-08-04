@@ -1,11 +1,5 @@
-import React, {
-  Fragment,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import { Menu, MenuButton, MenuItems, Transition } from '@headlessui/react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import { useAppSelector } from '../../store';
@@ -22,7 +16,6 @@ const ConnectionStatus = () => {
   );
   const [qualityStats, setQualityStats] = useState<QualityStats | null>(null);
   const [copied, setCopied] = useState(false);
-  const [isPolling, setIsPolling] = useState(false);
 
   const overallColor = useMemo(() => {
     if (!overallQuality) return '#9ca3af';
@@ -45,17 +38,10 @@ const ConnectionStatus = () => {
   }, []);
 
   useEffect(() => {
-    let interval: any;
-    if (isPolling) {
-      fetchStats();
-      interval = setInterval(fetchStats, 5000);
-    }
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [isPolling, fetchStats]);
+    fetchStats();
+    const interval = setInterval(fetchStats, 5000);
+    return () => clearInterval(interval);
+  }, [fetchStats]);
 
   const renderStat = (
     label: string,
@@ -87,115 +73,91 @@ const ConnectionStatus = () => {
   if (!overallQuality) return null;
 
   return (
-    <Menu as={Fragment}>
-      {({ open }) => (
-        <div className="relative">
-          <MenuButton
-            className={`flex items-center justify-center w-9 h-9 rounded-xl transition-all cursor-pointer
+    <Popover className="relative">
+      <PopoverButton
+        className="flex items-center justify-center w-9 h-9 rounded-xl transition-all cursor-pointer focus-ring data-[open]:bg-gray-200 data-[open]:dark:bg-Gray-700 data-[open]:scale-105 hover:bg-gray-100 dark:hover:bg-Gray-800"
+        aria-label={t('header.connection-status.title').toString()}
+      >
+        <i style={{ color: overallColor }} className="pnm-network text-lg" />
+      </PopoverButton>
+
+      <PopoverPanel
+        anchor="bottom end"
+        transition
+        className="z-10 w-72 rounded-2xl shadow-2xl pt-8 pb-4 px-4 !overflow-visible bg-white dark:bg-dark-primary border border-gray-200 dark:border-Gray-700 focus:outline-hidden [--anchor-gap:4px] transition ease-out data-[closed]:opacity-0 data-[closed]:scale-95 data-[enter]:duration-200 data-[leave]:duration-150"
+      >
+        {qualityStats ? (
+          <div className="flex flex-col gap-1">
+            {renderStat(
+              t('header.connection-status.overall-quality'),
+              t(
+                `header.connection-status.qualities.${qualityStats.overallQuality}`,
+              ),
+              t('header.connection-status.tooltips.overall-quality'),
+              getConnectionQualityColor(qualityStats.overallQuality),
+            )}
+
+            {renderStat(
+              t('header.connection-status.upload'),
+              t(
+                `header.connection-status.qualities.${qualityStats.uploadQuality}`,
+              ),
+              t('header.connection-status.tooltips.upload'),
+              getConnectionQualityColor(qualityStats.uploadQuality),
+            )}
+
+            {renderStat(
+              t('header.connection-status.download'),
+              t(
+                `header.connection-status.qualities.${qualityStats.receiveQuality}`,
+              ),
+              t('header.connection-status.tooltips.download'),
+              getConnectionQualityColor(qualityStats.receiveQuality),
+            )}
+
+            {renderStat(
+              t('header.connection-status.score'),
+              qualityStats.score.toFixed(2),
+              t('header.connection-status.tooltips.score'),
+            )}
+
+            {renderStat(
+              t('header.connection-status.packet-loss'),
+              `${qualityStats.rawPacketLoss.toFixed(2)}%`,
+              t('header.connection-status.tooltips.packet-loss'),
+            )}
+
+            {renderStat(
+              t('header.connection-status.rtt'),
+              `${qualityStats.rtt ? qualityStats.rtt.toFixed(2) : 0} ms`,
+              t('header.connection-status.tooltips.rtt'),
+            )}
+          </div>
+        ) : null}
+
+        <div className="flex justify-end mt-4">
+          <button
+            type="button"
+            onClick={handleCopy}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer focus-ring
               ${
-                open
-                  ? 'bg-gray-200 dark:bg-Gray-700 scale-105'
-                  : 'hover:bg-gray-100 dark:hover:bg-Gray-800'
+                copied
+                  ? 'bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200 scale-105'
+                  : 'bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-Gray-700 dark:text-white dark:hover:bg-Gray-600'
               }`}
           >
-            <i
-              style={{ color: overallColor }}
-              className="pnm-network text-lg"
-            />
-          </MenuButton>
-
-          <Transition
-            as={Fragment}
-            show={open}
-            enter="transition ease-out duration-200"
-            enterFrom="opacity-0 scale-95 -translate-y-1"
-            enterTo="opacity-100 scale-100 translate-y-0"
-            leave="transition ease-in duration-150"
-            leaveFrom="opacity-100 scale-100 translate-y-0"
-            leaveTo="opacity-0 scale-95 -translate-y-1"
-            afterEnter={() => setIsPolling(true)}
-            afterLeave={() => setIsPolling(false)}
-          >
-            <MenuItems
-              className="absolute z-10 mt-2 w-72 end-0
-              rounded-2xl shadow-2xl p-4
-              bg-white dark:bg-dark-primary
-              border border-gray-200 dark:border-Gray-700"
-            >
-              {qualityStats ? (
-                <div className="flex flex-col gap-1">
-                  {renderStat(
-                    t('header.connection-status.overall-quality'),
-                    t(
-                      `header.connection-status.qualities.${qualityStats.overallQuality}`,
-                    ),
-                    t('header.connection-status.tooltips.overall-quality'),
-                    getConnectionQualityColor(qualityStats.overallQuality),
-                  )}
-
-                  {renderStat(
-                    t('header.connection-status.upload'),
-                    t(
-                      `header.connection-status.qualities.${qualityStats.uploadQuality}`,
-                    ),
-                    t('header.connection-status.tooltips.upload'),
-                    getConnectionQualityColor(qualityStats.uploadQuality),
-                  )}
-
-                  {renderStat(
-                    t('header.connection-status.download'),
-                    t(
-                      `header.connection-status.qualities.${qualityStats.receiveQuality}`,
-                    ),
-                    t('header.connection-status.tooltips.download'),
-                    getConnectionQualityColor(qualityStats.receiveQuality),
-                  )}
-
-                  {renderStat(
-                    t('header.connection-status.score'),
-                    qualityStats.score.toFixed(2),
-                    t('header.connection-status.tooltips.score'),
-                  )}
-
-                  {renderStat(
-                    t('header.connection-status.packet-loss'),
-                    `${qualityStats.rawPacketLoss.toFixed(2)}%`,
-                    t('header.connection-status.tooltips.packet-loss'),
-                  )}
-
-                  {renderStat(
-                    t('header.connection-status.rtt'),
-                    `${qualityStats.rtt ? qualityStats.rtt.toFixed(2) : 0} ms`,
-                    t('header.connection-status.tooltips.rtt'),
-                  )}
-                </div>
-              ) : null}
-
-              <div className="flex justify-end mt-4">
-                <button
-                  onClick={handleCopy}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer
-                    ${
-                      copied
-                        ? 'bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200 scale-105'
-                        : 'bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-Gray-700 dark:text-white dark:hover:bg-Gray-600'
-                    }`}
-                >
-                  {copied ? (
-                    <>{t('breakout-room.copied')}</>
-                  ) : (
-                    <>
-                      <CopyIcon />
-                      {t('header.connection-status.copy')}
-                    </>
-                  )}
-                </button>
-              </div>
-            </MenuItems>
-          </Transition>
+            {copied ? (
+              <>{t('breakout-room.copied')}</>
+            ) : (
+              <>
+                <CopyIcon />
+                {t('header.connection-status.copy')}
+              </>
+            )}
+          </button>
         </div>
-      )}
-    </Menu>
+      </PopoverPanel>
+    </Popover>
   );
 };
 

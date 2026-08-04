@@ -118,6 +118,7 @@ const TextBoxArea = () => {
         setMessage(message);
       } finally {
         setIsSendingMsg(false);
+        textAreaRef.current?.focus();
       }
     }
   }, [conn, message, selectedChatOption, isSendingMsg, isMsgSendingLocked]);

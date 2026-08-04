@@ -1,4 +1,5 @@
 import React, { ReactElement, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Menu, MenuButton, MenuItems } from '@headlessui/react';
 
 import MicMenuItem from './menu-items/mic';
@@ -26,6 +27,7 @@ const MenuIcon = ({
   isAdmin,
   openRemoveParticipantAlert,
 }: IMenuIconProps) => {
+  const { t } = useTranslation();
   const defaultLockSettings = useAppSelector(
     (state) => state.session.currentRoom.metadata?.defaultLockSettings,
   );
@@ -85,7 +87,10 @@ const MenuIcon = ({
   return (
     <IconWrapper>
       <Menu as="div" className="flex items-center">
-        <MenuButton className="relative shrink-0 cursor-pointer dark:text-white">
+        <MenuButton
+          className="relative shrink-0 cursor-pointer dark:text-white focus-ring"
+          aria-label={t('participant-menu').toString()}
+        >
           <ParticipantsMenuIconSVG />
         </MenuButton>
         <MenuItems

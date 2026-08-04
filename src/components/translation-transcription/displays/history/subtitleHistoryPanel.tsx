@@ -140,20 +140,23 @@ const SubtitleHistoryPanel = ({
         <div className="right flex items-center justify-center gap-3">
           {showScrollDownBtn && (
             <button
-              className="w-5 h-5 flex items-center justify-center cursor-pointer"
+              aria-label={t('speech-services.scroll-to-bottom')}
+              className="focus-ring w-5 h-5 flex items-center justify-center cursor-pointer"
               onClick={() => forceScrollToBottom()}
             >
               <ScrollToBottomIconSVG />
             </button>
           )}
           <button
-            className="w-5 h-5 flex items-center justify-center cursor-pointer"
+            aria-label={t('speech-services.download-transcript')}
+            className="focus-ring w-5 h-5 flex items-center justify-center cursor-pointer"
             onClick={() => downloadTexts()}
           >
             <DownloadIconSVG />
           </button>
           <button
-            className="w-5 h-5 flex items-center justify-center cursor-pointer"
+            aria-label={t('close')}
+            className="focus-ring w-5 h-5 flex items-center justify-center cursor-pointer"
             onClick={() => setShowPopover(!showPopover)}
           >
             <CloseIconSVG />

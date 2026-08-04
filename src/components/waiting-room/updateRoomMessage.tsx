@@ -103,7 +103,7 @@ const UpdateRoomMessage = () => {
         value={message}
         onChange={(e) => setMessage(e.currentTarget.value)}
         disabled={isUpdating}
-        className="border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-dark-primary shadow-input block px-3 py-2 w-full h-20 rounded-[15px] outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-gray-950 dark:text-white"
+        className="border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-dark-primary shadow-input block px-3 py-2 w-full h-20 rounded-[15px] outline-hidden focus-ring focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-gray-950 dark:text-white"
       ></textarea>
       <div className="flex items-center justify-between mt-2 gap-4">
         <div className="flex-1 text-left">
@@ -122,7 +122,7 @@ const UpdateRoomMessage = () => {
         <button
           onClick={updateRoomMsg}
           disabled={isUpdating || message === ''}
-          className="primary-button h-9 cursor-pointer px-5 text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="primary-button focus-ring h-9 cursor-pointer px-5 text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isUpdating && (
             <LoadingIcon className="w-4 h-4 animate-spin" fillColor="#fff" />

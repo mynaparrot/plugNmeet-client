@@ -508,7 +508,8 @@ body[dir='rtl'] span.tooltip.tooltip-left::before {
   right: 45px !important;
 }
 
-.has-tooltip:hover .tooltip {
+.has-tooltip:hover .tooltip,
+.has-tooltip:has(:focus-visible) .tooltip {
   @apply visible z-[9];
 }
 

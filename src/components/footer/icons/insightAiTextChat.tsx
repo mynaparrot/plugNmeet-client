@@ -30,6 +30,10 @@ const InsightsAiTextChatIcon = () => {
     dispatch(updateIsActiveInsightsAiTextChat(!isActiveAiTextChat));
   }, [dispatch, isActiveAiTextChat]);
 
+  const tooltipText = isActiveAiTextChat
+    ? t('footer.icons.hide-ai-chat-panel')
+    : t('footer.icons.show-ai-chat-panel');
+
   if (!isEnabled) {
     return null;
   }
@@ -40,6 +44,7 @@ const InsightsAiTextChatIcon = () => {
       'border-[rgba(124,206,247,0.25)] dark:border-Gray-800':
         isActiveAiTextChat,
       'border-transparent': !isActiveAiTextChat,
+      'focus-ring': true,
     },
   );
 
@@ -53,16 +58,17 @@ const InsightsAiTextChatIcon = () => {
   );
 
   return (
-    <div className={wrapperClasses} onClick={togglePanel}>
+    <button
+      type="button"
+      className={wrapperClasses}
+      onClick={togglePanel}
+      aria-label={tooltipText.toString()}
+    >
       <div className={innerDivClasses}>
-        <span className="tooltip">
-          {isActiveAiTextChat
-            ? t('footer.icons.hide-ai-chat-panel')
-            : t('footer.icons.show-ai-chat-panel')}
-        </span>
+        <span className="tooltip">{tooltipText}</span>
         <AiIconSVG classes="h-auto w-4 3xl:w-5" />
       </div>
-    </div>
+    </button>
   );
 };
 

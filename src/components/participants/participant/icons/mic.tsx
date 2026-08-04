@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Menu, MenuButton, MenuItems, Transition } from '@headlessui/react';
 import { debounce } from 'es-toolkit';
 
@@ -18,6 +19,7 @@ interface MicIconProps {
 }
 
 const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
+  const { t } = useTranslation();
   const audioTracks = useAppSelector(
     (state) => participantsSelector.selectById(state, userId)?.audioTracks,
   );
@@ -66,7 +68,10 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
         <Menu>
           {({ open }) => (
             <>
-              <MenuButton>
+              <MenuButton
+                className="flex items-center justify-center cursor-pointer focus-ring"
+                aria-label={t('participant-volume').toString()}
+              >
                 {volume ? (
                   <Microphone classes="h-3 3xl:h-4 w-auto cursor-pointer dark:text-white" />
                 ) : (
@@ -95,13 +100,16 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
                     <p className="w-10 text-center text-sm dark:text-white">
                       {Math.round(volume * 100)}
                     </p>
-                    <button className="w-5 h-5">
+                    <span
+                      aria-hidden="true"
+                      className="w-5 h-5 flex items-center justify-center"
+                    >
                       {volume ? (
                         <Microphone classes="h-3 3xl:h-4 w-auto dark:text-white" />
                       ) : (
                         <MicrophoneOff classes="h-3 3xl:h-4 w-auto" />
                       )}
-                    </button>
+                    </span>
                   </section>
                 </MenuItems>
               </Transition>
@@ -110,7 +118,7 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
         </Menu>
       </div>
     );
-  }, [volume]);
+  }, [volume, t]);
 
   const render = useMemo(() => {
     if (audioTracks > 0) {

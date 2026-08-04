@@ -6,12 +6,8 @@ import React, {
   useState,
 } from 'react';
 import { toast } from 'react-toastify';
-import {
-  Popover,
-  PopoverButton,
-  PopoverPanel,
-  Transition,
-} from '@headlessui/react';
+import { useTranslation } from 'react-i18next';
+import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import clsx from 'clsx';
 
 import NewPoll from './newPoll';
@@ -24,6 +20,7 @@ import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
 import { NotifyIconSVG } from '../../../assets/Icons/NotifyIconSVG';
 
 const UserNotifications = () => {
+  const { t } = useTranslation();
   const toastId = useRef<number | string>('toastId');
   const userNotifications = useAppSelector(
     (state) => state.roomSettings.userNotifications,
@@ -129,67 +126,70 @@ const UserNotifications = () => {
       {({ open, close }) => (
         <>
           <PopoverButton
-            className={`w-7 md:w-8 h-7 md:h-8 flex items-center justify-center rounded-[10px] cursor-pointer ${open ? 'bg-Gray-50 dark:bg-Gray-800' : ''}`}
+            className={`w-7 md:w-8 h-7 md:h-8 flex items-center justify-center rounded-[10px] cursor-pointer focus-ring ${open ? 'bg-Gray-50 dark:bg-Gray-800' : ''}`}
           >
             {displayIcon(open)}
           </PopoverButton>
-          <Transition show={open}>
+          <PopoverPanel
+            transition
+            className={clsx([
+              'side-panel-bg-color notifications-panel fixed w-[300px] 3xl:w-[340px] end-0 h-[calc(100%-110px)] 3xl:h-[calc(100%-144px)] top-[54px] 3xl:top-[68px] bg-Gray-25 dark:bg-dark-primary border-s border-Gray-200 dark:border-Gray-800',
+              'flex flex-col',
+              'transition ease-out',
+              'data-[closed]:opacity-0',
+              'data-[enter]:duration-300 ltr:data-[enter]:data-[closed]:translate-x-full rtl:data-[enter]:data-[closed]:-translate-x-full',
+              'data-[leave]:duration-300 ltr:data-[leave]:data-[closed]:translate-x-full rtl:data-[leave]:data-[closed]:-translate-x-full',
+            ])}
+          >
+            <div className="top flex items-center justify-between h-10 px-3 border-b border-Gray-200 dark:border-Gray-800">
+              <p className="text-sm text-Gray-950 dark:text-white font-medium leading-tight">
+                {t('notifications.title')}
+              </p>
+              <button
+                type="button"
+                aria-label={t('close').toString()}
+                className="close cursor-pointer focus-ring"
+                onClick={() => {
+                  close();
+                }}
+              >
+                <PopupCloseSVGIcon classes="text-Gray-600" />
+              </button>
+            </div>
             <div
-              className={clsx([
-                // Base styles
-                'side-panel-bg-color notifications-panel fixed transition ease-in-out w-[300px] 3xl:w-[340px] end-0 h-[calc(100%-110px)] 3xl:h-[calc(100%-144px)] top-[54px] 3xl:top-[68px] bg-Gray-25 dark:bg-dark-primary border-s border-Gray-200 dark:border-Gray-800',
-                // Shared closed styles
-                'data-closed:opacity-0',
-                // Entering styles
-                'data-enter:duration-300 ltr:data-enter:data-closed:translate-x-full rtl:data-enter:data-closed:-translate-x-full',
-                // Leaving styles
-                'data-leave:duration-300 ltr:data-leave:data-closed:translate-x-full rtl:data-leave:data-closed:-translate-x-full',
-              ])}
+              className="scrollBar overflow-auto h-[calc(100vh-148px)] 3xl:h-[calc(100vh-184px)] py-4"
+              tabIndex={0}
             >
-              <PopoverPanel className="flex flex-col">
-                <div className="top flex items-center justify-between h-10 px-3 border-b border-Gray-200 dark:border-Gray-800">
-                  <p className="text-sm text-Gray-950 dark:text-white font-medium leading-tight">
-                    Notifications
-                  </p>
-                  <div
-                    className="close cursor-pointer"
-                    onClick={async () => {
-                      close();
-                    }}
-                  >
-                    <PopupCloseSVGIcon classes="text-Gray-600" />
-                  </div>
-                </div>
-                <div className="scrollBar overflow-auto h-[calc(100vh-148px)] 3xl:h-[calc(100vh-184px)] py-4">
-                  <div className="inner grid gap-2">
-                    {reversedNotifications.map((notif) => {
-                      switch (notif.notificationCat) {
-                        case 'new-poll-created':
-                          return (
-                            <NewPoll
-                              key={notif.created}
-                              createdAt={notif.created}
-                              onClosePopover={close}
-                            />
-                          );
-                        case 'breakout-room-invitation':
-                          return (
-                            <NewBreakoutRoom
-                              key={notif.created}
-                              receivedInvitationFor={notif.data}
-                              createdAt={notif.created}
-                            />
-                          );
-                        default:
-                          return (
-                            <GenericNotification
-                              key={notif.created}
-                              notification={notif}
-                            />
-                          );
-                      }
-                    })}
-                    {/* <div className="notification flex gap-4 py-2 px-4 border-b border-Gray-200">
+              <ul className="inner grid gap-2 list-none">
+                {reversedNotifications.map((notif) => {
+                  switch (notif.notificationCat) {
+                    case 'new-poll-created':
+                      return (
+                        <li key={notif.created}>
+                          <NewPoll
+                            createdAt={notif.created}
+                            onClosePopover={close}
+                          />
+                        </li>
+                      );
+                    case 'breakout-room-invitation':
+                      return (
+                        <li key={notif.created}>
+                          <NewBreakoutRoom
+                            receivedInvitationFor={notif.data}
+                            createdAt={notif.created}
+                          />
+                        </li>
+                      );
+                    default:
+                      return (
+                        <li key={notif.created}>
+                          <GenericNotification notification={notif} />
+                        </li>
+                      );
+                  }
+                })}
+                {/* <div className="notification flex gap-4 py-2 px-4 border-b border-Gray-200">
                       <div className="name w-9 h-9 rounded-xl bg-Blue2-700 text-sm font-medium uppercase text-white relative inline-flex items-center justify-center">
                         NB
                         <span className="w-5 h-5 bg-Gray-100 border border-white inline-flex items-center justify-center p-[2px] rounded-full absolute -bottom-1 -right-1 text-Blue2-700">
@@ -317,11 +317,9 @@ const UserNotifications = () => {
                         <span className="text-Gray-800 text-xs">12:04 AM</span>
                       </div>
                     </div> */}
-                  </div>
-                </div>
-              </PopoverPanel>
+              </ul>
             </div>
-          </Transition>
+          </PopoverPanel>
         </>
       )}
     </Popover>

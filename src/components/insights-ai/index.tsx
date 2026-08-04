@@ -94,9 +94,9 @@ const InsightsAiSettingsModal = () => {
           )}
           {tabItems.length > 0 && (
             <Tabs
+              key={tabItems.length}
               uniqueKey="insightsAiSettingsModal"
               items={tabItems}
-              vertical
             />
           )}
         </div>

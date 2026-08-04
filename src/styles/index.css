@@ -25,6 +25,22 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@utility sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+@utility focus-ring {
+  @apply focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-Blue;
+}
+
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still

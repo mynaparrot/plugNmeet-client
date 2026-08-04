@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import FooterMenuItem from './menuItem';
 import { store, useAppDispatch, useAppSelector } from '../../../../store';
 import useSharedNotepad from './hooks/useSharedNotepad';
 import usePolls from './hooks/usePolls';
@@ -25,6 +24,7 @@ import { PollsIconSVG } from '../../../../assets/Icons/PollsIconSVG';
 import { BreakoutRoomIconSVG } from '../../../../assets/Icons/BreakoutRoomIconSVG';
 import { RoomLockIconSVG } from '../../../../assets/Icons/RoomLockIconSVG';
 import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
+import MenuItemHelper from './menuItemHelper';
 
 const AdminMenus = () => {
   const dispatch = useAppDispatch();
@@ -77,7 +77,7 @@ const AdminMenus = () => {
     <>
       {roomFeatures?.insightsFeatures?.isAllow &&
         roomFeatures?.insightsFeatures?.aiFeatures?.isAllow && (
-          <FooterMenuItem
+          <MenuItemHelper
             onClick={openInsightsAISettingsModal}
             icon={<AiIconSVG classes="w-6" />}
             text={t('footer.menus.ai-settings')}
@@ -85,20 +85,20 @@ const AdminMenus = () => {
         )}
       {roomFeatures?.externalBroadcastingFeatures?.isAllow &&
         roomFeatures?.externalBroadcastingFeatures?.isAllowRtmp && (
-          <FooterMenuItem
+          <MenuItemHelper
             onClick={openRtmpModal}
-            isActive={isActiveRtmpBroadcasting}
             icon={<RTMPIconSVG />}
             text={
               isActiveRtmpBroadcasting
                 ? t('footer.icons.stop-rtmp-broadcasting')
                 : t('footer.icons.start-rtmp-broadcasting')
             }
+            isActive={isActiveRtmpBroadcasting}
           />
         )}
       {roomFeatures?.insightsFeatures?.isAllow &&
         roomFeatures?.insightsFeatures?.transcriptionFeatures?.isAllow && (
-          <FooterMenuItem
+          <MenuItemHelper
             onClick={openSpeechServiceSettingsModal}
             icon={<SpeechIconSVG classes="w-6" />}
             text={t('footer.menus.speech-to-text-settings')}
@@ -106,73 +106,73 @@ const AdminMenus = () => {
         )}
       <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ms-3 my-0.5"></div>
       {roomFeatures?.pollsFeatures?.isAllow && (
-        <FooterMenuItem
+        <MenuItemHelper
           onClick={togglePolls}
-          isActive={isActivePoll}
           icon={<PollsIconSVG classes="" />}
           text={
             isActivePoll
               ? t('footer.menus.disable-polls')
               : t('footer.menus.enable-polls')
           }
+          isActive={isActivePoll}
         />
       )}
       {roomFeatures?.externalMediaPlayerFeatures?.isAllow && (
-        <FooterMenuItem
+        <MenuItemHelper
           onClick={toggleExternalMediaPlayer}
-          isActive={isActiveExternalMediaPlayer}
           icon={<PlayerIconSVG />}
           text={
             isActiveExternalMediaPlayer
               ? t('footer.menus.stop-external-media-player')
               : t('footer.menus.start-external-media-player')
           }
+          isActive={isActiveExternalMediaPlayer}
         />
       )}
       {roomFeatures?.displayExternalLinkFeatures?.isAllow && (
-        <FooterMenuItem
+        <MenuItemHelper
           onClick={toggleDisplayExternalLinkModal}
-          isActive={isActiveDisplayExternalLink}
           icon={<ExternalPlayerIconSVG />}
           text={
             isActiveDisplayExternalLink
               ? t('footer.menus.stop-display-external-link')
               : t('footer.menus.start-display-external-link')
           }
+          isActive={isActiveDisplayExternalLink}
         />
       )}
       {roomFeatures?.sharedNotePadFeatures?.isAllow && (
-        <FooterMenuItem
+        <MenuItemHelper
           onClick={toggleSharedNotepad}
-          isActive={sharedNotepadStatus}
           icon={<SharedNotepadIconSVG />}
           text={
             sharedNotepadStatus
               ? t('footer.menus.disable-shared-notepad')
               : t('footer.menus.enable-shared-notepad')
           }
+          isActive={sharedNotepadStatus}
         />
       )}
       <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ms-3 my-0.5"></div>
-      <FooterMenuItem
+      <MenuItemHelper
         onClick={muteAllUsers}
         icon={<i className="pnm-mic-mute" />}
         text={t('footer.menus.mute-all-users')}
       />
-      <FooterMenuItem
+      <MenuItemHelper
         onClick={openLockSettingsModal}
         icon={<RoomLockIconSVG />}
         text={t('footer.menus.room-lock-settings')}
       />
       {roomFeatures?.waitingRoomFeatures?.isActive && (
-        <FooterMenuItem
+        <MenuItemHelper
           onClick={openManageWaitingRoomModal}
           icon={<i className="pnm-waiting-room" />}
           text={t('footer.menus.manage-waiting-room')}
         />
       )}
       {roomFeatures?.breakoutRoomFeatures?.isAllow && (
-        <FooterMenuItem
+        <MenuItemHelper
           onClick={openManageBreakoutRoomModal}
           icon={<BreakoutRoomIconSVG classes="w-6 h-auto" />}
           text={t('footer.menus.manage-breakout-room')}

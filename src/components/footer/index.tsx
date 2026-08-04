@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { store } from '../../store';
 import { useHybridLockForwarder } from '../../helpers/nativeBridge';
@@ -20,6 +21,8 @@ import Translation from './icons/translation';
 import InsightsAiTextChatIcon from './icons/insightAiTextChat';
 
 const Footer = () => {
+  const { t } = useTranslation();
+
   const { isAdmin, isRecorder, allowChat } = useMemo(() => {
     const { currentRoom, currentUser } = store.getState().session;
     return {
@@ -35,6 +38,7 @@ const Footer = () => {
   return (
     <footer
       id="main-footer"
+      aria-label={t('footer.aria-label').toString()}
       className={`px-2 md:px-4 flex items-center justify-between bg-Gray-25 dark:border-Gray-800 dark:bg-dark-primary h-[54px] 3xl:h-[76px] border-t border-Gray-200 relative z-[100] ${
         isRecorder ? 'hidden' : ''
       }`}

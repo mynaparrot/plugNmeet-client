@@ -10,6 +10,9 @@ interface ILoadingProps {
 const Loading = ({ text }: ILoadingProps) => {
   return (
     <div
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
       className={`loader opacity-100 fixed top-0 start-0 w-full h-full bg-Gray-100 dark:bg-dark-primary z-999 flex flex-wrap items-center justify-center`}
     >
       <div

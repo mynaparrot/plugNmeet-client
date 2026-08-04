@@ -321,6 +321,7 @@ const WebcamIcon = () => {
   const iconDivClasses = clsx(
     'w-[32px] md:w-[36px] 3xl:w-[42px] h-full relative flex items-center justify-center cursor-pointer',
     {
+      'focus-ring': true,
       'has-tooltip': showTooltip,
       'cursor-not-allowed opacity-50':
         hybrid && !nativeAvailable && !isWebcamLocked,
@@ -335,6 +336,7 @@ const WebcamIcon = () => {
             type="button"
             className={iconDivClasses}
             onClick={() => toggleWebcam()}
+            aria-label={getTooltipText()}
           >
             <span className="tooltip">{getTooltipText()}</span>
             {renderIcon()}

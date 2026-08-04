@@ -1,11 +1,10 @@
-import React, { Fragment } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Listbox,
   ListboxButton,
   ListboxOption,
   ListboxOptions,
-  Transition,
 } from '@headlessui/react';
 import { createSelector } from '@reduxjs/toolkit';
 
@@ -116,6 +115,14 @@ const ChatTabs = ({ isRecorder }: ChatTabsProps) => {
     dispatch(setActiveSidePanel(null));
   };
 
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      closeBtnRef.current?.focus();
+    }, 350);
+    return () => clearTimeout(timer);
+  }, []);
+
   if (isRecorder) {
     return (
       <div className="h-full">
@@ -137,13 +144,19 @@ const ChatTabs = ({ isRecorder }: ChatTabsProps) => {
           </p>
           <ChatTranslation />
         </div>
-        <div className="text-Gray-600 cursor-pointer" onClick={closePanel}>
+        <button
+          ref={closeBtnRef}
+          type="button"
+          aria-label={t('close').toString()}
+          className="text-Gray-600 cursor-pointer focus-ring"
+          onClick={closePanel}
+        >
           <CloseIconSVG />
-        </div>
+        </button>
       </div>
       <Listbox value={selectedChatOption} onChange={onChange}>
         <div className="relative z-10 chat-tabs">
-          <ListboxButton className="flex items-center justify-between border-y border-Gray-200 dark:border-Gray-800 h-8 3xl:h-10 w-full outline-hidden px-3 3xl:px-5 text-xs 3xl:text-sm text-Gray-700 dark:text-dark-text cursor-pointer">
+          <ListboxButton className="flex items-center justify-between border-y border-Gray-200 dark:border-Gray-800 h-8 3xl:h-10 w-full outline-hidden focus-ring px-3 3xl:px-5 text-xs 3xl:text-sm text-Gray-700 dark:text-dark-text cursor-pointer">
             <p className="block truncate">
               To:{' '}
               <span className="font-medium text-Gray-950 dark:text-white">
@@ -159,47 +172,43 @@ const ChatTabs = ({ isRecorder }: ChatTabsProps) => {
               <DropdownIconSVG />
             </span>
           </ListboxButton>
-          <Transition
-            as={Fragment}
-            leave="transition ease-in duration-100"
-            leaveFrom="opacity-100 z-90"
-            leaveTo="opacity-0"
+          <ListboxOptions
+            transition
+            className="absolute max-h-60 w-[calc(100%-8px)] start-1 border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary shadow-lg rounded-2xl overflow-hidden p-2 transition ease-out data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75"
           >
-            <ListboxOptions className="absolute max-h-60 w-[calc(100%-8px)] start-1 border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary shadow-lg rounded-2xl overflow-hidden p-2">
-              <div className="title h-8 w-full flex items-center text-xs leading-none text-Gray-700 dark:text-dark-text px-3 uppercase">
-                {t('left-panel.select-chat-conversation-title')}
-              </div>
-              {chatOptions.map((option) => (
-                <ListboxOption
-                  key={option.id}
-                  className={({ focus, selected }) =>
-                    `h-8 w-full cursor-pointer flex items-center text-sm gap-2 leading-none 3xl:font-medium text-Gray-950 dark:text-dark-text px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2 relative ${
-                      focus ? 'bg-Gray-50 dark:bg-dark-secondary2' : ''
-                    } ${selected ? 'bg-Gray-50 dark:bg-dark-secondary2' : ''}`
-                  }
-                  value={option.id}
-                >
-                  {({ selected }) => (
-                    <>
-                      <span>
-                        {option.title}
-                        {option.hasUnread && (
-                          <span className="shake ps-2">
-                            <i className="pnm-chat shake" />
-                          </span>
-                        )}
-                      </span>
-                      {selected && (
-                        <span className="end absolute end-3">
-                          <CheckMarkIcon />
+            <div className="title h-8 w-full flex items-center text-xs leading-none text-Gray-700 dark:text-dark-text px-3 uppercase">
+              {t('left-panel.select-chat-conversation-title')}
+            </div>
+            {chatOptions.map((option) => (
+              <ListboxOption
+                key={option.id}
+                className={({ focus, selected }) =>
+                  `h-8 w-full cursor-pointer flex items-center text-sm gap-2 leading-none 3xl:font-medium text-Gray-950 dark:text-dark-text px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2 relative ${
+                    focus ? 'bg-Gray-50 dark:bg-dark-secondary2' : ''
+                  } ${selected ? 'bg-Gray-50 dark:bg-dark-secondary2' : ''}`
+                }
+                value={option.id}
+              >
+                {({ selected }) => (
+                  <>
+                    <span>
+                      {option.title}
+                      {option.hasUnread && (
+                        <span className="shake ps-2">
+                          <i className="pnm-chat shake" />
                         </span>
                       )}
-                    </>
-                  )}
-                </ListboxOption>
-              ))}
-            </ListboxOptions>
-          </Transition>
+                    </span>
+                    {selected && (
+                      <span className="end absolute end-3">
+                        <CheckMarkIcon />
+                      </span>
+                    )}
+                  </>
+                )}
+              </ListboxOption>
+            ))}
+          </ListboxOptions>
         </div>
       </Listbox>
       <div className="flex-1 min-h-0 chat-messages-container">

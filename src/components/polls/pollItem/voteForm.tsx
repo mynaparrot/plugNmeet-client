@@ -125,6 +125,9 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
         barColor = 'rgba(0, 161, 242, 0.2)'; // green for high percentages
       }
       elms.push(
+        // Keyboard users interact with the nested radio input/label below, which
+        // already emits the click this wrapper listens for.
+        // oxlint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
         <div
           key={`option-${pollDataWithOption.pollId}-${o.id}`}
           className="relative flex items-center border border-Gray-300 dark:border-Gray-600 min-h-[38px] bg-white dark:bg-dark-secondary shadow-button-shadow dark:shadow-none rounded-xl px-2 overflow-hidden my-2 cursor-pointer"

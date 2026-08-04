@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo } from 'react';
+import { useMemo } from 'react';
 import {
   Field,
   Label,
@@ -6,7 +6,6 @@ import {
   ListboxButton,
   ListboxOption,
   ListboxOptions,
-  Transition,
 } from '@headlessui/react';
 
 import { DropdownIconSVG } from '../../assets/Icons/DropdownIconSVG';
@@ -81,7 +80,7 @@ const Dropdown = ({
             >
               <ListboxButton
                 id={id}
-                className={`min-h-10 full cursor-pointer rounded-[8px] border border-Gray-300 dark:border-Gray-800 bg-white shadow-input w-full px-3 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-start text-sm dark:bg-transparent dark:text-white ${
+                className={`min-h-10 full cursor-pointer rounded-[8px] border border-Gray-300 dark:border-Gray-800 bg-white shadow-input w-full px-3 py-1 outline-hidden focus-ring focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-start text-sm dark:bg-transparent dark:text-white ${
                   disabled ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >
@@ -94,44 +93,35 @@ const Dropdown = ({
                   <DropdownIconSVG />
                 </span>
               </ListboxButton>
-              <Transition
-                as={Fragment}
-                leave="transition ease-in duration-100"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
+              <ListboxOptions
+                transition
+                className="absolute z-20 mt-1 max-h-60 w-72 end-0 overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdown-menu border border-Gray-100 dark:border-Gray-800 focus:outline-hidden scrollBar scrollBar2 grid gap-0.5 dark:bg-dark-secondary transition ease-out data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75"
               >
-                <ListboxOptions
-                  static
-                  className="absolute z-20 mt-1 max-h-60 w-72 end-0 overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdown-menu border border-Gray-100 dark:border-Gray-800 focus:outline-hidden scrollBar scrollBar2 grid gap-0.5 dark:bg-dark-secondary"
-                >
-                  {options.map((option) => (
-                    <ListboxOption
-                      key={option.value.toString() + option.text}
-                      value={option.value}
-                      className={({ focus, selected }) =>
-                        `relative select-none py-2 px-3 rounded-[8px] cursor-pointer dark:text-white dark:hover:bg-dark-secondary2 ${
-                          focus || selected
-                            ? 'bg-Blue2-50 dark:bg-dark-secondary2'
-                            : 'dark:text-white'
-                        }`
-                      }
-                    >
-                      {({ selected }) => (
-                        <>
-                          <span className={`block truncate`}>
-                            {option.text}
+                {options.map((option) => (
+                  <ListboxOption
+                    key={option.value.toString() + option.text}
+                    value={option.value}
+                    className={({ focus, selected }) =>
+                      `relative select-none py-2 px-3 rounded-[8px] cursor-pointer dark:text-white dark:hover:bg-dark-secondary2 ${
+                        focus || selected
+                          ? 'bg-Blue2-50 dark:bg-dark-secondary2'
+                          : 'dark:text-white'
+                      }`
+                    }
+                  >
+                    {({ selected }) => (
+                      <>
+                        <span className={`block truncate`}>{option.text}</span>
+                        {selected && (
+                          <span className="absolute inset-y-0 end-0 flex items-center pe-3 text-Blue2-500 dark:text-white">
+                            <CheckMarkIcon />
                           </span>
-                          {selected && (
-                            <span className="absolute inset-y-0 end-0 flex items-center pe-3 text-Blue2-500 dark:text-white">
-                              <CheckMarkIcon />
-                            </span>
-                          )}
-                        </>
-                      )}
-                    </ListboxOption>
-                  ))}
-                </ListboxOptions>
-              </Transition>
+                        )}
+                      </>
+                    )}
+                  </ListboxOption>
+                ))}
+              </ListboxOptions>
             </div>
           </Listbox>
         </div>
@@ -159,7 +149,7 @@ const Dropdown = ({
         <div className="relative w-full">
           <ListboxButton
             id={id}
-            className={`min-h-10 full cursor-pointer rounded-[8px] border border-Gray-300 dark:border-Gray-800 bg-white shadow-input w-full px-3 py-1 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-start text-sm dark:bg-transparent dark:text-white ${
+            className={`min-h-10 full cursor-pointer rounded-[8px] border border-Gray-300 dark:border-Gray-800 bg-white shadow-input w-full px-3 py-1 outline-hidden focus-ring focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-start text-sm dark:bg-transparent dark:text-white ${
               disabled ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
@@ -172,42 +162,35 @@ const Dropdown = ({
               <DropdownIconSVG />
             </span>
           </ListboxButton>
-          <Transition
-            as={Fragment}
-            leave="transition ease-in duration-100"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
+          <ListboxOptions
+            transition
+            className="absolute z-20 mt-1 max-h-60 w-full end-0 overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdown-menu border border-Gray-100 dark:border-Gray-800 focus:outline-hidden scrollBar scrollBar2 grid gap-0.5 dark:bg-dark-secondary transition ease-out data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75"
           >
-            <ListboxOptions
-              static
-              className="absolute z-20 mt-1 max-h-60 w-full end-0 overflow-auto rounded-[15px] bg-white p-1 text-sm shadow-dropdown-menu border border-Gray-100 dark:border-Gray-800 focus:outline-hidden scrollBar scrollBar2 grid gap-0.5 dark:bg-dark-secondary"
-            >
-              {options.map((option) => (
-                <ListboxOption
-                  key={option.value.toString() + option.text}
-                  value={option.value}
-                  className={({ focus, selected }) =>
-                    `relative select-none py-2 px-3 rounded-[8px] cursor-pointer dark:text-white dark:hover:bg-dark-secondary2 ${
-                      focus || selected
-                        ? 'bg-Blue2-50 dark:bg-dark-secondary2'
-                        : 'dark:text-white'
-                    }`
-                  }
-                >
-                  {({ selected }) => (
-                    <>
-                      <span className={`block truncate`}>{option.text}</span>
-                      {selected && (
-                        <span className="absolute inset-y-0 end-0 flex items-center pe-3 text-Blue2-500 dark:text-white">
-                          <CheckMarkIcon />
-                        </span>
-                      )}
-                    </>
-                  )}
-                </ListboxOption>
-              ))}
-            </ListboxOptions>
-          </Transition>
+            {options.map((option) => (
+              <ListboxOption
+                key={option.value.toString() + option.text}
+                value={option.value}
+                className={({ focus, selected }) =>
+                  `relative select-none py-2 px-3 rounded-[8px] cursor-pointer dark:text-white dark:hover:bg-dark-secondary2 ${
+                    focus || selected
+                      ? 'bg-Blue2-50 dark:bg-dark-secondary2'
+                      : 'dark:text-white'
+                  }`
+                }
+              >
+                {({ selected }) => (
+                  <>
+                    <span className={`block truncate`}>{option.text}</span>
+                    {selected && (
+                      <span className="absolute inset-y-0 end-0 flex items-center pe-3 text-Blue2-500 dark:text-white">
+                        <CheckMarkIcon />
+                      </span>
+                    )}
+                  </>
+                )}
+              </ListboxOption>
+            ))}
+          </ListboxOptions>
         </div>
       </Listbox>
     </Field>

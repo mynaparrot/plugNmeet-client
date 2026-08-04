@@ -18,6 +18,7 @@ interface RangeSliderProps {
   filledColor?: string;
   emptyColor?: string;
   thumbColor?: string;
+  label?: string;
 }
 
 const RangeSlider = ({
@@ -30,6 +31,7 @@ const RangeSlider = ({
   filledColor = 'linear-gradient(90deg, #F0F8FC 0%, #BAE3F7 25%, #32B7FA 50%, #00A1F2 75%, #0088CC 100%)',
   emptyColor = 'rgba(225, 237, 250, 1)',
   thumbColor = '#fff',
+  label,
 }: RangeSliderProps) => {
   const { i18n } = useTranslation();
   const [internalValue, setInternalValue] = useState<number>(propValue);
@@ -107,6 +109,51 @@ const RangeSlider = ({
     updateValueFromPosition(e.touches[0].clientX);
   };
 
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      const step = Math.max(1, Math.round((max - min) / 100));
+      let newValue = value;
+      switch (e.key) {
+        case 'ArrowRight':
+        case 'ArrowUp':
+          e.preventDefault();
+          newValue = Math.min(
+            max,
+            value +
+              (i18n.dir() === 'rtl' && e.key === 'ArrowRight' ? -step : step),
+          );
+          break;
+        case 'ArrowLeft':
+        case 'ArrowDown':
+          e.preventDefault();
+          newValue = Math.max(
+            min,
+            value -
+              (i18n.dir() === 'rtl' && e.key === 'ArrowLeft' ? -step : step),
+          );
+          break;
+        case 'Home':
+          e.preventDefault();
+          newValue = min;
+          break;
+        case 'End':
+          e.preventDefault();
+          newValue = max;
+          break;
+        default:
+          return;
+      }
+      if (newValue !== value) {
+        if (onChange) {
+          onChange(newValue);
+        } else {
+          setInternalValue(newValue);
+        }
+      }
+    },
+    [min, max, value, onChange, i18n],
+  );
+
   const fillPercentage = ((value - min) / (max - min)) * 100;
 
   return (
@@ -129,7 +176,13 @@ const RangeSlider = ({
         />
         <div
           ref={thumbRef}
-          className="custom-range-thumb"
+          className="custom-range-thumb focus-ring"
+          role="slider"
+          tabIndex={0}
+          aria-valuemin={min}
+          aria-valuemax={max}
+          aria-valuenow={value}
+          aria-label={label ?? 'Slider'}
           style={{
             insetInlineStart: `${fillPercentage}%`,
             width: `${thumbSize}px`,
@@ -142,6 +195,7 @@ const RangeSlider = ({
           }}
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
+          onKeyDown={handleKeyDown}
         />
       </div>
     </div>

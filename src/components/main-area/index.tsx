@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { debounce } from 'es-toolkit';
+import { useTranslation } from 'react-i18next';
 
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import {
@@ -21,6 +22,7 @@ import ParticipantsComponent from '../participants';
 import SidePanel from './sidePanel';
 
 const MainArea = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const mediaServerConn = getMediaServerConn();
 
@@ -164,6 +166,9 @@ const MainArea = () => {
         <SidePanel
           isActive={activeSidePanel === 'PARTICIPANTS'}
           panelClass="participants-panel"
+          ariaLabel={t('left-panel.participants', { total: '' })
+            .toString()
+            .replace(' ()', '')}
           onToggle={handleSidePanelToggled}
         >
           <ParticipantsComponent />
@@ -172,6 +177,7 @@ const MainArea = () => {
           <SidePanel
             isActive={activeSidePanel === 'CHAT'}
             panelClass="chat-panel"
+            ariaLabel="Chat panel"
             onToggle={handleSidePanelToggled}
           >
             <ChatComponent />
@@ -181,6 +187,7 @@ const MainArea = () => {
           <SidePanel
             isActive={activeSidePanel === 'POLLS'}
             panelClass="polls-panel"
+            ariaLabel="Polls panel"
             onToggle={handleSidePanelToggled}
           >
             <PollsComponent />

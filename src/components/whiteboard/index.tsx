@@ -617,8 +617,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         {screenWidth > 767 && isPresenter && excalidrawAPI && (
           <div className="menu relative z-10">
             <button
+              type="button"
               onClick={() => setIsOpenManageFilesUI(true)}
-              className="wb-manage-upload-file ml-1"
+              className="wb-manage-upload-file ml-1 focus-ring"
             >
               <i className="pnm-attachment text-[13px]" />
               {t('whiteboard.manage-files')}
@@ -688,6 +689,8 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       className={`excalidraw-wrapper flex-1 w-full max-w-[1280px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9 z-0 ${
         isToolbarHidden ? 'toolbar-hidden' : ''
       }`}
+      role="region"
+      aria-label={t('whiteboard.whiteboard-area').toString()}
     >
       {isPresenter && excalidrawAPI && (
         <>
@@ -740,10 +743,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
             <MainMenu.DefaultItems.SaveAsImage />
             {isPresenter && excalidrawAPI && (
               <>
-                <div
-                  className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
+                <button
+                  type="button"
+                  className="radix-menu-item dropdown-menu-item dropdown-menu-item-base focus-ring"
                   onClick={() => setIsOpenExportPdfUI(true)}
-                  role="button"
                 >
                   <div className="dropdown-menu-item__icon">
                     <PdfIcon className="w-[13px] h-[13px]" />
@@ -751,13 +754,13 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
                   <div className="dropdown-menu-item__text">
                     {t('whiteboard.export-pdf-title')}
                   </div>
-                </div>
-                <div
-                  className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
+                </button>
+                <button
+                  type="button"
+                  className="radix-menu-item dropdown-menu-item dropdown-menu-item-base focus-ring"
                   onClick={() => {
                     setIsOpenManageFilesUI(true);
                   }}
-                  role="button"
                 >
                   <div className="dropdown-menu-item__icon">
                     <i className="pnm-attachment text-[13px]" />
@@ -765,11 +768,11 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
                   <div className="dropdown-menu-item__text">
                     {t('whiteboard.manage-files-menu-title')}
                   </div>
-                </div>
-                <div
-                  className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
+                </button>
+                <button
+                  type="button"
+                  className="radix-menu-item dropdown-menu-item dropdown-menu-item-base focus-ring"
                   onClick={handleSwitchPageOrDocument}
-                  role="button"
                 >
                   <div className="dropdown-menu-item__icon">
                     <RefreshIcon />
@@ -777,14 +780,14 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
                   <div className="dropdown-menu-item__text">
                     {t('whiteboard.force-sync')}
                   </div>
-                </div>
+                </button>
               </>
             )}
             {!viewModeEnabled && (
-              <div
-                className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
+              <button
+                type="button"
+                className="radix-menu-item dropdown-menu-item dropdown-menu-item-base focus-ring"
                 onClick={() => setIsToolbarHidden(!isToolbarHidden)}
-                role="button"
               >
                 <div className="dropdown-menu-item__icon">
                   <ToolbarBar className="w-[13px] h-[13px]" />
@@ -794,7 +797,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
                     ? t('whiteboard.show-toolbar')
                     : t('whiteboard.hide-toolbar')}
                 </div>
-              </div>
+              </button>
             )}
             <MainMenu.DefaultItems.Help />
             {screenWidth <= 767 && renderFooter}

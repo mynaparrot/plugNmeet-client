@@ -83,12 +83,13 @@ const VideoParticipant = ({
     >
       {participantType.isLocal && displaySwitchCamIcon && (
         <>
-          <div
-            className="switch-camera absolute top-3 start-4 z-50 text-white cursor-pointer h-7 w-7 rounded-full hidden items-center justify-center bg-black bg-opacity-50"
+          <button
+            type="button"
+            className="switch-camera absolute top-3 start-4 z-50 text-white cursor-pointer h-7 w-7 rounded-full hidden items-center justify-center bg-black bg-opacity-50 focus-ring"
             onClick={() => setFloatView(!floatView)}
           >
             <RepeatIconSVG />
-          </div>
+          </button>
         </>
       )}
       {renderVideoElms}

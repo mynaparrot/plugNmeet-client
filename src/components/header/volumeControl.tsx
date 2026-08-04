@@ -1,5 +1,5 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import { Menu, MenuButton, MenuItems, Transition } from '@headlessui/react';
+import { useCallback, useEffect, useState } from 'react';
+import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'es-toolkit';
 
@@ -76,83 +76,65 @@ const VolumeControl = () => {
   }, [localScreenShareVolume, debouncedScreenShareVolumeUpdate]);
 
   return (
-    <Menu as={Fragment}>
-      {({ open }) => (
-        <div className="">
-          <MenuButton
-            className={`relative shrink-0 p-0 w-7 md:w-8 h-7 md:h-8 flex items-center justify-center rounded-[10px] ${
-              open ? 'bg-Gray-50  dark:bg-Gray-800' : ''
-            }`}
-          >
-            <div className="text-gray-700 dark:text-white cursor-pointer">
-              {localRoomVolume > 0 ? <VolumeHeader /> : <VolumeMutedSVG />}
-            </div>
-          </MenuButton>
-          <Transition
-            as={Fragment}
-            show={open}
-            enter="transition ease-out duration-300"
-            enterFrom="transform opacity-0 scale-95 -translate-y-2"
-            enterTo="transform opacity-100 scale-100 translate-y-0"
-            leave="transition ease-in duration-200"
-            leaveFrom="transform opacity-100 scale-100 translate-y-0"
-            leaveTo="transform opacity-0 scale-95 -translate-y-2"
-          >
-            <MenuItems
-              unmount={false}
-              className="volume-popup-wrapper ltr:origin-top-right rtl:origin-top-left z-10 absolute end-0 top-6 mt-2 w-64 py-5 px-2 rounded-md shadow-lg bg-white dark:bg-dark-primary border-Gray-100 dark:border-Gray-700 border"
-            >
-              <p className="text-sm text-Gray-950 dark:text-white">
-                {t('header.room-audio-volume')}
-              </p>
-              <section className="flex items-center ps-3">
-                <RangeSlider
-                  min={0}
-                  max={100}
-                  value={Math.round(localRoomVolume * 100)}
-                  onChange={(v) => setLocalRoomVolume(v / 100)}
-                  thumbSize={20}
-                  trackHeight={8}
-                />
-                <p className="w-10 text-center text-sm text-Gray-950 dark:text-white ms-3">
-                  {Math.round(localRoomVolume * 100)}
-                </p>
-                <button className="w-5 h-5">
-                  {localRoomVolume > 0 ? (
-                    <i className="pnm-speaker text-Gray-950 dark:text-white" />
-                  ) : (
-                    <i className="pnm-speaker-muted  text-Gray-950 dark:text-white" />
-                  )}
-                </button>
-              </section>
-              <p className="text-sm mt-2 text-Gray-950 dark:text-white">
-                {t('header.room-screen-share-audio-volume')}
-              </p>
-              <section className="flex items-center ps-3">
-                <RangeSlider
-                  min={0}
-                  max={100}
-                  value={Math.round(localScreenShareVolume * 100)}
-                  onChange={(v) => setLocalScreenShareVolume(v / 100)}
-                  thumbSize={20}
-                  trackHeight={8}
-                />
-                <p className="w-10 text-center text-sm text-Gray-950 dark:text-white ms-3">
-                  {Math.round(localScreenShareVolume * 100)}
-                </p>
-                <button className="w-5 h-5">
-                  {localScreenShareVolume > 0 ? (
-                    <i className="pnm-speaker text-Gray-950 dark:text-white" />
-                  ) : (
-                    <i className="pnm-speaker-muted text-Gray-950 dark:text-white" />
-                  )}
-                </button>
-              </section>
-            </MenuItems>
-          </Transition>
+    <Popover className="relative">
+      <PopoverButton className="relative shrink-0 p-0 w-7 md:w-8 h-7 md:h-8 flex items-center justify-center rounded-[10px] focus-ring data-[open]:bg-Gray-50 data-[open]:dark:bg-Gray-800">
+        <div className="text-gray-700 dark:text-white cursor-pointer">
+          {localRoomVolume > 0 ? <VolumeHeader /> : <VolumeMutedSVG />}
         </div>
-      )}
-    </Menu>
+      </PopoverButton>
+      <PopoverPanel
+        anchor="bottom end"
+        transition
+        className="volume-popup-wrapper z-10 w-64 py-5 px-2 rounded-md shadow-lg bg-white dark:bg-dark-primary border-Gray-100 dark:border-Gray-700 border focus:outline-hidden [--anchor-gap:8px] transition ease-out data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150"
+      >
+        <p className="text-sm text-Gray-950 dark:text-white">
+          {t('header.room-audio-volume')}
+        </p>
+        <section className="flex items-center ps-3">
+          <RangeSlider
+            min={0}
+            max={100}
+            value={Math.round(localRoomVolume * 100)}
+            onChange={(v) => setLocalRoomVolume(v / 100)}
+            thumbSize={20}
+            trackHeight={8}
+          />
+          <p className="w-10 text-center text-sm text-Gray-950 dark:text-white ms-3">
+            {Math.round(localRoomVolume * 100)}
+          </p>
+          <span aria-hidden="true" className="w-5 h-5">
+            {localRoomVolume > 0 ? (
+              <i className="pnm-speaker text-Gray-950 dark:text-white" />
+            ) : (
+              <i className="pnm-speaker-muted  text-Gray-950 dark:text-white" />
+            )}
+          </span>
+        </section>
+        <p className="text-sm mt-2 text-Gray-950 dark:text-white">
+          {t('header.room-screen-share-audio-volume')}
+        </p>
+        <section className="flex items-center ps-3">
+          <RangeSlider
+            min={0}
+            max={100}
+            value={Math.round(localScreenShareVolume * 100)}
+            onChange={(v) => setLocalScreenShareVolume(v / 100)}
+            thumbSize={20}
+            trackHeight={8}
+          />
+          <p className="w-10 text-center text-sm text-Gray-950 dark:text-white ms-3">
+            {Math.round(localScreenShareVolume * 100)}
+          </p>
+          <span aria-hidden="true" className="w-5 h-5">
+            {localScreenShareVolume > 0 ? (
+              <i className="pnm-speaker text-Gray-950 dark:text-white" />
+            ) : (
+              <i className="pnm-speaker-muted text-Gray-950 dark:text-white" />
+            )}
+          </span>
+        </section>
+      </PopoverPanel>
+    </Popover>
   );
 };
 

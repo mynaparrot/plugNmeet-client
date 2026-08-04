@@ -246,7 +246,6 @@ const VideoLayout = ({
       participantsToRender.push(
         <button
           key="next-page"
-          role="button"
           className="video-camera-item webcam-next-page order-3 relative bg-Gray-900 text-white cursor-pointer flex items-center justify-between"
           onClick={nextPage}
         >
@@ -269,7 +268,6 @@ const VideoLayout = ({
       participantsToRender.unshift(
         <button
           key="prev-page"
-          role="button"
           className="video-camera-item webcam-prev-page order-1 relative bg-Gray-900 text-white cursor-pointer flex items-center justify-between"
           onClick={prePage}
         >

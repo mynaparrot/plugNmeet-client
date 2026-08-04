@@ -137,12 +137,13 @@ const ManageOfficeFilesModal = ({
             >
               <div className="flex items-center gap-2">
                 {t('whiteboard.upload-files-title')}
-                <div
-                  className="cursor-pointer"
+                <button
+                  type="button"
+                  className="cursor-pointer focus-ring"
                   onClick={() => setRefresh(Date.now())}
                 >
                   <RefreshIcon />
-                </div>
+                </button>
               </div>
               <Button className="cursor-pointer" onClick={() => onClose()}>
                 <PopupCloseSVGIcon classes="text-Gray-600 dark:text-white" />
