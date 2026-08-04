@@ -90,7 +90,7 @@ const WebcamMenuItems = ({
                   selectedVideoDevice === device.id
                     ? 'bg-Gray-50 dark:bg-dark-secondary2'
                     : ''
-                } h-8 w-full flex items-center justify-between text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2 focus-ring`}
+                } h-8 w-full flex items-center justify-between text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus-ring`}
                 onClick={() => handleDeviceChange(device.id)}
               >
                 <span dir="ltr">{device.label}</span>
@@ -106,6 +106,7 @@ const WebcamMenuItems = ({
 
   return (
     <MenuItems
+      unmount={false}
       anchor="top end"
       transition
       className="menu z-10 border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary shadow-lg rounded-2xl p-2 w-max focus:outline-hidden [--anchor-gap:8px] transition ease-out data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150"
@@ -116,7 +117,7 @@ const WebcamMenuItems = ({
           {() => (
             <button
               type="button"
-              className="h-8 w-full flex items-center text-sm gap-2 leading-none font-medium text-red-700 px-2 rounded-lg transition-all duration-300 hover:bg-Red-600 hover:text-white focus-ring"
+              className="h-8 w-full flex items-center text-sm gap-2 leading-none font-medium text-red-700 px-2 rounded-lg transition-all duration-300 hover:bg-Red-600 hover:text-white data-[focus]:bg-Red-600 data-[focus]:text-white focus-ring"
               onClick={toggleWebcam}
             >
               <CameraOff classes={'h-4 w-auto'} />
@@ -132,7 +133,7 @@ const WebcamMenuItems = ({
           {() => (
             <button
               type="button"
-              className="group h-8 w-full flex items-center text-sm gap-2 leading-none font-medium text-red-700 px-2 rounded-lg transition-all duration-300 hover:bg-Red-600 hover:text-white focus-ring"
+              className="group h-8 w-full flex items-center text-sm gap-2 leading-none font-medium text-red-700 px-2 rounded-lg transition-all duration-300 hover:bg-Red-600 hover:text-white data-[focus]:bg-Red-600 data-[focus]:text-white focus-ring"
               onClick={leaveWebcam}
             >
               <i className="pnm-logout text-base transition ease-in" />

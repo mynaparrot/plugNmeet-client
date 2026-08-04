@@ -81,7 +81,7 @@ const AdminMenus = () => {
             <button
               type="button"
               onClick={openInsightsAISettingsModal}
-              className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 focus:outline-hidden"
+              className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
             >
               <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
                 <AiIconSVG classes="w-6" />
@@ -96,7 +96,7 @@ const AdminMenus = () => {
             <button
               type="button"
               onClick={openRtmpModal}
-              className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 focus:outline-hidden"
+              className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
             >
               <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
                 <RTMPIconSVG />
@@ -116,7 +116,7 @@ const AdminMenus = () => {
             <button
               type="button"
               onClick={openSpeechServiceSettingsModal}
-              className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 focus:outline-hidden"
+              className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
             >
               <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
                 <SpeechIconSVG classes="w-6" />
@@ -131,7 +131,7 @@ const AdminMenus = () => {
           <button
             type="button"
             onClick={togglePolls}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 focus:outline-hidden"
+            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
           >
             <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
               <PollsIconSVG classes="" />
@@ -150,7 +150,7 @@ const AdminMenus = () => {
           <button
             type="button"
             onClick={toggleExternalMediaPlayer}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 focus:outline-hidden"
+            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
           >
             <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
               <PlayerIconSVG />
@@ -169,7 +169,7 @@ const AdminMenus = () => {
           <button
             type="button"
             onClick={toggleDisplayExternalLinkModal}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 focus:outline-hidden"
+            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
           >
             <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
               <ExternalPlayerIconSVG />
@@ -188,7 +188,7 @@ const AdminMenus = () => {
           <button
             type="button"
             onClick={toggleSharedNotepad}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 focus:outline-hidden"
+            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
           >
             <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
               <SharedNotepadIconSVG />
@@ -207,7 +207,7 @@ const AdminMenus = () => {
         <button
           type="button"
           onClick={muteAllUsers}
-          className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 focus:outline-hidden"
+          className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
         >
           <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
             <i className="pnm-mic-mute" />
@@ -219,7 +219,7 @@ const AdminMenus = () => {
         <button
           type="button"
           onClick={openLockSettingsModal}
-          className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 focus:outline-hidden"
+          className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
         >
           <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
             <RoomLockIconSVG />
@@ -232,7 +232,7 @@ const AdminMenus = () => {
           <button
             type="button"
             onClick={openManageWaitingRoomModal}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 focus:outline-hidden"
+            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
           >
             <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
               <i className="pnm-waiting-room" />
@@ -246,7 +246,7 @@ const AdminMenus = () => {
           <button
             type="button"
             onClick={openManageBreakoutRoomModal}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 focus:outline-hidden"
+            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
           >
             <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
               <BreakoutRoomIconSVG classes="w-6 h-auto" />

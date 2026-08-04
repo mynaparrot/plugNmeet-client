@@ -68,16 +68,15 @@ const MenusIcon = ({ isAdmin }: MenusIconProps) => {
                 </div>
               </MenuButton>
               <MenuItems
+                unmount={false}
                 anchor="top end"
                 transition
-                className="z-9999 w-[300px] shadow-dropdown-menu rounded-[15px] border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary p-2 focus:outline-hidden [--anchor-gap:8px] transition ease-out data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150"
+                className="z-9999 w-[300px] shadow-dropdown-menu rounded-[15px] border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary p-2 focus:outline-hidden focus-ring [--anchor-gap:8px] transition ease-out data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150"
                 id="footer-menu"
               >
                 {isAdmin && <AdminMenus />}
-                <div className="mobile-menu-icons block md:hidden">
-                  <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ms-3 my-0.5 last-one"></div>
-                  <IconsInMenu />
-                </div>
+                <div className="divider block md:hidden h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ms-3 my-0.5 last-one"></div>
+                <IconsInMenu />
               </MenuItems>
             </div>
           )}

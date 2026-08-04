@@ -100,7 +100,7 @@ const IconsInMenu = () => {
           <button
             type="button"
             onClick={toggleWhiteboard}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 focus:outline-hidden"
+            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden md:hidden"
           >
             <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
               <WhiteBoardIconSVG />
@@ -119,7 +119,7 @@ const IconsInMenu = () => {
           <button
             type="button"
             onClick={toggleScreenShare}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 focus:outline-hidden"
+            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden md:hidden"
           >
             <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
               <ShareScreenIconSVG classes="w-auto h-4" />
@@ -140,7 +140,7 @@ const IconsInMenu = () => {
           <button
             type="button"
             onClick={toggleSharedNotePad}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 focus:outline-hidden"
+            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden md:hidden"
           >
             <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
               <SharedNotepadIconSVG />
@@ -159,7 +159,7 @@ const IconsInMenu = () => {
           <button
             type="button"
             onClick={togglePollsPanel}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 focus:outline-hidden"
+            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden md:hidden"
           >
             <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
               <PollsIconSVG classes="" />
@@ -178,7 +178,7 @@ const IconsInMenu = () => {
           <button
             type="button"
             onClick={toggleSpeechSettingOptionsModal}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 focus:outline-hidden"
+            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden md:hidden"
           >
             <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
               <SpeechIconSVG classes="w-auto" />
@@ -197,7 +197,7 @@ const IconsInMenu = () => {
           <button
             type="button"
             onClick={toggleAiTextChatPanel}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 focus:outline-hidden"
+            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden md:hidden"
           >
             <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
               <AiIconSVG classes="w-auto" />
