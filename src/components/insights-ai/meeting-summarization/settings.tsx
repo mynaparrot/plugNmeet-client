@@ -149,7 +149,7 @@ const MeetingSummarization = ({
                   dir="auto"
                   name="summarizationPrompt"
                   id="summarizationPrompt"
-                  className="w-full outline-none text-xs 3xl:text-sm text-Gray-900 dark:text-white p-2 border border-Gray-200 dark:border-Gray-800 rounded-lg resize-y"
+                  className="w-full outline-none focus-ring text-xs 3xl:text-sm text-Gray-900 dark:text-white p-2 border border-Gray-200 dark:border-Gray-800 rounded-lg resize-y"
                   value={summarizationPrompt}
                   onChange={handleChange}
                   rows={3}
@@ -163,14 +163,14 @@ const MeetingSummarization = ({
       <div className="px-4 py-4 border-t border-Gray-100 dark:border-Gray-800 flex justify-end items-center gap-4 rounded-b-xl">
         {!meetingSummarizationFeatures?.isEnabled ? (
           <button
-            className="primary-button h-10 px-8 w-auto cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+            className="primary-button focus-ring h-10 px-8 w-auto cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
             onClick={() => enableOrUpdateService()}
           >
             {t('insights.start-service')}
           </button>
         ) : (
           <button
-            className="secondary-button h-10 px-8 w-auto cursor-pointer text-sm 3xl:text-base font-semibold bg-white hover:bg-Red-600 border border-Gray-300 rounded-[15px] text-Gray-950 hover:text-white transition-all duration-300 shadow-button-shadow"
+            className="secondary-button focus-ring h-10 px-8 w-auto cursor-pointer text-sm 3xl:text-base font-semibold bg-white hover:bg-Red-600 border border-Gray-300 rounded-[15px] text-Gray-950 hover:text-white transition-all duration-300 shadow-button-shadow"
             onClick={() => stopService()}
           >
             {t('insights.stop-service')}

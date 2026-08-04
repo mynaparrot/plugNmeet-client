@@ -132,10 +132,10 @@ const TextBoxArea = () => {
         dir="auto"
         name="message-textarea"
         id="message-textarea"
-        className="flex-1 outline-hidden text-xs 3xl:text-sm text-Gray-600 dark:text-dark-text placeholder:dark:text-dark-text  font-normal h-10 mr-2 overflow-hidden px-2"
+        className="flex-1 outline-hidden focus-ring text-xs 3xl:text-sm text-Gray-600 dark:text-dark-text placeholder:dark:text-dark-text  font-normal h-10 mr-2 overflow-hidden px-2"
         value={message}
         onChange={handleChange}
-        disabled={isAwaitingResponse}
+        readOnly={isAwaitingResponse}
         placeholder={placeholderText}
         onKeyDown={onEnterPress}
         ref={textAreaRef}
@@ -144,7 +144,8 @@ const TextBoxArea = () => {
       <button
         disabled={isSendButtonDisabled}
         onClick={sendMsg}
-        className={`w-7 3xl:w-9 h-7 3xl:h-9 flex items-center justify-center rounded-full transition-all duration-300 hover:bg-[#00A1F2] hover:border-[#08C] ${
+        aria-label="Send message"
+        className={`focus-ring w-7 3xl:w-9 h-7 3xl:h-9 flex items-center justify-center rounded-full transition-all duration-300 hover:bg-[#00A1F2] hover:border-[#08C] ${
           isSendButtonDisabled
             ? 'bg-[#00A1F2]/30 border border-[#08C]/30 cursor-not-allowed'
             : 'bg-[#00A1F2] border border-[#08C] cursor-pointer'
