@@ -154,18 +154,11 @@ const UploadedFilesList = ({
         }
 
         return (
-          <div
+          <button
+            type="button"
             key={file.fileId}
             className={classNames}
             onClick={() => onSelectOfficeFile(file)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                onSelectOfficeFile(file);
-              }
-            }}
-            role="button"
-            tabIndex={0}
           >
             <div className="icon w-9 h-9 rounded-full bg-Gray-100 dark:bg-Gray-700 text-Blue2-800 dark:text-white relative inline-flex items-center justify-center">
               <FileIconSVG />
@@ -212,7 +205,7 @@ const UploadedFilesList = ({
                 })}
               </div>
             </div>
-          </div>
+          </button>
         );
       })}
     </div>

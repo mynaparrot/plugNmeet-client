@@ -105,11 +105,7 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
       aria-live="polite"
     >
       {chatMessages.map((message) => (
-        <li
-          key={message.id}
-          className="message-item py-2 focus:outline-hidden focus:bg-Gray-50 dark:focus:bg-dark-secondary2 rounded"
-          tabIndex={0}
-        >
+        <li key={message.id} className="message-item py-2">
           <Message body={message} currentUser={currentUser} />
         </li>
       ))}

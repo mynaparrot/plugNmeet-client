@@ -49,10 +49,7 @@ const ConnectionStatus = () => {
     tooltip?: string,
     color?: string,
   ) => (
-    <div
-      className="flex justify-between items-center py-2 px-2 rounded-md hover:bg-gray-50 dark:hover:bg-Gray-800 transition focus:outline-hidden focus:bg-Gray-50 dark:focus:bg-Gray-800"
-      tabIndex={0}
-    >
+    <div className="flex justify-between items-center py-2 px-2 rounded-md hover:bg-gray-50 dark:hover:bg-Gray-800 transition">
       <Tooltip text={tooltip}>
         <span className="text-xs font-medium text-gray-500 dark:text-gray-400 cursor-help">
           {label}

@@ -165,11 +165,7 @@ const UserNotifications = () => {
                   switch (notif.notificationCat) {
                     case 'new-poll-created':
                       return (
-                        <li
-                          key={notif.created}
-                          tabIndex={0}
-                          className="focus:outline-hidden focus:bg-Gray-50 dark:focus:bg-dark-secondary2 rounded"
-                        >
+                        <li key={notif.created}>
                           <NewPoll
                             createdAt={notif.created}
                             onClosePopover={close}
@@ -178,11 +174,7 @@ const UserNotifications = () => {
                       );
                     case 'breakout-room-invitation':
                       return (
-                        <li
-                          key={notif.created}
-                          tabIndex={0}
-                          className="focus:outline-hidden focus:bg-Gray-50 dark:focus:bg-dark-secondary2 rounded"
-                        >
+                        <li key={notif.created}>
                           <NewBreakoutRoom
                             receivedInvitationFor={notif.data}
                             createdAt={notif.created}
@@ -191,11 +183,7 @@ const UserNotifications = () => {
                       );
                     default:
                       return (
-                        <li
-                          key={notif.created}
-                          tabIndex={0}
-                          className="focus:outline-hidden focus:bg-Gray-50 dark:focus:bg-dark-secondary2 rounded"
-                        >
+                        <li key={notif.created}>
                           <GenericNotification notification={notif} />
                         </li>
                       );

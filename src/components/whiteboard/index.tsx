@@ -743,17 +743,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
             <MainMenu.DefaultItems.SaveAsImage />
             {isPresenter && excalidrawAPI && (
               <>
-                <div
+                <button
+                  type="button"
                   className="radix-menu-item dropdown-menu-item dropdown-menu-item-base focus-ring"
                   onClick={() => setIsOpenExportPdfUI(true)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      setIsOpenExportPdfUI(true);
-                    }
-                  }}
-                  role="button"
-                  tabIndex={0}
                 >
                   <div className="dropdown-menu-item__icon">
                     <PdfIcon className="w-[13px] h-[13px]" />
@@ -761,20 +754,13 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
                   <div className="dropdown-menu-item__text">
                     {t('whiteboard.export-pdf-title')}
                   </div>
-                </div>
-                <div
+                </button>
+                <button
+                  type="button"
                   className="radix-menu-item dropdown-menu-item dropdown-menu-item-base focus-ring"
                   onClick={() => {
                     setIsOpenManageFilesUI(true);
                   }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      setIsOpenManageFilesUI(true);
-                    }
-                  }}
-                  role="button"
-                  tabIndex={0}
                 >
                   <div className="dropdown-menu-item__icon">
                     <i className="pnm-attachment text-[13px]" />
@@ -782,18 +768,11 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
                   <div className="dropdown-menu-item__text">
                     {t('whiteboard.manage-files-menu-title')}
                   </div>
-                </div>
-                <div
+                </button>
+                <button
+                  type="button"
                   className="radix-menu-item dropdown-menu-item dropdown-menu-item-base focus-ring"
                   onClick={handleSwitchPageOrDocument}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      void handleSwitchPageOrDocument();
-                    }
-                  }}
-                  role="button"
-                  tabIndex={0}
                 >
                   <div className="dropdown-menu-item__icon">
                     <RefreshIcon />
@@ -801,21 +780,14 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
                   <div className="dropdown-menu-item__text">
                     {t('whiteboard.force-sync')}
                   </div>
-                </div>
+                </button>
               </>
             )}
             {!viewModeEnabled && (
-              <div
+              <button
+                type="button"
                 className="radix-menu-item dropdown-menu-item dropdown-menu-item-base focus-ring"
                 onClick={() => setIsToolbarHidden(!isToolbarHidden)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    setIsToolbarHidden(!isToolbarHidden);
-                  }
-                }}
-                role="button"
-                tabIndex={0}
               >
                 <div className="dropdown-menu-item__icon">
                   <ToolbarBar className="w-[13px] h-[13px]" />
@@ -825,7 +797,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
                     ? t('whiteboard.show-toolbar')
                     : t('whiteboard.hide-toolbar')}
                 </div>
-              </div>
+              </button>
             )}
             <MainMenu.DefaultItems.Help />
             {screenWidth <= 767 && renderFooter}

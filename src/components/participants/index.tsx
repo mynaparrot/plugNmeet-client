@@ -153,8 +153,7 @@ const ParticipantsComponent = () => {
               <li
                 key={index}
                 ref={measureRef}
-                className="w-full list-none min-h-[40px] 3xl:min-h-[60px] py-1 flex items-center focus:outline-hidden focus:bg-Gray-50 dark:focus:bg-dark-secondary2 rounded"
-                tabIndex={0}
+                className="w-full list-none min-h-[40px] 3xl:min-h-[60px] py-1 flex items-center"
               >
                 {renderParticipant(index)}
               </li>
