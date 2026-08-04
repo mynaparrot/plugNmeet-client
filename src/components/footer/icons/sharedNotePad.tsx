@@ -77,15 +77,21 @@ const SharedNotePadIcon = () => {
     dispatch(updateIsActiveSharedNotePad(!isActiveSharedNotePad));
   }, [isActiveSharedNotePad, dispatch]);
 
+  const tooltipText = isActiveSharedNotePad
+    ? t('footer.icons.hide-shared-notepad')
+    : t('footer.icons.show-shared-notepad');
+
   return (
     shouldRenderIcon && (
-      <div
-        className={`sharedNotePad hidden md:block relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 ${
+      <button
+        type="button"
+        className={`sharedNotePad hidden md:block relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 focus-ring ${
           isActiveSharedNotePad
             ? 'border-[rgba(124,206,247,0.25)] dark:border-Gray-800'
             : 'border-transparent'
         }`}
         onClick={toggle}
+        aria-label={tooltipText.toString()}
       >
         <div
           className={`footer-icon-bg h-full w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 dark:border-Gray-700 shadow transition-all duration-300 hover:bg-gray-100 dark:hover:bg-Gray-700 text-Gray-950 dark:text-white ${
@@ -96,14 +102,10 @@ const SharedNotePadIcon = () => {
               : 'bg-white dark:bg-Gray-800'
           }`}
         >
-          <span className="tooltip">
-            {isActiveSharedNotePad
-              ? t('footer.icons.hide-shared-notepad')
-              : t('footer.icons.show-shared-notepad')}
-          </span>
+          <span className="tooltip">{tooltipText}</span>
           <SharedNotepadIconSVG />
         </div>
-      </div>
+      </button>
     )
   );
 };

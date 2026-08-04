@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Menu, MenuButton, Transition } from '@headlessui/react';
+import { Menu, MenuButton } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import { store, useAppSelector } from '../../store';
@@ -69,26 +69,15 @@ const Header = () => {
               {({ open }) => (
                 <div>
                   <MenuButton
-                    className={`relative shrink-0 w-7 md:w-8 h-7 md:h-8 flex items-center justify-center rounded-[10px] cursor-pointer ${open ? 'bg-Gray-50 dark:bg-Gray-800' : ''}`}
+                    className={`relative shrink-0 w-7 md:w-8 h-7 md:h-8 flex items-center justify-center rounded-[10px] cursor-pointer focus-ring ${open ? 'bg-Gray-50 dark:bg-Gray-800' : ''}`}
+                    aria-label={t('header.menus.menu').toString()}
                   >
                     <div className="text-gray-700 dark:text-white cursor-pointer">
                       <HeaderMenuIcon />
                     </div>
                   </MenuButton>
 
-                  {/* Use the Transition component. */}
-                  <Transition
-                    as="div"
-                    show={open}
-                    enter="transition ease-out duration-300"
-                    enterFrom="transform opacity-0 scale-95 -translate-y-2"
-                    enterTo="transform opacity-100 scale-100 translate-y-0"
-                    leave="transition ease-in duration-200"
-                    leaveFrom="transform opacity-100 scale-100 translate-y-0"
-                    leaveTo="transform opacity-0 scale-95 -translate-y-2"
-                  >
-                    <HeaderMenus onOpenAlert={() => handleLogout()} />
-                  </Transition>
+                  <HeaderMenus onOpenAlert={() => handleLogout()} />
                 </div>
               )}
             </Menu>

@@ -44,8 +44,9 @@ const WebcamIcon = ({
           selectedDeviceId={selectedVideoDevice}
         />
       )}
-      <div
-        className="w-11 h-11 relative flex items-center justify-center"
+      <button
+        type="button"
+        className="w-11 h-11 relative flex items-center justify-center focus-ring"
         onClick={() =>
           videoDevices.length === 0
             ? enableMediaDevices('video')
@@ -62,7 +63,7 @@ const WebcamIcon = ({
         ) : (
           <Camera classes={'h-5 w-auto'} />
         )}
-      </div>
+      </button>
       {videoDevices.length > 0 && (
         <div className="menu relative">
           <Menu as="div">
@@ -91,8 +92,9 @@ const WebcamIcon = ({
                       <div className="" role="none" key={`${device.id}-${i}`}>
                         <MenuItem>
                           {() => (
-                            <p
-                              className={`min-h-9 w-full flex items-center justify-between text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2`}
+                            <button
+                              type="button"
+                              className={`min-h-9 w-full flex items-center justify-between text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2 focus-ring`}
                               onClick={() => setSelectedVideoDevice(device.id)}
                             >
                               <span dir="ltr">{device.label}</span>
@@ -101,7 +103,7 @@ const WebcamIcon = ({
                               ) : (
                                 ''
                               )}
-                            </p>
+                            </button>
                           )}
                         </MenuItem>
                       </div>
@@ -113,8 +115,9 @@ const WebcamIcon = ({
                         <div className="title h-9 w-full flex items-center text-xs leading-none text-Gray-700 dark:text-dark-text px-2 uppercase">
                           {t('landing.background-filter-title')}
                         </div>
-                        <p
-                          className="min-h-9 w-full flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-gray-50 dark:hover:bg-dark-secondary2 cursor-pointer"
+                        <button
+                          type="button"
+                          className="min-h-9 w-full flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-gray-50 dark:hover:bg-dark-secondary2 cursor-pointer focus-ring"
                           onClick={() =>
                             dispatch(
                               updateShowVideoShareModal(!showVideoShareModal),
@@ -122,7 +125,7 @@ const WebcamIcon = ({
                           }
                         >
                           {t('landing.config-background-btn')}
-                        </p>
+                        </button>
                       </>
                     )}
                   </div>

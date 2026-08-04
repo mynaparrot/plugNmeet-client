@@ -81,6 +81,9 @@ const EndMeetingButton = () => {
 
   const buttonClasses = clsx(
     'relative footer-icon cursor-pointer w-10 md:w-11 3xl:w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px]',
+    {
+      'focus-ring': true,
+    },
   );
   const innerDivClasses = clsx(
     'h-full w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow',
@@ -89,16 +92,23 @@ const EndMeetingButton = () => {
     },
   );
 
+  const tooltipText = isAdmin
+    ? t('header.menus.end')
+    : t('header.menus.logout');
+
   return (
     <>
-      <div className={buttonClasses} onClick={open}>
+      <button
+        type="button"
+        className={buttonClasses}
+        onClick={open}
+        aria-label={tooltipText.toString()}
+      >
         <div className={innerDivClasses}>
-          <span className="tooltip tooltip-right end-0">
-            {isAdmin ? t('header.menus.end') : t('header.menus.logout')}
-          </span>
+          <span className="tooltip tooltip-right end-0">{tooltipText}</span>
           <EndMeetingIconSVG />
         </div>
-      </div>
+      </button>
 
       <ConfirmationModal
         show={isOpen}

@@ -11,11 +11,13 @@
   "plugnmeet-server-client-version": "Server: v{{server}}; Client: v{{client}}",
   "open": "Open",
   "other": "Other",
+  "participant-menu": "Participant options",
   "pip": "Picture-in-Picture",
   "please-wait": "Please wait...",
   "are-you-sure-to-close": "Are you sure you want to close?",
   "you-are-about-to-close": "You are about to close",
   "notifications": {
+    "title": "Notifications",
     "room-not-active": "This room is not active.",
     "recording-already-running": "Recording is already in progress.",
     "recording-not-running": "Recording is not in progress.",
@@ -116,6 +118,8 @@
     "menus": {
       "settings": "Settings",
       "keyboard-shortcuts": "Keyboard Shortcuts",
+      "menu": "Menu",
+      "toggle-theme": "Toggle theme",
       "logout": "Leave Meeting",
       "end": "End meeting",
       "alert": {
@@ -327,7 +331,8 @@
       "hide-translation-settings": "Hide Transcription Settings",
       "promote-presenter": "Make Presenter",
       "demote-presenter": "Remove as Presenter",
-      "you-are-muted": "No one can hear you. You're muted."
+      "you-are-muted": "No one can hear you. You're muted.",
+      "menu": "More options"
     },
     "menus": {
       "mute-all-users": "Mute Everyone",

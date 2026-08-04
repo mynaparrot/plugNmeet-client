@@ -112,17 +112,18 @@ const MicMenuItems = ({
           {audioDevices.map((device) => (
             <MenuItem key={device.id}>
               {() => (
-                <p
+                <button
+                  type="button"
                   className={`${
                     selectedAudioDevice === device.id
                       ? 'bg-Gray-50 dark:bg-dark-secondary2'
                       : ''
-                  } h-8 w-full flex items-center justify-between text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2`}
+                  } h-8 w-full flex items-center justify-between text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2 focus-ring`}
                   onClick={() => handleDeviceChange(device.id)}
                 >
                   <span dir="ltr">{device.label}</span>
                   {selectedAudioDevice === device.id ? <CheckMarkIcon /> : ''}
-                </p>
+                </button>
               )}
             </MenuItem>
           ))}
@@ -132,8 +133,9 @@ const MicMenuItems = ({
       <div className="" role="none">
         <MenuItem disabled={isLocked}>
           {() => (
-            <p
-              className="h-8 w-full flex items-center text-sm gap-2 leading-none font-medium text-red-700 px-2 rounded-lg transition-all duration-300 hover:bg-Red-600 hover:text-white"
+            <button
+              type="button"
+              className="h-8 w-full flex items-center text-sm gap-2 leading-none font-medium text-red-700 px-2 rounded-lg transition-all duration-300 hover:bg-Red-600 hover:text-white focus-ring"
               onClick={muteUnmuteMic}
             >
               {isMicMuted ? (
@@ -147,20 +149,21 @@ const MicMenuItems = ({
                   {t('footer.menus.mute-microphone')}
                 </>
               )}
-            </p>
+            </button>
           )}
         </MenuItem>
       </div>
       <div className="" role="none">
         <MenuItem disabled={isLocked}>
           {() => (
-            <p
-              className="group h-8 w-full flex items-center text-sm gap-2 leading-none font-medium px-2 rounded-lg transition-all duration-300 hover:bg-Red-600 hover:text-white text-red-700"
+            <button
+              type="button"
+              className="group h-8 w-full flex items-center text-sm gap-2 leading-none font-medium px-2 rounded-lg transition-all duration-300 hover:bg-Red-600 hover:text-white text-red-700 focus-ring"
               onClick={leaveMic}
             >
               <i className="pnm-logout text-base transition ease-in" />
               {t('footer.menus.leave-microphone')}
-            </p>
+            </button>
           )}
         </MenuItem>
       </div>

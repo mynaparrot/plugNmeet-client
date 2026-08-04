@@ -28,8 +28,9 @@ const MicrophoneIcon = ({
 
   return (
     <div className="microphone-wrap relative cursor-pointer shadow-IconBox border border-Gray-300 rounded-2xl h-11 min-w-11 flex items-center justify-center transition-all duration-300 hover:bg-Gray-200 dark:hover:bg-Gray-700 text-Gray-950 dark:text-white">
-      <div
-        className="w-11 h-11 relative flex items-center justify-center"
+      <button
+        type="button"
+        className="w-11 h-11 relative flex items-center justify-center focus-ring"
         onClick={() =>
           audioDevices.length === 0 ? enableMediaDevices('audio') : disableMic()
         }
@@ -44,7 +45,7 @@ const MicrophoneIcon = ({
         ) : (
           <Microphone classes={'h-5 w-auto'} />
         )}
-      </div>
+      </button>
       {audioDevices.length > 0 && (
         <div className="menu relative">
           <Menu>
@@ -70,25 +71,22 @@ const MicrophoneIcon = ({
                       {t('landing.mic-menu-title')}
                     </div>
                     {audioDevices.map((device, i) => (
-                      <div
-                        className=""
-                        role="none"
-                        key={`${device.id}-${i}`}
-                        onClick={() => setSelectedAudioDevice(device.id)}
-                      >
-                        <MenuItem>
-                          {() => (
-                            <p className="min-h-9 w-full flex items-center justify-between text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2">
-                              <span dir="ltr">{device.label}</span>
-                              {selectedAudioDevice === device.id ? (
-                                <CheckMarkIcon />
-                              ) : (
-                                ''
-                              )}
-                            </p>
-                          )}
-                        </MenuItem>
-                      </div>
+                      <MenuItem key={`${device.id}-${i}`}>
+                        {() => (
+                          <button
+                            type="button"
+                            className="min-h-9 w-full flex items-center justify-between text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2 focus-ring"
+                            onClick={() => setSelectedAudioDevice(device.id)}
+                          >
+                            <span dir="ltr">{device.label}</span>
+                            {selectedAudioDevice === device.id ? (
+                              <CheckMarkIcon />
+                            ) : (
+                              ''
+                            )}
+                          </button>
+                        )}
+                      </MenuItem>
                     ))}
                   </div>
                 </Transition>

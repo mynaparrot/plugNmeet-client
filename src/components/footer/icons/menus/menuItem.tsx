@@ -17,8 +17,9 @@ const FooterMenuItem = ({
   return (
     <MenuItem>
       <button
+        type="button"
         onClick={onClick}
-        className="h-10 w-full cursor-pointer flex items-center hover:bg-Gray-50 dark:hover:bg-dark-secondary2 text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative"
+        className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 focus:outline-hidden"
       >
         <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
           {icon}

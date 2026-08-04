@@ -15,12 +15,14 @@ const PollsComponent = () => {
 
   return (
     <div className="side-panel-bg-color relative z-10 w-full bg-Gray-25 dark:bg-dark-primary border-s border-Gray-200 dark:border-Gray-800 h-full">
-      <div
-        className="inline-block absolute z-50 end-3 3xl:end-5 top-[10px] 3xl:top-[18px] text-Gray-600 dark:text-white cursor-pointer"
+      <button
+        type="button"
+        aria-label={t('close').toString()}
+        className="inline-block absolute z-50 end-3 3xl:end-5 top-[10px] 3xl:top-[18px] text-Gray-600 dark:text-white cursor-pointer focus-ring"
         onClick={() => dispatch(setActiveSidePanel(null))}
       >
         <CloseIconSVG />
-      </div>
+      </button>
       <div className="inner-wrapper relative z-20 w-full">
         <div className="top flex items-center h-10 3xl:h-14 px-3 3xl:px-5 border-b border-Gray-200 dark:border-Gray-800">
           <p className="text-sm 3xl:text-base text-Gray-950 dark:text-white font-medium leading-tight">

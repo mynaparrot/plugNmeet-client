@@ -164,9 +164,13 @@ const FileUploadProgress = ({
               </div>
             </div>
             {message && message.isError && (
-              <div className="right cursor-pointer" onClick={handleDelete}>
+              <button
+                type="button"
+                className="right cursor-pointer focus-ring"
+                onClick={handleDelete}
+              >
                 <TrashSVG />
-              </div>
+              </button>
             )}
           </div>
           <div className="progress-bar flex gap-2 items-center">

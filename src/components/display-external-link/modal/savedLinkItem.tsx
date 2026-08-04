@@ -27,8 +27,9 @@ const SavedLinkItem = ({
 
   return (
     <div className={classNames}>
-      <div
-        className="flex flex-1 items-center gap-4 overflow-hidden"
+      <button
+        type="button"
+        className="flex flex-1 items-center gap-4 overflow-hidden text-start focus-ring"
         onClick={() => onSelect(url)}
       >
         <div className="icon w-9 h-9 rounded-full bg-Gray-100  dark:bg-Gray-800 text-Blue2-800 dark:text-white relative inline-flex items-center justify-center shrink-0">
@@ -37,7 +38,7 @@ const SavedLinkItem = ({
         <div className="text flex-1 text-Gray-800 dark:text-white text-sm overflow-hidden">
           <p className="break-all truncate">{url}</p>
         </div>
-      </div>
+      </button>
       <button
         className="delete-btn shrink-0 h-9 w-9 rounded-full hover:bg-red-100 text-red-600 flex items-center justify-center transition-all duration-200 cursor-pointer"
         onClick={(e) => {

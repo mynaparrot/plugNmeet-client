@@ -99,6 +99,10 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
       className="relative h-full overflow-auto scrollBar messages-item-wrap px-3 3xl:px-5"
       ref={messagesContainerRef}
       onScroll={handleScroll}
+      tabIndex={0}
+      role="log"
+      aria-label="Chat messages"
+      aria-live="polite"
     >
       {chatMessages.map((message) => (
         <div key={message.id} className="message-item py-2">

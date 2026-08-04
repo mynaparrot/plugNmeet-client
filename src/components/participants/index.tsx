@@ -93,12 +93,14 @@ const ParticipantsComponent = () => {
 
   return (
     <div className="side-panel-bg-color relative z-10 w-full bg-Gray-25 dark:bg-dark-primary border-s border-Gray-200 dark:border-Gray-800 h-full">
-      <div
-        className="inline-block absolute z-50 end-3 3xl:end-5 top-[10px] text-Gray-600 dark:text-white cursor-pointer"
+      <button
+        type="button"
+        aria-label={t('close').toString()}
+        className="inline-block absolute z-50 end-3 3xl:end-5 top-[10px] text-Gray-600 dark:text-white cursor-pointer focus-ring"
         onClick={closePanel}
       >
         <CloseIconSVG />
-      </div>
+      </button>
       <div className="inner-wrapper relative z-20 w-full">
         <div className="top flex items-center h-10 px-3 3xl:px-5">
           <p className="text-sm text-Gray-950 dark:text-white font-medium leading-tight">
@@ -127,6 +129,8 @@ const ParticipantsComponent = () => {
         <div
           ref={outerRef as any}
           className="scrollBar overflow-auto h-[calc(100vh-240px)]"
+          tabIndex={0}
+          aria-label="Participants list"
         >
           <div
             className="all-participants-wrap px-2 xl:px-3 3xl:px-5"

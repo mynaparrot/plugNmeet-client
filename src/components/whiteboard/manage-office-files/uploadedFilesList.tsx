@@ -144,7 +144,7 @@ const UploadedFilesList = ({
         const isSelectedInModal = selectedOfficeFile?.fileId === file.fileId;
 
         let classNames =
-          'flex gap-4 py-2 px-3 w-full rounded-xl cursor-pointer transition-all duration-200';
+          'flex gap-4 py-2 px-3 w-full rounded-xl cursor-pointer transition-all duration-200 focus-ring';
         if (isSelectedInModal) {
           classNames +=
             ' border-2 border-Blue2-500 bg-Blue2-50 dark:bg-dark-primary';
@@ -158,6 +158,14 @@ const UploadedFilesList = ({
             key={file.fileId}
             className={classNames}
             onClick={() => onSelectOfficeFile(file)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onSelectOfficeFile(file);
+              }
+            }}
+            role="button"
+            tabIndex={0}
           >
             <div className="icon w-9 h-9 rounded-full bg-Gray-100 dark:bg-Gray-700 text-Blue2-800 dark:text-white relative inline-flex items-center justify-center">
               <FileIconSVG />
@@ -169,13 +177,19 @@ const UploadedFilesList = ({
                 </div>
                 {file.fileId !== 'default' && (
                   <div className="right flex items-center gap-2">
-                    <div
-                      className={`inline-flex items-center justify-center w-7 h-7 rounded-full cursor-pointer transition-all duration-200 [&_path]:stroke-current ${
+                    <button
+                      type="button"
+                      className={`inline-flex items-center justify-center w-7 h-7 rounded-full cursor-pointer transition-all duration-200 focus-ring [&_path]:stroke-current ${
                         linkSentFileIds.has(file.fileId)
                           ? 'bg-Green-100 text-Green-600 pointer-events-none'
                           : 'bg-Gray-100 dark:bg-Gray-700 text-Gray-600 dark:text-white hover:bg-Gray-200'
                       }`}
                       title={
+                        linkSentFileIds.has(file.fileId)
+                          ? t('whiteboard.download-link-sent')
+                          : t('whiteboard.share-download-link')
+                      }
+                      aria-label={
                         linkSentFileIds.has(file.fileId)
                           ? t('whiteboard.download-link-sent')
                           : t('whiteboard.share-download-link')
@@ -187,7 +201,7 @@ const UploadedFilesList = ({
                       ) : (
                         <DownloadIconSVG />
                       )}
-                    </div>
+                    </button>
                     {isCurrentlyInUse && <SelectedIcon />}
                   </div>
                 )}

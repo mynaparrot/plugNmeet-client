@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useAppDispatch, useAppSelector } from '../../store';
 import { updateTheme } from '../../store/slices/roomSettingsSlice';
@@ -7,6 +8,7 @@ import { MoonIcon } from '../../assets/Icons/MoonIcon';
 import { getConfigValue } from '../../helpers/utils';
 
 const DarkThemeSwitcher = () => {
+  const { t } = useTranslation();
   const theme = useAppSelector((state) => state.roomSettings.theme);
   const dispatch = useAppDispatch();
 
@@ -23,7 +25,8 @@ const DarkThemeSwitcher = () => {
   return (
     <button
       onClick={toggleDarkMode}
-      className="flex items-center shrink-0 h-8 w-8 md:w-auto justify-center"
+      className="flex items-center shrink-0 h-8 w-8 md:w-auto justify-center focus-ring"
+      aria-label={t('header.menus.toggle-theme').toString()}
     >
       <div className="bg-Gray-200 dark:bg-Gray-700 p-0.5 3xl:p-1 rounded-[14px] overflow-hidden hidden md:flex items-center cursor-pointer transition-all duration-300">
         <div

@@ -34,6 +34,10 @@ const Translation = () => {
     );
   }, [dispatch, isActiveDisplaySpeechSettingOptionsModal]);
 
+  const tooltipText = isActiveDisplaySpeechSettingOptionsModal
+    ? t('footer.icons.hide-translation-settings')
+    : t('footer.icons.show-translation-settings');
+
   if (!isEnabled) {
     return null;
   }
@@ -44,6 +48,7 @@ const Translation = () => {
       'border-[rgba(124,206,247,0.25)] dark:border-Gray-800':
         isActiveDisplaySpeechSettingOptionsModal,
       'border-transparent': !isActiveDisplaySpeechSettingOptionsModal,
+      'focus-ring': true,
     },
   );
 
@@ -57,16 +62,17 @@ const Translation = () => {
   );
 
   return (
-    <div className={wrapperClasses} onClick={toggleModal}>
+    <button
+      type="button"
+      className={wrapperClasses}
+      onClick={toggleModal}
+      aria-label={tooltipText.toString()}
+    >
       <div className={innerDivClasses}>
-        <span className="tooltip">
-          {isActiveDisplaySpeechSettingOptionsModal
-            ? t('footer.icons.hide-translation-settings')
-            : t('footer.icons.show-translation-settings')}
-        </span>
+        <span className="tooltip">{tooltipText}</span>
         <SpeechIconSVG classes="h-6 w-auto" />
       </div>
-    </div>
+    </button>
   );
 };
 

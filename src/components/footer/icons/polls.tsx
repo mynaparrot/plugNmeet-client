@@ -36,6 +36,7 @@ const PollsIcon = () => {
   const wrapperClasses = clsx(
     'pollsIcon hidden md:block relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4',
     {
+      'focus-ring': true,
       'border-[rgba(124,206,247,0.25)] dark:border-Gray-800':
         isActivePollsPanel,
       'border-transparent': !isActivePollsPanel,
@@ -55,14 +56,19 @@ const PollsIcon = () => {
     return null;
   }
 
+  const tooltipText = isActivePollsPanel
+    ? t('footer.icons.hide-polls-panel')
+    : t('footer.icons.show-polls-panel');
+
   return (
-    <button type="button" className={wrapperClasses} onClick={togglePollsPanel}>
+    <button
+      type="button"
+      className={wrapperClasses}
+      onClick={togglePollsPanel}
+      aria-label={tooltipText.toString()}
+    >
       <div className={innerDivClasses}>
-        <span className="tooltip">
-          {isActivePollsPanel
-            ? t('footer.icons.hide-polls-panel')
-            : t('footer.icons.show-polls-panel')}
-        </span>
+        <span className="tooltip">{tooltipText}</span>
         <PollsIconSVG classes="" />
       </div>
     </button>

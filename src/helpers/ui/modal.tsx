@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -35,6 +35,18 @@ const Modal = ({
   unmount,
 }: IModalProps) => {
   const [isOpen, setIsOpen] = useState(show);
+
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (isOpen && closeButtonRef.current) {
+      // Delay to ensure the TransitionChild has rendered the panel into the DOM
+      const timer = setTimeout(() => {
+        closeButtonRef.current?.focus();
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     setIsOpen(show);
@@ -83,8 +95,10 @@ const Modal = ({
               >
                 <span>{title}</span>
                 <Button
+                  ref={closeButtonRef}
                   className="cursor-pointer"
                   onClick={() => setIsOpen(false)}
+                  aria-label="Close"
                 >
                   <PopupCloseSVGIcon classes="text-Gray-600 dark:text-white" />
                 </Button>

@@ -161,14 +161,14 @@ const App = () => {
     }
 
     return (
-      <div className="plugNmeet-app overflow-hidden h-full flex flex-col">
+      <main className="plugNmeet-app overflow-hidden h-full flex flex-col">
         <Header />
         <MainArea />
         <Footer />
         <AudioNotification />
         <DummyAudio />
         <ReactionsOverlay />
-      </div>
+      </main>
     );
   };
 

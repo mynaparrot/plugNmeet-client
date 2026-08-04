@@ -80,7 +80,7 @@ const UploadedFileList = ({
       {uploadedFiles.map((file) => {
         const isSelectedInModal = selectedFile?.fileId === file.fileId;
         let classNames =
-          'flex gap-4 py-2 px-3 w-full rounded-xl cursor-pointer transition-all duration-200';
+          'flex gap-4 py-2 px-3 w-full rounded-xl cursor-pointer transition-all duration-200 text-start focus-ring';
         if (isSelectedInModal) {
           classNames += ' border-2 border-Blue2-500 bg-Blue2-50';
         } else {
@@ -88,7 +88,8 @@ const UploadedFileList = ({
         }
 
         return (
-          <div
+          <button
+            type="button"
             key={file.fileId}
             className={classNames}
             onClick={() => onFileSelect(file)}
@@ -99,7 +100,7 @@ const UploadedFileList = ({
             <div className="text flex-1 text-Gray-800 text-sm">
               <p className="break-all">{file.fileName}</p>
             </div>
-          </div>
+          </button>
         );
       })}
     </div>

@@ -156,12 +156,13 @@ const UploadFile = ({
                     : ''}
                 </div>
               </div>
-              <div
-                className="right cursor-pointer"
+              <button
+                type="button"
+                className="right cursor-pointer focus-ring"
                 onClick={() => !isUploading && handleReset()}
               >
                 <TrashSVG />
-              </div>
+              </button>
             </div>
             <div className="progress-bar flex gap-2 items-center">
               <div className="bar h-2 w-full relative bg-Gray-25 rounded-full overflow-hidden">

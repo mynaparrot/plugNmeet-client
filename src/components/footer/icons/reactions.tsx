@@ -1,11 +1,6 @@
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Popover,
-  PopoverButton,
-  PopoverPanel,
-  Transition,
-} from '@headlessui/react';
+import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import {
   AnalyticsEvents,
   AnalyticsEventType,
@@ -103,16 +98,22 @@ const ReactionsIcon = () => {
 
   // reactions unavailable (locked/disabled) → fall back to the classic
   // single-click raise-hand button, no popover
+  const tooltipText = isActiveRaisehand
+    ? t('footer.icons.lower-hand')
+    : t('footer.icons.raise-hand');
+
   if (!canReact) {
     return (
-      <div
+      <button
+        type="button"
         className={clsx(
-          'raise-hand relative footer-icon cursor-pointer w-10 md:w-11 3xl:w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4',
+          'raise-hand relative footer-icon cursor-pointer w-10 md:w-11 3xl:w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 focus-ring',
           isActiveRaisehand
             ? 'border-[rgba(124,206,247,0.25)] dark:border-Gray-800'
             : 'border-transparent',
         )}
         onClick={toggleRaiseHand}
+        aria-label={tooltipText.toString()}
       >
         <div
           className={clsx(
@@ -124,14 +125,10 @@ const ReactionsIcon = () => {
             },
           )}
         >
-          <span className="tooltip">
-            {isActiveRaisehand
-              ? t('footer.icons.lower-hand')
-              : t('footer.icons.raise-hand')}
-          </span>
+          <span className="tooltip">{tooltipText}</span>
           <HandsIconSVG classes={'h-4 md:h-5 w-auto'} />
         </div>
-      </div>
+      </button>
     );
   }
 
@@ -150,7 +147,7 @@ const ReactionsIcon = () => {
     <Popover className="reactions relative footer-icon">
       <PopoverButton
         className={clsx(
-          'w-10 md:w-11 3xl:w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 cursor-pointer outline-none',
+          'w-10 md:w-11 3xl:w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 cursor-pointer outline-none focus-ring',
           isActiveRaisehand
             ? 'border-[rgba(124,206,247,0.25)] dark:border-Gray-800'
             : 'border-transparent',
@@ -167,53 +164,46 @@ const ReactionsIcon = () => {
         </div>
       </PopoverButton>
 
-      <Transition
-        as={React.Fragment}
-        enter="transition ease-out duration-200"
-        enterFrom="transform opacity-0 scale-95 translate-y-2"
-        enterTo="transform opacity-100 scale-100 translate-y-0"
-        leave="transition ease-in duration-150"
-        leaveFrom="transform opacity-100 scale-100 translate-y-0"
-        leaveTo="transform opacity-0 scale-95 translate-y-2"
+      <PopoverPanel
+        transition
+        className="absolute bottom-full start-1/2 ltr:-translate-x-1/2 rtl:translate-x-1/2 mb-3 z-50 transition ease-out data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150"
       >
-        <PopoverPanel className="absolute bottom-full start-1/2 ltr:-translate-x-1/2 rtl:translate-x-1/2 mb-3 z-50">
-          <div className="flex flex-col gap-2 p-2 rounded-2xl bg-white dark:bg-dark-primary border border-Gray-100 dark:border-Gray-700 shadow-lg">
-            {canReact && (
-              <div className="flex items-center gap-1">
-                {REACTION_EMOJIS.map((emoji) => (
-                  <button
-                    key={emoji}
-                    type="button"
-                    aria-label={emoji}
-                    className="w-9 h-9 3xl:w-10 3xl:h-10 flex items-center justify-center text-xl 3xl:text-2xl rounded-full hover:bg-Gray-50 dark:hover:bg-dark-secondary2 transition-transform duration-150 hover:scale-125 cursor-pointer"
-                    onClick={() => sendReaction(emoji)}
-                  >
-                    {emoji}
-                  </button>
-                ))}
-              </div>
-            )}
+        <div className="flex flex-col gap-2 p-2 rounded-2xl bg-white dark:bg-dark-primary border border-Gray-100 dark:border-Gray-700 shadow-lg">
+          {canReact && (
+            <div className="flex items-center gap-1">
+              {REACTION_EMOJIS.map((emoji) => (
+                <button
+                  key={emoji}
+                  type="button"
+                  aria-label={emoji}
+                  className="w-9 h-9 3xl:w-10 3xl:h-10 flex items-center justify-center text-xl 3xl:text-2xl rounded-full hover:bg-Gray-50 dark:hover:bg-dark-secondary2 transition-transform duration-150 hover:scale-125 cursor-pointer"
+                  onClick={() => sendReaction(emoji)}
+                >
+                  {emoji}
+                </button>
+              ))}
+            </div>
+          )}
 
-            {allowRaiseHand && (
-              <button
-                type="button"
-                onClick={toggleRaiseHand}
-                className={clsx(
-                  'w-full flex items-center justify-center gap-2 h-9 3xl:h-10 px-3 rounded-xl border text-sm font-medium whitespace-nowrap cursor-pointer transition-colors duration-150',
-                  isActiveRaisehand
-                    ? 'bg-Blue2-50 dark:bg-dark-secondary2 border-Blue2-500 text-Blue2-700 dark:text-dark-text'
-                    : 'bg-white dark:bg-dark-primary border-Gray-200 dark:border-dark-secondary2 text-Gray-950 dark:text-dark-text hover:bg-Gray-50 dark:hover:bg-dark-secondary2',
-                )}
-              >
-                <span aria-hidden>✋</span>
-                {isActiveRaisehand
-                  ? t('footer.icons.lower-hand')
-                  : t('footer.icons.raise-hand')}
-              </button>
-            )}
-          </div>
-        </PopoverPanel>
-      </Transition>
+          {allowRaiseHand && (
+            <button
+              type="button"
+              onClick={toggleRaiseHand}
+              className={clsx(
+                'w-full flex items-center justify-center gap-2 h-9 3xl:h-10 px-3 rounded-xl border text-sm font-medium whitespace-nowrap cursor-pointer transition-colors duration-150',
+                isActiveRaisehand
+                  ? 'bg-Blue2-50 dark:bg-dark-secondary2 border-Blue2-500 text-Blue2-700 dark:text-dark-text'
+                  : 'bg-white dark:bg-dark-primary border-Gray-200 dark:border-dark-secondary2 text-Gray-950 dark:text-dark-text hover:bg-Gray-50 dark:hover:bg-dark-secondary2',
+              )}
+            >
+              <span aria-hidden>✋</span>
+              {isActiveRaisehand
+                ? t('footer.icons.lower-hand')
+                : t('footer.icons.raise-hand')}
+            </button>
+          )}
+        </div>
+      </PopoverPanel>
     </Popover>
   );
 };

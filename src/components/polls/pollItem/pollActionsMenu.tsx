@@ -1,11 +1,5 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
-import {
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-  Transition,
-} from '@headlessui/react';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import { FooterMenuIconSVG } from '../../../assets/Icons/FooterMenuIconSVG';
@@ -36,59 +30,49 @@ const PollActionsMenu = ({
 
   return (
     <Menu as="div">
-      {({ open }) => (
+      {() => (
         <>
           <MenuButton className="relative shrink-0 p-2 me-2 cursor-pointer">
             <div className="">
               <FooterMenuIconSVG />
             </div>
           </MenuButton>
-          <Transition
-            as="div"
-            show={open}
-            enter="transition duration-100 ease-out"
-            enterFrom="transform scale-95 opacity-0"
-            enterTo="transform scale-100 opacity-100"
-            leave="transition duration-75 ease-out"
-            leaveFrom="transform scale-100 opacity-100"
-            leaveTo="transform scale-95 opacity-0"
+          <MenuItems
+            anchor="bottom end"
+            transition
+            className="ltr:origin-top-right rtl:origin-top-left z-20 w-[244px] shadow-dropdown-menu rounded-[15px] overflow-hidden border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary p-2 ring-0 focus:outline-hidden transition ease-out data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150"
           >
-            <MenuItems
-              static
-              className="ltr:origin-top-right rtl:origin-top-left z-20 absolute end-0 mt-2 w-[244px] shadow-dropdown-menu rounded-[15px] overflow-hidden border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary p-2 ring-0 focus:outline-hidden"
-            >
+            <MenuItem>
+              <button
+                className="h-7 cursor-pointer w-full flex items-center hover:bg-Gray-50 dark:hover:bg-dark-secondary2 text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 3xl:px-3 rounded-lg transition-all duration-300 relative"
+                onClick={() => setViewDetails(true)}
+              >
+                {t('polls.view-details')}
+              </button>
+            </MenuItem>
+            <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ms-3 my-0.5"></div>
+            {isRunning ? (
               <MenuItem>
                 <button
-                  className="h-7 cursor-pointer w-full flex items-center hover:bg-Gray-50 dark:hover:bg-dark-secondary2 text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 3xl:px-3 rounded-lg transition-all duration-300 relative"
-                  onClick={() => setViewDetails(true)}
+                  onClick={() => endPoll(pollDataWithOption.pollId)}
+                  disabled={isEndingPoll}
+                  className="h-7 cursor-pointer w-full flex items-center hover:bg-Red-600 text-sm gap-2 leading-none font-medium text-Red-700 hover:text-white px-2 3xl:px-3 rounded-lg transition-all duration-300 relative disabled:opacity-50 disabled:cursor-wait"
                 >
-                  {t('polls.view-details')}
+                  {t('polls.end-poll')}
                 </button>
               </MenuItem>
-              <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ms-3 my-0.5"></div>
-              {isRunning ? (
-                <MenuItem>
-                  <button
-                    onClick={() => endPoll(pollDataWithOption.pollId)}
-                    disabled={isEndingPoll}
-                    className="h-7 cursor-pointer w-full flex items-center hover:bg-Red-600 text-sm gap-2 leading-none font-medium text-Red-700 hover:text-white px-2 3xl:px-3 rounded-lg transition-all duration-300 relative disabled:opacity-50 disabled:cursor-wait"
-                  >
-                    {t('polls.end-poll')}
-                  </button>
-                </MenuItem>
-              ) : (
-                <MenuItem>
-                  <button
-                    className="h-7 cursor-pointer w-full flex items-center hover:bg-Gray-50 dark:hover:bg-dark-secondary2 text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 3xl:px-3 rounded-lg transition-all duration-300 relative disabled:opacity-50 disabled:cursor-wait"
-                    onClick={handlePublish}
-                    disabled={isPublishing}
-                  >
-                    {t('polls.publish-result')}
-                  </button>
-                </MenuItem>
-              )}
-            </MenuItems>
-          </Transition>
+            ) : (
+              <MenuItem>
+                <button
+                  className="h-7 cursor-pointer w-full flex items-center hover:bg-Gray-50 dark:hover:bg-dark-secondary2 text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 3xl:px-3 rounded-lg transition-all duration-300 relative disabled:opacity-50 disabled:cursor-wait"
+                  onClick={handlePublish}
+                  disabled={isPublishing}
+                >
+                  {t('polls.publish-result')}
+                </button>
+              </MenuItem>
+            )}
+          </MenuItems>
         </>
       )}
     </Menu>

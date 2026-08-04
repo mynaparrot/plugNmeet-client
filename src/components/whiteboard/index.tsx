@@ -741,9 +741,16 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
             {isPresenter && excalidrawAPI && (
               <>
                 <div
-                  className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
+                  className="radix-menu-item dropdown-menu-item dropdown-menu-item-base focus-ring"
                   onClick={() => setIsOpenExportPdfUI(true)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setIsOpenExportPdfUI(true);
+                    }
+                  }}
                   role="button"
+                  tabIndex={0}
                 >
                   <div className="dropdown-menu-item__icon">
                     <PdfIcon className="w-[13px] h-[13px]" />
@@ -753,11 +760,18 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
                   </div>
                 </div>
                 <div
-                  className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
+                  className="radix-menu-item dropdown-menu-item dropdown-menu-item-base focus-ring"
                   onClick={() => {
                     setIsOpenManageFilesUI(true);
                   }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setIsOpenManageFilesUI(true);
+                    }
+                  }}
                   role="button"
+                  tabIndex={0}
                 >
                   <div className="dropdown-menu-item__icon">
                     <i className="pnm-attachment text-[13px]" />
@@ -767,9 +781,16 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
                   </div>
                 </div>
                 <div
-                  className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
+                  className="radix-menu-item dropdown-menu-item dropdown-menu-item-base focus-ring"
                   onClick={handleSwitchPageOrDocument}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      void handleSwitchPageOrDocument();
+                    }
+                  }}
                   role="button"
+                  tabIndex={0}
                 >
                   <div className="dropdown-menu-item__icon">
                     <RefreshIcon />
@@ -782,9 +803,16 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
             )}
             {!viewModeEnabled && (
               <div
-                className="radix-menu-item dropdown-menu-item dropdown-menu-item-base"
+                className="radix-menu-item dropdown-menu-item dropdown-menu-item-base focus-ring"
                 onClick={() => setIsToolbarHidden(!isToolbarHidden)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setIsToolbarHidden(!isToolbarHidden);
+                  }
+                }}
                 role="button"
+                tabIndex={0}
               >
                 <div className="dropdown-menu-item__icon">
                   <ToolbarBar className="w-[13px] h-[13px]" />

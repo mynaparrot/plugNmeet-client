@@ -31,7 +31,7 @@ const SettingsSwitch = ({
         disabled={disabled}
         checked={enabled}
         onChange={onChange}
-        className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus:ring-2 focus:ring-offset-2 cursor-pointer ${
+        className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-hidden focus-ring cursor-pointer ${
           enabled ? 'bg-Blue2-500' : 'bg-Gray-200'
         } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
