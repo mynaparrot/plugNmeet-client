@@ -101,8 +101,9 @@ const MicMenuItems = ({
 
   return (
     <MenuItems
-      static
-      className="menu ltr:origin-top-right rtl:origin-top-left z-10 absolute ltr:-left-8 md:ltr:left-0 rtl:right-0 bottom-12 border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary shadow-lg rounded-2xl overflow-hidden p-2 w-max"
+      anchor="top end"
+      transition
+      className="menu z-10 border border-Gray-100 dark:border-Gray-700 bg-white dark:bg-dark-primary shadow-lg rounded-2xl p-2 w-max focus:outline-hidden [--anchor-gap:8px] transition ease-out data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150"
     >
       {!isHybrid && (
         <>

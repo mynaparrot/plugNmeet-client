@@ -115,6 +115,9 @@ const ParticipantsComponent = () => {
               <SearchIconSVG />
             </div>
             <input
+              // focus the search field when the participants panel opens
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus
               dir="auto"
               type="text"
               name="search-participants"
