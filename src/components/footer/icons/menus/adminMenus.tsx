@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MenuItem } from '@headlessui/react';
 
 import { store, useAppDispatch, useAppSelector } from '../../../../store';
 import useSharedNotepad from './hooks/useSharedNotepad';
@@ -25,6 +24,7 @@ import { PollsIconSVG } from '../../../../assets/Icons/PollsIconSVG';
 import { BreakoutRoomIconSVG } from '../../../../assets/Icons/BreakoutRoomIconSVG';
 import { RoomLockIconSVG } from '../../../../assets/Icons/RoomLockIconSVG';
 import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
+import MenuItemHelper from './menuItemHelper';
 
 const AdminMenus = () => {
   const dispatch = useAppDispatch();
@@ -77,183 +77,106 @@ const AdminMenus = () => {
     <>
       {roomFeatures?.insightsFeatures?.isAllow &&
         roomFeatures?.insightsFeatures?.aiFeatures?.isAllow && (
-          <MenuItem>
-            <button
-              type="button"
-              onClick={openInsightsAISettingsModal}
-              className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
-            >
-              <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
-                <AiIconSVG classes="w-6" />
-              </span>
-              {t('footer.menus.ai-settings')}
-            </button>
-          </MenuItem>
+          <MenuItemHelper
+            onClick={openInsightsAISettingsModal}
+            icon={<AiIconSVG classes="w-6" />}
+            text={t('footer.menus.ai-settings')}
+          />
         )}
       {roomFeatures?.externalBroadcastingFeatures?.isAllow &&
         roomFeatures?.externalBroadcastingFeatures?.isAllowRtmp && (
-          <MenuItem>
-            <button
-              type="button"
-              onClick={openRtmpModal}
-              className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
-            >
-              <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
-                <RTMPIconSVG />
-              </span>
-              {isActiveRtmpBroadcasting
+          <MenuItemHelper
+            onClick={openRtmpModal}
+            icon={<RTMPIconSVG />}
+            text={
+              isActiveRtmpBroadcasting
                 ? t('footer.icons.stop-rtmp-broadcasting')
-                : t('footer.icons.start-rtmp-broadcasting')}
-              {isActiveRtmpBroadcasting && (
-                <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 dark:bg-Blue2-500 absolute top-1/2 -translate-y-1/2 end-3" />
-              )}
-            </button>
-          </MenuItem>
+                : t('footer.icons.start-rtmp-broadcasting')
+            }
+            isActive={isActiveRtmpBroadcasting}
+          />
         )}
       {roomFeatures?.insightsFeatures?.isAllow &&
         roomFeatures?.insightsFeatures?.transcriptionFeatures?.isAllow && (
-          <MenuItem>
-            <button
-              type="button"
-              onClick={openSpeechServiceSettingsModal}
-              className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
-            >
-              <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
-                <SpeechIconSVG classes="w-6" />
-              </span>
-              {t('footer.menus.speech-to-text-settings')}
-            </button>
-          </MenuItem>
+          <MenuItemHelper
+            onClick={openSpeechServiceSettingsModal}
+            icon={<SpeechIconSVG classes="w-6" />}
+            text={t('footer.menus.speech-to-text-settings')}
+          />
         )}
       <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ms-3 my-0.5"></div>
       {roomFeatures?.pollsFeatures?.isAllow && (
-        <MenuItem>
-          <button
-            type="button"
-            onClick={togglePolls}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
-          >
-            <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
-              <PollsIconSVG classes="" />
-            </span>
-            {isActivePoll
+        <MenuItemHelper
+          onClick={togglePolls}
+          icon={<PollsIconSVG classes="" />}
+          text={
+            isActivePoll
               ? t('footer.menus.disable-polls')
-              : t('footer.menus.enable-polls')}
-            {isActivePoll && (
-              <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 dark:bg-Blue2-500 absolute top-1/2 -translate-y-1/2 end-3" />
-            )}
-          </button>
-        </MenuItem>
+              : t('footer.menus.enable-polls')
+          }
+          isActive={isActivePoll}
+        />
       )}
       {roomFeatures?.externalMediaPlayerFeatures?.isAllow && (
-        <MenuItem>
-          <button
-            type="button"
-            onClick={toggleExternalMediaPlayer}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
-          >
-            <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
-              <PlayerIconSVG />
-            </span>
-            {isActiveExternalMediaPlayer
+        <MenuItemHelper
+          onClick={toggleExternalMediaPlayer}
+          icon={<PlayerIconSVG />}
+          text={
+            isActiveExternalMediaPlayer
               ? t('footer.menus.stop-external-media-player')
-              : t('footer.menus.start-external-media-player')}
-            {isActiveExternalMediaPlayer && (
-              <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 dark:bg-Blue2-500 absolute top-1/2 -translate-y-1/2 end-3" />
-            )}
-          </button>
-        </MenuItem>
+              : t('footer.menus.start-external-media-player')
+          }
+          isActive={isActiveExternalMediaPlayer}
+        />
       )}
       {roomFeatures?.displayExternalLinkFeatures?.isAllow && (
-        <MenuItem>
-          <button
-            type="button"
-            onClick={toggleDisplayExternalLinkModal}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
-          >
-            <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
-              <ExternalPlayerIconSVG />
-            </span>
-            {isActiveDisplayExternalLink
+        <MenuItemHelper
+          onClick={toggleDisplayExternalLinkModal}
+          icon={<ExternalPlayerIconSVG />}
+          text={
+            isActiveDisplayExternalLink
               ? t('footer.menus.stop-display-external-link')
-              : t('footer.menus.start-display-external-link')}
-            {isActiveDisplayExternalLink && (
-              <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 dark:bg-Blue2-500 absolute top-1/2 -translate-y-1/2 end-3" />
-            )}
-          </button>
-        </MenuItem>
+              : t('footer.menus.start-display-external-link')
+          }
+          isActive={isActiveDisplayExternalLink}
+        />
       )}
       {roomFeatures?.sharedNotePadFeatures?.isAllow && (
-        <MenuItem>
-          <button
-            type="button"
-            onClick={toggleSharedNotepad}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
-          >
-            <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
-              <SharedNotepadIconSVG />
-            </span>
-            {sharedNotepadStatus
+        <MenuItemHelper
+          onClick={toggleSharedNotepad}
+          icon={<SharedNotepadIconSVG />}
+          text={
+            sharedNotepadStatus
               ? t('footer.menus.disable-shared-notepad')
-              : t('footer.menus.enable-shared-notepad')}
-            {sharedNotepadStatus && (
-              <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 dark:bg-Blue2-500 absolute top-1/2 -translate-y-1/2 end-3" />
-            )}
-          </button>
-        </MenuItem>
+              : t('footer.menus.enable-shared-notepad')
+          }
+          isActive={sharedNotepadStatus}
+        />
       )}
       <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ms-3 my-0.5"></div>
-      <MenuItem>
-        <button
-          type="button"
-          onClick={muteAllUsers}
-          className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
-        >
-          <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
-            <i className="pnm-mic-mute" />
-          </span>
-          {t('footer.menus.mute-all-users')}
-        </button>
-      </MenuItem>
-      <MenuItem>
-        <button
-          type="button"
-          onClick={openLockSettingsModal}
-          className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
-        >
-          <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
-            <RoomLockIconSVG />
-          </span>
-          {t('footer.menus.room-lock-settings')}
-        </button>
-      </MenuItem>
+      <MenuItemHelper
+        onClick={muteAllUsers}
+        icon={<i className="pnm-mic-mute" />}
+        text={t('footer.menus.mute-all-users')}
+      />
+      <MenuItemHelper
+        onClick={openLockSettingsModal}
+        icon={<RoomLockIconSVG />}
+        text={t('footer.menus.room-lock-settings')}
+      />
       {roomFeatures?.waitingRoomFeatures?.isActive && (
-        <MenuItem>
-          <button
-            type="button"
-            onClick={openManageWaitingRoomModal}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
-          >
-            <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
-              <i className="pnm-waiting-room" />
-            </span>
-            {t('footer.menus.manage-waiting-room')}
-          </button>
-        </MenuItem>
+        <MenuItemHelper
+          onClick={openManageWaitingRoomModal}
+          icon={<i className="pnm-waiting-room" />}
+          text={t('footer.menus.manage-waiting-room')}
+        />
       )}
       {roomFeatures?.breakoutRoomFeatures?.isAllow && (
-        <MenuItem>
-          <button
-            type="button"
-            onClick={openManageBreakoutRoomModal}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
-          >
-            <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
-              <BreakoutRoomIconSVG classes="w-6 h-auto" />
-            </span>
-            {t('footer.menus.manage-breakout-room')}
-          </button>
-        </MenuItem>
+        <MenuItemHelper
+          onClick={openManageBreakoutRoomModal}
+          icon={<BreakoutRoomIconSVG classes="w-6 h-auto" />}
+          text={t('footer.menus.manage-breakout-room')}
+        />
       )}
     </>
   );

@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MenuItem } from '@headlessui/react';
 
 import { store, useAppDispatch, useAppSelector } from '../../../../store';
 import {
@@ -17,6 +16,7 @@ import { SpeechIconSVG } from '../../../../assets/Icons/SpeechIconSVG';
 import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
 import { ShareScreenIconSVG } from '../../../../assets/Icons/ShareScreenIconSVG';
 import useScreenshare from '../hooks/useScreenshare';
+import MenuItemHelper from './menuItemHelper';
 
 const IconsInMenu = () => {
   const { t } = useTranslation();
@@ -96,120 +96,84 @@ const IconsInMenu = () => {
   return (
     <>
       {roomFeatures?.whiteboardFeatures?.isAllow && (
-        <MenuItem>
-          <button
-            type="button"
-            onClick={toggleWhiteboard}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden md:hidden"
-          >
-            <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
-              <WhiteBoardIconSVG />
-            </span>
-            {isActiveWhiteboard
+        <MenuItemHelper
+          onClick={toggleWhiteboard}
+          icon={<WhiteBoardIconSVG />}
+          text={
+            isActiveWhiteboard
               ? t('footer.icons.hide-whiteboard')
-              : t('footer.icons.show-whiteboard')}
-            {isActiveWhiteboard && (
-              <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 dark:bg-Blue2-500 absolute top-1/2 -translate-y-1/2 end-3" />
-            )}
-          </button>
-        </MenuItem>
+              : t('footer.icons.show-whiteboard')
+          }
+          isActive={isActiveWhiteboard}
+          customClass="md:hidden"
+        />
       )}
       {isScreenShareAllowed && !(isMobileOrTablet && !hybrid) && (
-        <MenuItem>
-          <button
-            type="button"
-            onClick={toggleScreenShare}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden md:hidden"
-          >
-            <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
-              <ShareScreenIconSVG classes="w-auto h-4" />
-            </span>
-            {isScreenShareLocked
+        <MenuItemHelper
+          onClick={toggleScreenShare}
+          icon={<ShareScreenIconSVG classes="w-auto h-4" />}
+          text={
+            isScreenShareLocked
               ? t('footer.icons.screen-sharing-locked')
               : isActiveShare
                 ? t('footer.icons.stop-screen-sharing')
-                : t('footer.icons.start-screen-sharing')}
-            {isActiveShare && (
-              <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 dark:bg-Blue2-500 absolute top-1/2 -translate-y-1/2 end-3" />
-            )}
-          </button>
-        </MenuItem>
+                : t('footer.icons.start-screen-sharing')
+          }
+          isActive={isActiveShare}
+          customClass="md:hidden"
+        />
       )}
       {roomFeatures?.sharedNotePadFeatures?.isActive && (
-        <MenuItem>
-          <button
-            type="button"
-            onClick={toggleSharedNotePad}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden md:hidden"
-          >
-            <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
-              <SharedNotepadIconSVG />
-            </span>
-            {isActiveSharedNotePad
+        <MenuItemHelper
+          onClick={toggleSharedNotePad}
+          icon={<SharedNotepadIconSVG />}
+          text={
+            isActiveSharedNotePad
               ? t('footer.icons.hide-shared-notepad')
-              : t('footer.icons.show-shared-notepad')}
-            {isActiveSharedNotePad && (
-              <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 dark:bg-Blue2-500 absolute top-1/2 -translate-y-1/2 end-3" />
-            )}
-          </button>
-        </MenuItem>
+              : t('footer.icons.show-shared-notepad')
+          }
+          isActive={isActiveSharedNotePad}
+          customClass="md:hidden"
+        />
       )}
       {isActivePoll && (
-        <MenuItem>
-          <button
-            type="button"
-            onClick={togglePollsPanel}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden md:hidden"
-          >
-            <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
-              <PollsIconSVG classes="" />
-            </span>
-            {isActivePollsPanel
+        <MenuItemHelper
+          onClick={togglePollsPanel}
+          icon={<PollsIconSVG classes="" />}
+          text={
+            isActivePollsPanel
               ? t('footer.icons.hide-polls-panel')
-              : t('footer.icons.show-polls-panel')}
-            {isActivePollsPanel && (
-              <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 dark:bg-Blue2-500 absolute top-1/2 -translate-y-1/2 end-3" />
-            )}
-          </button>
-        </MenuItem>
+              : t('footer.icons.show-polls-panel')
+          }
+          isActive={isActivePollsPanel}
+          customClass="md:hidden"
+        />
       )}
       {isEnabledTranscription && (
-        <MenuItem>
-          <button
-            type="button"
-            onClick={toggleSpeechSettingOptionsModal}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden md:hidden"
-          >
-            <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
-              <SpeechIconSVG classes="w-auto" />
-            </span>
-            {isActiveDisplaySpeechSettingOptionsModal
+        <MenuItemHelper
+          onClick={toggleSpeechSettingOptionsModal}
+          icon={<SpeechIconSVG classes="w-auto" />}
+          text={
+            isActiveDisplaySpeechSettingOptionsModal
               ? t('footer.icons.hide-translation-settings')
-              : t('footer.icons.show-translation-settings')}
-            {isActiveDisplaySpeechSettingOptionsModal && (
-              <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 dark:bg-Blue2-500 absolute top-1/2 -translate-y-1/2 end-3" />
-            )}
-          </button>
-        </MenuItem>
+              : t('footer.icons.show-translation-settings')
+          }
+          isActive={isActiveDisplaySpeechSettingOptionsModal}
+          customClass="md:hidden"
+        />
       )}
       {isEnabledAiTextChat && (
-        <MenuItem>
-          <button
-            type="button"
-            onClick={toggleAiTextChatPanel}
-            className="h-10 w-full cursor-pointer flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-dark-text ps-3 pe-7 rounded-lg transition-all duration-300 relative hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden md:hidden"
-          >
-            <span className="icon flex w-5 h-auto justify-center text-Blue2-700 dark:text-Blue2-500">
-              <AiIconSVG classes="w-auto" />
-            </span>
-            {isActiveAiTextChat
+        <MenuItemHelper
+          onClick={toggleAiTextChatPanel}
+          icon={<AiIconSVG classes="w-auto" />}
+          text={
+            isActiveAiTextChat
               ? t('footer.icons.hide-ai-chat-panel')
-              : t('footer.icons.show-ai-chat-panel')}
-            {isActiveAiTextChat && (
-              <div className="h-2.5 w-2.5 rounded-full bg-Blue2-600 dark:bg-Blue2-500 absolute top-1/2 -translate-y-1/2 end-3" />
-            )}
-          </button>
-        </MenuItem>
+              : t('footer.icons.show-ai-chat-panel')
+          }
+          isActive={isActiveAiTextChat}
+          customClass="md:hidden"
+        />
       )}
     </>
   );

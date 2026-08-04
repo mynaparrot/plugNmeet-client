@@ -176,7 +176,7 @@ const RangeSlider = ({
         />
         <div
           ref={thumbRef}
-          className="custom-range-thumb"
+          className="custom-range-thumb focus-ring"
           role="slider"
           tabIndex={0}
           aria-valuemin={min}

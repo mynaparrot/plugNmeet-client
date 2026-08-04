@@ -144,7 +144,7 @@ const UploadedFilesList = ({
         const isSelectedInModal = selectedOfficeFile?.fileId === file.fileId;
 
         let classNames =
-          'flex gap-4 py-2 px-3 w-full rounded-xl cursor-pointer transition-all duration-200 focus-ring';
+          'flex items-center gap-4 py-2 px-3 w-full rounded-xl cursor-pointer transition-all duration-200';
         if (isSelectedInModal) {
           classNames +=
             ' border-2 border-Blue2-500 bg-Blue2-50 dark:bg-dark-primary';
@@ -154,58 +154,59 @@ const UploadedFilesList = ({
         }
 
         return (
-          <button
-            type="button"
-            key={file.fileId}
-            className={classNames}
-            onClick={() => onSelectOfficeFile(file)}
-          >
-            <div className="icon w-9 h-9 rounded-full bg-Gray-100 dark:bg-Gray-700 text-Blue2-800 dark:text-white relative inline-flex items-center justify-center">
-              <FileIconSVG />
-            </div>
-            <div className="text flex-1 text-Gray-800 dark:text-white text-sm">
-              <div className="top flex gap-3 justify-between">
-                <div className="left">
-                  <p className="break-all">{file.fileName}</p>
-                </div>
-                {file.fileId !== 'default' && (
-                  <div className="right flex items-center gap-2">
-                    <button
-                      type="button"
-                      className={`inline-flex items-center justify-center w-7 h-7 rounded-full cursor-pointer transition-all duration-200 focus-ring [&_path]:stroke-current ${
-                        linkSentFileIds.has(file.fileId)
-                          ? 'bg-Green-100 text-Green-600 pointer-events-none'
-                          : 'bg-Gray-100 dark:bg-Gray-700 text-Gray-600 dark:text-white hover:bg-Gray-200'
-                      }`}
-                      title={
-                        linkSentFileIds.has(file.fileId)
-                          ? t('whiteboard.download-link-sent')
-                          : t('whiteboard.share-download-link')
-                      }
-                      aria-label={
-                        linkSentFileIds.has(file.fileId)
-                          ? t('whiteboard.download-link-sent')
-                          : t('whiteboard.share-download-link')
-                      }
-                      onClick={(e) => handleShareDownloadLink(e, file)}
-                    >
-                      {linkSentFileIds.has(file.fileId) ? (
-                        <CheckMarkIconSVG />
-                      ) : (
-                        <DownloadIconSVG />
-                      )}
-                    </button>
-                    {isCurrentlyInUse && <SelectedIcon />}
+          <div key={file.fileId} className={classNames}>
+            <button
+              type="button"
+              className="flex flex-1 items-center gap-4 text-start focus-ring"
+              onClick={() => onSelectOfficeFile(file)}
+            >
+              <div className="icon w-9 h-9 rounded-full bg-Gray-100 dark:bg-Gray-700 text-Blue2-800 dark:text-white relative inline-flex items-center justify-center shrink-0">
+                <FileIconSVG />
+              </div>
+              <div className="text flex-1 text-Gray-800 dark:text-white text-sm">
+                <div className="top flex gap-3 justify-between">
+                  <div className="left">
+                    <p className="break-all">{file.fileName}</p>
                   </div>
-                )}
+                </div>
+                <div className="progress-bar flex gap-2 items-center text-xs pt-0.5">
+                  {t('whiteboard.total-pages', {
+                    count: file.totalPages,
+                  })}
+                </div>
               </div>
-              <div className="progress-bar flex gap-2 items-center text-xs pt-0.5">
-                {t('whiteboard.total-pages', {
-                  count: file.totalPages,
-                })}
+            </button>
+            {file.fileId !== 'default' && (
+              <div className="right flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  className={`inline-flex items-center justify-center w-7 h-7 rounded-full cursor-pointer transition-all duration-200 focus-ring [&_path]:stroke-current ${
+                    linkSentFileIds.has(file.fileId)
+                      ? 'bg-Green-100 text-Green-600 pointer-events-none'
+                      : 'bg-Gray-100 dark:bg-Gray-700 text-Gray-600 dark:text-white hover:bg-Gray-200'
+                  }`}
+                  title={
+                    linkSentFileIds.has(file.fileId)
+                      ? t('whiteboard.download-link-sent')
+                      : t('whiteboard.share-download-link')
+                  }
+                  aria-label={
+                    linkSentFileIds.has(file.fileId)
+                      ? t('whiteboard.download-link-sent')
+                      : t('whiteboard.share-download-link')
+                  }
+                  onClick={(e) => handleShareDownloadLink(e, file)}
+                >
+                  {linkSentFileIds.has(file.fileId) ? (
+                    <CheckMarkIconSVG />
+                  ) : (
+                    <DownloadIconSVG />
+                  )}
+                </button>
+                {isCurrentlyInUse && <SelectedIcon />}
               </div>
-            </div>
-          </button>
+            )}
+          </div>
         );
       })}
     </div>
