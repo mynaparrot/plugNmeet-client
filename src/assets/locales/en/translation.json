@@ -113,6 +113,7 @@
     "rtmp-stopped": "This meeting is no longer being live-streamed."
   },
   "header": {
+    "aria-label": "Meeting header",
     "hide-header": "Hide header",
     "show-header": "Show header",
     "room-audio-volume": "Meeting Audio",
@@ -177,6 +178,7 @@
       "show-hide-hand": "Raise/Lower Hand"
     },
     "connection-status": {
+      "title": "Connection quality",
       "overall-quality": "Overall Experience",
       "score": "Connection Score",
       "upload": "Sending Quality",
@@ -290,6 +292,7 @@
     "sending-message": "Please wait, sending..."
   },
   "footer": {
+    "aria-label": "Meeting controls",
     "hide-footer": "Hide footer",
     "show-footer": "Show footer",
     "icons": {
@@ -467,7 +470,8 @@
     "export-pdf-clear": "Clear",
     "export-pdf-exporting": "Exporting...",
     "share-download-link": "Share download link in public chat",
-    "download-link-sent": "Download link sent to public chat"
+    "download-link-sent": "Download link sent to public chat",
+    "whiteboard-area": "Whiteboard area"
   },
   "waiting-room": {
     "modal-title": "Manage Waiting Room",

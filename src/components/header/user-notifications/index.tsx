@@ -126,7 +126,7 @@ const UserNotifications = () => {
       {({ open, close }) => (
         <>
           <PopoverButton
-            className={`w-7 md:w-8 h-7 md:h-8 flex items-center justify-center rounded-[10px] cursor-pointer ${open ? 'bg-Gray-50 dark:bg-Gray-800' : ''}`}
+            className={`w-7 md:w-8 h-7 md:h-8 flex items-center justify-center rounded-[10px] cursor-pointer focus-ring ${open ? 'bg-Gray-50 dark:bg-Gray-800' : ''}`}
           >
             {displayIcon(open)}
           </PopoverButton>
@@ -156,32 +156,48 @@ const UserNotifications = () => {
                 <PopupCloseSVGIcon classes="text-Gray-600" />
               </button>
             </div>
-            <div className="scrollBar overflow-auto h-[calc(100vh-148px)] 3xl:h-[calc(100vh-184px)] py-4">
-              <div className="inner grid gap-2">
+            <div
+              className="scrollBar overflow-auto h-[calc(100vh-148px)] 3xl:h-[calc(100vh-184px)] py-4"
+              tabIndex={0}
+            >
+              <ul className="inner grid gap-2 list-none">
                 {reversedNotifications.map((notif) => {
                   switch (notif.notificationCat) {
                     case 'new-poll-created':
                       return (
-                        <NewPoll
+                        <li
                           key={notif.created}
-                          createdAt={notif.created}
-                          onClosePopover={close}
-                        />
+                          tabIndex={0}
+                          className="focus:outline-hidden focus:bg-Gray-50 dark:focus:bg-dark-secondary2 rounded"
+                        >
+                          <NewPoll
+                            createdAt={notif.created}
+                            onClosePopover={close}
+                          />
+                        </li>
                       );
                     case 'breakout-room-invitation':
                       return (
-                        <NewBreakoutRoom
+                        <li
                           key={notif.created}
-                          receivedInvitationFor={notif.data}
-                          createdAt={notif.created}
-                        />
+                          tabIndex={0}
+                          className="focus:outline-hidden focus:bg-Gray-50 dark:focus:bg-dark-secondary2 rounded"
+                        >
+                          <NewBreakoutRoom
+                            receivedInvitationFor={notif.data}
+                            createdAt={notif.created}
+                          />
+                        </li>
                       );
                     default:
                       return (
-                        <GenericNotification
+                        <li
                           key={notif.created}
-                          notification={notif}
-                        />
+                          tabIndex={0}
+                          className="focus:outline-hidden focus:bg-Gray-50 dark:focus:bg-dark-secondary2 rounded"
+                        >
+                          <GenericNotification notification={notif} />
+                        </li>
                       );
                   }
                 })}
@@ -313,7 +329,7 @@ const UserNotifications = () => {
                         <span className="text-Gray-800 text-xs">12:04 AM</span>
                       </div>
                     </div> */}
-              </div>
+              </ul>
             </div>
           </PopoverPanel>
         </>

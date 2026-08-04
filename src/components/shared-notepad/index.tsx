@@ -32,6 +32,17 @@ const SharedNotepad = () => {
     dispatch(updateIsActiveSharedNotePad(false));
   }, [dispatch]);
 
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (isActiveSharedNotePad) {
+      const timer = setTimeout(() => {
+        closeBtnRef.current?.focus();
+      }, 350);
+      return () => clearTimeout(timer);
+    }
+  }, [isActiveSharedNotePad]);
+
   return (
     url && (
       <div
@@ -58,7 +69,10 @@ const SharedNotepad = () => {
                 >
                   <span>{t('footer.modal.shared-notepad')}</span>
                   <button
-                    className="cursor-pointer relative z-30 hidden md:inline"
+                    ref={closeBtnRef}
+                    type="button"
+                    aria-label={t('close').toString()}
+                    className="cursor-pointer relative z-30 hidden md:inline focus-ring"
                     onClick={minimizePad}
                   >
                     <PopupCloseSVGIcon classes="text-Gray-600 dark:text-white" />

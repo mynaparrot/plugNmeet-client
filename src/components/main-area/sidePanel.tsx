@@ -6,6 +6,7 @@ interface SidePanelProps {
   panelClass: string;
   children: ReactNode;
   onToggle: (isOpen: boolean) => void;
+  ariaLabel: string;
 }
 
 const SidePanel = ({
@@ -13,6 +14,7 @@ const SidePanel = ({
   panelClass,
   children,
   onToggle,
+  ariaLabel,
 }: SidePanelProps) => {
   return (
     <Transition
@@ -28,6 +30,8 @@ const SidePanel = ({
     >
       <div
         className={`${panelClass} bottom-0 absolute w-full md:w-[300px] 3xl:w-[340px] end-0 h-[300px] md:h-full`}
+        role="complementary"
+        aria-label={ariaLabel}
       >
         {children}
       </div>

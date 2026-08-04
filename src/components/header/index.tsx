@@ -49,14 +49,15 @@ const Header = () => {
       <>
         <header
           id="main-header"
+          aria-label={t('header.aria-label').toString()}
           className={`relative z-99999 px-4 min-h-[54px] 3xl:min-h-[68px] py-1 md:py-0 flex flex-nowrap items-center justify-between bg-white dark:bg-dark-primary transition-transform border-b border-Gray-200 dark:border-Gray-800`}
         >
           <div className="left relative z-20 flex items-center gap-2 md:gap-2.5 lg:gap-5 shrink-0 justify-start">
             <HeaderLogo />
             <DarkThemeSwitcher />
           </div>
-          <div className="middle flex-1 min-w-0 flex justify-center z-10 order-2 py-0.5 pointer-events-none mx-2">
-            <h2 className="header-title text-xs sm:text-sm 3xl:text-base font-medium text-Gray-950 dark:text-white leading-tight text-center truncate">
+          <div className="middle flex-1 min-w-0 flex justify-center z-10 order-2 py-0.5 mx-2">
+            <h2 className="header-title text-xs sm:text-sm 3xl:text-base font-medium text-Gray-950 dark:text-white leading-tight text-center cursor-text truncate">
               {title}
             </h2>
           </div>

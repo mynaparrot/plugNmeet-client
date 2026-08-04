@@ -685,9 +685,11 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
   return (
     <div
-      className={`excalidraw-wrapper flex-1 w-full max-w-[1280px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9 z-0 ${
+      className={`excalidraw-wrapper flex-1 w-full max-w-[1280px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9 z-0 focus-ring ${
         isToolbarHidden ? 'toolbar-hidden' : ''
       }`}
+      role="region"
+      aria-label={t('whiteboard.whiteboard-area').toString()}
     >
       {isPresenter && excalidrawAPI && (
         <>

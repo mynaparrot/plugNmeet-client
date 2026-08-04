@@ -176,7 +176,7 @@ const ReactionsIcon = () => {
                   key={emoji}
                   type="button"
                   aria-label={emoji}
-                  className="w-9 h-9 3xl:w-10 3xl:h-10 flex items-center justify-center text-xl 3xl:text-2xl rounded-full hover:bg-Gray-50 dark:hover:bg-dark-secondary2 transition-transform duration-150 hover:scale-125 cursor-pointer"
+                  className="w-9 h-9 3xl:w-10 3xl:h-10 flex items-center justify-center text-xl 3xl:text-2xl rounded-full hover:bg-Gray-50 dark:hover:bg-dark-secondary2 transition-transform duration-150 hover:scale-125 cursor-pointer focus-ring"
                   onClick={() => sendReaction(emoji)}
                 >
                   {emoji}
@@ -190,7 +190,7 @@ const ReactionsIcon = () => {
               type="button"
               onClick={toggleRaiseHand}
               className={clsx(
-                'w-full flex items-center justify-center gap-2 h-9 3xl:h-10 px-3 rounded-xl border text-sm font-medium whitespace-nowrap cursor-pointer transition-colors duration-150',
+                'w-full flex items-center justify-center gap-2 h-9 3xl:h-10 px-3 rounded-xl border text-sm font-medium whitespace-nowrap cursor-pointer transition-colors duration-150 focus-ring',
                 isActiveRaisehand
                   ? 'bg-Blue2-50 dark:bg-dark-secondary2 border-Blue2-500 text-Blue2-700 dark:text-dark-text'
                   : 'bg-white dark:bg-dark-primary border-Gray-200 dark:border-dark-secondary2 text-Gray-950 dark:text-dark-text hover:bg-Gray-50 dark:hover:bg-dark-secondary2',

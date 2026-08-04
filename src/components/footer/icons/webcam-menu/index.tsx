@@ -26,7 +26,7 @@ const WebcamMenu = ({
             <MenuButton
               aria-label="Webcam options"
               disabled={isLocked}
-              className={`footer-icon-bg w-[20px] md:w-[25px] 3xl:w-[30px] h-[34px] md:h-9 3xl:h-11 flex items-center justify-center border-e-0 border overflow-hidden bg-Gray-50 dark:bg-transparent rounded-e-xl 3xl:rounded-e-2xl disabled:cursor-not-allowed disabled:opacity-50 ${open ? 'border-Gray-100 dark:border-Gray-700 dark:bg-Gray-800!' : 'border-Gray-300 dark:border-Gray-700 dark:border-s-Gray-800'}`}
+              className={`footer-icon-bg w-[20px] md:w-[25px] 3xl:w-[30px] h-[34px] md:h-9 3xl:h-11 flex items-center justify-center border-e-0 border overflow-hidden bg-Gray-50 dark:bg-transparent rounded-e-xl 3xl:rounded-e-2xl disabled:cursor-not-allowed disabled:opacity-50 focus-ring ${open ? 'border-Gray-100 dark:border-Gray-700 dark:bg-Gray-800!' : 'border-Gray-300 dark:border-Gray-700 dark:border-s-Gray-800'}`}
             >
               <ArrowUp />
             </MenuButton>

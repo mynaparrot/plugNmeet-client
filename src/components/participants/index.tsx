@@ -135,7 +135,7 @@ const ParticipantsComponent = () => {
               name="search-participants"
               id="search-participants"
               placeholder={t('left-panel.search-participant')}
-              className="text-Gray-950 dark:text-white placeholder:text-Gray-600 dark:placeholder:text-white h-9 rounded-lg 3xl:rounded-[15px] bg-white dark:bg-dark-primary border border-Gray-200 dark:border-Gray-800 w-full ps-8 3xl:ps-10 outline-hidden text-xs 3xl:text-sm"
+              className="text-Gray-950 dark:text-white placeholder:text-Gray-600 dark:placeholder:text-white h-9 rounded-lg 3xl:rounded-[15px] bg-white dark:bg-dark-primary border border-Gray-200 dark:border-Gray-800 w-full ps-8 3xl:ps-10 outline-hidden focus-ring text-xs 3xl:text-sm"
               onChange={(e) => setSearchParticipant(e.target.value)}
             />
           </div>
@@ -144,8 +144,6 @@ const ParticipantsComponent = () => {
         <div
           ref={outerRef as any}
           className="scrollBar overflow-auto h-[calc(100vh-240px)]"
-          tabIndex={0}
-          aria-label="Participants list"
         >
           <ul
             className="all-participants-wrap px-2 xl:px-3 3xl:px-5 list-none"
@@ -155,7 +153,8 @@ const ParticipantsComponent = () => {
               <li
                 key={index}
                 ref={measureRef}
-                className="w-full list-none min-h-[40px] 3xl:min-h-[60px] py-1 flex items-center"
+                className="w-full list-none min-h-[40px] 3xl:min-h-[60px] py-1 flex items-center focus:outline-hidden focus:bg-Gray-50 dark:focus:bg-dark-secondary2 rounded"
+                tabIndex={0}
               >
                 {renderParticipant(index)}
               </li>
