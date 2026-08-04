@@ -117,6 +117,7 @@ const VideoElm = ({ track }: IVideoElmProps) => {
         <button
           className="absolute z-10 bottom-2 end-2 p-1 bg-black/50 rounded-md opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
           onClick={fullScreen}
+          aria-label="Fullscreen"
         >
           <i className="icon pnm-fullscreen text-[18px] text-white" />
         </button>

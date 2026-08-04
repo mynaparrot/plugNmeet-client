@@ -121,7 +121,13 @@ const FooterUI = ({
   const renderForAdmin = () => {
     return (
       <div className="flex wb-page-navigation ml-2">
-        <button className="pre" onClick={handlePre} disabled={currentPage <= 1}>
+        <button
+          type="button"
+          className="pre focus-ring"
+          onClick={handlePre}
+          disabled={currentPage <= 1}
+          aria-label={t('whiteboard.previous-page')}
+        >
           <i className="pnm-arrow-left-short text-black dark:text-white text-xl opacity-50 rtl:rotate-180" />
         </button>
         <select
@@ -138,9 +144,11 @@ const FooterUI = ({
           ))}
         </select>
         <button
-          className="next"
+          type="button"
+          className="next focus-ring"
           onClick={handleNext}
           disabled={currentPage >= totalPages}
+          aria-label={t('whiteboard.next-page')}
         >
           <i className="pnm-arrow-right-short text-black dark:text-white text-xl opacity-50 rtl:rotate-180" />
         </button>
@@ -158,13 +166,19 @@ const FooterUI = ({
         } `}
       >
         {isAdmin && !isRecorder && (
-          <button className="presenter" onClick={takeOverPresenter}>
+          <button
+            type="button"
+            className="presenter focus-ring"
+            onClick={takeOverPresenter}
+            aria-label={t('whiteboard.take-over-presenter')}
+          >
             <i className="pnm-presenter text-[14px]" />
           </button>
         )}
         {!isRecorder && (
           <button
-            className={`px-2 ${isFollowing ? 'following' : ''}`}
+            type="button"
+            className={`px-2 focus-ring ${isFollowing ? 'following' : ''}`}
             onClick={handleFollowPresenter}
             title={
               isFollowing

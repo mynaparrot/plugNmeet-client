@@ -195,6 +195,7 @@ const VerticalLayout = ({
           <button
             type="button"
             className="cam-pip cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center absolute top-2 end-2 z-50 opacity-0 group-hover:opacity-100 transition-all duration-300"
+            aria-label={t('pip')}
             onPointerDown={(event) => {
               event.stopPropagation();
             }}

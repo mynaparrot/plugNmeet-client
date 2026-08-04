@@ -91,6 +91,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
         type="button"
         className={`wrap overflow-hidden rounded-2xl h-20 focus-ring ${selectedBg.type === 'none' ? 'border-4 border-[rgba(124,206,247,0.25)]' : 'border-4 border-transparent'}`}
         onClick={() => handleOnClick('none', '')}
+        aria-label="No background"
       >
         <div
           className={`cursor-pointer w-full h-full flex items-center justify-center bg-Gray-50 dark:bg-transparent overflow-hidden ${selectedBg.type === 'none' ? 'border border-Blue dark:border-none shadow-virtual-item dark:shadow-none rounded-xl' : 'rounded-2xl dark:border dark:border-Gray-700'}`}
@@ -102,6 +103,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
         type="button"
         className={`wrap overflow-hidden rounded-2xl h-20 focus-ring ${selectedBg.type === 'blur' ? 'border-4 border-[rgba(124,206,247,0.25)]' : 'border-4 border-transparent'}`}
         onClick={() => handleOnClick('blur', '')}
+        aria-label="Blur background"
       >
         <div
           className={`cursor-pointer w-full h-full flex items-center justify-center bg-Gray-50 dark:bg-transparent overflow-hidden ${selectedBg.type === 'blur' ? 'border border-Blue dark:border-none shadow-virtual-item dark:shadow-none rounded-xl' : 'rounded-2xl dark:border dark:border-Gray-700'}`}
@@ -130,7 +132,10 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
         );
       })}
       <div className="upload-btn-wrap relative border-4 border-transparent">
-        <button className="cursor-pointer h-18 w-full border border-dashed border-Blue rounded-2xl flex items-center justify-center bg-Gray-50 dark:bg-transparent overflow-hidden">
+        <button
+          className="cursor-pointer h-18 w-full border border-dashed border-Blue rounded-2xl flex items-center justify-center bg-Gray-50 dark:bg-transparent overflow-hidden"
+          aria-label="Upload background"
+        >
           <svg
             width="16"
             height="16"

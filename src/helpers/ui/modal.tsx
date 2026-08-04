@@ -96,7 +96,7 @@ const Modal = ({
                 <span>{title}</span>
                 <Button
                   ref={closeButtonRef}
-                  className="cursor-pointer"
+                  className="cursor-pointer focus-ring"
                   onClick={() => setIsOpen(false)}
                   aria-label="Close"
                 >
