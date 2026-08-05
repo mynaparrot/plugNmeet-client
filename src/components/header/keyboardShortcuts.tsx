@@ -20,11 +20,7 @@ const KeyboardShortcuts = () => {
     <Modal
       show={isShowKeyboardShortcuts}
       onClose={closeModal}
-      title={
-        <h3 className="flex items-center justify-between text-base 3xl:text-lg font-semibold leading-7 text-Gray-950 dark:text-white mb-2">
-          <span>{t('header.keyboard-shortcuts.title')}</span>
-        </h3>
-      }
+      title={t('header.keyboard-shortcuts.title')}
       maxWidth="max-w-2xl"
       customClass="KeyboardShortcuts"
     >

@@ -39,11 +39,12 @@ const Modal = ({
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (isOpen && closeButtonRef.current) {
-      // Delay to ensure the TransitionChild has rendered the panel into the DOM
+    if (isOpen) {
+      // Delay auto-focus until after the 300ms enter transition completes to
+      // avoid a visual jump glitch where focus fires mid-transition.
       const timer = setTimeout(() => {
         closeButtonRef.current?.focus();
-      }, 50);
+      }, 350);
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
@@ -96,6 +97,7 @@ const Modal = ({
                 <span>{title}</span>
                 <Button
                   ref={closeButtonRef}
+                  data-autofocus
                   className="cursor-pointer focus-ring"
                   onClick={() => setIsOpen(false)}
                   aria-label="Close"
