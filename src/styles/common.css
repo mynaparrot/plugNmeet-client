@@ -653,7 +653,7 @@ body[dir='rtl'] span.tooltip.tooltip-left::before {
   #main-area.fullWidthMainArea
   .middle-fullscreen-wrapper
   .notepad-wrapper {
-  @apply h-[94%] top-[3%] relative mt-0;
+  @apply top-[3%] relative mt-0;
 }
 .landscape-device.is-mobile
   #main-area.fullWidthMainArea
@@ -682,7 +682,7 @@ body[dir='rtl'] span.tooltip.tooltip-left::before {
   #main-area.fullWidthMainArea
   .middle-fullscreen-wrapper
   .external-display-link-wrapper {
-  @apply h-full m-0 p-2;
+  @apply m-0 p-2;
 }
 .landscape-device.is-mobile
   #main-area.fullWidthMainArea
@@ -809,13 +809,13 @@ body[dir='rtl'] span.tooltip.tooltip-left::before {
 .portrait-device.is-mobile
   .middle-fullscreen-wrapper
   .external-display-link-wrapper {
-  @apply h-full m-0 p-2;
+  @apply m-0 p-2;
 }
 .portrait-device.is-mobile .middle-fullscreen-wrapper .notepad-wrapper {
-  @apply h-full m-0 p-2;
+  @apply m-0 p-2;
 }
 .portrait-device.is-mobile .middle-fullscreen-wrapper .excalidraw-wrapper {
-  @apply h-full m-0 p-2;
+  @apply m-0 p-2;
 }
 .portrait-device.is-mobile .media-player-inner > div {
   width: 100% !important;
@@ -870,11 +870,16 @@ aside {
 .portrait-device.is-tablet .camera-row-0.total-items-3 .video-camera-item {
   @apply w-full h-1/3;
 }
+/* Portrait tablet: content heights above the bottom bar.
+   Whiteboard, notepad, and external-link define their own heights in JSX
+   (h-[calc(100%-50px)]). Screen-share (h-full) and external-media (no JSX
+   height) get a small gap here because the wrapper's pb-[110px] already
+   reserves the 110px bottom bar. */
 .portrait-device.is-tablet
   #main-area.fullWidthMainArea
   .middle-fullscreen-wrapper.verticalsWebcamsActivated
   .screen-share-video {
-  @apply h-[calc(100%-90px)];
+  @apply h-[calc(100%-10px)] mt-0;
 }
 .portrait-device.is-tablet
   #main-area.fullWidthMainArea
@@ -886,26 +891,8 @@ aside {
 .portrait-device.is-tablet
   #main-area.fullWidthMainArea
   .middle-fullscreen-wrapper.verticalsWebcamsActivated
-  .excalidraw-wrapper {
-  @apply h-[calc(100%-120px)];
-}
-.portrait-device.is-tablet
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper.verticalsWebcamsActivated
-  .notepad-wrapper {
-  @apply h-[calc(100%-135px)];
-}
-.portrait-device.is-tablet
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper.verticalsWebcamsActivated
   .Div-external-media-player {
-  @apply h-[calc(100%-90px)];
-}
-.portrait-device.is-tablet
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper.verticalsWebcamsActivated
-  .external-display-link-wrapper {
-  @apply h-[calc(100%-130px)];
+  @apply h-[calc(100%-10px)] mt-0;
 }
 .portrait-device.is-tablet
   #main-area.fullWidthMainArea
@@ -991,7 +978,9 @@ body[dir='rtl'] .rtl\:microphone-rtl-left::before {
 }
 
 .vertical-webcams-wrapper.not-extended .video-camera-item {
-  @apply w-1/3 md:w-full h-full md:h-1/4;
+  @apply w-full h-auto;
+  aspect-ratio: 16 / 9;
+  flex: 0 0 auto;
 }
 
 /* Landscape mobile/tablet: width-driven 16:9 tiles stacked in the right strip */
