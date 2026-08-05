@@ -39,6 +39,8 @@ const MainArea = () => {
   );
   const natsPrevioulyState = useRef<boolean>(isNatsServerConnected);
 
+  const extendedViewPreference = useRef<boolean>(false);
+
   const {
     columnCameraWidth,
     columnCameraPosition,
@@ -128,7 +130,23 @@ const MainArea = () => {
     }
 
     if (anyPanelIsOpen && !isRecorder) {
+      // Save the user's current preference before forcing extended view off,
+      // so we can restore it when the panel closes.
+      extendedViewPreference.current =
+        store.getState().bottomIconsActivity.isEnabledExtendedVerticalCamView;
       dispatch(updateIsEnabledExtendedVerticalCamView(false));
+    } else if (
+      !anyPanelIsOpen &&
+      !isRecorder &&
+      extendedViewPreference.current
+    ) {
+      // Restore extended view only if the screen is wide enough to accommodate
+      // the side panel (max 340px) + extended strip (416px) + reasonable content area.
+      const screenWidth = store.getState().bottomIconsActivity.screenWidth;
+      if (screenWidth >= 1400) {
+        dispatch(updateIsEnabledExtendedVerticalCamView(true));
+      }
+      extendedViewPreference.current = false;
     }
   }, [dispatch, debouncedRefresh, isActiveWhiteboard, isRecorder]);
 

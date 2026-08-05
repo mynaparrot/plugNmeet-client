@@ -18,6 +18,7 @@ import {
   getElmsForPc,
   getElmsForPCExtendedVerticalView,
   getElmsForTablet,
+  getElmsForTabletPortrait,
   getTotalWebcamPages,
 } from './helpers/utils';
 import { useDeviceInfo } from './helpers/useDeviceInfo';
@@ -36,18 +37,24 @@ interface IPaginatedParticipantsResult {
   participantsToRender: ReactElement[];
 }
 
+// Desktop / PC
 const DESKTOP_PER_PAGE = 24,
-  TABLET_PER_PAGE = 9,
-  TABLET_WITH_SIDEBAR_PER_PAGE = 6,
-  MOBILE_PER_PAGE = 6,
-  MOBILE_WITH_SIDEBAR_PER_PAGE = 4,
   PC_VERTICAL_PER_PAGE = 5,
   PC_EXTENDED_VERTICAL_PER_PAGE = 10,
-  TABLET_VERTICAL_PORTRAIT_PER_PAGE = 3,
+  // Tablet
+  TABLET_PER_PAGE = 9,
+  TABLET_WITH_SIDEBAR_PER_PAGE = 6,
+  TABLET_PORTRAIT_PER_PAGE = 9,
+  TABLET_PORTRAIT_WITH_SIDEBAR_PER_PAGE = 6,
   TABLET_VERTICAL_LANDSCAPE_PER_PAGE = 6,
-  MOBILE_VERTICAL_PORTRAIT_PER_PAGE = 3,
+  TABLET_VERTICAL_PORTRAIT_PER_PAGE = 4,
+  TABLET_VERTICAL_PORTRAIT_WITH_SIDEBAR_PER_PAGE = 2,
+  // Mobile
+  MOBILE_PER_PAGE = 6,
+  MOBILE_WITH_SIDEBAR_PER_PAGE = 4,
   MOBILE_VERTICAL_LANDSCAPE_PER_PAGE = 4,
-  MOBILE_VERTICAL_WITH_SIDEBAR_PER_PAGE = 2;
+  MOBILE_VERTICAL_WITH_SIDEBAR_PER_PAGE = 4,
+  MOBILE_VERTICAL_PORTRAIT_PER_PAGE = 3;
 
 const VideoLayout = ({
   allParticipants,
@@ -112,15 +119,23 @@ const VideoLayout = ({
       }
     } else if (isTablet) {
       if (enabledVerticalViewMode) {
-        // Tablet: sidebar doesn't reduce vertical webcam count
+        // Vertical view: right strip (landscape) or bottom bar (portrait)
         perPage = isPortrait
-          ? TABLET_VERTICAL_PORTRAIT_PER_PAGE
+          ? isSidebarOpen
+            ? TABLET_VERTICAL_PORTRAIT_WITH_SIDEBAR_PER_PAGE
+            : TABLET_VERTICAL_PORTRAIT_PER_PAGE
           : TABLET_VERTICAL_LANDSCAPE_PER_PAGE;
       } else {
         // default mode
-        perPage = isSidebarOpen
-          ? TABLET_WITH_SIDEBAR_PER_PAGE
-          : TABLET_PER_PAGE;
+        if (isPortrait) {
+          perPage = isSidebarOpen
+            ? TABLET_PORTRAIT_WITH_SIDEBAR_PER_PAGE
+            : TABLET_PORTRAIT_PER_PAGE;
+        } else {
+          perPage = isSidebarOpen
+            ? TABLET_WITH_SIDEBAR_PER_PAGE
+            : TABLET_PER_PAGE;
+        }
       }
     } else {
       // PC
@@ -303,14 +318,19 @@ const VideoLayout = ({
 
     const participantsToRender = paginatedParticipants.participantsToRender;
 
-    // If the device is mobile OR a tablet in portrait mode (which moves webcams to the bottom),
-    // use the mobile element layout to prevent horizontal squeezing and layout breaks.
-    if (isMobile || (isTablet && isPortrait)) {
+    // Mobile always uses the mobile layout helper.
+    if (isMobile) {
       layout = getElmsForMobile(
         participantsToRender,
         isPortrait,
         enabledVerticalViewMode,
         isSidebarOpen,
+      );
+    } else if (isTablet && isPortrait) {
+      layout = getElmsForTabletPortrait(
+        participantsToRender,
+        isSidebarOpen,
+        enabledVerticalViewMode,
       );
     } else if (isTablet) {
       layout = getElmsForTablet(
