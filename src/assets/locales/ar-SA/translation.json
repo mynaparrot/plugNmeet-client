@@ -11,11 +11,15 @@
   "plugnmeet-server-client-version": "الخادم: v{{server}}، العميل: v{{client}}",
   "open": "فتح",
   "other": "أخرى",
+  "participant-menu": "خيارات المشاركين",
+  "participant-volume": "ضبط حجم المشاركين",
+  "participant-webcam-on": "الكاميرا تعمل",
   "pip": "صورة داخل الصورة",
   "please-wait": "يرجى الانتظار...",
   "are-you-sure-to-close": "هل أنت متأكد من رغبتك في الإغلاق؟",
   "you-are-about-to-close": "أنت على وشك الإغلاق.",
   "notifications": {
+    "title": "الإشعارات",
     "room-not-active": "هذه الغرفة غير نشطة.",
     "recording-already-running": "التسجيل قيد التشغيل بالفعل.",
     "recording-not-running": "التسجيل ليس قيد التشغيل.",
@@ -109,6 +113,7 @@
     "rtmp-stopped": "لم يعد هذا الاجتماع يُبث مباشرة."
   },
   "header": {
+    "aria-label": "رأس الاجتماع",
     "hide-header": "إخفاء الترويسة",
     "show-header": "إظهار الترويسة",
     "room-audio-volume": "مستوى صوت الاجتماع",
@@ -116,6 +121,8 @@
     "menus": {
       "settings": "الإعدادات",
       "keyboard-shortcuts": "اختصارات لوحة المفاتيح",
+      "menu": "القائمة",
+      "toggle-theme": "تبديل الموضوع",
       "logout": "مغادرة الاجتماع",
       "end": "إنهاء الاجتماع",
       "alert": {
@@ -171,6 +178,7 @@
       "show-hide-hand": "رفع/خفض اليد"
     },
     "connection-status": {
+      "title": "جودة الاتصال",
       "overall-quality": "التجربة العامة",
       "score": "نتيجة الاتصال",
       "upload": "جودة الإرسال",
@@ -284,6 +292,7 @@
     "sending-message": "جارٍ الإرسال، يرجى الانتظار..."
   },
   "footer": {
+    "aria-label": "ضوابط الاجتماعات",
     "hide-footer": "إخفاء التذييل",
     "show-footer": "إظهار التذييل",
     "icons": {
@@ -327,7 +336,8 @@
       "hide-translation-settings": "إخفاء إعدادات الترجمة",
       "promote-presenter": "تعيين كمقدِّم",
       "demote-presenter": "إزالة من دور المقدِّم",
-      "you-are-muted": "لا أحد يستطيع سماعك. الميكروفون مكتوم."
+      "you-are-muted": "لا أحد يستطيع سماعك. الميكروفون مكتوم.",
+      "menu": "خيارات أكثر"
     },
     "menus": {
       "mute-all-users": "كتم صوت الجميع",
@@ -433,6 +443,9 @@
     "export-pdf-button-count": "التصدير ({{count}})",
     "export-pdf-all-pages": "جميع الصفحات ({{count}})",
     "export-pdf-current-page": "الصفحة الحالية: {{page}}",
+    "previous-page": "الصفحة السابقة",
+    "next-page": "الصفحة التالية",
+    "take-over-presenter": "تولى دور المقدم",
     "export-pdf-selected-pages": "صفحات مختارة",
     "export-pdf-selected-pages-count": "المختار ({{count}})",
     "export-pdf-select-pages-label": "اختر الصفحات للتصدير:",
@@ -460,7 +473,8 @@
     "export-pdf-clear": "واضح",
     "export-pdf-exporting": "تصدير...",
     "share-download-link": "شارك رابط التحميل في الدردشة العامة",
-    "download-link-sent": "تحميل الرابط الذي أرسل إلى الدردشة العامة"
+    "download-link-sent": "تحميل الرابط الذي أرسل إلى الدردشة العامة",
+    "whiteboard-area": "منطقة السبورة البيضاء"
   },
   "waiting-room": {
     "modal-title": "إدارة غرفة الانتظار",
@@ -629,6 +643,8 @@
     "enable-translation-warning": "لقد اخترت أكثر من لغة منطوقة، لكن الترجمة معطلة.",
     "select-one-lang": "اختر لغة",
     "subtitle-history-modal-title": "سجل الترجمة",
+    "scroll-to-bottom": "التمرير إلى الأسفل",
+    "download-transcript": "تحميل النص",
     "azure-error": "خطأ في خدمة Microsoft Azure: {{error}}",
     "speech-to-text-stopped": "توقفت خدمة النسخ.",
     "enable-transcription": "تمكين النسخ",
