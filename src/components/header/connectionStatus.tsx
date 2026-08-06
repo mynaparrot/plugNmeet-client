@@ -1,5 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
+import {
+  Button,
+  Popover,
+  PopoverButton,
+  PopoverPanel,
+} from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import { useAppSelector } from '../../store';
@@ -136,8 +141,9 @@ const ConnectionStatus = () => {
         ) : null}
 
         <div className="flex justify-end mt-4">
-          <button
-            type="button"
+          <Button
+            // oxlint-disable-next-line jsx-a11y/no-autofocus
+            autoFocus={true}
             onClick={handleCopy}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer focus-ring
               ${
@@ -154,7 +160,7 @@ const ConnectionStatus = () => {
                 {t('header.connection-status.copy')}
               </>
             )}
-          </button>
+          </Button>
         </div>
       </PopoverPanel>
     </Popover>

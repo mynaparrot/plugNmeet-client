@@ -14,6 +14,7 @@ import ConnectionQualityIcon from './icons/connectionQuality';
 
 import { ICurrentUser } from '../../../store/slices/interfaces/session';
 import { IVisibleParticipantInfo } from '../../../store/slices/interfaces/participant';
+import { store } from '../../../store';
 
 interface IParticipantComponentProps {
   participant: IVisibleParticipantInfo;
@@ -33,6 +34,8 @@ const ParticipantComponent = ({
       openRemoveParticipantAlert(participant.name, user_id, type);
     }
   };
+  const currentUserIsAdmin =
+    !!store.getState().session.currentUser?.metadata?.isAdmin;
 
   return (
     <div className="flex items-center justify-between relative w-full gap-2">
@@ -60,6 +63,7 @@ const ParticipantComponent = ({
               userId={participant.userId}
               name={participant.name}
               isAdmin={participant.isAdmin}
+              currentUserIsAdmin={currentUserIsAdmin}
               openRemoveParticipantAlert={onOpenRemoveParticipantAlert}
             />
           )}

@@ -18,6 +18,7 @@ interface IMenuIconProps {
   userId: string;
   name: string;
   isAdmin: boolean;
+  currentUserIsAdmin: boolean;
   openRemoveParticipantAlert(userId: string, type: string): void;
 }
 
@@ -25,18 +26,22 @@ const MenuIcon = ({
   userId,
   name,
   isAdmin,
+  currentUserIsAdmin,
   openRemoveParticipantAlert,
 }: IMenuIconProps) => {
   const { t } = useTranslation();
   const defaultLockSettings = useAppSelector(
     (state) => state.session.currentRoom.metadata?.defaultLockSettings,
   );
-  const currentUser = useAppSelector((state) => state.session.currentUser);
+  const currentUserLockPrivateChat = useAppSelector(
+    (state) =>
+      state.session.currentUser?.metadata?.lockSettings?.lockPrivateChat,
+  );
 
   const menuItems = useMemo(() => {
     const items: ReactElement[] = [];
 
-    if (currentUser?.metadata?.isAdmin) {
+    if (currentUserIsAdmin) {
       items.push(
         <MicMenuItem key="mic" userId={userId} />,
         <WebcamMenuItem key="webcam" userId={userId} />,
@@ -55,7 +60,7 @@ const MenuIcon = ({
 
     // For non-admins, check if they can send private messages.
     const canSendPrivateMessage =
-      !currentUser?.metadata?.lockSettings?.lockPrivateChat &&
+      !currentUserLockPrivateChat &&
       !defaultLockSettings?.lockChat &&
       !defaultLockSettings?.lockPrivateChat;
 
@@ -73,12 +78,13 @@ const MenuIcon = ({
 
     return items;
   }, [
-    currentUser,
+    currentUserLockPrivateChat,
     defaultLockSettings,
     isAdmin,
     name,
     openRemoveParticipantAlert,
     userId,
+    currentUserIsAdmin,
   ]);
 
   if (menuItems.length === 0) {
