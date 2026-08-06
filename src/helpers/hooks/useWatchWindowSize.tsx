@@ -22,6 +22,7 @@ const SIDE_PANEL_BREAKPOINT_PX = 1024;
 const useWatchWindowSize = (currentRoom: Room | undefined) => {
   const dispatch = useAppDispatch();
   const noSleepRef = useRef<NoSleep | null>(null);
+  const prevWidthRef = useRef(window.innerWidth);
 
   const [deviceClass, setDeviceClass] = useState<string>('');
   const [orientationClass, setOrientationClass] =
@@ -69,9 +70,14 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
       const activeSidePanel =
         store.getState().bottomIconsActivity.activeSidePanel;
 
-      if (width < SIDE_PANEL_BREAKPOINT_PX && activeSidePanel) {
+      if (
+        prevWidthRef.current >= SIDE_PANEL_BREAKPOINT_PX &&
+        width < SIDE_PANEL_BREAKPOINT_PX &&
+        activeSidePanel
+      ) {
         dispatch(setActiveSidePanel(null));
       }
+      prevWidthRef.current = width;
     };
 
     const resizeObserver = new ResizeObserver((entries) => {
@@ -90,6 +96,9 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
 
     dispatch(updateScreenHeight(window.innerHeight));
 
+    // Runs once on mount; only closes the side panel on initial load if the
+    // viewport starts below the breakpoint. Height-only changes (soft keyboard)
+    // are handled separately above and won't trigger a close here.
     if (window.innerWidth < SIDE_PANEL_BREAKPOINT_PX) {
       dispatch(setActiveSidePanel(null));
     }
