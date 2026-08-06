@@ -11,11 +11,15 @@
   "plugnmeet-server-client-version": "Szerver: v{{server}}; Ügyfél: v{{client}}",
   "open": "Nyitott",
   "other": "Egyéb",
+  "participant-menu": "Résztvevői opciók",
+  "participant-volume": "A résztvevők hangerő beállítása",
+  "participant-webcam-on": "A kamera be van kapcsolva",
   "pip": "Kép a képben",
   "please-wait": "Várj, kérlek...",
   "are-you-sure-to-close": "Biztos benne, hogy be akar zárni?",
   "you-are-about-to-close": "Hamarosan bezár",
   "notifications": {
+    "title": "Értesítések",
     "room-not-active": "Ez a szoba nem aktív.",
     "recording-already-running": "A felvétel már folyamatban van.",
     "recording-not-running": "A felvétel nincs folyamatban.",
@@ -109,6 +113,7 @@
     "rtmp-stopped": "Ezt a találkozót már nem közvetítik élőben."
   },
   "header": {
+    "aria-label": "Találkozó fejléce",
     "hide-header": "Fejléc elrejtése",
     "show-header": "Fejléc megjelenítése",
     "room-audio-volume": "Értekezlet hangja",
@@ -116,6 +121,8 @@
     "menus": {
       "settings": "Beállítások",
       "keyboard-shortcuts": "Billentyűparancsok",
+      "menu": "Menü",
+      "toggle-theme": "Kapcsoló téma",
       "logout": "Kilépés az értekezletről",
       "end": "Értekezlet befejezése",
       "alert": {
@@ -171,6 +178,7 @@
       "show-hide-hand": "Emelés/Kéz csökkentése"
     },
     "connection-status": {
+      "title": "Kapcsolat minősége",
       "overall-quality": "Általános tapasztalat",
       "score": "Kapcsolati pontszám",
       "upload": "Küldési minőség",
@@ -284,6 +292,7 @@
     "sending-message": "Kérlek, várj, küldöm..."
   },
   "footer": {
+    "aria-label": "Találkozók vezérlése",
     "hide-footer": "Lábléc elrejtése",
     "show-footer": "Lábléc megjelenítése",
     "icons": {
@@ -327,7 +336,8 @@
       "hide-translation-settings": "Átírási beállítások elrejtése",
       "promote-presenter": "Készítsen előadót",
       "demote-presenter": "Eltávolítás előadóként",
-      "you-are-muted": "Senki sem hall téged. Némított vagy."
+      "you-are-muted": "Senki sem hall téged. Némított vagy.",
+      "menu": "További lehetőségek"
     },
     "menus": {
       "mute-all-users": "Mindenki elnémítása",
@@ -433,6 +443,9 @@
     "export-pdf-button-count": "Export ({{count}})",
     "export-pdf-all-pages": "Minden oldal ({{count}})",
     "export-pdf-current-page": "Jelenlegi oldal: {{page}}",
+    "previous-page": "Előző oldal",
+    "next-page": "Következő oldal",
+    "take-over-presenter": "Átveszed a műsorvezetői szerepet",
     "export-pdf-selected-pages": "Kiválasztott oldalak",
     "export-pdf-selected-pages-count": "Válogatott ({{count}})",
     "export-pdf-select-pages-label": "Válassz exportálható oldalakat:",
@@ -460,7 +473,8 @@
     "export-pdf-clear": "Tiszta",
     "export-pdf-exporting": "Export...",
     "share-download-link": "Megosztás letöltési linkje nyilvános csevegésben",
-    "download-link-sent": "Letöltési link, amelyet nyilvános csevegésbe küldtek"
+    "download-link-sent": "Letöltési link, amelyet nyilvános csevegésbe küldtek",
+    "whiteboard-area": "Fehértábla terület"
   },
   "waiting-room": {
     "modal-title": "Váróterem kezelése",
@@ -629,6 +643,8 @@
     "enable-translation-warning": "Egynél több beszélt nyelvet választott, de a fordítás le van tiltva.",
     "select-one-lang": "Válasszon nyelvet",
     "subtitle-history-modal-title": "Felirat előzmények",
+    "scroll-to-bottom": "Görgess le az alulra",
+    "download-transcript": "Töltse le az átirat",
     "azure-error": "Microsoft Azure szolgáltatás hiba: {{error}}",
     "speech-to-text-stopped": "Az átírási szolgáltatás leállt.",
     "enable-transcription": "Átírás engedélyezése",
