@@ -11,11 +11,15 @@
   "plugnmeet-server-client-version": "Serveur : v{{server}}, Client : v{{client}}",
   "open": "Ouvrir",
   "other": "Autres",
+  "participant-menu": "Options de participants",
+  "participant-volume": "Ajuster le volume des participants",
+  "participant-webcam-on": "La caméra est allumée",
   "pip": "Image dans l’image",
   "please-wait": "Veuillez patienter...",
   "are-you-sure-to-close": "Voulez-vous vraiment fermer ?",
   "you-are-about-to-close": "Vous êtes sur le point de fermer.",
   "notifications": {
+    "title": "Notifications",
     "room-not-active": "Cette salle n'est pas active.",
     "recording-already-running": "L'enregistrement est déjà en cours.",
     "recording-not-running": "Aucun enregistrement n'est en cours.",
@@ -109,6 +113,7 @@
     "rtmp-stopped": "Cette réunion n'est plus diffusée en direct."
   },
   "header": {
+    "aria-label": "Tête de réunion",
     "hide-header": "Masquer l'en-tête",
     "show-header": "Afficher l'en-tête",
     "room-audio-volume": "Volume audio de la réunion",
@@ -116,6 +121,8 @@
     "menus": {
       "settings": "Paramètres",
       "keyboard-shortcuts": "Raccourcis clavier",
+      "menu": "Menu",
+      "toggle-theme": "Basculement du thème",
       "logout": "Quitter la réunion",
       "end": "Terminer la réunion",
       "alert": {
@@ -171,6 +178,7 @@
       "show-hide-hand": "Lever/Baisser la main"
     },
     "connection-status": {
+      "title": "Qualité de la connexion",
       "overall-quality": "Expérience globale",
       "score": "Score de connexion",
       "upload": "Qualité d’envoi",
@@ -284,6 +292,7 @@
     "sending-message": "Envoi en cours, veuillez patienter..."
   },
   "footer": {
+    "aria-label": "Contrôles de réunion",
     "hide-footer": "Masquer le pied de page",
     "show-footer": "Afficher le pied de page",
     "icons": {
@@ -327,7 +336,8 @@
       "hide-translation-settings": "Masquer les paramètres de transcription",
       "promote-presenter": "Nommer présentateur",
       "demote-presenter": "Retirer le rôle de présentateur",
-      "you-are-muted": "Personne ne peut vous entendre. Votre micro est coupé."
+      "you-are-muted": "Personne ne peut vous entendre. Votre micro est coupé.",
+      "menu": "Plus d’options"
     },
     "menus": {
       "mute-all-users": "Couper le micro de tous les participants",
@@ -433,6 +443,9 @@
     "export-pdf-button-count": "Export ({{count}})",
     "export-pdf-all-pages": "Toutes les pages ({{count}})",
     "export-pdf-current-page": "Page actuelle : {{page}}",
+    "previous-page": "Page précédente",
+    "next-page": "Page suivante",
+    "take-over-presenter": "Prendre la tête comme présentatrice",
     "export-pdf-selected-pages": "Pages sélectionnées",
     "export-pdf-selected-pages-count": "Sélectionné ({{count}})",
     "export-pdf-select-pages-label": "Sélectionnez les pages à exporter :",
@@ -460,7 +473,8 @@
     "export-pdf-clear": "Clair",
     "export-pdf-exporting": "Exporter...",
     "share-download-link": "Partager le lien de téléchargement dans le chat public",
-    "download-link-sent": "Lien de téléchargement envoyé vers le chat public"
+    "download-link-sent": "Lien de téléchargement envoyé vers le chat public",
+    "whiteboard-area": "Zone tableau blanc"
   },
   "waiting-room": {
     "modal-title": "Gérer la salle d'attente",
@@ -629,6 +643,8 @@
     "enable-translation-warning": "Vous avez sélectionné plusieurs langues parlées, mais la traduction est désactivée.",
     "select-one-lang": "Sélectionnez une langue",
     "subtitle-history-modal-title": "Historique des sous-titres",
+    "scroll-to-bottom": "Défiler jusqu’en bas",
+    "download-transcript": "Télécharger la transcription",
     "azure-error": "Erreur du service Microsoft Azure : {{error}}",
     "speech-to-text-stopped": "Le service de transcription s'est arrêté.",
     "enable-transcription": "Activer la transcription",

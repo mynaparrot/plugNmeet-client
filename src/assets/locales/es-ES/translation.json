@@ -10,12 +10,16 @@
   "share": "Compartir",
   "plugnmeet-server-client-version": "Servidor: v{{server}}; Cliente: v{{client}}",
   "open": "Abrir",
-  "other": "Otros",
+  "other": "Otro",
+  "participant-menu": "Opciones de participante",
+  "participant-volume": "Ajustar el volumen de participantes",
+  "participant-webcam-on": "La cámara está encendida",
   "pip": "Imagen en imagen",
   "please-wait": "Por favor, espere...",
   "are-you-sure-to-close": "¿Está seguro de que desea cerrar?",
   "you-are-about-to-close": "Está a punto de cerrar",
   "notifications": {
+    "title": "Notificaciones",
     "room-not-active": "Esta sala no está activa.",
     "recording-already-running": "La grabación ya está en curso.",
     "recording-not-running": "No hay ninguna grabación en curso.",
@@ -99,7 +103,7 @@
     "encryption-error": "Error de cifrado: {{error}}",
     "decryption-error": "Error de descifrado: {{error}}",
     "error-occurred": "Se produjo un error",
-    "native-bridge-error": "La solicitud informó de un error: {{error}}",
+    "native-bridge-error": "La aplicación informó un error: {{error}}",
     "cannot-lock-admin": "No puedes cambiar la configuración de bloqueo para otros usuarios administradores."
   },
   "room-metadata": {
@@ -109,6 +113,7 @@
     "rtmp-stopped": "Esta reunión ya no se transmite en vivo."
   },
   "header": {
+    "aria-label": "Cabecera de la reunión",
     "hide-header": "Ocultar encabezado",
     "show-header": "Mostrar encabezado",
     "room-audio-volume": "Audio de la reunión",
@@ -116,6 +121,8 @@
     "menus": {
       "settings": "Ajustes",
       "keyboard-shortcuts": "Atajos de teclado",
+      "menu": "Menú",
+      "toggle-theme": "Interruptor de tema",
       "logout": "Salir de la reunión",
       "end": "Finalizar reunión",
       "alert": {
@@ -171,6 +178,7 @@
       "show-hide-hand": "Levantar/Bajar la mano"
     },
     "connection-status": {
+      "title": "Calidad de la conexión",
       "overall-quality": "Experiencia general",
       "score": "Puntuación de conexión",
       "upload": "Calidad de envío",
@@ -284,6 +292,7 @@
     "sending-message": "Por favor espere, enviando..."
   },
   "footer": {
+    "aria-label": "Controles de reuniones",
     "hide-footer": "Ocultar pie de página",
     "show-footer": "Mostrar pie de página",
     "icons": {
@@ -327,7 +336,8 @@
       "hide-translation-settings": "Ocultar ajustes de transcripción",
       "promote-presenter": "Hacer presentador",
       "demote-presenter": "Quitar como presentador",
-      "you-are-muted": "Nadie puede oírle. Su micrófono está silenciado."
+      "you-are-muted": "Nadie puede oírle. Su micrófono está silenciado.",
+      "menu": "Más opciones"
     },
     "menus": {
       "mute-all-users": "Silenciar a todos",
@@ -358,8 +368,8 @@
       "has-raised-hand": "{{user}} ha levantado la mano.",
       "you-raised-hand": "Ha levantado la mano.",
       "muted-all-microphone": "Se han silenciado todos los micrófonos.",
-      "no-suitable-track-found": "No se encontró ninguna pista adecuada para silenciar o reactivar el silencio.",
-      "failed-to-mute-unmute-track": "No se pudo silenciar ni desactivar la pista.",
+      "no-suitable-track-found": "No se encontró ninguna pista adecuada para silenciar/activar el sonido.",
+      "failed-to-mute-unmute-track": "No se pudo silenciar/activar el sonido de la pista.",
       "failed-to-load-participant-info": "No se ha podido cargar la información del participante.",
       "applied-settings": "Se han aplicado los nuevos ajustes de bloqueo.",
       "rtmp-starting": "La transmisión en vivo está comenzando. Por favor, espere.",
@@ -433,6 +443,9 @@
     "export-pdf-button-count": "Exportar ({{count}})",
     "export-pdf-all-pages": "Todas las páginas ({{count}})",
     "export-pdf-current-page": "Página actual: {{page}}",
+    "previous-page": "Página anterior",
+    "next-page": "Página siguiente",
+    "take-over-presenter": "Asumir el papel de presentador",
     "export-pdf-selected-pages": "Páginas seleccionadas",
     "export-pdf-selected-pages-count": "Seleccionados ({{count}})",
     "export-pdf-select-pages-label": "Seleccionar páginas para exportar:",
@@ -460,7 +473,8 @@
     "export-pdf-clear": "Borrar",
     "export-pdf-exporting": "Exportando...",
     "share-download-link": "Compartir enlace de descarga en el chat público",
-    "download-link-sent": "Enlace de descarga enviado al chat público"
+    "download-link-sent": "Enlace de descarga enviado al chat público",
+    "whiteboard-area": "Zona de pizarra blanca"
   },
   "waiting-room": {
     "modal-title": "Gestionar sala de espera",
@@ -505,7 +519,7 @@
     "publish-result": "Publicar resultados",
     "total": "Total: {{count}}",
     "not-respondents-total": "No respondieron: {{count}}",
-    "ask-question": "Haz una pregunta"
+    "ask-question": "Haga una pregunta"
   },
   "breakout-room": {
     "modal-title": "Gestionar salas de grupos",
@@ -547,7 +561,7 @@
     "join-prompt-mic-locked": "El micrófono está desactivado para esta reunión. Puede activar su cámara o unirse como oyente.",
     "join-prompt-cam-locked": "La cámara está desactivada para esta reunión. Puede activar su micrófono o unirse como oyente.",
     "join-prompt-both-locked": "El micrófono y la cámara están desactivados para esta reunión. Por favor, únase como oyente.",
-    "join-prompt-hybrid": "¡Ya estáis listos! Puedes gestionar la cámara y el micrófono una vez que estés en la reunión. Haz clic en 'Unirte' para empezar.",
+    "join-prompt-hybrid": "¡Listo! Podrá gestionar su cámara y micrófono una vez dentro de la reunión. Haga clic en «Unirse» para empezar.",
     "enable-mic-cam-btn": "Activar micrófono y cámara",
     "enable-mic-btn": "Activar micrófono",
     "enable-cam-btn": "Activar cámara",
@@ -629,6 +643,8 @@
     "enable-translation-warning": "Ha seleccionado más de un idioma hablado, pero la traducción está desactivada.",
     "select-one-lang": "Seleccione un idioma",
     "subtitle-history-modal-title": "Historial de subtítulos",
+    "scroll-to-bottom": "Desplázate hasta abajo",
+    "download-transcript": "Descargar transcripción",
     "azure-error": "Error del servicio de Microsoft Azure: {{error}}",
     "speech-to-text-stopped": "El servicio de transcripción se ha detenido.",
     "enable-transcription": "Activar transcripción",
@@ -659,7 +675,7 @@
       "users-required": "Se debe seleccionar al menos un participante.",
       "chat-box-placeholder": "Haga una pregunta al asistente de IA...",
       "responding-placeholder": "El asistente de IA está respondiendo...",
-      "response-timed-out": "El asistente de IA tarda demasiado en responder. Por favor, inténtalo de nuevo."
+      "response-timed-out": "El asistente de IA tarda demasiado en responder. Por favor, inténtelo de nuevo."
     },
     "meeting-summarization": {
       "enable": "Activar resumen de la reunión",

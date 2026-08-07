@@ -11,11 +11,15 @@
   "plugnmeet-server-client-version": "サーバー: v{{server}}; クライアント: v{{client}}",
   "open": "開く",
   "other": "その他",
+  "participant-menu": "参加者オプション",
+  "participant-volume": "参加者数を調整する",
+  "participant-webcam-on": "カメラが回ってる",
   "pip": "ピクチャー・イン・ピクチャー",
   "please-wait": "お待ちください...",
   "are-you-sure-to-close": "閉じてもよろしいですか？",
   "you-are-about-to-close": "まもなく閉じます。",
   "notifications": {
+    "title": "通知",
     "room-not-active": "このルームはアクティブではありません。",
     "recording-already-running": "録画はすでに進行中です。",
     "recording-not-running": "録画は進行中ではありません。",
@@ -109,6 +113,7 @@
     "rtmp-stopped": "この会議のライブ配信は終了しました。"
   },
   "header": {
+    "aria-label": "会議ヘッダー",
     "hide-header": "ヘッダーを非表示",
     "show-header": "ヘッダーを表示",
     "room-audio-volume": "会議の音量",
@@ -116,6 +121,8 @@
     "menus": {
       "settings": "設定",
       "keyboard-shortcuts": "キーボードショートカット",
+      "menu": "メニュー",
+      "toggle-theme": "トグルテーマ",
       "logout": "会議から退出",
       "end": "会議を終了",
       "alert": {
@@ -171,6 +178,7 @@
       "show-hide-hand": "手を挙げる/下ろす"
     },
     "connection-status": {
+      "title": "接続品質",
       "overall-quality": "全体的な体験",
       "score": "コネクションスコア",
       "upload": "送信品質",
@@ -284,6 +292,7 @@
     "sending-message": "送信中です。お待ちください..."
   },
   "footer": {
+    "aria-label": "会議制御",
     "hide-footer": "フッターを非表示",
     "show-footer": "フッターを表示",
     "icons": {
@@ -327,7 +336,8 @@
       "hide-translation-settings": "文字起こし設定を非表示",
       "promote-presenter": "発表者にする",
       "demote-presenter": "発表者から降ろす",
-      "you-are-muted": "あなたはミュートされています。他の人には聞こえません。"
+      "you-are-muted": "あなたはミュートされています。他の人には聞こえません。",
+      "menu": "さらに多くの選択肢があります"
     },
     "menus": {
       "mute-all-users": "全員をミュート",
@@ -433,6 +443,9 @@
     "export-pdf-button-count": "エクスポート({{count}})",
     "export-pdf-all-pages": "全ページ({{count}})",
     "export-pdf-current-page": "現在のページ: {{page}}",
+    "previous-page": "前のページ",
+    "next-page": "次のページ",
+    "take-over-presenter": "プレゼンターを引き継いでください",
     "export-pdf-selected-pages": "選定ページ",
     "export-pdf-selected-pages-count": "選ばれている({{count}})",
     "export-pdf-select-pages-label": "エクスポートするページを選択してください:",
@@ -460,7 +473,8 @@
     "export-pdf-clear": "クリア",
     "export-pdf-exporting": "輸出中...",
     "share-download-link": "公開チャットでダウンロードリンクを共有してください",
-    "download-link-sent": "ダウンロードリンクは公開チャットに送信済み"
+    "download-link-sent": "ダウンロードリンクは公開チャットに送信済み",
+    "whiteboard-area": "ホワイトボードエリア"
   },
   "waiting-room": {
     "modal-title": "待機室を管理",
@@ -629,6 +643,8 @@
     "enable-translation-warning": "複数の話されている言語を選択しましたが、翻訳は無効になっています。",
     "select-one-lang": "言語を選択してください",
     "subtitle-history-modal-title": "字幕履歴",
+    "scroll-to-bottom": "一番下までスクロール",
+    "download-transcript": "トランスクリプトをダウンロード",
     "azure-error": "Microsoft Azureサービスエラー: {{error}}",
     "speech-to-text-stopped": "文字起こしサービスが停止しました。",
     "enable-transcription": "文字起こしを有効にする",

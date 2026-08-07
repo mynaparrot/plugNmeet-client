@@ -11,11 +11,15 @@
   "plugnmeet-server-client-version": "伺服器: v{{server}}; 用戶端: v{{client}}",
   "open": "開啟",
   "other": "其他",
+  "participant-menu": "參與者選擇權",
+  "participant-volume": "調整參與者數量",
+  "participant-webcam-on": "攝影機開著",
   "pip": "畫中畫",
   "please-wait": "請稍候...",
   "are-you-sure-to-close": "您確定要關閉嗎？",
   "you-are-about-to-close": "您即將關閉。",
   "notifications": {
+    "title": "通知",
     "room-not-active": "此會議室未啟用。",
     "recording-already-running": "錄製已在進行中。",
     "recording-not-running": "沒有正在進行的錄製。",
@@ -109,6 +113,7 @@
     "rtmp-stopped": "此會議不再直播。"
   },
   "header": {
+    "aria-label": "會議標題",
     "hide-header": "隱藏標題列",
     "show-header": "顯示標題列",
     "room-audio-volume": "會議音量",
@@ -116,6 +121,8 @@
     "menus": {
       "settings": "設定",
       "keyboard-shortcuts": "鍵盤快捷鍵",
+      "menu": "菜單",
+      "toggle-theme": "切換主題",
       "logout": "離開會議",
       "end": "結束會議",
       "alert": {
@@ -171,6 +178,7 @@
       "show-hide-hand": "舉手/放下手"
     },
     "connection-status": {
+      "title": "連線品質",
       "overall-quality": "整體體驗",
       "score": "連線分數",
       "upload": "傳送品質",
@@ -284,6 +292,7 @@
     "sending-message": "正在傳送，請稍候..."
   },
   "footer": {
+    "aria-label": "會議控制",
     "hide-footer": "隱藏頁尾",
     "show-footer": "顯示頁尾",
     "icons": {
@@ -327,7 +336,8 @@
       "hide-translation-settings": "隱藏轉錄設定",
       "promote-presenter": "設為主講人",
       "demote-presenter": "取消主講人",
-      "you-are-muted": "您已被靜音，其他人聽不到您的聲音。"
+      "you-are-muted": "您已被靜音，其他人聽不到您的聲音。",
+      "menu": "更多選擇"
     },
     "menus": {
       "mute-all-users": "將所有人靜音",
@@ -433,6 +443,9 @@
     "export-pdf-button-count": "輸出（{{count}})",
     "export-pdf-all-pages": "所有頁面（{{count}})",
     "export-pdf-current-page": "目前頁面： {{page}}",
+    "previous-page": "上一頁",
+    "next-page": "下一頁",
+    "take-over-presenter": "接手主持",
     "export-pdf-selected-pages": "精選頁面",
     "export-pdf-selected-pages-count": "精選（{{count}})",
     "export-pdf-select-pages-label": "選擇頁面匯出：",
@@ -460,7 +473,8 @@
     "export-pdf-clear": "清場",
     "export-pdf-exporting": "正在輸出......",
     "share-download-link": "在公開聊天中分享下載連結",
-    "download-link-sent": "下載連結已發送至公開聊天"
+    "download-link-sent": "下載連結已發送至公開聊天",
+    "whiteboard-area": "白板區域"
   },
   "waiting-room": {
     "modal-title": "管理等候室",
@@ -629,6 +643,8 @@
     "enable-translation-warning": "您選擇了多種口語，但翻譯功能已停用。",
     "select-one-lang": "選擇一種語言",
     "subtitle-history-modal-title": "字幕歷史",
+    "scroll-to-bottom": "往最底部捲動",
+    "download-transcript": "下載逐字稿",
     "azure-error": "Microsoft Azure 服務錯誤: {{error}}",
     "speech-to-text-stopped": "轉錄服務已停止。",
     "enable-transcription": "啟用轉錄",

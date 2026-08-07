@@ -11,11 +11,15 @@
   "plugnmeet-server-client-version": "Server: v{{server}}; Bygherre: v{{client}}",
   "open": "Åben",
   "other": "Andet",
+  "participant-menu": "Deltageroptioner",
+  "participant-volume": "Juster deltagervolumen",
+  "participant-webcam-on": "Kameraet er tændt",
   "pip": "Billede-i-billede",
   "please-wait": "Vent venligst...",
   "are-you-sure-to-close": "Er du sikker på, at du vil lukke?",
   "you-are-about-to-close": "Du er ved at lukke",
   "notifications": {
+    "title": "Notifikationer",
     "room-not-active": "Dette værelse er ikke aktivt.",
     "recording-already-running": "Optagelsen er allerede i gang.",
     "recording-not-running": "Optagelsen er ikke i gang.",
@@ -109,6 +113,7 @@
     "rtmp-stopped": "Dette møde bliver ikke længere livestreamet."
   },
   "header": {
+    "aria-label": "Mødeoverskrift",
     "hide-header": "Skjul sidehoved",
     "show-header": "Vis sidehoved",
     "room-audio-volume": "Lyd fra møde",
@@ -116,6 +121,8 @@
     "menus": {
       "settings": "Indstillinger",
       "keyboard-shortcuts": "Tastaturgenveje",
+      "menu": "Menu",
+      "toggle-theme": "Skift tema",
       "logout": "Forlad mødet",
       "end": "Afslut møde",
       "alert": {
@@ -171,6 +178,7 @@
       "show-hide-hand": "Raise/Sænk hånd"
     },
     "connection-status": {
+      "title": "Forbindelseskvalitet",
       "overall-quality": "Samlet oplevelse",
       "score": "Forbindelsesscore",
       "upload": "Sendekvalitet",
@@ -284,6 +292,7 @@
     "sending-message": "Vent venligst, sender..."
   },
   "footer": {
+    "aria-label": "Mødekontroller",
     "hide-footer": "Skjul sidefod",
     "show-footer": "Vis sidefod",
     "icons": {
@@ -327,7 +336,8 @@
       "hide-translation-settings": "Skjul transskriptionsindstillinger",
       "promote-presenter": "Gør oplægsholder",
       "demote-presenter": "Fjern som præsentationsvært",
-      "you-are-muted": "Ingen kan høre dig. Du er muted."
+      "you-are-muted": "Ingen kan høre dig. Du er muted.",
+      "menu": "Flere muligheder"
     },
     "menus": {
       "mute-all-users": "Slå lyden fra for alle",
@@ -433,6 +443,9 @@
     "export-pdf-button-count": "Eksport ({{count}})",
     "export-pdf-all-pages": "Alle sider ({{count}})",
     "export-pdf-current-page": "Nuværende side: {{page}}",
+    "previous-page": "Forrige side",
+    "next-page": "Næste side",
+    "take-over-presenter": "Overtag som vært",
     "export-pdf-selected-pages": "Udvalgte sider",
     "export-pdf-selected-pages-count": "Udvalgt ({{count}})",
     "export-pdf-select-pages-label": "Vælg sider til eksport:",
@@ -460,7 +473,8 @@
     "export-pdf-clear": "Klart",
     "export-pdf-exporting": "Eksport...",
     "share-download-link": "Del downloadlink i offentlig chat",
-    "download-link-sent": "Download-link sendt til offentlig chat"
+    "download-link-sent": "Download-link sendt til offentlig chat",
+    "whiteboard-area": "Whiteboard-område"
   },
   "waiting-room": {
     "modal-title": "Administrer venteværelse",
@@ -629,6 +643,8 @@
     "enable-translation-warning": "Du har valgt mere end ét talt sprog, men oversættelse er deaktiveret.",
     "select-one-lang": "Vælg et sprog",
     "subtitle-history-modal-title": "Billedtekstens historie",
+    "scroll-to-bottom": "Scroll ned til bunden",
+    "download-transcript": "Download transskription",
     "azure-error": "Fejl i Microsoft Azure-tjenesten: {{error}}",
     "speech-to-text-stopped": "Transskriptionstjenesten er stoppet.",
     "enable-transcription": "Aktiver transskription",

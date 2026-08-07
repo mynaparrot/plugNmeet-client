@@ -5,14 +5,21 @@
   "cancel": "لغو",
   "yes": "بله",
   "no": "نه",
+  "error": "Error",
   "join": "پیوستن",
   "share": "اشتراک گذاشتن",
   "plugnmeet-server-client-version": "سرور: v{{server}}; مشتری: v{{client}}",
   "open": "باز",
+  "other": "Other",
+  "participant-menu": "Participant options",
+  "participant-volume": "Adjust participant volume",
+  "participant-webcam-on": "Camera is on",
+  "pip": "Picture-in-Picture",
   "please-wait": "لطفاً منتظر بمانید...",
   "are-you-sure-to-close": "آیا مطمئن هستید که می خواهید ببندید؟",
   "you-are-about-to-close": "شما در شرف بسته شدن هستید",
   "notifications": {
+    "title": "Notifications",
     "room-not-active": "این اتاق فعال نیست.",
     "recording-already-running": "ضبط در حال حاضر در حال انجام است.",
     "recording-not-running": "ضبط در حال انجام نیست.",
@@ -46,8 +53,7 @@
     "room-disconnected-server-unresponsive": "شما قطع شده اید چون سرور پاسخ را قطع کرده است.",
     "room-disconnected-reconnecting": "اتصال قطع شد. اتصال مجدد...",
     "room-disconnected-network-error": "به دلیل مشکل شبکه ارتباط شما قطع شد.",
-    "your-connection-quality-not-good": "اتصال اینترنت شما ناپایدار است.",
-    "your-connection-quality-lost": "اتصال شما به جلسه قطع شده است.",
+    "your-connection-lost-or-unstable": "Your connection is a bit unstable right now. Others may notice some audio or video issues from you.",
     "need-to-disable-display-external-link": "برای پخش ویدیو، لطفا ابتدا اشتراک گذاری پیوند خارجی را متوقف کنید.",
     "need-to-disable-external-media-player": "برای اشتراک گذاری پیوند خارجی، لطفا ابتدا پخش کننده ویدیو را متوقف کنید.",
     "websocket-disconnected": "اتصال قطع شد، تلاش برای اتصال مجدد...",
@@ -75,18 +81,30 @@
     "preloaded-whiteboard-file-processing-error": "خطایی در بارگیری فایل تخته سفید رخ داد.",
     "max-num-participates-exceeded": "جلسه پر است. در حال حاضر نمی توانید به آن بپیوندید.",
     "uploading-file": "در حال آپلود فایل...",
+    "merging-file": "Finalizing file upload...",
+    "file-merge-success": "File is ready!",
+    "file-merge-failed": "Could not finalize the file upload.",
     "ending-session": "جلسه در حال پایان است، لطفا صبر کنید...",
     "whiteboard-other-task-to-finish": "تخته سفید در حال آماده سازی محتوای جدید است. لطفاً منتظر بمانید.",
     "cloud-recording-not-supported-self-key": "ضبط ابری هنگام استفاده از کلید امنیتی سفارشی در دسترس نیست.",
     "media-only-recording-not-support-e2ee": "وقتی رمزگذاری سرتاسری فعال باشد، ضبط فقط صدا و ویدیو در دسترس نیست.",
     "you-are-sharing-screen": "اکنون صفحه نمایش خود را هم رسانی می کنید. دیگران نمای بزرگتری خواهند دید.",
     "new-system-message-in-chat": "یک پیام سیستم جدید در چت عمومی ارسال شده است.",
-    "queue-holding-messages": "مشکل اتصال: پیام ها در حال نگهداری هستند. ({{error}})",
-    "queue-discarded-message": "پیامی ارسال نشد و کنار گذاشته شد. ({{error}})",
+    "queue-holding-messages": "Connection problem: messages are being held.",
+    "queue-discarded-message": "A message could not be sent and was discarded.",
     "request-submitted-wait": "درخواست شما ارسال شده است. لطفا منتظر تأیید باشید",
     "wait-other-uploading-to-finish": "یک بارگذاری دیگر در حال انجام است. لطفا منتظر بمانید تا کامل شود.",
     "server-not-responding": "سرور پاسخ نمی دهد. ممکن است اتصال شما ناپایدار باشد.",
-    "re-routing-connection": "اتصال ناپایدار است. برای پایداری بهتر، مسیر را تغییر می دهم..."
+    "re-routing-connection": "اتصال ناپایدار است. برای پایداری بهتر، مسیر را تغییر می دهم...",
+    "whiteboard-new-file-added": "New file is ready and has been added to the whiteboard files list.",
+    "private-download-link-ready": "Your download link is ready. Only you can see this message.<br/>{{link}}",
+    "local-audio-stuck-fallback": "We detected an issue with your microphone. Try turning it off and back on.",
+    "local-video-stuck-fallback": "We detected an issue with your camera. Try turning it off and back on.",
+    "encryption-error": "Encryption error: {{error}}",
+    "decryption-error": "Decryption error: {{error}}",
+    "error-occurred": "Error occurred",
+    "native-bridge-error": "The application reported an error: {{error}}",
+    "cannot-lock-admin": "You can't change lock settings for other admin users."
   },
   "room-metadata": {
     "session-recording": "این جلسه در حال ضبط است.",
@@ -95,6 +113,7 @@
     "rtmp-stopped": "این جلسه دیگر به صورت زنده پخش نمی شود."
   },
   "header": {
+    "aria-label": "Meeting header",
     "hide-header": "پنهان کردن هدر",
     "show-header": "نمایش هدر",
     "room-audio-volume": "صدای جلسه",
@@ -102,6 +121,8 @@
     "menus": {
       "settings": "تنظیمات",
       "keyboard-shortcuts": "میانبرهای صفحه کلید",
+      "menu": "Menu",
+      "toggle-theme": "Toggle theme",
       "logout": "ترک جلسه",
       "end": "پایان جلسه",
       "alert": {
@@ -155,6 +176,30 @@
       "show-hide-settings": "پنهان کردن/نمایش تنظیمات",
       "show-hide-whiteboard": "پنهان کردن/نمایش تخته سفید",
       "show-hide-hand": "بالا بردن / پایین آوردن دست"
+    },
+    "connection-status": {
+      "title": "Connection quality",
+      "overall-quality": "Overall Experience",
+      "score": "Connection Score",
+      "upload": "Sending Quality",
+      "download": "Receiving Quality",
+      "packet-loss": "Data Loss",
+      "rtt": "Delay (RTT)",
+      "copy": "Copy Details",
+      "tooltips": {
+        "overall-quality": "Your overall meeting experience, based on sending and receiving quality.",
+        "score": "A score from 0 to 100 that represents the stability of your connection.",
+        "upload": "The quality of the video and audio you are sending to others.",
+        "download": "The quality of the video and audio you are receiving from others.",
+        "packet-loss": "The percentage of data that was lost while traveling over the internet. Lower is better.",
+        "rtt": "The time it takes for your data to travel to the server and back. Lower is better."
+      },
+      "qualities": {
+        "excellent": "Excellent",
+        "good": "Good",
+        "poor": "Poor",
+        "lost": "Lost"
+      }
     }
   },
   "app": {
@@ -187,6 +232,7 @@
     "polls-tab": "نظرسنجی",
     "breakout-room-tab": "اتاق های برک آوت",
     "me": "(من)",
+    "search-participant": "Search for Participant",
     "public-chat": "چت عمومی",
     "private-chat": "گفتگوی خصوصی",
     "select-chat-conversation-title": "مکالمه ای را انتخاب کنید",
@@ -217,6 +263,8 @@
         "lock-send-chat-message": "غیرفعال کردن ارسال پیام های چت",
         "unlock-send-file": "اجازه اشتراک گذاری فایل",
         "lock-send-file": "اشتراک گذاری فایل را غیرفعال کنید",
+        "lock-reaction": "Disable Sending Reactions",
+        "unlock-reaction": "Allow Sending Reactions",
         "remove-participant": "حذف شرکت کننده",
         "private-chat": "ارسال پیام خصوصی"
       },
@@ -244,6 +292,7 @@
     "sending-message": "لطفا صبر کنید، ارسال..."
   },
   "footer": {
+    "aria-label": "Meeting controls",
     "hide-footer": "پنهان کردن پاورقی",
     "show-footer": "نمایش پاورقی",
     "icons": {
@@ -264,8 +313,10 @@
       "stop-screen-sharing": "توقف اشتراک گذاری صفحه",
       "start-screen-sharing": "اشتراک گذاری صفحه نمایش",
       "screen-sharing-locked": "اشتراک گذاری صفحه قفل شده است",
+      "native-publisher-unavailable": "Native publisher unavailable",
       "lower-hand": "دست پایین",
       "raise-hand": "دست را بالا ببرید",
+      "reactions": "Reactions",
       "stop-recording": "ضبط را متوقف کنید",
       "start-recording": "شروع به ضبط کنید",
       "how-to-record": "چگونه می خواهید ضبط کنید؟",
@@ -285,7 +336,8 @@
       "hide-translation-settings": "مخفی کردن تنظیمات رونویسی",
       "promote-presenter": "ارائه دهنده بسازید",
       "demote-presenter": "برداشتن به عنوان ارائه دهنده",
-      "you-are-muted": "هیچ صدایت را نمی شنود. صدایت بی صدا است."
+      "you-are-muted": "هیچ صدایت را نمی شنود. صدایت بی صدا است.",
+      "menu": "More options"
     },
     "menus": {
       "mute-all-users": "همه را بی صدا کنید",
@@ -316,6 +368,9 @@
       "has-raised-hand": "{{user}} دست آنها را بلند کرده است.",
       "you-raised-hand": "شما دستتان را بلند کرده اید.",
       "muted-all-microphone": "همه میکروفون ها بی صدا شده اند.",
+      "no-suitable-track-found": "No suitable track found to mute/unmute.",
+      "failed-to-mute-unmute-track": "Failed to mute/unmute track.",
+      "failed-to-load-participant-info": "Failed to load participant info.",
       "applied-settings": "تنظیمات قفل جدید اعمال شده است.",
       "rtmp-starting": "پخش زنده در حال شروع است. لطفاً منتظر بمانید.",
       "rtmp-ending": "پخش زنده در حال پایان است. لطفاً منتظر بمانید.",
@@ -323,7 +378,8 @@
       "rtmp-url-invalid": "URL RTMP معتبر یا پشتیبانی نمی شود.",
       "rtmp-stream-key-required": "یک کلید جریان مورد نیاز است.",
       "external-media-player-url-invalid": "URL معتبر یا پشتیبانی نمی شود.",
-      "external-media-player-starting": "در حال آماده سازی ویدیو برای پخش ، لطفا صبر کنید."
+      "external-media-player-starting": "در حال آماده سازی ویدیو برای پخش ، لطفا صبر کنید.",
+      "screenshare-error": "The screen share could not be started."
     },
     "modal": {
       "lock-settings-title": "تنظیمات قفل جلسه",
@@ -332,6 +388,7 @@
       "lock-screen-sharing": "غیرفعال کردن اشتراک گذاری صفحه برای همه",
       "lock-whiteboard": "غیرفعال کردن تخته سفید برای همه",
       "lock-shared-notepad": "غیرفعال کردن دفترچه یادداشت مشترک برای همه",
+      "lock-reactions": "Disable Reactions for Everyone",
       "lock-chat": "غیرفعال کردن گفتگوی عمومی",
       "lock-private-chat": "غیرفعال کردن گفتگوی خصوصی",
       "lock-send-message": "غیرفعال کردن ارسال پیام های چت",
@@ -365,18 +422,59 @@
     "file-ready": "فایل آماده است",
     "upload-file": "آپلود فایل",
     "manage-files": "فایل",
+    "manage-files-menu-title": "Manage office files",
     "upload-image": "تصویر",
     "follow-presenter-tooltip": "ارائه دهنده را دنبال کنید",
     "unfollow-presenter-tooltip": "دنبال کردن ارائه دهنده را متوقف کنید",
     "follow": "دنبال",
     "unfollow": "لغو فالو",
-    "upload-files-title": "آپلود فایل ها",
-    "drag-drop-file": "فایل خود را برای آپلود بکشید و رها کنید",
+    "upload-files-title": "Manage office files",
+    "drag-drop-file": "Drag and drop your office files (PDF, DOCX, etc.) here for upload and conversion. For image uploads, please use the dedicated image option.",
     "max-file-size": "حداکثر حجم فایل: {{size}} مگابایت",
     "or": "یا",
     "select-file": "یک فایل را انتخاب کنید",
     "add-to-whiteboard": "افزودن به تخته سفید",
-    "total-pages": "تعداد صفحات: {{count}}"
+    "total-pages": "تعداد صفحات: {{count}}",
+    "show-toolbar": "Show toolbar",
+    "hide-toolbar": "Hide toolbar",
+    "file-conversion-failed": "File conversion failed",
+    "export-pdf-title": "Export to PDF",
+    "export-pdf-button": "Export",
+    "export-pdf-button-count": "Export ({{count}})",
+    "export-pdf-all-pages": "All Pages ({{count}})",
+    "export-pdf-current-page": "Current page: {{page}}",
+    "previous-page": "Previous page",
+    "next-page": "Next page",
+    "take-over-presenter": "Take over as presenter",
+    "export-pdf-selected-pages": "Selected Pages",
+    "export-pdf-selected-pages-count": "Selected ({{count}})",
+    "export-pdf-select-pages-label": "Select pages to export:",
+    "export-pdf-pages-info": "Only pages that have been opened at least once on the whiteboard will be considered for export. Unopened pages will not be included.",
+    "export-pdf-no-pages-selected": "Please select at least one page to export.",
+    "export-pdf-no-content-on-current-page": "There is no content on the current page to export.",
+    "export-pdf-no-pages-to-export": "There are no pages with content to export.",
+    "export-pdf-no-pages-with-content": "No pages with content found to export.",
+    "export-pdf-progress-warning": "An export is already in progress.",
+    "export-pdf-api-not-ready": "Excalidraw API is not ready.",
+    "export-pdf-starting": "Starting PDF export...",
+    "export-pdf-gathering-page": "Gathering page {{page}} ({{current}}/{{total}})...",
+    "export-pdf-creating-image": "Creating image for page {{page}}...",
+    "export-pdf-all-pages-processed": "All pages processed!",
+    "export-pdf-unknown-error": "An unknown error occurred.",
+    "export-pdf-processing-page": "Processing page {{page}} (slice {{slice}}/{{totalSlices}})...",
+    "export-pdf-worker-error": "An unexpected worker error occurred.",
+    "export-pdf-worker-error-render": "Worker Error: {{message}}",
+    "export-pdf-finalizing": "Finalizing PDF...",
+    "export-pdf-finished": "PDF export finished successfully!",
+    "force-sync": "Refresh whiteboard",
+    "export-pdf-mode": "Export mode",
+    "export-pdf-pages": "Pages",
+    "export-pdf-select-all": "Select all",
+    "export-pdf-clear": "Clear",
+    "export-pdf-exporting": "Exporting...",
+    "share-download-link": "Share download link in public chat",
+    "download-link-sent": "Download link sent to public chat",
+    "whiteboard-area": "Whiteboard area"
   },
   "waiting-room": {
     "modal-title": "مدیریت اتاق انتظار",
@@ -420,7 +518,8 @@
     "end-poll-success": "نظرسنجی به پایان رسیده است.",
     "publish-result": "نتایج را منتشر کنید",
     "total": "مجموع: {{count}}",
-    "not-respondents-total": "پاسخ نداد: {{count}}"
+    "not-respondents-total": "پاسخ نداد: {{count}}",
+    "ask-question": "Ask a question"
   },
   "breakout-room": {
     "modal-title": "مدیریت اتاق های جانبی",
@@ -462,6 +561,7 @@
     "join-prompt-mic-locked": "میکروفون برای این جلسه غیرفعال است. می توانید دوربین خود را فعال کنید یا به عنوان شنونده بپیوندید.",
     "join-prompt-cam-locked": "دوربین برای این جلسه غیرفعال است. می توانید میکروفون خود را فعال کنید یا به عنوان شنونده بپیوندید.",
     "join-prompt-both-locked": "میکروفون و دوربین برای این جلسه غیرفعال هستند. لطفا به عنوان شنونده بپیوندید.",
+    "join-prompt-hybrid": "You're all set! You can manage your camera and microphone once you're in the meeting. Click 'Join' to get started.",
     "enable-mic-cam-btn": "میکروفون و دوربین را فعال کنید",
     "enable-mic-btn": "میکروفون را فعال کنید",
     "enable-cam-btn": "دوربین را فعال کنید",
@@ -496,7 +596,7 @@
     "ingress-type-rtmp": "RTMP (برای OBS و غیره)",
     "ingress-type-whip": "WHIP (WebRTC، OBS و غیره)",
     "join-as-name": "نام نمایشی",
-    "feature-not-allow": "این ویژگی مجاز نیست.",
+    "feature-not-allow": "This feature is not enabled for this room.",
     "join-as-name-required": "یک نام نمایشی مورد نیاز است.",
     "gen-link": "ایجاد لینک",
     "stream-url": "جریان میزبان/URL",
@@ -543,6 +643,8 @@
     "enable-translation-warning": "شما بیش از یک زبان گفتاری را انتخاب کرده اید، اما ترجمه غیرفعال است.",
     "select-one-lang": "یک زبان را انتخاب کنید",
     "subtitle-history-modal-title": "تاریخچه زیرنویس",
+    "scroll-to-bottom": "Scroll to bottom",
+    "download-transcript": "Download transcript",
     "azure-error": "خطای سرویس Microsoft Azure: {{error}}",
     "speech-to-text-stopped": "سرویس رونویسی متوقف شده است.",
     "enable-transcription": "فعال کردن رونویسی",
@@ -563,6 +665,7 @@
     "tab-meeting-summarization-title": "خلاصه جلسه",
     "feature-disable-while-e2ee-self-key-enabled": "این ویژگی زمانی غیرفعال می شود که رمزنگاری سرتاسری خودمدیریت شده فعال باشد.",
     "not-enough-credit-to-start-service": "اعتبار کافی برای شروع این سرویس وجود ندارد. لطفا برای افزودن اعتبار بیشتر با یک مدیر تماس بگیرید.",
+    "no-ai-feature-available": "No AI features are available.",
     "ai-text-chat": {
       "name": "دستیار هوش مصنوعی",
       "panel-title": "چت دستیار هوش مصنوعی",
@@ -571,7 +674,8 @@
       "allowed-users": "شرکت کنندگان مجاز",
       "users-required": "حداقل یک شرکت کننده باید انتخاب شود.",
       "chat-box-placeholder": "از دستیار هوش مصنوعی یک سؤال بپرسید...",
-      "responding-placeholder": "دستیار هوش مصنوعی پاسخ می دهد..."
+      "responding-placeholder": "دستیار هوش مصنوعی پاسخ می دهد...",
+      "response-timed-out": "The AI assistant is taking too long to respond. Please try again."
     },
     "meeting-summarization": {
       "enable": "فعال سازی خلاصه سازی جلسات",
@@ -589,5 +693,10 @@
     "no-phone-numbers": "هیچ شماره تلفنی در دسترس نیست.",
     "publish-to-chat": "اشتراک گذاری در چت",
     "dial-in-info": "اطلاعات شماره گیری"
+  },
+  "recorder-bot-options": {
+    "enable-auto-close-chat-panel": "Enable auto-close chat panel",
+    "duration-after-last-message": "Duration after last message (in minutes)",
+    "duration-after-last-message-help": "The chat panel will close automatically after this duration of inactivity."
   }
 }
