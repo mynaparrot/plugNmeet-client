@@ -147,20 +147,28 @@ const RecordingIcon = () => {
       if (recordingType === RecordingType.RECORDING_TYPE_LOCAL) {
         stopLocalRecording();
       } else if (recordingType === RecordingType.RECORDING_TYPE_CLOUD) {
-        await stopCloudRecording();
-
         if (timerRef.current) {
           clearTimeout(timerRef.current);
         }
         timerRef.current = setTimeout(() => {
+          if (store.getState().session.isActiveRecording) {
+            dispatch(
+              addUserNotification({
+                message: t('footer.notice.recording-did-not-stop'),
+                typeOption: 'error',
+              }),
+            );
+          }
           setDisable(false);
-          dispatch(
-            addUserNotification({
-              message: t('footer.notice.recording-did-not-stop'),
-              typeOption: 'error',
-            }),
-          );
         }, 30000);
+
+        await stopCloudRecording();
+
+        if (!store.getState().session.isActiveRecording) {
+          if (timerRef.current) {
+            clearTimeout(timerRef.current);
+          }
+        }
       }
     }
   };
@@ -178,20 +186,29 @@ const RecordingIcon = () => {
     ) {
       setDisable(true);
       setRecordingType(selectedRecordingType.type);
-      await startCloudRecording(selectedRecordingType.variant, botOptions);
 
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
       timerRef.current = setTimeout(() => {
+        if (!store.getState().session.isActiveRecording) {
+          dispatch(
+            addUserNotification({
+              message: t('footer.notice.recording-not-start'),
+              typeOption: 'error',
+            }),
+          );
+        }
         setDisable(false);
-        dispatch(
-          addUserNotification({
-            message: t('footer.notice.recording-not-start'),
-            typeOption: 'error',
-          }),
-        );
       }, 30000);
+
+      await startCloudRecording(selectedRecordingType.variant, botOptions);
+
+      if (store.getState().session.isActiveRecording) {
+        if (timerRef.current) {
+          clearTimeout(timerRef.current);
+        }
+      }
     }
   };
 

@@ -96,8 +96,16 @@ const useCloudRecording = (): IUseCloudRecordingReturn => {
       const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
       let msg = 'footer.notice.start-recording-progress';
       if (!res.status) {
-        setHasError(true);
-        msg = res.msg;
+        // Only show error if metadata hasn't already confirmed recording started
+        if (store.getState().session.isActiveRecording) {
+          msg = '';
+        } else {
+          setHasError(true);
+          msg = res.msg;
+        }
+      }
+      if (msg === '') {
+        return;
       }
 
       dispatch(
@@ -128,8 +136,16 @@ const useCloudRecording = (): IUseCloudRecordingReturn => {
       let msg = 'footer.notice.stop-recording-service-in-progress';
 
       if (!res.status) {
-        setHasError(true);
-        msg = res.msg;
+        // Only show error if metadata hasn't already confirmed recording stopped
+        if (!store.getState().session.isActiveRecording) {
+          msg = '';
+        } else {
+          setHasError(true);
+          msg = res.msg;
+        }
+      }
+      if (msg === '') {
+        return;
       }
 
       dispatch(
