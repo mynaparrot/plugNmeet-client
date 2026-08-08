@@ -608,7 +608,7 @@
     "chat-translation": "ترجمه گفتگو",
     "enable-speech-to-text": "فعال کردن رونویسی",
     "speech-langs-label": "زبان‌های گفتاری",
-    "allow-transcription-storage": "گفتار من در متن نهایی ذخیره شود",
+    "allow-transcription-storage": "گفتار من در رونوشت نهایی ذخیره شود",
     "speech-users-label": "کاربران برای رونویسی",
     "subtitle-font-size": "اندازه قلم زیرنویس",
     "enable-translation": "فعال کردن ترجمه",
@@ -697,6 +697,6 @@
   "recorder-bot-options": {
     "enable-auto-close-chat-panel": "فعال کردن بستن خودکار پنل گفتگو",
     "duration-after-last-message": "مدت زمان پس از آخرین پیام (به دقیقه)",
-    "duration-after-last-message-help": "پنل گفتگو پس از این مدت بی‌فعالیتی به‌طور خودکار بسته می‌شود."
+    "duration-after-last-message-help": "پنل گفتگو پس از این مدت عدم فعالیت به‌طور خودکار بسته می‌شود."
   }
 }
