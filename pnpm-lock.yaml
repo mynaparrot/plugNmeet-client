@@ -11,8 +11,8 @@ importers:
         specifier: 2.13.0
         version: 2.13.0
       '@excalidraw/excalidraw':
-        specifier: 0.18.0-ab0255f
-        version: 0.18.0-ab0255f(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(immer@11.1.16)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        specifier: 0.18.0-4872083
+        version: 0.18.0-4872083(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(immer@11.1.16)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@headlessui/react':
         specifier: 2.2.10
         version: 2.2.10(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -81,7 +81,7 @@ importers:
         version: 0.7.0(react@19.2.8)
       react-dnd:
         specifier: 16.0.1
-        version: 16.0.1(@types/node@26.1.2)(@types/react@19.2.18)(react@19.2.8)
+        version: 16.0.1(@types/node@26.2.0)(@types/react@19.2.18)(react@19.2.8)
       react-dnd-html5-backend:
         specifier: 16.0.1
         version: 16.0.1
@@ -118,13 +118,13 @@ importers:
         version: 0.2.2
       '@tailwindcss/vite':
         specifier: 4.3.3
-        version: 4.3.3(vite@8.2.0(@types/node@26.1.2)(jiti@2.7.0))
+        version: 4.3.3(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0))
       '@types/emscripten':
         specifier: 1.41.5
         version: 1.41.5
       '@types/node':
-        specifier: 26.1.2
-        version: 26.1.2
+        specifier: 26.2.0
+        version: 26.2.0
       '@types/react':
         specifier: 19.2.18
         version: 19.2.18
@@ -136,7 +136,7 @@ importers:
         version: 2.16.1
       '@vitejs/plugin-react':
         specifier: 6.0.5
-        version: 6.0.5(vite@8.2.0(@types/node@26.1.2)(jiti@2.7.0))
+        version: 6.0.5(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0))
       husky:
         specifier: 9.1.7
         version: 9.1.7
@@ -153,17 +153,17 @@ importers:
         specifier: 6.0.3
         version: 6.0.3
       vite:
-        specifier: 8.2.0
-        version: 8.2.0(@types/node@26.1.2)(jiti@2.7.0)
+        specifier: 8.2.1
+        version: 8.2.1(@types/node@26.2.0)(jiti@2.7.0)
       vite-plugin-clean:
         specifier: 2.0.1
-        version: 2.0.1(@types/node@26.1.2)(jiti@2.7.0)(lightningcss@1.33.0)(rollup@4.62.4)
+        version: 2.0.1(@types/node@26.2.0)(jiti@2.7.0)(lightningcss@1.33.0)(rollup@4.62.4)
       vite-plugin-oxlint:
         specifier: 2.1.2
-        version: 2.1.2(oxlint@1.77.0)(vite@8.2.0(@types/node@26.1.2)(jiti@2.7.0))
+        version: 2.1.2(oxlint@1.77.0)(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0))
       vite-plugin-static-copy:
         specifier: 4.1.1
-        version: 4.1.1(vite@8.2.0(@types/node@26.1.2)(jiti@2.7.0))
+        version: 4.1.1(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0))
 
 packages:
   '@antfu/install-pkg@1.1.0':
@@ -515,31 +515,31 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@excalidraw/common@0.18.0-ab0255f':
+  '@excalidraw/common@0.18.0-4872083':
     resolution:
       {
-        integrity: sha512-mPhSHdcf4DaRAt4Wf3iWWdyPQZKGGSuW5BAfClS9f3zv0RxZ4HmBsLrYw2mtBDdGYx3X+8astHeBS7MaO6nOhQ==,
+        integrity: sha512-gHK+yHS0PsiOCz49Lt7cyuANelHdOKyqNnUL0KB69Wh8mzp87ahyGxCOZTj/Gb6sjAcGzdgYEZ+FKEP0X3uXQg==,
       }
 
-  '@excalidraw/element@0.18.0-ab0255f':
+  '@excalidraw/element@0.18.0-4872083':
     resolution:
       {
-        integrity: sha512-Uj4m//qmoZlHskXJ7Id4Qu3heJk0sWDL5SnkoqpdhUBejopPwyy2XWaM9ZxqQQUppsl2Pg4oO4D0z6jiLrv03Q==,
+        integrity: sha512-xJNUhqk9/hrfKEfaJRzRBZGn+ix4Bdc660Z+be3dh7dI9QaCqbhNQb4wv4duQAXLPMCDIdIJXCHlsVBZDygOlg==,
       }
 
-  '@excalidraw/excalidraw@0.18.0-ab0255f':
+  '@excalidraw/excalidraw@0.18.0-4872083':
     resolution:
       {
-        integrity: sha512-pSKUBx/gfcFavta/2EX4pPbZ6N4KXo/PJeikXltyFXgWCryJ2viXdrb2y4wRPnMxapBw0aCiRrtpB4tuVAF3Sg==,
+        integrity: sha512-2RcjfEsBsKLAp8YFyjOZLXAYzGgg+AzK0LHw1klnfPHXmwGxeO4kT5uOjL/MIRNTLM97UxYM9CT7hYqIYjfJgg==,
       }
     peerDependencies:
       react: ^17.0.2 || ^18.2.0 || ^19.0.0
       react-dom: ^17.0.2 || ^18.2.0 || ^19.0.0
 
-  '@excalidraw/fractional-indexing@0.18.0-ab0255f':
+  '@excalidraw/fractional-indexing@0.18.0-4872083':
     resolution:
       {
-        integrity: sha512-g2HJ1lfehEuvuJCfpTcdwco7kKGZJq6IC/1km0flgyVl6/Ldg7Tj8DSeCiZf/4IvIXyZ1Mcxw1sysQP5DE8nXA==,
+        integrity: sha512-Mp3/qkv3Tl3XX9+A2+VyBpcLj2XxrAXTlKahwJkrq3KtH0S+Z+ueUUCf+VujQHrJFiV232dZK4cFS4jNNdLJew==,
       }
     engines: { node: ^14.13.1 || >=16.0.0 }
 
@@ -555,10 +555,10 @@ packages:
         integrity: sha512-1nDXBNAojfi3oSFwJswKREkFm5wrSjqay81QlyRv2pkITG/XYB5v+oChENVBQLcxQwX4IUATWvXM5BcaNhPiIg==,
       }
 
-  '@excalidraw/math@0.18.0-ab0255f':
+  '@excalidraw/math@0.18.0-4872083':
     resolution:
       {
-        integrity: sha512-QCo2p87SSgV9Uh5emm+1WgjDkhNmbtJprlUNrX5qg6Kph99xrWDJRI4X9KAOiHokRugROh8cFWfqhUz6cysyJQ==,
+        integrity: sha512-S4DhLfu8dI3lohH72sEP80EFhyk0J5nYy6wfMA1kyVBe2YpshC7pLzltHz+Cz5n+OmfPCA8PcqLfpttUggUfsQ==,
       }
 
   '@excalidraw/mermaid-to-excalidraw@2.2.2':
@@ -2984,10 +2984,10 @@ packages:
         integrity: sha512-gRjJoPKQRjjTuySHqZe8Pnu6a5B0bKbTUD2ioDLPSWlEuBaAc2p1mzUzy42SCeWkyYffo2Mnv+blUGuvVvx3dQ==,
       }
 
-  '@types/node@26.1.2':
+  '@types/node@26.2.0':
     resolution:
       {
-        integrity: sha512-Vu4a5UFA9rIIFJ7rB/Vaafh9lrCQszopTCx6KjFboXTGQbPNasehVR5TEiithSDGyd1DEiUByggTZsg8jukeIg==,
+        integrity: sha512-5IviulTZeRNp2vAJ514cc/HUlY5nZ9fCbq9DMyC52BrhFZACo3nI0R7qBxhQmo/d27NFe96ur/b7Wwxklda+kg==,
       }
 
   '@types/react-dom@19.2.4':
@@ -5416,10 +5416,10 @@ packages:
       yaml:
         optional: true
 
-  vite@8.2.0:
+  vite@8.2.1:
     resolution:
       {
-        integrity: sha512-pn+CFpM0lwDeKwmOq1ZaBK/9sjorZcgqxki6MbY/jPEVd9vichIlmlD4HmQ5wdP5EgqQCFRaACBxMC7uEGc6lQ==,
+        integrity: sha512-EU/eS7BH3XROHh2YnBefjM6DBKA6ZeMZEYQbj7NLWg5wHYlhB8B/Mayd5XsgWq+NFYccDOTemRpdETWR6Ka/lw==,
       }
     engines: { node: ^20.19.0 || >=22.12.0 }
     hasBin: true
@@ -5720,27 +5720,27 @@ snapshots:
   '@esbuild/win32-x64@0.25.12':
     optional: true
 
-  '@excalidraw/common@0.18.0-ab0255f':
+  '@excalidraw/common@0.18.0-4872083':
     dependencies:
       tinycolor2: 1.6.0
 
-  '@excalidraw/element@0.18.0-ab0255f':
+  '@excalidraw/element@0.18.0-4872083':
     dependencies:
-      '@excalidraw/common': 0.18.0-ab0255f
-      '@excalidraw/fractional-indexing': 0.18.0-ab0255f
-      '@excalidraw/math': 0.18.0-ab0255f
+      '@excalidraw/common': 0.18.0-4872083
+      '@excalidraw/fractional-indexing': 0.18.0-4872083
+      '@excalidraw/math': 0.18.0-4872083
 
-  '@excalidraw/excalidraw@0.18.0-ab0255f(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(immer@11.1.16)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@excalidraw/excalidraw@0.18.0-4872083(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(immer@11.1.16)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
       '@braintree/sanitize-url': 6.0.2
       '@codemirror/commands': 6.10.4
       '@codemirror/language': 6.12.4
       '@codemirror/state': 6.7.1
       '@codemirror/view': 6.43.8
-      '@excalidraw/common': 0.18.0-ab0255f
-      '@excalidraw/element': 0.18.0-ab0255f
+      '@excalidraw/common': 0.18.0-4872083
+      '@excalidraw/element': 0.18.0-4872083
       '@excalidraw/laser-pointer': 1.3.1
-      '@excalidraw/math': 0.18.0-ab0255f
+      '@excalidraw/math': 0.18.0-4872083
       '@excalidraw/mermaid-to-excalidraw': 2.2.2
       '@excalidraw/random-username': 1.1.0
       '@lezer/highlight': 1.2.3
@@ -5775,15 +5775,15 @@ snapshots:
       - '@types/react-dom'
       - immer
 
-  '@excalidraw/fractional-indexing@0.18.0-ab0255f': {}
+  '@excalidraw/fractional-indexing@0.18.0-4872083': {}
 
   '@excalidraw/laser-pointer@1.3.1': {}
 
   '@excalidraw/markdown-to-text@0.1.2': {}
 
-  '@excalidraw/math@0.18.0-ab0255f':
+  '@excalidraw/math@0.18.0-4872083':
     dependencies:
-      '@excalidraw/common': 0.18.0-ab0255f
+      '@excalidraw/common': 0.18.0-4872083
 
   '@excalidraw/mermaid-to-excalidraw@2.2.2':
     dependencies:
@@ -7108,12 +7108,12 @@ snapshots:
       '@tailwindcss/oxide-win32-arm64-msvc': 4.3.3
       '@tailwindcss/oxide-win32-x64-msvc': 4.3.3
 
-  '@tailwindcss/vite@4.3.3(vite@8.2.0(@types/node@26.1.2)(jiti@2.7.0))':
+  '@tailwindcss/vite@4.3.3(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0))':
     dependencies:
       '@tailwindcss/node': 4.3.3
       '@tailwindcss/oxide': 4.3.3
       tailwindcss: 4.3.3
-      vite: 8.2.0(@types/node@26.1.2)(jiti@2.7.0)
+      vite: 8.2.1(@types/node@26.2.0)(jiti@2.7.0)
 
   '@tanstack/react-virtual@3.14.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
@@ -7259,7 +7259,7 @@ snapshots:
 
   '@types/google_interactive_media_ads_types@3.697.1': {}
 
-  '@types/node@26.1.2':
+  '@types/node@26.2.0':
     dependencies:
       undici-types: 8.3.0
 
@@ -7290,10 +7290,10 @@ snapshots:
       native-promise-only: 0.8.1
       weakmap-polyfill: 2.0.4
 
-  '@vitejs/plugin-react@6.0.5(vite@8.2.0(@types/node@26.1.2)(jiti@2.7.0))':
+  '@vitejs/plugin-react@6.0.5(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0))':
     dependencies:
       '@rolldown/pluginutils': 1.0.1
-      vite: 8.2.0(@types/node@26.1.2)(jiti@2.7.0)
+      vite: 8.2.1(@types/node@26.2.0)(jiti@2.7.0)
 
   agent-base@6.0.2:
     dependencies:
@@ -8407,7 +8407,7 @@ snapshots:
     dependencies:
       dnd-core: 16.0.1
 
-  react-dnd@16.0.1(@types/node@26.1.2)(@types/react@19.2.18)(react@19.2.8):
+  react-dnd@16.0.1(@types/node@26.2.0)(@types/react@19.2.18)(react@19.2.8):
     dependencies:
       '@react-dnd/invariant': 4.0.2
       '@react-dnd/shallowequal': 4.0.2
@@ -8416,7 +8416,7 @@ snapshots:
       hoist-non-react-statics: 3.3.2
       react: 19.2.8
     optionalDependencies:
-      '@types/node': 26.1.2
+      '@types/node': 26.2.0
       '@types/react': 19.2.18
 
   react-dom@19.2.8(react@19.2.8):
@@ -8732,10 +8732,10 @@ snapshots:
       '@vimeo/player': 2.29.0
       media-played-ranges-mixin: 0.1.0
 
-  vite-plugin-clean@2.0.1(@types/node@26.1.2)(jiti@2.7.0)(lightningcss@1.33.0)(rollup@4.62.4):
+  vite-plugin-clean@2.0.1(@types/node@26.2.0)(jiti@2.7.0)(lightningcss@1.33.0)(rollup@4.62.4):
     dependencies:
       '@rollup/pluginutils': 5.4.0(rollup@4.62.4)
-      vite: 6.4.3(@types/node@26.1.2)(jiti@2.7.0)(lightningcss@1.33.0)
+      vite: 6.4.3(@types/node@26.2.0)(jiti@2.7.0)(lightningcss@1.33.0)
     transitivePeerDependencies:
       - '@types/node'
       - jiti
@@ -8750,22 +8750,22 @@ snapshots:
       - tsx
       - yaml
 
-  vite-plugin-oxlint@2.1.2(oxlint@1.77.0)(vite@8.2.0(@types/node@26.1.2)(jiti@2.7.0)):
+  vite-plugin-oxlint@2.1.2(oxlint@1.77.0)(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0)):
     dependencies:
       cross-spawn: 7.0.6
       oxlint: 1.77.0
       package-manager-detector: 1.8.0
-      vite: 8.2.0(@types/node@26.1.2)(jiti@2.7.0)
+      vite: 8.2.1(@types/node@26.2.0)(jiti@2.7.0)
 
-  vite-plugin-static-copy@4.1.1(vite@8.2.0(@types/node@26.1.2)(jiti@2.7.0)):
+  vite-plugin-static-copy@4.1.1(vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0)):
     dependencies:
       chokidar: 3.6.0
       p-map: 7.0.6
       picocolors: 1.1.1
       tinyglobby: 0.2.17
-      vite: 8.2.0(@types/node@26.1.2)(jiti@2.7.0)
+      vite: 8.2.1(@types/node@26.2.0)(jiti@2.7.0)
 
-  vite@6.4.3(@types/node@26.1.2)(jiti@2.7.0)(lightningcss@1.33.0):
+  vite@6.4.3(@types/node@26.2.0)(jiti@2.7.0)(lightningcss@1.33.0):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.5)
@@ -8774,12 +8774,12 @@ snapshots:
       rollup: 4.62.4
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 26.1.2
+      '@types/node': 26.2.0
       fsevents: 2.3.3
       jiti: 2.7.0
       lightningcss: 1.33.0
 
-  vite@8.2.0(@types/node@26.1.2)(jiti@2.7.0):
+  vite@8.2.1(@types/node@26.2.0)(jiti@2.7.0):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.5
@@ -8787,7 +8787,7 @@ snapshots:
       rolldown: 1.2.3
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 26.1.2
+      '@types/node': 26.2.0
       fsevents: 2.3.3
       jiti: 2.7.0
 
