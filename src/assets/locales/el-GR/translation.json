@@ -11,11 +11,15 @@
   "plugnmeet-server-client-version": "Διακομιστής: v{{server}}; Πελάτης: v{{client}}",
   "open": "Άνοιγμα",
   "other": "Άλλα",
+  "participant-menu": "Επιλογές συμμετεχόντων",
+  "participant-volume": "Προσαρμογή της έντασης ήχου των συμμετεχόντων",
+  "participant-webcam-on": "Η κάμερα είναι ενεργοποιημένη",
   "pip": "Εικόνα σε εικόνα",
   "please-wait": "Παρακαλώ περιμένετε...",
   "are-you-sure-to-close": "Είστε βέβαιοι ότι θέλετε να κλείσετε;",
   "you-are-about-to-close": "Πρόκειται να κλείσετε",
   "notifications": {
+    "title": "Ειδοποιήσεις",
     "room-not-active": "Αυτή η αίθουσα δεν είναι ενεργή.",
     "recording-already-running": "Η εγγραφή βρίσκεται ήδη σε εξέλιξη.",
     "recording-not-running": "Η εγγραφή δεν βρίσκεται σε εξέλιξη.",
@@ -109,6 +113,7 @@
     "rtmp-stopped": "Αυτή η σύσκεψη δεν μεταδίδεται πλέον ζωντανά."
   },
   "header": {
+    "aria-label": "Κεφαλίδα σύσκεψης",
     "hide-header": "Απόκρυψη κεφαλίδας",
     "show-header": "Εμφάνιση κεφαλίδας",
     "room-audio-volume": "Ήχος σύσκεψης",
@@ -116,6 +121,8 @@
     "menus": {
       "settings": "Ρυθμίσεις",
       "keyboard-shortcuts": "Συντομεύσεις πληκτρολογίου",
+      "menu": "Μενού",
+      "toggle-theme": "Εναλλαγή θέματος",
       "logout": "Αποχώρηση από τη σύσκεψη",
       "end": "Τερματισμός σύσκεψης",
       "alert": {
@@ -171,6 +178,7 @@
       "show-hide-hand": "Σήκωμα/Κατέβασμα χεριού"
     },
     "connection-status": {
+      "title": "Ποιότητα σύνδεσης",
       "overall-quality": "Συνολική εμπειρία",
       "score": "Βαθμολογία σύνδεσης",
       "upload": "Ποιότητα αποστολής",
@@ -284,6 +292,7 @@
     "sending-message": "Παρακαλώ περιμένετε, αποστολή..."
   },
   "footer": {
+    "aria-label": "Στοιχεία ελέγχου σύσκεψης",
     "hide-footer": "Απόκρυψη υποσέλιδου",
     "show-footer": "Εμφάνιση υποσέλιδου",
     "icons": {
@@ -327,7 +336,8 @@
       "hide-translation-settings": "Απόκρυψη ρυθμίσεων μεταγραφής",
       "promote-presenter": "Ορισμός ως παρουσιαστή",
       "demote-presenter": "Αφαίρεση από παρουσιαστή",
-      "you-are-muted": "Κανείς δεν μπορεί να σας ακούσει. Είστε σε σίγαση."
+      "you-are-muted": "Κανείς δεν μπορεί να σας ακούσει. Είστε σε σίγαση.",
+      "menu": "Περισσότερες επιλογές"
     },
     "menus": {
       "mute-all-users": "Σίγαση όλων",
@@ -433,6 +443,9 @@
     "export-pdf-button-count": "Εξαγωγή ({{count}})",
     "export-pdf-all-pages": "Όλες οι σελίδες ({{count}})",
     "export-pdf-current-page": "Τρέχουσα σελίδα: {{page}}",
+    "previous-page": "Προηγούμενη σελίδα",
+    "next-page": "Επόμενη σελίδα",
+    "take-over-presenter": "Ανάληψη παρουσιαστή",
     "export-pdf-selected-pages": "Επιλεγμένες σελίδες",
     "export-pdf-selected-pages-count": "Επιλεγμένο ({{count}})",
     "export-pdf-select-pages-label": "Επιλέξτε σελίδες για εξαγωγή:",
@@ -460,7 +473,8 @@
     "export-pdf-clear": "Εκκαθάριση",
     "export-pdf-exporting": "Εξαγωγή...",
     "share-download-link": "Μοιραστείτε τον σύνδεσμο λήψης σε δημόσια συνομιλία",
-    "download-link-sent": "Λήψη συνδέσμου που στάλθηκε σε δημόσια συνομιλία"
+    "download-link-sent": "Λήψη συνδέσμου που στάλθηκε σε δημόσια συνομιλία",
+    "whiteboard-area": "Περιοχή πίνακα"
   },
   "waiting-room": {
     "modal-title": "Διαχείριση αίθουσας αναμονής",
@@ -629,6 +643,8 @@
     "enable-translation-warning": "Έχετε επιλέξει περισσότερες από μία ομιλούμενες γλώσσες, αλλά η μετάφραση είναι απενεργοποιημένη.",
     "select-one-lang": "Επιλέξτε μια γλώσσα",
     "subtitle-history-modal-title": "Ιστορικό υπότιτλων",
+    "scroll-to-bottom": "Κύλιση προς τα κάτω",
+    "download-transcript": "Λήψη μεταγραφής",
     "azure-error": "Σφάλμα υπηρεσίας Microsoft Azure: {{error}}",
     "speech-to-text-stopped": "Η υπηρεσία μεταγραφής έχει σταματήσει.",
     "enable-transcription": "Ενεργοποίηση μεταγραφής",

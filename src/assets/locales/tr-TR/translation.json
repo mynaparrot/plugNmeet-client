@@ -11,11 +11,15 @@
   "plugnmeet-server-client-version": "Sunucu: v{{server}}; İstemci: v{{client}}",
   "open": "Aç",
   "other": "Diğer",
+  "participant-menu": "Katılımcı seçenekleri",
+  "participant-volume": "Katılımcı sesini ayarlayın",
+  "participant-webcam-on": "Kamera açık.",
   "pip": "Resim içinde Fotoğraf",
   "please-wait": "Lütfen bekleyin...",
   "are-you-sure-to-close": "Kapatmak istediğinizden emin misiniz?",
   "you-are-about-to-close": "Kapatmak üzeresiniz.",
   "notifications": {
+    "title": "Bildirimler",
     "room-not-active": "Bu oda aktif değil.",
     "recording-already-running": "Kayıt zaten devam ediyor.",
     "recording-not-running": "Kayıt devam etmiyor.",
@@ -109,6 +113,7 @@
     "rtmp-stopped": "Bu toplantı artık canlı yayınlanmıyor."
   },
   "header": {
+    "aria-label": "Toplantı başlığı",
     "hide-header": "Başlığı gizle",
     "show-header": "Başlığı göster",
     "room-audio-volume": "Toplantı Sesi",
@@ -116,6 +121,8 @@
     "menus": {
       "settings": "Ayarlar",
       "keyboard-shortcuts": "Klavye Kısayolları",
+      "menu": "Menü",
+      "toggle-theme": "Tema değiştirme",
       "logout": "Toplantıdan Ayrıl",
       "end": "Toplantıyı Sonlandır",
       "alert": {
@@ -171,6 +178,7 @@
       "show-hide-hand": "El Kaldır/İndir"
     },
     "connection-status": {
+      "title": "Bağlantı kalitesi",
       "overall-quality": "Genel Deneyim",
       "score": "Bağlantı Puanı",
       "upload": "Gönderme Kalitesi",
@@ -284,6 +292,7 @@
     "sending-message": "Gönderiliyor, lütfen bekleyin..."
   },
   "footer": {
+    "aria-label": "Toplantı kontrolleri",
     "hide-footer": "Altbilgiyi gizle",
     "show-footer": "Altbilgiyi göster",
     "icons": {
@@ -327,7 +336,8 @@
       "hide-translation-settings": "Transkripsiyon Ayarlarını Gizle",
       "promote-presenter": "Sunucu Yap",
       "demote-presenter": "Sunuculuktan Çıkar",
-      "you-are-muted": "Sesiniz kapalı. Kimse sizi duyamıyor."
+      "you-are-muted": "Sesiniz kapalı. Kimse sizi duyamıyor.",
+      "menu": "Daha fazla seçenek"
     },
     "menus": {
       "mute-all-users": "Herkesi Sessize Al",
@@ -433,6 +443,9 @@
     "export-pdf-button-count": "İhracat ({{count}})",
     "export-pdf-all-pages": "Tüm sayfalar ({{count}})",
     "export-pdf-current-page": "Güncel sayfa: {{page}}",
+    "previous-page": "Önceki sayfa",
+    "next-page": "Sonraki sayfa",
+    "take-over-presenter": "Sunuculuğu devralın",
     "export-pdf-selected-pages": "Seçilmiş Sayfalar",
     "export-pdf-selected-pages-count": "Seçilmiş ({{count}})",
     "export-pdf-select-pages-label": "İhracat için sayfaları seçin:",
@@ -460,7 +473,8 @@
     "export-pdf-clear": "Temiz",
     "export-pdf-exporting": "İhracat...",
     "share-download-link": "İndirme bağlantısını kamu sohbetinde paylaş",
-    "download-link-sent": "Halka açık sohbete gönderilen indirme bağlantısı"
+    "download-link-sent": "Halka açık sohbete gönderilen indirme bağlantısı",
+    "whiteboard-area": "Beyaz tahta alanı"
   },
   "waiting-room": {
     "modal-title": "Bekleme Odasını Yönet",
@@ -629,6 +643,8 @@
     "enable-translation-warning": "Birden fazla konuşma dili seçtiniz ancak çeviri devre dışı.",
     "select-one-lang": "Bir dil seçin",
     "subtitle-history-modal-title": "Altyazı Geçmişi",
+    "scroll-to-bottom": "Aşağıya kaydırın",
+    "download-transcript": "Transkripti indir",
     "azure-error": "Microsoft Azure hizmet hatası: {{error}}",
     "speech-to-text-stopped": "Transkripsiyon hizmeti durduruldu.",
     "enable-transcription": "Transkripsiyonu Etkinleştir",
