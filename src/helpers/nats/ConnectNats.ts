@@ -96,6 +96,7 @@ export default class ConnectNats {
   private missedPongs = 0;
   private pongMissedToastId: any;
   private isRoomReconnecting: boolean = false;
+  private _finalizeAppConnCalled = false;
 
   // state setters
   private readonly _setErrorState: Dispatch<IErrorPageProps>;
@@ -301,6 +302,10 @@ export default class ConnectNats {
   };
 
   public endSession = async (msg: string) => {
+    // Hybrid mode: tell the native host to release its LiveKit publisher + media
+    // (no-op in a regular browser)
+    teardownNativePublisher();
+
     // Immediately update UI and stop new messages
     this.setErrorStatus(
       i18n.t('notifications.room-disconnected-title'),
@@ -317,11 +322,13 @@ export default class ConnectNats {
     clearInterval(this.tokenRenewInterval);
     clearInterval(this.pingInterval);
     clearInterval(this.reconciliationInterval);
+    clearInterval(this.statusCheckerInterval);
+    this.statusCheckerInterval = undefined;
+    if (this.toastIdConnecting) {
+      toast.dismiss(this.toastIdConnecting);
+      this.toastIdConnecting = undefined;
+    }
     this.subscriptionHandler.handleParticipants.clearParticipantCounterInterval();
-
-    // Hybrid mode: tell the native host to release its LiveKit publisher + media
-    // (no-op in a regular browser; see HYBRID_INTEGRATION_ARCHITECTURE.md 4.1)
-    teardownNativePublisher();
 
     // Concurrently run all cleanup tasks.
     const cleanupPromises: Promise<void>[] = [];
@@ -798,6 +805,9 @@ export default class ConnectNats {
    * Calling this method prematurely may result in the media server token expiring before it is used.
    */
   public finalizeAppConn = () => {
+    if (this._finalizeAppConnCalled) return;
+    this._finalizeAppConnCalled = true;
+
     // Request for users' list to prepare everything
     this.sendMessageToSystemWorker(
       create(NatsMsgClientToServerSchema, {

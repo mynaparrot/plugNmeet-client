@@ -39,7 +39,7 @@ import {
 } from '../../store/slices/interfaces/speechServices';
 import { addAllChatMessages } from '../../store/slices/chatMessagesSlice';
 import { setSpeechToTextLastFinalTexts } from '../../store/slices/speechServicesSlice';
-import { getChatDonors, getWhiteboardDonors } from '../utils';
+import { formatNatsError, getChatDonors, getWhiteboardDonors } from '../utils';
 import i18n from '../i18n';
 import { addToken } from '../../store/slices/sessionSlice';
 
@@ -52,6 +52,8 @@ export default class SubscriptionHandler {
   private readonly _handleChat: HandleChat;
   private readonly _handleDataMsg: HandleDataMessage;
   private readonly _handleWhiteboard: HandleWhiteboard;
+
+  private _afterUserReadyCalled = false;
 
   constructor(connectNats: ConnectNats) {
     this.connectNats = connectNats;
@@ -76,7 +78,13 @@ export default class SubscriptionHandler {
 
   public initializeSubscriptions = () => {
     // now we'll subscribe to the room events stream
-    void this.subscribeToRoomEvents();
+    this.subscribeToRoomEvents().catch((e) => {
+      console.error('subscribeToRoomEvents failed:', e);
+      this.connectNats.setErrorStatus(
+        i18n.t('notifications.nats-error-title'),
+        formatNatsError(e),
+      );
+    });
     // we'll still need this for any pub/sub based messages
     void this.subscribeToSystemPublicPubSub();
   };
@@ -126,8 +134,12 @@ export default class SubscriptionHandler {
     const sub = this.connectNats.nc.subscribe(subject);
 
     for await (const m of sub) {
-      const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
-      await this.handleSystemEvents(payload);
+      try {
+        const payload = fromBinary(NatsMsgServerToClientSchema, m.data);
+        await this.handleSystemEvents(payload);
+      } catch (e) {
+        console.error('systemPublic event error:', e);
+      }
     }
   }
 
@@ -179,7 +191,11 @@ export default class SubscriptionHandler {
     }
 
     for await (const m of sub) {
-      await this.processToHandleChatMsg(m.data);
+      try {
+        await this.processToHandleChatMsg(m.data);
+      } catch (e) {
+        console.error('chat event error:', e);
+      }
     }
   }
 
@@ -205,18 +221,22 @@ export default class SubscriptionHandler {
     }
 
     for await (const m of sub) {
-      let dataToParse = m.data;
-      if (this.connectNats.enableE2EEWhiteboard) {
-        const data = await this.connectNats.decryptData(dataToParse);
-        if (typeof data === 'undefined') {
-          continue; // Skip if decryption fails
+      try {
+        let dataToParse = m.data;
+        if (this.connectNats.enableE2EEWhiteboard) {
+          const data = await this.connectNats.decryptData(dataToParse);
+          if (typeof data === 'undefined') {
+            continue; // Skip if decryption fails
+          }
+          dataToParse = data;
         }
-        dataToParse = data;
-      }
-      const payload = fromBinary(DataChannelMessageSchema, dataToParse);
-      // Still need to check if the message is from the local user to avoid echo.
-      if (payload.fromUserId !== this.connectNats.userId) {
-        await this._handleWhiteboard.handleWhiteboardMsg(payload);
+        const payload = fromBinary(DataChannelMessageSchema, dataToParse);
+        // Still need to check if the message is from the local user to avoid echo.
+        if (payload.fromUserId !== this.connectNats.userId) {
+          await this._handleWhiteboard.handleWhiteboardMsg(payload);
+        }
+      } catch (e) {
+        console.error('whiteboard event error:', e);
       }
     }
   }
@@ -274,7 +294,6 @@ export default class SubscriptionHandler {
   } = {
     [NatsMsgServerToClientEvents.RES_INITIAL_DATA]: async (p) => {
       await this.handleInitialData(p.msg);
-      this.connectNats.setRoomConnectionStatusState('ready');
     },
     [NatsMsgServerToClientEvents.RES_MEDIA_SERVER_DATA]: async (p) => {
       await this.handleMediaServerData(p.msg);
@@ -375,11 +394,15 @@ export default class SubscriptionHandler {
     this.connectNats.userName = localUser.name;
 
     // 6. We'll initialize the media server class.
-    await this.connectNats.initializeMediaServer(
+    const mediaInitialized = await this.connectNats.initializeMediaServer(
       this.connectNats.currentRoomInfo.metadata?.roomFeatures
         ?.endToEndEncryptionFeatures,
       data.room.roomSid,
     );
+    if (!mediaInitialized) {
+      return;
+    }
+    this.connectNats.setRoomConnectionStatusState('ready');
   }
 
   private async handleJoinedUsersList(msg: string) {
@@ -394,6 +417,10 @@ export default class SubscriptionHandler {
       await this.onAfterUserReady();
     } catch (e) {
       console.error(e);
+      this.connectNats.setErrorStatus(
+        i18n.t('notifications.decode-error-title'),
+        i18n.t('notifications.decode-error-body'),
+      );
     }
   }
 
@@ -403,6 +430,9 @@ export default class SubscriptionHandler {
    * user fully operational in the room.
    */
   private async onAfterUserReady() {
+    if (this._afterUserReadyCalled) return;
+    this._afterUserReadyCalled = true;
+
     // Request for media server connection data
     this.connectNats.sendMessageToSystemWorker(
       create(NatsMsgClientToServerSchema, {
