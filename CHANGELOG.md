@@ -1,5 +1,55 @@
 # Changelog
 
+## [2.4.0](https://github.com/mynaparrot/plugNmeet-client/compare/v2.3.0...v2.4.0) (2026-08-11)
+
+
+### Features
+
+* added option to share original uploaded whiteboard file ([04203cd](https://github.com/mynaparrot/plugNmeet-client/commit/04203cddcf24402c0cf9fe358365f36a4be3878d))
+* hybrid integration (nativeBridge) ([#1077](https://github.com/mynaparrot/plugNmeet-client/issues/1077)) ([dac4d12](https://github.com/mynaparrot/plugNmeet-client/commit/dac4d128f7466c09f7508694b09e535f70466000))
+
+
+### Bug Fixes
+
+* `useHybridLockForwarder` should initialize in footer ([3d41a34](https://github.com/mynaparrot/plugNmeet-client/commit/3d41a34f14071e6240158dddeaed6532e47159e8))
+* accessibility issue ([06e5e0b](https://github.com/mynaparrot/plugNmeet-client/commit/06e5e0b211ee045375430445f20c35035dfbe861))
+* active speaker indicator some went behind camera til ([7db2fd2](https://github.com/mynaparrot/plugNmeet-client/commit/7db2fd2a3322fef8fa978ece95c806e4761057dc))
+* added error handling by `try ..catch` ([ee6ad72](https://github.com/mynaparrot/plugNmeet-client/commit/ee6ad721aaccc5932587eee821bb64bbaad6ee15))
+* added missing translation ([ec220f2](https://github.com/mynaparrot/plugNmeet-client/commit/ec220f28866c2d29957dcea7d52fa23785d057cb))
+* bug fixes and improvement ([eb9d061](https://github.com/mynaparrot/plugNmeet-client/commit/eb9d061067219a9fffa814eb57fc4d9269ce08f2))
+* bump deps ([de11977](https://github.com/mynaparrot/plugNmeet-client/commit/de11977a242c46131fb6dda0d29091dbab0c2ef3))
+* don't show error notification if metadata updated already ([02e4170](https://github.com/mynaparrot/plugNmeet-client/commit/02e4170253887dcec27b5b2253ecc2da51e574c6))
+* dynamically calculated A4 page orientation e.g. landscape or  portrait based on converted image file ([f5ef045](https://github.com/mynaparrot/plugNmeet-client/commit/f5ef045310d868c2ba99da8c50aae3c8ec91cd7b))
+* exact per-page size from meta (not just two A4 profiles) ([cb33fb4](https://github.com/mynaparrot/plugNmeet-client/commit/cb33fb4f24b596456a8fb7f0d185fec31acf269a))
+* guards the side-panel close ([96e19c5](https://github.com/mynaparrot/plugNmeet-client/commit/96e19c50e569d8900ad1a7c07d479fe3936d4489))
+* handle error properly in case error happen ([57a6312](https://github.com/mynaparrot/plugNmeet-client/commit/57a631221feb941ad6c96764d29c16e393ba69b4))
+* improved appending subtitle text ([091234f](https://github.com/mynaparrot/plugNmeet-client/commit/091234f77062b6b057d50d529ea48cab5cc0933f))
+* improvement + cleanup regarding nativeBridge ([03a5989](https://github.com/mynaparrot/plugNmeet-client/commit/03a59890d8abdb16220eeac71ea4ad71f0e15f1e))
+* in hybrid mode ensure mic status check from source ([4ff1ce3](https://github.com/mynaparrot/plugNmeet-client/commit/4ff1ce39a410c063be856119d631a92635aa772b))
+* initialize `ConnectionQualityMonitor` only when room is fully ready ([bc6b3d1](https://github.com/mynaparrot/plugNmeet-client/commit/bc6b3d17f15a3aa14fa136e721c0a7463dfac489))
+* instated of sharing publishing empty track better use mute/unmute feature ([f068245](https://github.com/mynaparrot/plugNmeet-client/commit/f06824501615a48e71032400f3f1d3f66032667e))
+* menu wasn't visible in mobile ([859facd](https://github.com/mynaparrot/plugNmeet-client/commit/859facdfe2e3af232ee2158af1a17b0faa610e33))
+* moved code into multiple files for clarity ([6703ea7](https://github.com/mynaparrot/plugNmeet-client/commit/6703ea71192528369b0d6f4c9fe8d77d600b8bb7))
+* moved to single redux pattern ([ec37bf9](https://github.com/mynaparrot/plugNmeet-client/commit/ec37bf9204ca2c79b97b447dc08a0c48ebca7578))
+* new Crowdin updates ([#1083](https://github.com/mynaparrot/plugNmeet-client/issues/1083)) ([9b1d23a](https://github.com/mynaparrot/plugNmeet-client/commit/9b1d23afe765474dc020f0bd98efc93245613058))
+* new Crowdin updates ([#1087](https://github.com/mynaparrot/plugNmeet-client/issues/1087)) ([0a1a61c](https://github.com/mynaparrot/plugNmeet-client/commit/0a1a61c53907775901cd89b0e81362ddbd6e3138))
+* normalize all subscriber maps to use plugNmeet userId as single canonical key ([997a7c6](https://github.com/mynaparrot/plugNmeet-client/commit/997a7c64356ab439e2299a625de0c879230621b6))
+* now default recommended codec is ([e98d23c](https://github.com/mynaparrot/plugNmeet-client/commit/e98d23c65bb0425341d85f7d3225e40df51ec5fa))
+* organized code into utils ([f886278](https://github.com/mynaparrot/plugNmeet-client/commit/f88627863154d19dbfd4e10736b0de619eb80019))
+* pip became stuck during track mute/unmute ([3f3cb18](https://github.com/mynaparrot/plugNmeet-client/commit/3f3cb18c0600212bf805e499c3b96e23e77decc0))
+* prevent to change lock setting for admin ([6aece10](https://github.com/mynaparrot/plugNmeet-client/commit/6aece1028cfb6340cbb32e1ae4efb729806b14ba))
+* process messages before displaying ([0342931](https://github.com/mynaparrot/plugNmeet-client/commit/034293126c11600b69cc88c9a83e250399841a93))
+* reduce connection quality notification frequency ([ab1e4ea](https://github.com/mynaparrot/plugNmeet-client/commit/ab1e4eaa8439da7d99e6f7e850943cbfb235d1db))
+* simplified bridge code ([be5b4a8](https://github.com/mynaparrot/plugNmeet-client/commit/be5b4a8aca53496b73c1a15a9739446e7f57c31b))
+* some UI adjustment for small devices ([dac4a2d](https://github.com/mynaparrot/plugNmeet-client/commit/dac4a2daaa7870ed872f7e51a45e8be1d1148834))
+* tablet + mobile webcam layout ([#1086](https://github.com/mynaparrot/plugNmeet-client/issues/1086)) ([11af450](https://github.com/mynaparrot/plugNmeet-client/commit/11af450b7427414e657a5f7f75e6b1424d0bb906))
+* use A4 as standard frame to calculate others ([de7a331](https://github.com/mynaparrot/plugNmeet-client/commit/de7a331c03b731ec0b73850868f1498b104a6027))
+* use default VP8 codec as other codec may create problem in recorder ([1fa6c04](https://github.com/mynaparrot/plugNmeet-client/commit/1fa6c0416fb3c17d25896d4df8f3e3e6abcab9c6))
+* use multiple events to get actual situation ([1e281bd](https://github.com/mynaparrot/plugNmeet-client/commit/1e281bde974a444dc98c26f3bb8947d485b96a5c))
+* use null checker for `speechSynthesis` ([85114c6](https://github.com/mynaparrot/plugNmeet-client/commit/85114c6622ed929d9824c89520e4342555e14982))
+* various `RLT` improvements ([1a59d68](https://github.com/mynaparrot/plugNmeet-client/commit/1a59d68316c1c006c4a891a9ac5f0b134f13786c))
+* various issues related with `Accessibility` ([#1085](https://github.com/mynaparrot/plugNmeet-client/issues/1085)) ([0a49071](https://github.com/mynaparrot/plugNmeet-client/commit/0a490713a54c4f658d1374cc602730820dc1b8a6))
+
 ## [2.3.0](https://github.com/mynaparrot/plugNmeet-client/compare/v2.2.0...v2.3.0) (2026-07-09)
 
 
