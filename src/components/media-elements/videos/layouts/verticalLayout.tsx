@@ -183,7 +183,6 @@ const VerticalLayout = ({
                 key={item.key}
                 videoTrack={item.videoTrack}
                 name={item.name}
-                isCameraMuted={item.isCameraMuted}
               />
             ))}
           </div>,

@@ -89,13 +89,17 @@ export const injectPipStyles = (win: Window) => {
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #ffffff;
-      font-family: sans-serif;
-      font-size: 13px;
       background-color: #262626;
       text-align: center;
       padding: 4px;
       box-sizing: border-box;
+    }
+
+    .pip-video-fallback span {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #ffffff;
+      user-select: none;
     }
   `;
 
