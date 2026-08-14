@@ -21,6 +21,7 @@ import {
 } from '../../store/slices/reactionsSlice';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import i18n from '../i18n';
+import { getNotepadController } from '../../components/shared-notepad/NotepadController';
 import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
 import { WhiteboardDataAsDonorData } from '../../store/slices/interfaces/whiteboard';
 import { fromJsonString } from '@bufbuild/protobuf';
@@ -143,6 +144,12 @@ export default class HandleDataMessage {
         if (payload.toUserId === this.connectNats.userId) {
           store.dispatch(updateReceivedInvitationFor(payload.message));
         }
+        break;
+      case DataMsgBodyType.NOTEPAD_UPDATE:
+      case DataMsgBodyType.NOTEPAD_AWARENESS:
+      case DataMsgBodyType.NOTEPAD_SYNC_REQUEST:
+      case DataMsgBodyType.NOTEPAD_SYNC_RESPONSE:
+        getNotepadController().handleNotepadMessage(payload);
         break;
     }
   };

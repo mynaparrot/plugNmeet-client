@@ -413,6 +413,7 @@
       "external-media-player-select-file": "Select a media file to upload",
       "upload-background-image": "Upload background image",
       "shared-notepad": "Shared Notepad",
+      "export-notepad": "Export Markdown",
       "chose-virtual-bg": "Choose Background"
     }
   },
