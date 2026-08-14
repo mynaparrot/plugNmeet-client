@@ -8,6 +8,7 @@ import {
 import { DataChannelMessage, DataMsgBodyType } from 'plugnmeet-protocol-js';
 
 import { getNatsConn } from '../../helpers/nats';
+import { getNotepadDBName } from '../../helpers/libs/idb';
 import { store } from '../../store';
 
 const REMOTE_ORIGIN = 'nats-remote';
@@ -134,11 +135,12 @@ export class NotepadController {
     try {
       await this.clearCurrentSession();
       this.notePadId = notePadId;
-      this.dbName = `plugnmeet-notepad-${notePadId}`;
+      this.dbName = getNotepadDBName(notePadId);
 
       const doc = new Y.Doc();
       const persistence = new IndexeddbPersistence(this.dbName, doc);
       await persistence.whenSynced;
+      await persistence.set('lastAccessed', Date.now());
 
       const awareness = new Awareness(doc);
       const fragment = doc.getXmlFragment(FRAGMENT_NAME);
@@ -150,6 +152,9 @@ export class NotepadController {
       this.generation++;
 
       doc.on('update', (update: Uint8Array, origin: unknown) => {
+        // Keep the notepad DB "alive" on activity so long-running sessions
+        // are not considered stale by cleanupStaleDBs.
+        void persistence.set('lastAccessed', Date.now());
         if (origin === REMOTE_ORIGIN) {
           return;
         }

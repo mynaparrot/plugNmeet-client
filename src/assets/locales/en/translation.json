@@ -700,7 +700,7 @@
       "generating": "Generating AI response...",
       "done": "AI result applied",
       "failed": "AI request failed",
-      "disabled-message": "AI is currently disabled. Ask a moderator to enable it from the AI Tools >  AI Assistant Chats."
+      "disabled-message": "The AI feature is currently disabled. An administrator can enable it from More Options (...) → AI Tools → AI Assistant Chats."
     }
   },
   "sip-dial-in-features": {
