@@ -3,6 +3,7 @@ import {
   ChatMessageSchema,
   InsightsAITextChatStreamResult,
   InsightsAITextChatStreamResultSchema,
+  InsightsAIRequestSource,
   NatsMsgServerToClient,
   NatsMsgServerToClientEvents,
   NatsSystemNotificationSchema,
@@ -20,6 +21,7 @@ import { pollsApi } from '../../store/services/pollsApi';
 import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
 import { cleanHtmlForChat, getConfigValue, randomString } from '../utils';
 import { updateAiTextChat } from '../../store/slices/insightsAiTextChatSlice';
+import { handleNotepadAIStreamResult } from '../../components/shared-notepad/helpers/notepadAI';
 import HandleChat from './HandleChat';
 import { triggerRefreshWhiteboardFilesListSignal } from '../../store/slices/whiteboard';
 import { breakoutRoomApi } from '../../store/services/breakoutRoomApi';
@@ -204,8 +206,18 @@ export default class HandleSystemData {
   }
 
   public handleInsightsAITextData = (msg: string) => {
-    const data = fromJsonString(InsightsAITextChatStreamResultSchema, msg);
-    store.dispatch(updateAiTextChat(data as InsightsAITextChatStreamResult));
+    const data = fromJsonString(
+      InsightsAITextChatStreamResultSchema,
+      msg,
+    ) as InsightsAITextChatStreamResult;
+    if (
+      data.requestFrom ===
+      InsightsAIRequestSource.INSIGHTS_AI_REQUEST_SOURCE_NOTEPAD
+    ) {
+      handleNotepadAIStreamResult(data);
+      return;
+    }
+    store.dispatch(updateAiTextChat(data));
   };
 
   private playNotification() {

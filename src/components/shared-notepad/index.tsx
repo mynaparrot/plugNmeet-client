@@ -11,9 +11,10 @@ import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { updateIsActiveSharedNotePad } from '../../store/slices/bottomIconsActivitySlice';
 import { getNotepadController } from './NotepadController';
-import NotepadEditor from './NotepadEditor';
+import NotepadEditor, { type NotepadEditorHandle } from './NotepadEditor';
 import { LoadingIcon } from '../../assets/Icons/Loading';
 import { PopupCloseSVGIcon } from '../../assets/Icons/PopupCloseSVGIcon';
+import { DownloadIconSVG } from '../../assets/Icons/DownloadIconSVG';
 
 const SharedNotepad = () => {
   const { t } = useTranslation();
@@ -23,6 +24,7 @@ const SharedNotepad = () => {
   const dispatch = useAppDispatch();
   const nodeRef = useRef(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const notepadEditorRef = useRef<NotepadEditorHandle>(null);
 
   const controller = useMemo(() => getNotepadController(), []);
   const snapshot = useSyncExternalStore(
@@ -72,18 +74,30 @@ const SharedNotepad = () => {
                 className="absolute top-0 w-full flex items-center justify-between cursor-move text-base font-medium leading-7 text-Gray-950 dark:text-white px-4 py-2 border border-Gray-100 dark:border-Gray-800! bg-white dark:bg-dark-primary rounded-t-xl"
               >
                 <span>{t('footer.modal.shared-notepad')}</span>
-                <button
-                  ref={closeBtnRef}
-                  type="button"
-                  aria-label={t('close').toString()}
-                  className="cursor-pointer relative z-30 hidden md:inline focus-ring"
-                  onClick={minimizePad}
-                >
-                  <PopupCloseSVGIcon classes="text-Gray-600 dark:text-white" />
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    title={t('footer.modal.export-notepad')}
+                    aria-label={t('footer.modal.export-notepad').toString()}
+                    className="cursor-pointer focus-ring [&_path]:stroke-current text-Gray-600 dark:text-white"
+                    onClick={() => notepadEditorRef.current?.exportMarkdown()}
+                  >
+                    <DownloadIconSVG />
+                  </button>
+                  <button
+                    ref={closeBtnRef}
+                    type="button"
+                    aria-label={t('close').toString()}
+                    className="cursor-pointer relative z-30 hidden md:inline focus-ring"
+                    onClick={minimizePad}
+                  >
+                    <PopupCloseSVGIcon classes="text-Gray-600 dark:text-white" />
+                  </button>
+                </div>
               </div>
               {snapshot.fragment && snapshot.awareness ? (
                 <NotepadEditor
+                  ref={notepadEditorRef}
                   snapshot={snapshot}
                   userId={currentUser?.userId}
                   userName={currentUser?.name}
