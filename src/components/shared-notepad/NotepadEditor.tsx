@@ -1,8 +1,10 @@
 import {
   forwardRef,
   useCallback,
+  useEffect,
   useImperativeHandle,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import {
@@ -20,11 +22,13 @@ import '@blocknote/core/fonts/inter.css';
 // @ts-ignore
 import '@blocknote/mantine/style.css';
 
+import { useTranslation } from 'react-i18next';
 import { useAppSelector } from '../../store';
 import type { NotepadSnapshot } from './NotepadController';
 import NotepadAIMenu from './helpers/NotepadAIMenu';
+import NotepadAIDisabledNotice from './helpers/NotepadAIDisabledNotice';
 import { getNotepadAISlashMenuItems } from './helpers/notepadAIActions';
-import { getUserColor } from './helpers/utils';
+import { getBlockNoteDictionary, getUserColor } from './helpers/utils';
 
 export interface NotepadEditorHandle {
   exportMarkdown: () => void;
@@ -45,18 +49,20 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
         state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
           ?.aiFeatures?.aiTextChatFeatures,
     );
-    const currentUserId = useAppSelector(
-      (state) => state.session.currentUser?.userId,
-    );
     const aiEnabled =
       !!aiTextChatFeatures?.isEnabled &&
       !aiTextChatFeatures?.isNotepadAiDisabled &&
       (aiTextChatFeatures?.isAllowedEveryone ||
-        (aiTextChatFeatures?.allowedUserIds ?? []).includes(
-          currentUserId ?? '',
-        ));
+        (aiTextChatFeatures?.allowedUserIds ?? []).includes(userId ?? ''));
 
     const [aiMenuBlockId, setAiMenuBlockId] = useState<string | undefined>();
+
+    const { i18n } = useTranslation();
+
+    const dictionary = useMemo(
+      () => getBlockNoteDictionary(i18n.language),
+      [i18n.language],
+    );
 
     const user = useMemo(
       () => ({
@@ -68,39 +74,63 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
     );
 
     const editor = useCreateBlockNote(
-      withCollaboration({
-        collaboration: {
-          provider: { awareness: snapshot.awareness ?? undefined },
-          fragment: snapshot.fragment!,
-          user,
-          renderCursor: (collabUser) => {
-            const caret = document.createElement('span');
-            caret.style.position = 'absolute';
-            caret.style.borderLeft = `2px solid ${collabUser.color}`;
-            caret.style.height = '1.2em';
-            caret.style.width = '0';
+      {
+        dictionary,
+        ...withCollaboration({
+          collaboration: {
+            provider: { awareness: snapshot.awareness ?? undefined },
+            fragment: snapshot.fragment!,
+            user,
+            renderCursor: (collabUser) => {
+              const caret = document.createElement('span');
+              caret.style.position = 'absolute';
+              caret.style.borderLeft = `2px solid ${collabUser.color}`;
+              caret.style.height = '1.2em';
+              caret.style.width = '0';
 
-            const label = document.createElement('span');
-            label.style.position = 'absolute';
-            label.style.top = '-1.5em';
-            label.style.left = '0';
-            label.style.padding = '1px 6px';
-            label.style.borderRadius = '4px';
-            label.style.backgroundColor = collabUser.color;
-            label.style.color = '#ffffff';
-            label.style.fontSize = '11px';
-            label.style.fontWeight = '600';
-            label.style.lineHeight = '1.4';
-            label.style.whiteSpace = 'nowrap';
-            label.textContent = collabUser.name;
+              const label = document.createElement('span');
+              label.style.position = 'absolute';
+              label.style.top = '-1.5em';
+              label.style.left = '0';
+              label.style.padding = '1px 6px';
+              label.style.borderRadius = '4px';
+              label.style.backgroundColor = collabUser.color;
+              label.style.color = '#ffffff';
+              label.style.fontSize = '11px';
+              label.style.fontWeight = '600';
+              label.style.lineHeight = '1.4';
+              label.style.whiteSpace = 'nowrap';
+              label.textContent = collabUser.name;
 
-            caret.appendChild(label);
-            return caret;
+              caret.appendChild(label);
+              return caret;
+            },
           },
-        },
-      }),
-      [snapshot.fragment, snapshot.awareness, snapshot.generation],
+        }),
+      },
+      [snapshot.fragment, snapshot.awareness, snapshot.generation, dictionary],
     );
+
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+    const scrollToBottom = useCallback(() => {
+      requestAnimationFrame(() => {
+        const el = scrollContainerRef.current;
+        if (el) {
+          el.scrollTop = el.scrollHeight;
+        }
+      });
+    }, []);
+
+    // In view-only mode, keep the editor pinned to the latest content so the
+    // recorder bot / locked participants always see newly appended content.
+    useEffect(() => {
+      if (!editable) {
+        scrollToBottom();
+        return editor.onChange(() => scrollToBottom());
+      }
+      return undefined;
+    }, [editor, editable, scrollToBottom]);
 
     const exportMarkdown = useCallback(() => {
       const md = editor.blocksToMarkdownLossy();
@@ -116,7 +146,10 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
     useImperativeHandle(ref, () => ({ exportMarkdown }), [exportMarkdown]);
 
     return (
-      <div className="h-full overflow-y-auto">
+      <div
+        ref={scrollContainerRef}
+        className="h-full overflow-y-auto border-t border-Gray-200 dark:border-Gray-800"
+      >
         <BlockNoteView
           editor={editor}
           theme={theme}
@@ -129,11 +162,9 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
               filterSuggestionItems(
                 [
                   ...getDefaultReactSlashMenuItems(editor),
-                  ...(aiEnabled
-                    ? getNotepadAISlashMenuItems(editor, (id) =>
-                        setAiMenuBlockId(id),
-                      )
-                    : []),
+                  ...getNotepadAISlashMenuItems(editor, (id) =>
+                    setAiMenuBlockId(id),
+                  ),
                 ],
                 query,
               )
@@ -166,12 +197,16 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
               style: { zIndex: 100 },
             }}
           >
-            {aiMenuBlockId && (
-              <NotepadAIMenu
-                editor={editor}
-                onClose={() => setAiMenuBlockId(undefined)}
-              />
-            )}
+            {aiMenuBlockId &&
+              (aiEnabled ? (
+                <NotepadAIMenu
+                  editor={editor}
+                  onClose={() => setAiMenuBlockId(undefined)}
+                  scrollToBottom={scrollToBottom}
+                />
+              ) : (
+                <NotepadAIDisabledNotice />
+              ))}
           </BlockPopover>
         </BlockNoteView>
       </div>

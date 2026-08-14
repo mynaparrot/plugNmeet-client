@@ -19,6 +19,7 @@ export type IDBStoreName = (typeof DB_STORE_NAMES)[keyof typeof DB_STORE_NAMES];
 const DB_STORE_METADATA = 'metadata';
 // Databases older than this will be cleaned up on startup (6 hours).
 const DB_MAX_AGE_MS = getConfigValue('dbMaxAgeMs', 6 * 60 * 60 * 1000);
+const DB_VERSION = 4;
 
 class IDBManager {
   /**
@@ -49,7 +50,7 @@ class IDBManager {
     // Use a stable name for persistence across reloads.
     this.dbName = `pnm-${roomSid}-${userId}`;
     this.isDbActive = true;
-    this.dbPromise = openDB(this.dbName, 4, {
+    this.dbPromise = openDB(this.dbName, DB_VERSION, {
       upgrade: (db) => {
         // Create all necessary object stores if they don't already exist.
         for (const storeName of this.ALL_STORES) {
@@ -187,26 +188,29 @@ class IDBManager {
     const now = Date.now();
 
     for (const dbInfo of allDBs) {
-      if (dbInfo.name && dbInfo.name.startsWith('pnm-')) {
-        try {
-          // Briefly open the DB to check its lastAccessed timestamp.
-          const db = await openDB(dbInfo.name, 3);
-          const lastAccessed = await db.get(DB_STORE_METADATA, 'lastAccessed');
-          db.close();
+      if (
+        !dbInfo.name ||
+        !dbInfo.name.startsWith('pnm-') ||
+        dbInfo.name === this.dbName
+      ) {
+        continue;
+      }
 
-          if (
-            typeof lastAccessed !== 'number' ||
-            now - lastAccessed > DB_MAX_AGE_MS
-          ) {
-            console.log(`Deleting stale IndexedDB: ${dbInfo.name}`);
-            await deleteDB(dbInfo.name);
-          }
-        } catch (e) {
-          console.error(
-            `Could not check or delete stale DB ${dbInfo.name}:`,
-            e,
-          );
+      try {
+        // Briefly open the DB to check its lastAccessed timestamp.
+        const db = await openDB(dbInfo.name, DB_VERSION);
+        const lastAccessed = await db.get(DB_STORE_METADATA, 'lastAccessed');
+        db.close();
+
+        if (
+          typeof lastAccessed !== 'number' ||
+          now - lastAccessed > DB_MAX_AGE_MS
+        ) {
+          console.log(`Deleting stale IndexedDB: ${dbInfo.name}`);
+          await deleteDB(dbInfo.name);
         }
+      } catch (e) {
+        console.error(`Could not check or delete stale DB ${dbInfo.name}:`, e);
       }
     }
   }

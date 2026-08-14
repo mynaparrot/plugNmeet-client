@@ -132,7 +132,7 @@ export class NotepadController {
     }
     this.settingUp = true;
     try {
-      await this.teardown();
+      await this.clearCurrentSession();
       this.notePadId = notePadId;
       this.dbName = `plugnmeet-notepad-${notePadId}`;
 
@@ -179,6 +179,12 @@ export class NotepadController {
   }
 
   private async teardown() {
+    if (!this.settingUp) {
+      await this.clearCurrentSession();
+    }
+  }
+
+  private async clearCurrentSession() {
     if (this.syncRetryTimer) {
       clearTimeout(this.syncRetryTimer);
       this.syncRetryTimer = null;
@@ -205,6 +211,10 @@ export class NotepadController {
     this.notePadId = '';
     this.dbName = '';
     this.updateSnapshot();
+  }
+
+  async destroy() {
+    await this.teardown();
   }
 
   private send(

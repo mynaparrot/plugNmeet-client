@@ -42,6 +42,7 @@ import { setSpeechToTextLastFinalTexts } from '../../store/slices/speechServices
 import { formatNatsError, getChatDonors, getWhiteboardDonors } from '../utils';
 import i18n from '../i18n';
 import { addToken } from '../../store/slices/sessionSlice';
+import { getNotepadController } from '../../components/shared-notepad/NotepadController';
 
 export default class SubscriptionHandler {
   private readonly connectNats: ConnectNats;
@@ -432,6 +433,10 @@ export default class SubscriptionHandler {
   private async onAfterUserReady() {
     if (this._afterUserReadyCalled) return;
     this._afterUserReadyCalled = true;
+
+    // Instantiate the shared-notepad controller so it stays in the app
+    // lifecycle even if the notepad is never opened.
+    getNotepadController();
 
     // Request for media server connection data
     this.connectNats.sendMessageToSystemWorker(

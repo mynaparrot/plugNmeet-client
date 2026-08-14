@@ -14,9 +14,14 @@ import { NOTEPAD_AI_PRESET_ACTIONS, runNotepadAI } from './notepadAIActions';
 interface INotepadAIMenuProps {
   editor: BlockNoteEditor;
   onClose: () => void;
+  scrollToBottom: () => void;
 }
 
-const NotepadAIMenu = ({ editor, onClose }: INotepadAIMenuProps) => {
+const NotepadAIMenu = ({
+  editor,
+  onClose,
+  scrollToBottom,
+}: INotepadAIMenuProps) => {
   const Components = useComponentsContext();
   const [prompt, setPrompt] = useState('');
 
@@ -26,13 +31,13 @@ const NotepadAIMenu = ({ editor, onClose }: INotepadAIMenuProps) => {
         title: i18n.t(labelKey),
         size: 'small',
         onItemClick: () => {
-          void runNotepadAI(editor, action);
+          void runNotepadAI(editor, action, undefined, scrollToBottom);
           onClose();
         },
       }));
 
     return filterSuggestionItems(presetItems, prompt);
-  }, [editor, onClose, prompt]);
+  }, [editor, onClose, prompt, scrollToBottom]);
 
   const { selectedIndex, setSelectedIndex, handler } =
     useSuggestionMenuKeyboardHandler(items, (item) => item.onItemClick());
@@ -47,9 +52,9 @@ const NotepadAIMenu = ({ editor, onClose }: INotepadAIMenuProps) => {
     if (!trimmed) {
       return;
     }
-    void runNotepadAI(editor, 'custom', trimmed);
+    void runNotepadAI(editor, 'custom', trimmed, scrollToBottom);
     onClose();
-  }, [editor, onClose, prompt]);
+  }, [editor, onClose, prompt, scrollToBottom]);
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent) => {

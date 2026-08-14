@@ -29,6 +29,9 @@ const NOTEPAD_AI_PROMPTS: Record<
     `Rewrite the following text in simpler language. Return only the simplified text:\n\n${text}`,
 };
 
+const MARKDOWN_FORMATTING_INSTRUCTION =
+  'Format your response using Markdown when it improves clarity: use headings and subheadings for longer answers, bullet or numbered lists, bold/italic emphasis, and fenced code blocks for code.';
+
 export const blockToPlainText = (block: Block): string => {
   const content = block.content;
   if (typeof content === 'string') {
@@ -58,70 +61,11 @@ export const blockToPlainText = (block: Block): string => {
     .join('');
 };
 
-/**
- * Scrolls the block with the given id into view within the notepad panel's
- * own scroll container only. Unlike `prosemirrorView`'s `tr.scrollIntoView()`
- * (which walks every ancestor up to `document.body` and can scroll the outer
- * page/window), this walks up the editor DOM to the nearest scrollable
- * ancestor and adjusts only that container's scroll position.
- */
-const scrollBlockIntoView = (
-  editor: BlockNoteEditor,
-  blockId: string,
-): void => {
-  const domElement = editor.domElement;
-  if (!domElement) {
-    return;
-  }
-
-  // BlockNote renders each block with a `data-id` attribute on its DOM node.
-  const blockDom = domElement.querySelector(`[data-id="${blockId}"]`);
-  if (!(blockDom instanceof HTMLElement)) {
-    return;
-  }
-
-  let container: HTMLElement | null = blockDom.parentElement;
-  while (
-    container &&
-    container !== document.body &&
-    container !== document.documentElement
-  ) {
-    const overflowY = getComputedStyle(container).overflowY;
-    if (
-      (overflowY === 'auto' ||
-        overflowY === 'scroll' ||
-        overflowY === 'overlay') &&
-      container.scrollHeight > container.clientHeight
-    ) {
-      break;
-    }
-    container = container.parentElement;
-  }
-
-  if (
-    !container ||
-    container === document.body ||
-    container === document.documentElement ||
-    container.scrollHeight <= container.clientHeight
-  ) {
-    return;
-  }
-
-  const blockRect = blockDom.getBoundingClientRect();
-  const containerRect = container.getBoundingClientRect();
-  const margin = 12;
-
-  if (blockRect.top < containerRect.top + margin) {
-    container.scrollTop += blockRect.top - containerRect.top - margin;
-  } else if (blockRect.bottom > containerRect.bottom - margin) {
-    container.scrollTop += blockRect.bottom - containerRect.bottom + margin;
-  }
-};
-
 export const runNotepadAI = async (
   editor: BlockNoteEditor,
   action: NotepadAIAction,
   customPrompt?: string,
+  scrollToBottom?: () => void,
 ): Promise<void> => {
   const cursorPosition = editor.getTextCursorPosition();
   const cursorBlock = cursorPosition.block;
@@ -135,47 +79,43 @@ export const runNotepadAI = async (
     return;
   }
 
-  const prompt =
+  const basePrompt =
     action === 'custom'
       ? `${customPrompt}\n\n${text.trim()}`
       : NOTEPAD_AI_PROMPTS[action](text.trim());
+
+  const prompt = `${basePrompt}\n\n${MARKDOWN_FORMATTING_INSTRUCTION}`;
   const toastId = toast.loading(i18n.t('insights.notepad-ai.generating'));
 
   try {
     const result = await executeNotepadAI(prompt);
+    const blocks = editor.tryParseMarkdownToBlocks(result);
 
     if (action === 'continue-writing') {
-      const [insertedBlock] = editor.insertBlocks(
-        [{ type: 'paragraph', content: result }],
-        cursorBlock,
-        'after',
-      );
+      const insertedBlocks = editor.insertBlocks(blocks, cursorBlock, 'after');
+      const insertedBlock = insertedBlocks[0];
 
-      // Put the text cursor into the newly inserted block and scroll that
-      // block into view inside the notepad panel.
       if (insertedBlock) {
         editor.setTextCursorPosition(insertedBlock, 'end');
         editor.focus();
-        scrollBlockIntoView(editor, insertedBlock.id);
+        scrollToBottom?.();
       }
     } else {
       const selectedBlocks = editor.getSelection()?.blocks;
       let resultBlock: Block<any, any, any> | undefined;
+
       if (selectedBlocks && selectedBlocks.length > 0) {
-        const { insertedBlocks } = editor.replaceBlocks(selectedBlocks, [
-          { type: 'paragraph', content: result },
-        ]);
+        const { insertedBlocks } = editor.replaceBlocks(selectedBlocks, blocks);
         resultBlock = insertedBlocks[0];
       } else {
-        resultBlock = editor.updateBlock(cursorBlock, { content: result });
+        const { insertedBlocks } = editor.replaceBlocks([cursorBlock], blocks);
+        resultBlock = insertedBlocks[0];
       }
 
-      // Move the cursor to the end of the replaced/updated content and scroll
-      // it into view within the notepad panel.
       if (resultBlock) {
         editor.setTextCursorPosition(resultBlock, 'end');
         editor.focus();
-        scrollBlockIntoView(editor, resultBlock.id);
+        scrollToBottom?.();
       }
     }
 
@@ -221,6 +161,7 @@ export const getNotepadAISlashMenuItems = (
 ): DefaultReactSuggestionItem[] => [
   {
     title: i18n.t('insights.notepad-ai.title'),
+    subtext: i18n.t('insights.notepad-ai.sub-title'),
     aliases: ['ai'],
     group: 'AI',
     icon: <AiIconSVG classes="h-4 w-4" />,

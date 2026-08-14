@@ -54,6 +54,7 @@ import { deleteRoomDB } from '../libs/idb';
 import { createLivekitConnection } from '../livekit/utils';
 import { executeChatTranslation } from '../../components/translation-transcription/helpers/apiConnections';
 import { teardownNativePublisher } from '../nativeBridge';
+import { getNotepadController } from '../../components/shared-notepad/NotepadController';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000,
   PING_INTERVAL = 10 * 1000,
@@ -340,6 +341,7 @@ export default class ConnectNats {
       cleanupPromises.push(this._nc.close());
     }
     cleanupPromises.push(deleteRoomDB());
+    cleanupPromises.push(getNotepadController().destroy());
 
     await Promise.allSettled(cleanupPromises);
 

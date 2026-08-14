@@ -8,7 +8,7 @@ import {
 import Draggable from 'react-draggable';
 import { useTranslation } from 'react-i18next';
 
-import { useAppDispatch, useAppSelector } from '../../store';
+import { store, useAppDispatch, useAppSelector } from '../../store';
 import { updateIsActiveSharedNotePad } from '../../store/slices/bottomIconsActivitySlice';
 import { getNotepadController } from './NotepadController';
 import NotepadEditor, { type NotepadEditorHandle } from './NotepadEditor';
@@ -18,6 +18,12 @@ import { DownloadIconSVG } from '../../assets/Icons/DownloadIconSVG';
 
 const SharedNotepad = () => {
   const { t } = useTranslation();
+  const { currentUser } = useMemo(() => {
+    const session = store.getState().session;
+    return {
+      currentUser: session.currentUser,
+    };
+  }, []);
   const isActiveSharedNotePad = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveSharedNotePad,
   );
@@ -30,11 +36,9 @@ const SharedNotepad = () => {
   const snapshot = useSyncExternalStore(
     controller.subscribe,
     controller.getSnapshot,
-    controller.getSnapshot,
   );
 
   const theme = useAppSelector((state) => state.roomSettings.theme);
-  const currentUser = useAppSelector((state) => state.session.currentUser);
   const lockSharedNotepad = useAppSelector(
     (state) =>
       state.session.currentUser?.metadata?.lockSettings?.lockSharedNotepad,
