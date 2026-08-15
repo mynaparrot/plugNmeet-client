@@ -413,6 +413,7 @@
       "external-media-player-select-file": "Wybierz plik multimedialny do przesłania",
       "upload-background-image": "Prześlij obraz tła",
       "shared-notepad": "Udostępniony notatnik",
+      "export-notepad": "Eksport Markdown",
       "chose-virtual-bg": "Wybierz tło"
     }
   },
@@ -675,13 +676,31 @@
       "users-required": "Należy wybrać co najmniej jednego uczestnika.",
       "chat-box-placeholder": "Zadaj pytanie Asystentowi AI...",
       "responding-placeholder": "Asystent AI odpowiada...",
-      "response-timed-out": "Asystent AI zbyt długo nie odpowiada. Proszę, spróbuj ponownie."
+      "response-timed-out": "Asystent AI zbyt długo nie odpowiada. Proszę, spróbuj ponownie.",
+      "enable-notepad-ai": "Włącz AI w współdzielonym notatniku"
     },
     "meeting-summarization": {
       "enable": "Włącz podsumowanie spotkania",
       "summarization-prompt-label": "Instrukcje podsumowania",
       "summarization-prompt-required": "Wprowadź instrukcje, jak podsumować.",
       "enabled-notification-all": "Dźwięk z tego spotkania jest teraz nagrywany w celu wygenerowania podsumowania."
+    },
+    "notepad-ai": {
+      "title": "Zapytaj AI",
+      "sub-title": "Pisz z pomocą AI",
+      "continue-writing": "Kontynuuj pisanie",
+      "summarize": "Podsumowanie",
+      "improve-writing": "Popraw pisanie",
+      "fix-spelling": "Popraw pisownię",
+      "simplify": "Uproszczenie",
+      "custom-placeholder": "Pytaj AI o cokolwiek…",
+      "run": "Uciekaj",
+      "back": "Z powrotem",
+      "select-text": "Wybierz najpierw tekst lub umieść kursor w bloku.",
+      "generating": "Generowanie odpowiedzi AI...",
+      "done": "Zastosowanie wyniku AI",
+      "failed": "Żądanie AI nie powiodło się",
+      "disabled-message": "Funkcja AI jest obecnie wyłączona. Administrator może włączyć to z opcji Więcej opcji (...) → narzędzi AI → czatów z asystentem AI."
     }
   },
   "sip-dial-in-features": {
