@@ -413,6 +413,7 @@
       "external-media-player-select-file": "Selectați un fișier media de încărcat",
       "upload-background-image": "Încărcați imaginea de fundal",
       "shared-notepad": "Notepad partajat",
+      "export-notepad": "Reducere la export",
       "chose-virtual-bg": "Alege fundalul"
     }
   },
@@ -675,13 +676,31 @@
       "users-required": "Cel puțin un participant trebuie selectat.",
       "chat-box-placeholder": "Pune o întrebare Asistentului AI...",
       "responding-placeholder": "AI Assistant răspunde...",
-      "response-timed-out": "Asistentul AI răspunde prea mult. Vă rog să încercați din nou."
+      "response-timed-out": "Asistentul AI răspunde prea mult. Vă rog să încercați din nou.",
+      "enable-notepad-ai": "Activează AI în notenotebook-ul partajat"
     },
     "meeting-summarization": {
       "enable": "Permiterea rezumatizării ședințelor",
       "summarization-prompt-label": "Instrucțiuni de rezumare",
       "summarization-prompt-required": "Vă rugăm să introduceți instrucțiuni despre cum să rezumați.",
       "enabled-notification-all": "Înregistrarea audio a acestei întâlniri este acum pentru a genera un rezumat."
+    },
+    "notepad-ai": {
+      "title": "Ask AI",
+      "sub-title": "Scrie cu AI",
+      "continue-writing": "Continuă să scrii",
+      "summarize": "Rezumă",
+      "improve-writing": "Îmbunătățește scrierea",
+      "fix-spelling": "Corectează ortografia",
+      "simplify": "Simplifică",
+      "custom-placeholder": "Întreabă AI orice…",
+      "run": "Fugi",
+      "back": "Înapoi",
+      "select-text": "Selectează un text sau plasează cursorul într-un bloc mai întâi.",
+      "generating": "Generarea unui răspuns AI...",
+      "done": "Rezultat AI aplicat",
+      "failed": "Cererea AI a eșuat",
+      "disabled-message": "Funcția AI este în prezent dezactivată. Un administrator îl poate activa din Mai multe opțiuni (...) → AI Tools → AI Assistant Chats."
     }
   },
   "sip-dial-in-features": {
