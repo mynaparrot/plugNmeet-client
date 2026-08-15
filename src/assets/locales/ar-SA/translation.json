@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "التسجيل السحابي غير متاح عند استخدام مفتاح أمان مخصص.",
     "media-only-recording-not-support-e2ee": "تسجيل الصوت والفيديو فقط غير متاح عند تمكين التشفير من طرف إلى طرف.",
     "you-are-sharing-screen": "أنت تشارك شاشتك الآن. سيرى الآخرون عرضاً أكبر.",
+    "screen-share-view-disabled": "{{name}} يشارك الشاشة، لكنك قمت بتعطيل عرض مشاركة الشاشة من إعدادات حفظ البيانات.",
     "new-system-message-in-chat": "تم نشر رسالة نظام جديدة في الدردشة العامة.",
     "queue-holding-messages": "مشكلة في الاتصال: يتم الاحتفاظ بالرسائل.",
     "queue-discarded-message": "تعذر إرسال رسالة وتم تجاهلها.",
