@@ -29,6 +29,7 @@ import '@blocknote/mantine/style.css';
 
 import { useTranslation } from 'react-i18next';
 import { useAppSelector } from '../../store';
+import { participantsSelector } from '../../store/slices/participantSlice';
 import type { NotepadSnapshot } from './NotepadController';
 import NotepadAIToolbarButton from './helpers/NotepadAIToolbarButton';
 import NotepadAIMenu from './helpers/NotepadAIMenu';
@@ -37,7 +38,11 @@ import {
   getNotepadAISlashMenuItems,
   INotepadAISelection,
 } from './helpers/notepadAIActions';
-import { getBlockNoteDictionary, getUserColor } from './helpers/utils';
+import {
+  getBlockNoteDictionary,
+  getContrastTextColor,
+  getUserColor,
+} from './helpers/utils';
 
 export interface NotepadEditorHandle {
   exportMarkdown: () => void;
@@ -63,6 +68,7 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
       !aiTextChatFeatures?.isNotepadAiDisabled &&
       (aiTextChatFeatures?.isAllowedEveryone ||
         (aiTextChatFeatures?.allowedUserIds ?? []).includes(userId ?? ''));
+    const onlineUsers = useAppSelector(participantsSelector.selectIds);
 
     const [aiMenuBlockId, setAiMenuBlockId] = useState<string | undefined>();
     const [aiSelection, setAiSelection] = useState<INotepadAISelection>();
@@ -93,7 +99,11 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
             fragment: snapshot.fragment!,
             user,
             renderCursor: (collabUser) => {
-              if (!collabUser.editable) {
+              if (!collabUser.editable || !collabUser.id) {
+                return document.createElement('span');
+              }
+
+              if (!onlineUsers.includes(collabUser.id)) {
                 return document.createElement('span');
               }
 
@@ -114,7 +124,7 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
               label.style.padding = '1px 6px';
               label.style.borderRadius = '4px';
               label.style.backgroundColor = collabUser.color;
-              label.style.color = '#ffffff';
+              label.style.color = getContrastTextColor(collabUser.color);
               label.style.fontSize = '11px';
               label.style.fontWeight = '600';
               label.style.lineHeight = '1.4';
@@ -127,7 +137,14 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
           },
         }),
       },
-      [snapshot.fragment, snapshot.awareness, snapshot.generation, dictionary],
+      [
+        snapshot.fragment,
+        snapshot.awareness,
+        snapshot.generation,
+        dictionary,
+        user,
+        onlineUsers,
+      ],
     );
 
     const scrollContainerRef = useRef<HTMLDivElement>(null);

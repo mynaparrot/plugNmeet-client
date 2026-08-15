@@ -6,6 +6,7 @@ import {
   encodeAwarenessUpdate,
 } from 'y-protocols/awareness';
 import { DataChannelMessage, DataMsgBodyType } from 'plugnmeet-protocol-js';
+import { throttle } from 'es-toolkit';
 
 import { getNatsConn } from '../../helpers/nats';
 import { getNotepadDBName } from '../../helpers/libs/idb';
@@ -14,6 +15,7 @@ import { store } from '../../store';
 const REMOTE_ORIGIN = 'nats-remote';
 const FRAGMENT_NAME = 'document-store';
 const SYNC_RETRY_DELAY = 2000;
+const LAST_ACCESSED_THROTTLE_MS = 5 * 60 * 1000;
 
 function uint8ToBase64(bytes: Uint8Array): string {
   let binary = '';
@@ -57,6 +59,11 @@ export class NotepadController {
   private settingUp = false;
   private boundConn = false;
   private boundVisibility = false;
+  private updateLastAccessedThrottled = throttle(() => {
+    if (this.persistence) {
+      void this.persistence.set('lastAccessed', Date.now());
+    }
+  }, LAST_ACCESSED_THROTTLE_MS);
 
   private listeners = new Set<() => void>();
   private snapshot: NotepadSnapshot = {
@@ -90,6 +97,14 @@ export class NotepadController {
     };
     this.emitChange();
   }
+
+  private canWrite = () => {
+    const user = store.getState().session.currentUser;
+    if (!user) {
+      return false;
+    }
+    return !user.isRecorder && !user.metadata?.lockSettings?.lockSharedNotepad;
+  };
 
   async sync() {
     const features =
@@ -154,15 +169,15 @@ export class NotepadController {
       doc.on('update', (update: Uint8Array, origin: unknown) => {
         // Keep the notepad DB "alive" on activity so long-running sessions
         // are not considered stale by cleanupStaleDBs.
-        void persistence.set('lastAccessed', Date.now());
-        if (origin === REMOTE_ORIGIN) {
+        this.updateLastAccessedThrottled();
+        if (origin === REMOTE_ORIGIN || !this.canWrite()) {
           return;
         }
         this.send(DataMsgBodyType.NOTEPAD_UPDATE, update);
       });
 
       awareness.on('update', ({ added, updated, removed }, origin: unknown) => {
-        if (origin === REMOTE_ORIGIN) {
+        if (origin === REMOTE_ORIGIN || !this.canWrite()) {
           return;
         }
         const changed = [...added, ...updated, ...removed];
@@ -199,6 +214,7 @@ export class NotepadController {
     }
     this.backupResponseTimers.clear();
     this.pendingSyncRequestId = null;
+    this.updateLastAccessedThrottled.cancel();
 
     if (this.persistence) {
       await this.persistence.clearData();
