@@ -413,6 +413,7 @@
       "external-media-player-select-file": "Pilih file media untuk diunggah",
       "upload-background-image": "Unggah gambar latar belakang",
       "shared-notepad": "Notepad Bersama",
+      "export-notepad": "Diskon Ekspor",
       "chose-virtual-bg": "Pilih Latar Belakang"
     }
   },
@@ -675,13 +676,31 @@
       "users-required": "Setidaknya satu peserta harus dipilih.",
       "chat-box-placeholder": "Ajukan pertanyaan kepada Asisten AI...",
       "responding-placeholder": "Asisten AI sedang merespons...",
-      "response-timed-out": "Asisten AI terlalu lama untuk merespons. Silakan coba lagi."
+      "response-timed-out": "Asisten AI terlalu lama untuk merespons. Silakan coba lagi.",
+      "enable-notepad-ai": "Aktifkan AI di notepad bersama"
     },
     "meeting-summarization": {
       "enable": "Aktifkan ringkasan rapat",
       "summarization-prompt-label": "Instruksi Ringkasan",
       "summarization-prompt-required": "Harap masukkan instruksi tentang cara meringkas.",
       "enabled-notification-all": "Audio rapat ini sekarang sedang direkam untuk menghasilkan ringkasan."
+    },
+    "notepad-ai": {
+      "title": "Tanyakan pada AI",
+      "sub-title": "Menulis dengan AI",
+      "continue-writing": "Lanjutkan menulis",
+      "summarize": "Merangkum",
+      "improve-writing": "Tingkatkan penulisan",
+      "fix-spelling": "Perbaiki ejaan",
+      "simplify": "Menyederhanakan",
+      "custom-placeholder": "Tanyakan apa saja pada AI…",
+      "run": "Lari",
+      "back": "Kembali",
+      "select-text": "Pilih beberapa teks atau tempatkan kursor di blok terlebih dahulu.",
+      "generating": "Menghasilkan respons AI...",
+      "done": "Hasil AI diterapkan",
+      "failed": "Permintaan AI gagal",
+      "disabled-message": "Fitur AI saat ini dinonaktifkan. Seorang administrator dapat mengaktifkannya dari More Options (...) → AI Tools → AI Assistant Chats."
     }
   },
   "sip-dial-in-features": {
