@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Înregistrarea în cloud nu este disponibilă atunci când utilizați o cheie de securitate personalizată.",
     "media-only-recording-not-support-e2ee": "Înregistrarea numai audio și video nu este disponibilă atunci când criptarea end-to-end este activată.",
     "you-are-sharing-screen": "Partajați ecranul acum. Alții vor vedea o vedere mai mare.",
+    "screen-share-view-disabled": "{{name}} Partajează ecranul, dar ai dezactivat vizualizarea partajării ecranului din setările de salvare a datelor.",
     "new-system-message-in-chat": "Un nou mesaj de sistem a fost postat în chat-ul public.",
     "queue-holding-messages": "Problemă de conexiune: mesajele sunt reținute.",
     "queue-discarded-message": "Un mesaj nu a putut fi trimis și a fost aruncat.",
