@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Molninspelning är inte tillgängligt när du använder en anpassad säkerhetsnyckel.",
     "media-only-recording-not-support-e2ee": "Det går inte att spela in endast ljud och video när end-to-end-kryptering är aktiverat.",
     "you-are-sharing-screen": "Du delar din skärm nu. Andra kommer att se en större vy.",
+    "screen-share-view-disabled": "{{name}} delar skärmen, men du har inaktiverat skärmdelning från datasparande inställningar.",
     "new-system-message-in-chat": "Ett nytt systemmeddelande har publicerats i den offentliga chatten.",
     "queue-holding-messages": "Anslutningsproblem: meddelanden hålls kvar.",
     "queue-discarded-message": "Ett meddelande kunde inte skickas och förkastades.",
