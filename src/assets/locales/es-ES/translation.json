@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "La grabación en la nube no está disponible cuando se utiliza una clave de seguridad personalizada.",
     "media-only-recording-not-support-e2ee": "La grabación de solo audio y vídeo no está disponible cuando el cifrado de extremo a extremo está habilitado.",
     "you-are-sharing-screen": "Está compartiendo su pantalla. Los demás verán una vista más grande.",
+    "screen-share-view-disabled": "{{name}} está compartiendo la pantalla, pero tienes desactivado la visualización de compartir pantalla desde la configuración de guardado de datos.",
     "new-system-message-in-chat": "Se ha publicado un nuevo mensaje del sistema en el chat público.",
     "queue-holding-messages": "Problema de conexión: se están reteniendo mensajes.",
     "queue-discarded-message": "No se pudo enviar un mensaje y fue descartado.",
