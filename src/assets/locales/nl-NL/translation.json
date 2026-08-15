@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Cloudopname is niet beschikbaar bij gebruik van een aangepaste beveiligingssleutel.",
     "media-only-recording-not-support-e2ee": "Het opnemen van alleen audio en video is niet beschikbaar wanneer end-to-end-versleuteling is ingeschakeld.",
     "you-are-sharing-screen": "Je deelt nu je scherm. Anderen zullen een groter beeld zien.",
+    "screen-share-view-disabled": "{{name}} het deelt het scherm, maar je hebt het weergeven van het scherm delen uit de data-saving instellingen uitgeschakeld.",
     "new-system-message-in-chat": "Er is een nieuw systeembericht geplaatst in de openbare chat.",
     "queue-holding-messages": "Verbindingsprobleem: berichten worden vastgehouden.",
     "queue-discarded-message": "Er kon geen bericht worden verzonden en werd verworpen.",
