@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Özel bir güvenlik anahtarı kullanılırken bulut kaydı kullanılamaz.",
     "media-only-recording-not-support-e2ee": "Uçtan uca şifreleme etkinleştirildiğinde yalnızca ses ve video kaydı yapılamaz.",
     "you-are-sharing-screen": "Şu anda ekranınızı paylaşıyorsunuz. Diğer katılımcılar daha büyük bir görünüm görecek.",
+    "screen-share-view-disabled": "{{name}} Ekran paylaşımı yapıyor ama veri kaydetme ayarlarından ekran paylaşımı görüntülemesini devre dışı bıraktınız.",
     "new-system-message-in-chat": "Genel sohbette yeni bir sistem mesajı yayınlandı.",
     "queue-holding-messages": "Bağlantı sorunu: mesajlar tutuluyor.",
     "queue-discarded-message": "Mesaj gönderilemedi ve atıldı.",
