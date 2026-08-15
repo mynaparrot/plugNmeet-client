@@ -6,6 +6,12 @@ import { AiIconSVG } from '../../../assets/Icons/AiIconSVG';
 import i18n from '../../../helpers/i18n';
 import { executeNotepadAI } from './notepadAI';
 
+export interface INotepadAISelection {
+  text: string;
+  blocks: Block[];
+  cursorBlock: Block;
+}
+
 export type NotepadAIAction =
   | 'continue-writing'
   | 'summarize'
@@ -66,11 +72,12 @@ export const runNotepadAI = async (
   action: NotepadAIAction,
   customPrompt?: string,
   scrollToBottom?: () => void,
+  selection?: INotepadAISelection,
 ): Promise<void> => {
   const cursorPosition = editor.getTextCursorPosition();
-  const cursorBlock = cursorPosition.block;
+  const cursorBlock = selection?.cursorBlock ?? cursorPosition.block;
 
-  let text = editor.getSelectedText();
+  let text = selection?.text ?? editor.getSelectedText();
   if (!text.trim()) {
     text = blockToPlainText(cursorBlock);
   }
@@ -101,7 +108,7 @@ export const runNotepadAI = async (
         'after',
       )[0];
     } else {
-      const selectedBlocks = editor.getSelection()?.blocks;
+      const selectedBlocks = selection?.blocks ?? editor.getSelection()?.blocks;
       if (selectedBlocks && selectedBlocks.length > 0) {
         placeholderBlock = editor.replaceBlocks(selectedBlocks, [
           placeholderBlockPartial,
@@ -159,7 +166,8 @@ export const runNotepadAI = async (
           scrollToBottom?.();
         }
       } else {
-        const selectedBlocks = editor.getSelection()?.blocks;
+        const selectedBlocks =
+          selection?.blocks ?? editor.getSelection()?.blocks;
         let resultBlock: Block<any, any, any> | undefined;
 
         if (selectedBlocks && selectedBlocks.length > 0) {

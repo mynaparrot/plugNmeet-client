@@ -15,18 +15,24 @@ import type { DefaultReactSuggestionItem } from '@blocknote/react';
 
 import { AiIconSVG } from '../../../assets/Icons/AiIconSVG';
 import i18n from '../../../helpers/i18n';
-import { NOTEPAD_AI_PRESET_ACTIONS, runNotepadAI } from './notepadAIActions';
+import {
+  INotepadAISelection,
+  NOTEPAD_AI_PRESET_ACTIONS,
+  runNotepadAI,
+} from './notepadAIActions';
 
 interface INotepadAIMenuProps {
   editor: BlockNoteEditor;
   onClose: () => void;
   scrollToBottom: () => void;
+  selection?: INotepadAISelection;
 }
 
 const NotepadAIMenu = ({
   editor,
   onClose,
   scrollToBottom,
+  selection,
 }: INotepadAIMenuProps) => {
   const Components = useComponentsContext();
   const [prompt, setPrompt] = useState('');
@@ -37,13 +43,19 @@ const NotepadAIMenu = ({
         title: i18n.t(labelKey),
         size: 'small',
         onItemClick: () => {
-          void runNotepadAI(editor, action, undefined, scrollToBottom);
+          void runNotepadAI(
+            editor,
+            action,
+            undefined,
+            scrollToBottom,
+            selection,
+          );
           onClose();
         },
       }));
 
     return filterSuggestionItems(presetItems, prompt);
-  }, [editor, onClose, prompt, scrollToBottom]);
+  }, [editor, onClose, prompt, scrollToBottom, selection]);
 
   const { selectedIndex, setSelectedIndex, handler } =
     useSuggestionMenuKeyboardHandler(items, (item) => item.onItemClick());
@@ -58,9 +70,9 @@ const NotepadAIMenu = ({
     if (!trimmed) {
       return;
     }
-    void runNotepadAI(editor, 'custom', trimmed, scrollToBottom);
+    void runNotepadAI(editor, 'custom', trimmed, scrollToBottom, selection);
     onClose();
-  }, [editor, onClose, prompt, scrollToBottom]);
+  }, [editor, onClose, prompt, scrollToBottom, selection]);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {

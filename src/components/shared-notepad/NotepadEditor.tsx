@@ -7,12 +7,17 @@ import {
   useRef,
   useState,
 } from 'react';
+import type { FC } from 'react';
 import {
   BlockPopover,
+  FormattingToolbar,
+  FormattingToolbarController,
   getDefaultReactSlashMenuItems,
+  getFormattingToolbarItems,
   SuggestionMenuController,
   useCreateBlockNote,
 } from '@blocknote/react';
+import type { FormattingToolbarProps } from '@blocknote/react';
 import { BlockNoteView } from '@blocknote/mantine';
 import { withCollaboration } from '@blocknote/core/yjs';
 import { filterSuggestionItems } from '@blocknote/core/extensions';
@@ -25,9 +30,13 @@ import '@blocknote/mantine/style.css';
 import { useTranslation } from 'react-i18next';
 import { useAppSelector } from '../../store';
 import type { NotepadSnapshot } from './NotepadController';
+import NotepadAIToolbarButton from './helpers/NotepadAIToolbarButton';
 import NotepadAIMenu from './helpers/NotepadAIMenu';
 import NotepadAIDisabledNotice from './helpers/NotepadAIDisabledNotice';
-import { getNotepadAISlashMenuItems } from './helpers/notepadAIActions';
+import {
+  getNotepadAISlashMenuItems,
+  INotepadAISelection,
+} from './helpers/notepadAIActions';
 import { getBlockNoteDictionary, getUserColor } from './helpers/utils';
 
 export interface NotepadEditorHandle {
@@ -56,6 +65,7 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
         (aiTextChatFeatures?.allowedUserIds ?? []).includes(userId ?? ''));
 
     const [aiMenuBlockId, setAiMenuBlockId] = useState<string | undefined>();
+    const [aiSelection, setAiSelection] = useState<INotepadAISelection>();
 
     const { i18n } = useTranslation();
 
@@ -84,14 +94,18 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
             renderCursor: (collabUser) => {
               const caret = document.createElement('span');
               caret.style.position = 'absolute';
+              caret.style.zIndex = '100';
+              caret.style.pointerEvents = 'none';
               caret.style.borderLeft = `2px solid ${collabUser.color}`;
               caret.style.height = '1.2em';
               caret.style.width = '0';
 
               const label = document.createElement('span');
               label.style.position = 'absolute';
-              label.style.top = '-1.5em';
+              label.style.top = '1.2em';
               label.style.left = '0';
+              label.style.zIndex = '100';
+              label.style.pointerEvents = 'none';
               label.style.padding = '1px 6px';
               label.style.borderRadius = '4px';
               label.style.backgroundColor = collabUser.color;
@@ -121,6 +135,28 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
         }
       });
     }, []);
+
+    const openAIMenuFromSelection = useCallback(() => {
+      const text = editor.getSelectedText();
+      if (!text.trim()) {
+        return;
+      }
+      const blocks = editor.getSelection()?.blocks ?? [];
+      const cursorBlock = editor.getTextCursorPosition().block;
+      setAiSelection({ text, blocks, cursorBlock });
+      const anchorId = blocks[0]?.id ?? cursorBlock.id;
+      setAiMenuBlockId(anchorId);
+    }, [editor]);
+
+    const formattingToolbar = useCallback<FC<FormattingToolbarProps>>(
+      (props) => (
+        <FormattingToolbar {...props}>
+          {getFormattingToolbarItems(props.blockTypeSelectItems)}
+          <NotepadAIToolbarButton onClick={openAIMenuFromSelection} />
+        </FormattingToolbar>
+      ),
+      [openAIMenuFromSelection],
+    );
 
     // In view-only mode, keep the editor pinned to the latest content so the
     // recorder bot / locked participants always see newly appended content.
@@ -155,7 +191,9 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
           theme={theme}
           editable={editable}
           slashMenu={false}
+          formattingToolbar={false}
         >
+          <FormattingToolbarController formattingToolbar={formattingToolbar} />
           <SuggestionMenuController
             triggerCharacter="/"
             getItems={async (query) =>
@@ -182,7 +220,10 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
                 },
               ],
               onOpenChange: (open) => {
-                if (!open) setAiMenuBlockId(undefined);
+                if (!open) {
+                  setAiMenuBlockId(undefined);
+                  setAiSelection(undefined);
+                }
               },
             }}
             useDismissProps={{
@@ -203,6 +244,7 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
                   editor={editor}
                   onClose={() => setAiMenuBlockId(undefined)}
                   scrollToBottom={scrollToBottom}
+                  selection={aiSelection}
                 />
               ) : (
                 <NotepadAIDisabledNotice />

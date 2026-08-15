@@ -69,7 +69,7 @@ const SharedNotepad = () => {
       <div className="notepad-wrapper h-[calc(100%-50px)] mt-9 flex items-end justify-center">
         <Draggable handle="#draggable-h1" nodeRef={nodeRef} bounds="#main-area">
           <div
-            className="h-[calc(100%-80px)] w-full max-w-[400px] max-h-[500px] relative pointer-events-auto rounded-xl"
+            className="h-[calc(100%-80px)] w-full max-w-[550px] max-h-[500px] relative pointer-events-auto rounded-xl"
             ref={nodeRef}
           >
             <div className="inner w-full h-full pt-[45px] relative bg-Gray-25 dark:bg-dark-primary rounded-xl">
