@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Cloud-optagelse er ikke tilgængelig, når du bruger en brugerdefineret sikkerhedsnøgle.",
     "media-only-recording-not-support-e2ee": "Optagelse af lyd og video er ikke tilgængelig, når end-to-end-kryptering er aktiveret.",
     "you-are-sharing-screen": "Du deler din skærm nu. Andre vil se en større visning.",
+    "screen-share-view-disabled": "{{name}} deler skærmen, men du har deaktiveret visning af skærmdeling fra datalagringsindstillingerne.",
     "new-system-message-in-chat": "En ny systemmeddelelse er blevet offentliggjort i den offentlige chat.",
     "queue-holding-messages": "Forbindelsesproblem: beskeder bliver tilbageholdt.",
     "queue-discarded-message": "En besked kunne ikke sendes og blev kasseret.",
