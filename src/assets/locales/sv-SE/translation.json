@@ -413,6 +413,7 @@
       "external-media-player-select-file": "Välj en mediefil som ska laddas upp",
       "upload-background-image": "Ladda upp bakgrundsbild",
       "shared-notepad": "Delat anteckningsblock",
+      "export-notepad": "Exportrabatt",
       "chose-virtual-bg": "Välj bakgrund"
     }
   },
@@ -675,13 +676,31 @@
       "users-required": "Minst en deltagare måste väljas.",
       "chat-box-placeholder": "Ställ AI-assistenten en fråga...",
       "responding-placeholder": "AI-assistenten svarar...",
-      "response-timed-out": "AI-assistenten tar för lång tid på sig att svara. Försök igen, tack."
+      "response-timed-out": "AI-assistenten tar för lång tid på sig att svara. Försök igen, tack.",
+      "enable-notepad-ai": "Aktivera AI i delad anteckningsbok"
     },
     "meeting-summarization": {
       "enable": "Aktivera mötessammanfattning",
       "summarization-prompt-label": "Sammanfattningsinstruktioner",
       "summarization-prompt-required": "Vänligen ange instruktioner för hur man sammanfattar.",
       "enabled-notification-all": "Ljudet från detta möte spelas nu in för att skapa en sammanfattning."
+    },
+    "notepad-ai": {
+      "title": "Fråga AI",
+      "sub-title": "Skriv med AI",
+      "continue-writing": "Fortsätt skriva",
+      "summarize": "Sammanfatta",
+      "improve-writing": "Förbättra skrivandet",
+      "fix-spelling": "Rätta stavningen",
+      "simplify": "Förenkla",
+      "custom-placeholder": "Fråga AI vad som helst…",
+      "run": "Spring",
+      "back": "Tillbaka",
+      "select-text": "Välj text eller placera markören i ett block först.",
+      "generating": "Genererar AI-respons...",
+      "done": "AI-resultat tillämpat",
+      "failed": "AI-förfrågan misslyckades",
+      "disabled-message": "AI-funktionen är för närvarande inaktiverad. En administratör kan aktivera det från Fler alternativ (...) → AI-verktyg → AI-assistentchattar."
     }
   },
   "sip-dial-in-features": {
