@@ -25,45 +25,44 @@ const pendingStreams = new Map<string, PendingNotepadAIStream>();
  * tagged with requestFrom = NOTEPAD and a client-generated stream id so the
  * matching chunks can be correlated back to this call.
  */
-export const executeNotepadAI = (prompt: string): Promise<string> => {
-  return new Promise<string>((resolve, reject) => {
-    const streamId = crypto.randomUUID();
+export const executeNotepadAI = async (prompt: string): Promise<string> => {
+  const streamId = crypto.randomUUID();
 
+  const body = create(InsightsAITextChatContentSchema, {
+    role: InsightsAITextChatRole.INSIGHTS_AI_TEXT_CHAT_ROLE_USER,
+    text: prompt,
+    streamId,
+    requestFrom: InsightsAIRequestSource.INSIGHTS_AI_REQUEST_SOURCE_NOTEPAD,
+  });
+
+  const streamPromise = new Promise<string>((resolve, reject) => {
     const timer = setTimeout(() => {
       pendingStreams.delete(streamId);
       reject(new Error('Notepad AI request timed out'));
     }, STREAM_TIMEOUT_MS);
 
     pendingStreams.set(streamId, { resolve, reject, chunks: [], timer });
-
-    const body = create(InsightsAITextChatContentSchema, {
-      role: InsightsAITextChatRole.INSIGHTS_AI_TEXT_CHAT_ROLE_USER,
-      text: prompt,
-      streamId,
-      requestFrom: InsightsAIRequestSource.INSIGHTS_AI_REQUEST_SOURCE_NOTEPAD,
-    });
-
-    sendAPIRequest(
-      'insights/ai/textChat/execute',
-      toBinary(InsightsAITextChatContentSchema, body),
-      false,
-      'application/protobuf',
-      'arraybuffer',
-    )
-      .then((r) => {
-        const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
-        if (!res.status) {
-          clearTimeout(timer);
-          pendingStreams.delete(streamId);
-          reject(new Error(res.msg || 'Failed to start Notepad AI'));
-        }
-      })
-      .catch((error) => {
-        clearTimeout(timer);
-        pendingStreams.delete(streamId);
-        reject(error instanceof Error ? error : new Error(String(error)));
-      });
   });
+
+  const r = await sendAPIRequest(
+    'insights/ai/textChat/execute',
+    toBinary(InsightsAITextChatContentSchema, body),
+    false,
+    'application/protobuf',
+    'arraybuffer',
+  );
+
+  const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
+  if (!res.status) {
+    const entry = pendingStreams.get(streamId);
+    if (entry) {
+      clearTimeout(entry.timer);
+      pendingStreams.delete(streamId);
+      entry.reject(new Error(res.msg || 'Failed to start Notepad AI'));
+    }
+  }
+
+  return streamPromise;
 };
 
 /**

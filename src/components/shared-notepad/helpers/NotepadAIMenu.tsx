@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  KeyboardEvent,
+} from 'react';
 import type { BlockNoteEditor } from '@blocknote/core';
 import { filterSuggestionItems } from '@blocknote/core/extensions';
 import {
@@ -57,7 +63,7 @@ const NotepadAIMenu = ({
   }, [editor, onClose, prompt, scrollToBottom]);
 
   const handleKeyDown = useCallback(
-    (event: React.KeyboardEvent) => {
+    (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault();
         onClose();
