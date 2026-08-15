@@ -413,6 +413,7 @@
       "external-media-player-select-file": "Velg en mediefil du vil laste opp",
       "upload-background-image": "Last opp bakgrunnsbilde",
       "shared-notepad": "Delt notisblokk",
+      "export-notepad": "Eksportrabatt",
       "chose-virtual-bg": "Velg bakgrunn"
     }
   },
@@ -675,13 +676,31 @@
       "users-required": "Minst én deltaker må velges.",
       "chat-box-placeholder": "Still AI-assistenten et spørsmål...",
       "responding-placeholder": "AI-assistenten svarer...",
-      "response-timed-out": "AI-assistenten bruker for lang tid på å svare. Vennligst prøv igjen."
+      "response-timed-out": "AI-assistenten bruker for lang tid på å svare. Vennligst prøv igjen.",
+      "enable-notepad-ai": "Aktiver AI i delt notatblokk"
     },
     "meeting-summarization": {
       "enable": "Aktiver møteoppsummering",
       "summarization-prompt-label": "Oppsummeringsinstruksjoner",
       "summarization-prompt-required": "Vennligst skriv inn instruksjoner for hvordan du skal oppsummere.",
       "enabled-notification-all": "Lydopptaket fra dette møtet blir nå tatt opp for å lage et sammendrag."
+    },
+    "notepad-ai": {
+      "title": "Ask AI",
+      "sub-title": "Skriv med AI",
+      "continue-writing": "Fortsett å skrive",
+      "summarize": "Oppsummer",
+      "improve-writing": "Forbedre skrivingen",
+      "fix-spelling": "Fiks stavemåten",
+      "simplify": "Forenkle",
+      "custom-placeholder": "Spør AI om hva som helst…",
+      "run": "Løp",
+      "back": "Tilbake",
+      "select-text": "Velg noe tekst eller plasser markøren i en blokk først.",
+      "generating": "Genererer AI-respons...",
+      "done": "AI-resultat anvendt",
+      "failed": "AI-forespørsel mislyktes",
+      "disabled-message": "AI-funksjonen er for øyeblikket deaktivert. En administrator kan aktivere det fra Flere alternativer (...) → AI-verktøy → AI-assistentchatter."
     }
   },
   "sip-dial-in-features": {
