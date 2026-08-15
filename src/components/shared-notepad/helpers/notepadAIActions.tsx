@@ -120,6 +120,9 @@ export const runNotepadAI = async (
       streamedText += chunk;
       if (placeholderBlock) {
         const blocks = editor.tryParseMarkdownToBlocks(streamedText);
+        if (blocks.length === 0) {
+          return;
+        }
         const targetIds =
           renderedBlocks.length > 0
             ? renderedBlocks.map((b) => b.id)
