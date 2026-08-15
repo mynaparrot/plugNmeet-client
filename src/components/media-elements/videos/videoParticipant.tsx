@@ -3,6 +3,7 @@ import {
   LocalParticipant,
   ParticipantEvent,
   RemoteParticipant,
+  RemoteTrackPublication,
   Track,
 } from 'livekit-client';
 
@@ -28,6 +29,9 @@ const VideoParticipant = ({
   displaySwitchCamIcon,
 }: VideoParticipantProps) => {
   const isSpeaking = useAppSelector(selectIsSpeakingByUserId(userId));
+  const activateWebcamsView = useAppSelector(
+    (state) => state.roomSettings.activateWebcamsView,
+  );
   const [floatView, setFloatView] = useState<boolean>(true);
 
   const [version, forceUpdate] = useReducer((x: number) => x + 1, 0);
@@ -41,13 +45,29 @@ const VideoParticipant = ({
     };
   }, [participant]);
 
+  useEffect(() => {
+    for (const track of participant.videoTrackPublications.values()) {
+      if (
+        track.source === Track.Source.Camera &&
+        track instanceof RemoteTrackPublication
+      ) {
+        track.setEnabled(activateWebcamsView);
+      }
+    }
+  }, [participant, activateWebcamsView]);
+
   const renderVideoElms = useMemo(() => {
     const elements: Array<React.ReactNode> = [];
     for (const track of participant.videoTrackPublications.values()) {
       if (track.source !== Track.Source.Camera) {
         continue;
       }
-      if (!track.isMuted && track.videoTrack) {
+      const isRemote = track instanceof RemoteTrackPublication;
+      const showVideo =
+        !track.isMuted &&
+        track.videoTrack &&
+        (!isRemote || activateWebcamsView);
+      if (showVideo) {
         elements.push(
           <VideoComponent
             userId={userId}
@@ -73,7 +93,13 @@ const VideoParticipant = ({
     }
     return elements;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [participant, displayPinIcon, participantType, version]);
+  }, [
+    participant,
+    displayPinIcon,
+    participantType,
+    version,
+    activateWebcamsView,
+  ]);
 
   return (
     <div

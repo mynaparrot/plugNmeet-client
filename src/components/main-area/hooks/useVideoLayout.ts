@@ -6,7 +6,6 @@ interface IUseVideoLayoutParams {
   isActiveWhiteboard: boolean;
   isActiveExternalMediaPlayer: boolean;
   isActiveDisplayExternalLink: boolean;
-  isActiveWebcamsView: boolean;
   hasVideoSubscribers: boolean;
 }
 
@@ -15,7 +14,6 @@ export const useVideoLayout = ({
   isActiveWhiteboard,
   isActiveExternalMediaPlayer,
   isActiveDisplayExternalLink,
-  isActiveWebcamsView,
   hasVideoSubscribers,
 }: IUseVideoLayoutParams) => {
   const pinCamUserId = useAppSelector(
@@ -37,8 +35,8 @@ export const useVideoLayout = ({
   );
 
   const showVideoElms = useMemo(
-    () => isActiveWebcamsView && hasVideoSubscribers,
-    [isActiveWebcamsView, hasVideoSubscribers],
+    () => hasVideoSubscribers,
+    [hasVideoSubscribers],
   );
 
   return { showVerticalVideoView, showVideoElms, pinCamUserId };

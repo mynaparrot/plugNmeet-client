@@ -131,8 +131,10 @@ const VideoElm = ({ track }: IVideoElmProps) => {
         })}
       />
       {self && (
-        <div className="text-sm 3xl:text-base text-Gray-950 dark:text-white absolute start-1/2 top-1/2 ltr:-translate-x-1/2 rtl:translate-x-1/2 -translate-y-1/2 text-center w-full pt-64">
-          {t('notifications.you-are-sharing-screen')}
+        <div className="absolute start-1/2 top-1/2 ltr:-translate-x-1/2 rtl:translate-x-1/2 -translate-y-1/2 text-center w-full pt-64 pointer-events-none">
+          <span className="inline-block text-sm 3xl:text-base text-white bg-black/70 dark:bg-gray-900/80 rounded-md px-3 py-1.5">
+            {t('notifications.you-are-sharing-screen')}
+          </span>
         </div>
       )}
     </div>

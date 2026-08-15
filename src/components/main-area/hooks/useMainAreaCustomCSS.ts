@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 
 interface IUseMainAreaCustomCSS {
-  isActiveScreenSharingView: boolean;
   hasScreenShareSubscribers: boolean;
   isActiveWhiteboard: boolean;
   isActiveExternalMediaPlayer: boolean | undefined;
@@ -10,7 +9,6 @@ interface IUseMainAreaCustomCSS {
 }
 
 export const useMainAreaCustomCSS = ({
-  isActiveScreenSharingView,
   hasScreenShareSubscribers,
   isActiveWhiteboard,
   isActiveExternalMediaPlayer,
@@ -20,7 +18,7 @@ export const useMainAreaCustomCSS = ({
   return useMemo(() => {
     const css: Array<string> = [];
 
-    isActiveScreenSharingView && hasScreenShareSubscribers
+    hasScreenShareSubscribers
       ? css.push('showScreenShare fullWidthMainArea')
       : css.push('hideScreenShare');
 
@@ -42,7 +40,6 @@ export const useMainAreaCustomCSS = ({
 
     return css.join(' ');
   }, [
-    isActiveScreenSharingView,
     hasScreenShareSubscribers,
     isActiveWhiteboard,
     isActiveExternalMediaPlayer,

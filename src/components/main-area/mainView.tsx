@@ -19,9 +19,7 @@ interface IMainViewProps {
   isActiveWhiteboard: boolean;
   isActiveExternalMediaPlayer: boolean;
   isActiveDisplayExternalLink: boolean;
-  isActiveScreenSharingView: boolean;
   hasScreenShareSubscribers: boolean;
-  isActiveWebcamsView: boolean;
   hasVideoSubscribers: boolean;
 }
 
@@ -30,9 +28,7 @@ const MainView = ({
   isActiveWhiteboard,
   isActiveExternalMediaPlayer,
   isActiveDisplayExternalLink,
-  isActiveScreenSharingView,
   hasScreenShareSubscribers,
-  isActiveWebcamsView,
   hasVideoSubscribers,
 }: IMainViewProps) => {
   const { showVerticalVideoView, showVideoElms, pinCamUserId } = useVideoLayout(
@@ -41,7 +37,6 @@ const MainView = ({
       isActiveWhiteboard,
       isActiveExternalMediaPlayer,
       isActiveDisplayExternalLink,
-      isActiveWebcamsView,
       hasVideoSubscribers,
     },
   );
@@ -69,20 +64,18 @@ const MainView = ({
   );
 
   const videosComponentElm = useVideosComponent(
-    isActiveWebcamsView,
+    hasVideoSubscribers,
     showVerticalVideoView,
   );
   const screenShareElementsElm = useScreenShareElements(
-    isActiveScreenSharingView,
+    hasScreenShareSubscribers,
   );
   const translationTranscriptionElm = useTranslationTranscription();
 
   return (
     <>
       <LayoutWrapper
-        isActiveScreenShare={
-          isActiveScreenSharingView && hasScreenShareSubscribers
-        }
+        isActiveScreenShare={hasScreenShareSubscribers}
         showVideoElms={showVideoElms}
         showVerticalVideoView={showVerticalVideoView}
         pinCamUserId={pinCamUserId}

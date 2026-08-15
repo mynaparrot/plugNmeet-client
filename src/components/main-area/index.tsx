@@ -45,9 +45,7 @@ const MainArea = () => {
     columnCameraWidth,
     columnCameraPosition,
     activeSidePanel,
-    isActiveScreenSharingView,
     hasScreenShareSubscribers,
-    isActiveWebcamsView,
     hasVideoSubscribers,
     isActiveWhiteboard,
     isActiveExternalMediaPlayer,
@@ -102,7 +100,6 @@ const MainArea = () => {
   }, [isNatsServerConnected, mediaServerConn]);
 
   const customCSS = useMainAreaCustomCSS({
-    isActiveScreenSharingView,
     hasScreenShareSubscribers,
     isActiveWhiteboard,
     isActiveExternalMediaPlayer,
@@ -173,9 +170,7 @@ const MainArea = () => {
                 isActiveDisplayExternalLink={
                   isActiveDisplayExternalLink ?? false
                 }
-                isActiveScreenSharingView={isActiveScreenSharingView}
                 hasScreenShareSubscribers={hasScreenShareSubscribers}
-                isActiveWebcamsView={isActiveWebcamsView}
                 hasVideoSubscribers={hasVideoSubscribers}
               />
             </>

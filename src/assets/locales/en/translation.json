@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Cloud recording is not available when using a custom security key.",
     "media-only-recording-not-support-e2ee": "Recording only audio and video is not available when end-to-end encryption is enabled.",
     "you-are-sharing-screen": "You're sharing your screen now. Others will see a larger view.",
+    "screen-share-view-disabled": "{{name}} is sharing the screen, but you have disabled screen share viewing from the data saving settings.",
     "new-system-message-in-chat": "A new system message has been posted in the public chat.",
     "queue-holding-messages": "Connection problem: messages are being held.",
     "queue-discarded-message": "A message could not be sent and was discarded.",

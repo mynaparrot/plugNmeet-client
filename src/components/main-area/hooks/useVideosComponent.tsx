@@ -3,13 +3,13 @@ import { useMemo } from 'react';
 import VideosComponent from '../../media-elements/videos';
 
 export const useVideosComponent = (
-  isActiveWebcamsView: boolean,
+  hasVideoSubscribers: boolean,
   showVerticalVideoView: boolean,
 ) => {
   return useMemo(() => {
-    if (isActiveWebcamsView) {
+    if (hasVideoSubscribers) {
       return <VideosComponent isVertical={showVerticalVideoView} />;
     }
     return null;
-  }, [isActiveWebcamsView, showVerticalVideoView]);
+  }, [hasVideoSubscribers, showVerticalVideoView]);
 };
