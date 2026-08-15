@@ -413,6 +413,7 @@
       "external-media-player-select-file": "選擇要上傳的媒體檔案",
       "upload-background-image": "上傳背景圖片",
       "shared-notepad": "共用記事本",
+      "export-notepad": "出口降價",
       "chose-virtual-bg": "選擇背景"
     }
   },
@@ -675,13 +676,31 @@
       "users-required": "必須至少選擇一名與會者。",
       "chat-box-placeholder": "向 AI 助理提問...",
       "responding-placeholder": "AI 助理正在回應...",
-      "response-timed-out": "AI 助理回覆太慢了。請再試一次。"
+      "response-timed-out": "AI 助理回覆太慢了。請再試一次。",
+      "enable-notepad-ai": "在共用記事本中啟用 AI"
     },
     "meeting-summarization": {
       "enable": "啟用會議摘要",
       "summarization-prompt-label": "摘要說明",
       "summarization-prompt-required": "請輸入如何進行摘要的說明。",
       "enabled-notification-all": "此會議的音訊正在被錄製以產生摘要。"
+    },
+    "notepad-ai": {
+      "title": "問 AI",
+      "sub-title": "用 AI 寫作",
+      "continue-writing": "繼續寫作",
+      "summarize": "總結",
+      "improve-writing": "提升寫作能力",
+      "fix-spelling": "修正拼字",
+      "simplify": "簡化",
+      "custom-placeholder": "問 AI 任何問題…",
+      "run": "跑",
+      "back": "返回",
+      "select-text": "先選擇一段文字或將游標放在區塊中。",
+      "generating": "生成 AI 回應......",
+      "done": "應用人工智慧結果",
+      "failed": "AI 請求失敗",
+      "disabled-message": "目前 AI 功能已停用。管理員可透過更多選項（...）→ AI 工具→ AI 助理聊天功能啟用。"
     }
   },
   "sip-dial-in-features": {
