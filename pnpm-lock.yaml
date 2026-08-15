@@ -127,9 +127,6 @@ importers:
       sanitize-html:
         specifier: 2.17.7
         version: 2.17.7
-      y-indexeddb:
-        specifier: 9.0.12
-        version: 9.0.12(yjs@13.6.32)
       y-prosemirror:
         specifier: 1.3.7
         version: 1.3.7(prosemirror-model@1.25.11)(prosemirror-state@1.4.4)(prosemirror-view@1.42.2)(y-protocols@1.0.7(yjs@13.6.32))(yjs@13.6.32)
@@ -5988,15 +5985,6 @@ packages:
         integrity: sha512-udI8/yiMZ+KIGwYK1qNOFiXl+s/wffiY+XkwTXlBFICZylFalOS0QYEQqYOmuBsm3jNfGUS4O50tLuN7Ejqm3A==,
       }
 
-  y-indexeddb@9.0.12:
-    resolution:
-      {
-        integrity: sha512-9oCFRSPPzBK7/w5vOkJBaVCQZKHXB/v6SIT+WYhnJxlEC61juqG0hBrAf+y3gmSMLFLwICNH9nQ53uscuse6Hg==,
-      }
-    engines: { node: '>=16.0.0', npm: '>=8.0.0' }
-    peerDependencies:
-      yjs: ^13.0.0
-
   y-prosemirror@1.3.7:
     resolution:
       {
@@ -9651,11 +9639,6 @@ snapshots:
   wistia-video-element@1.4.0:
     dependencies:
       super-media-element: 1.4.2
-
-  y-indexeddb@9.0.12(yjs@13.6.32):
-    dependencies:
-      lib0: 0.2.117
-      yjs: 13.6.32
 
   y-prosemirror@1.3.7(prosemirror-model@1.25.11)(prosemirror-state@1.4.4)(prosemirror-view@1.42.2)(y-protocols@1.0.7(yjs@13.6.32))(yjs@13.6.32):
     dependencies:

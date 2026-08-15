@@ -1,21 +1,25 @@
 import * as Y from 'yjs';
-import { IndexeddbPersistence } from 'y-indexeddb';
 import {
   Awareness,
   applyAwarenessUpdate,
   encodeAwarenessUpdate,
 } from 'y-protocols/awareness';
 import { DataChannelMessage, DataMsgBodyType } from 'plugnmeet-protocol-js';
-import { throttle } from 'es-toolkit';
 
 import { getNatsConn } from '../../helpers/nats';
-import { getNotepadDBName } from '../../helpers/libs/idb';
+import {
+  DB_STORE_NAMES,
+  idbDel,
+  idbGet,
+  idbStore,
+} from '../../helpers/libs/idb';
 import { store } from '../../store';
 
 const REMOTE_ORIGIN = 'nats-remote';
 const FRAGMENT_NAME = 'document-store';
 const SYNC_RETRY_DELAY = 2000;
-const LAST_ACCESSED_THROTTLE_MS = 5 * 60 * 1000;
+const SAVE_DEBOUNCE_MS = 1000;
+const NOTEPAD_SNAPSHOT_KEY = 'snapshot';
 
 function uint8ToBase64(bytes: Uint8Array): string {
   let binary = '';
@@ -44,11 +48,9 @@ export type NotepadSnapshot = {
 
 export class NotepadController {
   private doc: Y.Doc | null = null;
-  private persistence: IndexeddbPersistence | null = null;
   private awareness: Awareness | null = null;
   private fragment: Y.XmlFragment | null = null;
   private notePadId = '';
-  private dbName = '';
   private generation = 0;
   private pendingSyncRequestId: string | null = null;
   private backupResponseTimers = new Map<
@@ -59,11 +61,7 @@ export class NotepadController {
   private settingUp = false;
   private boundConn = false;
   private boundVisibility = false;
-  private updateLastAccessedThrottled = throttle(() => {
-    if (this.persistence) {
-      void this.persistence.set('lastAccessed', Date.now());
-    }
-  }, LAST_ACCESSED_THROTTLE_MS);
+  private saveTimer: ReturnType<typeof setTimeout> | null = null;
 
   private listeners = new Set<() => void>();
   private snapshot: NotepadSnapshot = {
@@ -104,6 +102,32 @@ export class NotepadController {
       return false;
     }
     return !user.isRecorder && !user.metadata?.lockSettings?.lockSharedNotepad;
+  };
+
+  private saveNow = async () => {
+    if (this.saveTimer) {
+      clearTimeout(this.saveTimer);
+      this.saveTimer = null;
+    }
+    if (!this.doc) {
+      return;
+    }
+    try {
+      const update = Y.encodeStateAsUpdate(this.doc);
+      await idbStore(DB_STORE_NAMES.NOTEPAD, NOTEPAD_SNAPSHOT_KEY, update);
+    } catch (e) {
+      console.error('[NotepadController] failed to save snapshot', e);
+    }
+  };
+
+  private scheduleSave = () => {
+    if (this.saveTimer) {
+      clearTimeout(this.saveTimer);
+    }
+    this.saveTimer = setTimeout(() => {
+      this.saveTimer = null;
+      void this.saveNow();
+    }, SAVE_DEBOUNCE_MS);
   };
 
   async sync() {
@@ -148,28 +172,45 @@ export class NotepadController {
     }
     this.settingUp = true;
     try {
+      const previousNotePadId = this.notePadId;
       await this.clearCurrentSession();
       this.notePadId = notePadId;
-      this.dbName = getNotepadDBName(notePadId);
+
+      // On a server-driven reset the notePadId changes; discard the old
+      // snapshot so stale content isn't reloaded and re-broadcast. Session-end
+      // cleanup is handled by deleteRoomDB(), so this only runs on reset.
+      if (previousNotePadId !== '' && previousNotePadId !== notePadId) {
+        try {
+          await idbDel(DB_STORE_NAMES.NOTEPAD, NOTEPAD_SNAPSHOT_KEY);
+        } catch (e) {
+          console.error('[NotepadController] failed to delete snapshot', e);
+        }
+      }
 
       const doc = new Y.Doc();
-      const persistence = new IndexeddbPersistence(this.dbName, doc);
-      await persistence.whenSynced;
-      await persistence.set('lastAccessed', Date.now());
+
+      try {
+        const stored = await idbGet<Uint8Array>(
+          DB_STORE_NAMES.NOTEPAD,
+          NOTEPAD_SNAPSHOT_KEY,
+        );
+        if (stored instanceof Uint8Array && stored.length > 0) {
+          Y.applyUpdate(doc, stored, REMOTE_ORIGIN);
+        }
+      } catch (e) {
+        console.error('[NotepadController] failed to load snapshot', e);
+      }
 
       const awareness = new Awareness(doc);
       const fragment = doc.getXmlFragment(FRAGMENT_NAME);
 
       this.doc = doc;
-      this.persistence = persistence;
       this.awareness = awareness;
       this.fragment = fragment;
       this.generation++;
 
       doc.on('update', (update: Uint8Array, origin: unknown) => {
-        // Keep the notepad DB "alive" on activity so long-running sessions
-        // are not considered stale by cleanupStaleDBs.
-        this.updateLastAccessedThrottled();
+        this.scheduleSave();
         if (origin === REMOTE_ORIGIN || !this.canWrite()) {
           return;
         }
@@ -214,12 +255,12 @@ export class NotepadController {
     }
     this.backupResponseTimers.clear();
     this.pendingSyncRequestId = null;
-    this.updateLastAccessedThrottled.cancel();
 
-    if (this.persistence) {
-      await this.persistence.clearData();
-      this.persistence = null;
+    if (this.saveTimer) {
+      clearTimeout(this.saveTimer);
+      this.saveTimer = null;
     }
+
     if (this.awareness) {
       this.awareness.destroy();
       this.awareness = null;
@@ -230,7 +271,6 @@ export class NotepadController {
     }
     this.fragment = null;
     this.notePadId = '';
-    this.dbName = '';
     this.updateSnapshot();
   }
 

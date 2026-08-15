@@ -5,6 +5,7 @@ import { getConfigValue } from '../utils';
 export const DB_STORE_NAMES = {
   USER_SETTINGS: 'userSettings',
   WHITEBOARD: 'whiteboard',
+  NOTEPAD: 'notepad', // yjs notepad snapshot (fixed key 'snapshot')
   IMAGE_CACHE: 'imageCache',
   OFFICE_PAGE_META_CACHE: 'officePageMetaCache',
   CHAT_MESSAGES: 'chatMessages',
@@ -21,13 +22,6 @@ const DB_STORE_METADATA = 'metadata';
 const DB_MAX_AGE_MS = getConfigValue('dbMaxAgeMs', 6 * 60 * 60 * 1000);
 const DB_VERSION = 4;
 
-// Shared notepad databases (created by y-indexeddb) follow this name pattern.
-export const NOTEPAD_DB_NAME_PREFIX = 'plugnmeet-notepad-';
-export const getNotepadDBName = (roomSid: string) =>
-  `${NOTEPAD_DB_NAME_PREFIX}${roomSid}`;
-// y-indexeddb stores custom key/value pairs in this object store.
-const NOTEPAD_DB_STORE = 'custom';
-
 class IDBManager {
   /**
    * A list of all object stores used in the application.
@@ -39,7 +33,6 @@ class IDBManager {
   ];
   private dbPromise: Promise<IDBPDatabase> | null = null;
   private dbName: string | null = null;
-  private roomSid: string | null = null;
   private isDbActive = false;
 
   /**
@@ -57,7 +50,6 @@ class IDBManager {
 
     // Use a stable name for persistence across reloads.
     this.dbName = `pnm-${roomSid}-${userId}`;
-    this.roomSid = roomSid;
     this.isDbActive = true;
     this.dbPromise = openDB(this.dbName, DB_VERSION, {
       upgrade: (db) => {
@@ -152,6 +144,22 @@ class IDBManager {
   };
 
   /**
+   * Deletes a value from a specified object store in the current session's database.
+   * @param storeName The name of the object store.
+   * @param key The key of the value to delete.
+   */
+  public del = async (storeName: IDBStoreName, key: string) => {
+    if (!this.isDbActive) {
+      return;
+    }
+    const db = await this.getDb();
+    if (!db.objectStoreNames.contains(storeName)) {
+      return;
+    }
+    await db.delete(storeName, key);
+  };
+
+  /**
    * Deletes the entire database for the current session.
    */
   public deleteDB = async () => {
@@ -165,7 +173,6 @@ class IDBManager {
       await deleteDB(this.dbName);
       this.dbPromise = null;
       this.dbName = null;
-      this.roomSid = null;
     }
   };
 
@@ -202,9 +209,6 @@ class IDBManager {
     if (this.dbName) {
       skipNames.add(this.dbName);
     }
-    if (this.roomSid) {
-      skipNames.add(getNotepadDBName(this.roomSid));
-    }
 
     for (const dbInfo of allDBs) {
       const name = dbInfo.name;
@@ -215,8 +219,6 @@ class IDBManager {
       let storeName: string;
       if (name.startsWith('pnm-')) {
         storeName = DB_STORE_METADATA;
-      } else if (name.startsWith(NOTEPAD_DB_NAME_PREFIX)) {
-        storeName = NOTEPAD_DB_STORE;
       } else {
         continue;
       }
@@ -249,6 +251,15 @@ const idbStore = idbManager.store;
 const idbGet = idbManager.get;
 const idbGetAll = idbManager.getAll;
 const idbGetAllKeys = idbManager.getAllKeys;
+const idbDel = idbManager.del;
 const deleteRoomDB = idbManager.deleteDB;
 
-export { initIDB, idbStore, idbGet, idbGetAll, idbGetAllKeys, deleteRoomDB };
+export {
+  initIDB,
+  idbStore,
+  idbGet,
+  idbGetAll,
+  idbGetAllKeys,
+  idbDel,
+  deleteRoomDB,
+};
