@@ -413,6 +413,7 @@
       "external-media-player-select-file": "Chọn tệp phương tiện để tải lên",
       "upload-background-image": "Tải lên hình nền",
       "shared-notepad": "Notepad được chia sẻ",
+      "export-notepad": "Giảm giá xuất khẩu",
       "chose-virtual-bg": "Chọn Hình nền"
     }
   },
@@ -675,13 +676,31 @@
       "users-required": "Ít nhất một người tham gia phải được chọn.",
       "chat-box-placeholder": "Hỏi Trợ lý AI một câu hỏi...",
       "responding-placeholder": "Trợ lý AI đang phản hồi...",
-      "response-timed-out": "Trợ lý AI phản hồi quá lâu. Vui lòng thử lại."
+      "response-timed-out": "Trợ lý AI phản hồi quá lâu. Vui lòng thử lại.",
+      "enable-notepad-ai": "Kích hoạt AI trong sổ tay chia sẻ"
     },
     "meeting-summarization": {
       "enable": "Bật tính năng tóm tắt cuộc họp",
       "summarization-prompt-label": "Hướng dẫn tóm tắt",
       "summarization-prompt-required": "Vui lòng nhập hướng dẫn để biết cách tóm tắt.",
       "enabled-notification-all": "Âm thanh của cuộc họp này hiện đang được ghi lại để tạo ra một bản tóm tắt."
+    },
+    "notepad-ai": {
+      "title": "Hỏi AI",
+      "sub-title": "Viết bằng AI",
+      "continue-writing": "Tiếp tục viết",
+      "summarize": "Tóm tắt",
+      "improve-writing": "Cải thiện kỹ năng viết",
+      "fix-spelling": "Sửa lỗi chính tả",
+      "simplify": "đơn giản hóa",
+      "custom-placeholder": "Hỏi AI bất cứ điều gì…",
+      "run": "Chạy",
+      "back": "Quay lại",
+      "select-text": "Chọn một đoạn văn bản hoặc đặt con trỏ vào một khối trước.",
+      "generating": "Tạo phản hồi AI...",
+      "done": "Kết quả AI được áp dụng",
+      "failed": "Yêu cầu AI thất bại",
+      "disabled-message": "Tính năng AI hiện đang bị vô hiệu hóa. Quản trị viên có thể kích hoạt từ Tùy chọn Thêm (...) → Công cụ AI → Chat Trợ lý AI."
     }
   },
   "sip-dial-in-features": {
