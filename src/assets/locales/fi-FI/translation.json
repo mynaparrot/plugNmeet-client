@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Pilvitallennus ei ole käytettävissä käytettäessä mukautettua suojausavainta.",
     "media-only-recording-not-support-e2ee": "Vain äänen ja videon tallentaminen ei ole käytettävissä, kun päästä päähän -salaus on käytössä.",
     "you-are-sharing-screen": "Jaat nyt näyttösi. Toiset näkevät suuremman näkymän.",
+    "screen-share-view-disabled": "{{name}} Jakaa näyttöä, mutta olet poistanut näytön jaon katselun käytöstä tallennusasetuksista.",
     "new-system-message-in-chat": "Uusi järjestelmäviesti on julkaistu julkisessa chatissa.",
     "queue-holding-messages": "Yhteysongelma: viestejä pidätetään.",
     "queue-discarded-message": "Viestiä ei voitu lähettää ja se hylättiin.",
