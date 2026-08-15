@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Nagrywanie w chmurze nie jest dostępne w przypadku korzystania z niestandardowego klucza bezpieczeństwa.",
     "media-only-recording-not-support-e2ee": "Nagrywanie tylko dźwięku i obrazu nie jest dostępne, gdy włączone jest szyfrowanie end-to-end.",
     "you-are-sharing-screen": "Udostępniasz teraz swój ekran. Inni zobaczą większy widok.",
+    "screen-share-view-disabled": "{{name}} udostępnia ekran, ale wyłączyłeś możliwość udostępniania ekranu w ustawieniach oszczędzania danych.",
     "new-system-message-in-chat": "Na czacie publicznym została opublikowana nowa wiadomość systemowa.",
     "queue-holding-messages": "Problem z połączeniem: wiadomości są wstrzymywane.",
     "queue-discarded-message": "Wiadomość nie mogła zostać wysłana i została odrzucona.",
