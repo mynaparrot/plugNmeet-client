@@ -413,6 +413,7 @@
       "external-media-player-select-file": "アップロードするメディアファイルを選択",
       "upload-background-image": "背景画像をアップロード",
       "shared-notepad": "共有メモ帳",
+      "export-notepad": "수출 마크다운",
       "chose-virtual-bg": "背景を選択"
     }
   },
@@ -675,13 +676,31 @@
       "users-required": "최소 한 명의 참가자를 선택해야 합니다.",
       "chat-box-placeholder": "AI 어시스턴트에게 질문하기...",
       "responding-placeholder": "AIアシスタントが応答中です...",
-      "response-timed-out": "AI 비서가 응답하는 데 너무 오래 걸리고 있습니다. 다시 시도해 주세요."
+      "response-timed-out": "AI 비서가 응답하는 데 너무 오래 걸리고 있습니다. 다시 시도해 주세요.",
+      "enable-notepad-ai": "공유 노트에서 AI 활성화하기"
     },
     "meeting-summarization": {
       "enable": "会議の要約を有効にする",
       "summarization-prompt-label": "要約の指示",
       "summarization-prompt-required": "요약 방법에 대한 지침을 입력하십시오.",
       "enabled-notification-all": "이 회의의 오디오는 요약을 생성하기 위해 현재 녹음되고 있습니다."
+    },
+    "notepad-ai": {
+      "title": "AI에게 물어보세요",
+      "sub-title": "AI로 글쓰기",
+      "continue-writing": "계속 쓰기",
+      "summarize": "요약해",
+      "improve-writing": "글쓰기 향상",
+      "fix-spelling": "맞춤법 수정",
+      "simplify": "단순화하세요",
+      "custom-placeholder": "AI에게 뭐든 물어보세요…",
+      "run": "도망쳐",
+      "back": "뒤로",
+      "select-text": "텍스트를 선택하거나 커서를 먼저 블록 안에 배치하세요.",
+      "generating": "AI 응답 생성...",
+      "done": "AI 결과 적용",
+      "failed": "AI 요청 실패",
+      "disabled-message": "현재 AI 기능은 비활성화되어 있습니다. 관리자는 More Options(...) → AI 도구 → AI 어시스턴트 채팅에서 활성화할 수 있습니다."
     }
   },
   "sip-dial-in-features": {
