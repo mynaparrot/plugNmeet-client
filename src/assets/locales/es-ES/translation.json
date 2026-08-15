@@ -413,6 +413,7 @@
       "external-media-player-select-file": "Seleccione un archivo multimedia para subir",
       "upload-background-image": "Subir imagen de fondo",
       "shared-notepad": "Bloc de notas compartido",
+      "export-notepad": "Reprecio de exportación",
       "chose-virtual-bg": "Elegir fondo"
     }
   },
@@ -675,13 +676,31 @@
       "users-required": "Se debe seleccionar al menos un participante.",
       "chat-box-placeholder": "Haga una pregunta al asistente de IA...",
       "responding-placeholder": "El asistente de IA está respondiendo...",
-      "response-timed-out": "El asistente de IA tarda demasiado en responder. Por favor, inténtelo de nuevo."
+      "response-timed-out": "El asistente de IA tarda demasiado en responder. Por favor, inténtelo de nuevo.",
+      "enable-notepad-ai": "Habilitar IA en el bloc de notas compartido"
     },
     "meeting-summarization": {
       "enable": "Activar resumen de la reunión",
       "summarization-prompt-label": "Instrucciones para el resumen",
       "summarization-prompt-required": "Por favor, introduzca las instrucciones sobre cómo resumir.",
       "enabled-notification-all": "El audio de esta reunión se está grabando para generar un resumen."
+    },
+    "notepad-ai": {
+      "title": "Ask AI",
+      "sub-title": "Escribe con IA",
+      "continue-writing": "Seguir escribiendo",
+      "summarize": "Resume",
+      "improve-writing": "Mejorar la escritura",
+      "fix-spelling": "Corregir la ortografía",
+      "simplify": "Simplificar",
+      "custom-placeholder": "Pregunta a la IA cualquier cosa…",
+      "run": "¡Corre",
+      "back": "Atrás",
+      "select-text": "Selecciona un texto o coloca el cursor en un bloque primero.",
+      "generating": "Generar respuesta de IA...",
+      "done": "Resultado de IA aplicado",
+      "failed": "Solicitud de IA fallida",
+      "disabled-message": "La función de IA está actualmente desactivada. Un administrador puede activarlo desde Más opciones (...) → Herramientas de IA → Chats de Asistente de IA."
     }
   },
   "sip-dial-in-features": {
