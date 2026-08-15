@@ -413,6 +413,7 @@
       "external-media-player-select-file": "בחר קובץ מדיה להעלאה",
       "upload-background-image": "העלה תמונת רקע",
       "shared-notepad": "פנקס רשימות משותף",
+      "export-notepad": "ייצוא Markdown",
       "chose-virtual-bg": "בחר רקע"
     }
   },
@@ -675,13 +676,31 @@
       "users-required": "לפחות משתתף אחד חייב להיבחר.",
       "chat-box-placeholder": "שאל את עוזר הבינה המלאכותית שאלה...",
       "responding-placeholder": "עוזר בינה מלאכותית מגיב...",
-      "response-timed-out": "העוזר של הבינה המלאכותית לוקח יותר מדי זמן להגיב. אנא נסה שוב."
+      "response-timed-out": "העוזר של הבינה המלאכותית לוקח יותר מדי זמן להגיב. אנא נסה שוב.",
+      "enable-notepad-ai": "הפעל AI במחברת משותפת"
     },
     "meeting-summarization": {
       "enable": "הפעלת סיכום פגישות",
       "summarization-prompt-label": "הוראות סיכום",
       "summarization-prompt-required": "אנא הזן הוראות לסיכום.",
       "enabled-notification-all": "ההקלטה של הפגישה הזו מוקלטת כעת כדי להפיק סיכום."
+    },
+    "notepad-ai": {
+      "title": "שאל את הבינה המלאכותית",
+      "sub-title": "כתוב עם בינה מלאכותית",
+      "continue-writing": "המשך לכתוב",
+      "summarize": "סיכום",
+      "improve-writing": "לשפר את הכתיבה",
+      "fix-spelling": "תיקון איות",
+      "simplify": "פשט",
+      "custom-placeholder": "תשאלו את הבינה המלאכותית כל דבר…",
+      "run": "רוץ",
+      "back": "חזרה",
+      "select-text": "בחר טקסט מסוים או הנח את הסמן בבלוק קודם.",
+      "generating": "מייצר תגובת בינה מלאכותית...",
+      "done": "תוצאה של בינה מלאכותית מיושמת",
+      "failed": "בקשת הבינה המלאכותית נכשלה",
+      "disabled-message": "תכונת הבינה המלאכותית כרגע מושבתת. מנהל יכול להפעיל זאת דרך אפשרויות נוספות (...) → כלי AI → צ'אטים עם עוזר AI."
     }
   },
   "sip-dial-in-features": {
