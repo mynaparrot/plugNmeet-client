@@ -413,6 +413,7 @@
       "external-media-player-select-file": "Wählen Sie eine Mediendatei zum Hochladen aus",
       "upload-background-image": "Hintergrundbild hochladen",
       "shared-notepad": "Geteiltes Notizbuch",
+      "export-notepad": "Exportrabatt",
       "chose-virtual-bg": "Virtuellen Hintergrund wählen"
     }
   },
@@ -675,13 +676,31 @@
       "users-required": "Es muss mindestens ein Teilnehmer ausgewählt werden.",
       "chat-box-placeholder": "Stellen Sie dem KI-Assistenten eine Frage...",
       "responding-placeholder": "KI-Assistent antwortet...",
-      "response-timed-out": "Der KI-Assistent braucht zu lange, um zu antworten. Bitte versuchen Sie es erneut."
+      "response-timed-out": "Der KI-Assistent braucht zu lange, um zu antworten. Bitte versuchen Sie es erneut.",
+      "enable-notepad-ai": "KI im gemeinsamen Notizblock aktivieren"
     },
     "meeting-summarization": {
       "enable": "Meeting-Zusammenfassung aktivieren",
       "summarization-prompt-label": "Anweisungen zur Zusammenfassung",
       "summarization-prompt-required": "Bitte geben Sie Anweisungen zur Zusammenfassung ein.",
       "enabled-notification-all": "Das Audio dieses Meetings wird jetzt aufgezeichnet, um eine Zusammenfassung zu erstellen."
+    },
+    "notepad-ai": {
+      "title": "Ask AI",
+      "sub-title": "Schreibe mit KI",
+      "continue-writing": "Weiterschreiben",
+      "summarize": "Zusammenfassen",
+      "improve-writing": "Verbessern Sie das Schreiben",
+      "fix-spelling": "Rechtschreibung korrigieren",
+      "simplify": "Vereinfachen",
+      "custom-placeholder": "Frag KI alles…",
+      "run": "Lauf",
+      "back": "Zurück",
+      "select-text": "Wählen Sie zuerst Text aus oder platzieren Sie den Cursor in einen Block.",
+      "generating": "KI-Reaktion wird erzeugt...",
+      "done": "KI-Ergebnis angewandt",
+      "failed": "KI-Anfrage gescheitert",
+      "disabled-message": "Die KI-Funktion ist derzeit deaktiviert. Ein Administrator kann es über Mehr Optionen (...) → KI-Tools → KI-Assistenten-Chats aktivieren."
     }
   },
   "sip-dial-in-features": {
