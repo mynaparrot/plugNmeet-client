@@ -19,6 +19,14 @@ export type IDBStoreName = (typeof DB_STORE_NAMES)[keyof typeof DB_STORE_NAMES];
 const DB_STORE_METADATA = 'metadata';
 // Databases older than this will be cleaned up on startup (6 hours).
 const DB_MAX_AGE_MS = getConfigValue('dbMaxAgeMs', 6 * 60 * 60 * 1000);
+const DB_VERSION = 4;
+
+// Shared notepad databases (created by y-indexeddb) follow this name pattern.
+export const NOTEPAD_DB_NAME_PREFIX = 'plugnmeet-notepad-';
+export const getNotepadDBName = (roomSid: string) =>
+  `${NOTEPAD_DB_NAME_PREFIX}${roomSid}`;
+// y-indexeddb stores custom key/value pairs in this object store.
+const NOTEPAD_DB_STORE = 'custom';
 
 class IDBManager {
   /**
@@ -31,6 +39,7 @@ class IDBManager {
   ];
   private dbPromise: Promise<IDBPDatabase> | null = null;
   private dbName: string | null = null;
+  private roomSid: string | null = null;
   private isDbActive = false;
 
   /**
@@ -48,8 +57,9 @@ class IDBManager {
 
     // Use a stable name for persistence across reloads.
     this.dbName = `pnm-${roomSid}-${userId}`;
+    this.roomSid = roomSid;
     this.isDbActive = true;
-    this.dbPromise = openDB(this.dbName, 4, {
+    this.dbPromise = openDB(this.dbName, DB_VERSION, {
       upgrade: (db) => {
         // Create all necessary object stores if they don't already exist.
         for (const storeName of this.ALL_STORES) {
@@ -155,6 +165,7 @@ class IDBManager {
       await deleteDB(this.dbName);
       this.dbPromise = null;
       this.dbName = null;
+      this.roomSid = null;
     }
   };
 
@@ -186,27 +197,45 @@ class IDBManager {
     const allDBs = await indexedDB.databases();
     const now = Date.now();
 
-    for (const dbInfo of allDBs) {
-      if (dbInfo.name && dbInfo.name.startsWith('pnm-')) {
-        try {
-          // Briefly open the DB to check its lastAccessed timestamp.
-          const db = await openDB(dbInfo.name, 3);
-          const lastAccessed = await db.get(DB_STORE_METADATA, 'lastAccessed');
-          db.close();
+    // O(1) lookup for the databases that belong to the active session.
+    const skipNames = new Set<string>();
+    if (this.dbName) {
+      skipNames.add(this.dbName);
+    }
+    if (this.roomSid) {
+      skipNames.add(getNotepadDBName(this.roomSid));
+    }
 
-          if (
-            typeof lastAccessed !== 'number' ||
-            now - lastAccessed > DB_MAX_AGE_MS
-          ) {
-            console.log(`Deleting stale IndexedDB: ${dbInfo.name}`);
-            await deleteDB(dbInfo.name);
-          }
-        } catch (e) {
-          console.error(
-            `Could not check or delete stale DB ${dbInfo.name}:`,
-            e,
-          );
+    for (const dbInfo of allDBs) {
+      const name = dbInfo.name;
+      if (!name || skipNames.has(name)) {
+        continue;
+      }
+
+      let storeName: string;
+      if (name.startsWith('pnm-')) {
+        storeName = DB_STORE_METADATA;
+      } else if (name.startsWith(NOTEPAD_DB_NAME_PREFIX)) {
+        storeName = NOTEPAD_DB_STORE;
+      } else {
+        continue;
+      }
+
+      try {
+        // Briefly open the DB to check its lastAccessed timestamp.
+        const db = await openDB(name);
+        const lastAccessed = await db.get(storeName, 'lastAccessed');
+        db.close();
+
+        if (
+          typeof lastAccessed !== 'number' ||
+          now - lastAccessed > DB_MAX_AGE_MS
+        ) {
+          console.log(`Deleting stale IndexedDB: ${name}`);
+          await deleteDB(name);
         }
+      } catch (e) {
+        console.error(`Could not check or delete stale DB ${name}:`, e);
       }
     }
   }

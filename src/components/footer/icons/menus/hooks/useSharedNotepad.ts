@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ChangeEtherpadStatusReqSchema,
-  CreateEtherpadSessionResSchema,
+  CommonResponseSchema,
 } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
@@ -21,11 +21,6 @@ const useSharedNotepad = () => {
     };
   }, []);
 
-  const host = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures
-        ?.host,
-  );
   const sharedNotepadStatus = useAppSelector(
     (state) =>
       state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures
@@ -33,21 +28,6 @@ const useSharedNotepad = () => {
   );
 
   const toggleSharedNotepad = useCallback(async () => {
-    // If there's no host, we need to create the notepad.
-    if (!host) {
-      const r = await sendAPIRequest('etherpad/create', new Uint8Array());
-      const res = fromBinary(CreateEtherpadSessionResSchema, new Uint8Array(r));
-      if (res.status) {
-        dispatch(updateIsActiveSharedNotePad(true));
-      } else if (res.msg) {
-        dispatch(
-          addUserNotification({ message: t(res.msg), typeOption: 'error' }),
-        );
-      }
-      return;
-    }
-
-    // If a host exists, we just toggle the status.
     const newStatus = !sharedNotepadStatus;
     const body = create(ChangeEtherpadStatusReqSchema, {
       roomId,
@@ -61,7 +41,7 @@ const useSharedNotepad = () => {
       'application/protobuf',
       'arraybuffer',
     );
-    const res = fromBinary(CreateEtherpadSessionResSchema, new Uint8Array(r));
+    const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
 
     if (res.status) {
       dispatch(updateIsActiveSharedNotePad(newStatus));
@@ -70,7 +50,7 @@ const useSharedNotepad = () => {
         addUserNotification({ message: t(res.msg), typeOption: 'error' }),
       );
     }
-  }, [host, sharedNotepadStatus, roomId, dispatch, t]);
+  }, [sharedNotepadStatus, roomId, dispatch, t]);
 
   return { toggleSharedNotepad, sharedNotepadStatus };
 };

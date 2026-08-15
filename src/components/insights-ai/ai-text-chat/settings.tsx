@@ -35,6 +35,9 @@ const AiTextChatSettings = ({
   const [allowedUsers, setAllowedUsers] = useState<string[]>(
     aiTextChatFeatures?.allowedUserIds ?? [],
   );
+  const [isNotepadAiDisabled, setIsNotepadAiDisabled] = useState(
+    !!aiTextChatFeatures?.isNotepadAiDisabled,
+  );
 
   const enableOrUpdateService = useCallback(async () => {
     if (!isAllowedEveryone && allowedUsers.length == 0) {
@@ -47,6 +50,7 @@ const AiTextChatSettings = ({
       isEnabled: isEnabled,
       isAllowedEveryone,
       allowedUserIds: allowedUsers,
+      isNotepadAiDisabled,
     });
 
     const r = await sendAPIRequest(
@@ -67,7 +71,15 @@ const AiTextChatSettings = ({
       type: 'info',
     });
     closeModal();
-  }, [t, setErrorMsg, closeModal, isEnabled, isAllowedEveryone, allowedUsers]);
+  }, [
+    t,
+    setErrorMsg,
+    closeModal,
+    isEnabled,
+    isAllowedEveryone,
+    allowedUsers,
+    isNotepadAiDisabled,
+  ]);
 
   const stopService = useCallback(async () => {
     const r = await sendAPIRequest(
@@ -110,6 +122,14 @@ const AiTextChatSettings = ({
                     label={t('insights.ai-text-chat.allow-everyone')}
                     enabled={isAllowedEveryone}
                     onChange={setIsAllowedEveryone}
+                    customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
+                  />
+                </div>
+                <div className="bg-Gray-25 dark:bg-dark-primary border-y border-dotted border-Gray-100 dark:border-Gray-800 -mx-4 px-4 py-4">
+                  <SettingsSwitch
+                    label={t('insights.ai-text-chat.enable-notepad-ai')}
+                    enabled={!isNotepadAiDisabled}
+                    onChange={(enabled) => setIsNotepadAiDisabled(!enabled)}
                     customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
                   />
                 </div>

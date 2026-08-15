@@ -54,6 +54,7 @@ import { deleteRoomDB } from '../libs/idb';
 import { createLivekitConnection } from '../livekit/utils';
 import { executeChatTranslation } from '../../components/translation-transcription/helpers/apiConnections';
 import { teardownNativePublisher } from '../nativeBridge';
+import { getNotepadController } from '../../components/shared-notepad/NotepadController';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000,
   PING_INTERVAL = 10 * 1000,
@@ -108,6 +109,7 @@ export default class ConnectNats {
   // helpers
   private readonly messageQueue: MessageQueue;
   private readonly subscriptionHandler: SubscriptionHandler;
+  private readonly reconnectCallbacks = new Set<() => void>();
 
   constructor(
     natsWSUrls: string[],
@@ -339,6 +341,7 @@ export default class ConnectNats {
       cleanupPromises.push(this._nc.close());
     }
     cleanupPromises.push(deleteRoomDB());
+    cleanupPromises.push(getNotepadController().destroy());
 
     await Promise.allSettled(cleanupPromises);
 
@@ -434,6 +437,7 @@ export default class ConnectNats {
           clearInterval(this.statusCheckerInterval);
           this.statusCheckerInterval = undefined;
           this.isRoomReconnecting = false;
+          this.notifyReconnect();
           break;
         case 'slowConsumer':
           toast(i18n.t('notifications.your-connection-quality-not-good'), {
@@ -693,6 +697,53 @@ export default class ConnectNats {
         payload,
       });
     }
+  };
+
+  /**
+   * Sends notepad data as a fire-and-forget message over the data channel.
+   * The binary Yjs payload is packed into the `binMessage` field of the
+   * DataChannelMessage envelope and managed by the MessageQueue.
+   */
+  public sendNotepadData = async (
+    type: DataMsgBodyType,
+    binMessage: Uint8Array,
+    id: string,
+    message?: string,
+  ) => {
+    if (!this._nc || this._nc.isClosed()) {
+      return;
+    }
+
+    const data = create(DataChannelMessageSchema, {
+      id,
+      type,
+      fromUserId: this._userId,
+      message: message ?? '',
+      binMessage,
+    });
+
+    let payload: Uint8Array = toBinary(DataChannelMessageSchema, data);
+    if (this._enableE2EE) {
+      const enc = await this.encryptData(payload);
+      if (typeof enc === 'undefined') {
+        return;
+      }
+      payload = enc;
+    }
+
+    const subject = `${this._subjects.dataChannel}.${this._roomId}`;
+    this.messageQueue.addToQueue({ subject, payload });
+  };
+
+  public onReconnect = (cb: () => void) => {
+    this.reconnectCallbacks.add(cb);
+    return () => {
+      this.reconnectCallbacks.delete(cb);
+    };
+  };
+
+  private notifyReconnect = () => {
+    this.reconnectCallbacks.forEach((cb) => cb());
   };
 
   /**

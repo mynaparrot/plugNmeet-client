@@ -413,6 +413,7 @@
       "external-media-player-select-file": "Select a media file to upload",
       "upload-background-image": "Upload background image",
       "shared-notepad": "Shared Notepad",
+      "export-notepad": "Export Markdown",
       "chose-virtual-bg": "Choose Background"
     }
   },
@@ -675,13 +676,31 @@
       "users-required": "At least one participant must be selected.",
       "chat-box-placeholder": "Ask the AI Assistant a question...",
       "responding-placeholder": "AI Assistant is responding...",
-      "response-timed-out": "The AI assistant is taking too long to respond. Please try again."
+      "response-timed-out": "The AI assistant is taking too long to respond. Please try again.",
+      "enable-notepad-ai": "Enable AI in shared notepad"
     },
     "meeting-summarization": {
       "enable": "Enable meeting summarization",
       "summarization-prompt-label": "Summarization Instructions",
       "summarization-prompt-required": "Please enter instructions for how to summarize.",
       "enabled-notification-all": "This meeting's audio is now being recorded to generate a summary."
+    },
+    "notepad-ai": {
+      "title": "Ask AI",
+      "sub-title": "Write with AI",
+      "continue-writing": "Continue writing",
+      "summarize": "Summarize",
+      "improve-writing": "Improve writing",
+      "fix-spelling": "Fix spelling",
+      "simplify": "Simplify",
+      "custom-placeholder": "Ask AI anything…",
+      "run": "Run",
+      "back": "Back",
+      "select-text": "Select some text or place the cursor in a block first.",
+      "generating": "Generating AI response...",
+      "done": "AI result applied",
+      "failed": "AI request failed",
+      "disabled-message": "The AI feature is currently disabled. An administrator can enable it from More Options (...) → AI Tools → AI Assistant Chats."
     }
   },
   "sip-dial-in-features": {
