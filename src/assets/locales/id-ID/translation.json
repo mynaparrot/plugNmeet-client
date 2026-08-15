@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Perekaman cloud tidak tersedia saat menggunakan kunci keamanan khusus.",
     "media-only-recording-not-support-e2ee": "Perekaman hanya audio dan video tidak tersedia saat enkripsi ujung-ke-ujung diaktifkan.",
     "you-are-sharing-screen": "Anda sedang berbagi layar. Peserta lain akan melihat tampilan yang lebih besar.",
+    "screen-share-view-disabled": "{{name}} berbagi layar, tetapi Anda telah menonaktifkan tampilan berbagi layar dari pengaturan penyimpanan data.",
     "new-system-message-in-chat": "Sebuah pesan sistem baru telah diposting di obrolan publik.",
     "queue-holding-messages": "Masalah koneksi: pesan ditahan.",
     "queue-discarded-message": "Pesan tidak dapat dikirim dan dibuang.",
