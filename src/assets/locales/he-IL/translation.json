@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "הקלטה בענן אינה זמינה בעת שימוש במפתח אבטחה מותאם אישית.",
     "media-only-recording-not-support-e2ee": "הקלטת שמע ווידאו בלבד אינה זמינה כאשר הצפנה מקצה לקצה מופעלת.",
     "you-are-sharing-screen": "אתה משתף את המסך שלך כעת. אחרים יראו נוף גדול יותר.",
+    "screen-share-view-disabled": "{{name}} הוא משתף את המסך, אבל השביתת את הצגת שיתוף המסך דרך הגדרות שמירת הנתונים.",
     "new-system-message-in-chat": "הודעת מערכת חדשה פורסמה בצ'אט הציבורי.",
     "queue-holding-messages": "בעיית חיבור: ההודעות מוחזקות.",
     "queue-discarded-message": "הודעה לא יכלה להישלח והיא נזרקה.",
