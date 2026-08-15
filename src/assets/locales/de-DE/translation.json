@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Cloud-Aufzeichnung ist nicht verfügbar, wenn ein benutzerdefinierter Sicherheitsschlüssel verwendet wird.",
     "media-only-recording-not-support-e2ee": "Die reine Audio- und Videoaufzeichnung ist nicht verfügbar, wenn die Ende-zu-Ende-Verschlüsselung aktiviert ist.",
     "you-are-sharing-screen": "Sie geben gerade Ihren Bildschirm frei. Andere Teilnehmer sehen eine vergrößerte Ansicht.",
+    "screen-share-view-disabled": "{{name}} Teilt den Bildschirm, aber du hast das Anzeigen des Bildschirmfreigabes in den Datenspeichereinstellungen deaktiviert.",
     "new-system-message-in-chat": "Eine neue Systemnachricht wurde im öffentlichen Chat veröffentlicht.",
     "queue-holding-messages": "Verbindungsproblem: Nachrichten werden zurückgehalten.",
     "queue-discarded-message": "Eine Nachricht konnte nicht gesendet werden und wurde verworfen.",
