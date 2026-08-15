@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "カスタムセキュリティキーを使用している場合、クラウド録画は利用できません。",
     "media-only-recording-not-support-e2ee": "종단 간 암호화가 활성화된 경우 오디오 및 비디오만 녹화할 수 없습니다.",
     "you-are-sharing-screen": "현재 화면을 공유하고 있습니다. 다른 참가자들은 더 큰 화면을 보게 됩니다.",
+    "screen-share-view-disabled": "{{name}} 화면 공유는 하고 있는데, 데이터 저장 설정에서 화면 공유 보기 기능을 비활성화하셨습니다.",
     "new-system-message-in-chat": "新しいシステムメッセージがパブリックチャットに投稿されました。",
     "queue-holding-messages": "연결 문제: 메시지가 보류되고 있습니다.",
     "queue-discarded-message": "메시지를 보낼 수 없어 삭제되었습니다.",
