@@ -413,6 +413,7 @@
       "external-media-player-select-file": "Выберите медиафайл для загрузки",
       "upload-background-image": "Загрузить фоновое изображение",
       "shared-notepad": "Общий блокнот",
+      "export-notepad": "Экспортная цена",
       "chose-virtual-bg": "Выбрать фон"
     }
   },
@@ -675,13 +676,31 @@
       "users-required": "Должен быть выбран как минимум один участник.",
       "chat-box-placeholder": "Задайте вопрос ИИ ассистенту...",
       "responding-placeholder": "ИИ ассистент отвечает...",
-      "response-timed-out": "ИИ-ассистент слишком долго не отвечает. Пожалуйста, попробуйте ещё раз."
+      "response-timed-out": "ИИ-ассистент слишком долго не отвечает. Пожалуйста, попробуйте ещё раз.",
+      "enable-notepad-ai": "Включите ИИ в общем блокноте"
     },
     "meeting-summarization": {
       "enable": "Сводка встречи",
       "summarization-prompt-label": "Промпт сводки встречи",
       "summarization-prompt-required": "Пожалуйста, введите промпт для сводки встречи.",
       "enabled-notification-all": "Ведется аудиозапись для создания краткого содержания встречи."
+    },
+    "notepad-ai": {
+      "title": "Спросите ИИ",
+      "sub-title": "Пишите с помощью ИИ",
+      "continue-writing": "Продолжайте писать",
+      "summarize": "Краткое содержание",
+      "improve-writing": "Улучшайте письмо",
+      "fix-spelling": "Исправьте орфографию",
+      "simplify": "Упростить",
+      "custom-placeholder": "Спросите у ИИ что угодно…",
+      "run": "Беги",
+      "back": "Назад",
+      "select-text": "Сначала выберите какой-нибудь текст или поместите курсор в блок.",
+      "generating": "Генерация отклика ИИ...",
+      "done": "Применённый результат ИИ",
+      "failed": "Запрос ИИ неудачен",
+      "disabled-message": "Функция искусственного интеллекта в настоящее время отключена. Администратор может включить это в разделах More Options (...) → AI Tools → AI Assistant Chats."
     }
   },
   "sip-dial-in-features": {
