@@ -79,8 +79,9 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
         id: userId,
         name: userName ?? '',
         color: getUserColor(),
+        editable,
       }),
-      [userId, userName],
+      [userId, userName, editable],
     );
 
     const editor = useCreateBlockNote(
@@ -92,6 +93,10 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
             fragment: snapshot.fragment!,
             user,
             renderCursor: (collabUser) => {
+              if (!collabUser.editable) {
+                return document.createElement('span');
+              }
+
               const caret = document.createElement('span');
               caret.style.position = 'absolute';
               caret.style.zIndex = '100';
@@ -152,10 +157,12 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
       (props) => (
         <FormattingToolbar {...props}>
           {getFormattingToolbarItems(props.blockTypeSelectItems)}
-          <NotepadAIToolbarButton onClick={openAIMenuFromSelection} />
+          {editable && (
+            <NotepadAIToolbarButton onClick={openAIMenuFromSelection} />
+          )}
         </FormattingToolbar>
       ),
-      [openAIMenuFromSelection],
+      [editable, openAIMenuFromSelection],
     );
 
     // In view-only mode, keep the editor pinned to the latest content so the
