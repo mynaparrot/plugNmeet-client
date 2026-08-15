@@ -413,6 +413,7 @@
       "external-media-player-select-file": "Selezioni un file multimediale da caricare",
       "upload-background-image": "Carica immagine di sfondo",
       "shared-notepad": "Blocco note condiviso",
+      "export-notepad": "Sconto all'esportazione",
       "chose-virtual-bg": "Scegli sfondo"
     }
   },
@@ -675,13 +676,31 @@
       "users-required": "È necessario selezionare almeno un partecipante.",
       "chat-box-placeholder": "Faccia una domanda all'Assistente AI...",
       "responding-placeholder": "L'Assistente AI sta rispondendo...",
-      "response-timed-out": "L'assistente AI sta mettendo troppo tempo a rispondere. Per favore, riprova."
+      "response-timed-out": "L'assistente AI sta mettendo troppo tempo a rispondere. Per favore, riprova.",
+      "enable-notepad-ai": "Abilita l'IA nel blocco note condiviso"
     },
     "meeting-summarization": {
       "enable": "Abilita riassunto della riunione",
       "summarization-prompt-label": "Istruzioni per il riassunto",
       "summarization-prompt-required": "Inserisca le istruzioni su come riassumere.",
       "enabled-notification-all": "L'audio di questa riunione viene ora registrato per generare un riassunto."
+    },
+    "notepad-ai": {
+      "title": "Ask AI",
+      "sub-title": "Scrivi con l'IA",
+      "continue-writing": "Continua a scrivere",
+      "summarize": "Riassumi",
+      "improve-writing": "Migliorare la scrittura",
+      "fix-spelling": "Correggere l'ortografia",
+      "simplify": "Semplificare",
+      "custom-placeholder": "Chiedi qualsiasi cosa all'IA…",
+      "run": "Corri",
+      "back": "Indietro",
+      "select-text": "Seleziona un testo o posiziona il cursore in un blocco per prima.",
+      "generating": "Generare una risposta IA...",
+      "done": "Risultato AI applicato",
+      "failed": "Richiesta AI fallita",
+      "disabled-message": "La funzione AI è attualmente disabilitata. Un amministratore può abilitarlo tramite Più opzioni (...) → AI Tools → AI Assistant Chats."
     }
   },
   "sip-dial-in-features": {
