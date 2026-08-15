@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Nahrávání do cloudu není k dispozici při použití vlastního bezpečnostního klíče.",
     "media-only-recording-not-support-e2ee": "Nahrávání pouze zvuku a videa není k dispozici, pokud je povoleno šifrování mezi koncovými body.",
     "you-are-sharing-screen": "Nyní sdílíte obrazovku. Ostatní uvidí větší pohled.",
+    "screen-share-view-disabled": "{{name}} Sdílí obrazovku, ale vy jste zakázali sdílení obrazovky v nastavení ukládání dat.",
     "new-system-message-in-chat": "Ve veřejném chatu byla zveřejněna nová systémová hláška.",
     "queue-holding-messages": "Problém s připojením: zprávy jsou zadržovány.",
     "queue-discarded-message": "Zpráva nemohla být odeslána a byla vyřazena.",
