@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Felhőalapú rögzítés nem érhető el egyéni biztonsági kulcs használata esetén.",
     "media-only-recording-not-support-e2ee": "Csak hang és videó rögzítése nem érhető el, ha a végpontok közötti titkosítás engedélyezve van.",
     "you-are-sharing-screen": "Most megosztja a képernyőjét. Mások nagyobb képet fognak látni.",
+    "screen-share-view-disabled": "{{name}} Megosztja a képernyőt, de az adatmentési beállításokból kitiltottad a képernyőmegosztás megtekintését.",
     "new-system-message-in-chat": "Új rendszerüzenetet tettek közzé a nyilvános csevegésben.",
     "queue-holding-messages": "Kapcsolati probléma: üzenetek maradnak.",
     "queue-discarded-message": "Üzenetet nem lehetett küldeni, ezért elvetették.",
