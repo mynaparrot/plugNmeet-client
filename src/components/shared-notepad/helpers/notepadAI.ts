@@ -16,6 +16,7 @@ interface PendingNotepadAIStream {
   reject: (error: Error) => void;
   chunks: string[];
   timer: ReturnType<typeof setTimeout>;
+  onChunk?: (text: string) => void;
 }
 
 const pendingStreams = new Map<string, PendingNotepadAIStream>();
@@ -25,7 +26,10 @@ const pendingStreams = new Map<string, PendingNotepadAIStream>();
  * tagged with requestFrom = NOTEPAD and a client-generated stream id so the
  * matching chunks can be correlated back to this call.
  */
-export const executeNotepadAI = async (prompt: string): Promise<string> => {
+export const executeNotepadAI = async (
+  prompt: string,
+  onChunk?: (text: string) => void,
+): Promise<string> => {
   const streamId = crypto.randomUUID();
 
   const body = create(InsightsAITextChatContentSchema, {
@@ -41,7 +45,13 @@ export const executeNotepadAI = async (prompt: string): Promise<string> => {
       reject(new Error('Notepad AI request timed out'));
     }, STREAM_TIMEOUT_MS);
 
-    pendingStreams.set(streamId, { resolve, reject, chunks: [], timer });
+    pendingStreams.set(streamId, {
+      resolve,
+      reject,
+      chunks: [],
+      timer,
+      onChunk,
+    });
   });
 
   const r = await sendAPIRequest(
@@ -78,13 +88,15 @@ export const handleNotepadAIStreamResult = (
     return false;
   }
 
+  if (data.text) {
+    entry.chunks.push(data.text);
+    entry.onChunk?.(data.text);
+  }
+
   if (data.isLastChunk) {
     clearTimeout(entry.timer);
     pendingStreams.delete(data.id);
-    entry.chunks.push(data.text);
     entry.resolve(entry.chunks.join(''));
-  } else {
-    entry.chunks.push(data.text);
   }
 
   return true;

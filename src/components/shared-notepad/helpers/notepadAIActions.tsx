@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import type { Block, BlockNoteEditor } from '@blocknote/core';
+import type { Block, BlockNoteEditor, PartialBlock } from '@blocknote/core';
 import type { DefaultReactSuggestionItem } from '@blocknote/react';
 
 import { AiIconSVG } from '../../../assets/Icons/AiIconSVG';
@@ -88,34 +88,96 @@ export const runNotepadAI = async (
   const toastId = toast.loading(i18n.t('insights.notepad-ai.generating'));
 
   try {
-    const result = await executeNotepadAI(prompt);
-    const blocks = editor.tryParseMarkdownToBlocks(result);
+    const placeholderBlockPartial: PartialBlock = {
+      type: 'paragraph',
+      content: '',
+    };
 
+    let placeholderBlock: Block<any, any, any> | undefined;
     if (action === 'continue-writing') {
-      const insertedBlocks = editor.insertBlocks(blocks, cursorBlock, 'after');
-      const insertedBlock = insertedBlocks[0];
-
-      if (insertedBlock) {
-        editor.setTextCursorPosition(insertedBlock, 'end');
-        editor.focus();
-        scrollToBottom?.();
-      }
+      placeholderBlock = editor.insertBlocks(
+        [placeholderBlockPartial],
+        cursorBlock,
+        'after',
+      )[0];
     } else {
       const selectedBlocks = editor.getSelection()?.blocks;
-      let resultBlock: Block<any, any, any> | undefined;
-
       if (selectedBlocks && selectedBlocks.length > 0) {
-        const { insertedBlocks } = editor.replaceBlocks(selectedBlocks, blocks);
-        resultBlock = insertedBlocks[0];
+        placeholderBlock = editor.replaceBlocks(selectedBlocks, [
+          placeholderBlockPartial,
+        ]).insertedBlocks[0];
       } else {
-        const { insertedBlocks } = editor.replaceBlocks([cursorBlock], blocks);
-        resultBlock = insertedBlocks[0];
+        placeholderBlock = editor.replaceBlocks(
+          [cursorBlock],
+          [placeholderBlockPartial],
+        ).insertedBlocks[0];
       }
+    }
 
-      if (resultBlock) {
-        editor.setTextCursorPosition(resultBlock, 'end');
+    let streamedText = '';
+    let renderedBlocks: Block<any, any, any>[] = [];
+    const fullText = await executeNotepadAI(prompt, (chunk) => {
+      streamedText += chunk;
+      if (placeholderBlock) {
+        const blocks = editor.tryParseMarkdownToBlocks(streamedText);
+        const targetIds =
+          renderedBlocks.length > 0
+            ? renderedBlocks.map((b) => b.id)
+            : [placeholderBlock.id];
+        renderedBlocks = editor.replaceBlocks(targetIds, blocks).insertedBlocks;
+        scrollToBottom?.();
+      }
+    });
+
+    if (placeholderBlock) {
+      if (renderedBlocks.length > 0) {
+        editor.setTextCursorPosition(
+          renderedBlocks[renderedBlocks.length - 1],
+          'end',
+        );
         editor.focus();
         scrollToBottom?.();
+      } else {
+        editor.replaceBlocks([placeholderBlock.id], []);
+      }
+    } else {
+      const blocks = editor.tryParseMarkdownToBlocks(fullText);
+      if (action === 'continue-writing') {
+        const insertedBlocks = editor.insertBlocks(
+          blocks,
+          cursorBlock,
+          'after',
+        );
+        const insertedBlock = insertedBlocks[insertedBlocks.length - 1];
+
+        if (insertedBlock) {
+          editor.setTextCursorPosition(insertedBlock, 'end');
+          editor.focus();
+          scrollToBottom?.();
+        }
+      } else {
+        const selectedBlocks = editor.getSelection()?.blocks;
+        let resultBlock: Block<any, any, any> | undefined;
+
+        if (selectedBlocks && selectedBlocks.length > 0) {
+          const { insertedBlocks } = editor.replaceBlocks(
+            selectedBlocks,
+            blocks,
+          );
+          resultBlock = insertedBlocks[insertedBlocks.length - 1];
+        } else {
+          const { insertedBlocks } = editor.replaceBlocks(
+            [cursorBlock],
+            blocks,
+          );
+          resultBlock = insertedBlocks[insertedBlocks.length - 1];
+        }
+
+        if (resultBlock) {
+          editor.setTextCursorPosition(resultBlock, 'end');
+          editor.focus();
+          scrollToBottom?.();
+        }
       }
     }
 
