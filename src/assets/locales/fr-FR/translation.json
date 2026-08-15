@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "L'enregistrement dans le cloud n'est pas disponible lors de l'utilisation d'une clé de sécurité personnalisée.",
     "media-only-recording-not-support-e2ee": "L'enregistrement audio et vidéo uniquement n'est pas disponible lorsque le chiffrement de bout en bout est activé.",
     "you-are-sharing-screen": "Vous partagez actuellement votre écran. Les autres participants verront un affichage agrandi.",
+    "screen-share-view-disabled": "{{name}} partage l’écran, mais vous avez désactivé la visualisation du partage d’écran depuis les paramètres de sauvegarde des données.",
     "new-system-message-in-chat": "Un nouveau message système a été publié dans le chat public.",
     "queue-holding-messages": "Problème de connexion : les messages sont en attente d'envoi.",
     "queue-discarded-message": "Un message n'a pas pu être envoyé et a été supprimé.",
