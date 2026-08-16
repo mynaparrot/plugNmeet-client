@@ -668,47 +668,15 @@ export default class ConnectNats {
     msg: string,
     to?: string,
   ) => {
-    if (!this._nc || this._nc.isClosed()) {
-      return;
-    }
-
-    const data = create(DataChannelMessageSchema, {
-      type,
-      fromUserId: this._userId,
-      toUserId: to,
-      message: msg,
-    });
-
-    let payload: Uint8Array = toBinary(DataChannelMessageSchema, data);
-    if (this._enableE2EE) {
-      const data = await this.encryptData(payload);
-      if (typeof data === 'undefined') {
-        return;
-      }
-      payload = data;
-    }
-
-    if (to) {
-      this.sendPrivateData(payload, 'DATA_MSG', to, false);
-    } else {
-      const subject = `${this._subjects.dataChannel}.${this._roomId}`;
-      this.messageQueue.addToQueue({
-        subject,
-        payload,
-      });
-    }
+    await this.publishData(type, msg, undefined, undefined, to);
   };
 
-  /**
-   * Sends notepad data as a fire-and-forget message over the data channel.
-   * The binary Yjs payload is packed into the `binMessage` field of the
-   * DataChannelMessage envelope and managed by the MessageQueue.
-   */
-  public sendNotepadData = async (
+  public publishData = async (
     type: DataMsgBodyType,
-    binMessage: Uint8Array,
-    id: string,
-    message?: string,
+    message: string | undefined,
+    binMessage: Uint8Array | undefined,
+    id: string | undefined,
+    to?: string,
   ) => {
     if (!this._nc || this._nc.isClosed()) {
       return;
@@ -718,7 +686,8 @@ export default class ConnectNats {
       id,
       type,
       fromUserId: this._userId,
-      message: message ?? '',
+      toUserId: to,
+      message,
       binMessage,
     });
 
@@ -731,8 +700,12 @@ export default class ConnectNats {
       payload = enc;
     }
 
-    const subject = `${this._subjects.dataChannel}.${this._roomId}`;
-    this.messageQueue.addToQueue({ subject, payload });
+    if (to) {
+      this.sendPrivateData(payload, 'DATA_MSG', to, false);
+    } else {
+      const subject = `${this._subjects.dataChannel}.${this._roomId}`;
+      this.messageQueue.addToQueue({ subject, payload });
+    }
   };
 
   public onReconnect = (cb: () => void) => {
