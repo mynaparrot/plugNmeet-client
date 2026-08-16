@@ -7,61 +7,30 @@ import {
   loadWhiteboardPageSnapshot,
   saveWhiteboardPageSnapshot,
 } from './whiteboardPersistence';
+import {
+  base64ToUint8,
+  decodeWhiteboardPageSnapshot,
+  isIncomingNewer,
+  uint8ToBase64,
+  WHITEBOARD_ELEMENTS_MAP,
+} from './utils';
+import { store } from '../../../store';
+import { participantsSelector } from '../../../store/slices/participantSlice';
+import { isUserRecorder } from '../../../helpers/utils';
+import type { IParticipant } from '../../../store/slices/interfaces/participant';
 import type {
   WhiteboardControllerConfig,
+  WhiteboardScope,
   WhiteboardYjsSnapshot,
 } from './types';
+import { WhiteboardDataAsDonorData } from '../../../store/slices/interfaces/whiteboard';
+import { addWhiteboardDataSentFromDonor } from '../../../store/slices/whiteboard';
 
 export const WHITEBOARD_REMOTE_ORIGIN = 'whiteboard-remote';
-export const WHITEBOARD_ELEMENTS_MAP = 'elements';
 const SYNC_RETRY_DELAY_MS = 2000;
 const MAX_SYNC_REQUEST_ATTEMPTS = 3;
 const SAVE_DEBOUNCE_MS = 1000;
-
-/**
- * Decode a persisted yjs state snapshot (as written by
- * `saveWhiteboardPageSnapshot`) back into the Excalidraw elements stored in
- * the `WHITEBOARD_ELEMENTS_MAP` map. Malformed snapshots yield an empty array
- * rather than throwing.
- */
-export const decodeWhiteboardPageSnapshot = (
-  update: Uint8Array,
-): ExcalidrawElement[] => {
-  const doc = new Y.Doc();
-  try {
-    Y.applyUpdate(doc, update);
-  } catch (e) {
-    console.error('[WhiteboardController] failed to decode page snapshot', e);
-    return [];
-  }
-  const elementsMap = doc.getMap<string>(WHITEBOARD_ELEMENTS_MAP);
-  const elements: ExcalidrawElement[] = [];
-  elementsMap.forEach((serialized) => {
-    try {
-      elements.push(JSON.parse(serialized) as ExcalidrawElement);
-    } catch {
-      // skip malformed entries
-    }
-  });
-  return elements;
-};
-
-function uint8ToBase64(bytes: Uint8Array): string {
-  let binary = '';
-  for (let i = 0; i < bytes.length; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary);
-}
-
-function base64ToUint8(base64: string): Uint8Array {
-  const binary = atob(base64);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) {
-    bytes[i] = binary.charCodeAt(i);
-  }
-  return bytes;
-}
+const INITIAL_REQUEST_TIMEOUT_MS = 4000;
 
 /**
  * Singleton controller owning the active yjs CRDT whiteboard session for the
@@ -79,13 +48,16 @@ export class WhiteboardController {
   private page = 0;
   private generation = 0;
   private config: WhiteboardControllerConfig | null = null;
-  private pendingSyncRequestId: string | null = null;
+  private pendingSyncRequestIds = new Set<string>();
   private syncRequestAttempts = 0;
   private backupResponseTimers = new Map<
     string,
     ReturnType<typeof setTimeout>
   >();
   private syncRetryTimer: ReturnType<typeof setTimeout> | null = null;
+  private initialRequestResolver:
+    ((data: { fileId: string; page: number } | null) => void) | null = null;
+  private initialRequestTimer: ReturnType<typeof setTimeout> | null = null;
   private saveTimer: ReturnType<typeof setTimeout> | null = null;
 
   private listeners = new Set<() => void>();
@@ -127,6 +99,19 @@ export class WhiteboardController {
     this.config = config;
   };
 
+  private sendWhiteboardData = (
+    type: DataMsgBodyType,
+    binMessage: Uint8Array,
+    id?: string,
+    message?: string,
+    to?: string,
+  ) => {
+    const conn = getNatsConn();
+    if (conn) {
+      void conn.sendWhiteboardData(type, { binMessage, id, message, to });
+    }
+  };
+
   /**
    * Point the controller at a specific whiteboard page and start syncing it.
    * No-op when no config was provided or the requested page is already the
@@ -146,10 +131,19 @@ export class WhiteboardController {
     return this.syncChain;
   };
 
-  private doSync = async (fileId: string, page: number, hydrate: boolean) => {
+  /**
+   * Creates (or reuses) the active Yjs doc/elements map for a whiteboard page.
+   * Returns true when a new doc was created; false when no config was provided
+   * or the requested page is already active.
+   */
+  private setupDoc = async (
+    fileId: string,
+    page: number,
+    options?: { hydrate?: boolean },
+  ): Promise<boolean> => {
     const config = this.config;
     if (!config) {
-      return;
+      return false;
     }
     if (
       this.doc &&
@@ -157,15 +151,17 @@ export class WhiteboardController {
       this.page === page &&
       this.roomSid === config.roomSid
     ) {
-      return;
+      return false;
     }
 
-    await this.teardownDoc();
+    if (this.doc) {
+      await this.teardownDoc();
+    }
 
     const doc = new Y.Doc();
     const elementsMap = doc.getMap<string>(WHITEBOARD_ELEMENTS_MAP);
 
-    if (hydrate) {
+    if (options?.hydrate) {
       // Hydrate from persistence BEFORE registering the update broadcaster so
       // the loaded update is neither re-broadcast nor re-persisted.
       try {
@@ -188,6 +184,16 @@ export class WhiteboardController {
 
     this.generation++;
     this.emitChange();
+
+    return true;
+  };
+
+  private doSync = async (fileId: string, page: number, hydrate: boolean) => {
+    const created = await this.setupDoc(fileId, page, { hydrate });
+    if (!created) {
+      return;
+    }
+
     this.syncRequestAttempts = 0;
     this.sendSyncRequest();
   };
@@ -223,31 +229,61 @@ export class WhiteboardController {
   };
 
   /**
-   * Write local (already reconciled) Excalidraw elements into the CRDT.
-   * Deleted elements are stored as `isDeleted: true` tombstones - we never
-   * call `elementsMap.delete()`.
+   * Merge Excalidraw elements into the CRDT map. Deleted elements are stored
+   * as `isDeleted: true` tombstones - we never call `elementsMap.delete()`.
    *
-   * Change detection: we compare the full serialized JSON string instead of
-   * parsing and diffing individual fields. A single string comparison is the
-   * cheaper correct approach: any semantic change to `id`, `version`,
-   * `versionNonce`, `updated` or `isDeleted` necessarily changes the JSON, and
-   * Excalidraw serializes a given element state deterministically, so an
-   * identical string guarantees nothing changed.
+   * Version-aware: an incoming element only replaces the stored value when it
+   * is newer according to Excalidraw's reconciliation rule (higher `version`;
+   * on equal version, lower `versionNonce`).
+   *
+   * `origin` controls how the resulting Yjs update is treated: default local
+   * writes are rebroadcast, while `WHITEBOARD_REMOTE_ORIGIN` applies imported
+   * snapshot content without rebroadcasting it.
    */
-  syncLocalElements = (elements: readonly ExcalidrawElement[]) => {
+  mergeElements = (
+    elements: readonly ExcalidrawElement[],
+    origin?: unknown,
+  ) => {
     const { doc, elementsMap } = this;
     if (!doc || !elementsMap) {
       return;
     }
     doc.transact(() => {
-      for (const element of elements) {
-        const serialized = JSON.stringify(element);
-        if (elementsMap.get(element.id) === serialized) {
-          continue;
-        }
-        elementsMap.set(element.id, serialized);
+      for (const incoming of elements) {
+        this.updateElementIfNewer(elementsMap, incoming);
       }
-    });
+    }, origin);
+
+    if (origin === WHITEBOARD_REMOTE_ORIGIN) {
+      this.config?.onRemoteUpdate?.();
+    }
+  };
+
+  /**
+   * Version-aware write for a single element. Keeps the stored value when it
+   * is newer than the incoming candidate (higher version; on tie, lower
+   * versionNonce). Mirrors Excalidraw's `shouldDiscardRemoteElement`.
+   */
+  private updateElementIfNewer = (
+    elementsMap: Y.Map<string>,
+    incoming: ExcalidrawElement,
+  ) => {
+    const serialized = JSON.stringify(incoming);
+    const stored = elementsMap.get(incoming.id);
+    if (stored === serialized) {
+      return;
+    }
+    if (stored) {
+      try {
+        const current = JSON.parse(stored) as ExcalidrawElement;
+        if (!isIncomingNewer(current, incoming)) {
+          return;
+        }
+      } catch {
+        // Malformed stored value; replace it below.
+      }
+    }
+    elementsMap.set(incoming.id, serialized);
   };
 
   /** Read all elements stored in the CRDT map (including tombstones). */
@@ -268,55 +304,22 @@ export class WhiteboardController {
   };
 
   /**
-   * Mark every element as a tombstone (`isDeleted: true`, `updated` bumped,
-   * id/version preserved). Never uses `elementsMap.clear()`/`delete()`.
-   */
-  clearElements = () => {
-    const { doc, elementsMap } = this;
-    if (!doc || !elementsMap) {
-      return;
-    }
-    const now = Date.now();
-    doc.transact(() => {
-      elementsMap.forEach((serialized, id) => {
-        let element: Record<string, unknown>;
-        try {
-          element = JSON.parse(serialized) as Record<string, unknown>;
-        } catch {
-          element = { id };
-        }
-        element.isDeleted = true;
-        element.updated = now;
-        elementsMap.set(id, JSON.stringify(element));
-      });
-    });
-  };
-
-  /**
    * Tag every outbound yjs message with the `(fileId, page)` scope so peers
    * can drop messages belonging to a different active page.
    */
   private buildScopeMessage = (extra: Record<string, unknown> = {}) =>
     JSON.stringify({ fileId: this.fileId, page: this.page, ...extra });
 
-  private parseScope = (
-    message?: string,
-  ): { fileId?: string; page?: number; stateVector?: string } | null => {
+  private parseScope = (message?: string): WhiteboardScope | null => {
     if (!message) return null;
     try {
-      return JSON.parse(message) as {
-        fileId?: string;
-        page?: number;
-        stateVector?: string;
-      };
+      return JSON.parse(message) as WhiteboardScope;
     } catch {
       return null;
     }
   };
 
-  private matchesActiveScope = (
-    scope: { fileId?: string; page?: number } | null,
-  ): boolean =>
+  private matchesActiveScope = (scope: WhiteboardScope | null): boolean =>
     !!scope &&
     !!this.doc &&
     scope.fileId === this.fileId &&
@@ -344,11 +347,11 @@ export class WhiteboardController {
         }
         break;
       }
-      case DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA:
-        this.handleSyncRequest(binMessage, fromUserId, id, message);
+      case DataMsgBodyType.WHITEBOARD_SYNC_REQUEST:
+        void this.handleSyncRequest(binMessage, fromUserId, id, message);
         break;
-      case DataMsgBodyType.RES_FULL_WHITEBOARD_DATA:
-        this.handleSyncResponse(binMessage, fromUserId, id, message);
+      case DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE:
+        void this.handleSyncResponse(binMessage, fromUserId, id, message);
         break;
       default:
         break;
@@ -363,7 +366,67 @@ export class WhiteboardController {
       Y.applyUpdate(this.doc, update, WHITEBOARD_REMOTE_ORIGIN);
     } catch (e) {
       console.error('[WhiteboardController] failed to apply remote update', e);
+      return;
     }
+    this.config?.onRemoteUpdate?.();
+  };
+
+  private canParticipantEdit = (
+    participant: IParticipant,
+    defaultRoomLock: boolean | undefined,
+  ): boolean => {
+    if (participant.metadata?.isPresenter) {
+      return true;
+    }
+    if (isUserRecorder(participant.userId)) {
+      return false;
+    }
+    const lock = participant.metadata?.lockSettings?.lockWhiteboard;
+    if (typeof lock === 'boolean') {
+      return !lock;
+    }
+    return !(defaultRoomLock ?? true);
+  };
+
+  private getSyncRequestTargets = (): string[] => {
+    const state = store.getState();
+    const currentUserId = state.session.currentUser?.userId;
+    if (!currentUserId) {
+      return [];
+    }
+
+    const defaultRoomLock =
+      state.session.currentRoom.metadata?.defaultLockSettings?.lockWhiteboard;
+
+    return participantsSelector
+      .selectAll(state)
+      .filter(
+        (p) =>
+          p.userId !== currentUserId &&
+          p.isOnline &&
+          !p.metadata.waitForApproval,
+      )
+      .sort((a, b) => {
+        const presenterDiff =
+          (b.metadata?.isPresenter ? 1 : 0) - (a.metadata?.isPresenter ? 1 : 0);
+        if (presenterDiff !== 0) {
+          return presenterDiff;
+        }
+        const editDiff =
+          (this.canParticipantEdit(b, defaultRoomLock) ? 1 : 0) -
+          (this.canParticipantEdit(a, defaultRoomLock) ? 1 : 0);
+        if (editDiff !== 0) {
+          return editDiff;
+        }
+        const adminDiff =
+          (b.metadata?.isAdmin ? 1 : 0) - (a.metadata?.isAdmin ? 1 : 0);
+        if (adminDiff !== 0) {
+          return adminDiff;
+        }
+        return a.joinedAt - b.joinedAt;
+      })
+      .slice(0, 3)
+      .map((p) => p.userId);
   };
 
   private sendSyncRequest = () => {
@@ -372,32 +435,39 @@ export class WhiteboardController {
       return;
     }
 
-    this.syncRequestAttempts += 1;
-    if (this.syncRequestAttempts > MAX_SYNC_REQUEST_ATTEMPTS) {
-      // Stop retrying when no peer on this (fileId, page) has answered.
-      // A later page switch / reconnect / visibilitychange resync will try again.
-      this.pendingSyncRequestId = null;
-      if (this.syncRetryTimer) {
-        clearTimeout(this.syncRetryTimer);
-        this.syncRetryTimer = null;
-      }
+    if (this.syncRetryTimer) {
+      clearTimeout(this.syncRetryTimer);
+      this.syncRetryTimer = null;
+    }
+
+    const targets = this.getSyncRequestTargets();
+    if (targets.length === 0) {
+      this.pendingSyncRequestIds.clear();
       return;
     }
 
-    const requestId = crypto.randomUUID();
-    this.pendingSyncRequestId = requestId;
-    config.send(
-      DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA,
-      Y.encodeStateVector(doc),
-      requestId,
-      this.buildScopeMessage(),
-    );
-
-    if (this.syncRetryTimer) {
-      clearTimeout(this.syncRetryTimer);
+    this.syncRequestAttempts += 1;
+    if (this.syncRequestAttempts > MAX_SYNC_REQUEST_ATTEMPTS) {
+      this.pendingSyncRequestIds.clear();
+      return;
     }
+
+    this.pendingSyncRequestIds.clear();
+    const stateVector = Y.encodeStateVector(doc);
+    for (const toUserId of targets) {
+      const requestId = crypto.randomUUID();
+      this.pendingSyncRequestIds.add(requestId);
+      this.sendWhiteboardData(
+        DataMsgBodyType.WHITEBOARD_SYNC_REQUEST,
+        stateVector,
+        requestId,
+        this.buildScopeMessage(),
+        toUserId,
+      );
+    }
+
     this.syncRetryTimer = setTimeout(() => {
-      if (this.pendingSyncRequestId === requestId && this.doc) {
+      if (this.pendingSyncRequestIds.size > 0 && this.doc) {
         this.sendSyncRequest();
       }
     }, SYNC_RETRY_DELAY_MS);
@@ -410,6 +480,69 @@ export class WhiteboardController {
     }
   };
 
+  requestInitialData = (): Promise<{ fileId: string; page: number } | null> => {
+    return new Promise((resolve) => {
+      const config = this.config;
+      if (!config) {
+        resolve(null);
+        return;
+      }
+
+      // Single-flight: cancel any previous pending initial request.
+      this.resolveInitialRequest(null);
+
+      const targets = this.getSyncRequestTargets();
+      if (targets.length === 0) {
+        resolve(null);
+        return;
+      }
+
+      this.initialRequestResolver = resolve;
+      this.pendingSyncRequestIds.clear();
+      const emptyStateVector = Y.encodeStateVector(new Y.Doc());
+
+      for (const toUserId of targets) {
+        const requestId = crypto.randomUUID();
+        this.pendingSyncRequestIds.add(requestId);
+        this.sendWhiteboardData(
+          DataMsgBodyType.WHITEBOARD_SYNC_REQUEST,
+          emptyStateVector,
+          requestId,
+          undefined,
+          toUserId,
+        );
+      }
+
+      this.initialRequestTimer = setTimeout(() => {
+        this.resolveInitialRequest(null);
+      }, INITIAL_REQUEST_TIMEOUT_MS);
+    });
+  };
+
+  private resolveInitialRequest = (
+    data: { fileId: string; page: number } | null,
+  ) => {
+    if (this.initialRequestResolver) {
+      const resolve = this.initialRequestResolver;
+      this.initialRequestResolver = null;
+      resolve(data);
+    }
+
+    if (this.initialRequestTimer) {
+      clearTimeout(this.initialRequestTimer);
+      this.initialRequestTimer = null;
+    }
+
+    this.pendingSyncRequestIds.clear();
+
+    if (this.syncRetryTimer) {
+      clearTimeout(this.syncRetryTimer);
+      this.syncRetryTimer = null;
+    }
+
+    this.syncRequestAttempts = 0;
+  };
+
   broadcastFullState = () => {
     const { doc, elementsMap, config } = this;
     if (!doc || !elementsMap || !config || !config.canWrite()) {
@@ -420,7 +553,7 @@ export class WhiteboardController {
     }
     const update = Y.encodeStateAsUpdate(doc);
     if (update.length > 0) {
-      config.send(
+      this.sendWhiteboardData(
         DataMsgBodyType.SCENE_UPDATE,
         update,
         undefined,
@@ -429,98 +562,258 @@ export class WhiteboardController {
     }
   };
 
-  private handleSyncRequest = (
+  /**
+   * Handles a whiteboard synchronization request.
+   *
+   * For a newly joined user without scope information, sends the active
+   * whiteboard metadata together with the full active Yjs document, falling
+   * back to its persisted snapshot when the document is empty.
+   *
+   * For an existing user requesting the active page, sends only the Yjs updates
+   * missing from the requester's state vector. Requests for another page are
+   * served from that page's persisted snapshot.
+   */
+  private handleSyncRequest = async (
     binMessage: Uint8Array,
-    _fromUserId: string,
+    fromUserId: string,
     id?: string,
     message?: string,
   ) => {
-    const { doc, config } = this;
-    if (!doc || !config || !id) {
+    const { doc, config, elementsMap } = this;
+
+    if (!config || !id || !config.excalidrawAPI) {
       return;
     }
-    const scope = this.parseScope(message);
-    if (!this.matchesActiveScope(scope)) {
-      return;
+
+    let responseMessage = this.buildScopeMessage();
+    let responseUpdate: Uint8Array;
+    let sendFullInitialData = false;
+
+    const senderScope = this.parseScope(message);
+
+    if (
+      !senderScope ||
+      !senderScope.fileId ||
+      typeof senderScope.page !== 'number'
+    ) {
+      sendFullInitialData = true;
+
+      const { currentOfficeFilePages } = store.getState().whiteboard;
+      const appState = config.excalidrawAPI.getAppState();
+
+      const initialData: WhiteboardDataAsDonorData = {
+        currentPageNumber: this.page,
+        currentWhiteboardOfficeFileId: this.fileId,
+        currentOfficeFilePages,
+        appState: {
+          height: appState.height,
+          width: appState.width,
+          scrollX: appState.scrollX,
+          scrollY: appState.scrollY,
+          zoomValue: appState.zoom.value,
+          theme: appState.theme,
+          viewBackgroundColor: appState.viewBackgroundColor,
+          zenModeEnabled: appState.zenModeEnabled,
+          gridSize: appState.gridSize,
+        },
+      };
+
+      responseMessage = this.buildScopeMessage({
+        initial_data: JSON.stringify(initialData),
+      });
     }
-    const missing = Y.encodeStateAsUpdate(doc, binMessage);
-    const stateVector = uint8ToBase64(Y.encodeStateVector(doc));
+
+    if (sendFullInitialData) {
+      if (doc && elementsMap && elementsMap.size > 0) {
+        responseUpdate = Y.encodeStateAsUpdate(doc);
+      } else {
+        const stored = await loadWhiteboardPageSnapshot(this.fileId, this.page);
+
+        if (!stored?.length) {
+          return;
+        }
+
+        if (!this.doc || !this.config) {
+          return;
+        }
+
+        responseUpdate = stored;
+      }
+    } else if (
+      doc &&
+      elementsMap &&
+      this.matchesActiveScope(senderScope) &&
+      elementsMap.size > 0
+    ) {
+      responseUpdate = Y.encodeStateAsUpdate(doc, binMessage);
+
+      responseMessage = this.buildScopeMessage({
+        stateVector: uint8ToBase64(Y.encodeStateVector(doc)),
+      });
+    } else if (
+      senderScope &&
+      senderScope.fileId &&
+      typeof senderScope.page === 'number'
+    ) {
+      const stored = await loadWhiteboardPageSnapshot(
+        senderScope.fileId,
+        senderScope.page,
+      );
+
+      if (!stored?.length) {
+        return;
+      }
+
+      if (!this.doc || !this.config) {
+        return;
+      }
+
+      responseUpdate = stored;
+      responseMessage = JSON.stringify({
+        fileId: senderScope.fileId,
+        page: senderScope.page,
+      });
+    }
 
     const respond = () => {
-      config.send(
-        DataMsgBodyType.RES_FULL_WHITEBOARD_DATA,
-        missing,
+      this.sendWhiteboardData(
+        DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE,
+        responseUpdate,
         id,
-        this.buildScopeMessage({ stateVector }),
+        responseMessage,
+        fromUserId,
       );
     };
 
-    // Primary responder (presenter) / writers respond immediately; everyone
-    // else jitters 250-800ms as a randomized backup responder.
     if (config.isPrimaryResponder?.() ?? config.canWrite()) {
       respond();
       return;
     }
+
     const delay = 250 + Math.floor(Math.random() * 550);
     const timer = setTimeout(respond, delay);
     this.backupResponseTimers.set(id, timer);
   };
 
-  private handleSyncResponse = (
+  /**
+   * Handles a valid synchronization response.
+   *
+   * Initial responses (with donor metadata in `scope.initial_data`) bootstrap
+   * a non-presenter's whiteboard session: the donor's file/page is applied to
+   * Redux, an empty doc is created for that scope when needed, and the
+   * included full scene is merged. The first valid response resolves the
+   * pending `requestInitialData()` promise. Normal responses must match the
+   * active file/page scope and may include a state vector for reverse
+   * synchronization.
+   */
+  private handleSyncResponse = async (
     binMessage: Uint8Array,
-    _fromUserId: string,
+    fromUserId: string,
     id?: string,
     message?: string,
   ) => {
     const scope = this.parseScope(message);
-    if (!this.matchesActiveScope(scope)) {
+
+    if (!scope || !id || !this.pendingSyncRequestIds.has(id)) {
       return;
     }
 
-    if (id) {
-      const timer = this.backupResponseTimers.get(id);
-      if (timer) {
-        clearTimeout(timer);
-        this.backupResponseTimers.delete(id);
+    const hasInitialData =
+      typeof scope.initial_data === 'string' && scope.initial_data.length > 0;
+
+    if (!hasInitialData && !this.doc) {
+      return;
+    }
+
+    if (!hasInitialData && !this.matchesActiveScope(scope)) {
+      return;
+    }
+
+    const timer = this.backupResponseTimers.get(id);
+    if (timer) {
+      clearTimeout(timer);
+      this.backupResponseTimers.delete(id);
+    }
+
+    this.pendingSyncRequestIds.delete(id);
+
+    let donorFileId = this.fileId;
+    let donorPage = this.page;
+
+    if (hasInitialData) {
+      try {
+        const initialData = JSON.parse(
+          scope.initial_data!,
+        ) as WhiteboardDataAsDonorData;
+
+        donorFileId = initialData.currentWhiteboardOfficeFileId;
+        donorPage = initialData.currentPageNumber;
+
+        store.dispatch(addWhiteboardDataSentFromDonor(initialData));
+      } catch (error) {
+        console.error(
+          '[WhiteboardController] failed to parse initial whiteboard data',
+          error,
+        );
+        return;
+      }
+
+      await this.setupDoc(donorFileId, donorPage);
+
+      if (!this.doc || !this.elementsMap) {
+        return;
       }
     }
-
-    if (id !== this.pendingSyncRequestId || !this.doc) {
-      return;
-    }
-
-    if (this.syncRetryTimer) {
-      clearTimeout(this.syncRetryTimer);
-      this.syncRetryTimer = null;
-    }
-    this.pendingSyncRequestId = null;
-    this.syncRequestAttempts = 0;
 
     if (binMessage.length > 0) {
-      this.applyRemoteUpdate(binMessage);
-    }
-
-    // The responder sent its state vector; push any state we have beyond it
-    // back to the room so nobody loses concurrent local edits.
-    let stateVector: Uint8Array | null = null;
-    if (scope && scope.stateVector) {
-      try {
-        stateVector = base64ToUint8(scope.stateVector);
-      } catch {
-        stateVector = null;
+      if (scope.stateVector) {
+        // Normal response containing the Yjs updates missing locally.
+        this.applyRemoteUpdate(binMessage);
+      } else {
+        // Initial data or persisted snapshot without a state vector.
+        const remoteElements = decodeWhiteboardPageSnapshot(binMessage);
+        this.mergeElements(remoteElements, WHITEBOARD_REMOTE_ORIGIN);
       }
     }
 
-    if (stateVector && this.config && this.doc) {
-      const extra = Y.encodeStateAsUpdate(this.doc, stateVector);
-      if (extra.length > 0) {
-        this.config.send(
-          DataMsgBodyType.SCENE_UPDATE,
-          extra,
-          undefined,
-          this.buildScopeMessage(),
+    /*
+     * Send back updates that the responder did not have when it generated its
+     * state vector.
+     */
+    if (scope.stateVector && this.config && this.doc) {
+      try {
+        const stateVector = base64ToUint8(scope.stateVector);
+        const extra = Y.encodeStateAsUpdate(this.doc, stateVector);
+
+        if (extra.length > 0) {
+          this.sendWhiteboardData(
+            DataMsgBodyType.SCENE_UPDATE,
+            extra,
+            undefined,
+            this.buildScopeMessage(),
+            fromUserId,
+          );
+        }
+      } catch (error) {
+        console.error(
+          '[WhiteboardController] failed to process responder state vector',
+          error,
         );
       }
+    }
+
+    if (hasInitialData) {
+      this.resolveInitialRequest({ fileId: donorFileId, page: donorPage });
+      return;
+    }
+
+    if (this.pendingSyncRequestIds.size === 0) {
+      if (this.syncRetryTimer) {
+        clearTimeout(this.syncRetryTimer);
+        this.syncRetryTimer = null;
+      }
+
+      this.syncRequestAttempts = 0;
     }
   };
 
@@ -539,7 +832,7 @@ export class WhiteboardController {
     if (!config || !config.canWrite()) {
       return;
     }
-    config.send(
+    this.sendWhiteboardData(
       DataMsgBodyType.SCENE_UPDATE,
       update,
       undefined,
@@ -577,7 +870,7 @@ export class WhiteboardController {
       clearTimeout(t);
     }
     this.backupResponseTimers.clear();
-    this.pendingSyncRequestId = null;
+    this.pendingSyncRequestIds.clear();
     this.syncRequestAttempts = 0;
 
     if (this.doc) {

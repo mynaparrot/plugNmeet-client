@@ -104,10 +104,15 @@ const ManageOfficeFilesModal = ({
         // Flush the current page's yjs snapshot to IndexedDB before switching.
         await getWhiteboardController().saveNow();
         // broadcast first so that user can prepare for file
-        await broadcastCurrentFileId(officeFile.fileId);
+        await broadcastCurrentFileId(officeFile.fileId, 1);
         await sleep(300);
         // now update our store
-        dispatch(updateCurrentWhiteboardOfficeFileId(officeFile.fileId));
+        dispatch(
+          updateCurrentWhiteboardOfficeFileId({
+            fileId: officeFile.fileId,
+            page: 1,
+          }),
+        );
         onClose();
       }, 300),
     [excalidrawAPI, dispatch, onClose],

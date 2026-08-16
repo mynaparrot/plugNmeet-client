@@ -623,40 +623,43 @@ export default class ConnectNats {
   };
 
   /**
-   * Sends whiteboard data as a fire-and-forget message.
-   * This method uses the core NATS `publish` method via the `MessageQueue`
-   * to avoid blocking critical messages.
+   * Sends whiteboard data as a fire-and-forget message on the whiteboard
+   * subject. Supports JSON control messages (`message`) and Yjs binary
+   * updates (`binMessage`). E2EE uses `_enableE2EEWhiteboard`.
    */
   public sendWhiteboardData = async (
     type: DataMsgBodyType,
-    msg: string,
-    to?: string,
+    payload: {
+      message?: string;
+      binMessage?: Uint8Array;
+      id?: string;
+      to?: string;
+    } = {},
   ) => {
     if (!this._nc || this._nc.isClosed()) {
       return;
     }
 
     const data = create(DataChannelMessageSchema, {
+      id: payload.id ?? '',
       type,
       fromUserId: this._userId,
-      toUserId: to,
-      message: msg,
+      toUserId: payload.to,
+      message: payload.message ?? '',
+      binMessage: payload.binMessage,
     });
 
-    let payload: Uint8Array = toBinary(DataChannelMessageSchema, data);
+    let encoded: Uint8Array = toBinary(DataChannelMessageSchema, data);
     if (this._enableE2EEWhiteboard) {
-      const data = await this.encryptData(payload);
-      if (typeof data === 'undefined') {
-        return; // Don't send if encryption fails
+      const enc = await this.encryptData(encoded);
+      if (typeof enc === 'undefined') {
+        return;
       }
-      payload = data;
+      encoded = enc;
     }
 
     const subject = `${this._subjects.whiteboard}.${this._roomId}`;
-    this.messageQueue.addToQueue({
-      subject,
-      payload,
-    });
+    this.messageQueue.addToQueue({ subject, payload: encoded });
   };
 
   /**
@@ -670,47 +673,15 @@ export default class ConnectNats {
     msg: string,
     to?: string,
   ) => {
-    if (!this._nc || this._nc.isClosed()) {
-      return;
-    }
-
-    const data = create(DataChannelMessageSchema, {
-      type,
-      fromUserId: this._userId,
-      toUserId: to,
-      message: msg,
-    });
-
-    let payload: Uint8Array = toBinary(DataChannelMessageSchema, data);
-    if (this._enableE2EE) {
-      const data = await this.encryptData(payload);
-      if (typeof data === 'undefined') {
-        return;
-      }
-      payload = data;
-    }
-
-    if (to) {
-      this.sendPrivateData(payload, 'DATA_MSG', to, false);
-    } else {
-      const subject = `${this._subjects.dataChannel}.${this._roomId}`;
-      this.messageQueue.addToQueue({
-        subject,
-        payload,
-      });
-    }
+    await this.publishData(type, msg, undefined, undefined, to);
   };
 
-  /**
-   * Sends notepad data as a fire-and-forget message over the data channel.
-   * The binary Yjs payload is packed into the `binMessage` field of the
-   * DataChannelMessage envelope and managed by the MessageQueue.
-   */
-  public sendNotepadData = async (
+  public publishData = async (
     type: DataMsgBodyType,
-    binMessage: Uint8Array,
-    id: string,
-    message?: string,
+    message: string | undefined,
+    binMessage: Uint8Array | undefined,
+    id: string | undefined,
+    to?: string,
   ) => {
     if (!this._nc || this._nc.isClosed()) {
       return;
@@ -720,7 +691,8 @@ export default class ConnectNats {
       id,
       type,
       fromUserId: this._userId,
-      message: message ?? '',
+      toUserId: to,
+      message,
       binMessage,
     });
 
@@ -733,44 +705,12 @@ export default class ConnectNats {
       payload = enc;
     }
 
-    const subject = `${this._subjects.dataChannel}.${this._roomId}`;
-    this.messageQueue.addToQueue({ subject, payload });
-  };
-
-  /**
-   * Sends whiteboard Yjs CRDT data as a fire-and-forget message on the
-   * whiteboard subject. The binary Yjs payload is packed into the `binMessage`
-   * field of the DataChannelMessage envelope and managed by the MessageQueue.
-   */
-  public sendWhiteboardYjsData = async (
-    type: DataMsgBodyType,
-    binMessage: Uint8Array,
-    id?: string,
-    message?: string,
-  ) => {
-    if (!this._nc || this._nc.isClosed()) {
-      return;
+    if (to) {
+      this.sendPrivateData(payload, 'DATA_MSG', to, false);
+    } else {
+      const subject = `${this._subjects.dataChannel}.${this._roomId}`;
+      this.messageQueue.addToQueue({ subject, payload });
     }
-
-    const data = create(DataChannelMessageSchema, {
-      id: id ?? '',
-      type,
-      fromUserId: this._userId,
-      message: message ?? '',
-      binMessage,
-    });
-
-    let payload: Uint8Array = toBinary(DataChannelMessageSchema, data);
-    if (this._enableE2EEWhiteboard) {
-      const enc = await this.encryptData(payload);
-      if (typeof enc === 'undefined') {
-        return;
-      }
-      payload = enc;
-    }
-
-    const subject = `${this._subjects.whiteboard}.${this._roomId}`;
-    this.messageQueue.addToQueue({ subject, payload });
   };
 
   public onReconnect = (cb: () => void) => {

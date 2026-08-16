@@ -1,14 +1,11 @@
 export {
   WhiteboardController,
-  decodeWhiteboardPageSnapshot,
   getWhiteboardController,
-  WHITEBOARD_ELEMENTS_MAP,
   WHITEBOARD_REMOTE_ORIGIN,
 } from './WhiteboardController';
+export { decodeWhiteboardPageSnapshot, WHITEBOARD_ELEMENTS_MAP } from './utils';
 export type {
   WhiteboardControllerConfig,
-  WhiteboardPageKey,
-  WhiteboardTransport,
   WhiteboardYjsSnapshot,
 } from './types';
 export {

@@ -70,3 +70,10 @@ export interface WhiteboardFileConversionRes {
   filePath: string;
   totalPages: number;
 }
+
+export interface WhiteboardDataAsDonorData {
+  appState: IWhiteboardAppState;
+  currentOfficeFilePages: string;
+  currentWhiteboardOfficeFileId: string;
+  currentPageNumber: number;
+}

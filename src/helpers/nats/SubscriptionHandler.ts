@@ -222,9 +222,19 @@ export default class SubscriptionHandler {
         }
         const payload = fromBinary(DataChannelMessageSchema, dataToParse);
         // Still need to check if the message is from the local user to avoid echo.
-        if (payload.fromUserId !== this.connectNats.userId) {
-          await this._handleWhiteboard.handleWhiteboardMsg(payload);
+        if (payload.fromUserId === this.connectNats.userId) {
+          continue;
         }
+        const isYjsMessage =
+          !!payload.binMessage && payload.binMessage.length > 0;
+        if (
+          isYjsMessage &&
+          payload.toUserId &&
+          payload.toUserId !== this.connectNats.userId
+        ) {
+          continue;
+        }
+        await this._handleWhiteboard.handleWhiteboardMsg(payload);
       } catch (e) {
         console.error('whiteboard event error:', e);
       }

@@ -4,7 +4,9 @@ import {
   IWhiteboardAppState,
   IWhiteboardOfficeFile,
   IWhiteboardSlice,
+  WhiteboardDataAsDonorData,
 } from './interfaces/whiteboard';
+import { isArray } from 'es-toolkit/compat';
 
 const initialState: IWhiteboardSlice = {
   totalPages: 10,
@@ -45,10 +47,12 @@ const whiteboardSlice = createSlice({
     },
     updateCurrentWhiteboardOfficeFileId: (
       state,
-      action: PayloadAction<string>,
+      action: PayloadAction<{ fileId: string; page: number }>,
     ) => {
+      const { fileId, page } = action.payload;
+
       const file = state.whiteboardUploadedOfficeFiles.find(
-        (f) => f.fileId === action.payload,
+        (f) => f.fileId === fileId,
       );
       if (file) {
         state.totalPages = file.totalPages;
@@ -58,10 +62,9 @@ const whiteboardSlice = createSlice({
         // The page data will be synced from the presenter.
         state.currentOfficeFilePages = '';
       }
-      // This state update is crucial for triggering a refresh for all clients.
-      state.currentWhiteboardOfficeFileId = action.payload;
-      // Reset to the first page whenever a new file is selected.
-      state.currentPage = 1;
+
+      state.currentWhiteboardOfficeFileId = fileId;
+      state.currentPage = page;
     },
     updateCurrentOfficeFilePages: (state, action: PayloadAction<string>) => {
       state.currentOfficeFilePages = action.payload;
@@ -86,6 +89,23 @@ const whiteboardSlice = createSlice({
     triggerRefreshWhiteboardFilesListSignal: (state) => {
       state.refreshWhiteboardFilesListSignal = Date.now();
     },
+    addWhiteboardDataSentFromDonor: (
+      state,
+      action: PayloadAction<WhiteboardDataAsDonorData>,
+    ) => {
+      state.currentWhiteboardOfficeFileId =
+        action.payload.currentWhiteboardOfficeFileId;
+      state.currentPage = action.payload.currentPageNumber;
+      state.currentOfficeFilePages = action.payload.currentOfficeFilePages;
+
+      if (action.payload.currentOfficeFilePages !== '') {
+        const pages = JSON.parse(action.payload.currentOfficeFilePages);
+        if (pages && isArray(pages) && pages.length > 0) {
+          state.totalPages = pages.length;
+        }
+      }
+      state.whiteboardAppState = action.payload.appState;
+    },
   },
 });
 
@@ -98,6 +118,7 @@ export const {
   addWhiteboardUploadedOfficeFile,
   triggerRefreshWhiteboard,
   triggerRefreshWhiteboardFilesListSignal,
+  addWhiteboardDataSentFromDonor,
 } = whiteboardSlice.actions;
 
 export default whiteboardSlice.reducer;

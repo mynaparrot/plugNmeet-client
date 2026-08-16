@@ -7,65 +7,6 @@ import ConnectNats from '../../../helpers/nats/ConnectNats';
 
 let preAppState: Record<string, any> | null = null,
   conn: ConnectNats;
-let positionRequestResolver:
-  ((position: { fileId: string; page: number } | null) => void) | null = null;
-let positionRequestTimer: ReturnType<typeof setTimeout> | null = null;
-
-export const requestCurrentWhiteboardPosition = (): Promise<{
-  fileId: string;
-  page: number;
-} | null> => {
-  if (!conn) {
-    conn = getNatsConn();
-  }
-  return new Promise((resolve) => {
-    if (positionRequestResolver) {
-      positionRequestResolver(null);
-    }
-    positionRequestResolver = resolve;
-
-    if (positionRequestTimer) {
-      clearTimeout(positionRequestTimer);
-    }
-    positionRequestTimer = setTimeout(() => {
-      positionRequestResolver?.(null);
-      positionRequestResolver = null;
-      positionRequestTimer = null;
-    }, 2000);
-
-    void conn.sendWhiteboardData(
-      DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA,
-      JSON.stringify({ action: 'position-request' }),
-    );
-  });
-};
-
-export const resolveWhiteboardPositionResponse = (
-  fileId: string,
-  page: number,
-) => {
-  if (positionRequestResolver) {
-    positionRequestResolver({ fileId, page });
-    positionRequestResolver = null;
-  }
-  if (positionRequestTimer) {
-    clearTimeout(positionRequestTimer);
-    positionRequestTimer = null;
-  }
-};
-
-export const sendWhiteboardPositionResponse = async (
-  fileId: string,
-  page: number,
-) => {
-  if (!conn) {
-    conn = getNatsConn();
-  }
-  await conn.sendWhiteboardData(
-    DataMsgBodyType.RES_FULL_WHITEBOARD_DATA,
-    JSON.stringify({ action: 'position-response', fileId, page }),
-  );
-};
 
 export const broadcastCurrentPageNumber = async (
   page: number,
@@ -74,17 +15,24 @@ export const broadcastCurrentPageNumber = async (
   if (!conn) {
     conn = getNatsConn();
   }
-  await conn.sendWhiteboardData(DataMsgBodyType.PAGE_CHANGE, `${page}`, sendTo);
+  await conn.sendWhiteboardData(DataMsgBodyType.PAGE_CHANGE, {
+    message: `${page}`,
+    to: sendTo,
+  });
 };
 
 export const broadcastCurrentFileId = async (
   fileId: string,
+  page: number,
   sendTo?: string,
 ) => {
   if (!conn) {
     conn = getNatsConn();
   }
-  await conn.sendWhiteboardData(DataMsgBodyType.FILE_CHANGE, fileId, sendTo);
+  await conn.sendWhiteboardData(DataMsgBodyType.FILE_CHANGE, {
+    message: JSON.stringify({ fileId, page }),
+    to: sendTo,
+  });
 };
 
 /*
@@ -101,8 +49,10 @@ export const broadcastCurrentOfficeFilePages = async (
   }
   await conn.sendWhiteboardData(
     DataMsgBodyType.UPDATE_CURRENT_OFFICE_FILE_PAGES,
-    pages,
-    sendTo,
+    {
+      message: pages,
+      to: sendTo,
+    },
   );
 };
 
@@ -110,10 +60,9 @@ export const broadcastMousePointerUpdate = async (element: any) => {
   if (!conn) {
     conn = getNatsConn();
   }
-  await conn.sendWhiteboardData(
-    DataMsgBodyType.POINTER_UPDATE,
-    JSON.stringify(element),
-  );
+  await conn.sendWhiteboardData(DataMsgBodyType.POINTER_UPDATE, {
+    message: JSON.stringify(element),
+  });
 };
 
 export const broadcastAppStateChanges = async (
@@ -149,8 +98,7 @@ export const broadcastAppStateChanges = async (
   if (!conn) {
     conn = getNatsConn();
   }
-  await conn.sendWhiteboardData(
-    DataMsgBodyType.WHITEBOARD_APP_STATE_CHANGE,
-    finalMsg,
-  );
+  await conn.sendWhiteboardData(DataMsgBodyType.WHITEBOARD_APP_STATE_CHANGE, {
+    message: finalMsg,
+  });
 };

@@ -4,7 +4,6 @@ import React, {
   useMemo,
   useRef,
   useState,
-  useSyncExternalStore,
 } from 'react';
 import { throttle } from 'es-toolkit';
 import { useTranslation } from 'react-i18next';
@@ -41,25 +40,19 @@ import {
   broadcastAppStateChanges,
   broadcastCurrentFileId,
   broadcastMousePointerUpdate,
-  requestCurrentWhiteboardPosition,
 } from './helpers/handleRequests';
 import usePrevious from './helpers/hooks/usePrevious';
 import useWhiteboardSetup from './helpers/hooks/useWhiteboardSetup';
 import useWhiteboardAppStateSync from './helpers/hooks/useWhiteboardAppStateSync';
 import useOfficePageSyncer from './helpers/hooks/useOfficePageSyncer';
-import {
-  setWhiteboardCurrentPage,
-  updateCurrentWhiteboardOfficeFileId,
-  updateMousePointerLocation,
-} from '../../store/slices/whiteboard';
+import { updateMousePointerLocation } from '../../store/slices/whiteboard';
 import {
   A4_BOUNDARY_GUIDE_ID,
   ensureAllImagesDataIsLoaded,
   getA4WidthBasedZoom,
   getPageBoundaryMetrics,
-  getSceneElementsWithoutBoundary,
+  getSceneAndVersionWithoutBoundary,
   isPendingImageElement,
-  orderElementsByIndex,
   prepareA4BoundaryGuide,
   ResolvedPageInfo,
   resolvePageInfoFromElements,
@@ -68,7 +61,7 @@ import {
   cleanProcessedImageElementsMap,
   uploadCanvasBinaryFile,
 } from './helpers/handleFiles';
-import { getWhiteboardController, WHITEBOARD_REMOTE_ORIGIN } from './collab';
+import { getWhiteboardController } from './collab';
 import { getNatsConn } from '../../helpers/nats';
 import {
   A4_VIEWPORT_PADDING_LEFT,
@@ -79,9 +72,12 @@ import {
 const DEFAULT_PAGE_INFO: ResolvedPageInfo = {
   orientation: DEFAULT_PAGE_ORIENTATION,
 };
+
 import ToolbarBar from '../../assets/Icons/ToolbarBar';
 import PdfIcon from '../../assets/Icons/PdfIcon';
 import { RefreshIcon } from '../../assets/Icons/RefreshIcon';
+import { sleep } from '../../helpers/utils';
+import { RemoteExcalidrawElement } from '@excalidraw/excalidraw/data/reconcile';
 
 interface WhiteboardProps {
   onReadyExcalidrawAPI?: (excalidrawAPI: ExcalidrawImperativeAPI) => void;
@@ -147,15 +143,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   }, [currentPage, currentWhiteboardOfficeFileId]);
 
   const isSwitching = useRef(false);
+  const lastBroadcastOrReceivedSceneVersion = useRef<number>(-1);
 
   // The yjs CRDT session (doc + elements map) owns all whiteboard scene sync.
-  // Subscribe via useSyncExternalStore so we re-render when the active doc
-  // changes (page/file switch) or a new generation is emitted.
   const controller = useMemo(() => getWhiteboardController(), []);
-  const snapshot = useSyncExternalStore(
-    controller.subscribe,
-    controller.getSnapshot,
-  );
 
   // Determines if the current user has editing privileges.
   const canEdit = useMemo(() => {
@@ -182,50 +173,13 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     currentPage,
   });
 
-  // Wire the yjs controller to this room's NATS transport and role.
-  useEffect(() => {
-    controller.configure({
-      roomSid: roomSid,
-      send: (type, binMessage, id, message) => {
-        const conn = getNatsConn();
-        if (conn) {
-          void conn.sendWhiteboardYjsData(type, binMessage, id, message);
-        }
-      },
-      canWrite: () => canEdit,
-      isPrimaryResponder: () => !!isPresenter,
-    });
-  }, [controller, roomSid, canEdit, isPresenter]);
-
-  // Resync the active CRDT doc after reconnects and when the tab becomes
-  // visible again (state-vector handshake with the room).
-  useEffect(() => {
-    const conn = getNatsConn();
-    if (!conn) return;
-    const unsub = conn.onReconnect(() => getWhiteboardController().resync());
-    const onVisibility = () => {
-      if (document.visibilityState === 'visible') {
-        getWhiteboardController().resync();
-      }
-    };
-    document.addEventListener('visibilitychange', onVisibility);
-    return () => {
-      unsub();
-      document.removeEventListener('visibilitychange', onVisibility);
-    };
-  }, []);
-
   /**
    * Applies the current yjs CRDT scene to the Excalidraw canvas.
    *
    * `controller.getElements()` returns the elements map in Yjs iteration order,
-   * which is not guaranteed to be Excalidraw z-order, so we order them by their
-   * fractional `index` first (mirroring Excalidraw's internal
-   * `orderByFractionalIndex`; `sortElements` is not exported by
-   * @excalidraw/excalidraw in 0.18.x).
-   * @param init A flag to indicate if this is the initial scene load.
+   * which is not guaranteed to be Excalidraw z-order, reconcileElements will take care
    */
-  const applyYjsSceneToExcalidraw = useCallback(
+  const applySceneToExcalidraw = useCallback(
     ({ init = false }: { init?: boolean } = {}) => {
       // 1. Do nothing if Excalidraw API is not ready.
       if (!excalidrawAPI) {
@@ -249,7 +203,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       // this client's own serialized scene so they are structurally compatible.
       const reconciledElements = reconcileElements(
         localElements,
-        orderElementsByIndex(remoteElements) as never,
+        remoteElements as RemoteExcalidrawElement[],
         appState,
       );
 
@@ -266,25 +220,57 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           ? CaptureUpdateAction.IMMEDIATELY
           : CaptureUpdateAction.NEVER,
       });
-      // 8. Clear the history to ensure a clean state after the remote update.
+
+      // 8. Record the received scene version so the follow-up onChange (fired
+      // by updateScene) doesn't re-broadcast the same scene back to the room.
+      lastBroadcastOrReceivedSceneVersion.current =
+        getSceneAndVersionWithoutBoundary(reconciledElements).version;
+
+      // 9. Clear the history to ensure a clean state after the remote update.
       excalidrawAPI.history.clear();
     },
     [excalidrawAPI, controller],
   );
 
-  // Observe remote updates on the active yjs doc and apply them to Excalidraw.
+  // Wire the yjs controller to this room's NATS transport and role.
   useEffect(() => {
-    if (!snapshot?.doc) return;
-    const onDocUpdate = (_update: Uint8Array, origin: unknown) => {
-      if (origin === WHITEBOARD_REMOTE_ORIGIN) {
-        applyYjsSceneToExcalidraw({ init: false });
+    if (!excalidrawAPI) {
+      return;
+    }
+
+    controller.configure({
+      excalidrawAPI,
+      roomSid,
+      onRemoteUpdate: () => applySceneToExcalidraw({ init: false }),
+      canWrite: () => canEdit,
+      isPrimaryResponder: () => !!isPresenter,
+    });
+  }, [
+    excalidrawAPI,
+    controller,
+    roomSid,
+    canEdit,
+    isPresenter,
+    applySceneToExcalidraw,
+  ]);
+
+  // Resync the active CRDT doc after reconnects and when the tab becomes
+  // visible again (state-vector handshake with the room).
+  useEffect(() => {
+    const conn = getNatsConn();
+    if (!conn) return;
+    const unsub = conn.onReconnect(() => getWhiteboardController().resync());
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        getWhiteboardController().resync();
       }
     };
-    snapshot.doc.on('update', onDocUpdate);
+    document.addEventListener('visibilitychange', onVisibility);
     return () => {
-      snapshot.doc.off('update', onDocUpdate);
+      unsub();
+      document.removeEventListener('visibilitychange', onVisibility);
     };
-  }, [snapshot, applyYjsSceneToExcalidraw]);
+  }, []);
 
   const resetWhiteboardState = useCallback(
     (excalidrawAPI: ExcalidrawImperativeAPI) => {
@@ -292,6 +278,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       excalidrawAPI.updateScene({ elements: [] });
       excalidrawAPI.addFiles([]);
       excalidrawAPI.history.clear();
+
+      // Reset the last scene version so a page/file switch re-arms the guard.
+      lastBroadcastOrReceivedSceneVersion.current = -1;
 
       // 2. Reset the internal state for a clean slate.
       cleanProcessedImageElementsMap();
@@ -378,7 +367,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       await controller.sync(currentWhiteboardOfficeFileId, currentPage, {
         hydrate: !!isPresenter,
       });
-      applyYjsSceneToExcalidraw({ init: true });
+      applySceneToExcalidraw({ init: true });
 
       if (isPresenter) {
         // 5. If the new page has no CRDT content yet, insert the office page
@@ -400,7 +389,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         // 6. Persist any newly inserted office-page elements into the CRDT so
         // they reach followers.
         if (elements && elements.length) {
-          controller.syncLocalElements(elements);
+          controller.mergeElements(elements);
         }
 
         // Broadcast the full authoritative scene so followers converge without
@@ -421,7 +410,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     syncOfficeFilePage,
     addBoundaryToElements,
     scrollToBoundary,
-    applyYjsSceneToExcalidraw,
+    applySceneToExcalidraw,
   ]);
 
   // clean up store during exit
@@ -447,11 +436,16 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           // Keep broadcasting the active file id (control message) so followers
           // converge on the same file/page. Scene content now syncs via yjs, so
           // there is no sendClearWhiteboardSignal() anymore.
-          await broadcastCurrentFileId(currentWhiteboardOfficeFileId);
+          await broadcastCurrentFileId(
+            currentWhiteboardOfficeFileId,
+            currentPage,
+          );
+          await sleep(300);
+
           await controller.sync(currentWhiteboardOfficeFileId, currentPage, {
             hydrate: true,
           });
-          applyYjsSceneToExcalidraw({ init: true });
+          applySceneToExcalidraw({ init: true });
 
           const elements = excalidrawAPI.getSceneElements();
           const pageInfo = resolvePageInfoFromElements(elements);
@@ -461,20 +455,19 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           scrollToBoundary(excalidrawAPI, pageInfo);
           controller.broadcastFullState();
         } else {
-          const position = await requestCurrentWhiteboardPosition();
-          const fileId = position?.fileId ?? currentWhiteboardOfficeFileId;
-          const page = position?.page ?? currentPage;
+          const donor = await controller.requestInitialData();
 
-          if (
-            position &&
-            (fileId !== currentWhiteboardOfficeFileId || page !== currentPage)
-          ) {
-            dispatch(updateCurrentWhiteboardOfficeFileId(fileId));
-            dispatch(setWhiteboardCurrentPage(page));
-          }
+          await controller.sync(
+            donor?.fileId ?? currentWhiteboardOfficeFileId,
+            donor?.page ?? currentPage,
+            { hydrate: false },
+          );
 
-          await controller.sync(fileId, page, { hydrate: false });
-          applyYjsSceneToExcalidraw({ init: true });
+          applySceneToExcalidraw({ init: true });
+
+          const elements = excalidrawAPI.getSceneElements();
+          const pageInfo = resolvePageInfoFromElements(elements);
+          scrollToBoundary(excalidrawAPI, pageInfo);
         }
       } finally {
         isSwitching.current = false;
@@ -483,7 +476,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
     setTimeout(() => void initialize(), 300);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [excalidrawAPI, controller, applyYjsSceneToExcalidraw]);
+  }, [excalidrawAPI, controller, applySceneToExcalidraw]);
 
   // Effect for page or file changes
   useEffect(() => {
@@ -514,7 +507,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
    */
   const handleCanvasChange = useCallback(
     (
-      _elements: readonly ExcalidrawElement[],
+      elements: readonly ExcalidrawElement[],
       appState: AppState,
       files: BinaryFiles,
     ) => {
@@ -526,31 +519,36 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         return;
       }
 
-      if (canEdit) {
-        // The onChange `elements` argument may omit `isDeleted` tombstones
-        // (e.g. when the last element is deleted), so derive the authoritative
-        // scene from the Excalidraw API to make sure deletions propagate to the
-        // CRDT.
-        const elms = getSceneElementsWithoutBoundary(excalidrawAPI);
-        if (elms.length) {
-          // Pending images must be uploaded before they can be synced; they are
-          // written into the CRDT by the follow-up onChange after the upload
-          // flips `status` to 'saved' (uploadCanvasBinaryFile updates the scene
-          // element in place).
-          const syncableElements: ExcalidrawElement[] = [];
-          for (const elm of elms) {
-            if (isPendingImageElement(elm)) {
-              const fileData = elm.fileId && files[elm.fileId];
-              if (fileData) {
-                void uploadCanvasBinaryFile(elm, fileData, excalidrawAPI);
-              }
-              continue;
+      const { elms, version: currentSceneVersion } =
+        getSceneAndVersionWithoutBoundary(elements);
+
+      if (
+        elms.length &&
+        // Presenters or unlocked users can broadcast scene changes.
+        canEdit &&
+        // Prevent re-broadcasting the scene we just received/applied, and skip
+        // redundant CRDT writes when nothing actually changed.
+        currentSceneVersion !== lastBroadcastOrReceivedSceneVersion.current
+      ) {
+        lastBroadcastOrReceivedSceneVersion.current = currentSceneVersion;
+
+        // Pending images must be uploaded before they can be synced; they are
+        // written into the CRDT by the follow-up onChange after the upload
+        // flips `status` to 'saved' (uploadCanvasBinaryFile updates the scene
+        // element in place).
+        const syncableElements: ExcalidrawElement[] = [];
+        for (const elm of elms) {
+          if (isPendingImageElement(elm)) {
+            const fileData = elm.fileId && files[elm.fileId];
+            if (fileData) {
+              void uploadCanvasBinaryFile(elm, fileData, excalidrawAPI);
             }
-            syncableElements.push(elm);
+            continue;
           }
-          if (syncableElements.length) {
-            controller.syncLocalElements(syncableElements);
-          }
+          syncableElements.push(elm);
+        }
+        if (syncableElements.length) {
+          controller.mergeElements(syncableElements);
         }
       }
 

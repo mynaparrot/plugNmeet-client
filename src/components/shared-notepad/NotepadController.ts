@@ -14,6 +14,7 @@ import {
   idbStore,
 } from '../../helpers/libs/idb';
 import { store } from '../../store';
+import { participantsSelector } from '../../store/slices/participantSlice';
 
 const REMOTE_ORIGIN = 'nats-remote';
 const FRAGMENT_NAME = 'document-store';
@@ -283,34 +284,77 @@ export class NotepadController {
     binMessage: Uint8Array,
     id?: string,
     message?: string,
+    toUserId?: string,
   ) {
     const conn = getNatsConn();
     if (!conn) {
       return;
     }
-    void conn.sendNotepadData(
+
+    void conn.publishData(
       type,
+      message,
       binMessage,
       id ?? crypto.randomUUID(),
-      message,
+      toUserId,
     );
+  }
+
+  private getSyncRequestTargets(): string[] {
+    const state = store.getState();
+    const currentUserId = state.session.currentUser?.userId;
+    if (!currentUserId) {
+      return [];
+    }
+
+    return participantsSelector
+      .selectAll(state)
+      .filter(
+        (p) =>
+          p.userId !== currentUserId &&
+          p.isOnline &&
+          !p.metadata.waitForApproval,
+      )
+      .sort((a, b) => {
+        const adminDiff =
+          (b.metadata?.isAdmin ? 1 : 0) - (a.metadata?.isAdmin ? 1 : 0);
+        if (adminDiff !== 0) {
+          return adminDiff;
+        }
+        return a.joinedAt - b.joinedAt;
+      })
+      .slice(0, 3)
+      .map((p) => p.userId);
   }
 
   private sendSyncRequest() {
     if (!this.doc) {
       return;
     }
-    const requestId = crypto.randomUUID();
-    this.pendingSyncRequestId = requestId;
-    this.send(
-      DataMsgBodyType.NOTEPAD_SYNC_REQUEST,
-      Y.encodeStateVector(this.doc),
-      requestId,
-    );
-
     if (this.syncRetryTimer) {
       clearTimeout(this.syncRetryTimer);
+      this.syncRetryTimer = null;
     }
+
+    const targets = this.getSyncRequestTargets();
+    if (targets.length === 0) {
+      this.pendingSyncRequestId = null;
+      return;
+    }
+
+    const requestId = crypto.randomUUID();
+    this.pendingSyncRequestId = requestId;
+    const stateVector = Y.encodeStateVector(this.doc);
+    for (const toUserId of targets) {
+      this.send(
+        DataMsgBodyType.NOTEPAD_SYNC_REQUEST,
+        stateVector,
+        requestId,
+        undefined,
+        toUserId,
+      );
+    }
+
     this.syncRetryTimer = setTimeout(() => {
       if (this.pendingSyncRequestId === requestId && this.doc) {
         this.sendSyncRequest();

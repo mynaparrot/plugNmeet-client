@@ -1,4 +1,7 @@
-import { convertToExcalidrawElements } from '@excalidraw/excalidraw';
+import {
+  convertToExcalidrawElements,
+  hashElementsVersion,
+} from '@excalidraw/excalidraw';
 import {
   ExcalidrawImperativeAPI,
   NormalizedZoomValue,
@@ -315,3 +318,13 @@ export const isPendingImageElement = (
   element: ExcalidrawElement,
 ): element is ExcalidrawImageElement =>
   element.type === 'image' && element.status === 'pending';
+
+export const getSceneAndVersionWithoutBoundary = (
+  elements: readonly ExcalidrawElement[],
+): { elms: readonly ExcalidrawElement[]; version: number } => {
+  const hasBoundary = elements.some((e) => e.id === A4_BOUNDARY_GUIDE_ID);
+  const elms = hasBoundary
+    ? elements.filter((e) => e.id !== A4_BOUNDARY_GUIDE_ID)
+    : elements;
+  return { elms, version: hashElementsVersion(elms) };
+};

@@ -3,10 +3,6 @@ import { DataChannelMessage, DataMsgBodyType } from 'plugnmeet-protocol-js';
 import { store } from '../../store';
 import { getWhiteboardController } from '../../components/whiteboard/collab';
 import {
-  resolveWhiteboardPositionResponse,
-  sendWhiteboardPositionResponse,
-} from '../../components/whiteboard/helpers/handleRequests';
-import {
   setWhiteboardCurrentPage,
   updateCurrentOfficeFilePages,
   updateCurrentWhiteboardOfficeFileId,
@@ -28,7 +24,7 @@ export default class HandleWhiteboard {
           );
         }
         break;
-      case DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA:
+      case DataMsgBodyType.WHITEBOARD_SYNC_REQUEST:
         if (payload.binMessage && payload.binMessage.length > 0) {
           getWhiteboardController().handleMessage(
             payload.type,
@@ -36,17 +32,10 @@ export default class HandleWhiteboard {
             payload.fromUserId,
             payload.id,
             payload.message,
-          );
-        } else if (this.isCurrentUserPresenter()) {
-          const { currentWhiteboardOfficeFileId, currentPage } =
-            store.getState().whiteboard;
-          void sendWhiteboardPositionResponse(
-            currentWhiteboardOfficeFileId,
-            currentPage,
           );
         }
         break;
-      case DataMsgBodyType.RES_FULL_WHITEBOARD_DATA:
+      case DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE:
         if (payload.binMessage && payload.binMessage.length > 0) {
           getWhiteboardController().handleMessage(
             payload.type,
@@ -55,23 +44,6 @@ export default class HandleWhiteboard {
             payload.id,
             payload.message,
           );
-        } else {
-          try {
-            const msg = JSON.parse(payload.message) as {
-              action?: string;
-              fileId?: string;
-              page?: number;
-            };
-            if (
-              msg.action === 'position-response' &&
-              typeof msg.fileId === 'string' &&
-              typeof msg.page === 'number'
-            ) {
-              resolveWhiteboardPositionResponse(msg.fileId, msg.page);
-            }
-          } catch {
-            // ignore malformed position response
-          }
         }
         break;
       case DataMsgBodyType.POINTER_UPDATE:
@@ -84,7 +56,11 @@ export default class HandleWhiteboard {
         break;
       case DataMsgBodyType.FILE_CHANGE:
         if (!this.isCurrentUserPresenter()) {
-          store.dispatch(updateCurrentWhiteboardOfficeFileId(payload.message));
+          const { fileId, page } = JSON.parse(payload.message) as {
+            fileId: string;
+            page: number;
+          };
+          store.dispatch(updateCurrentWhiteboardOfficeFileId({ fileId, page }));
         }
         break;
       case DataMsgBodyType.UPDATE_CURRENT_OFFICE_FILE_PAGES:
