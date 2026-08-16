@@ -14,8 +14,8 @@ import { store, useAppDispatch, useAppSelector } from '../../store';
 import { setWhiteboardCurrentPage } from '../../store/slices/whiteboard';
 import { broadcastCurrentPageNumber } from './helpers/handleRequests';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
-import { savePageData } from './helpers/utils';
 import { sleep } from '../../helpers/utils';
+import { getWhiteboardController } from './collab';
 
 interface IFooterUIProps {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
@@ -49,13 +49,10 @@ const FooterUI = ({
 
   const debouncedSetCurrentPage = useMemo(
     () =>
-      debounce(async (newPage: number, pageToSave: number) => {
-        // First, save the state of the page we are leaving.
+      debounce(async (newPage: number) => {
+        // First, flush the current page's yjs snapshot to IndexedDB.
         if (isPresenter && excalidrawAPI) {
-          await savePageData(
-            excalidrawAPI.getSceneElementsIncludingDeleted(),
-            pageToSave,
-          );
+          await getWhiteboardController().saveNow();
         }
         // broadcast first so that user can prepare for page change
         await broadcastCurrentPageNumber(newPage);
@@ -68,7 +65,7 @@ const FooterUI = ({
 
   const setCurrentPage = (page: number) => {
     if (showSwitchingWarning()) return;
-    debouncedSetCurrentPage(page, currentPage);
+    debouncedSetCurrentPage(page);
   };
 
   const handlePre = () => {

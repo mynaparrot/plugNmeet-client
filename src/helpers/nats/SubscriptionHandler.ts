@@ -39,7 +39,7 @@ import {
 } from '../../store/slices/interfaces/speechServices';
 import { addAllChatMessages } from '../../store/slices/chatMessagesSlice';
 import { setSpeechToTextLastFinalTexts } from '../../store/slices/speechServicesSlice';
-import { formatNatsError, getChatDonors, getWhiteboardDonors } from '../utils';
+import { formatNatsError, getChatDonors } from '../utils';
 import i18n from '../i18n';
 import { addToken } from '../../store/slices/sessionSlice';
 import { getNotepadController } from '../../components/shared-notepad/NotepadController';
@@ -209,17 +209,6 @@ export default class SubscriptionHandler {
     }
     const subject = `${this.connectNats.subjects.whiteboard}.${this.connectNats.roomId}`;
     const sub = this.connectNats.nc.subscribe(subject);
-
-    const donors = getWhiteboardDonors();
-    for (let i = 0; i < donors.length; i++) {
-      this.connectNats
-        .sendDataMessage(
-          DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA,
-          '',
-          donors[i].userId,
-        )
-        .then();
-    }
 
     for await (const m of sub) {
       try {

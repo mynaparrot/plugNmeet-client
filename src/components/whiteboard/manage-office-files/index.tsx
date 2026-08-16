@@ -16,7 +16,7 @@ import { store, useAppDispatch } from '../../../store';
 import FileUploadProgress from './fileUploadProgress';
 import UploadedFilesList from './uploadedFilesList';
 import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboard';
-import { savePageData } from '../helpers/utils';
+import { getWhiteboardController } from '../collab';
 import { broadcastCurrentFileId } from '../helpers/handleRequests';
 import { sleep } from '../../../helpers/utils';
 import { RefreshIcon } from '../../../assets/Icons/RefreshIcon';
@@ -94,19 +94,15 @@ const ManageOfficeFilesModal = ({
           return;
         }
         // save current file information
-        const { currentPage, currentWhiteboardOfficeFileId } =
-          store.getState().whiteboard;
+        const { currentWhiteboardOfficeFileId } = store.getState().whiteboard;
         if (currentWhiteboardOfficeFileId === officeFile.fileId) {
           // same file selected, nothing to do
           onClose();
           return;
         }
 
-        await savePageData(
-          excalidrawAPI.getSceneElementsIncludingDeleted(),
-          currentPage,
-          currentWhiteboardOfficeFileId,
-        );
+        // Flush the current page's yjs snapshot to IndexedDB before switching.
+        await getWhiteboardController().saveNow();
         // broadcast first so that user can prepare for file
         await broadcastCurrentFileId(officeFile.fileId);
         await sleep(300);

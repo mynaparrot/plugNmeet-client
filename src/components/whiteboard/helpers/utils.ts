@@ -1,4 +1,3 @@
-import { RefObject } from 'react';
 import { convertToExcalidrawElements } from '@excalidraw/excalidraw';
 import {
   ExcalidrawImperativeAPI,
@@ -10,11 +9,8 @@ import {
   OrderedExcalidrawElement,
 } from '@excalidraw/excalidraw/element/types';
 
-import { broadcastSceneOnChange } from './handleRequests';
-import { store } from '../../../store';
-import { getConfigValue, sleep } from '../../../helpers/utils';
+import { getConfigValue } from '../../../helpers/utils';
 import { ensureImageDataIsLoaded, ImageCustomData } from './handleFiles';
-import { DB_STORE_NAMES, idbGet, idbStore } from '../../../helpers/libs/idb';
 import {
   DEFAULT_A4_MARGIN,
   DEFAULT_PAGE_ORIENTATION,
@@ -80,79 +76,6 @@ export const addPreloadedLibraryItems = async (
       );
     }
   }
-};
-
-export const formatStorageKey = (pageNumber: number, fileId?: string) => {
-  const key =
-    fileId ?? store.getState().whiteboard.currentWhiteboardOfficeFileId;
-  return `${key}_${pageNumber}`;
-};
-
-export const getStorageKeyPageNumberRegex = (fileId: string) => {
-  return new RegExp(`^${fileId}_(\\d+)$`);
-};
-
-export const savePageData = async (
-  elms: readonly OrderedExcalidrawElement[],
-  page: number,
-  fileId?: string,
-) => {
-  const toSaveElms = elms.filter((e) => e.id !== A4_BOUNDARY_GUIDE_ID);
-
-  if (toSaveElms.length > 0) {
-    await idbStore(
-      DB_STORE_NAMES.WHITEBOARD,
-      formatStorageKey(page, fileId),
-      toSaveElms,
-    );
-  }
-};
-
-export const displaySavedPageData = async (
-  excalidrawAPI: ExcalidrawImperativeAPI,
-  isPresenter: boolean,
-  page: number,
-  currentFileId?: string,
-  isSwitching?: RefObject<boolean>,
-) => {
-  // 1. Attempt to retrieve the page data from IndexedDB.
-  const elements = await idbGet<readonly OrderedExcalidrawElement[]>(
-    DB_STORE_NAMES.WHITEBOARD,
-    formatStorageKey(page, currentFileId),
-  );
-  let hasData = false;
-
-  // 2. Proceed only if data exists and the Excalidraw API is ready.
-  if (elements && elements.length) {
-    try {
-      hasData = true;
-
-      // 3. It's important to do this now because other syncs are locked by `isSwitching.current = true`.
-      // Ensure any image files referenced in the elements are loaded.
-      //and update the Excalidraw scene with the loaded elements.
-      ensureAllImagesDataIsLoaded(excalidrawAPI, elements);
-      excalidrawAPI.updateScene({ elements });
-
-      // 4. If the user is the presenter, broadcast the complete scene to all other participants.
-      if (isPresenter) {
-        // A short delay ensures all elements are rendered before broadcasting.
-        await sleep(300);
-        const latestElms = excalidrawAPI.getSceneElementsIncludingDeleted();
-        await broadcastSceneOnChange(latestElms ?? elements, true);
-        // wait until last data send complete
-        await sleep(300);
-      }
-    } catch (e) {
-      console.error('Failed to parse or display saved page data.', e);
-    }
-  }
-
-  // 5. Reset the switching flag to re-enable normal synchronization.
-  if (isSwitching) {
-    isSwitching.current = false;
-  }
-  // 6. Return whether data was successfully loaded.
-  return hasData;
 };
 
 /**
@@ -284,6 +207,20 @@ export const prepareA4BoundaryGuide = (
   );
 };
 
+/**
+ * Returns the current scene elements (including tombstones) with the A4
+ * boundary guide excluded. Used before writing local edits into the CRDT.
+ */
+export const getSceneElementsWithoutBoundary = (
+  excalidrawAPI: ExcalidrawImperativeAPI,
+): ExcalidrawElement[] => {
+  const sceneElements = excalidrawAPI.getSceneElementsIncludingDeleted();
+  const hasBoundary = sceneElements.some((e) => e.id === A4_BOUNDARY_GUIDE_ID);
+  return hasBoundary
+    ? sceneElements.filter((e) => e.id !== A4_BOUNDARY_GUIDE_ID)
+    : (sceneElements as ExcalidrawElement[]);
+};
+
 export const getA4WidthBasedZoom = (
   viewportWidth: number,
   targetWidth: number,
@@ -345,3 +282,36 @@ export const resolvePageInfoFromElements = (
   }
   return { orientation: DEFAULT_PAGE_ORIENTATION };
 };
+
+/**
+ * Order elements by their fractional `index` (Excalidraw z-order).
+ *
+ * @excalidraw/excalidraw does not export a runtime `sortElements` in 0.18.x
+ * (only type-only `element/*` subpaths), so this mirrors the package's
+ * internal `orderByFractionalIndex` comparator
+ * (packages/element/src/fractionalIndex.ts): plain lexicographic comparison of
+ * the fractional index with an element-id tie-break. Elements without an
+ * index defensively keep their array order, exactly like the upstream sort.
+ */
+export const orderElementsByIndex = (elements: ExcalidrawElement[]) => {
+  return elements.sort((a, b) => {
+    if (a.index && b.index) {
+      if (a.index < b.index) {
+        return -1;
+      } else if (a.index > b.index) {
+        return 1;
+      }
+      return a.id < b.id ? -1 : 1;
+    }
+    return 1;
+  });
+};
+
+/**
+ * True for image elements whose binary data still needs to be uploaded before
+ * they can be synced into the CRDT (mirrors the check in handleRequests.ts).
+ */
+export const isPendingImageElement = (
+  element: ExcalidrawElement,
+): element is ExcalidrawImageElement =>
+  element.type === 'image' && element.status === 'pending';

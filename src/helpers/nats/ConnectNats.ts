@@ -55,6 +55,7 @@ import { createLivekitConnection } from '../livekit/utils';
 import { executeChatTranslation } from '../../components/translation-transcription/helpers/apiConnections';
 import { teardownNativePublisher } from '../nativeBridge';
 import { getNotepadController } from '../../components/shared-notepad/NotepadController';
+import { getWhiteboardController } from '../../components/whiteboard/collab';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000,
   PING_INTERVAL = 10 * 1000,
@@ -342,6 +343,7 @@ export default class ConnectNats {
     }
     cleanupPromises.push(deleteRoomDB());
     cleanupPromises.push(getNotepadController().destroy());
+    cleanupPromises.push(getWhiteboardController().destroy());
 
     await Promise.allSettled(cleanupPromises);
 
@@ -732,6 +734,42 @@ export default class ConnectNats {
     }
 
     const subject = `${this._subjects.dataChannel}.${this._roomId}`;
+    this.messageQueue.addToQueue({ subject, payload });
+  };
+
+  /**
+   * Sends whiteboard Yjs CRDT data as a fire-and-forget message on the
+   * whiteboard subject. The binary Yjs payload is packed into the `binMessage`
+   * field of the DataChannelMessage envelope and managed by the MessageQueue.
+   */
+  public sendWhiteboardYjsData = async (
+    type: DataMsgBodyType,
+    binMessage: Uint8Array,
+    id?: string,
+    message?: string,
+  ) => {
+    if (!this._nc || this._nc.isClosed()) {
+      return;
+    }
+
+    const data = create(DataChannelMessageSchema, {
+      id: id ?? '',
+      type,
+      fromUserId: this._userId,
+      message: message ?? '',
+      binMessage,
+    });
+
+    let payload: Uint8Array = toBinary(DataChannelMessageSchema, data);
+    if (this._enableE2EEWhiteboard) {
+      const enc = await this.encryptData(payload);
+      if (typeof enc === 'undefined') {
+        return;
+      }
+      payload = enc;
+    }
+
+    const subject = `${this._subjects.whiteboard}.${this._roomId}`;
     this.messageQueue.addToQueue({ subject, payload });
   };
 

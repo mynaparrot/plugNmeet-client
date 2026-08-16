@@ -266,20 +266,6 @@ export const formatNatsError = (err: any) => {
 };
 
 /**
- * getWhiteboardDonors returns the presenter.
- */
-export const getWhiteboardDonors = (): IParticipant[] => {
-  const s = store.getState();
-  return participantsSelector
-    .selectAll(s)
-    .filter(
-      (participant) =>
-        participant.userId !== s.session.currentUser?.userId &&
-        participant.metadata.isPresenter,
-    );
-};
-
-/**
  * getChatDonors returns the two participants who joined the session earliest.
  */
 export const getChatDonors = (): IParticipant[] => {

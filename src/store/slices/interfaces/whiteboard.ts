@@ -1,20 +1,15 @@
 import type { NormalizedZoomValue } from '@excalidraw/excalidraw/types';
-import { OrderedExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 
 export interface IWhiteboardSlice {
   totalPages: number;
   currentPage: number;
-  excalidrawElements: string;
   mousePointerLocation: string;
   whiteboardAppState: IWhiteboardAppState | null;
-  requestedWhiteboardData: IRequestWhiteboardData;
   currentWhiteboardOfficeFileId: string;
   currentOfficeFilePages: string;
   whiteboardUploadedOfficeFiles: Array<IWhiteboardOfficeFile>;
   refreshWhiteboardSignal: number;
   refreshWhiteboardFilesListSignal: number;
-  whiteboardResetSignal: number;
-  allExcalidrawElements: string;
 }
 
 export type WhiteboardPageOrientation = 'portrait' | 'landscape';
@@ -37,11 +32,6 @@ export interface WhiteboardOfficePageMeta {
   orientation: WhiteboardPageOrientation;
   width: number;
   height: number;
-}
-
-export interface IRequestWhiteboardData {
-  requested: boolean;
-  sendTo: string;
 }
 
 export interface IWhiteboardOfficeFile {
@@ -79,12 +69,4 @@ export interface WhiteboardFileConversionRes {
   fileId: string;
   filePath: string;
   totalPages: number;
-}
-
-export interface WhiteboardDataAsDonorData {
-  appState: IWhiteboardAppState;
-  elements: readonly OrderedExcalidrawElement[];
-  currentOfficeFilePages: string;
-  currentWhiteboardOfficeFileId: string;
-  currentPageNumber: number;
 }

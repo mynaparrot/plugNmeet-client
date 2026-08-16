@@ -1,24 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { isArray } from 'es-toolkit/compat';
 
 import {
-  IRequestWhiteboardData,
   IWhiteboardAppState,
   IWhiteboardOfficeFile,
   IWhiteboardSlice,
-  WhiteboardDataAsDonorData,
 } from './interfaces/whiteboard';
 
 const initialState: IWhiteboardSlice = {
   totalPages: 10,
   currentPage: 1,
-  excalidrawElements: '',
   mousePointerLocation: '',
   whiteboardAppState: null,
-  requestedWhiteboardData: {
-    requested: false,
-    sendTo: '',
-  },
   currentWhiteboardOfficeFileId: 'default',
   currentOfficeFilePages: '',
   whiteboardUploadedOfficeFiles: [
@@ -33,17 +25,12 @@ const initialState: IWhiteboardSlice = {
   ],
   refreshWhiteboardSignal: 0,
   refreshWhiteboardFilesListSignal: 0,
-  whiteboardResetSignal: 0,
-  allExcalidrawElements: '',
 };
 
 const whiteboardSlice = createSlice({
   name: 'whiteboard',
   initialState,
   reducers: {
-    updateExcalidrawElements: (state, action: PayloadAction<string>) => {
-      state.excalidrawElements = action.payload;
-    },
     updateMousePointerLocation: (state, action: PayloadAction<string>) => {
       state.mousePointerLocation = action.payload;
     },
@@ -53,20 +40,8 @@ const whiteboardSlice = createSlice({
     ) => {
       state.whiteboardAppState = action.payload;
     },
-    addAllExcalidrawElements: (state, action: PayloadAction<string>) => {
-      state.allExcalidrawElements = action.payload;
-    },
-    updateRequestedWhiteboardData: (
-      state,
-      action: PayloadAction<IRequestWhiteboardData>,
-    ) => {
-      state.requestedWhiteboardData = action.payload;
-    },
     setWhiteboardCurrentPage: (state, action: PayloadAction<number>) => {
       state.currentPage = action.payload;
-      // When the page changes, clear any existing elements to make way for the new content.
-      state.excalidrawElements = '';
-      state.allExcalidrawElements = '';
     },
     updateCurrentWhiteboardOfficeFileId: (
       state,
@@ -87,9 +62,6 @@ const whiteboardSlice = createSlice({
       state.currentWhiteboardOfficeFileId = action.payload;
       // Reset to the first page whenever a new file is selected.
       state.currentPage = 1;
-      // When the file changes, clear any existing elements to make way for the new content.
-      state.excalidrawElements = '';
-      state.allExcalidrawElements = '';
     },
     updateCurrentOfficeFilePages: (state, action: PayloadAction<string>) => {
       state.currentOfficeFilePages = action.payload;
@@ -114,47 +86,18 @@ const whiteboardSlice = createSlice({
     triggerRefreshWhiteboardFilesListSignal: (state) => {
       state.refreshWhiteboardFilesListSignal = Date.now();
     },
-    triggerWhiteboardReset: (state) => {
-      // clean up whiteboard state
-      state.excalidrawElements = '';
-      state.allExcalidrawElements = '';
-      state.whiteboardResetSignal = Date.now();
-    },
-    addWhiteboardDataSentFromDonor: (
-      state,
-      action: PayloadAction<WhiteboardDataAsDonorData>,
-    ) => {
-      state.currentWhiteboardOfficeFileId =
-        action.payload.currentWhiteboardOfficeFileId;
-      state.currentPage = action.payload.currentPageNumber;
-      state.currentOfficeFilePages = action.payload.currentOfficeFilePages;
-
-      if (action.payload.currentOfficeFilePages !== '') {
-        const pages = JSON.parse(action.payload.currentOfficeFilePages);
-        if (pages && isArray(pages) && pages.length > 0) {
-          state.totalPages = pages.length;
-        }
-      }
-      state.allExcalidrawElements = JSON.stringify(action.payload.elements);
-      state.whiteboardAppState = action.payload.appState;
-    },
   },
 });
 
 export const {
-  updateExcalidrawElements,
   updateMousePointerLocation,
   updateMouseAppStateChanges,
-  updateRequestedWhiteboardData,
   setWhiteboardCurrentPage,
   updateCurrentWhiteboardOfficeFileId,
   updateCurrentOfficeFilePages,
   addWhiteboardUploadedOfficeFile,
   triggerRefreshWhiteboard,
-  triggerWhiteboardReset,
   triggerRefreshWhiteboardFilesListSignal,
-  addAllExcalidrawElements,
-  addWhiteboardDataSentFromDonor,
 } = whiteboardSlice.actions;
 
 export default whiteboardSlice.reducer;

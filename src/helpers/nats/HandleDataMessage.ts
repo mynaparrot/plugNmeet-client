@@ -7,10 +7,6 @@ import {
 
 import ConnectNats from './ConnectNats';
 import { store } from '../../store';
-import {
-  addWhiteboardDataSentFromDonor,
-  updateRequestedWhiteboardData,
-} from '../../store/slices/whiteboard';
 import { pollsApi } from '../../store/services/pollsApi';
 import { updateParticipant } from '../../store/slices/participantSlice';
 import { addExternalMediaPlayerEvent } from '../../store/slices/externalMediaPlayer';
@@ -23,7 +19,6 @@ import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import i18n from '../i18n';
 import { getNotepadController } from '../../components/shared-notepad/NotepadController';
 import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
-import { WhiteboardDataAsDonorData } from '../../store/slices/interfaces/whiteboard';
 import { fromJsonString } from '@bufbuild/protobuf';
 import { TextWithInfo } from '../../store/slices/interfaces/speechServices';
 import { addSpeechSubtitleText } from '../../store/slices/speechServicesSlice';
@@ -42,18 +37,6 @@ export default class HandleDataMessage {
 
   public handleMessage = async (payload: DataChannelMessage) => {
     switch (payload.type) {
-      case DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA:
-        if (payload.toUserId === this.connectNats.userId) {
-          // only if was sent for me
-          this.handleSendInitWhiteboard(payload);
-        }
-        break;
-      case DataMsgBodyType.RES_FULL_WHITEBOARD_DATA:
-        if (payload.toUserId === this.connectNats.userId) {
-          // only if was sent for me
-          this.handleWhiteboardDataSentFromDonor(payload.message);
-        }
-        break;
       case DataMsgBodyType.REQ_PUBLIC_CHAT_DATA:
         if (payload.toUserId === this.connectNats.userId) {
           // only if was sent for me
@@ -154,21 +137,6 @@ export default class HandleDataMessage {
     }
   };
 
-  private handleSendInitWhiteboard(payload: DataChannelMessage) {
-    if (store.getState().whiteboard.requestedWhiteboardData.requested) {
-      // already have one request
-      return;
-    }
-    // we'll update the reducer-only
-    // component will take care for sending data
-    store.dispatch(
-      updateRequestedWhiteboardData({
-        requested: true,
-        sendTo: payload.fromUserId,
-      }),
-    );
-  }
-
   private handleUserVisibility(payload: DataChannelMessage) {
     if (!this.connectNats.isAdmin) {
       return;
@@ -221,15 +189,6 @@ export default class HandleDataMessage {
           result,
         }),
       );
-    }
-  }
-
-  private handleWhiteboardDataSentFromDonor(msg: string) {
-    try {
-      const data: WhiteboardDataAsDonorData = JSON.parse(msg);
-      store.dispatch(addWhiteboardDataSentFromDonor(data));
-    } catch (e) {
-      console.error(e);
     }
   }
 

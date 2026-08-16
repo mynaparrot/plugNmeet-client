@@ -125,9 +125,8 @@ const useWhiteboardAppStateSync = ({
     debouncedSync,
   ]);
 
-  // Recalibrate the local viewport when the refreshWhiteboardSignal triggered
-  // note: refreshWhiteboardSignal and whiteboardResetSignal are not same!
-  // refreshWhiteboardSignal happen for width change, sidebar open, webcam/screen sharing on/off etc.
+  // Recalibrate the local viewport when refreshWhiteboardSignal is triggered.
+  // refreshWhiteboardSignal happens on width change, sidebar open, webcam/screen sharing on/off etc.
   useEffect(() => {
     if (
       excalidrawAPI &&
