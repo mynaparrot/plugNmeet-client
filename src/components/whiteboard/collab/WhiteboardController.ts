@@ -8,15 +8,17 @@ import {
   saveWhiteboardPageSnapshot,
 } from './whiteboardPersistence';
 import {
-  base64ToUint8,
   decodeWhiteboardPageSnapshot,
   isIncomingNewer,
-  uint8ToBase64,
   WHITEBOARD_ELEMENTS_MAP,
 } from './utils';
 import { store } from '../../../store';
 import { participantsSelector } from '../../../store/slices/participantSlice';
-import { isUserRecorder } from '../../../helpers/utils';
+import {
+  base64ToUint8,
+  isUserRecorder,
+  uint8ToBase64,
+} from '../../../helpers/utils';
 import type { IParticipant } from '../../../store/slices/interfaces/participant';
 import type {
   WhiteboardControllerConfig,
@@ -404,7 +406,7 @@ export class WhiteboardController {
         (p) =>
           p.userId !== currentUserId &&
           p.isOnline &&
-          !p.metadata.waitForApproval,
+          !p.metadata?.waitForApproval,
       )
       .sort((a, b) => {
         const presenterDiff =
@@ -676,6 +678,11 @@ export class WhiteboardController {
     }
 
     const respond = () => {
+      const timer = this.backupResponseTimers.get(id);
+      if (timer) {
+        clearTimeout(timer);
+        this.backupResponseTimers.delete(id);
+      }
       this.sendWhiteboardData(
         DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE,
         responseUpdate,

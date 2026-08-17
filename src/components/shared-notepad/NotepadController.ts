@@ -15,29 +15,13 @@ import {
 } from '../../helpers/libs/idb';
 import { store } from '../../store';
 import { participantsSelector } from '../../store/slices/participantSlice';
+import { base64ToUint8, uint8ToBase64 } from '../../helpers/utils';
 
 const REMOTE_ORIGIN = 'nats-remote';
 const FRAGMENT_NAME = 'document-store';
 const SYNC_RETRY_DELAY = 2000;
 const SAVE_DEBOUNCE_MS = 1000;
 const NOTEPAD_SNAPSHOT_KEY = 'snapshot';
-
-function uint8ToBase64(bytes: Uint8Array): string {
-  let binary = '';
-  for (let i = 0; i < bytes.length; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary);
-}
-
-function base64ToUint8(base64: string): Uint8Array {
-  const binary = atob(base64);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) {
-    bytes[i] = binary.charCodeAt(i);
-  }
-  return bytes;
-}
 
 export type NotepadSnapshot = {
   doc: Y.Doc | null;
@@ -313,7 +297,7 @@ export class NotepadController {
         (p) =>
           p.userId !== currentUserId &&
           p.isOnline &&
-          !p.metadata.waitForApproval,
+          !p.metadata?.waitForApproval,
       )
       .sort((a, b) => {
         const adminDiff =
@@ -418,6 +402,11 @@ export class NotepadController {
     const requestId = payload.id;
 
     const respond = () => {
+      const timer = this.backupResponseTimers.get(requestId);
+      if (timer) {
+        clearTimeout(timer);
+        this.backupResponseTimers.delete(requestId);
+      }
       this.send(
         DataMsgBodyType.NOTEPAD_SYNC_RESPONSE,
         missing,

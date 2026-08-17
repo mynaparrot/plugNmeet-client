@@ -539,7 +539,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         const syncableElements: ExcalidrawElement[] = [];
         for (const elm of elms) {
           if (isPendingImageElement(elm)) {
-            const fileData = elm.fileId && files[elm.fileId];
+            const fileData = elm.fileId && files && files[elm.fileId];
             if (fileData) {
               void uploadCanvasBinaryFile(elm, fileData, excalidrawAPI);
             }
