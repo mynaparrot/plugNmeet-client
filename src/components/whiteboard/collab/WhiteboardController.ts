@@ -7,11 +7,7 @@ import {
   loadWhiteboardPageSnapshot,
   saveWhiteboardPageSnapshot,
 } from './whiteboardPersistence';
-import {
-  decodeWhiteboardPageSnapshot,
-  isIncomingNewer,
-  WHITEBOARD_ELEMENTS_MAP,
-} from './utils';
+import { isIncomingNewer, WHITEBOARD_ELEMENTS_MAP } from './utils';
 import { store } from '../../../store';
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import {
@@ -773,14 +769,7 @@ export class WhiteboardController {
     }
 
     if (binMessage.length > 0) {
-      if (scope.stateVector) {
-        // Normal response containing the Yjs updates missing locally.
-        this.applyRemoteUpdate(binMessage);
-      } else {
-        // Initial data or persisted snapshot without a state vector.
-        const remoteElements = decodeWhiteboardPageSnapshot(binMessage);
-        this.mergeElements(remoteElements, WHITEBOARD_REMOTE_ORIGIN);
-      }
+      this.applyRemoteUpdate(binMessage);
     }
 
     /*
