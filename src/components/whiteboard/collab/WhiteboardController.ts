@@ -30,14 +30,6 @@ const MAX_SYNC_REQUEST_ATTEMPTS = 3;
 const SAVE_DEBOUNCE_MS = 1000;
 const INITIAL_REQUEST_TIMEOUT_MS = 4000;
 
-/**
- * Singleton controller owning the active yjs CRDT whiteboard session for the
- * current page. Mirrors `NotepadController` (state-vector sync handshake with
- * randomized backup responders, `useSyncExternalStore` snapshot shape,
- * `REMOTE_ORIGIN` sentinel, base64 helpers, generation counter, teardown).
- * Wired into the UI (index.tsx), NATS routing (HandleWhiteboard.ts) and
- * IndexedDB persistence (helpers/libs/idb.ts).
- */
 export class WhiteboardController {
   private doc: Y.Doc | null = null;
   private elementsMap: Y.Map<string> | null = null;
@@ -227,20 +219,17 @@ export class WhiteboardController {
   };
 
   /**
-   * Merge Excalidraw elements into the CRDT map. Deleted elements are stored
-   * as `isDeleted: true` tombstones - we never call `elementsMap.delete()`.
+   * Write local Excalidraw elements into the CRDT map. Deleted elements are
+   * stored as `isDeleted: true` tombstones - we never call `elementsMap.delete()`.
    *
    * Version-aware: an incoming element only replaces the stored value when it
    * is newer according to Excalidraw's reconciliation rule (higher `version`;
-   * on equal version, lower `versionNonce`).
-   *
-   * `origin` controls how the resulting Yjs update is treated: default local
-   * writes are rebroadcast, while `WHITEBOARD_REMOTE_ORIGIN` applies imported
-   * snapshot content without rebroadcasting it.
+   * on equal version, lower `versionNonce`). This protects the local write
+   * path from clobbering a newer value already present in the CRDT.
    */
   mergeElements = (
     elements: readonly ExcalidrawElement[],
-    origin?: unknown,
+    isEditingElement?: (id: string) => boolean,
   ) => {
     const { doc, elementsMap } = this;
     if (!doc || !elementsMap) {
@@ -248,13 +237,9 @@ export class WhiteboardController {
     }
     doc.transact(() => {
       for (const incoming of elements) {
-        this.updateElementIfNewer(elementsMap, incoming);
+        this.updateElementIfNewer(elementsMap, incoming, isEditingElement);
       }
-    }, origin);
-
-    if (origin === WHITEBOARD_REMOTE_ORIGIN) {
-      this.config?.onRemoteUpdate?.();
-    }
+    });
   };
 
   /**
@@ -265,12 +250,21 @@ export class WhiteboardController {
   private updateElementIfNewer = (
     elementsMap: Y.Map<string>,
     incoming: ExcalidrawElement,
+    isEditingElement?: (id: string) => boolean,
   ) => {
     const serialized = JSON.stringify(incoming);
     const stored = elementsMap.get(incoming.id);
     if (stored === serialized) {
       return;
     }
+
+    // Mirror Excalidraw: a locally edited/resized/new element always wins,
+    // regardless of its version.
+    if (isEditingElement?.(incoming.id)) {
+      elementsMap.set(incoming.id, serialized);
+      return;
+    }
+
     if (stored) {
       try {
         const current = JSON.parse(stored) as ExcalidrawElement;
@@ -704,10 +698,10 @@ export class WhiteboardController {
    * Initial responses (with donor metadata in `scope.initial_data`) bootstrap
    * a non-presenter's whiteboard session: the donor's file/page is applied to
    * Redux, an empty doc is created for that scope when needed, and the
-   * included full scene is merged. The first valid response resolves the
-   * pending `requestInitialData()` promise. Normal responses must match the
-   * active file/page scope and may include a state vector for reverse
-   * synchronization.
+   * included full scene is applied as a Yjs update via `applyRemoteUpdate`.
+   * The first valid response resolves the pending `requestInitialData()`
+   * promise. Normal responses must match the active file/page scope and may
+   * include a state vector for reverse synchronization.
    */
   private handleSyncResponse = async (
     binMessage: Uint8Array,

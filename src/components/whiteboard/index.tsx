@@ -548,7 +548,13 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           syncableElements.push(elm);
         }
         if (syncableElements.length) {
-          controller.mergeElements(syncableElements);
+          controller.mergeElements(
+            syncableElements,
+            (id) =>
+              id === appState.editingTextElement?.id ||
+              id === appState.resizingElement?.id ||
+              id === appState.newElement?.id,
+          );
         }
       }
 

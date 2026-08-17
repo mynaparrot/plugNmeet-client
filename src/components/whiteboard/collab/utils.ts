@@ -34,7 +34,7 @@ export const decodeWhiteboardPageSnapshot = (
 /**
  * Returns true when `incoming` should replace `current` for the same element
  * id. Mirrors Excalidraw's reconciliation rule: higher `version` wins; on
- * equal version, the lower `versionNonce` wins.
+ * equal version, the lower or equal `versionNonce` wins (incoming wins ties).
  */
 export const isIncomingNewer = (
   current: ExcalidrawElement,
@@ -43,5 +43,5 @@ export const isIncomingNewer = (
   if (incoming.version !== current.version) {
     return incoming.version > current.version;
   }
-  return incoming.versionNonce < current.versionNonce;
+  return incoming.versionNonce <= current.versionNonce;
 };

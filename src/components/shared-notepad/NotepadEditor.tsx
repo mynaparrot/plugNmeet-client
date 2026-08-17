@@ -279,6 +279,5 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
     );
   },
 );
-NotepadEditor.displayName = 'NotepadEditor';
 
 export default NotepadEditor;
