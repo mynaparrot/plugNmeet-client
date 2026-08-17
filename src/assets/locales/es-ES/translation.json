@@ -89,7 +89,7 @@
     "cloud-recording-not-supported-self-key": "La grabación en la nube no está disponible cuando se utiliza una clave de seguridad personalizada.",
     "media-only-recording-not-support-e2ee": "La grabación de solo audio y vídeo no está disponible cuando el cifrado de extremo a extremo está habilitado.",
     "you-are-sharing-screen": "Está compartiendo su pantalla. Los demás verán una vista más grande.",
-    "screen-share-view-disabled": "{{name}} está compartiendo la pantalla, pero tienes desactivado la visualización de compartir pantalla desde la configuración de guardado de datos.",
+    "screen-share-view-disabled": "{{name}} está compartiendo la pantalla, pero ha desactivado la visualización de pantalla compartida en la configuración de ahorro de datos.",
     "new-system-message-in-chat": "Se ha publicado un nuevo mensaje del sistema en el chat público.",
     "queue-holding-messages": "Problema de conexión: se están reteniendo mensajes.",
     "queue-discarded-message": "No se pudo enviar un mensaje y fue descartado.",
@@ -414,7 +414,7 @@
       "external-media-player-select-file": "Seleccione un archivo multimedia para subir",
       "upload-background-image": "Subir imagen de fondo",
       "shared-notepad": "Bloc de notas compartido",
-      "export-notepad": "Reprecio de exportación",
+      "export-notepad": "Exportar Markdown",
       "chose-virtual-bg": "Elegir fondo"
     }
   },
@@ -678,7 +678,7 @@
       "chat-box-placeholder": "Haga una pregunta al asistente de IA...",
       "responding-placeholder": "El asistente de IA está respondiendo...",
       "response-timed-out": "El asistente de IA tarda demasiado en responder. Por favor, inténtelo de nuevo.",
-      "enable-notepad-ai": "Habilitar IA en el bloc de notas compartido"
+      "enable-notepad-ai": "Habilitar la IA en el bloc de notas compartido"
     },
     "meeting-summarization": {
       "enable": "Activar resumen de la reunión",
@@ -687,20 +687,20 @@
       "enabled-notification-all": "El audio de esta reunión se está grabando para generar un resumen."
     },
     "notepad-ai": {
-      "title": "Ask AI",
+      "title": "Preguntar a la IA",
       "sub-title": "Escribe con IA",
       "continue-writing": "Seguir escribiendo",
-      "summarize": "Resume",
+      "summarize": "Resumir",
       "improve-writing": "Mejorar la escritura",
       "fix-spelling": "Corregir la ortografía",
       "simplify": "Simplificar",
-      "custom-placeholder": "Pregunta a la IA cualquier cosa…",
-      "run": "¡Corre",
+      "custom-placeholder": "Pregunte a la IA cualquier cosa…",
+      "run": "Ejecutar",
       "back": "Atrás",
-      "select-text": "Selecciona un texto o coloca el cursor en un bloque primero.",
+      "select-text": "Seleccione un texto o coloque el cursor en un bloque primero.",
       "generating": "Generar respuesta de IA...",
       "done": "Resultado de IA aplicado",
-      "failed": "Solicitud de IA fallida",
+      "failed": "La solicitud de IA falló",
       "disabled-message": "La función de IA está actualmente desactivada. Un administrador puede activarlo desde Más opciones (...) → Herramientas de IA → Chats de Asistente de IA."
     }
   },
