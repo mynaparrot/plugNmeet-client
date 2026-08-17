@@ -39,7 +39,7 @@ import {
 } from '../../store/slices/interfaces/speechServices';
 import { addAllChatMessages } from '../../store/slices/chatMessagesSlice';
 import { setSpeechToTextLastFinalTexts } from '../../store/slices/speechServicesSlice';
-import { formatNatsError, getChatDonors, getWhiteboardDonors } from '../utils';
+import { formatNatsError, getChatDonors } from '../utils';
 import i18n from '../i18n';
 import { addToken } from '../../store/slices/sessionSlice';
 import { getNotepadController } from '../../components/shared-notepad/NotepadController';
@@ -210,17 +210,6 @@ export default class SubscriptionHandler {
     const subject = `${this.connectNats.subjects.whiteboard}.${this.connectNats.roomId}`;
     const sub = this.connectNats.nc.subscribe(subject);
 
-    const donors = getWhiteboardDonors();
-    for (let i = 0; i < donors.length; i++) {
-      this.connectNats
-        .sendDataMessage(
-          DataMsgBodyType.REQ_FULL_WHITEBOARD_DATA,
-          '',
-          donors[i].userId,
-        )
-        .then();
-    }
-
     for await (const m of sub) {
       try {
         let dataToParse = m.data;
@@ -233,9 +222,19 @@ export default class SubscriptionHandler {
         }
         const payload = fromBinary(DataChannelMessageSchema, dataToParse);
         // Still need to check if the message is from the local user to avoid echo.
-        if (payload.fromUserId !== this.connectNats.userId) {
-          await this._handleWhiteboard.handleWhiteboardMsg(payload);
+        if (payload.fromUserId === this.connectNats.userId) {
+          continue;
         }
+        const isYjsMessage =
+          !!payload.binMessage && payload.binMessage.length > 0;
+        if (
+          isYjsMessage &&
+          payload.toUserId &&
+          payload.toUserId !== this.connectNats.userId
+        ) {
+          continue;
+        }
+        await this._handleWhiteboard.handleWhiteboardMsg(payload);
       } catch (e) {
         console.error('whiteboard event error:', e);
       }

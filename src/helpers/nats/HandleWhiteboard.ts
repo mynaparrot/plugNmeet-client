@@ -1,12 +1,11 @@
 import { DataChannelMessage, DataMsgBodyType } from 'plugnmeet-protocol-js';
 
 import { store } from '../../store';
+import { getWhiteboardController } from '../../components/whiteboard/collab';
 import {
   setWhiteboardCurrentPage,
-  triggerWhiteboardReset,
   updateCurrentOfficeFilePages,
   updateCurrentWhiteboardOfficeFileId,
-  updateExcalidrawElements,
   updateMouseAppStateChanges,
   updateMousePointerLocation,
 } from '../../store/slices/whiteboard';
@@ -15,7 +14,37 @@ export default class HandleWhiteboard {
   public handleWhiteboardMsg = async (payload: DataChannelMessage) => {
     switch (payload.type) {
       case DataMsgBodyType.SCENE_UPDATE:
-        store.dispatch(updateExcalidrawElements(payload.message));
+        if (payload.binMessage && payload.binMessage.length > 0) {
+          getWhiteboardController().handleMessage(
+            payload.type,
+            payload.binMessage,
+            payload.fromUserId,
+            payload.id,
+            payload.message,
+          );
+        }
+        break;
+      case DataMsgBodyType.WHITEBOARD_SYNC_REQUEST:
+        if (payload.binMessage && payload.binMessage.length > 0) {
+          getWhiteboardController().handleMessage(
+            payload.type,
+            payload.binMessage,
+            payload.fromUserId,
+            payload.id,
+            payload.message,
+          );
+        }
+        break;
+      case DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE:
+        if (payload.binMessage && payload.binMessage.length > 0) {
+          getWhiteboardController().handleMessage(
+            payload.type,
+            payload.binMessage,
+            payload.fromUserId,
+            payload.id,
+            payload.message,
+          );
+        }
         break;
       case DataMsgBodyType.POINTER_UPDATE:
         store.dispatch(updateMousePointerLocation(payload.message));
@@ -27,7 +56,11 @@ export default class HandleWhiteboard {
         break;
       case DataMsgBodyType.FILE_CHANGE:
         if (!this.isCurrentUserPresenter()) {
-          store.dispatch(updateCurrentWhiteboardOfficeFileId(payload.message));
+          const { fileId, page } = JSON.parse(payload.message) as {
+            fileId: string;
+            page: number;
+          };
+          store.dispatch(updateCurrentWhiteboardOfficeFileId({ fileId, page }));
         }
         break;
       case DataMsgBodyType.UPDATE_CURRENT_OFFICE_FILE_PAGES:
@@ -40,11 +73,6 @@ export default class HandleWhiteboard {
           store.dispatch(
             updateMouseAppStateChanges(JSON.parse(payload.message)),
           );
-        }
-        break;
-      case DataMsgBodyType.WHITEBOARD_RESET:
-        if (!this.isCurrentUserPresenter()) {
-          store.dispatch(triggerWhiteboardReset());
         }
         break;
     }

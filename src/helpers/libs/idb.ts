@@ -4,7 +4,7 @@ import { getConfigValue } from '../utils';
 // Define all exportable store names in a single object to act as the source of truth.
 export const DB_STORE_NAMES = {
   USER_SETTINGS: 'userSettings',
-  WHITEBOARD: 'whiteboard',
+  WHITEBOARD: 'whiteboard', // yjs whiteboard page snapshots (key `${fileId}_${page}`)
   NOTEPAD: 'notepad', // yjs notepad snapshot (fixed key 'snapshot')
   IMAGE_CACHE: 'imageCache',
   OFFICE_PAGE_META_CACHE: 'officePageMetaCache',

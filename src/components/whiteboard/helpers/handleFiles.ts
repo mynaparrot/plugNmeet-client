@@ -18,7 +18,10 @@ import {
 } from '../../../store/slices/interfaces/whiteboard';
 import { DB_STORE_NAMES, idbGet, idbStore } from '../../../helpers/libs/idb';
 import { addWhiteboardUploadedOfficeFile } from '../../../store/slices/whiteboard';
-import { convertToExcalidrawElements } from '@excalidraw/excalidraw';
+import {
+  convertToExcalidrawElements,
+  newElementWith,
+} from '@excalidraw/excalidraw';
 import {
   DEFAULT_A4_MARGIN,
   DEFAULT_PAGE_ORIENTATION,
@@ -548,13 +551,10 @@ export const uploadCanvasBinaryFile = (
           // Use map for a cleaner, immutable update.
           const newElms = localElements.map((el) => {
             if (el.id === elm.id && el.type === 'image') {
-              updatedImageElement = {
-                ...el,
+              updatedImageElement = newElementWith(el, {
                 status: 'saved',
-                version: el.version + 1,
-                versionNonce: el.versionNonce + 1,
                 customData,
-              };
+              });
               return updatedImageElement;
             }
             return el;

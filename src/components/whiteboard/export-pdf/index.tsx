@@ -5,9 +5,8 @@ import { toast } from 'react-toastify';
 
 import Modal from '../../../helpers/ui/modal';
 import { useAppSelector } from '../../../store';
+import { listWhiteboardPages } from '../collab';
 import { exportPdfService } from './ExportPdfService';
-import { DB_STORE_NAMES, idbGetAllKeys } from '../../../helpers/libs/idb';
-import { getStorageKeyPageNumberRegex } from '../helpers/utils';
 
 type ExportMode = 'all' | 'current' | 'selected';
 
@@ -44,19 +43,11 @@ const ExportPDFModal = ({
   useEffect(() => {
     const fetchAvailablePages = async () => {
       if (!isOpen) return;
-      const keys = await idbGetAllKeys(DB_STORE_NAMES.WHITEBOARD);
-      const regex = getStorageKeyPageNumberRegex(fileId);
-      const pageNumbers = keys
-        .map((key) => {
-          const match = (key as string).match(regex);
-          return match ? parseInt(match[1], 10) : null;
-        })
-        .filter((p): p is number => p !== null)
-        .sort((a, b) => a - b);
+      const pageNumbers = await listWhiteboardPages(fileId);
       setAvailablePages(pageNumbers);
     };
 
-    fetchAvailablePages();
+    void fetchAvailablePages();
   }, [isOpen, fileId]);
 
   useEffect(() => {

@@ -18,15 +18,18 @@ import { exportToBlob, MIME_TYPES } from '@excalidraw/excalidraw';
 // @ts-expect-error not an error
 import ExportWorkerUrl from './exportPdf.worker?worker&url';
 
-import { DB_STORE_NAMES, idbGet } from '../../../helpers/libs/idb';
 import {
   A4_BOUNDARY_GUIDE_ID,
-  formatStorageKey,
   getPageBoundaryMetrics,
+  orderElementsByIndex,
   prepareA4BoundaryGuide,
   ResolvedPageInfo,
   resolvePageInfoFromElements,
 } from '../helpers/utils';
+import {
+  decodeWhiteboardPageSnapshot,
+  loadWhiteboardPageSnapshot,
+} from '../collab';
 import {
   getImageData,
   getOfficePageInfo,
@@ -231,19 +234,16 @@ class ExportPdfService {
     files: Record<string, BinaryFileData>;
   }> {
     const files = new Map<string, BinaryFileData>();
-    const pageKey = formatStorageKey(pageNumber, fileId);
-    const elements = await idbGet<ExcalidrawElement[]>(
-      DB_STORE_NAMES.WHITEBOARD,
-      pageKey,
-    );
-
-    if (!elements) {
+    const snapshot = await loadWhiteboardPageSnapshot(fileId, pageNumber);
+    if (!snapshot || snapshot.length === 0) {
       return { elements: [], files: {} };
     }
 
-    const pageElements = elements.filter(
+    const allElements = decodeWhiteboardPageSnapshot(snapshot);
+    const pageElements = allElements.filter(
       (el) => !el.isDeleted && el.id !== A4_BOUNDARY_GUIDE_ID,
     );
+    orderElementsByIndex(pageElements);
 
     for (const el of pageElements) {
       if (el.type === 'image') {

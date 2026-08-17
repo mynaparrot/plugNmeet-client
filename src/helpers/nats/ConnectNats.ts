@@ -55,6 +55,7 @@ import { createLivekitConnection } from '../livekit/utils';
 import { executeChatTranslation } from '../../components/translation-transcription/helpers/apiConnections';
 import { teardownNativePublisher } from '../nativeBridge';
 import { getNotepadController } from '../../components/shared-notepad/NotepadController';
+import { getWhiteboardController } from '../../components/whiteboard/collab';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000,
   PING_INTERVAL = 10 * 1000,
@@ -342,6 +343,7 @@ export default class ConnectNats {
     }
     cleanupPromises.push(deleteRoomDB());
     cleanupPromises.push(getNotepadController().destroy());
+    cleanupPromises.push(getWhiteboardController().destroy());
 
     await Promise.allSettled(cleanupPromises);
 
@@ -621,40 +623,43 @@ export default class ConnectNats {
   };
 
   /**
-   * Sends whiteboard data as a fire-and-forget message.
-   * This method uses the core NATS `publish` method via the `MessageQueue`
-   * to avoid blocking critical messages.
+   * Sends whiteboard data as a fire-and-forget message on the whiteboard
+   * subject. Supports JSON control messages (`message`) and Yjs binary
+   * updates (`binMessage`). E2EE uses `_enableE2EEWhiteboard`.
    */
   public sendWhiteboardData = async (
     type: DataMsgBodyType,
-    msg: string,
-    to?: string,
+    payload: {
+      message?: string;
+      binMessage?: Uint8Array;
+      id?: string;
+      to?: string;
+    } = {},
   ) => {
     if (!this._nc || this._nc.isClosed()) {
       return;
     }
 
     const data = create(DataChannelMessageSchema, {
+      id: payload.id ?? '',
       type,
       fromUserId: this._userId,
-      toUserId: to,
-      message: msg,
+      toUserId: payload.to,
+      message: payload.message ?? '',
+      binMessage: payload.binMessage,
     });
 
-    let payload: Uint8Array = toBinary(DataChannelMessageSchema, data);
+    let encoded: Uint8Array = toBinary(DataChannelMessageSchema, data);
     if (this._enableE2EEWhiteboard) {
-      const data = await this.encryptData(payload);
-      if (typeof data === 'undefined') {
-        return; // Don't send if encryption fails
+      const enc = await this.encryptData(encoded);
+      if (typeof enc === 'undefined') {
+        return;
       }
-      payload = data;
+      encoded = enc;
     }
 
     const subject = `${this._subjects.whiteboard}.${this._roomId}`;
-    this.messageQueue.addToQueue({
-      subject,
-      payload,
-    });
+    this.messageQueue.addToQueue({ subject, payload: encoded });
   };
 
   /**
