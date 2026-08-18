@@ -701,7 +701,7 @@
       "generating": "AI 응답 생성...",
       "done": "AI 결과 적용",
       "failed": "AI 요청 실패",
-      "disabled-message": "현재 AI 기능은 비활성화되어 있습니다. 관리자는 More Options(...) → AI 도구 → AI 어시스턴트 채팅에서 활성화할 수 있습니다."
+      "disabled-message": "현재 AI 기능은 비활성화되어 있습니다. 관리자는 AI 도구 → AI 어시스턴트 채팅→ 더 많은 옵션에서 활성화할 수 있습니다."
     }
   },
   "sip-dial-in-features": {
