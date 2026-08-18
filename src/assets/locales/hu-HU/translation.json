@@ -678,7 +678,8 @@
       "chat-box-placeholder": "Kérdezz egy kérdést az MI asszisztensnek...",
       "responding-placeholder": "Az MI asszisztens válaszol...",
       "response-timed-out": "Az MI asszisztens túl sokáig tart a válaszadással. Kérlek, próbáld meg újra.",
-      "enable-notepad-ai": "Kapcsold be az MI a közös jegyzetfüzetben"
+      "enable-notepad-ai": "Kapcsold be az MI a közös jegyzetfüzetben",
+      "enable-whiteboard-ai": "Kapcsold be az MI a táblán"
     },
     "meeting-summarization": {
       "enable": "Engedélyezze a találkozók összefoglalását",
@@ -701,6 +702,9 @@
       "generating": "MI válasz generálása...",
       "done": "AI eredmény alkalmazása",
       "failed": "Az MI kérés sikertelen",
+      "disabled-message": "Az AI funkció jelenleg le van tiltva. Egy adminisztrátor engedélyezheti a További opciók (...) → AI Tools → AI Assistant Chat menüpontból."
+    },
+    "whiteboard-ai": {
       "disabled-message": "Az AI funkció jelenleg le van tiltva. Egy adminisztrátor engedélyezheti a További opciók (...) → AI Tools → AI Assistant Chat menüpontból."
     }
   },
