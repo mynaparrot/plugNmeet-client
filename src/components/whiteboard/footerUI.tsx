@@ -15,7 +15,7 @@ import { setWhiteboardCurrentPage } from '../../store/slices/whiteboard';
 import { broadcastCurrentPageNumber } from './helpers/handleRequests';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { sleep } from '../../helpers/utils';
-import { getWhiteboardController } from './collab';
+import { getWhiteboardController, saveWhiteboardLastPage } from './collab';
 
 interface IFooterUIProps {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
@@ -54,6 +54,9 @@ const FooterUI = ({
         if (isPresenter && excalidrawAPI) {
           await getWhiteboardController().saveNow();
         }
+        // Remember the last page for the current file.
+        const { currentWhiteboardOfficeFileId } = store.getState().whiteboard;
+        await saveWhiteboardLastPage(currentWhiteboardOfficeFileId, newPage);
         // broadcast first so that user can prepare for page change
         await broadcastCurrentPageNumber(newPage);
         await sleep(300);

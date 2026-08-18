@@ -16,7 +16,7 @@ import { store, useAppDispatch } from '../../../store';
 import FileUploadProgress from './fileUploadProgress';
 import UploadedFilesList from './uploadedFilesList';
 import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboard';
-import { getWhiteboardController } from '../collab';
+import { getWhiteboardController, loadWhiteboardLastPage } from '../collab';
 import { broadcastCurrentFileId } from '../helpers/handleRequests';
 import { sleep } from '../../../helpers/utils';
 import { RefreshIcon } from '../../../assets/Icons/RefreshIcon';
@@ -103,14 +103,16 @@ const ManageOfficeFilesModal = ({
 
         // Flush the current page's yjs snapshot to IndexedDB before switching.
         await getWhiteboardController().saveNow();
+        const lastPage = await loadWhiteboardLastPage(officeFile.fileId);
+        const page = lastPage ?? 1;
         // broadcast first so that user can prepare for file
-        await broadcastCurrentFileId(officeFile.fileId, 1);
+        await broadcastCurrentFileId(officeFile.fileId, page);
         await sleep(300);
         // now update our store
         dispatch(
           updateCurrentWhiteboardOfficeFileId({
             fileId: officeFile.fileId,
-            page: 1,
+            page,
           }),
         );
         onClose();

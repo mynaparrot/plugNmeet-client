@@ -10,6 +10,8 @@ export type {
 } from './types';
 export {
   listWhiteboardPages,
+  loadWhiteboardLastPage,
   loadWhiteboardPageSnapshot,
+  saveWhiteboardLastPage,
   saveWhiteboardPageSnapshot,
 } from './whiteboardPersistence';

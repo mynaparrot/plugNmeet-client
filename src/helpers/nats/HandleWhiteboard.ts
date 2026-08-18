@@ -14,27 +14,7 @@ export default class HandleWhiteboard {
   public handleWhiteboardMsg = async (payload: DataChannelMessage) => {
     switch (payload.type) {
       case DataMsgBodyType.SCENE_UPDATE:
-        if (payload.binMessage && payload.binMessage.length > 0) {
-          getWhiteboardController().handleMessage(
-            payload.type,
-            payload.binMessage,
-            payload.fromUserId,
-            payload.id,
-            payload.message,
-          );
-        }
-        break;
       case DataMsgBodyType.WHITEBOARD_SYNC_REQUEST:
-        if (payload.binMessage && payload.binMessage.length > 0) {
-          getWhiteboardController().handleMessage(
-            payload.type,
-            payload.binMessage,
-            payload.fromUserId,
-            payload.id,
-            payload.message,
-          );
-        }
-        break;
       case DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE:
         if (payload.binMessage && payload.binMessage.length > 0) {
           getWhiteboardController().handleMessage(

@@ -35,3 +35,24 @@ export const listWhiteboardPages = async (
     .filter((page) => Number.isInteger(page))
     .sort((a, b) => a - b);
 };
+
+const WHITEBOARD_LAST_PAGE_PREFIX = 'lastPage_';
+
+export const saveWhiteboardLastPage = (fileId: string, page: number) =>
+  idbStore(
+    DB_STORE_NAMES.WHITEBOARD,
+    `${WHITEBOARD_LAST_PAGE_PREFIX}${fileId}`,
+    page,
+  );
+
+export const loadWhiteboardLastPage = async (
+  fileId: string,
+): Promise<number | undefined> => {
+  const value = await idbGet<number>(
+    DB_STORE_NAMES.WHITEBOARD,
+    `${WHITEBOARD_LAST_PAGE_PREFIX}${fileId}`,
+  );
+  return typeof value === 'number' && Number.isInteger(value) && value > 0
+    ? value
+    : undefined;
+};
