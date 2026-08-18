@@ -678,7 +678,8 @@
       "chat-box-placeholder": "AIアシスタントに質問してください...",
       "responding-placeholder": "AIアシスタントが応答中です...",
       "response-timed-out": "AIアシスタントの返信が遅すぎます。もう一度お試しください。",
-      "enable-notepad-ai": "共有ノートでAIを有効にする"
+      "enable-notepad-ai": "共有ノートでAIを有効にする",
+      "enable-whiteboard-ai": "ホワイトボードでAIを有効にする"
     },
     "meeting-summarization": {
       "enable": "会議の要約を有効にする",
@@ -701,6 +702,9 @@
       "generating": "AI応答を生成中...",
       "done": "AI結果の適用",
       "failed": "AIリクエストは失敗しました",
+      "disabled-message": "AI機能は現在無効化されています。管理者は「More Options(...)」→AIツール→AIアシスタントチャットから有効化できます。"
+    },
+    "whiteboard-ai": {
       "disabled-message": "AI機能は現在無効化されています。管理者は「More Options(...)」→AIツール→AIアシスタントチャットから有効化できます。"
     }
   },
