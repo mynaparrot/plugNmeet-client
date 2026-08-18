@@ -701,7 +701,7 @@
       "generating": "生成 AI 回應......",
       "done": "應用人工智慧結果",
       "failed": "AI 請求失敗",
-      "disabled-message": "目前 AI 功能已停用。管理員可透過更多選項（...）→ AI 工具→ AI 助理聊天功能啟用。"
+      "disabled-message": "目前 AI 功能已停用。管理員可從更多選項（...）→ AI 工具→ AI 助理聊天室啟用此功能。"
     }
   },
   "sip-dial-in-features": {
