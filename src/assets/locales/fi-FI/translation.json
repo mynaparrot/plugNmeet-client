@@ -678,7 +678,8 @@
       "chat-box-placeholder": "Kysy tekoälyavustajalta kysymys...",
       "responding-placeholder": "Tekoälyavustaja vastaa...",
       "response-timed-out": "Tekoälyavustaja vastaa liian hitaasti. Ole hyvä ja yritä uudelleen.",
-      "enable-notepad-ai": "Ota tekoäly käyttöön jaetussa muistikirjassa"
+      "enable-notepad-ai": "Ota tekoäly käyttöön jaetussa muistikirjassa",
+      "enable-whiteboard-ai": "Ota tekoäly käyttöön valkotaululla"
     },
     "meeting-summarization": {
       "enable": "Ota käyttöön kokouksen yhteenveto",
@@ -701,6 +702,9 @@
       "generating": "Tekoälyn vastauksen tuottaminen...",
       "done": "AI-tulos sovellettu",
       "failed": "AI-pyyntö epäonnistui",
+      "disabled-message": "Tekoälyominaisuus on tällä hetkellä pois päältä. Ylläpitäjä voi ottaa sen käyttöön Lisää vaihtoehtoja (...) → AI Tools → AI Assistant Chat -osiosta."
+    },
+    "whiteboard-ai": {
       "disabled-message": "Tekoälyominaisuus on tällä hetkellä pois päältä. Ylläpitäjä voi ottaa sen käyttöön Lisää vaihtoehtoja (...) → AI Tools → AI Assistant Chat -osiosta."
     }
   },
