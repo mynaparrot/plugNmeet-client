@@ -678,7 +678,8 @@
       "chat-box-placeholder": "Haga una pregunta al asistente de IA...",
       "responding-placeholder": "El asistente de IA está respondiendo...",
       "response-timed-out": "El asistente de IA tarda demasiado en responder. Por favor, inténtelo de nuevo.",
-      "enable-notepad-ai": "Habilitar la IA en el bloc de notas compartido"
+      "enable-notepad-ai": "Habilitar la IA en el bloc de notas compartido",
+      "enable-whiteboard-ai": "Activar la IA en la pizarra"
     },
     "meeting-summarization": {
       "enable": "Activar resumen de la reunión",
@@ -701,6 +702,9 @@
       "generating": "Generar respuesta de IA...",
       "done": "Resultado de IA aplicado",
       "failed": "La solicitud de IA falló",
+      "disabled-message": "La función de IA está actualmente desactivada. Un administrador puede activarlo desde Más opciones (...) → AI Tools → AI Assistant Chat."
+    },
+    "whiteboard-ai": {
       "disabled-message": "La función de IA está actualmente desactivada. Un administrador puede activarlo desde Más opciones (...) → AI Tools → AI Assistant Chat."
     }
   },
