@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-patchedDependencies:
-  '@excalidraw/mermaid-to-excalidraw@2.2.2': 59f50519aa51dbdfbfae09de21ebdb461c588bc53057c17cfa1b01bd8ed42b07
-
 importers:
   .:
     dependencies:
@@ -24,7 +21,7 @@ importers:
         version: 2.14.0
       '@excalidraw/excalidraw':
         specifier: 0.18.0-abeeaeb
-        version: 0.18.0-abeeaeb(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(immer@11.1.16)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 0.18.0-abeeaeb(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(immer@11.1.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@headlessui/react':
         specifier: 2.2.10
         version: 2.2.10(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -312,10 +309,10 @@ packages:
         integrity: sha512-YslZMgtJUyuMbZ+aKvfF3x1f5liK4mWNxghFRv7jqRR9C3R3fAOGTTKvxXDa2Y1s9zSbcpuO0cAxDYsc9SrXoQ==,
       }
 
-  '@codemirror/commands@6.10.4':
+  '@codemirror/commands@6.11.0':
     resolution:
       {
-        integrity: sha512-Ryk9y9T0FFVF0cUGhAknveAyUOl/A1qReTFi+qPKtOh2Z9F4AUBz3XOrYD4ZEgZirdugVzHvd/2/Wcwy5OliTg==,
+        integrity: sha512-/K4Rl5BN0OtTiPWmJCdqODu38XnDMsDxKY5rgrPnCkutPTJf2wVbkoixLfealF5Kwse/s8P8M5jAiURiwSwnFA==,
       }
 
   '@codemirror/language@6.12.4':
@@ -330,10 +327,10 @@ packages:
         integrity: sha512-9QzNDgE4EYDnAHfrTlR2lwiPciiOymLtwKK+8yHQzCc7GXhAP9xdEbEJFy2IWB1j9UGUl9BsgMmTo/ImA02T7A==,
       }
 
-  '@codemirror/view@6.43.8':
+  '@codemirror/view@6.43.9':
     resolution:
       {
-        integrity: sha512-qtItTDssZ/5GFfi94hrILu9j/VUeFPDPkhovEfmWFj2ipTxnzPB8DdHgfbb8HYTzLTYhrndKmyQxXUz/PDLenw==,
+        integrity: sha512-sTuUzTpPMFebRhg6dawChoKKgndIwfjmJgKVxBefPElcU2NwQ6AFroupk0SFqEerQyZOGRfDNnSN8Dw/lMAsXw==,
       }
 
   '@emnapi/core@1.11.1':
@@ -2869,19 +2866,19 @@ packages:
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7 || ^8
 
-  '@tanstack/react-virtual@3.14.9':
+  '@tanstack/react-virtual@3.14.10':
     resolution:
       {
-        integrity: sha512-qZyr0FZDP8rDC4WBhsryIZmAd9bveJvFGUJJtskWaew6/0dTRS6wZxnR6VQ5bY2KwL3LjerrHqQLk3a0GKcPXQ==,
+        integrity: sha512-SRyoUbdFMRHuYXMijV5H4ZarQWpXkj3iANq8OFre+pybeVap8ZJjZ3Nz9bVjx4d8PfobVUQUdKyyyHYk3E+djw==,
       }
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  '@tanstack/virtual-core@3.17.7':
+  '@tanstack/virtual-core@3.17.8':
     resolution:
       {
-        integrity: sha512-bp+v10y65sp2H7WpWfIMyxTNfl8ZVfxFTLRjPIFRryi6FV/J33z4IS53WO4pTk36KlvJ4iLiQz+oaydDC1xbcA==,
+        integrity: sha512-BfEvehNpOT75r5Ksc5xW6NZuXujTfb7nlSEyVu4XHG3gdxNg1KqXruWbDewXOUaUYIo4oRbSfkjIajz4MAT8tA==,
       }
 
   '@tiptap/core@3.30.1':
@@ -3798,17 +3795,17 @@ packages:
         integrity: sha512-eN1IqgtTAbq4zVkbt82BDwQtybQ6WOXyQU5HbftUSnqo+SHAPbZCif1Y7uViAhgvuEPvZtbiXDiacvvTeGxc/g==,
       }
 
-  dashjs@5.2.0:
+  dashjs@5.2.1:
     resolution:
       {
-        integrity: sha512-2W2KHFN53Sk7+rtdnIfSUK/3Oov+hraMTeVZwDOTSCNKM1cQtFiJdblNzRMnl59a/QDseG7JW+PC9mh/B+CMcg==,
+        integrity: sha512-axcJmLeJCTJMLUfQRErUJB1KOiU5iHF+DMLBc3FKeox1HPYtGUQlC6Xm5Mm6vhBUR3CHHLIPOqw0JDIqMtP+Dw==,
       }
     engines: { node: '>=20' }
 
-  dayjs@1.11.21:
+  dayjs@1.11.23:
     resolution:
       {
-        integrity: sha512-98IT+HOahAisibz/yjKbzuOBwYcjJ7BCLPzARyHiyEBmRz4fatF+KPJszEHXsGYjUG234aH/cOjW1wwTbKUZlA==,
+        integrity: sha512-QDTCU0M0MxR3hQfnlDJfwekQiaanm1ubOD231u73WBckQ/fsamwRLiE2GBz6D3a/xF1NgfiDLJjXBa1hYOYTtQ==,
       }
 
   debug@4.4.3:
@@ -4310,10 +4307,10 @@ packages:
         integrity: sha512-XXOFtyqDjNDAQxVfYxuF7g9Il/IbWmmlQg2MYKOH8ExIT1qg6xc4zyS3HaEEATgs1btfzxq15ciUiY7gjSXRGQ==,
       }
 
-  immer@11.1.16:
+  immer@11.1.17:
     resolution:
       {
-        integrity: sha512-Xs7H9rBc+kti1J6RueUvbEBkmOz7jqj11XYgf+YMXAYzu8EeE7hwZ9poLXdVfVnGmJu7QAf41T7H2KuF6QoK6Q==,
+        integrity: sha512-8Vu44Y0MuMBlTQz/jQ8HEMYNq/bBqk87MnBwYR5mC8AthfhEXidZ5aT/oA/CUqboa8THKltnD9L3xyqhU/Sy1Q==,
       }
 
   immutable@4.3.9:
@@ -4407,10 +4404,10 @@ packages:
       }
     hasBin: true
 
-  jose@6.2.8:
+  jose@6.2.9:
     resolution:
       {
-        integrity: sha512-Bsdjwm3Qsd/P0jR+BHDe3LytDfY7WBq2HmCCLIwuVRHMuEC9ae7/R474GIUdF1NgCyZjzVo/A9DOiOBtXq8ZoQ==,
+        integrity: sha512-XrchZOFZUl/T3vTwRe8XK+cJrGtMF4th1ARnDfwbBXFKThGhlsxEE4Zu03AD/bjJSt/9jT/mxrOCkJWOg77aPA==,
       }
 
   jotai-scope@0.7.2:
@@ -6171,17 +6168,17 @@ snapshots:
 
   '@chevrotain/utils@11.0.3': {}
 
-  '@codemirror/commands@6.10.4':
+  '@codemirror/commands@6.11.0':
     dependencies:
       '@codemirror/language': 6.12.4
       '@codemirror/state': 6.7.1
-      '@codemirror/view': 6.43.8
+      '@codemirror/view': 6.43.9
       '@lezer/common': 1.5.2
 
   '@codemirror/language@6.12.4':
     dependencies:
       '@codemirror/state': 6.7.1
-      '@codemirror/view': 6.43.8
+      '@codemirror/view': 6.43.9
       '@lezer/common': 1.5.2
       '@lezer/highlight': 1.2.3
       '@lezer/lr': 1.4.10
@@ -6191,7 +6188,7 @@ snapshots:
     dependencies:
       '@marijn/find-cluster-break': 1.0.3
 
-  '@codemirror/view@6.43.8':
+  '@codemirror/view@6.43.9':
     dependencies:
       '@codemirror/state': 6.7.1
       crelt: 1.0.7
@@ -6304,13 +6301,13 @@ snapshots:
       '@excalidraw/fractional-indexing': 0.18.0-abeeaeb
       '@excalidraw/math': 0.18.0-abeeaeb
 
-  '@excalidraw/excalidraw@0.18.0-abeeaeb(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(immer@11.1.16)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@excalidraw/excalidraw@0.18.0-abeeaeb(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(immer@11.1.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
       '@braintree/sanitize-url': 6.0.2
-      '@codemirror/commands': 6.10.4
+      '@codemirror/commands': 6.11.0
       '@codemirror/language': 6.12.4
       '@codemirror/state': 6.7.1
-      '@codemirror/view': 6.43.8
+      '@codemirror/view': 6.43.9
       '@excalidraw/common': 0.18.0-abeeaeb
       '@excalidraw/element': 0.18.0-abeeaeb
       '@excalidraw/laser-pointer': 1.3.1
@@ -6343,7 +6340,7 @@ snapshots:
       react-dom: 19.2.8(react@19.2.8)
       roughjs: 4.6.4
       sass: 1.51.0
-      tunnel-rat: 0.1.2(@types/react@19.2.18)(immer@11.1.16)(react@19.2.8)
+      tunnel-rat: 0.1.2(@types/react@19.2.18)(immer@11.1.17)(react@19.2.8)
     transitivePeerDependencies:
       - '@types/react'
       - '@types/react-dom'
@@ -6414,7 +6411,7 @@ snapshots:
       '@floating-ui/react': 0.26.28(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@react-aria/focus': 3.22.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@react-aria/interactions': 3.28.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      '@tanstack/react-virtual': 3.14.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+      '@tanstack/react-virtual': 3.14.10(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
       use-sync-external-store: 1.6.0(react@19.2.8)
@@ -7469,7 +7466,7 @@ snapshots:
     dependencies:
       '@standard-schema/spec': 1.1.0
       '@standard-schema/utils': 0.3.0
-      immer: 11.1.16
+      immer: 11.1.17
       redux: 5.0.1
       redux-thunk: 3.1.0(redux@5.0.1)
       reselect: 5.2.0
@@ -7729,13 +7726,13 @@ snapshots:
       tailwindcss: 4.3.3
       vite: 8.2.1(@types/node@26.2.0)(jiti@2.7.0)
 
-  '@tanstack/react-virtual@3.14.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@tanstack/react-virtual@3.14.10(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
-      '@tanstack/virtual-core': 3.17.7
+      '@tanstack/virtual-core': 3.17.8
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
 
-  '@tanstack/virtual-core@3.17.7': {}
+  '@tanstack/virtual-core@3.17.8': {}
 
   '@tiptap/core@3.30.1(@tiptap/pm@3.30.1)':
     dependencies:
@@ -8309,14 +8306,14 @@ snapshots:
   dash-video-element@0.3.2(@svta/cml-cta@1.0.6(@svta/cml-structured-field-values@1.1.3(@svta/cml-utils@1.5.0))(@svta/cml-utils@1.5.0))(@svta/cml-structured-field-values@1.1.3(@svta/cml-utils@1.5.0))(@svta/cml-utils@1.5.0):
     dependencies:
       custom-media-element: 1.4.6
-      dashjs: 5.2.0(@svta/cml-cta@1.0.6(@svta/cml-structured-field-values@1.1.3(@svta/cml-utils@1.5.0))(@svta/cml-utils@1.5.0))(@svta/cml-structured-field-values@1.1.3(@svta/cml-utils@1.5.0))(@svta/cml-utils@1.5.0)
+      dashjs: 5.2.1(@svta/cml-cta@1.0.6(@svta/cml-structured-field-values@1.1.3(@svta/cml-utils@1.5.0))(@svta/cml-utils@1.5.0))(@svta/cml-structured-field-values@1.1.3(@svta/cml-utils@1.5.0))(@svta/cml-utils@1.5.0)
       media-tracks: 0.3.5
     transitivePeerDependencies:
       - '@svta/cml-cta'
       - '@svta/cml-structured-field-values'
       - '@svta/cml-utils'
 
-  dashjs@5.2.0(@svta/cml-cta@1.0.6(@svta/cml-structured-field-values@1.1.3(@svta/cml-utils@1.5.0))(@svta/cml-utils@1.5.0))(@svta/cml-structured-field-values@1.1.3(@svta/cml-utils@1.5.0))(@svta/cml-utils@1.5.0):
+  dashjs@5.2.1(@svta/cml-cta@1.0.6(@svta/cml-structured-field-values@1.1.3(@svta/cml-utils@1.5.0))(@svta/cml-utils@1.5.0))(@svta/cml-structured-field-values@1.1.3(@svta/cml-utils@1.5.0))(@svta/cml-utils@1.5.0):
     dependencies:
       '@svta/cml-608': 1.0.2
       '@svta/cml-cmcd': 2.3.2(@svta/cml-structured-field-values@1.1.3(@svta/cml-utils@1.5.0))(@svta/cml-utils@1.5.0)
@@ -8337,7 +8334,7 @@ snapshots:
       - '@svta/cml-structured-field-values'
       - '@svta/cml-utils'
 
-  dayjs@1.11.21: {}
+  dayjs@1.11.23: {}
 
   debug@4.4.3:
     dependencies:
@@ -8621,7 +8618,7 @@ snapshots:
 
   immediate@3.0.6: {}
 
-  immer@11.1.16: {}
+  immer@11.1.17: {}
 
   immutable@4.3.9: {}
 
@@ -8657,7 +8654,7 @@ snapshots:
 
   jiti@2.7.0: {}
 
-  jose@6.2.8: {}
+  jose@6.2.9: {}
 
   jotai-scope@0.7.2(jotai@2.11.0(@types/react@19.2.18)(react@19.2.8))(react@19.2.8):
     dependencies:
@@ -8687,7 +8684,7 @@ snapshots:
 
   launder@1.7.1:
     dependencies:
-      dayjs: 1.11.21
+      dayjs: 1.11.23
 
   layout-base@1.0.2: {}
 
@@ -8807,7 +8804,7 @@ snapshots:
       '@livekit/protocol': 1.50.4
       '@types/dom-mediacapture-record': 1.0.22
       events: 3.3.0
-      jose: 6.2.8
+      jose: 6.2.9
       loglevel: 1.9.2
       sdp-transform: 2.15.0
       tslib: 2.8.1
@@ -8865,7 +8862,7 @@ snapshots:
       d3: 7.9.0
       d3-sankey: 0.12.3
       dagre-d3-es: 7.0.14
-      dayjs: 1.11.21
+      dayjs: 1.11.23
       dompurify: 3.4.13
       es-toolkit: 1.51.0
       katex: 0.16.47
@@ -9499,9 +9496,9 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  tunnel-rat@0.1.2(@types/react@19.2.18)(immer@11.1.16)(react@19.2.8):
+  tunnel-rat@0.1.2(@types/react@19.2.18)(immer@11.1.17)(react@19.2.8):
     dependencies:
-      zustand: 4.5.7(@types/react@19.2.18)(immer@11.1.16)(react@19.2.8)
+      zustand: 4.5.7(@types/react@19.2.18)(immer@11.1.17)(react@19.2.8)
     transitivePeerDependencies:
       - '@types/react'
       - immer
@@ -9665,10 +9662,10 @@ snapshots:
     dependencies:
       media-played-ranges-mixin: 0.1.0
 
-  zustand@4.5.7(@types/react@19.2.18)(immer@11.1.16)(react@19.2.8):
+  zustand@4.5.7(@types/react@19.2.18)(immer@11.1.17)(react@19.2.8):
     dependencies:
       use-sync-external-store: 1.6.0(react@19.2.8)
     optionalDependencies:
       '@types/react': 19.2.18
-      immer: 11.1.16
+      immer: 11.1.17
       react: 19.2.8
