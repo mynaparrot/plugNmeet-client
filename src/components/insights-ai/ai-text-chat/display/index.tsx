@@ -158,7 +158,7 @@ const InsightsAiTextChat = () => {
                   )}
                   <button
                     ref={closeBtnRef}
-                    className="cursor-pointer focus-ring relative z-30 hidden md:inline"
+                    className="cursor-pointer focus-ring relative z-30"
                     onClick={close}
                     aria-label="Close"
                   >

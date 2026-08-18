@@ -92,7 +92,7 @@ const SharedNotepad = () => {
                     ref={closeBtnRef}
                     type="button"
                     aria-label={t('close').toString()}
-                    className="cursor-pointer relative z-30 hidden md:inline focus-ring"
+                    className="cursor-pointer relative z-30 focus-ring"
                     onClick={minimizePad}
                   >
                     <PopupCloseSVGIcon classes="text-Gray-600 dark:text-white" />
