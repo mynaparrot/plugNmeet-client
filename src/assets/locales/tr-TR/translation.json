@@ -701,7 +701,7 @@
       "generating": "Yapay zeka tepkisi oluşturmak...",
       "done": "Yapay zeka sonucu uygulandı",
       "failed": "Yapay zeka talebi başarısız oldu",
-      "disabled-message": "Yapay zeka özelliği şu anda devre dışı bırakılmış. Bir yönetici, bunu Daha Fazla Seçenek (...) → Yapay Zeka Araçları → Yapay Zeka Asistanı Sohbetlerinden etkinleştirebilir."
+      "disabled-message": "Yapay zeka özelliği şu anda devre dışı bırakılmış. Bir yönetici, bunu Daha Fazla Seçenek (...) → AI Tools → AI Assistant Chat'ten etkinleştirebilir."
     }
   },
   "sip-dial-in-features": {
