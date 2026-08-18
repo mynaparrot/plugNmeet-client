@@ -678,7 +678,8 @@
       "chat-box-placeholder": "Pune o întrebare Asistentului AI...",
       "responding-placeholder": "AI Assistant răspunde...",
       "response-timed-out": "Asistentul AI răspunde prea mult. Vă rog să încercați din nou.",
-      "enable-notepad-ai": "Activează AI în notenotebook-ul partajat"
+      "enable-notepad-ai": "Activează AI în notenotebook-ul partajat",
+      "enable-whiteboard-ai": "Activează AI în tablă albă"
     },
     "meeting-summarization": {
       "enable": "Permiterea rezumatizării ședințelor",
@@ -701,6 +702,9 @@
       "generating": "Generarea unui răspuns AI...",
       "done": "Rezultat AI aplicat",
       "failed": "Cererea AI a eșuat",
+      "disabled-message": "Funcția AI este în prezent dezactivată. Un administrator îl poate activa din Mai multe opțiuni (...) → AI Tools → AI Assistant Chat."
+    },
+    "whiteboard-ai": {
       "disabled-message": "Funcția AI este în prezent dezactivată. Un administrator îl poate activa din Mai multe opțiuni (...) → AI Tools → AI Assistant Chat."
     }
   },
