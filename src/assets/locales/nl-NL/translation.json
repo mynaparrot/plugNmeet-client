@@ -678,7 +678,8 @@
       "chat-box-placeholder": "Stel de AI-assistent een vraag...",
       "responding-placeholder": "AI Assistant reageert...",
       "response-timed-out": "De AI-assistent doet er te lang over om te reageren. Probeer het alsjeblieft opnieuw.",
-      "enable-notepad-ai": "Schakel AI in in gedeeld notitieblok in"
+      "enable-notepad-ai": "Schakel AI in in gedeeld notitieblok in",
+      "enable-whiteboard-ai": "AI inschakelen in whiteboard"
     },
     "meeting-summarization": {
       "enable": "Schakel vergaderingssamenvatting in",
@@ -701,6 +702,9 @@
       "generating": "AI-reactie genereren...",
       "done": "AI-resultaat toegepast",
       "failed": "AI-verzoek mislukt",
+      "disabled-message": "De AI-functie is momenteel uitgeschakeld. Een beheerder kan het inschakelen via Meer opties (...) → AI-tools → AI Assistant Chat."
+    },
+    "whiteboard-ai": {
       "disabled-message": "De AI-functie is momenteel uitgeschakeld. Een beheerder kan het inschakelen via Meer opties (...) → AI-tools → AI Assistant Chat."
     }
   },
