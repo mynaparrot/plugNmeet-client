@@ -67,7 +67,12 @@ const SharedNotepad = () => {
       }
     >
       <div className="notepad-wrapper h-[calc(100%-50px)] mt-9 flex items-end justify-center">
-        <Draggable handle="#draggable-h1" nodeRef={nodeRef} bounds="#main-area">
+        <Draggable
+          handle="#draggable-h1"
+          nodeRef={nodeRef}
+          bounds="#main-area"
+          cancel=".notepad-close-btn, .notepad-export-btn"
+        >
           <div
             className="h-[calc(100%-80px)] w-full max-w-[550px] max-h-[500px] relative pointer-events-auto rounded-xl"
             ref={nodeRef}
@@ -83,7 +88,7 @@ const SharedNotepad = () => {
                     type="button"
                     title={t('footer.modal.export-notepad')}
                     aria-label={t('footer.modal.export-notepad').toString()}
-                    className="cursor-pointer focus-ring [&_path]:stroke-current text-Gray-600 dark:text-white"
+                    className="cursor-pointer focus-ring [&_path]:stroke-current text-Gray-600 dark:text-white notepad-export-btn"
                     onClick={() => notepadEditorRef.current?.exportMarkdown()}
                   >
                     <DownloadIconSVG />
@@ -92,7 +97,7 @@ const SharedNotepad = () => {
                     ref={closeBtnRef}
                     type="button"
                     aria-label={t('close').toString()}
-                    className="cursor-pointer relative z-30 focus-ring"
+                    className="cursor-pointer relative z-30 focus-ring notepad-close-btn"
                     onClick={minimizePad}
                   >
                     <PopupCloseSVGIcon classes="text-Gray-600 dark:text-white" />
