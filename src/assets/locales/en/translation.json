@@ -678,7 +678,8 @@
       "chat-box-placeholder": "Ask the AI Assistant a question...",
       "responding-placeholder": "AI Assistant is responding...",
       "response-timed-out": "The AI assistant is taking too long to respond. Please try again.",
-      "enable-notepad-ai": "Enable AI in shared notepad"
+      "enable-notepad-ai": "Enable AI in shared notepad",
+      "enable-whiteboard-ai": "Enable AI in whiteboard"
     },
     "meeting-summarization": {
       "enable": "Enable meeting summarization",
@@ -701,6 +702,9 @@
       "generating": "Generating AI response...",
       "done": "AI result applied",
       "failed": "AI request failed",
+      "disabled-message": "The AI feature is currently disabled. An administrator can enable it from More Options (...) → AI Tools → AI Assistant Chat."
+    },
+    "whiteboard-ai": {
       "disabled-message": "The AI feature is currently disabled. An administrator can enable it from More Options (...) → AI Tools → AI Assistant Chat."
     }
   },

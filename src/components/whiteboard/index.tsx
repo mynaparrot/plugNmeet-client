@@ -34,6 +34,7 @@ import './style.css';
 import ManageOfficeFilesModal from './manage-office-files';
 import FooterUI from './footerUI';
 import ExportPDFModal from './export-pdf';
+import WhiteboardAI from './ai';
 
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import {
@@ -721,6 +722,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           initialState={initialStateViewport}
           theme={theme}
           name="plugNmeet whiteboard"
+          aiEnabled={canEdit}
           UIOptions={{
             canvasActions: {
               loadScene: false,
@@ -805,6 +807,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
             <MainMenu.DefaultItems.Help />
             {screenWidth <= 767 && renderFooter}
           </MainMenu>
+          <WhiteboardAI canEdit={canEdit} />
           {screenWidth > 767 && <Footer>{renderFooter}</Footer>}
         </Excalidraw>
       </div>

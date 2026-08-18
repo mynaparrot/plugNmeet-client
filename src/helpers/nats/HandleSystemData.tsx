@@ -22,6 +22,7 @@ import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlic
 import { cleanHtmlForChat, getConfigValue, randomString } from '../utils';
 import { updateAiTextChat } from '../../store/slices/insightsAiTextChatSlice';
 import { handleNotepadAIStreamResult } from '../../components/shared-notepad/helpers/notepadAI';
+import { handleWhiteboardAIStreamResult } from '../../components/whiteboard/ai/whiteboardAI';
 import HandleChat from './HandleChat';
 import { triggerRefreshWhiteboardFilesListSignal } from '../../store/slices/whiteboard';
 import { breakoutRoomApi } from '../../store/services/breakoutRoomApi';
@@ -215,6 +216,13 @@ export default class HandleSystemData {
       InsightsAIRequestSource.INSIGHTS_AI_REQUEST_SOURCE_NOTEPAD
     ) {
       handleNotepadAIStreamResult(data);
+      return;
+    }
+    if (
+      data.requestFrom ===
+      InsightsAIRequestSource.INSIGHTS_AI_REQUEST_SOURCE_WHITEBOARD
+    ) {
+      handleWhiteboardAIStreamResult(data);
       return;
     }
     store.dispatch(updateAiTextChat(data));
