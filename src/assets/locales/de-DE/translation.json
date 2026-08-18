@@ -678,7 +678,8 @@
       "chat-box-placeholder": "Stellen Sie dem KI-Assistenten eine Frage...",
       "responding-placeholder": "KI-Assistent antwortet...",
       "response-timed-out": "Der KI-Assistent braucht zu lange, um zu antworten. Bitte versuchen Sie es erneut.",
-      "enable-notepad-ai": "KI im gemeinsamen Notizblock aktivieren"
+      "enable-notepad-ai": "KI im gemeinsamen Notizblock aktivieren",
+      "enable-whiteboard-ai": "KI im Whiteboard aktivieren"
     },
     "meeting-summarization": {
       "enable": "Meeting-Zusammenfassung aktivieren",
@@ -701,6 +702,9 @@
       "generating": "KI-Reaktion wird erzeugt...",
       "done": "KI-Ergebnis angewandt",
       "failed": "KI-Anfrage gescheitert",
+      "disabled-message": "Die KI-Funktion ist derzeit deaktiviert. Ein Administrator kann es über Mehr Optionen (...) → KI-Tools → KI-Assistenten-Chat aktivieren."
+    },
+    "whiteboard-ai": {
       "disabled-message": "Die KI-Funktion ist derzeit deaktiviert. Ein Administrator kann es über Mehr Optionen (...) → KI-Tools → KI-Assistenten-Chat aktivieren."
     }
   },
