@@ -701,7 +701,7 @@
       "generating": "Generarea unui răspuns AI...",
       "done": "Rezultat AI aplicat",
       "failed": "Cererea AI a eșuat",
-      "disabled-message": "Funcția AI este în prezent dezactivată. Un administrator îl poate activa din Mai multe opțiuni (...) → AI Tools → AI Assistant Chats."
+      "disabled-message": "Funcția AI este în prezent dezactivată. Un administrator îl poate activa din Mai multe opțiuni (...) → AI Tools → AI Assistant Chat."
     }
   },
   "sip-dial-in-features": {
