@@ -678,7 +678,8 @@
       "chat-box-placeholder": "Yapay Zeka Asistanına bir soru sorun...",
       "responding-placeholder": "Yapay Zeka Asistanı yanıtlıyor...",
       "response-timed-out": "Yapay zeka asistanı yanıt vermekte çok geç kalıyor. Lütfen tekrar dene.",
-      "enable-notepad-ai": "Paylaşılan not defterinde yapay zekayı etkinleştirin"
+      "enable-notepad-ai": "Paylaşılan not defterinde yapay zekayı etkinleştirin",
+      "enable-whiteboard-ai": "Beyaz tahtada yapay zekayı etkinleştirin"
     },
     "meeting-summarization": {
       "enable": "Toplantı özetini etkinleştir",
@@ -701,6 +702,9 @@
       "generating": "Yapay zeka tepkisi oluşturmak...",
       "done": "Yapay zeka sonucu uygulandı",
       "failed": "Yapay zeka talebi başarısız oldu",
+      "disabled-message": "Yapay zeka özelliği şu anda devre dışı bırakılmış. Bir yönetici, bunu Daha Fazla Seçenek (...) → AI Tools → AI Assistant Chat'ten etkinleştirebilir."
+    },
+    "whiteboard-ai": {
       "disabled-message": "Yapay zeka özelliği şu anda devre dışı bırakılmış. Bir yönetici, bunu Daha Fazla Seçenek (...) → AI Tools → AI Assistant Chat'ten etkinleştirebilir."
     }
   },
