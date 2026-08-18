@@ -678,7 +678,8 @@
       "chat-box-placeholder": "Ställ AI-assistenten en fråga...",
       "responding-placeholder": "AI-assistenten svarar...",
       "response-timed-out": "AI-assistenten tar för lång tid på sig att svara. Försök igen, tack.",
-      "enable-notepad-ai": "Aktivera AI i delad anteckningsbok"
+      "enable-notepad-ai": "Aktivera AI i delad anteckningsbok",
+      "enable-whiteboard-ai": "Aktivera AI i whiteboard"
     },
     "meeting-summarization": {
       "enable": "Aktivera mötessammanfattning",
@@ -701,6 +702,9 @@
       "generating": "Genererar AI-respons...",
       "done": "AI-resultat tillämpat",
       "failed": "AI-förfrågan misslyckades",
+      "disabled-message": "AI-funktionen är för närvarande inaktiverad. En administratör kan aktivera det från Fler alternativ (...) → AI-verktyg → AI Assistant Chat."
+    },
+    "whiteboard-ai": {
       "disabled-message": "AI-funktionen är för närvarande inaktiverad. En administratör kan aktivera det från Fler alternativ (...) → AI-verktyg → AI Assistant Chat."
     }
   },
