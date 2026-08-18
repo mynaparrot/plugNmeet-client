@@ -678,7 +678,8 @@
       "chat-box-placeholder": "Zeptejte se AI asistenta na otázku...",
       "responding-placeholder": "AI Assistant reaguje...",
       "response-timed-out": "AI asistent reaguje příliš dlouho. Zkuste to prosím znovu.",
-      "enable-notepad-ai": "Povolte AI ve sdíleném poznámkovém bloku"
+      "enable-notepad-ai": "Povolte AI ve sdíleném poznámkovém bloku",
+      "enable-whiteboard-ai": "Povolit AI na tabuli"
     },
     "meeting-summarization": {
       "enable": "Umožnit shrnutí schůzky",
@@ -701,6 +702,9 @@
       "generating": "Generování AI odpovědi...",
       "done": "Aplikovaný výsledek AI",
       "failed": "Žádost AI neúspěšná",
+      "disabled-message": "Funkce AI je momentálně deaktivovaná. Administrátor ji může povolit z Více možností (...) → AI Tools → AI Assistant Chat."
+    },
+    "whiteboard-ai": {
       "disabled-message": "Funkce AI je momentálně deaktivovaná. Administrátor ji může povolit z Více možností (...) → AI Tools → AI Assistant Chat."
     }
   },
