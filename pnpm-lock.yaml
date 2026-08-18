@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  '@excalidraw/mermaid-to-excalidraw@2.2.2': 59f50519aa51dbdfbfae09de21ebdb461c588bc53057c17cfa1b01bd8ed42b07
+
 importers:
   .:
     dependencies:

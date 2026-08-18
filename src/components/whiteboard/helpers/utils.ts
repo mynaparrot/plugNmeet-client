@@ -317,7 +317,8 @@ export const orderElementsByIndex = (elements: ExcalidrawElement[]) => {
 export const isPendingImageElement = (
   element: ExcalidrawElement,
 ): element is ExcalidrawImageElement =>
-  element.type === 'image' && element.status === 'pending';
+  element.type === 'image' &&
+  (element.status === 'pending' || element.customData === undefined);
 
 export const getSceneAndVersionWithoutBoundary = (
   elements: readonly ExcalidrawElement[],
