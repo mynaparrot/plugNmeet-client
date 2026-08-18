@@ -678,7 +678,8 @@
       "chat-box-placeholder": "שאל את עוזר הבינה המלאכותית שאלה...",
       "responding-placeholder": "עוזר בינה מלאכותית מגיב...",
       "response-timed-out": "העוזר של הבינה המלאכותית לוקח יותר מדי זמן להגיב. אנא נסה שוב.",
-      "enable-notepad-ai": "הפעל AI במחברת משותפת"
+      "enable-notepad-ai": "הפעל AI במחברת משותפת",
+      "enable-whiteboard-ai": "הפעל בינה מלאכותית בלוח הלבן"
     },
     "meeting-summarization": {
       "enable": "הפעלת סיכום פגישות",
@@ -701,6 +702,9 @@
       "generating": "מייצר תגובת בינה מלאכותית...",
       "done": "תוצאה של בינה מלאכותית מיושמת",
       "failed": "בקשת הבינה המלאכותית נכשלה",
+      "disabled-message": "תכונת הבינה המלאכותית כרגע מושבתת. מנהל יכול להפעיל זאת דרך More Options (...) → AI Tools → AI Assistant Chat."
+    },
+    "whiteboard-ai": {
       "disabled-message": "תכונת הבינה המלאכותית כרגע מושבתת. מנהל יכול להפעיל זאת דרך More Options (...) → AI Tools → AI Assistant Chat."
     }
   },
