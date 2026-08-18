@@ -678,7 +678,8 @@
       "chat-box-placeholder": "Hỏi Trợ lý AI một câu hỏi...",
       "responding-placeholder": "Trợ lý AI đang phản hồi...",
       "response-timed-out": "Trợ lý AI phản hồi quá lâu. Vui lòng thử lại.",
-      "enable-notepad-ai": "Kích hoạt AI trong sổ tay chia sẻ"
+      "enable-notepad-ai": "Kích hoạt AI trong sổ tay chia sẻ",
+      "enable-whiteboard-ai": "Kích hoạt AI trên bảng trắng"
     },
     "meeting-summarization": {
       "enable": "Bật tính năng tóm tắt cuộc họp",
@@ -701,6 +702,9 @@
       "generating": "Tạo phản hồi AI...",
       "done": "Kết quả AI được áp dụng",
       "failed": "Yêu cầu AI thất bại",
+      "disabled-message": "Tính năng AI hiện đang bị vô hiệu hóa. Quản trị viên có thể kích hoạt nó từ Tùy chọn Thêm (...) → Công cụ AI → Chat Trợ lý AI."
+    },
+    "whiteboard-ai": {
       "disabled-message": "Tính năng AI hiện đang bị vô hiệu hóa. Quản trị viên có thể kích hoạt nó từ Tùy chọn Thêm (...) → Công cụ AI → Chat Trợ lý AI."
     }
   },
