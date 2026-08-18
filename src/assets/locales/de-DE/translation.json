@@ -701,7 +701,7 @@
       "generating": "KI-Reaktion wird erzeugt...",
       "done": "KI-Ergebnis angewandt",
       "failed": "KI-Anfrage gescheitert",
-      "disabled-message": "Die KI-Funktion ist derzeit deaktiviert. Ein Administrator kann es über Mehr Optionen (...) → KI-Tools → KI-Assistenten-Chats aktivieren."
+      "disabled-message": "Die KI-Funktion ist derzeit deaktiviert. Ein Administrator kann es über Mehr Optionen (...) → KI-Tools → KI-Assistenten-Chat aktivieren."
     }
   },
   "sip-dial-in-features": {
