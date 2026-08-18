@@ -701,7 +701,7 @@
       "generating": "Menghasilkan respons AI...",
       "done": "Hasil AI diterapkan",
       "failed": "Permintaan AI gagal",
-      "disabled-message": "Fitur AI saat ini dinonaktifkan. Seorang administrator dapat mengaktifkannya dari More Options (...) → AI Tools → AI Assistant Chats."
+      "disabled-message": "Fitur AI saat ini dinonaktifkan. Seorang administrator dapat mengaktifkannya dari More Options (...) → AI Tools → AI Assistant Chat."
     }
   },
   "sip-dial-in-features": {
