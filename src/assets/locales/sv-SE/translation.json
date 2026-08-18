@@ -701,7 +701,7 @@
       "generating": "Genererar AI-respons...",
       "done": "AI-resultat tillämpat",
       "failed": "AI-förfrågan misslyckades",
-      "disabled-message": "AI-funktionen är för närvarande inaktiverad. En administratör kan aktivera det från Fler alternativ (...) → AI-verktyg → AI-assistentchattar."
+      "disabled-message": "AI-funktionen är för närvarande inaktiverad. En administratör kan aktivera det från Fler alternativ (...) → AI-verktyg → AI Assistant Chat."
     }
   },
   "sip-dial-in-features": {
