@@ -678,7 +678,8 @@
       "chat-box-placeholder": "Задайте ШІ асистенту питання...",
       "responding-placeholder": "Асистент ШІ відповідає...",
       "response-timed-out": "AI-асистент занадто довго не відповідає. Будь ласка, спробуйте ще раз.",
-      "enable-notepad-ai": "Увімкніть ШІ у спільному блокноті"
+      "enable-notepad-ai": "Увімкніть ШІ у спільному блокноті",
+      "enable-whiteboard-ai": "Увімкнути ШІ на дошці"
     },
     "meeting-summarization": {
       "enable": "Увімкніть узагальнення зборів",
@@ -701,6 +702,9 @@
       "generating": "Генерація відповіді ШІ...",
       "done": "Застосування результатів ШІ",
       "failed": "Запит на ШІ не вдалося",
+      "disabled-message": "Функція штучного інтелекту наразі вимкнена. Адміністратор може увімкнути це через розділ More Options (...) → AI Tools → AI Assistant Chat."
+    },
+    "whiteboard-ai": {
       "disabled-message": "Функція штучного інтелекту наразі вимкнена. Адміністратор може увімкнути це через розділ More Options (...) → AI Tools → AI Assistant Chat."
     }
   },
