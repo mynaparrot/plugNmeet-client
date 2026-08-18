@@ -701,7 +701,7 @@
       "generating": "Generowanie odpowiedzi AI...",
       "done": "Zastosowanie wyniku AI",
       "failed": "Żądanie AI nie powiodło się",
-      "disabled-message": "Funkcja AI jest obecnie wyłączona. Administrator może włączyć to z opcji Więcej opcji (...) → narzędzi AI → czatów z asystentem AI."
+      "disabled-message": "Funkcja AI jest obecnie wyłączona. Administrator może włączyć to z opcji Więcej opcji (...) → narzędzi AI → Czatu Asystenta AI."
     }
   },
   "sip-dial-in-features": {
