@@ -701,7 +701,7 @@
       "generating": "Générer une réponse IA...",
       "done": "Résultat IA appliqué",
       "failed": "Requête IA échouée",
-      "disabled-message": "La fonction IA est actuellement désactivée. Un administrateur peut l’activer via Plus d’options (...) → AI Tools → AI Assistant Chats."
+      "disabled-message": "La fonction IA est actuellement désactivée. Un administrateur peut l’activer depuis Plus d’options (...) → AI Tools → AI Assistant Chat."
     }
   },
   "sip-dial-in-features": {
