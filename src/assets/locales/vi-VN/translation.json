@@ -701,7 +701,7 @@
       "generating": "Tạo phản hồi AI...",
       "done": "Kết quả AI được áp dụng",
       "failed": "Yêu cầu AI thất bại",
-      "disabled-message": "Tính năng AI hiện đang bị vô hiệu hóa. Quản trị viên có thể kích hoạt từ Tùy chọn Thêm (...) → Công cụ AI → Chat Trợ lý AI."
+      "disabled-message": "Tính năng AI hiện đang bị vô hiệu hóa. Quản trị viên có thể kích hoạt nó từ Tùy chọn Thêm (...) → Công cụ AI → Chat Trợ lý AI."
     }
   },
   "sip-dial-in-features": {
