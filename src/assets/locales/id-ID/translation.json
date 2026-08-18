@@ -678,7 +678,8 @@
       "chat-box-placeholder": "Ajukan pertanyaan kepada Asisten AI...",
       "responding-placeholder": "Asisten AI sedang merespons...",
       "response-timed-out": "Asisten AI terlalu lama untuk merespons. Silakan coba lagi.",
-      "enable-notepad-ai": "Aktifkan AI di notepad bersama"
+      "enable-notepad-ai": "Aktifkan AI di notepad bersama",
+      "enable-whiteboard-ai": "Aktifkan AI di papan tulis"
     },
     "meeting-summarization": {
       "enable": "Aktifkan ringkasan rapat",
@@ -701,6 +702,9 @@
       "generating": "Menghasilkan respons AI...",
       "done": "Hasil AI diterapkan",
       "failed": "Permintaan AI gagal",
+      "disabled-message": "Fitur AI saat ini dinonaktifkan. Seorang administrator dapat mengaktifkannya dari More Options (...) → AI Tools → AI Assistant Chat."
+    },
+    "whiteboard-ai": {
       "disabled-message": "Fitur AI saat ini dinonaktifkan. Seorang administrator dapat mengaktifkannya dari More Options (...) → AI Tools → AI Assistant Chat."
     }
   },
