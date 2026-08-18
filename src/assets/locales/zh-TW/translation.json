@@ -678,7 +678,8 @@
       "chat-box-placeholder": "向 AI 助理提問...",
       "responding-placeholder": "AI 助理正在回應...",
       "response-timed-out": "AI 助理回覆太慢了。請再試一次。",
-      "enable-notepad-ai": "在共用記事本中啟用 AI"
+      "enable-notepad-ai": "在共用記事本中啟用 AI",
+      "enable-whiteboard-ai": "在白板中啟用 AI"
     },
     "meeting-summarization": {
       "enable": "啟用會議摘要",
@@ -701,6 +702,9 @@
       "generating": "生成 AI 回應......",
       "done": "應用人工智慧結果",
       "failed": "AI 請求失敗",
+      "disabled-message": "目前 AI 功能已停用。管理員可從更多選項（...）→ AI 工具→ AI 助理聊天室啟用此功能。"
+    },
+    "whiteboard-ai": {
       "disabled-message": "目前 AI 功能已停用。管理員可從更多選項（...）→ AI 工具→ AI 助理聊天室啟用此功能。"
     }
   },
