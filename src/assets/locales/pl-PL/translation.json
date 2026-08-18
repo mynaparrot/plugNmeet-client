@@ -678,7 +678,8 @@
       "chat-box-placeholder": "Zadaj pytanie Asystentowi AI...",
       "responding-placeholder": "Asystent AI odpowiada...",
       "response-timed-out": "Asystent AI zbyt długo nie odpowiada. Proszę, spróbuj ponownie.",
-      "enable-notepad-ai": "Włącz AI w współdzielonym notatniku"
+      "enable-notepad-ai": "Włącz AI w współdzielonym notatniku",
+      "enable-whiteboard-ai": "Włącz AI na tablicy suchościeralnej"
     },
     "meeting-summarization": {
       "enable": "Włącz podsumowanie spotkania",
@@ -701,6 +702,9 @@
       "generating": "Generowanie odpowiedzi AI...",
       "done": "Zastosowanie wyniku AI",
       "failed": "Żądanie AI nie powiodło się",
+      "disabled-message": "Funkcja AI jest obecnie wyłączona. Administrator może włączyć to z opcji Więcej opcji (...) → narzędzi AI → Czatu Asystenta AI."
+    },
+    "whiteboard-ai": {
       "disabled-message": "Funkcja AI jest obecnie wyłączona. Administrator może włączyć to z opcji Więcej opcji (...) → narzędzi AI → Czatu Asystenta AI."
     }
   },
