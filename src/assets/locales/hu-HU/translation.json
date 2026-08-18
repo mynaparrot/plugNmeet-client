@@ -701,7 +701,7 @@
       "generating": "MI válasz generálása...",
       "done": "AI eredmény alkalmazása",
       "failed": "Az MI kérés sikertelen",
-      "disabled-message": "Az AI funkció jelenleg le van tiltva. Egy adminisztrátor engedélyezheti a további opciók (...) → AI eszközök → AI asszisztens csevegések menüpontjából."
+      "disabled-message": "Az AI funkció jelenleg le van tiltva. Egy adminisztrátor engedélyezheti a További opciók (...) → AI Tools → AI Assistant Chat menüpontból."
     }
   },
   "sip-dial-in-features": {
