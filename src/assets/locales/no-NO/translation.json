@@ -678,7 +678,8 @@
       "chat-box-placeholder": "Still AI-assistenten et spørsmål...",
       "responding-placeholder": "AI-assistenten svarer...",
       "response-timed-out": "AI-assistenten bruker for lang tid på å svare. Vennligst prøv igjen.",
-      "enable-notepad-ai": "Aktiver AI i delt notatblokk"
+      "enable-notepad-ai": "Aktiver AI i delt notatblokk",
+      "enable-whiteboard-ai": "Aktiver AI i whiteboard"
     },
     "meeting-summarization": {
       "enable": "Aktiver møteoppsummering",
@@ -701,6 +702,9 @@
       "generating": "Genererer AI-respons...",
       "done": "AI-resultat anvendt",
       "failed": "AI-forespørsel mislyktes",
+      "disabled-message": "AI-funksjonen er for øyeblikket deaktivert. En administrator kan aktivere det fra Flere alternativer (...) → AI-verktøy → AI Assistant Chat."
+    },
+    "whiteboard-ai": {
       "disabled-message": "AI-funksjonen er for øyeblikket deaktivert. En administrator kan aktivere det fra Flere alternativer (...) → AI-verktøy → AI Assistant Chat."
     }
   },
