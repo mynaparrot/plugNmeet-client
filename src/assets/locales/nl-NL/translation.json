@@ -701,7 +701,7 @@
       "generating": "AI-reactie genereren...",
       "done": "AI-resultaat toegepast",
       "failed": "AI-verzoek mislukt",
-      "disabled-message": "De AI-functie is momenteel uitgeschakeld. Een beheerder kan het inschakelen via Meer opties (...) → AI-tools → AI Assistent-chats."
+      "disabled-message": "De AI-functie is momenteel uitgeschakeld. Een beheerder kan het inschakelen via Meer opties (...) → AI-tools → AI Assistant Chat."
     }
   },
   "sip-dial-in-features": {
