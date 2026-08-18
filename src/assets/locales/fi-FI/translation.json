@@ -701,7 +701,7 @@
       "generating": "Tekoälyn vastauksen tuottaminen...",
       "done": "AI-tulos sovellettu",
       "failed": "AI-pyyntö epäonnistui",
-      "disabled-message": "Tekoälyominaisuus on tällä hetkellä pois päältä. Ylläpitäjä voi ottaa sen käyttöön Lisää vaihtoehtoja (...) → AI Tools → AI Assistant Chats -osioista."
+      "disabled-message": "Tekoälyominaisuus on tällä hetkellä pois päältä. Ylläpitäjä voi ottaa sen käyttöön Lisää vaihtoehtoja (...) → AI Tools → AI Assistant Chat -osiosta."
     }
   },
   "sip-dial-in-features": {
