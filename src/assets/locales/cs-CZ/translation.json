@@ -701,7 +701,7 @@
       "generating": "Generování AI odpovědi...",
       "done": "Aplikovaný výsledek AI",
       "failed": "Žádost AI neúspěšná",
-      "disabled-message": "Funkce AI je momentálně deaktivovaná. Administrátor ji může povolit z Více možností (...) → AI nástroje → chat s AI asistenty."
+      "disabled-message": "Funkce AI je momentálně deaktivovaná. Administrátor ji může povolit z Více možností (...) → AI Tools → AI Assistant Chat."
     }
   },
   "sip-dial-in-features": {
