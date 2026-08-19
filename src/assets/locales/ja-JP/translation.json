@@ -705,7 +705,8 @@
       "disabled-message": "AI機能は現在無効化されています。管理者は「More Options(...)」→AIツール→AIアシスタントチャットから有効化できます。"
     },
     "whiteboard-ai": {
-      "disabled-message": "AI機能は現在無効化されています。管理者は「More Options(...)」→AIツール→AIアシスタントチャットから有効化できます。"
+      "disabled-message": "AI機能は現在無効化されています。管理者は「More Options(...)」→AIツール→AIアシスタントチャットから有効化できます。",
+      "request-timeout": "ホワイトボードAIリクエストのタイムアウト"
     }
   },
   "sip-dial-in-features": {
