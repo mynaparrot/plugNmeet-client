@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Molninspelning är inte tillgängligt när du använder en anpassad säkerhetsnyckel.",
     "media-only-recording-not-support-e2ee": "Det går inte att spela in endast ljud och video när end-to-end-kryptering är aktiverat.",
     "you-are-sharing-screen": "Du delar din skärm nu. Andra kommer att se en större vy.",
+    "screen-share-view-disabled": "{{name}} delar skärmen, men du har inaktiverat skärmdelning från datasparande inställningar.",
     "new-system-message-in-chat": "Ett nytt systemmeddelande har publicerats i den offentliga chatten.",
     "queue-holding-messages": "Anslutningsproblem: meddelanden hålls kvar.",
     "queue-discarded-message": "Ett meddelande kunde inte skickas och förkastades.",
@@ -413,6 +414,7 @@
       "external-media-player-select-file": "Välj en mediefil som ska laddas upp",
       "upload-background-image": "Ladda upp bakgrundsbild",
       "shared-notepad": "Delat anteckningsblock",
+      "export-notepad": "Exportrabatt",
       "chose-virtual-bg": "Välj bakgrund"
     }
   },
@@ -675,13 +677,36 @@
       "users-required": "Minst en deltagare måste väljas.",
       "chat-box-placeholder": "Ställ AI-assistenten en fråga...",
       "responding-placeholder": "AI-assistenten svarar...",
-      "response-timed-out": "AI-assistenten tar för lång tid på sig att svara. Försök igen, tack."
+      "response-timed-out": "AI-assistenten tar för lång tid på sig att svara. Försök igen, tack.",
+      "enable-notepad-ai": "Aktivera AI i delad anteckningsbok",
+      "enable-whiteboard-ai": "Aktivera AI i whiteboard"
     },
     "meeting-summarization": {
       "enable": "Aktivera mötessammanfattning",
       "summarization-prompt-label": "Sammanfattningsinstruktioner",
       "summarization-prompt-required": "Vänligen ange instruktioner för hur man sammanfattar.",
       "enabled-notification-all": "Ljudet från detta möte spelas nu in för att skapa en sammanfattning."
+    },
+    "notepad-ai": {
+      "title": "Fråga AI",
+      "sub-title": "Skriv med AI",
+      "continue-writing": "Fortsätt skriva",
+      "summarize": "Sammanfatta",
+      "improve-writing": "Förbättra skrivandet",
+      "fix-spelling": "Rätta stavningen",
+      "simplify": "Förenkla",
+      "custom-placeholder": "Fråga AI vad som helst…",
+      "run": "Spring",
+      "back": "Tillbaka",
+      "select-text": "Välj text eller placera markören i ett block först.",
+      "generating": "Genererar AI-respons...",
+      "done": "AI-resultat tillämpat",
+      "failed": "AI-förfrågan misslyckades",
+      "disabled-message": "AI-funktionen är för närvarande inaktiverad. En administratör kan aktivera det från Fler alternativ (...) → AI-verktyg → AI Assistant Chat."
+    },
+    "whiteboard-ai": {
+      "disabled-message": "AI-funktionen är för närvarande inaktiverad. En administratör kan aktivera det från Fler alternativ (...) → AI-verktyg → AI Assistant Chat.",
+      "request-timeout": "Whiteboard AI-förfrågan har gått ut på tid"
     }
   },
   "sip-dial-in-features": {
