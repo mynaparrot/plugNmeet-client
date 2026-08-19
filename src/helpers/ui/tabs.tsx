@@ -28,7 +28,7 @@ const Tabs = ({
 
   useEffect(() => {
     if (uniqueKey) {
-      const lastTab = localStorage.getItem(uniqueKey);
+      const lastTab = sessionStorage.getItem(uniqueKey);
       if (lastTab) {
         setSelectedIndex(Number(lastTab));
       }
@@ -39,7 +39,7 @@ const Tabs = ({
     (index: number) => {
       setSelectedIndex(index);
       if (uniqueKey) {
-        localStorage.setItem(uniqueKey, String(index));
+        sessionStorage.setItem(uniqueKey, String(index));
       }
     },
     [uniqueKey],
