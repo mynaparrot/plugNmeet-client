@@ -705,7 +705,8 @@
       "disabled-message": "A funcionalidade de IA está atualmente desativada. Um administrador pode ativá-lo através de Mais Opções (...) → Ferramentas de IA → AI Assistant Chat."
     },
     "whiteboard-ai": {
-      "disabled-message": "A funcionalidade de IA está atualmente desativada. Um administrador pode ativá-lo através de Mais Opções (...) → Ferramentas de IA → AI Assistant Chat."
+      "disabled-message": "A funcionalidade de IA está atualmente desativada. Um administrador pode ativá-lo através de Mais Opções (...) → Ferramentas de IA → AI Assistant Chat.",
+      "request-timeout": "Pedido de IA para quadro branco expirado"
     }
   },
   "sip-dial-in-features": {
