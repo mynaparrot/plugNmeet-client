@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "L'enregistrement dans le cloud n'est pas disponible lors de l'utilisation d'une clé de sécurité personnalisée.",
     "media-only-recording-not-support-e2ee": "L'enregistrement audio et vidéo uniquement n'est pas disponible lorsque le chiffrement de bout en bout est activé.",
     "you-are-sharing-screen": "Vous partagez actuellement votre écran. Les autres participants verront un affichage agrandi.",
+    "screen-share-view-disabled": "{{name}} partage l’écran, mais vous avez désactivé la visualisation du partage d’écran depuis les paramètres de sauvegarde des données.",
     "new-system-message-in-chat": "Un nouveau message système a été publié dans le chat public.",
     "queue-holding-messages": "Problème de connexion : les messages sont en attente d'envoi.",
     "queue-discarded-message": "Un message n'a pas pu être envoyé et a été supprimé.",
@@ -413,6 +414,7 @@
       "external-media-player-select-file": "Sélectionnez un fichier multimédia à téléverser",
       "upload-background-image": "Téléverser une image d'arrière-plan",
       "shared-notepad": "Bloc-notes partagé",
+      "export-notepad": "Réduction de la réduction à l’exportation",
       "chose-virtual-bg": "Choisir un arrière-plan virtuel"
     }
   },
@@ -675,13 +677,36 @@
       "users-required": "Au moins un participant doit être sélectionné.",
       "chat-box-placeholder": "Posez une question à l'assistant IA...",
       "responding-placeholder": "L'assistant IA est en train de répondre...",
-      "response-timed-out": "L’assistant IA met trop de temps à répondre. Veuillez réessayer."
+      "response-timed-out": "L’assistant IA met trop de temps à répondre. Veuillez réessayer.",
+      "enable-notepad-ai": "Activez l’IA dans un bloc-notes partagé",
+      "enable-whiteboard-ai": "Activez l’IA dans le tableau blanc"
     },
     "meeting-summarization": {
       "enable": "Activer le résumé de la réunion",
       "summarization-prompt-label": "Instructions pour le résumé",
       "summarization-prompt-required": "Veuillez saisir les instructions pour le résumé.",
       "enabled-notification-all": "L'audio de cette réunion est en cours d'enregistrement pour générer un résumé."
+    },
+    "notepad-ai": {
+      "title": "Ask AI",
+      "sub-title": "Écrire avec l’IA",
+      "continue-writing": "Continuer à écrire",
+      "summarize": "Résumez",
+      "improve-writing": "Améliorer l’écriture",
+      "fix-spelling": "Corriger l’orthographe",
+      "simplify": "Simplifier",
+      "custom-placeholder": "Demande à l’IA n’importe quoi…",
+      "run": "Cours",
+      "back": "Retour",
+      "select-text": "Sélectionnez un texte ou placez d’abord le curseur dans un bloc.",
+      "generating": "Générer une réponse IA...",
+      "done": "Résultat IA appliqué",
+      "failed": "Requête IA échouée",
+      "disabled-message": "La fonction IA est actuellement désactivée. Un administrateur peut l’activer depuis Plus d’options (...) → AI Tools → AI Assistant Chat."
+    },
+    "whiteboard-ai": {
+      "disabled-message": "La fonction IA est actuellement désactivée. Un administrateur peut l’activer depuis Plus d’options (...) → AI Tools → AI Assistant Chat.",
+      "request-timeout": "Demande IA au tableau blanc expirée"
     }
   },
   "sip-dial-in-features": {

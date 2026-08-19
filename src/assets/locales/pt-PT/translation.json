@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "A gravação na nuvem não está disponível ao usar uma chave de segurança personalizada.",
     "media-only-recording-not-support-e2ee": "A gravação apenas de áudio e vídeo não está disponível quando a encriptação de ponta a ponta está ativada.",
     "you-are-sharing-screen": "Está a partilhar o seu ecrã. Os outros participantes verão uma vista ampliada.",
+    "screen-share-view-disabled": "{{name}} está a partilhar o ecrã, mas desativou a visualização de partilha de ecrã nas definições de gravação de dados.",
     "new-system-message-in-chat": "Foi publicada uma nova mensagem de sistema no chat público.",
     "queue-holding-messages": "Problema de ligação: as mensagens estão retidas.",
     "queue-discarded-message": "Não foi possível enviar uma mensagem, que foi descartada.",
@@ -413,6 +414,7 @@
       "external-media-player-select-file": "Selecione um ficheiro de multimédia para carregar",
       "upload-background-image": "Carregar imagem de fundo",
       "shared-notepad": "Bloco de notas partilhado",
+      "export-notepad": "Desconto nas exportações",
       "chose-virtual-bg": "Escolher fundo"
     }
   },
@@ -675,13 +677,36 @@
       "users-required": "Pelo menos um participante deve ser selecionado.",
       "chat-box-placeholder": "Faça uma pergunta ao Assistente de IA...",
       "responding-placeholder": "O Assistente de IA está a responder...",
-      "response-timed-out": "O assistente de IA está a demorar demasiado a responder. Por favor, tente novamente."
+      "response-timed-out": "O assistente de IA está a demorar demasiado a responder. Por favor, tente novamente.",
+      "enable-notepad-ai": "Ativar IA no bloco de notas partilhado",
+      "enable-whiteboard-ai": "Ativar IA no quadro branco"
     },
     "meeting-summarization": {
       "enable": "Ativar resumo da reunião",
       "summarization-prompt-label": "Instruções de resumo",
       "summarization-prompt-required": "Por favor, introduza as instruções sobre como resumir.",
       "enabled-notification-all": "O áudio desta reunião está a ser gravado para gerar um resumo."
+    },
+    "notepad-ai": {
+      "title": "Ask AI",
+      "sub-title": "Escreve com IA",
+      "continue-writing": "Continuar a escrever",
+      "summarize": "Resumir",
+      "improve-writing": "Melhorar a escrita",
+      "fix-spelling": "Corrigir a ortografia",
+      "simplify": "Simplificar",
+      "custom-placeholder": "Pergunta qualquer coisa à IA…",
+      "run": "Corre",
+      "back": "Voltar",
+      "select-text": "Selecione um texto ou coloque o cursor num bloco primeiro.",
+      "generating": "Gerar resposta de IA...",
+      "done": "Resultado da IA aplicado",
+      "failed": "Pedido de IA falhado",
+      "disabled-message": "A funcionalidade de IA está atualmente desativada. Um administrador pode ativá-lo através de Mais Opções (...) → Ferramentas de IA → AI Assistant Chat."
+    },
+    "whiteboard-ai": {
+      "disabled-message": "A funcionalidade de IA está atualmente desativada. Um administrador pode ativá-lo através de Mais Opções (...) → Ferramentas de IA → AI Assistant Chat.",
+      "request-timeout": "Pedido de IA para quadro branco expirado"
     }
   },
   "sip-dial-in-features": {

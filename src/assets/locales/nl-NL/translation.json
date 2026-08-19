@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Cloudopname is niet beschikbaar bij gebruik van een aangepaste beveiligingssleutel.",
     "media-only-recording-not-support-e2ee": "Het opnemen van alleen audio en video is niet beschikbaar wanneer end-to-end-versleuteling is ingeschakeld.",
     "you-are-sharing-screen": "Je deelt nu je scherm. Anderen zullen een groter beeld zien.",
+    "screen-share-view-disabled": "{{name}} het deelt het scherm, maar je hebt het weergeven van het scherm delen uit de data-saving instellingen uitgeschakeld.",
     "new-system-message-in-chat": "Er is een nieuw systeembericht geplaatst in de openbare chat.",
     "queue-holding-messages": "Verbindingsprobleem: berichten worden vastgehouden.",
     "queue-discarded-message": "Er kon geen bericht worden verzonden en werd verworpen.",
@@ -413,6 +414,7 @@
       "external-media-player-select-file": "Selecteer een mediabestand om te uploaden",
       "upload-background-image": "Achtergrondafbeelding uploaden",
       "shared-notepad": "Gedeeld Kladblok",
+      "export-notepad": "Exportprijsonderlaag",
       "chose-virtual-bg": "Kies Achtergrond"
     }
   },
@@ -675,13 +677,36 @@
       "users-required": "Er moet ten minste één deelnemer worden geselecteerd.",
       "chat-box-placeholder": "Stel de AI-assistent een vraag...",
       "responding-placeholder": "AI Assistant reageert...",
-      "response-timed-out": "De AI-assistent doet er te lang over om te reageren. Probeer het alsjeblieft opnieuw."
+      "response-timed-out": "De AI-assistent doet er te lang over om te reageren. Probeer het alsjeblieft opnieuw.",
+      "enable-notepad-ai": "Schakel AI in in gedeeld notitieblok in",
+      "enable-whiteboard-ai": "AI inschakelen in whiteboard"
     },
     "meeting-summarization": {
       "enable": "Schakel vergaderingssamenvatting in",
       "summarization-prompt-label": "Samenvattingsinstructies",
       "summarization-prompt-required": "Voer instructies in voor hoe je het samenvat.",
       "enabled-notification-all": "De audio van deze vergadering wordt nu opgenomen om een samenvatting te maken."
+    },
+    "notepad-ai": {
+      "title": "Ask AI",
+      "sub-title": "Schrijf met AI",
+      "continue-writing": "Blijf schrijven",
+      "summarize": "Samenvatting",
+      "improve-writing": "Verbeter het schrijven",
+      "fix-spelling": "Correctie van spelling",
+      "simplify": "Vereenvoudig",
+      "custom-placeholder": "Vraag AI wat dan ook…",
+      "run": "Ren",
+      "back": "Achteruit",
+      "select-text": "Selecteer eerst wat tekst of plaats de cursor in een blok.",
+      "generating": "AI-reactie genereren...",
+      "done": "AI-resultaat toegepast",
+      "failed": "AI-verzoek mislukt",
+      "disabled-message": "De AI-functie is momenteel uitgeschakeld. Een beheerder kan het inschakelen via Meer opties (...) → AI-tools → AI Assistant Chat."
+    },
+    "whiteboard-ai": {
+      "disabled-message": "De AI-functie is momenteel uitgeschakeld. Een beheerder kan het inschakelen via Meer opties (...) → AI-tools → AI Assistant Chat.",
+      "request-timeout": "Whiteboard AI-verzoek is getimed"
     }
   },
   "sip-dial-in-features": {
