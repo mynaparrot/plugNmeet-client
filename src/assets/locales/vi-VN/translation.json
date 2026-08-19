@@ -705,7 +705,8 @@
       "disabled-message": "Tính năng AI hiện đang bị vô hiệu hóa. Quản trị viên có thể kích hoạt nó từ Tùy chọn Thêm (...) → Công cụ AI → Chat Trợ lý AI."
     },
     "whiteboard-ai": {
-      "disabled-message": "Tính năng AI hiện đang bị vô hiệu hóa. Quản trị viên có thể kích hoạt nó từ Tùy chọn Thêm (...) → Công cụ AI → Chat Trợ lý AI."
+      "disabled-message": "Tính năng AI hiện đang bị vô hiệu hóa. Quản trị viên có thể kích hoạt nó từ Tùy chọn Thêm (...) → Công cụ AI → Chat Trợ lý AI.",
+      "request-timeout": "Yêu cầu AI trên bảng trắng đã hết thời gian"
     }
   },
   "sip-dial-in-features": {
