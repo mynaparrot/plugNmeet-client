@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Özel bir güvenlik anahtarı kullanılırken bulut kaydı kullanılamaz.",
     "media-only-recording-not-support-e2ee": "Uçtan uca şifreleme etkinleştirildiğinde yalnızca ses ve video kaydı yapılamaz.",
     "you-are-sharing-screen": "Şu anda ekranınızı paylaşıyorsunuz. Diğer katılımcılar daha büyük bir görünüm görecek.",
+    "screen-share-view-disabled": "{{name}} Ekran paylaşımı yapıyor ama veri kaydetme ayarlarından ekran paylaşımı görüntülemesini devre dışı bıraktınız.",
     "new-system-message-in-chat": "Genel sohbette yeni bir sistem mesajı yayınlandı.",
     "queue-holding-messages": "Bağlantı sorunu: mesajlar tutuluyor.",
     "queue-discarded-message": "Mesaj gönderilemedi ve atıldı.",
@@ -413,6 +414,7 @@
       "external-media-player-select-file": "Yüklenecek bir medya dosyası seçin",
       "upload-background-image": "Arka plan resmi yükle",
       "shared-notepad": "Paylaşılan Not Defteri",
+      "export-notepad": "İhracat Fiyatı",
       "chose-virtual-bg": "Arka Plan Seç"
     }
   },
@@ -675,13 +677,36 @@
       "users-required": "En az bir katılımcı seçilmelidir.",
       "chat-box-placeholder": "Yapay Zeka Asistanına bir soru sorun...",
       "responding-placeholder": "Yapay Zeka Asistanı yanıtlıyor...",
-      "response-timed-out": "Yapay zeka asistanı yanıt vermekte çok geç kalıyor. Lütfen tekrar dene."
+      "response-timed-out": "Yapay zeka asistanı yanıt vermekte çok geç kalıyor. Lütfen tekrar dene.",
+      "enable-notepad-ai": "Paylaşılan not defterinde yapay zekayı etkinleştirin",
+      "enable-whiteboard-ai": "Beyaz tahtada yapay zekayı etkinleştirin"
     },
     "meeting-summarization": {
       "enable": "Toplantı özetini etkinleştir",
       "summarization-prompt-label": "Özetleme Talimatları",
       "summarization-prompt-required": "Lütfen nasıl özetleneceğine dair talimatları girin.",
       "enabled-notification-all": "Bu toplantının sesi, bir özet oluşturmak için şimdi kaydediliyor."
+    },
+    "notepad-ai": {
+      "title": "Yapay Zekaya Sorun",
+      "sub-title": "Yapay Zeka ile Yaz",
+      "continue-writing": "Yazmaya devam et",
+      "summarize": "Özet",
+      "improve-writing": "Yazmayı geliştirin",
+      "fix-spelling": "Yazımını düzelt",
+      "simplify": "Basitleştir",
+      "custom-placeholder": "Yapay zekaya her şeyi sor.…",
+      "run": "Koş",
+      "back": "Geri",
+      "select-text": "Önce bir metin seçin veya imleci bir bloka yerleştirin.",
+      "generating": "Yapay zeka tepkisi oluşturmak...",
+      "done": "Yapay zeka sonucu uygulandı",
+      "failed": "Yapay zeka talebi başarısız oldu",
+      "disabled-message": "Yapay zeka özelliği şu anda devre dışı bırakılmış. Bir yönetici, bunu Daha Fazla Seçenek (...) → AI Tools → AI Assistant Chat'ten etkinleştirebilir."
+    },
+    "whiteboard-ai": {
+      "disabled-message": "Yapay zeka özelliği şu anda devre dışı bırakılmış. Bir yönetici, bunu Daha Fazla Seçenek (...) → AI Tools → AI Assistant Chat'ten etkinleştirebilir.",
+      "request-timeout": "Beyaz tahta yapay zeka talebi zamanlama doldu"
     }
   },
   "sip-dial-in-features": {
