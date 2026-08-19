@@ -705,7 +705,8 @@
       "disabled-message": "תכונת הבינה המלאכותית כרגע מושבתת. מנהל יכול להפעיל זאת דרך More Options (...) → AI Tools → AI Assistant Chat."
     },
     "whiteboard-ai": {
-      "disabled-message": "תכונת הבינה המלאכותית כרגע מושבתת. מנהל יכול להפעיל זאת דרך More Options (...) → AI Tools → AI Assistant Chat."
+      "disabled-message": "תכונת הבינה המלאכותית כרגע מושבתת. מנהל יכול להפעיל זאת דרך More Options (...) → AI Tools → AI Assistant Chat.",
+      "request-timeout": "בקשת בינה מלאכותית ללוח לבן נגמרה בזמן."
     }
   },
   "sip-dial-in-features": {
