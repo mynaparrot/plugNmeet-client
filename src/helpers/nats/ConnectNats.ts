@@ -62,7 +62,7 @@ const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000,
   STATUS_CHECKER_INTERVAL = 500,
   USERS_SYNC_INTERVAL = 30 * 1000,
   MAX_MISSED_PONGS = 12;
-export type PrivateDataDeliveryType = 'CHAT' | 'DATA_MSG';
+export type PrivateDataDeliveryType = 'CHAT' | 'DATA_MSG' | 'WHITEBOARD_MSG';
 
 export default class ConnectNats {
   // connections
@@ -641,11 +641,11 @@ export default class ConnectNats {
     }
 
     const data = create(DataChannelMessageSchema, {
-      id: payload.id ?? '',
       type,
+      id: payload.id,
       fromUserId: this._userId,
       toUserId: payload.to,
-      message: payload.message ?? '',
+      message: payload.message,
       binMessage: payload.binMessage,
     });
 
@@ -658,8 +658,12 @@ export default class ConnectNats {
       encoded = enc;
     }
 
-    const subject = `${this._subjects.whiteboard}.${this._roomId}`;
-    this.messageQueue.addToQueue({ subject, payload: encoded });
+    if (payload.to) {
+      this.sendPrivateData(encoded, 'WHITEBOARD_MSG', payload.to, false);
+    } else {
+      const subject = `${this._subjects.whiteboard}.${this._roomId}`;
+      this.messageQueue.addToQueue({ subject, payload: encoded });
+    }
   };
 
   /**
@@ -673,43 +677,48 @@ export default class ConnectNats {
     msg: string,
     to?: string,
   ) => {
-    await this.publishData(type, msg, undefined, undefined, to);
+    await this.publishData(type, {
+      message: msg,
+      to,
+    });
   };
 
   public publishData = async (
     type: DataMsgBodyType,
-    message: string | undefined,
-    binMessage: Uint8Array | undefined,
-    id: string | undefined,
-    to?: string,
+    payload: {
+      message?: string;
+      binMessage?: Uint8Array;
+      id?: string;
+      to?: string;
+    } = {},
   ) => {
     if (!this._nc || this._nc.isClosed()) {
       return;
     }
 
     const data = create(DataChannelMessageSchema, {
-      id,
       type,
+      id: payload.id,
       fromUserId: this._userId,
-      toUserId: to,
-      message,
-      binMessage,
+      toUserId: payload.to,
+      message: payload.message,
+      binMessage: payload.binMessage,
     });
 
-    let payload: Uint8Array = toBinary(DataChannelMessageSchema, data);
+    let encoded: Uint8Array = toBinary(DataChannelMessageSchema, data);
     if (this._enableE2EE) {
-      const enc = await this.encryptData(payload);
+      const enc = await this.encryptData(encoded);
       if (typeof enc === 'undefined') {
         return;
       }
-      payload = enc;
+      encoded = enc;
     }
 
-    if (to) {
-      this.sendPrivateData(payload, 'DATA_MSG', to, false);
+    if (payload.to) {
+      this.sendPrivateData(encoded, 'DATA_MSG', payload.to, false);
     } else {
       const subject = `${this._subjects.dataChannel}.${this._roomId}`;
-      this.messageQueue.addToQueue({ subject, payload });
+      this.messageQueue.addToQueue({ subject, payload: encoded });
     }
   };
 

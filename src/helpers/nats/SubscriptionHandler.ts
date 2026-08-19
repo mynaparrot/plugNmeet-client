@@ -146,12 +146,14 @@ export default class SubscriptionHandler {
 
   private async handlePrivateDataDelivery(p: NatsMsgServerToClient) {
     const header = fromJsonString(PrivateDataDeliverySchema, p.msg);
-    switch (header.type as PrivateDataDeliveryType) {
+    const type = header.type as PrivateDataDeliveryType;
+    switch (type) {
       case 'CHAT':
         await this.processToHandleChatMsg(p.binMsg);
         break;
       case 'DATA_MSG':
-        await this.processToHandleDataMsg(p.binMsg);
+      case 'WHITEBOARD_MSG':
+        await this.processToHandleDataMsg(type, p.binMsg);
         break;
     }
   }
@@ -241,9 +243,17 @@ export default class SubscriptionHandler {
     }
   }
 
-  private async processToHandleDataMsg(data: Uint8Array<ArrayBufferLike>) {
+  private async processToHandleDataMsg(
+    deliveryType: PrivateDataDeliveryType,
+    data: Uint8Array<ArrayBufferLike>,
+  ) {
     let dataToParse = data;
-    if (this.connectNats.enableE2EE) {
+    const enabledE2EE =
+      deliveryType === 'WHITEBOARD_MSG'
+        ? this.connectNats.enableE2EE && this.connectNats.enableE2EEWhiteboard
+        : this.connectNats.enableE2EE;
+
+    if (enabledE2EE) {
       const data = await this.connectNats.decryptData(dataToParse);
       if (typeof data === 'undefined') {
         return;
@@ -259,7 +269,11 @@ export default class SubscriptionHandler {
       return;
     }
 
-    // All other messages are for us
+    // special case when message was send privately which server will route as data message
+    if (deliveryType === 'WHITEBOARD_MSG') {
+      await this._handleWhiteboard.handleWhiteboardMsg(payload);
+      return;
+    }
     await this._handleDataMsg.handleMessage(payload);
   }
 
@@ -277,7 +291,7 @@ export default class SubscriptionHandler {
 
     for await (const m of sub) {
       try {
-        await this.processToHandleDataMsg(m.data);
+        await this.processToHandleDataMsg('DATA_MSG', m.data);
       } catch (e) {
         console.error('failed to process data channel message', e);
       }

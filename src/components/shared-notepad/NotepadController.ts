@@ -261,13 +261,12 @@ export class NotepadController {
       return;
     }
 
-    void conn.publishData(
-      type,
+    void conn.publishData(type, {
       message,
       binMessage,
-      id ?? crypto.randomUUID(),
-      toUserId,
-    );
+      id: id ?? crypto.randomUUID(),
+      to: toUserId,
+    });
   }
 
   private getSyncRequestTargets(): string[] {
