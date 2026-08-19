@@ -705,7 +705,8 @@
       "disabled-message": "Tekoälyominaisuus on tällä hetkellä pois päältä. Ylläpitäjä voi ottaa sen käyttöön Lisää vaihtoehtoja (...) → AI Tools → AI Assistant Chat -osiosta."
     },
     "whiteboard-ai": {
-      "disabled-message": "Tekoälyominaisuus on tällä hetkellä pois päältä. Ylläpitäjä voi ottaa sen käyttöön Lisää vaihtoehtoja (...) → AI Tools → AI Assistant Chat -osiosta."
+      "disabled-message": "Tekoälyominaisuus on tällä hetkellä pois päältä. Ylläpitäjä voi ottaa sen käyttöön Lisää vaihtoehtoja (...) → AI Tools → AI Assistant Chat -osiosta.",
+      "request-timeout": "Valkotaulun tekoälypyyntö aikakatkaistu"
     }
   },
   "sip-dial-in-features": {
