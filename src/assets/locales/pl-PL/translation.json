@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Nagrywanie w chmurze nie jest dostępne w przypadku korzystania z niestandardowego klucza bezpieczeństwa.",
     "media-only-recording-not-support-e2ee": "Nagrywanie tylko dźwięku i obrazu nie jest dostępne, gdy włączone jest szyfrowanie end-to-end.",
     "you-are-sharing-screen": "Udostępniasz teraz swój ekran. Inni zobaczą większy widok.",
+    "screen-share-view-disabled": "{{name}} udostępnia ekran, ale wyłączyłeś możliwość udostępniania ekranu w ustawieniach oszczędzania danych.",
     "new-system-message-in-chat": "Na czacie publicznym została opublikowana nowa wiadomość systemowa.",
     "queue-holding-messages": "Problem z połączeniem: wiadomości są wstrzymywane.",
     "queue-discarded-message": "Wiadomość nie mogła zostać wysłana i została odrzucona.",
@@ -413,6 +414,7 @@
       "external-media-player-select-file": "Wybierz plik multimedialny do przesłania",
       "upload-background-image": "Prześlij obraz tła",
       "shared-notepad": "Udostępniony notatnik",
+      "export-notepad": "Eksport Markdown",
       "chose-virtual-bg": "Wybierz tło"
     }
   },
@@ -675,13 +677,36 @@
       "users-required": "Należy wybrać co najmniej jednego uczestnika.",
       "chat-box-placeholder": "Zadaj pytanie Asystentowi AI...",
       "responding-placeholder": "Asystent AI odpowiada...",
-      "response-timed-out": "Asystent AI zbyt długo nie odpowiada. Proszę, spróbuj ponownie."
+      "response-timed-out": "Asystent AI zbyt długo nie odpowiada. Proszę, spróbuj ponownie.",
+      "enable-notepad-ai": "Włącz AI w współdzielonym notatniku",
+      "enable-whiteboard-ai": "Włącz AI na tablicy suchościeralnej"
     },
     "meeting-summarization": {
       "enable": "Włącz podsumowanie spotkania",
       "summarization-prompt-label": "Instrukcje podsumowania",
       "summarization-prompt-required": "Wprowadź instrukcje, jak podsumować.",
       "enabled-notification-all": "Dźwięk z tego spotkania jest teraz nagrywany w celu wygenerowania podsumowania."
+    },
+    "notepad-ai": {
+      "title": "Zapytaj AI",
+      "sub-title": "Pisz z pomocą AI",
+      "continue-writing": "Kontynuuj pisanie",
+      "summarize": "Podsumowanie",
+      "improve-writing": "Popraw pisanie",
+      "fix-spelling": "Popraw pisownię",
+      "simplify": "Uproszczenie",
+      "custom-placeholder": "Pytaj AI o cokolwiek…",
+      "run": "Uciekaj",
+      "back": "Z powrotem",
+      "select-text": "Wybierz najpierw tekst lub umieść kursor w bloku.",
+      "generating": "Generowanie odpowiedzi AI...",
+      "done": "Zastosowanie wyniku AI",
+      "failed": "Żądanie AI nie powiodło się",
+      "disabled-message": "Funkcja AI jest obecnie wyłączona. Administrator może włączyć to z opcji Więcej opcji (...) → narzędzi AI → Czatu Asystenta AI."
+    },
+    "whiteboard-ai": {
+      "disabled-message": "Funkcja AI jest obecnie wyłączona. Administrator może włączyć to z opcji Więcej opcji (...) → narzędzi AI → Czatu Asystenta AI.",
+      "request-timeout": "Żądanie AI tablicy zakończone"
     }
   },
   "sip-dial-in-features": {
