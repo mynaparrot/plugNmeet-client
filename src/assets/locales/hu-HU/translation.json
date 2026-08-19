@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Felhőalapú rögzítés nem érhető el egyéni biztonsági kulcs használata esetén.",
     "media-only-recording-not-support-e2ee": "Csak hang és videó rögzítése nem érhető el, ha a végpontok közötti titkosítás engedélyezve van.",
     "you-are-sharing-screen": "Most megosztja a képernyőjét. Mások nagyobb képet fognak látni.",
+    "screen-share-view-disabled": "{{name}} Megosztja a képernyőt, de az adatmentési beállításokból kitiltottad a képernyőmegosztás megtekintését.",
     "new-system-message-in-chat": "Új rendszerüzenetet tettek közzé a nyilvános csevegésben.",
     "queue-holding-messages": "Kapcsolati probléma: üzenetek maradnak.",
     "queue-discarded-message": "Üzenetet nem lehetett küldeni, ezért elvetették.",
@@ -413,6 +414,7 @@
       "external-media-player-select-file": "Válaszd ki a feltölteni kívánt médiafájlt",
       "upload-background-image": "Háttérkép feltöltése",
       "shared-notepad": "Megosztott jegyzettömb",
+      "export-notepad": "Exportár leszállás",
       "chose-virtual-bg": "Válaszd a háttér"
     }
   },
@@ -675,13 +677,36 @@
       "users-required": "Legalább egy résztvevőt ki kell választani.",
       "chat-box-placeholder": "Kérdezz egy kérdést az MI asszisztensnek...",
       "responding-placeholder": "Az MI asszisztens válaszol...",
-      "response-timed-out": "Az MI asszisztens túl sokáig tart a válaszadással. Kérlek, próbáld meg újra."
+      "response-timed-out": "Az MI asszisztens túl sokáig tart a válaszadással. Kérlek, próbáld meg újra.",
+      "enable-notepad-ai": "Kapcsold be az MI a közös jegyzetfüzetben",
+      "enable-whiteboard-ai": "Kapcsold be az MI a táblán"
     },
     "meeting-summarization": {
       "enable": "Engedélyezze a találkozók összefoglalását",
       "summarization-prompt-label": "Összefoglaló utasítások",
       "summarization-prompt-required": "Kérjük, add meg az összefoglaló utasításait.",
       "enabled-notification-all": "A találkozó hanganyagát most rögzítik, hogy összefoglalót készítsenek."
+    },
+    "notepad-ai": {
+      "title": "Kérdezz MI-t",
+      "sub-title": "Írj MI-vel",
+      "continue-writing": "Folytasd az írást",
+      "summarize": "Összefoglaló",
+      "improve-writing": "Fejlesztés az írás",
+      "fix-spelling": "Helyesírás javítása",
+      "simplify": "Egyszerűsítse",
+      "custom-placeholder": "Kérdezz AI-t bármit…",
+      "run": "Fuss",
+      "back": "Hátra",
+      "select-text": "Válassz valami szöveget, vagy helyezd el a kurzort először egy blokkoban.",
+      "generating": "MI válasz generálása...",
+      "done": "AI eredmény alkalmazása",
+      "failed": "Az MI kérés sikertelen",
+      "disabled-message": "Az AI funkció jelenleg le van tiltva. Egy adminisztrátor engedélyezheti a További opciók (...) → AI Tools → AI Assistant Chat menüpontból."
+    },
+    "whiteboard-ai": {
+      "disabled-message": "Az AI funkció jelenleg le van tiltva. Egy adminisztrátor engedélyezheti a További opciók (...) → AI Tools → AI Assistant Chat menüpontból.",
+      "request-timeout": "Whiteboard MI kérés időlejárt"
     }
   },
   "sip-dial-in-features": {
