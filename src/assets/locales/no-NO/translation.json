@@ -705,7 +705,8 @@
       "disabled-message": "AI-funksjonen er for øyeblikket deaktivert. En administrator kan aktivere det fra Flere alternativer (...) → AI-verktøy → AI Assistant Chat."
     },
     "whiteboard-ai": {
-      "disabled-message": "AI-funksjonen er for øyeblikket deaktivert. En administrator kan aktivere det fra Flere alternativer (...) → AI-verktøy → AI Assistant Chat."
+      "disabled-message": "AI-funksjonen er for øyeblikket deaktivert. En administrator kan aktivere det fra Flere alternativer (...) → AI-verktøy → AI Assistant Chat.",
+      "request-timeout": "Whiteboard AI-forespørsel har gått ut på tid"
     }
   },
   "sip-dial-in-features": {
