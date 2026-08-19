@@ -705,7 +705,8 @@
       "disabled-message": "目前 AI 功能已停用。管理員可從更多選項（...）→ AI 工具→ AI 助理聊天室啟用此功能。"
     },
     "whiteboard-ai": {
-      "disabled-message": "目前 AI 功能已停用。管理員可從更多選項（...）→ AI 工具→ AI 助理聊天室啟用此功能。"
+      "disabled-message": "目前 AI 功能已停用。管理員可從更多選項（...）→ AI 工具→ AI 助理聊天室啟用此功能。",
+      "request-timeout": "白板 AI 請求逾時"
     }
   },
   "sip-dial-in-features": {
