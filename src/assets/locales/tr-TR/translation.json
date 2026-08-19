@@ -705,7 +705,8 @@
       "disabled-message": "Yapay zeka özelliği şu anda devre dışı bırakılmış. Bir yönetici, bunu Daha Fazla Seçenek (...) → AI Tools → AI Assistant Chat'ten etkinleştirebilir."
     },
     "whiteboard-ai": {
-      "disabled-message": "Yapay zeka özelliği şu anda devre dışı bırakılmış. Bir yönetici, bunu Daha Fazla Seçenek (...) → AI Tools → AI Assistant Chat'ten etkinleştirebilir."
+      "disabled-message": "Yapay zeka özelliği şu anda devre dışı bırakılmış. Bir yönetici, bunu Daha Fazla Seçenek (...) → AI Tools → AI Assistant Chat'ten etkinleştirebilir.",
+      "request-timeout": "Beyaz tahta yapay zeka talebi zamanlama doldu"
     }
   },
   "sip-dial-in-features": {
