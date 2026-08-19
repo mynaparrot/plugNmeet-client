@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Pilvitallennus ei ole käytettävissä käytettäessä mukautettua suojausavainta.",
     "media-only-recording-not-support-e2ee": "Vain äänen ja videon tallentaminen ei ole käytettävissä, kun päästä päähän -salaus on käytössä.",
     "you-are-sharing-screen": "Jaat nyt näyttösi. Toiset näkevät suuremman näkymän.",
+    "screen-share-view-disabled": "{{name}} Jakaa näyttöä, mutta olet poistanut näytön jaon katselun käytöstä tallennusasetuksista.",
     "new-system-message-in-chat": "Uusi järjestelmäviesti on julkaistu julkisessa chatissa.",
     "queue-holding-messages": "Yhteysongelma: viestejä pidätetään.",
     "queue-discarded-message": "Viestiä ei voitu lähettää ja se hylättiin.",
@@ -413,6 +414,7 @@
       "external-media-player-select-file": "Valitse ladattava mediatiedosto",
       "upload-background-image": "Lataa taustakuva",
       "shared-notepad": "Jaettu muistio",
+      "export-notepad": "Vientihinnan alennus",
       "chose-virtual-bg": "Valitse tausta"
     }
   },
@@ -675,13 +677,36 @@
       "users-required": "Vähintään yksi osallistuja on valittava.",
       "chat-box-placeholder": "Kysy tekoälyavustajalta kysymys...",
       "responding-placeholder": "Tekoälyavustaja vastaa...",
-      "response-timed-out": "Tekoälyavustaja vastaa liian hitaasti. Ole hyvä ja yritä uudelleen."
+      "response-timed-out": "Tekoälyavustaja vastaa liian hitaasti. Ole hyvä ja yritä uudelleen.",
+      "enable-notepad-ai": "Ota tekoäly käyttöön jaetussa muistikirjassa",
+      "enable-whiteboard-ai": "Ota tekoäly käyttöön valkotaululla"
     },
     "meeting-summarization": {
       "enable": "Ota käyttöön kokouksen yhteenveto",
       "summarization-prompt-label": "Yhteenvetoohjeet",
       "summarization-prompt-required": "Syötäthän ohjeet yhteenvetoon.",
       "enabled-notification-all": "Tämän kokouksen äänitteitä nauhoitetaan nyt, jotta saadaan yhteenveto."
+    },
+    "notepad-ai": {
+      "title": "Kysy tekoälyltä",
+      "sub-title": "Kirjoita tekoälyllä",
+      "continue-writing": "Jatka kirjoittamista",
+      "summarize": "Yhteenveto",
+      "improve-writing": "Paranna kirjoittamista",
+      "fix-spelling": "Korjaa oikeinkirjoitus",
+      "simplify": "Yksinkertaista",
+      "custom-placeholder": "Kysy tekoälyltä mitä tahansa…",
+      "run": "Juokse",
+      "back": "Takaisin",
+      "select-text": "Valitse tekstiä tai aseta kursori ensin lohkoon.",
+      "generating": "Tekoälyn vastauksen tuottaminen...",
+      "done": "AI-tulos sovellettu",
+      "failed": "AI-pyyntö epäonnistui",
+      "disabled-message": "Tekoälyominaisuus on tällä hetkellä pois päältä. Ylläpitäjä voi ottaa sen käyttöön Lisää vaihtoehtoja (...) → AI Tools → AI Assistant Chat -osiosta."
+    },
+    "whiteboard-ai": {
+      "disabled-message": "Tekoälyominaisuus on tällä hetkellä pois päältä. Ylläpitäjä voi ottaa sen käyttöön Lisää vaihtoehtoja (...) → AI Tools → AI Assistant Chat -osiosta.",
+      "request-timeout": "Valkotaulun tekoälypyyntö aikakatkaistu"
     }
   },
   "sip-dial-in-features": {
