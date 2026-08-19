@@ -4,11 +4,6 @@ import { DB_STORE_NAMES, idbGet, idbStore } from '../../../helpers/libs/idb';
 
 const WHITEBOARD_AI_CHATS_KEY = 'ai-chats';
 
-/**
- * Persists whiteboard AI chat sessions to the session IndexedDB store
- * (`pnm-<roomSid>-<userId>`) so they survive reloads and stay scoped to the
- * current user and room.
- */
 export const whiteboardPersistenceAdapter: TTDPersistenceAdapter = {
   async loadChats() {
     try {

@@ -88,7 +88,7 @@ const WhiteboardAI = ({ canEdit }: WhiteboardAIProps) => {
   const renderWelcomeScreen = useCallback<TTTDDialog.renderWelcomeScreen>(
     () =>
       !whiteboardAIEnabled ? (
-        <div className="w-full rounded-lg border border-Gray-100 bg-white p-3 text-sm text-Gray-600 shadow-xl dark:border-Gray-800 dark:bg-dark-primary dark:text-Gray-300">
+        <div className="text-red-600">
           {t('insights.whiteboard-ai.disabled-message')}
         </div>
       ) : undefined,
@@ -103,7 +103,7 @@ const WhiteboardAI = ({ canEdit }: WhiteboardAIProps) => {
     <>
       <TTDDialog
         onTextSubmit={onTextSubmit}
-        renderWelcomeScreen={renderWelcomeScreen}
+        {...(whiteboardAIEnabled ? {} : { renderWelcomeScreen })}
         persistenceAdapter={whiteboardPersistenceAdapter}
       />
       <TTDDialogTrigger />

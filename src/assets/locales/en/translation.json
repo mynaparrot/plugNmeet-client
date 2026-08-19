@@ -705,7 +705,8 @@
       "disabled-message": "The AI feature is currently disabled. An administrator can enable it from More Options (...) → AI Tools → AI Assistant Chat."
     },
     "whiteboard-ai": {
-      "disabled-message": "The AI feature is currently disabled. An administrator can enable it from More Options (...) → AI Tools → AI Assistant Chat."
+      "disabled-message": "The AI feature is currently disabled. An administrator can enable it from More Options (...) → AI Tools → AI Assistant Chat.",
+      "request-timeout": "Whiteboard AI request timed out"
     }
   },
   "sip-dial-in-features": {

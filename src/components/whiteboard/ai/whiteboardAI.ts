@@ -8,22 +8,27 @@ import {
 } from 'plugnmeet-protocol-js';
 
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
+import i18n from '../../../helpers/i18n';
 
 const STREAM_TIMEOUT_MS = 60_000;
 
 const WHITEBOARD_AI_INSTRUCTIONS = `Convert the user's request into one valid Mermaid diagram compatible with mermaid-to-excalidraw.
 
 Rules:
-- Return ONLY raw Mermaid syntax, with exactly one diagram.
-- Do not use markdown fences, explanations, comments, HTML, initialization directives, links, custom styling, icons, or images.
-- Choose the best type: flowchart, sequenceDiagram, classDiagram, stateDiagram-v2, erDiagram, gantt, journey, pie, or mindmap.
-- Prefer simple, conservative Mermaid syntax.
+- Return ONLY raw Mermaid syntax.
+- Do not use markdown fences, explanations, comments, HTML, initialization directives, links, or custom styling.
+- Use only these supported diagram types:
+  - flowchart for processes, workflows, and decision trees
+  - sequenceDiagram for communication flows
+  - classDiagram for class structures
+  - stateDiagram-v2 for state machines
+  - erDiagram for entity relationships
+- Prefer simple Mermaid syntax.
 - Use unique alphanumeric node IDs.
-- Keep labels short and avoid multiline or complex labels.
-- Use subgraphs only when they improve clarity.
+- Keep labels short and readable.
 - Do not invent details not implied by the request.
-- Ensure all nodes and connections are syntactically complete.
 - If the request is ambiguous or unsupported, return a valid flowchart asking the user to clarify.
+- Ensure the output contains exactly one complete diagram.
 
 Return ONLY raw Mermaid syntax.`;
 
@@ -60,7 +65,7 @@ export const executeWhiteboardAI = async (
   const streamPromise = new Promise<string>((resolve, reject) => {
     const timer = setTimeout(() => {
       pendingStreams.delete(streamId);
-      reject(new Error('Whiteboard AI request timed out'));
+      reject(new Error(i18n.t('insights.whiteboard-ai.request-timeout')));
     }, STREAM_TIMEOUT_MS);
 
     pendingStreams.set(streamId, {
