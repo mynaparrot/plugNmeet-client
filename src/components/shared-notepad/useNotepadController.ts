@@ -11,5 +11,5 @@ export const useNotepadController = () => {
 
   useEffect(() => {
     void getNotepadController().sync();
-  }, [features?.notePadId, features?.isActive, features?.isAllow]);
+  }, [features?.isActive, features?.isAllow]);
 };

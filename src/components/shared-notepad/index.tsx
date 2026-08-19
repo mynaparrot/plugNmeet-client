@@ -18,10 +18,12 @@ import { DownloadIconSVG } from '../../assets/Icons/DownloadIconSVG';
 
 const SharedNotepad = () => {
   const { t } = useTranslation();
-  const { currentUser } = useMemo(() => {
+  const { currentUser, isAdmin, isRecorder } = useMemo(() => {
     const session = store.getState().session;
     return {
       currentUser: session.currentUser,
+      isAdmin: !!session.currentUser?.metadata?.isAdmin,
+      isRecorder: !!session.currentUser?.isRecorder,
     };
   }, []);
   const isActiveSharedNotePad = useAppSelector(
@@ -43,7 +45,17 @@ const SharedNotepad = () => {
     (state) =>
       state.session.currentUser?.metadata?.lockSettings?.lockSharedNotepad,
   );
-  const editable = !currentUser?.isRecorder && !lockSharedNotepad;
+  const defaultRoomLock = useAppSelector(
+    (state) =>
+      state.session.currentRoom.metadata?.defaultLockSettings
+        ?.lockSharedNotepad,
+  );
+  const editable = useMemo(() => {
+    if (isRecorder) return false;
+    if (isAdmin) return true;
+    if (typeof lockSharedNotepad === 'boolean') return !lockSharedNotepad;
+    return !(defaultRoomLock ?? true);
+  }, [isRecorder, isAdmin, lockSharedNotepad, defaultRoomLock]);
 
   useEffect(() => {
     if (isActiveSharedNotePad) {

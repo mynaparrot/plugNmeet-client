@@ -7,12 +7,7 @@ import {
 import { DataChannelMessage, DataMsgBodyType } from 'plugnmeet-protocol-js';
 
 import { getNatsConn } from '../../helpers/nats';
-import {
-  DB_STORE_NAMES,
-  idbDel,
-  idbGet,
-  idbStore,
-} from '../../helpers/libs/idb';
+import { DB_STORE_NAMES, idbGet, idbStore } from '../../helpers/libs/idb';
 import { store } from '../../store';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import { base64ToUint8, uint8ToBase64 } from '../../helpers/utils';
@@ -28,14 +23,12 @@ export type NotepadSnapshot = {
   fragment: Y.XmlFragment | null;
   awareness: Awareness | null;
   generation: number;
-  notePadId: string;
 };
 
 export class NotepadController {
   private doc: Y.Doc | null = null;
   private awareness: Awareness | null = null;
   private fragment: Y.XmlFragment | null = null;
-  private notePadId = '';
   private generation = 0;
   private pendingSyncRequestId: string | null = null;
   private backupResponseTimers = new Map<
@@ -54,7 +47,6 @@ export class NotepadController {
     fragment: null,
     awareness: null,
     generation: 0,
-    notePadId: '',
   };
 
   subscribe = (cb: () => void) => {
@@ -76,17 +68,30 @@ export class NotepadController {
       fragment: this.fragment,
       awareness: this.awareness,
       generation: this.generation,
-      notePadId: this.notePadId,
     };
     this.emitChange();
   }
 
   private canWrite = () => {
-    const user = store.getState().session.currentUser;
+    const state = store.getState();
+    const user = state.session.currentUser;
     if (!user) {
       return false;
     }
-    return !user.isRecorder && !user.metadata?.lockSettings?.lockSharedNotepad;
+    if (user.isRecorder) {
+      return false;
+    }
+    if (user.metadata?.isAdmin) {
+      return true;
+    }
+    const lock = user.metadata?.lockSettings?.lockSharedNotepad;
+    if (typeof lock === 'boolean') {
+      return !lock;
+    }
+    const defaultRoomLock =
+      state.session.currentRoom.metadata?.defaultLockSettings
+        ?.lockSharedNotepad;
+    return !(defaultRoomLock ?? true);
   };
 
   private saveNow = async () => {
@@ -119,18 +124,13 @@ export class NotepadController {
     const features =
       store.getState().session.currentRoom.metadata?.roomFeatures
         ?.sharedNotePadFeatures;
-    if (
-      !features ||
-      !features.isAllow ||
-      !features.isActive ||
-      !features.notePadId
-    ) {
+    if (!features || !features.isAllow || !features.isActive) {
       return;
     }
-    if (this.notePadId === features.notePadId && this.doc) {
+    if (this.doc) {
       return;
     }
-    await this.setup(features.notePadId);
+    await this.setup();
   }
 
   private bindLifecycle() {
@@ -151,26 +151,13 @@ export class NotepadController {
     }
   }
 
-  private async setup(notePadId: string) {
+  private async setup() {
     if (this.settingUp) {
       return;
     }
     this.settingUp = true;
     try {
-      const previousNotePadId = this.notePadId;
       await this.clearCurrentSession();
-      this.notePadId = notePadId;
-
-      // On a server-driven reset the notePadId changes; discard the old
-      // snapshot so stale content isn't reloaded and re-broadcast. Session-end
-      // cleanup is handled by deleteRoomDB(), so this only runs on reset.
-      if (previousNotePadId !== '' && previousNotePadId !== notePadId) {
-        try {
-          await idbDel(DB_STORE_NAMES.NOTEPAD, NOTEPAD_SNAPSHOT_KEY);
-        } catch (e) {
-          console.error('[NotepadController] failed to delete snapshot', e);
-        }
-      }
 
       const doc = new Y.Doc();
 
@@ -255,7 +242,6 @@ export class NotepadController {
       this.doc = null;
     }
     this.fragment = null;
-    this.notePadId = '';
     this.updateSnapshot();
   }
 
