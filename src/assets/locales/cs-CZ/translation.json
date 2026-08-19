@@ -705,7 +705,8 @@
       "disabled-message": "Funkce AI je momentálně deaktivovaná. Administrátor ji může povolit z Více možností (...) → AI Tools → AI Assistant Chat."
     },
     "whiteboard-ai": {
-      "disabled-message": "Funkce AI je momentálně deaktivovaná. Administrátor ji může povolit z Více možností (...) → AI Tools → AI Assistant Chat."
+      "disabled-message": "Funkce AI je momentálně deaktivovaná. Administrátor ji může povolit z Více možností (...) → AI Tools → AI Assistant Chat.",
+      "request-timeout": "Požadavek AI na tabuli vypršel"
     }
   },
   "sip-dial-in-features": {
