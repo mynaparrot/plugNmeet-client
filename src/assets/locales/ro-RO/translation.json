@@ -705,7 +705,8 @@
       "disabled-message": "Funcția AI este în prezent dezactivată. Un administrator îl poate activa din Mai multe opțiuni (...) → AI Tools → AI Assistant Chat."
     },
     "whiteboard-ai": {
-      "disabled-message": "Funcția AI este în prezent dezactivată. Un administrator îl poate activa din Mai multe opțiuni (...) → AI Tools → AI Assistant Chat."
+      "disabled-message": "Funcția AI este în prezent dezactivată. Un administrator îl poate activa din Mai multe opțiuni (...) → AI Tools → AI Assistant Chat.",
+      "request-timeout": "Cererea de AI pe tablă albă expirată"
     }
   },
   "sip-dial-in-features": {
