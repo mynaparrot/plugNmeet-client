@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "La registrazione su cloud non è disponibile quando si utilizza una chiave di sicurezza personalizzata.",
     "media-only-recording-not-support-e2ee": "La registrazione di solo audio e video non è disponibile quando la crittografia end-to-end è abilitata.",
     "you-are-sharing-screen": "Sta condividendo il suo schermo. Gli altri vedranno una visualizzazione più grande.",
+    "screen-share-view-disabled": "{{name}} sta condividendo lo schermo, ma hai disabilitato la visualizzazione dello schermo dalle impostazioni di salvataggio dati.",
     "new-system-message-in-chat": "Un nuovo messaggio di sistema è stato pubblicato nella chat pubblica.",
     "queue-holding-messages": "Problema di connessione: i messaggi sono in attesa.",
     "queue-discarded-message": "Un messaggio non ha potuto essere inviato ed è stato eliminato.",
@@ -413,6 +414,7 @@
       "external-media-player-select-file": "Selezioni un file multimediale da caricare",
       "upload-background-image": "Carica immagine di sfondo",
       "shared-notepad": "Blocco note condiviso",
+      "export-notepad": "Sconto all'esportazione",
       "chose-virtual-bg": "Scegli sfondo"
     }
   },
@@ -675,13 +677,36 @@
       "users-required": "È necessario selezionare almeno un partecipante.",
       "chat-box-placeholder": "Faccia una domanda all'Assistente AI...",
       "responding-placeholder": "L'Assistente AI sta rispondendo...",
-      "response-timed-out": "L'assistente AI sta mettendo troppo tempo a rispondere. Per favore, riprova."
+      "response-timed-out": "L'assistente AI sta mettendo troppo tempo a rispondere. Per favore, riprova.",
+      "enable-notepad-ai": "Abilita l'IA nel blocco note condiviso",
+      "enable-whiteboard-ai": "Abilita l'IA nella lavagna"
     },
     "meeting-summarization": {
       "enable": "Abilita riassunto della riunione",
       "summarization-prompt-label": "Istruzioni per il riassunto",
       "summarization-prompt-required": "Inserisca le istruzioni su come riassumere.",
       "enabled-notification-all": "L'audio di questa riunione viene ora registrato per generare un riassunto."
+    },
+    "notepad-ai": {
+      "title": "Ask AI",
+      "sub-title": "Scrivi con l'IA",
+      "continue-writing": "Continua a scrivere",
+      "summarize": "Riassumi",
+      "improve-writing": "Migliorare la scrittura",
+      "fix-spelling": "Correggere l'ortografia",
+      "simplify": "Semplificare",
+      "custom-placeholder": "Chiedi qualsiasi cosa all'IA…",
+      "run": "Corri",
+      "back": "Indietro",
+      "select-text": "Seleziona un testo o posiziona il cursore in un blocco per prima.",
+      "generating": "Generare una risposta IA...",
+      "done": "Risultato AI applicato",
+      "failed": "Richiesta AI fallita",
+      "disabled-message": "La funzione AI è attualmente disabilitata. Un amministratore può abilitarlo tramite Più opzioni (...) → AI Tools → AI Assistant Chat."
+    },
+    "whiteboard-ai": {
+      "disabled-message": "La funzione AI è attualmente disabilitata. Un amministratore può abilitarlo tramite Più opzioni (...) → AI Tools → AI Assistant Chat.",
+      "request-timeout": "Richiesta IA della lavagna con tempi di scadenza"
     }
   },
   "sip-dial-in-features": {
