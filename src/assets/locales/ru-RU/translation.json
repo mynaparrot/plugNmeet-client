@@ -705,7 +705,8 @@
       "disabled-message": "Функция искусственного интеллекта в настоящее время отключена. Администратор может включить его в разделе More Options (...) → AI Tools → AI Assistant Chat."
     },
     "whiteboard-ai": {
-      "disabled-message": "Функция искусственного интеллекта в настоящее время отключена. Администратор может включить его в разделе More Options (...) → AI Tools → AI Assistant Chat."
+      "disabled-message": "Функция искусственного интеллекта в настоящее время отключена. Администратор может включить его в разделе More Options (...) → AI Tools → AI Assistant Chat.",
+      "request-timeout": "Запрос на AI на доске истёк"
     }
   },
   "sip-dial-in-features": {
