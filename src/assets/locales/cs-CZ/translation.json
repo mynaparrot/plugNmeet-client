@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Nahrávání do cloudu není k dispozici při použití vlastního bezpečnostního klíče.",
     "media-only-recording-not-support-e2ee": "Nahrávání pouze zvuku a videa není k dispozici, pokud je povoleno šifrování mezi koncovými body.",
     "you-are-sharing-screen": "Nyní sdílíte obrazovku. Ostatní uvidí větší pohled.",
+    "screen-share-view-disabled": "{{name}} Sdílí obrazovku, ale vy jste zakázali sdílení obrazovky v nastavení ukládání dat.",
     "new-system-message-in-chat": "Ve veřejném chatu byla zveřejněna nová systémová hláška.",
     "queue-holding-messages": "Problém s připojením: zprávy jsou zadržovány.",
     "queue-discarded-message": "Zpráva nemohla být odeslána a byla vyřazena.",
@@ -413,6 +414,7 @@
       "external-media-player-select-file": "Vyberte mediální soubor, který chcete nahrát",
       "upload-background-image": "Nahrát obrázek na pozadí",
       "shared-notepad": "Sdílený Poznámkový blok",
+      "export-notepad": "Export Markdown",
       "chose-virtual-bg": "Vyberte si pozadí"
     }
   },
@@ -675,13 +677,36 @@
       "users-required": "Musí být vybrán alespoň jeden účastník.",
       "chat-box-placeholder": "Zeptejte se AI asistenta na otázku...",
       "responding-placeholder": "AI Assistant reaguje...",
-      "response-timed-out": "AI asistent reaguje příliš dlouho. Zkuste to prosím znovu."
+      "response-timed-out": "AI asistent reaguje příliš dlouho. Zkuste to prosím znovu.",
+      "enable-notepad-ai": "Povolte AI ve sdíleném poznámkovém bloku",
+      "enable-whiteboard-ai": "Povolit AI na tabuli"
     },
     "meeting-summarization": {
       "enable": "Umožnit shrnutí schůzky",
       "summarization-prompt-label": "Instrukce pro shrnutí",
       "summarization-prompt-required": "Zadejte prosím instrukce, jak shrnout.",
       "enabled-notification-all": "Zvuková nahrávka tohoto setkání je nyní nahrávána, aby vzniklo shrnutí."
+    },
+    "notepad-ai": {
+      "title": "Zeptejte se AI",
+      "sub-title": "Pište s AI",
+      "continue-writing": "Pokračovat v psaní",
+      "summarize": "Shrnutí",
+      "improve-writing": "Zlepšujte psaní",
+      "fix-spelling": "Opravit pravopis",
+      "simplify": "Zjednodušit",
+      "custom-placeholder": "Zeptejte se AI na cokoli…",
+      "run": "Utíkej",
+      "back": "Zpět",
+      "select-text": "Vyberte nějaký text nebo nejprve umístěte kurzor do bloku.",
+      "generating": "Generování AI odpovědi...",
+      "done": "Aplikovaný výsledek AI",
+      "failed": "Žádost AI neúspěšná",
+      "disabled-message": "Funkce AI je momentálně deaktivovaná. Administrátor ji může povolit z Více možností (...) → AI Tools → AI Assistant Chat."
+    },
+    "whiteboard-ai": {
+      "disabled-message": "Funkce AI je momentálně deaktivovaná. Administrátor ji může povolit z Více možností (...) → AI Tools → AI Assistant Chat.",
+      "request-timeout": "Požadavek AI na tabuli vypršel"
     }
   },
   "sip-dial-in-features": {
