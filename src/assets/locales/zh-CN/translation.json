@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "使用自定义安全密钥时，云录制不可用。",
     "media-only-recording-not-support-e2ee": "启用端到端加密后，仅录制音频和视频的功能不可用。",
     "you-are-sharing-screen": "您正在共享屏幕。其他参与者将看到放大的视图。",
+    "screen-share-view-disabled": "{{name}} 正在共享屏幕，但你在数据保存设置中禁用了屏幕共享查看。",
     "new-system-message-in-chat": "公共聊天中发布了一条新的系统消息。",
     "queue-holding-messages": "连接问题：消息被保留了。",
     "queue-discarded-message": "无法发送消息并被丢弃。",
@@ -413,6 +414,7 @@
       "external-media-player-select-file": "选择要上传的媒体文件",
       "upload-background-image": "上传背景图片",
       "shared-notepad": "共享记事本",
+      "export-notepad": "出口减价",
       "chose-virtual-bg": "选择背景"
     }
   },
@@ -675,13 +677,36 @@
       "users-required": "必须至少选择一名与会者。",
       "chat-box-placeholder": "向 AI 助手提问...",
       "responding-placeholder": "AI 助手正在回应...",
-      "response-timed-out": "AI助手回复太慢了。请再试一次。"
+      "response-timed-out": "AI助手回复太慢了。请再试一次。",
+      "enable-notepad-ai": "在共享记事本中启用AI。",
+      "enable-whiteboard-ai": "在白板中启用AI。"
     },
     "meeting-summarization": {
       "enable": "启用会议摘要",
       "summarization-prompt-label": "摘要说明",
       "summarization-prompt-required": "请输入如何进行摘要的说明。",
       "enabled-notification-all": "此会议的音频正在被录制以生成摘要。"
+    },
+    "notepad-ai": {
+      "title": "问AI",
+      "sub-title": "用AI写作",
+      "continue-writing": "继续写作",
+      "summarize": "总结",
+      "improve-writing": "提升写作水平",
+      "fix-spelling": "修正拼写",
+      "simplify": "简化",
+      "custom-placeholder": "问AI任何问题…",
+      "run": "跑",
+      "back": "返回",
+      "select-text": "先选择文本或将光标放入方块中。",
+      "generating": "生成AI回应......",
+      "done": "应用人工智能结果",
+      "failed": "AI请求失败",
+      "disabled-message": "AI功能目前已禁用。管理员可以通过更多选项（...）→ AI 工具→ AI 助理聊天来启用。"
+    },
+    "whiteboard-ai": {
+      "disabled-message": "AI功能目前已禁用。管理员可以通过更多选项（...）→ AI 工具→ AI 助理聊天来启用。",
+      "request-timeout": "白板AI请求超时"
     }
   },
   "sip-dial-in-features": {
