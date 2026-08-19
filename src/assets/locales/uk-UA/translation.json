@@ -705,7 +705,8 @@
       "disabled-message": "Функція штучного інтелекту наразі вимкнена. Адміністратор може увімкнути це через розділ More Options (...) → AI Tools → AI Assistant Chat."
     },
     "whiteboard-ai": {
-      "disabled-message": "Функція штучного інтелекту наразі вимкнена. Адміністратор може увімкнути це через розділ More Options (...) → AI Tools → AI Assistant Chat."
+      "disabled-message": "Функція штучного інтелекту наразі вимкнена. Адміністратор може увімкнути це через розділ More Options (...) → AI Tools → AI Assistant Chat.",
+      "request-timeout": "Запит на AI на дошці вичерпано"
     }
   },
   "sip-dial-in-features": {
