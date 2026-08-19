@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "カスタムセキュリティキーを使用している場合、クラウド録画は利用できません。",
     "media-only-recording-not-support-e2ee": "エンドツーエンド暗号化が有効な場合、音声と映像のみの録画は利用できません。",
     "you-are-sharing-screen": "画面を共有中です。他の参加者には拡大表示されます。",
+    "screen-share-view-disabled": "{{name}} 画面共有は存在しますが、データ保存設定から画面共有表示が無効になっています。",
     "new-system-message-in-chat": "新しいシステムメッセージがパブリックチャットに投稿されました。",
     "queue-holding-messages": "接続に問題があります：メッセージが保留されています。",
     "queue-discarded-message": "メッセージを送信できず、破棄されました。",
@@ -413,6 +414,7 @@
       "external-media-player-select-file": "アップロードするメディアファイルを選択",
       "upload-background-image": "背景画像をアップロード",
       "shared-notepad": "共有メモ帳",
+      "export-notepad": "エクスポートマークダウン",
       "chose-virtual-bg": "背景を選択"
     }
   },
@@ -675,13 +677,36 @@
       "users-required": "少なくとも1人の参加者を選択する必要があります。",
       "chat-box-placeholder": "AIアシスタントに質問してください...",
       "responding-placeholder": "AIアシスタントが応答中です...",
-      "response-timed-out": "AIアシスタントの返信が遅すぎます。もう一度お試しください。"
+      "response-timed-out": "AIアシスタントの返信が遅すぎます。もう一度お試しください。",
+      "enable-notepad-ai": "共有ノートでAIを有効にする",
+      "enable-whiteboard-ai": "ホワイトボードでAIを有効にする"
     },
     "meeting-summarization": {
       "enable": "会議の要約を有効にする",
       "summarization-prompt-label": "要約の指示",
       "summarization-prompt-required": "要約の方法に関する指示を入力してください。",
       "enabled-notification-all": "この会議の音声は、要約を生成するために現在録音されています。"
+    },
+    "notepad-ai": {
+      "title": "AIに聞く",
+      "sub-title": "AIで書く",
+      "continue-writing": "執筆を続けてください",
+      "summarize": "まとめて",
+      "improve-writing": "文章力の向上",
+      "fix-spelling": "スペル修正",
+      "simplify": "簡略化",
+      "custom-placeholder": "AIに何でも聞いてください…",
+      "run": "逃げろ",
+      "back": "戻る",
+      "select-text": "テキストを選択するか、カーソルをブロック内に置く。",
+      "generating": "AI応答を生成中...",
+      "done": "AI結果の適用",
+      "failed": "AIリクエストは失敗しました",
+      "disabled-message": "AI機能は現在無効化されています。管理者は「More Options(...)」→AIツール→AIアシスタントチャットから有効化できます。"
+    },
+    "whiteboard-ai": {
+      "disabled-message": "AI機能は現在無効化されています。管理者は「More Options(...)」→AIツール→AIアシスタントチャットから有効化できます。",
+      "request-timeout": "ホワイトボードAIリクエストのタイムアウト"
     }
   },
   "sip-dial-in-features": {
