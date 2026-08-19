@@ -705,7 +705,8 @@
       "disabled-message": "La funzione AI è attualmente disabilitata. Un amministratore può abilitarlo tramite Più opzioni (...) → AI Tools → AI Assistant Chat."
     },
     "whiteboard-ai": {
-      "disabled-message": "La funzione AI è attualmente disabilitata. Un amministratore può abilitarlo tramite Più opzioni (...) → AI Tools → AI Assistant Chat."
+      "disabled-message": "La funzione AI è attualmente disabilitata. Un amministratore può abilitarlo tramite Più opzioni (...) → AI Tools → AI Assistant Chat.",
+      "request-timeout": "Richiesta IA della lavagna con tempi di scadenza"
     }
   },
   "sip-dial-in-features": {
