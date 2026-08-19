@@ -705,7 +705,8 @@
       "disabled-message": "Fitur AI saat ini dinonaktifkan. Seorang administrator dapat mengaktifkannya dari More Options (...) → AI Tools → AI Assistant Chat."
     },
     "whiteboard-ai": {
-      "disabled-message": "Fitur AI saat ini dinonaktifkan. Seorang administrator dapat mengaktifkannya dari More Options (...) → AI Tools → AI Assistant Chat."
+      "disabled-message": "Fitur AI saat ini dinonaktifkan. Seorang administrator dapat mengaktifkannya dari More Options (...) → AI Tools → AI Assistant Chat.",
+      "request-timeout": "Permintaan AI-nya di Papan Tulis habis waktu"
     }
   },
   "sip-dial-in-features": {
