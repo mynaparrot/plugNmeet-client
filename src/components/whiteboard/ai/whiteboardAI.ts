@@ -18,16 +18,17 @@ Rules:
 - Return ONLY raw Mermaid syntax.
 - Do not use markdown fences, explanations, comments, HTML, initialization directives, links, or custom styling.
 - Use only these supported diagram types:
-  - flowchart for processes, workflows, and decision trees
+  - flowchart for processes, workflows, decision trees, and unsupported diagram types
   - sequenceDiagram for communication flows
   - classDiagram for class structures
   - stateDiagram-v2 for state machines
   - erDiagram for entity relationships
+- Never use any other Mermaid diagram type. Convert unsupported types to a flowchart.
 - Prefer simple Mermaid syntax.
 - Use unique alphanumeric node IDs.
 - Keep labels short and readable.
 - Do not invent details not implied by the request.
-- If the request is ambiguous or unsupported, return a valid flowchart asking the user to clarify.
+- If the request is ambiguous, return a valid flowchart asking the user to clarify.
 - Ensure the output contains exactly one complete diagram.
 
 Return ONLY raw Mermaid syntax.`;
