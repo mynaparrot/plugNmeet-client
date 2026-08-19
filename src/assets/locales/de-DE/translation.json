@@ -705,7 +705,8 @@
       "disabled-message": "Die KI-Funktion ist derzeit deaktiviert. Ein Administrator kann es über Mehr Optionen (...) → KI-Tools → KI-Assistenten-Chat aktivieren."
     },
     "whiteboard-ai": {
-      "disabled-message": "Die KI-Funktion ist derzeit deaktiviert. Ein Administrator kann es über Mehr Optionen (...) → KI-Tools → KI-Assistenten-Chat aktivieren."
+      "disabled-message": "Die KI-Funktion ist derzeit deaktiviert. Ein Administrator kann es über Mehr Optionen (...) → KI-Tools → KI-Assistenten-Chat aktivieren.",
+      "request-timeout": "Whiteboard-KI-Anfrage hat abgelaufen"
     }
   },
   "sip-dial-in-features": {
