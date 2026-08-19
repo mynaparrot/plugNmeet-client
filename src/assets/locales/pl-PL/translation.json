@@ -705,7 +705,8 @@
       "disabled-message": "Funkcja AI jest obecnie wyłączona. Administrator może włączyć to z opcji Więcej opcji (...) → narzędzi AI → Czatu Asystenta AI."
     },
     "whiteboard-ai": {
-      "disabled-message": "Funkcja AI jest obecnie wyłączona. Administrator może włączyć to z opcji Więcej opcji (...) → narzędzi AI → Czatu Asystenta AI."
+      "disabled-message": "Funkcja AI jest obecnie wyłączona. Administrator może włączyć to z opcji Więcej opcji (...) → narzędzi AI → Czatu Asystenta AI.",
+      "request-timeout": "Żądanie AI tablicy zakończone"
     }
   },
   "sip-dial-in-features": {
