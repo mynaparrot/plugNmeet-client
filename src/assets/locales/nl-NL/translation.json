@@ -705,7 +705,8 @@
       "disabled-message": "De AI-functie is momenteel uitgeschakeld. Een beheerder kan het inschakelen via Meer opties (...) → AI-tools → AI Assistant Chat."
     },
     "whiteboard-ai": {
-      "disabled-message": "De AI-functie is momenteel uitgeschakeld. Een beheerder kan het inschakelen via Meer opties (...) → AI-tools → AI Assistant Chat."
+      "disabled-message": "De AI-functie is momenteel uitgeschakeld. Een beheerder kan het inschakelen via Meer opties (...) → AI-tools → AI Assistant Chat.",
+      "request-timeout": "Whiteboard AI-verzoek is getimed"
     }
   },
   "sip-dial-in-features": {
