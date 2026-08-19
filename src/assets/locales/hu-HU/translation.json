@@ -705,7 +705,8 @@
       "disabled-message": "Az AI funkció jelenleg le van tiltva. Egy adminisztrátor engedélyezheti a További opciók (...) → AI Tools → AI Assistant Chat menüpontból."
     },
     "whiteboard-ai": {
-      "disabled-message": "Az AI funkció jelenleg le van tiltva. Egy adminisztrátor engedélyezheti a További opciók (...) → AI Tools → AI Assistant Chat menüpontból."
+      "disabled-message": "Az AI funkció jelenleg le van tiltva. Egy adminisztrátor engedélyezheti a További opciók (...) → AI Tools → AI Assistant Chat menüpontból.",
+      "request-timeout": "Whiteboard MI kérés időlejárt"
     }
   },
   "sip-dial-in-features": {
