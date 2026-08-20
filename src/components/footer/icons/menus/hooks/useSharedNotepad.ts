@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  ChangeEtherpadStatusReqSchema,
+  ChangeSharedNotepadStatusReqSchema,
   CommonResponseSchema,
 } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
@@ -29,14 +29,14 @@ const useSharedNotepad = () => {
 
   const toggleSharedNotepad = useCallback(async () => {
     const newStatus = !sharedNotepadStatus;
-    const body = create(ChangeEtherpadStatusReqSchema, {
+    const body = create(ChangeSharedNotepadStatusReqSchema, {
       roomId,
       isActive: newStatus,
     });
 
     const r = await sendAPIRequest(
-      'etherpad/changeStatus',
-      toBinary(ChangeEtherpadStatusReqSchema, body),
+      'sharedNotepad/changeStatus',
+      toBinary(ChangeSharedNotepadStatusReqSchema, body),
       false,
       'application/protobuf',
       'arraybuffer',
