@@ -371,6 +371,17 @@ input.polls-checkbox:checked:before {
 
 .video-camera-item {
   @apply w-full h-full rounded-2xl overflow-hidden z-1 bg-black;
+  container-type: inline-size;
+}
+/* Avatar initial scales with the tile's own width; caps match text-5xl / 3xl:text-7xl */
+.camera-muted-fallback .avatar-initial {
+  font-size: clamp(1rem, 8cqw, 3rem);
+  line-height: 1;
+}
+@media (min-width: 110rem) {
+  .camera-muted-fallback .avatar-initial {
+    font-size: clamp(1rem, 9cqw, 4.5rem);
+  }
 }
 .video-camera-item .loading {
   @apply top-1/2 -translate-y-1/2;
