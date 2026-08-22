@@ -193,7 +193,7 @@ const VerticalLayout = ({
         {isDocumentPipSupported && (
           <button
             type="button"
-            className="cam-pip cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center absolute top-2 end-2 z-50 opacity-0 group-hover:opacity-100 transition-all duration-300"
+            className="cam-pip cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 dark:bg-Gray-50 shadow-shadowXS flex items-center justify-center absolute top-2 end-2 z-50 opacity-0 group-hover:opacity-100 transition-all duration-300"
             aria-label={t('pip')}
             onPointerDown={(event) => {
               event.stopPropagation();
@@ -208,7 +208,7 @@ const VerticalLayout = ({
             }}
             title={t('pip')}
           >
-            <i className="icon pnm-pip text-[14px] text-white" />
+            <i className="icon pnm-pip text-[14px] text-white dark:text-Gray-900" />
           </button>
         )}
 
@@ -230,7 +230,7 @@ const VerticalLayout = ({
           <button
             type="button"
             onClick={toggleExtendedVerticalCamView}
-            className="extend-button cursor-pointer absolute top-1/2 -translate-y-1/2 start-0 w-4 h-6 rounded-s-full bg-DarkBlue hidden xl:flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:-start-4"
+            className="extend-button cursor-pointer absolute top-1/2 -translate-y-1/2 start-0 w-4 h-6 rounded-s-full bg-Gray-950/50 dark:bg-Gray-50 text-white dark:text-Gray-900 shadow-md hidden xl:flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:-start-4"
           >
             <span
               className={`rtl:-scale-x-100 ${

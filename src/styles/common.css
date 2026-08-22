@@ -1,41 +1,11 @@
-body {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-weight: 400;
-}
-
 code {
   font-family: 'Inter', sans-serif;
 }
+
 section.Toastify {
   position: relative;
   z-index: 99999;
 }
-/* .primaryColor {
-  color: #004d90;
-}
-
-.secondaryColor {
-  color: #24aef7;
-}
-
-.bg-primaryColor {
-  background: #004d90;
-}
-
-.bg-secondaryColor {
-  background: #24aef7;
-}
-
-.border-primaryColor {
-  color: #004d90;
-}
-
-.border-secondaryColor {
-  color: #24aef7;
-} */
 
 #headlessui-portal-root {
   position: relative;
@@ -90,392 +60,6 @@ input.polls-checkbox:checked:before {
     @apply bg-white/40;
   }
 }
-
-/* .private-m-tab .inner2::-webkit-scrollbar-track {
-  @apply bg-[rgb(224,226,231)];
-}
-.private-m-tab .inner2::-webkit-scrollbar {
-  @apply h-[5px];
-}
-.private-m-tab .inner2::-webkit-scrollbar-thumb {
-  @apply bg-secondary-color border-none rounded-[5px];
-} */
-
-.all-webcam-wrapper.total-cam-2 .total-items-2 .video-camera-item.its-me {
-  @apply absolute bottom-10 end-10 w-40 md:w-52 xl:w-80 h-[86px] md:h-[130px] xl:h-[180px] z-30;
-}
-.all-webcam-wrapper.total-cam-2
-  .all-webcam-wrapper-inner
-  .total-items-2
-  .video-camera-item:not(.its-me) {
-  @apply w-full;
-}
-
-.total-cam-1 .video-camera-item .switch-camera {
-  display: none;
-}
-.total-cam-1 .video-camera-item .pin-webcam {
-  display: none;
-}
-
-/* .verticalsWebcamsActivated,
-.pinWebcamActivated .video-camera-item .switch-camera {
-  display: none;
-} */
-
-.all-webcam-wrapper.page-2
-  .all-webcam-wrapper-inner
-  .camera-row-1.total-items-3
-  .video-camera-item {
-  @apply w-[calc(50%-0.5rem)] h-auto;
-}
-
-.all-webcam-wrapper.total-cam-2 .switch-camera {
-  @apply flex;
-}
-
-.all-webcam-wrapper {
-  @apply h-full flex items-center relative;
-}
-.all-webcam-wrapper::-webkit-scrollbar {
-  @apply hidden;
-}
-.all-webcam-wrapper .all-webcam-wrapper-inner {
-  @apply w-full h-full p-3 grid gap-2;
-}
-.all-webcam-wrapper .all-webcam-wrapper-inner .camera-row-0 {
-  @apply flex gap-2 justify-center;
-}
-.all-webcam-wrapper .all-webcam-wrapper-inner .camera-row-1,
-.all-webcam-wrapper .all-webcam-wrapper-inner .camera-row-2,
-.all-webcam-wrapper .all-webcam-wrapper-inner .camera-row-3 {
-  @apply flex gap-2 justify-center;
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-1.total-items-2
-  .video-camera-item {
-  @apply w-1/2;
-}
-.all-webcam-wrapper .all-webcam-wrapper-inner .camera-row-0.total-items-3 {
-  @apply flex-wrap;
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-0.total-items-3
-  .video-camera-item {
-  @apply w-[calc(50%-0.5rem)] h-auto;
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-1.total-items-3
-  .video-camera-item {
-  @apply w-1/2;
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-1.total-items-5.inner-items-2
-  .video-camera-item {
-  @apply w-1/2;
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-0.total-items-7.inner-items-4
-  .video-camera-item {
-  @apply w-1/4;
-}
-/* .all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-1.total-items-7.inner-items-3
-  .video-camera-item {
-  @apply w-1/4;
-} */
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-1.total-items-8.inner-items-4
-  .video-camera-item {
-  @apply w-1/4;
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-2.total-items-11.inner-items-3
-  .video-camera-item {
-  @apply w-1/3;
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-2.total-items-10.inner-items-2
-  .video-camera-item {
-  @apply w-1/4;
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-2.total-items-13.inner-items-3
-  .video-camera-item {
-  @apply w-1/5;
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-2.total-items-14.inner-items-4
-  .video-camera-item {
-  @apply w-1/4;
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-2.total-items-15.inner-items-5
-  .video-camera-item {
-  @apply w-1/5;
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-2.total-items-16.inner-items-4
-  .video-camera-item {
-  @apply w-1/4;
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-3.total-items-16.inner-items-4
-  .video-camera-item {
-  @apply w-1/4;
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-2.total-items-17.inner-items-5
-  .video-camera-item {
-  @apply w-[16.3%];
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-2.total-items-18.inner-items-6
-  .video-camera-item {
-  @apply w-[16.3%];
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-2.total-items-19.inner-items-5
-  .video-camera-item {
-  @apply w-1/5;
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-2.total-items-20.inner-items-6
-  .video-camera-item {
-  @apply w-[13.95%];
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-2.total-items-21.inner-items-7
-  .video-camera-item {
-  @apply w-[13.95%];
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-2.total-items-22.inner-items-6
-  .video-camera-item {
-  @apply w-[12.15%];
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-2.total-items-23.inner-items-7
-  .video-camera-item {
-  @apply w-[12.15%];
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-2.total-items-24.inner-items-8
-  .video-camera-item {
-  @apply w-[12.15%];
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-1.total-items-9.inner-items-4
-  .video-camera-item {
-  @apply w-1/5;
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .camera-row-1.total-items-10.inner-items-5
-  .video-camera-item {
-  @apply w-1/5;
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .inner-items-6
-  .video-camera-item {
-  @apply w-1/6;
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .inner-items-2
-  .video-camera-item {
-  @apply w-1/2;
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .inner-items-3
-  .video-camera-item {
-  @apply w-1/3;
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .inner-items-4
-  .video-camera-item {
-  @apply w-1/4;
-}
-.all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .inner-items-5
-  .video-camera-item {
-  @apply w-1/5;
-}
-.all-webcam-wrapper .all-webcam-wrapper-inner .video-camera-item.admin {
-  @apply order-1;
-}
-.all-webcam-wrapper .all-webcam-wrapper-inner .video-camera-item.participants {
-  @apply order-2;
-}
-/* .all-webcam-wrapper
-  .all-webcam-wrapper-inner
-  .video-camera-item.admin.speaking::before {
-  @apply border-[#004e91];
-} */
-.all-webcam-wrapper button.previous-cam {
-  @apply absolute top-[48%] w-[120px] h-[30px] z-1 bg-black/50 text-center transition-all -rotate-90 -left-[55px] rounded-tlbl-d pt-[6px];
-}
-.all-webcam-wrapper button.previous-cam i {
-  @apply w-[20px] m-auto transition-all text-white;
-}
-.all-webcam-wrapper button.previous-cam:hover i {
-  @apply text-white;
-}
-.all-webcam-wrapper button.next-cam {
-  @apply absolute top-[48%] w-[120px] h-[30px] z-1 bg-black/50 text-center transition-all -rotate-90 left-auto -right-[55px] rounded-trbr-d pt-[2px];
-}
-.all-webcam-wrapper button.next-cam i {
-  @apply w-[20px] m-auto transition-all text-white;
-}
-.all-webcam-wrapper button.next-cam:hover i {
-  @apply text-white;
-}
-
-.fullWidthMainArea .select-camera-number {
-  @apply hidden;
-}
-
-.select-camera-number {
-  @apply flex items-center absolute start-6 text-xs top-0;
-}
-.select-camera-number select#select-camera-num {
-  @apply bg-transparent border border-solid border-[#333] me-[5px] outline-hidden;
-}
-
-.video-camera-item {
-  @apply w-full h-full rounded-2xl overflow-hidden z-1 bg-black;
-  container-type: inline-size;
-}
-/* Avatar initial scales with the tile's own width; caps match text-5xl / 3xl:text-7xl */
-.camera-muted-fallback .avatar-initial {
-  font-size: clamp(1rem, 8cqw, 3rem);
-  line-height: 1;
-}
-@media (min-width: 110rem) {
-  .camera-muted-fallback .avatar-initial {
-    font-size: clamp(1rem, 9cqw, 4.5rem);
-  }
-}
-.video-camera-item .loading {
-  @apply top-1/2 -translate-y-1/2;
-}
-.video-camera-item::before {
-  @apply absolute content-[""] w-full h-full border-[5px] border-solid border-transparent z-999 rounded-[15px] pointer-events-none;
-}
-.video-camera-item .camera-modules .camera-video-player {
-  @apply flex h-full w-full absolute;
-}
-.video-camera-item .camera-modules .camera-video-player video.camera-video {
-  @apply w-full h-full;
-}
-
-.video-camera-item.speaking::before {
-  @apply border-Blue2-500;
-}
-
-#main-area.fullWidthMainArea .middle-fullscreen-wrapper {
-  @apply relative;
-}
-#main-area.fullWidthMainArea .all-webcam-wrapper {
-  @apply absolute w-[212px] h-full block py-[30px] px-0 z-2 end-0 bg-white;
-}
-#main-area.fullWidthMainArea .all-webcam-wrapper .video-camera-item::after {
-  @apply bg-transparent opacity-100;
-}
-#main-area.fullWidthMainArea .all-webcam-wrapper .video-camera-item .name {
-  @apply opacity-100 top-auto start-3;
-}
-#main-area.fullWidthMainArea
-  .all-webcam-wrapper
-  .video-camera-item
-  .connection-status {
-  @apply flex;
-}
-#main-area.fullWidthMainArea
-  .all-webcam-wrapper
-  .video-camera-item
-  .mic-status {
-  @apply flex;
-}
-#main-area.fullWidthMainArea .all-webcam-wrapper button.previous-cam {
-  @apply top-0 w-full start-0 rotate-0;
-}
-#main-area.fullWidthMainArea .all-webcam-wrapper button.next-cam {
-  @apply absolute w-full start-0 rotate-0 bottom-0 top-auto;
-}
-#main-area.fullWidthMainArea .all-webcam-wrapper .all-webcam-wrapper-inner {
-  @apply block py-0 px-[5px];
-}
-#main-area.fullWidthMainArea .middle-fullscreen-wrapper {
-  @apply flex-auto w-full h-full;
-}
-
-.middle-fullscreen-wrapper.verticalsWebcamsActivated {
-  @apply pb-[110px] md:pb-0 md:pe-[212px] transition-all duration-300;
-}
-
-/* Force bottom space instead of right space when in portrait orientation */
-.portrait-device .middle-fullscreen-wrapper.verticalsWebcamsActivated {
-  @apply pb-[110px]! pe-0! md:pb-[110px]! md:pe-0!;
-}
-
-/* Landscape on mobile/tablet: narrower right strip than desktop */
-.landscape-device.is-mobile
-  .middle-fullscreen-wrapper.verticalsWebcamsActivated,
-.landscape-device.is-tablet
-  .middle-fullscreen-wrapper.verticalsWebcamsActivated {
-  @apply pe-[140px] pb-0;
-}
-
-.middle-fullscreen-wrapper.verticalsWebcamsActivated.extendedVerticalCamView {
-  @apply xl:pe-[416px];
-}
-
-/*
- * `.speechService` is absolutely positioned against its wrapper, so its
- * containing block is that wrapper's *padding* box - which still includes the
- * strip reserved for the vertical webcams (see the rules above). Mirroring the
- * wrapper's inline padding shrinks the overlay's content box down to the area
- * that is actually visible, keeping the live subtitle centred there. Using
- * `inherit` means every responsive/orientation variant above is picked up
- * automatically.
- */
-.speechService {
-  padding-inline: inherit;
-  transition: padding 300ms;
-}
-
-/* .SpeechHistory::before {
-  content: '';
-  @apply absolute h-[12px] w-[12px] bg-white dark:bg-dark-primary bottom-[-6px] left-14 rotate-45 border border-solid border-dark-primary/40;
-} */
 
 .tooltip {
   @apply invisible absolute shadow-lg rounded-sm text-[13px] text-dark-primary dark:text-dark-text py-[6px] px-[10px] inline-block bg-Gray-50 dark:bg-dark-secondary2 w-[150px] m-0 bottom-[52px] text-center;
@@ -537,19 +121,6 @@ body[dir='rtl'] span.tooltip.tooltip-left::before {
 
 .Toastify__toast-body {
   @apply m-0 font-light;
-}
-
-.vertical-webcams .all-webcam-wrapper-inner .video-camera-item {
-  @apply h-[calc(33.33%-10px)] my-2 mx-0;
-}
-
-.share-screen-wrapper.is-share-screen-running .screen-share-video {
-  @apply h-full w-full;
-}
-.share-screen-wrapper.is-share-screen-running
-  .screen-share-video
-  video.video-player {
-  @apply h-[calc(100%-30px)] w-[calc(100%-30px)] top-[15px] start-[15px];
 }
 
 .footer-podcast-button {
@@ -617,6 +188,42 @@ body[dir='rtl'] span.tooltip.tooltip-left::before {
   @apply outline-hidden;
 }
 
+.custom-range-container {
+  width: 100%;
+  user-select: none;
+}
+.custom-range-track {
+  position: relative;
+  width: 100%;
+  border-radius: 10px;
+  cursor: pointer;
+  touch-action: none;
+}
+.custom-range-fill {
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0;
+  border-start-start-radius: 10px;
+  border-end-start-radius: 10px;
+  pointer-events: none;
+}
+.custom-range-thumb {
+  position: absolute;
+  top: 50%;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.1s ease;
+  z-index: 2;
+}
+.custom-range-value {
+  margin-top: 10px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  color: #333;
+}
+
 .showParticipantsPanel .active-speakers-wrap {
   @apply z-2;
 }
@@ -657,177 +264,6 @@ body[dir='rtl'] span.tooltip.tooltip-left::before {
   z-index: 99999 !important;
 }
 
-.landscape-device.is-mobile #main-area.fullWidthMainArea .share-screen-wrapper {
-  @apply h-full;
-}
-.landscape-device.is-mobile
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper
-  .notepad-wrapper {
-  @apply top-[3%] relative mt-0;
-}
-.landscape-device.is-mobile
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper
-  .externalMediaPlayerWrapper {
-  @apply h-full;
-}
-.landscape-device.is-mobile
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper
-  .externalMediaPlayerWrapper
-  .media-player-inner
-  div {
-  margin: auto;
-}
-.landscape-device.is-mobile
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper
-  .externalMediaPlayerWrapper
-  .media-player-inner
-  div
-  div {
-  @apply pb-0;
-}
-.landscape-device.is-mobile
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper
-  .external-display-link-wrapper {
-  @apply m-0 p-2;
-}
-.landscape-device.is-mobile
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper
-  .all-webcam-wrapper.vertical-webcams.total-cam-1 {
-  @apply p-0;
-}
-.landscape-device.is-mobile
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper
-  .all-webcam-wrapper.vertical-webcams.total-cam-1
-  .all-webcam-wrapper-inner {
-  display: flex !important;
-  @apply flex-wrap items-center;
-}
-.landscape-device.is-mobile
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper
-  .all-webcam-wrapper.vertical-webcams.total-cam-1
-  .all-webcam-wrapper-inner
-  .video-camera-item {
-  @apply h-[45%];
-}
-.landscape-device.is-mobile
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper
-  .all-webcam-wrapper.vertical-webcams.total-cam-2 {
-  @apply p-0;
-}
-.landscape-device.is-mobile
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper
-  .all-webcam-wrapper.vertical-webcams.total-cam-2
-  .all-webcam-wrapper-inner {
-  display: flex !important;
-  @apply flex-wrap items-center;
-}
-.landscape-device.is-mobile
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper
-  .all-webcam-wrapper.vertical-webcams.total-cam-2
-  .all-webcam-wrapper-inner
-  .video-camera-item {
-  @apply h-[45%];
-}
-.landscape-device.is-mobile
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper
-  .all-webcam-wrapper.vertical-webcams.total-cam-3 {
-  @apply p-0;
-}
-.landscape-device.is-mobile
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper
-  .all-webcam-wrapper.vertical-webcams.total-cam-3
-  .all-webcam-wrapper-inner {
-  display: flex !important;
-  @apply flex-wrap items-center;
-}
-.landscape-device.is-mobile
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper
-  .all-webcam-wrapper.vertical-webcams.total-cam-3
-  .all-webcam-wrapper-inner
-  .video-camera-item {
-  @apply h-[30%];
-}
-.landscape-device.is-mobile
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper
-  .all-webcam-wrapper.vertical-webcams
-  .all-webcam-wrapper-inner
-  .video-camera-item {
-  @apply w-full;
-}
-.landscape-device.is-mobile
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper.verticalsWebcamsActivated
-  .screen-share-video
-  button {
-  @apply bottom-[55px];
-}
-
-/* .portrait-device.is-mobile
-  #main-area.fullWidthMainArea
-  .verticalsWebcamsActivated
-  .excalidraw-wrapper {
-  @apply h-[calc(100%-110px)] m-0 p-2;
-} */
-/* .portrait-device.is-mobile
-  #main-area.fullWidthMainArea
-  .verticalsWebcamsActivated
-  .notepad-wrapper {
-  @apply h-[calc(100%-110px)] m-0 p-2;
-} */
-/* .portrait-device.is-mobile
-  #main-area.fullWidthMainArea
-  .verticalsWebcamsActivated
-  .Div-external-media-player {
-  @apply h-[calc(100%-110px)] m-0 p-2;
-}
-.portrait-device.is-mobile
-  #main-area.fullWidthMainArea
-  .verticalsWebcamsActivated
-  .Div-external-media-player
-  .externalMediaPlayerWrapper {
-  @apply p-0;
-} */
-/* .portrait-device.is-mobile
-  #main-area.fullWidthMainArea
-  .verticalsWebcamsActivated
-  .external-display-link-wrapper {
-  @apply h-[calc(100%-145px)];
-}
-.portrait-device.is-mobile
-  #main-area.fullWidthMainArea
-  .verticalsWebcamsActivated
-  .screen-share-video {
-  @apply h-[calc(100%-110px)];
-} */
-.portrait-device.is-mobile .middle-fullscreen-wrapper .screen-share-video {
-  @apply h-full m-0 p-2;
-}
-.portrait-device.is-mobile
-  .middle-fullscreen-wrapper
-  .external-display-link-wrapper {
-  @apply m-0 p-2;
-}
-.portrait-device.is-mobile .middle-fullscreen-wrapper .notepad-wrapper {
-  @apply m-0 p-2;
-}
-.portrait-device.is-mobile .middle-fullscreen-wrapper .excalidraw-wrapper {
-  @apply m-0 p-2;
-}
 .portrait-device.is-mobile .media-player-inner > div {
   width: 100% !important;
 }
@@ -837,95 +273,6 @@ aside {
   width: 100% !important;
 }
 
-.landscape-device.is-tablet
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper.verticalsWebcamsActivated
-  .all-webcam-wrapper {
-  height: 100%;
-}
-.landscape-device.is-tablet
-  .camera-row-1.total-items-5.inner-items-2
-  .video-camera-item {
-  @apply w-1/2;
-}
-.landscape-device.is-tablet
-  .camera-row-2.total-items-5.inner-items-1
-  .video-camera-item {
-  @apply w-1/2;
-}
-.landscape-device.is-tablet
-  .camera-row-1.total-items-7.inner-items-3
-  .video-camera-item {
-  @apply w-1/3;
-}
-.landscape-device.is-tablet
-  .camera-row-2.total-items-7.inner-items-1
-  .video-camera-item {
-  @apply w-1/3;
-}
-.landscape-device.is-tablet
-  .camera-row-2.total-items-8.inner-items-2
-  .video-camera-item {
-  @apply w-1/3;
-}
-
-.portrait-device.is-tablet .camera-row-0.total-items-2 {
-  @apply flex-wrap;
-}
-.portrait-device.is-tablet .camera-row-0.total-items-2 .video-camera-item {
-  @apply w-full h-1/2;
-}
-.portrait-device.is-tablet .camera-row-0.total-items-3 {
-  @apply flex-wrap;
-}
-.portrait-device.is-tablet .camera-row-0.total-items-3 .video-camera-item {
-  @apply w-full h-1/3;
-}
-/* Portrait tablet: content heights above the bottom bar.
-   Whiteboard, notepad, and external-link define their own heights in JSX
-   (h-[calc(100%-50px)]). Screen-share (h-full) and external-media (no JSX
-   height) get a small gap here because the wrapper's pb-[110px] already
-   reserves the 110px bottom bar. */
-.portrait-device.is-tablet
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper.verticalsWebcamsActivated
-  .screen-share-video {
-  @apply h-[calc(100%-10px)] mt-0;
-}
-.portrait-device.is-tablet
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper.verticalsWebcamsActivated
-  .screen-share-video
-  button {
-  @apply absolute bottom-0;
-}
-.portrait-device.is-tablet
-  #main-area.fullWidthMainArea
-  .middle-fullscreen-wrapper.verticalsWebcamsActivated
-  .Div-external-media-player {
-  @apply h-[calc(100%-10px)] mt-0;
-}
-.portrait-device.is-tablet
-  #main-area.fullWidthMainArea
-  .all-webcam-wrapper.vertical-webcams
-  .all-webcam-wrapper-inner {
-  display: flex !important;
-  @apply justify-center;
-}
-.portrait-device.is-tablet
-  #main-area.fullWidthMainArea
-  .all-webcam-wrapper.vertical-webcams
-  .all-webcam-wrapper-inner
-  button.next-cam {
-  @apply -right-[42px] w-[100px] left-auto h-5 top-[45px] -rotate-90;
-}
-.portrait-device.is-tablet
-  #main-area.fullWidthMainArea
-  .all-webcam-wrapper.vertical-webcams
-  .all-webcam-wrapper-inner
-  button.previous-cam {
-  @apply right-auto w-[100px] -left-[42px] h-5 top-[45px] -rotate-90 pt-0;
-}
 .portrait-device.is-tablet .excalidraw-wrapper {
   @apply mt-4;
 }
@@ -982,247 +329,6 @@ body[dir='rtl'] .rtl\:microphone-rtl-left::before {
   right: auto;
 }
 
-.webcam-prev-page .icon {
-  inset-inline-end: auto;
-  transform: rotate(180deg);
-  top: calc(50% - 8px);
-}
-
-.vertical-webcams-wrapper.not-extended .video-camera-item {
-  @apply w-full h-auto;
-  aspect-ratio: 16 / 9;
-  flex: 0 0 auto;
-}
-
-/* Landscape mobile/tablet: width-driven 16:9 tiles stacked in the right strip */
-.landscape-device.is-mobile
-  .vertical-webcams-wrapper.not-extended
-  .video-camera-item,
-.landscape-device.is-tablet
-  .vertical-webcams-wrapper.not-extended
-  .video-camera-item {
-  width: 100% !important;
-  height: auto !important;
-  max-height: none !important;
-  aspect-ratio: 16 / 9;
-  flex: 0 0 auto;
-}
-
-/* Isolated bottom-bar: fill bar height; width follows 16:9 (no tiny 33% cap) */
-.vertical-bottom-layout.vertical-webcams-wrapper.not-extended
-  .video-camera-item {
-  width: auto !important;
-  max-width: calc(33.333% - 8px) !important;
-  height: 100% !important;
-  max-height: 100% !important;
-  aspect-ratio: 16 / 9;
-  flex: 0 0 auto;
-}
-
-/* 1–2 cams in bottom bar: allow wider tiles so they use full bar height */
-.vertical-bottom-layout.vertical-webcams-wrapper.not-extended
-  .inner.total-cam-1
-  .video-camera-item,
-.vertical-bottom-layout.vertical-webcams-wrapper.not-extended
-  .inner.total-cam-2
-  .video-camera-item {
-  max-width: none !important;
-}
-
-.vertical-bottom-layout.vertical-webcams-wrapper.not-extended
-  .inner
-  > .camera-row-0 {
-  flex-flow: row !important;
-  width: 100% !important;
-  justify-content: center;
-  align-items: center;
-}
-
-/* Reset special 2-camera layout rules when inside the vertical bottom bar */
-.vertical-webcams-wrapper .video-camera-item.its-me,
-.portrait-device .vertical-webcams-wrapper .video-camera-item.its-me {
-  position: relative !important;
-  bottom: auto !important;
-  inset-inline-end: auto !important;
-}
-
-.vertical-webcams-wrapper.not-extended
-  .video-camera-item.pinCam-item
-  .video-camera-item {
-  @apply h-full w-full;
-}
-.vertical-webcams-wrapper.not-extended .webcam-next-page {
-  @apply h-28 p-0;
-}
-.vertical-webcams-wrapper.not-extended .webcam-next-page .bottom-area {
-  @apply hidden;
-}
-.vertical-webcams-wrapper.not-extended .webcam-next-page .middle-area {
-  @apply ps-5;
-}
-.vertical-webcams-wrapper.not-extended .webcam-next-page .middle-area span {
-  @apply h-9 w-9 text-sm;
-}
-.vertical-webcams-wrapper.not-extended .webcam-next-page .icon svg {
-  @apply rotate-90;
-}
-.vertical-webcams-wrapper.not-extended .webcam-prev-page {
-  @apply h-28 p-0 order-1;
-}
-.vertical-webcams-wrapper.not-extended .webcam-prev-page .bottom-area {
-  @apply hidden;
-}
-.vertical-webcams-wrapper.not-extended .webcam-prev-page .middle-area {
-  @apply ps-5;
-}
-.vertical-webcams-wrapper.not-extended .webcam-prev-page .middle-area span {
-  @apply h-9 w-9 text-sm;
-}
-.vertical-webcams-wrapper.not-extended .webcam-prev-page .icon {
-  @apply start-auto end-4;
-}
-.vertical-webcams-wrapper.not-extended .webcam-prev-page .icon svg {
-  @apply rotate-90;
-}
-
-/* .vertical-webcams-wrapper:hover .extend-button {
-  @apply -left-4 opacity-100;
-} */
-.vertical-webcams-wrapper .video-camera-item {
-  @apply order-3;
-}
-
-.vertical-webcams-wrapper.extended-view-wrap .webcam-next-page .bottom-area,
-.vertical-webcams-wrapper.extended-view-wrap .webcam-prev-page .bottom-area {
-  @apply hidden;
-}
-.vertical-webcams-wrapper.extended-view-wrap .webcam-next-page .middle-area,
-.vertical-webcams-wrapper.extended-view-wrap .webcam-prev-page .middle-area {
-  @apply w-full px-5 flex;
-}
-.vertical-webcams-wrapper.extended-view-wrap .webcam-next-page .icon svg,
-.vertical-webcams-wrapper.extended-view-wrap .webcam-prev-page .icon svg {
-  @apply rotate-0;
-}
-.vertical-webcams-wrapper.extended-view-wrap .webcam-prev-page .middle-area {
-  @apply justify-end;
-}
-.vertical-webcams-wrapper.extended-view-wrap
-  .group-total-cam-1
-  .camera-row-wrap {
-  @apply grid-cols-1 h-[260px];
-}
-.vertical-webcams-wrapper.extended-view-wrap .group-total-cam-2 {
-  @apply h-full max-h-[530px];
-}
-.vertical-webcams-wrapper.extended-view-wrap
-  .group-total-cam-2
-  .camera-row-wrap {
-  @apply grid-cols-1;
-}
-.vertical-webcams-wrapper.extended-view-wrap .group-total-cam-3 {
-  @apply gap-3;
-}
-.vertical-webcams-wrapper.extended-view-wrap .group-total-cam-3 .camera-row-0 {
-  @apply grid-cols-1 h-2/3!;
-}
-.vertical-webcams-wrapper.extended-view-wrap
-  .group-total-cam-3
-  .camera-row-wrap {
-  @apply grid-cols-1 h-1/3;
-}
-.vertical-webcams-wrapper.extended-view-wrap .group-total-cam-4 {
-  @apply h-full max-h-80;
-}
-.vertical-webcams-wrapper.extended-view-wrap .group-total-cam-5,
-.vertical-webcams-wrapper.extended-view-wrap .group-total-cam-6 {
-  @apply h-full max-h-[450px];
-}
-
-.vertical-webcams-wrapper.extended-view-wrap
-  .group-total-cam-2.has-pin-cam
-  .pinCam-item {
-  height: 33.33% !important;
-}
-
-.vertical-webcams-wrapper.extended-view-wrap
-  .group-total-cam-2.has-pin-cam
-  .camera-row-wrap {
-  height: 66.66%;
-}
-
-.vertical-webcams-wrapper.extended-view-wrap
-  .group-total-cam-3.has-pin-cam
-  .pinCam-item {
-  height: 25% !important;
-}
-
-.vertical-webcams-wrapper.extended-view-wrap
-  .group-total-cam-3.has-pin-cam
-  .camera-row-wrap.camera-row-0 {
-  height: 50% !important;
-}
-
-.vertical-webcams-wrapper.extended-view-wrap
-  .group-total-cam-3.has-pin-cam
-  .camera-row-wrap.camera-row-1 {
-  height: 25% !important;
-}
-
-.vertical-webcams-wrapper.extended-view-wrap .group-total-cam-4.has-pin-cam {
-  max-height: 34rem;
-}
-
-.vertical-webcams-wrapper.extended-view-wrap
-  .group-total-cam-4.has-pin-cam
-  .pinCam-item.video-camera-item {
-  height: 40%;
-}
-
-.vertical-webcams-wrapper.extended-view-wrap
-  .group-total-cam-4.has-pin-cam
-  .camera-row-wrap {
-  height: 30%;
-}
-
-.vertical-webcams-wrapper.extended-view-wrap .group-total-cam-5.has-pin-cam,
-.vertical-webcams-wrapper.extended-view-wrap .group-total-cam-6.has-pin-cam {
-  max-height: 45rem;
-}
-
-.vertical-webcams-wrapper.extended-view-wrap
-  .group-total-cam-5.has-pin-cam
-  .pinCam-item.video-camera-item,
-.vertical-webcams-wrapper.extended-view-wrap
-  .group-total-cam-6.has-pin-cam
-  .pinCam-item.video-camera-item,
-.vertical-webcams-wrapper.extended-view-wrap
-  .group-total-cam-7.has-pin-cam
-  .pinCam-item.video-camera-item,
-.vertical-webcams-wrapper.extended-view-wrap
-  .group-total-cam-8.has-pin-cam
-  .pinCam-item.video-camera-item {
-  height: 30%;
-}
-
-.vertical-webcams-wrapper.extended-view-wrap
-  .group-total-cam-5.has-pin-cam
-  .camera-row-wrap,
-.vertical-webcams-wrapper.extended-view-wrap
-  .group-total-cam-6.has-pin-cam
-  .camera-row-wrap,
-.vertical-webcams-wrapper.extended-view-wrap
-  .group-total-cam-7.has-pin-cam
-  .camera-row-wrap,
-.vertical-webcams-wrapper.extended-view-wrap
-  .group-total-cam-8.has-pin-cam
-  .camera-row-wrap {
-  height: 23.33%;
-}
-
-.vertical-webcams-wrapper.extended-view-wrap .group-total-cam-2.has-pin-cam {
-  max-height: 640px;
-}
 .Toastify__toast.notification-toast {
   padding: 0 !important;
 }
@@ -1248,32 +354,6 @@ body[dir='rtl'] .rtl\:microphone-rtl-left::before {
   );
 }
 
-.vertical-webcams-wrapper.extended-view-wrap .inner {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.vertical-webcams-wrapper.not-extended .inner > .camera-row-0 {
-  display: flex;
-  flex-flow: column;
-  width: 100%;
-  height: 100%;
-  gap: 8px;
-  justify-content: center;
-}
-
-@media screen and (max-width: 767px) {
-  .vertical-bottom-layout.vertical-webcams-wrapper.not-extended
-    .inner
-    > .camera-row-0 {
-    flex-flow: row;
-  }
-  .vertical-webcams-wrapper.not-extended .webcam-next-page,
-  .vertical-webcams-wrapper.not-extended .webcam-prev-page {
-    height: 100%;
-  }
-}
 @media screen and (max-height: 600px) {
   #footer-menu {
     height: 260px;
@@ -1302,5 +382,11 @@ body[dir='rtl'] .rtl\:microphone-rtl-left::before {
   }
   .header-room-settings .tablist button {
     @apply w-auto flex-1 min-w-28;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .participant .footer-main-menu {
+    display: none;
   }
 }

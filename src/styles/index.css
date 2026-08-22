@@ -4,24 +4,9 @@
 @import './variables.css' layer(theme);
 
 @import './common.css' layer(utilities);
+@import './media.css' layer(utilities);
 @import './keyframes-animation.css' layer(utilities);
-@import './dark-mode.css' layer(utilities);
 @import './recorder.css' layer(utilities);
-
-@import './media_screens/min_1024.css' layer(utilities);
-@import './media_screens/max_w_980_max_h_450.css' layer(utilities);
-@import './media_screens/max_h_720.css' layer(utilities);
-@import './media_screens/max_1640.css' layer(utilities);
-@import './media_screens/max_1279.css' layer(utilities);
-@import './media_screens/max_1023.css' layer(utilities);
-@import './media_screens/max_767.css' layer(utilities);
-@import './media_screens/min_641.css' layer(utilities);
-@import './media_screens/max_640.css' layer(utilities);
-@import './media_screens/max_370.css' layer(utilities);
-@import './media_screens/min_1800.css' layer(utilities);
-@import './media_screens/max_1025.css' layer(utilities);
-@import './media_screens/min_641_max_1025.css' layer(utilities);
-@import './media_screens/h-max-800.css' layer(utilities);
 
 @custom-variant dark (&:is(.dark *));
 
@@ -58,6 +43,13 @@
     padding: 0;
   }
 
+  body {
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
+  }
+
   *,
   ::after,
   ::before,
@@ -65,39 +57,4 @@
   ::file-selector-button {
     border-color: var(--color-gray-200, currentcolor);
   }
-}
-.custom-range-container {
-  width: 100%;
-  user-select: none;
-}
-.custom-range-track {
-  position: relative;
-  width: 100%;
-  border-radius: 10px;
-  cursor: pointer;
-  touch-action: none;
-}
-.custom-range-fill {
-  position: absolute;
-  inset-inline-start: 0;
-  top: 0;
-  border-start-start-radius: 10px;
-  border-end-start-radius: 10px;
-  pointer-events: none;
-}
-.custom-range-thumb {
-  position: absolute;
-  top: 50%;
-  border-radius: 50%;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: transform 0.1s ease;
-  z-index: 2;
-}
-.custom-range-value {
-  margin-top: 10px;
-  text-align: center;
-  font-family: Arial, sans-serif;
-  font-size: 16px;
-  color: #333;
 }
