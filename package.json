@@ -74,7 +74,7 @@
     "oxlint": "1.78.0",
     "prettier": "3.9.6",
     "tailwindcss": "4.3.3",
-    "typescript": "6.0.3",
+    "typescript": "7.0.2",
     "vite": "8.2.2",
     "vite-plugin-clean": "2.0.1",
     "vite-plugin-oxlint": "2.1.2",
