@@ -14,7 +14,7 @@ import MenusIcon from './icons/menus';
 import SharedNotePadIcon from './icons/sharedNotePad';
 import WhiteboardIcon from './icons/whiteboard';
 import BreakoutRoomInvitation from '../breakout-room/breakoutRoomInvitation';
-import EndMeetingButton from './icons/endMeeting';
+import LeaveMeetingButton from './icons/leaveMeeting';
 import RecordingIcon from './icons/recording';
 import PollsIcon from './icons/polls';
 import Translation from './icons/translation';
@@ -68,7 +68,7 @@ const Footer = () => {
           )}
           <MenusIcon isAdmin={isAdmin} />
           <div className="icon block md:hidden">
-            <EndMeetingButton />
+            <LeaveMeetingButton />
           </div>
         </div>
 
@@ -76,7 +76,7 @@ const Footer = () => {
           <ParticipantIcon />
           {allowChat && <ChatIcon />}
           <div className="line h-6 w-px bg-Gray-200 dark:bg-Gray-700"></div>
-          <EndMeetingButton />
+          <LeaveMeetingButton />
         </div>
         <BreakoutRoomInvitation />
       </div>

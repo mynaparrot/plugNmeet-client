@@ -1,8 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Menu, MenuButton } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
+import {
+  CommonResponseSchema,
+  RoomEndAPIReqSchema,
+} from 'plugnmeet-protocol-js';
 
 import { store, useAppSelector } from '../../store';
+import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import HeaderMenus from './menus';
 import RoomSettings from './room-settings';
 import KeyboardShortcuts from './keyboardShortcuts';
@@ -44,6 +51,39 @@ const Header = () => {
     setShowModal(true);
   }, [t]);
 
+  const handleEndRoom = useCallback(() => {
+    const confirm = async () => {
+      const id = toast.loading(t('notifications.ending-session'), {
+        type: 'info',
+      });
+
+      const body = create(RoomEndAPIReqSchema, {
+        roomId: store.getState().session.currentRoom.roomId,
+      });
+      const r = await sendAPIRequest(
+        'endRoom',
+        toBinary(RoomEndAPIReqSchema, body),
+        false,
+        'application/protobuf',
+        'arraybuffer',
+      );
+      const res = fromBinary(CommonResponseSchema, new Uint8Array(r));
+      if (!res.status) {
+        toast.update(id, {
+          render: t(res.msg),
+          type: 'error',
+          isLoading: false,
+          autoClose: 3000,
+        });
+      } else {
+        toast.dismiss(id);
+      }
+    };
+    setModalText(t('header.menus.alert.end'));
+    setOnConfirm(() => confirm);
+    setShowModal(true);
+  }, [t]);
+
   return (
     !isRecorder && (
       <>
@@ -78,7 +118,11 @@ const Header = () => {
                     </div>
                   </MenuButton>
 
-                  <HeaderMenus onOpenAlert={() => handleLogout()} />
+                  <HeaderMenus
+                    onOpenAlert={(task) =>
+                      task === 'end' ? handleEndRoom() : handleLogout()
+                    }
+                  />
                 </div>
               )}
             </Menu>
