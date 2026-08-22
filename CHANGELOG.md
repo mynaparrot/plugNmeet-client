@@ -1,5 +1,39 @@
 # Changelog
 
+## [2.5.0](https://github.com/mynaparrot/plugNmeet-client/compare/v2.4.0...v2.5.0) (2026-08-22)
+
+
+### Features
+
+* `CRDT` implementation for whiteboard using `yjs` same as shared notepad ([#1100](https://github.com/mynaparrot/plugNmeet-client/issues/1100)) ([d97d8af](https://github.com/mynaparrot/plugNmeet-client/commit/d97d8afdc65676acca496131df899040ce0f8bb3))
+* **refactor:** renamed to `Shared Notepad` ([d2b986b](https://github.com/mynaparrot/plugNmeet-client/commit/d2b986ba38a05d2060745d8a3bb08a3bf4403a2f))
+* replaced `Etherpad` with `BlockNote` + `AI` ([#1095](https://github.com/mynaparrot/plugNmeet-client/issues/1095)) ([d8854cb](https://github.com/mynaparrot/plugNmeet-client/commit/d8854cbd786aacc5c34e29b238a38e2777708943))
+* **whiteboard:** add `AI Text-to-Diagram` support to the whiteboard ([ac765b3](https://github.com/mynaparrot/plugNmeet-client/commit/ac765b352e227f319a8c89e1ebb5901770e6be05))
+
+
+### Bug Fixes
+
+* added `AI` icon in the context menu ([6107445](https://github.com/mynaparrot/plugNmeet-client/commit/61074459f3eccf8bb2de76b18eda48d529822ed3))
+* adjust avatar size based on camera til size ([6f48edc](https://github.com/mynaparrot/plugNmeet-client/commit/6f48edc40dd4f2fa60fb16134139ce931139f68e))
+* clean up all unused CSS ([eae75f4](https://github.com/mynaparrot/plugNmeet-client/commit/eae75f45844ff421ef380139afa9012458dff649))
+* close btn was not working in mobile ([4cebbb3](https://github.com/mynaparrot/plugNmeet-client/commit/4cebbb3284876dbfac2783a3fdba12c78a72c4fd))
+* corrected order of options ([a02ae02](https://github.com/mynaparrot/plugNmeet-client/commit/a02ae02d1b513f8b352be3b4e17b5c2477f32aa5))
+* display video tracks properly when bandwidth savings enabled to avoid UI glitch ([5b142ce](https://github.com/mynaparrot/plugNmeet-client/commit/5b142ce0f5af36eea9cd644a63516ddf6bd839ca))
+* invalid image type checking + Rules update ([3e249e7](https://github.com/mynaparrot/plugNmeet-client/commit/3e249e7faf4ccb92f58a920a2b6242f8986798c4))
+* later joined user's whiteboard wasn't sync ([d9c10ea](https://github.com/mynaparrot/plugNmeet-client/commit/d9c10ea0a8c063f9b0ff019f7d06f661f84b5735))
+* make visible close button in mobile ([9079506](https://github.com/mynaparrot/plugNmeet-client/commit/9079506dab084db1994e331d98653ae229d3504c))
+* new Crowdin updates ([#1101](https://github.com/mynaparrot/plugNmeet-client/issues/1101)) ([9af608c](https://github.com/mynaparrot/plugNmeet-client/commit/9af608c102eb8d1326306559c100b72219b5ce7a))
+* private whiteboard message wasn't sending privately ([9794df0](https://github.com/mynaparrot/plugNmeet-client/commit/9794df085c59e473f07bc045ccc366e841e6299b))
+* removed notepad id based logic as we'll have only 1 notepad in the session ([5d0b4bf](https://github.com/mynaparrot/plugNmeet-client/commit/5d0b4bf2d8dc7471f17f9ef1828d16a04a9ca126))
+* reuse our own idb ([a44243f](https://github.com/mynaparrot/plugNmeet-client/commit/a44243f3939b2949ddc9691a670c92da36085f71))
+* send sync request to max 3 users ([de1ea4c](https://github.com/mynaparrot/plugNmeet-client/commit/de1ea4c1f91fe2c033e43ac334d5c0ede591e315))
+* sync + color bugs ([25e1a4b](https://github.com/mynaparrot/plugNmeet-client/commit/25e1a4b51ef7d5a21244194305026d99e4a59988))
+* update AI UI ([ecdd26d](https://github.com/mynaparrot/plugNmeet-client/commit/ecdd26d11a9d222f3c6afeff33dcd481e1dd407f))
+* updated prompt rules ([33e5727](https://github.com/mynaparrot/plugNmeet-client/commit/33e5727e16fe8d7677ca1350a06547f3deebf098))
+* visibility access for readonly user ([33da65a](https://github.com/mynaparrot/plugNmeet-client/commit/33da65a98e351982b1965732ca208faa01d48676))
+* we should use `sessionStorage` instated of `localStorage` ([77a6913](https://github.com/mynaparrot/plugNmeet-client/commit/77a69136dd23e59135afb852578f66efc9580e83))
+* **whiteboard:** restore last page when switching between files ([90b9b33](https://github.com/mynaparrot/plugNmeet-client/commit/90b9b336c6327d1b20a5daed81cd4660f8501b39))
+
 ## [2.4.0](https://github.com/mynaparrot/plugNmeet-client/compare/v2.3.0...v2.4.0) (2026-08-11)
 
 
