@@ -26,6 +26,7 @@ import {
 
 import MessageQueue from './MessageQueue';
 import SubscriptionHandler from './SubscriptionHandler';
+import { CUSTOM_DATA_MSG_TYPES } from './customDataMsgs';
 
 import { IErrorPageProps } from '../../components/extra-pages/Error';
 import { IConnectLivekit } from '../livekit/types';
@@ -620,6 +621,21 @@ export default class ConnectNats {
     await this.subscriptionHandler.handleChat.handleMsg(
       create(ChatMessageSchema, data),
     );
+  };
+
+  /**
+   * Broadcasts deletion of a public chat message to all clients (admin only).
+   * The local view updates when our own broadcast echoes back, the same way
+   * reactions are handled. Receivers verify the sender's admin status
+   * before applying the deletion.
+   */
+  public deletePublicChatMsg = async (messageId: string) => {
+    if (!this.isAdmin || messageId === '') {
+      return;
+    }
+    await this.publishData(CUSTOM_DATA_MSG_TYPES.DELETE_CHAT_MESSAGE, {
+      message: messageId,
+    });
   };
 
   /**

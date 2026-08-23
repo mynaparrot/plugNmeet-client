@@ -290,7 +290,9 @@
     "file-upload-success": "File uploaded successfully",
     "file-upload-default-error": "There was an error uploading the file.",
     "chat-box-placeholder": "Send a message, paste an image, or drop a file here (New line: Shift + Enter)",
-    "sending-message": "Please wait, sending..."
+    "sending-message": "Please wait, sending...",
+    "delete-msg": "Delete message",
+    "delete-msg-confirm": "Delete for everyone?"
   },
   "footer": {
     "aria-label": "Meeting controls",

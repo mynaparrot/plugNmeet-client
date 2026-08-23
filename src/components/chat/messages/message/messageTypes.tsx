@@ -6,6 +6,7 @@ import { formatDate } from '../../utils';
 import { useAppSelector } from '../../../../store';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
 import Avatar from './avatar';
+import DeleteMsgBtn from './deleteMsgBtn';
 import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
 import { cleanHtmlForChat } from '../../../../helpers/utils';
 
@@ -25,15 +26,26 @@ export const SystemMessage = memo(({ message }: { message: string }) => {
 SystemMessage.displayName = 'SystemMessage';
 
 export const MyMessage = memo(
-  ({ message, sentAt }: { message: string; sentAt: string }) => {
+  ({
+    message,
+    sentAt,
+    body,
+  }: {
+    message: string;
+    sentAt: string;
+    body?: ChatMessage;
+  }) => {
     const { t } = useTranslation();
     return (
       <div className="content me w-[calc(100%-36px)] 3xl:w-[calc(100%-48px)] ms-auto">
         <div className="name min-h-5 flex items-center text-xs 3xl:text-sm text-Gray-800 dark:text-white font-medium pb-1.5 capitalize justify-between">
           <p>{t('right-panel.you')}</p>
-          <p className="time text-xs text-Gray-600 dark:text-dark-text">
-            {formatDate(sentAt)}
-          </p>
+          <span className="flex items-center gap-1.5">
+            {body ? <DeleteMsgBtn body={body} /> : null}
+            <p className="time text-xs text-Gray-600 dark:text-dark-text">
+              {formatDate(sentAt)}
+            </p>
+          </span>
         </div>
         <p
           dir="auto"
@@ -63,9 +75,12 @@ export const OtherUserMessage = memo(({ body }: { body: ChatMessage }) => {
               <span className="text-[10px] pl-1">(offline)</span>
             )}
           </p>
-          <p className="time text-xs text-Gray-600">
-            {formatDate(body.sentAt)}
-          </p>
+          <span className="flex items-center gap-1.5">
+            <DeleteMsgBtn body={body} />
+            <p className="time text-xs text-Gray-600">
+              {formatDate(body.sentAt)}
+            </p>
+          </span>
         </div>
         <p
           dir="auto"

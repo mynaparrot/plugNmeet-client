@@ -8,7 +8,10 @@ import {
 import ConnectNats from './ConnectNats';
 import { store } from '../../store';
 import { pollsApi } from '../../store/services/pollsApi';
-import { updateParticipant } from '../../store/slices/participantSlice';
+import {
+  participantsSelector,
+  updateParticipant,
+} from '../../store/slices/participantSlice';
 import { addExternalMediaPlayerEvent } from '../../store/slices/externalMediaPlayer';
 import {
   addReaction,
@@ -24,9 +27,12 @@ import { TextWithInfo } from '../../store/slices/interfaces/speechServices';
 import { addSpeechSubtitleText } from '../../store/slices/speechServicesSlice';
 import {
   addAllChatMessages,
+  removeChatMessage,
   selectPublicChatMessages,
 } from '../../store/slices/chatMessagesSlice';
 import { PnmConnectionQuality } from '../livekit/ConnectionQualityMonitor';
+import { CUSTOM_DATA_MSG_TYPES } from './customDataMsgs';
+import { DB_STORE_NAMES, idbDel } from '../libs/idb';
 
 export default class HandleDataMessage {
   private connectNats: ConnectNats;
@@ -128,6 +134,9 @@ export default class HandleDataMessage {
           store.dispatch(updateReceivedInvitationFor(payload.message));
         }
         break;
+      case CUSTOM_DATA_MSG_TYPES.DELETE_CHAT_MESSAGE:
+        await this.handleDeleteChatMessage(payload);
+        break;
       case DataMsgBodyType.NOTEPAD_UPDATE:
       case DataMsgBodyType.NOTEPAD_AWARENESS:
       case DataMsgBodyType.NOTEPAD_SYNC_REQUEST:
@@ -191,6 +200,36 @@ export default class HandleDataMessage {
       );
     }
   }
+
+  /**
+   * A moderator requested deletion of a public chat message. Only applied
+   * when the sender is an admin (the same trust level as the fromAdmin flag
+   * on chat messages) and the target is not a private conversation. The
+   * message is tombstoned even if it hasn't arrived yet, so a copy landing
+   * later (in-flight message, peer history sync) stays deleted.
+   */
+  private handleDeleteChatMessage = async (payload: DataChannelMessage) => {
+    const messageId = payload.message;
+    if (messageId === '') {
+      return;
+    }
+
+    const sender = participantsSelector.selectById(
+      store.getState(),
+      payload.fromUserId,
+    );
+    if (!sender?.metadata.isAdmin) {
+      return;
+    }
+
+    const chatKey = store.getState().chatMessages.messageIds[messageId];
+    if (typeof chatKey !== 'undefined' && chatKey !== 'public') {
+      return;
+    }
+
+    store.dispatch(removeChatMessage(messageId));
+    await idbDel(DB_STORE_NAMES.CHAT_MESSAGES, messageId);
+  };
 
   private handlePublicChatDataReq(fromUserId: string) {
     const publicChats = selectPublicChatMessages(store.getState()).filter(

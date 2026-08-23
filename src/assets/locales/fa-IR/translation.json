@@ -290,7 +290,9 @@
     "file-upload-success": "فایل با موفقیت بارگذاری شد",
     "file-upload-default-error": "در بارگذاری فایل خطایی رخ داد.",
     "chat-box-placeholder": "پیام بنویسید، تصویر جای‌گذاری کنید یا فایل را اینجا رها کنید (خط جدید: Shift + Enter)",
-    "sending-message": "لطفاً صبر کنید، در حال ارسال..."
+    "sending-message": "لطفاً صبر کنید، در حال ارسال...",
+    "delete-msg": "حذف پیام",
+    "delete-msg-confirm": "برای همه حذف شود؟"
   },
   "footer": {
     "aria-label": "کنترل‌های جلسه",

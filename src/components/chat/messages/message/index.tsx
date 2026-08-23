@@ -15,7 +15,9 @@ const Message = ({ body, currentUser }: IMessageProps) => {
   if (body.fromUserId === 'system') {
     content = <SystemMessage message={body.message} />;
   } else if (currentUser?.userId === body.fromUserId) {
-    content = <MyMessage message={body.message} sentAt={body.sentAt} />;
+    content = (
+      <MyMessage message={body.message} sentAt={body.sentAt} body={body} />
+    );
   } else {
     content = <OtherUserMessage body={body} />;
   }

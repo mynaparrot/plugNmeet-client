@@ -16,6 +16,12 @@ interface ChatMessagesState {
     [messageId: string]: number;
   };
   nextDisplayOrder: number;
+  // Tombstones for messages deleted by a moderator. Stale copies arriving
+  // later (peer history sync, IndexedDB restore) must not resurrect them,
+  // as re-adding would also assign a wrong displayOrder position.
+  deletedIds: {
+    [messageId: string]: true;
+  };
 }
 
 const createInitialState = (): ChatMessagesState => ({
@@ -25,6 +31,7 @@ const createInitialState = (): ChatMessagesState => ({
   messageIds: {},
   displayOrder: {},
   nextDisplayOrder: 0,
+  deletedIds: {},
 });
 
 const initialState = createInitialState();
@@ -119,7 +126,7 @@ const chatMessagesSlice = createSlice({
     ) => {
       const { message, currentUserId } = action.payload;
 
-      if (state.messageIds[message.id]) {
+      if (state.messageIds[message.id] || state.deletedIds[message.id]) {
         return;
       }
 
@@ -176,7 +183,7 @@ const chatMessagesSlice = createSlice({
         const messagesToAdd = [...sortedMessages].reverse();
 
         messagesToAdd.forEach((message) => {
-          if (state.messageIds[message.id]) {
+          if (state.messageIds[message.id] || state.deletedIds[message.id]) {
             return;
           }
 
@@ -209,6 +216,25 @@ const chatMessagesSlice = createSlice({
           sortByDisplayOrder(state.messages[key], state.displayOrder);
         });
       },
+    },
+
+    removeChatMessage: (state, action: PayloadAction<string>) => {
+      const messageId = action.payload;
+      // Tombstone first so the message can't come back even if it hasn't
+      // arrived yet. Remaining messages keep their displayOrder values,
+      // so the relative order of the list is untouched.
+      state.deletedIds[messageId] = true;
+
+      const key = state.messageIds[messageId];
+      if (!key) {
+        return;
+      }
+
+      state.messages[key] = state.messages[key].filter(
+        (message) => message.id !== messageId,
+      );
+      delete state.messageIds[messageId];
+      delete state.displayOrder[messageId];
     },
 
     resetChatMessages: () => createInitialState(),
@@ -248,5 +274,9 @@ export const selectPublicChatMessages = createSelector(
 
 export default chatMessagesSlice.reducer;
 
-export const { addChatMessage, addAllChatMessages, resetChatMessages } =
-  chatMessagesSlice.actions;
+export const {
+  addChatMessage,
+  addAllChatMessages,
+  removeChatMessage,
+  resetChatMessages,
+} = chatMessagesSlice.actions;
