@@ -241,7 +241,9 @@
     "file-upload-success": "Datoteka je uspješno prenesena",
     "file-upload-default-error": "Došlo je do pogreške pri učitavanju datoteke.",
     "chat-box-placeholder": "Pošaljite poruku, zalijepite sliku ili ispustite datoteku ovdje (Novi redak: Shift + Enter)",
-    "sending-message": "Molim pričekajte, šaljem..."
+    "sending-message": "Molim pričekajte, šaljem...",
+    "delete-msg": "Izbriši poruku",
+    "delete-msg-confirm": "Izbrisati za sve?"
   },
   "footer": {
     "hide-footer": "Sakrij podnožje",

@@ -290,7 +290,9 @@
     "file-upload-success": "تم رفع الملف بنجاح.",
     "file-upload-default-error": "حدث خطأ أثناء رفع الملف.",
     "chat-box-placeholder": "أرسل رسالة، الصق صورة، أو اسحب ملفاً هنا (سطر جديد: Shift + Enter)",
-    "sending-message": "جارٍ الإرسال، يرجى الانتظار..."
+    "sending-message": "جارٍ الإرسال، يرجى الانتظار...",
+    "delete-msg": "حذف الرسالة",
+    "delete-msg-confirm": "حذف للجميع؟"
   },
   "footer": {
     "aria-label": "ضوابط الاجتماعات",

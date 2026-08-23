@@ -290,7 +290,9 @@
     "file-upload-success": "Filen har laddats upp",
     "file-upload-default-error": "Det gick inte att ladda upp filen.",
     "chat-box-placeholder": "Skicka ett meddelande, klistra in en bild eller släpp en fil här (Ny rad: Skift + Retur)",
-    "sending-message": "Vänligen vänta, skickar..."
+    "sending-message": "Vänligen vänta, skickar...",
+    "delete-msg": "Radera meddelande",
+    "delete-msg-confirm": "Radera för alla?"
   },
   "footer": {
     "aria-label": "Möteskontroller",

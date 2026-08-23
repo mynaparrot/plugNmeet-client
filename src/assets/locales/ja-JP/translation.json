@@ -290,7 +290,9 @@
     "file-upload-success": "ファイルが正常にアップロードされました。",
     "file-upload-default-error": "ファイルのアップロード中にエラーが発生しました。",
     "chat-box-placeholder": "メッセージを送信、画像を貼り付け、またはファイルをここにドロップ（改行：Shift + Enter）",
-    "sending-message": "送信中です。お待ちください..."
+    "sending-message": "送信中です。お待ちください...",
+    "delete-msg": "メッセージを削除",
+    "delete-msg-confirm": "全員に対して削除しますか？"
   },
   "footer": {
     "aria-label": "会議制御",

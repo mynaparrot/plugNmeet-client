@@ -290,7 +290,9 @@
     "file-upload-success": "Ficheiro carregado com sucesso.",
     "file-upload-default-error": "Ocorreu um erro ao carregar o ficheiro.",
     "chat-box-placeholder": "Envie uma mensagem, cole uma imagem ou largue um ficheiro aqui (Nova linha: Shift + Enter)",
-    "sending-message": "A enviar, por favor, aguarde..."
+    "sending-message": "A enviar, por favor, aguarde...",
+    "delete-msg": "Eliminar mensagem",
+    "delete-msg-confirm": "Eliminar para todos?"
   },
   "footer": {
     "aria-label": "Controlo de reuniões",

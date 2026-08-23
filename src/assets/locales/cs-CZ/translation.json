@@ -290,7 +290,9 @@
     "file-upload-success": "Soubor byl úspěšně nahrán",
     "file-upload-default-error": "Při nahrávání souboru došlo k chybě.",
     "chat-box-placeholder": "Odešlete zprávu, vložte obrázek nebo sem přetáhněte soubor (Nový řádek: Shift + Enter)",
-    "sending-message": "Prosím, počkejte, posílám..."
+    "sending-message": "Prosím, počkejte, posílám...",
+    "delete-msg": "Smazat zprávu",
+    "delete-msg-confirm": "Smazat pro všechny?"
   },
   "footer": {
     "aria-label": "Řízení setkání",

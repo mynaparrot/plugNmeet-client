@@ -290,7 +290,9 @@
     "file-upload-success": "File caricato con successo.",
     "file-upload-default-error": "Si è verificato un errore durante il caricamento del file.",
     "chat-box-placeholder": "Invia un messaggio, incolla un'immagine o trascina un file qui (Nuova riga: Maiusc + Invio)",
-    "sending-message": "Invio in corso, attendere prego..."
+    "sending-message": "Invio in corso, attendere prego...",
+    "delete-msg": "Elimina messaggio",
+    "delete-msg-confirm": "Eliminare per tutti?"
   },
   "footer": {
     "aria-label": "Controlli delle riunioni",

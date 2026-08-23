@@ -290,7 +290,9 @@
     "file-upload-success": "Plik został przesłany pomyślnie.",
     "file-upload-default-error": "Wystąpił błąd podczas przesyłania pliku.",
     "chat-box-placeholder": "Wyślij wiadomość, wklej obraz lub upuść plik tutaj (Nowy wiersz: Shift + Enter)",
-    "sending-message": "Proszę czekać, wysyłanie..."
+    "sending-message": "Proszę czekać, wysyłanie...",
+    "delete-msg": "Usuń wiadomość",
+    "delete-msg-confirm": "Usunąć dla wszystkich?"
   },
   "footer": {
     "aria-label": "Kontrola spotkań",

@@ -290,7 +290,9 @@
     "file-upload-success": "Bestand succesvol geüpload",
     "file-upload-default-error": "Er is een fout opgetreden bij het uploaden van het bestand.",
     "chat-box-placeholder": "Stuur hier een bericht, plak een afbeelding of zet hier een bestand neer (Nieuwe regel: Shift + Enter)",
-    "sending-message": "Wacht alstublieft, ik stuur..."
+    "sending-message": "Wacht alstublieft, ik stuur...",
+    "delete-msg": "Bericht verwijderen",
+    "delete-msg-confirm": "Voor iedereen verwijderen?"
   },
   "footer": {
     "aria-label": "Vergadercontroles",

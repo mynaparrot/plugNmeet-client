@@ -241,7 +241,9 @@
     "file-upload-success": "Faili üleslaadimine õnnestus",
     "file-upload-default-error": "Faili üleslaadimisel ilmnes tõrge.",
     "chat-box-placeholder": "Saatke sõnum, kleepige pilt või kukutage fail siia (Uus rida: tõstuklahv + sisestusklahv)",
-    "sending-message": "Palun oodake, saates..."
+    "sending-message": "Palun oodake, saates...",
+    "delete-msg": "Kustuta sõnum",
+    "delete-msg-confirm": "Kas kustutada kõigi jaoks?"
   },
   "footer": {
     "hide-footer": "Peida jalus",

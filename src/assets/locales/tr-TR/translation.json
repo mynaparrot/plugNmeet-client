@@ -290,7 +290,9 @@
     "file-upload-success": "Dosya başarıyla yüklendi.",
     "file-upload-default-error": "Dosya yüklenirken bir hata oluştu.",
     "chat-box-placeholder": "Bir mesaj gönderin, bir resim yapıştırın veya bir dosyayı buraya bırakın (Yeni satır: Shift + Enter)",
-    "sending-message": "Gönderiliyor, lütfen bekleyin..."
+    "sending-message": "Gönderiliyor, lütfen bekleyin...",
+    "delete-msg": "Mesajı sil",
+    "delete-msg-confirm": "Herkes için silinsin mi?"
   },
   "footer": {
     "aria-label": "Toplantı kontrolleri",

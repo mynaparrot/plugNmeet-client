@@ -290,7 +290,9 @@
     "file-upload-success": "Fișierul încărcat cu succes",
     "file-upload-default-error": "A apărut o eroare la încărcarea fișierului.",
     "chat-box-placeholder": "Trimiteți un mesaj, lipiți o imagine sau plasați un fișier aici (Linie nouă: Shift + Enter)",
-    "sending-message": "Te rog, așteaptă, trimiți..."
+    "sending-message": "Te rog, așteaptă, trimiți...",
+    "delete-msg": "Șterge mesajul",
+    "delete-msg-confirm": "Ștergeți pentru toți?"
   },
   "footer": {
     "aria-label": "Controlul ședințelor",

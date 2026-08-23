@@ -290,7 +290,9 @@
     "file-upload-success": "A fájl feltöltése sikeresen",
     "file-upload-default-error": "Hiba történt a fájl feltöltésekor.",
     "chat-box-placeholder": "Üzenet küldése, kép beillesztése vagy fájl eldobása ide (Új sor: Shift + Enter)",
-    "sending-message": "Kérlek, várj, küldöm..."
+    "sending-message": "Kérlek, várj, küldöm...",
+    "delete-msg": "Üzenet törlése",
+    "delete-msg-confirm": "Törlés mindenkinél?"
   },
   "footer": {
     "aria-label": "Találkozók vezérlése",

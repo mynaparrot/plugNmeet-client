@@ -290,7 +290,9 @@
     "file-upload-success": "File berhasil diunggah.",
     "file-upload-default-error": "Terjadi kesalahan saat mengunggah file.",
     "chat-box-placeholder": "Kirim pesan, tempel gambar, atau letakkan file di sini (Baris baru: Shift + Enter)",
-    "sending-message": "Mengirim, harap tunggu..."
+    "sending-message": "Mengirim, harap tunggu...",
+    "delete-msg": "Hapus pesan",
+    "delete-msg-confirm": "Hapus untuk semua?"
   },
   "footer": {
     "aria-label": "Kontrol rapat",

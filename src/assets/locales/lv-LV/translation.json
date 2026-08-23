@@ -241,7 +241,9 @@
     "file-upload-success": "Fails veiksmīgi augšupielādēts",
     "file-upload-default-error": "Augšupielādējot failu, radās kļūda.",
     "chat-box-placeholder": "Nosūtiet ziņojumu, ielīmējiet attēlu vai nometiet failu šeit (Jauna rindiņa: Shift + Enter)",
-    "sending-message": "Lūdzu, pagaidiet, nosūtot..."
+    "sending-message": "Lūdzu, pagaidiet, nosūtot...",
+    "delete-msg": "Dzēst ziņu",
+    "delete-msg-confirm": "Dzēst visiem?"
   },
   "footer": {
     "hide-footer": "Kājenes paslēpšana",

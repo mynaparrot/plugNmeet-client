@@ -290,7 +290,9 @@
     "file-upload-success": "Tiedoston lataus onnistui",
     "file-upload-default-error": "Tiedoston lataamisessa tapahtui virhe.",
     "chat-box-placeholder": "Lähetä viesti, liitä kuva tai pudota tiedosto tähän (Uusi rivi: Vaihto + Enter)",
-    "sending-message": "Odottakaa, lähettäen..."
+    "sending-message": "Odottakaa, lähettäen...",
+    "delete-msg": "Poista viesti",
+    "delete-msg-confirm": "Poistetaanko kaikilta?"
   },
   "footer": {
     "aria-label": "Kokousten ohjaus",

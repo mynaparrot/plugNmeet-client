@@ -290,7 +290,9 @@
     "file-upload-success": "Tệp được tải lên thành công",
     "file-upload-default-error": "Đã xảy ra lỗi khi tải tệp lên.",
     "chat-box-placeholder": "Gửi tin nhắn, dán hình ảnh hoặc thả file tại đây (Dòng mới: Shift + Enter)",
-    "sending-message": "Vui lòng đợi, gửi..."
+    "sending-message": "Vui lòng đợi, gửi...",
+    "delete-msg": "Xóa tin nhắn",
+    "delete-msg-confirm": "Xóa cho mọi người?"
   },
   "footer": {
     "aria-label": "Điều khiển cuộc họp",

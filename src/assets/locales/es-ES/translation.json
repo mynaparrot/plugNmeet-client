@@ -290,7 +290,9 @@
     "file-upload-success": "Archivo subido correctamente.",
     "file-upload-default-error": "Se ha producido un error al subir el archivo.",
     "chat-box-placeholder": "Envíe un mensaje, pegue una imagen o suelte un archivo aquí (Nueva línea: Mayús + Intro)",
-    "sending-message": "Por favor espere, enviando..."
+    "sending-message": "Por favor espere, enviando...",
+    "delete-msg": "Eliminar mensaje",
+    "delete-msg-confirm": "¿Eliminar para todos?"
   },
   "footer": {
     "aria-label": "Controles de reuniones",

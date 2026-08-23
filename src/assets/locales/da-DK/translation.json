@@ -290,7 +290,9 @@
     "file-upload-success": "Filen blev uploadet",
     "file-upload-default-error": "Der opstod en fejl under upload af filen.",
     "chat-box-placeholder": "Send en meddelelse, indsæt et billede, eller slip en fil her (Ny linje: Skift + Enter)",
-    "sending-message": "Vent venligst, sender..."
+    "sending-message": "Vent venligst, sender...",
+    "delete-msg": "Slet besked",
+    "delete-msg-confirm": "Slet for alle?"
   },
   "footer": {
     "aria-label": "Mødekontroller",

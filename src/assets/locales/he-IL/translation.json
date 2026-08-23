@@ -290,7 +290,9 @@
     "file-upload-success": "הקובץ הועלה בהצלחה",
     "file-upload-default-error": "אירעה שגיאה בהעלאת הקובץ.",
     "chat-box-placeholder": "שליחת הודעה, הדבקת תמונה או שחרור קובץ כאן (שורה חדשה: Shift + Enter)",
-    "sending-message": "בבקשה חכה, שולח..."
+    "sending-message": "בבקשה חכה, שולח...",
+    "delete-msg": "מחק הודעה",
+    "delete-msg-confirm": "למחוק עבור כולם?"
   },
   "footer": {
     "aria-label": "בקרות פגישות",

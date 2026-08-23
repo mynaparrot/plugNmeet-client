@@ -290,7 +290,9 @@
     "file-upload-success": "Datei erfolgreich hochgeladen.",
     "file-upload-default-error": "Beim Hochladen der Datei ist ein Fehler aufgetreten.",
     "chat-box-placeholder": "Senden Sie eine Nachricht, fügen Sie ein Bild ein oder legen Sie eine Datei hier ab (Neue Zeile: Umschalt + Eingabe)",
-    "sending-message": "Wird gesendet, bitte warten..."
+    "sending-message": "Wird gesendet, bitte warten...",
+    "delete-msg": "Nachricht löschen",
+    "delete-msg-confirm": "Für alle löschen?"
   },
   "footer": {
     "aria-label": "Sitzungskontrollen",

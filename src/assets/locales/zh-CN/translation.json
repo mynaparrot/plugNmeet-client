@@ -290,7 +290,9 @@
     "file-upload-success": "文件上传成功。",
     "file-upload-default-error": "上传文件时出错。",
     "chat-box-placeholder": "在此处发送消息、粘贴图片或拖放文件（换行：Shift + Enter）",
-    "sending-message": "正在发送，请稍候..."
+    "sending-message": "正在发送，请稍候...",
+    "delete-msg": "删除消息",
+    "delete-msg-confirm": "为所有人删除？"
   },
   "footer": {
     "aria-label": "会议控制",

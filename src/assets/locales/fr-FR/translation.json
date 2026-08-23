@@ -290,7 +290,9 @@
     "file-upload-success": "Fichier téléversé avec succès.",
     "file-upload-default-error": "Une erreur est survenue lors du téléversement du fichier.",
     "chat-box-placeholder": "Envoyez un message, collez une image ou déposez un fichier ici (Nouvelle ligne : Maj + Entrée)",
-    "sending-message": "Envoi en cours, veuillez patienter..."
+    "sending-message": "Envoi en cours, veuillez patienter...",
+    "delete-msg": "Supprimer le message",
+    "delete-msg-confirm": "Supprimer pour tout le monde ?"
   },
   "footer": {
     "aria-label": "Contrôles de réunion",

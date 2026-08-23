@@ -290,7 +290,9 @@
     "file-upload-success": "Файл успешно загружен",
     "file-upload-default-error": "Произошла ошибка при загрузке файла.",
     "chat-box-placeholder": "Отправьте сообщение",
-    "sending-message": "Пожалуйста, подождите, отправляю..."
+    "sending-message": "Пожалуйста, подождите, отправляю...",
+    "delete-msg": "Удалить сообщение",
+    "delete-msg-confirm": "Удалить у всех?"
   },
   "footer": {
     "aria-label": "Контроль собраний",
