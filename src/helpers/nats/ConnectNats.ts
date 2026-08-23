@@ -49,9 +49,10 @@ import {
   addUserNotification,
   updateIsNatsServerConnected,
 } from '../../store/slices/roomSettingsSlice';
+import { removeChatMessage } from '../../store/slices/chatMessagesSlice';
 import { roomConnectionStatus } from '../../components/app/helper';
 import { destroyAudioManager } from '../libs/AudioActivityManager';
-import { deleteRoomDB } from '../libs/idb';
+import { DB_STORE_NAMES, deleteRoomDB, idbDel } from '../libs/idb';
 import { createLivekitConnection } from '../livekit/utils';
 import { executeChatTranslation } from '../../components/translation-transcription/helpers/apiConnections';
 import { teardownNativePublisher } from '../nativeBridge';
@@ -625,9 +626,10 @@ export default class ConnectNats {
 
   /**
    * Broadcasts deletion of a public chat message to all clients (admin only).
-   * The local view updates when our own broadcast echoes back, the same way
-   * reactions are handled. Receivers verify the sender's admin status
-   * before applying the deletion.
+   * Receivers verify the sender's admin status before applying the deletion.
+   * Own data-channel messages are not echoed back by the subscription
+   * handler, so the deletion is also applied locally, the same way
+   * sendChatMsg adds the sender's own message.
    */
   public deletePublicChatMsg = async (messageId: string) => {
     if (!this.isAdmin || messageId === '') {
@@ -636,6 +638,9 @@ export default class ConnectNats {
     await this.publishData(CUSTOM_DATA_MSG_TYPES.DELETE_CHAT_MESSAGE, {
       message: messageId,
     });
+
+    store.dispatch(removeChatMessage(messageId));
+    await idbDel(DB_STORE_NAMES.CHAT_MESSAGES, messageId);
   };
 
   /**
