@@ -11,7 +11,6 @@ import { isArray } from 'es-toolkit/compat';
 const initialState: IWhiteboardSlice = {
   totalPages: 10,
   currentPage: 1,
-  mousePointerLocation: '',
   whiteboardAppState: null,
   currentWhiteboardOfficeFileId: 'default',
   currentOfficeFilePages: '',
@@ -33,9 +32,6 @@ const whiteboardSlice = createSlice({
   name: 'whiteboard',
   initialState,
   reducers: {
-    updateMousePointerLocation: (state, action: PayloadAction<string>) => {
-      state.mousePointerLocation = action.payload;
-    },
     updateMouseAppStateChanges: (
       state,
       action: PayloadAction<IWhiteboardAppState>,
@@ -110,7 +106,6 @@ const whiteboardSlice = createSlice({
 });
 
 export const {
-  updateMousePointerLocation,
   updateMouseAppStateChanges,
   setWhiteboardCurrentPage,
   updateCurrentWhiteboardOfficeFileId,

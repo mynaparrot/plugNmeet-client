@@ -7,7 +7,6 @@ import {
   updateCurrentOfficeFilePages,
   updateCurrentWhiteboardOfficeFileId,
   updateMouseAppStateChanges,
-  updateMousePointerLocation,
 } from '../../store/slices/whiteboard';
 
 export default class HandleWhiteboard {
@@ -16,6 +15,7 @@ export default class HandleWhiteboard {
       case DataMsgBodyType.SCENE_UPDATE:
       case DataMsgBodyType.WHITEBOARD_SYNC_REQUEST:
       case DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE:
+      case DataMsgBodyType.POINTER_UPDATE:
         if (payload.binMessage && payload.binMessage.length > 0) {
           getWhiteboardController().handleMessage(
             payload.type,
@@ -25,9 +25,6 @@ export default class HandleWhiteboard {
             payload.message,
           );
         }
-        break;
-      case DataMsgBodyType.POINTER_UPDATE:
-        store.dispatch(updateMousePointerLocation(payload.message));
         break;
       case DataMsgBodyType.PAGE_CHANGE:
         if (!this.isCurrentUserPresenter()) {

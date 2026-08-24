@@ -1,13 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import {
-  Collaborator,
-  ExcalidrawImperativeAPI,
-  SocketId,
-} from '@excalidraw/excalidraw/types';
+import { useEffect, useMemo, useState } from 'react';
+import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 
 import { useAppSelector } from '../../../../store';
 import { addPreloadedLibraryItems } from '../utils';
 import { selectWhiteboardParticipants } from '../../../../store/slices/participantSlice';
+import { getWhiteboardController } from '../../collab';
 
 interface IUseWhiteboardSetup {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
@@ -19,12 +16,8 @@ const useWhiteboardSetup = ({
   canEdit,
 }: IUseWhiteboardSetup) => {
   const [viewModeEnabled, setViewModeEnabled] = useState(true);
-  const collaborators = useRef(new Map<SocketId, Collaborator>());
 
   const participants = useAppSelector(selectWhiteboardParticipants);
-  const mousePointerLocation = useAppSelector(
-    (state) => state.whiteboard.mousePointerLocation,
-  );
   const refreshWhiteboardSignal = useAppSelector(
     (state) => state.whiteboard.refreshWhiteboardSignal,
   );
@@ -45,58 +38,26 @@ const useWhiteboardSetup = ({
     setViewModeEnabled(!canEdit);
 
     if (canEdit) {
-      addPreloadedLibraryItems(excalidrawAPI);
+      void addPreloadedLibraryItems(excalidrawAPI);
     }
   }, [excalidrawAPI, canEdit]);
-
-  // from useCollaborators
-  useEffect(() => {
-    if (excalidrawAPI && mousePointerLocation) {
-      try {
-        const data: Collaborator = JSON.parse(mousePointerLocation);
-        if (!data.id) {
-          return;
-        }
-
-        collaborators.current.set(data.id as SocketId, data);
-        excalidrawAPI.updateScene({
-          collaborators: new Map(collaborators.current),
-        });
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  }, [excalidrawAPI, mousePointerLocation]);
 
   const activeParticipantIds = useMemo(() => {
     // A user's cursor should be removed if:
     // 1. They have disconnected (and are no longer in the participants list).
     // 2. They are no longer a presenter OR their whiteboard is locked.
     const activeUsers = participants.filter(
-      (p) => p.isPresent && !p.isWhiteboardLocked,
+      (p) => p.isPresent || !p.isWhiteboardLocked,
     );
     return new Set(activeUsers.map((p) => p.userId));
   }, [participants]);
 
-  // for cleaning up collaborators if disconnected
+  // Refresh the rendered collaborator cursors whenever the active participant
+  // set changes (e.g. a participant leaves or their whiteboard lock flips).
+  // Presence itself is owned by the controller's room-scoped Awareness.
   useEffect(() => {
-    if (!excalidrawAPI) {
-      return;
-    }
-
-    const currentSize = collaborators.current.size;
-    collaborators.current.forEach((_, userId) => {
-      // The `activeParticipantIds` set contains all users who meet the criteria to remain.
-      // We remove any collaborator whose userId is not in that active set.
-      if (!activeParticipantIds.has(userId)) {
-        collaborators.current.delete(userId);
-      }
-    });
-
-    if (currentSize !== collaborators.current.size) {
-      excalidrawAPI.updateScene({
-        collaborators: new Map(collaborators.current),
-      });
+    if (excalidrawAPI) {
+      getWhiteboardController().refreshCollaborators();
     }
   }, [excalidrawAPI, activeParticipantIds]);
 

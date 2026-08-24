@@ -30,3 +30,21 @@ export type WhiteboardControllerConfig = {
   canWrite: () => boolean;
   isPrimaryResponder?: () => boolean;
 };
+
+/**
+ * JSON-serializable presence payload broadcast through Yjs Awareness and
+ * rendered as collaborator cursors on the canvas. Room-scoped, so it survives
+ * whiteboard page/file switches.
+ */
+export interface WhiteboardPresence {
+  id: string;
+  username?: string;
+  avatarUrl?: string;
+  pointer?: {
+    x: number;
+    y: number;
+    tool: string;
+  };
+  button?: 'up' | 'down';
+  selectedElementIds?: Record<string, boolean>;
+}

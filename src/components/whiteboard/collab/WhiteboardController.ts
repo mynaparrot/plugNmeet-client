@@ -1,6 +1,12 @@
 import * as Y from 'yjs';
+import {
+  Awareness,
+  applyAwarenessUpdate,
+  encodeAwarenessUpdate,
+} from 'y-protocols/awareness';
 import { DataMsgBodyType } from 'plugnmeet-protocol-js';
 import type { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
+import type { Collaborator, SocketId } from '@excalidraw/excalidraw/types';
 
 import { getNatsConn } from '../../../helpers/nats';
 import {
@@ -9,7 +15,10 @@ import {
 } from './whiteboardPersistence';
 import { isIncomingNewer, WHITEBOARD_ELEMENTS_MAP } from './utils';
 import { store } from '../../../store';
-import { participantsSelector } from '../../../store/slices/participantSlice';
+import {
+  participantsSelector,
+  selectWhiteboardParticipants,
+} from '../../../store/slices/participantSlice';
 import {
   base64ToUint8,
   isUserRecorder,
@@ -18,6 +27,7 @@ import {
 import type { IParticipant } from '../../../store/slices/interfaces/participant';
 import type {
   WhiteboardControllerConfig,
+  WhiteboardPresence,
   WhiteboardScope,
   WhiteboardYjsSnapshot,
 } from './types';
@@ -33,6 +43,11 @@ const INITIAL_REQUEST_TIMEOUT_MS = 4000;
 export class WhiteboardController {
   private doc: Y.Doc | null = null;
   private elementsMap: Y.Map<string> | null = null;
+
+  // separate from the page-scoped CRDT doc so cursor presence survives whiteboard page/file switches.
+  private presenceDoc: Y.Doc | null = null;
+  private awareness: Awareness | null = null;
+
   private roomSid = '';
   private fileId = '';
   private page = 0;
@@ -87,6 +102,7 @@ export class WhiteboardController {
 
   configure = (config: WhiteboardControllerConfig) => {
     this.config = config;
+    this.ensurePresence();
   };
 
   private sendWhiteboardData = (
@@ -195,9 +211,10 @@ export class WhiteboardController {
     this.emitChange();
   };
 
-  /** `teardown()` plus forget the transport/config entirely. */
+  /** `teardown()` plus tear down room presence and forget the transport/config entirely. */
   destroy = async () => {
     await this.teardown();
+    this.destroyPresence();
     this.config = null;
   };
 
@@ -345,6 +362,9 @@ export class WhiteboardController {
       case DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE:
         void this.handleSyncResponse(binMessage, fromUserId, id, message);
         break;
+      case DataMsgBodyType.POINTER_UPDATE:
+        this.applyRemoteAwareness(binMessage);
+        break;
       default:
         break;
     }
@@ -361,6 +381,140 @@ export class WhiteboardController {
       return;
     }
     this.config?.onRemoteUpdate?.();
+  };
+
+  /**
+   * Creates (or reuses) the room-scoped presence doc + Awareness instance.
+   * Idempotent: presence survives page/file switches and is only torn down in
+   * `destroy()`.
+   */
+  private ensurePresence = () => {
+    if (this.presenceDoc) {
+      return;
+    }
+    const presenceDoc = new Y.Doc();
+    const awareness = new Awareness(presenceDoc);
+    awareness.on('change', this.handleAwarenessChange);
+    this.presenceDoc = presenceDoc;
+    this.awareness = awareness;
+  };
+
+  private destroyPresence = () => {
+    if (this.awareness) {
+      this.awareness.off('change', this.handleAwarenessChange);
+      this.awareness.destroy();
+      this.awareness = null;
+    }
+    if (this.presenceDoc) {
+      this.presenceDoc.destroy();
+      this.presenceDoc = null;
+    }
+  };
+
+  /**
+   * Publishes this client's presence to the room (only when the current user
+   * can write to the whiteboard).
+   */
+  setLocalPresence = (presence: WhiteboardPresence) => {
+    if (this.config?.canWrite() && this.awareness) {
+      this.awareness.setLocalState(presence);
+    }
+  };
+
+  clearLocalPresence = () => {
+    if (this.awareness) {
+      this.awareness.setLocalState(null);
+    }
+  };
+
+  refreshCollaborators = () => {
+    this.syncCollaborators();
+  };
+
+  /**
+   * Awareness change handler. Always refreshes the rendered collaborators
+   * first, then only echoes *our own* local changes back into the room (remote
+   * updates must never be re-broadcast).
+   */
+  private handleAwarenessChange = (
+    {
+      added,
+      updated,
+      removed,
+    }: { added: number[]; updated: number[]; removed: number[] },
+    origin: unknown,
+  ) => {
+    this.syncCollaborators();
+
+    if (origin === WHITEBOARD_REMOTE_ORIGIN) {
+      return;
+    }
+
+    const changed = [...added, ...updated, ...removed];
+    if (changed.length === 0) {
+      return;
+    }
+    const { awareness, config } = this;
+    if (!awareness || !config || !config.canWrite()) {
+      return;
+    }
+    this.sendWhiteboardData(
+      DataMsgBodyType.POINTER_UPDATE,
+      encodeAwarenessUpdate(awareness, changed),
+    );
+  };
+
+  /**
+   * Rebuilds the `Map<SocketId, Collaborator>` rendered on the canvas from the
+   * awareness states. Skips our own client id, states without a truthy `id`,
+   * and any user that is no longer present / unlocked in the room.
+   */
+  private syncCollaborators = () => {
+    const { config, awareness } = this;
+    if (!config || !config.excalidrawAPI || !awareness) {
+      return;
+    }
+
+    const activeIds = new Set(
+      selectWhiteboardParticipants(store.getState())
+        .filter((p) => p.isPresent || !p.isWhiteboardLocked)
+        .map((p) => p.userId),
+    );
+
+    const collaborators = new Map<SocketId, Collaborator>();
+    awareness.getStates().forEach((state, clientId) => {
+      if (clientId === awareness.clientID) {
+        return;
+      }
+      if (!state.id) {
+        return;
+      }
+      const id = String(state.id);
+      if (!activeIds.has(id)) {
+        return;
+      }
+      collaborators.set(id as SocketId, state as unknown as Collaborator);
+    });
+
+    config.excalidrawAPI.updateScene({ collaborators });
+  };
+
+  /**
+   * Applies a remote awareness update received over NATS. The remote origin is
+   * supplied so the `change` listener does not re-broadcast it.
+   */
+  private applyRemoteAwareness = (update: Uint8Array) => {
+    if (!this.awareness) {
+      return;
+    }
+    try {
+      applyAwarenessUpdate(this.awareness, update, WHITEBOARD_REMOTE_ORIGIN);
+    } catch (e) {
+      console.error(
+        '[WhiteboardController] failed to apply remote awareness',
+        e,
+      );
+    }
   };
 
   private canParticipantEdit = (

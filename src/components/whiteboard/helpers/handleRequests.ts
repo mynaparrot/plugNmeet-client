@@ -56,15 +56,6 @@ export const broadcastCurrentOfficeFilePages = async (
   );
 };
 
-export const broadcastMousePointerUpdate = async (element: any) => {
-  if (!conn) {
-    conn = getNatsConn();
-  }
-  await conn.sendWhiteboardData(DataMsgBodyType.POINTER_UPDATE, {
-    message: JSON.stringify(element),
-  });
-};
-
 export const broadcastAppStateChanges = async (
   height: number,
   width: number,

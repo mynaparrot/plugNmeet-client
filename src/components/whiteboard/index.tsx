@@ -18,7 +18,6 @@ import {
 import {
   AppState,
   BinaryFiles,
-  Collaborator,
   CollaboratorPointer,
   ExcalidrawImperativeAPI,
   Gesture,
@@ -36,17 +35,15 @@ import FooterUI from './footerUI';
 import ExportPDFModal from './export-pdf';
 import WhiteboardAI from './ai';
 
-import { store, useAppDispatch, useAppSelector } from '../../store';
+import { store, useAppSelector } from '../../store';
 import {
   broadcastAppStateChanges,
   broadcastCurrentFileId,
-  broadcastMousePointerUpdate,
 } from './helpers/handleRequests';
 import usePrevious from './helpers/hooks/usePrevious';
 import useWhiteboardSetup from './helpers/hooks/useWhiteboardSetup';
 import useWhiteboardAppStateSync from './helpers/hooks/useWhiteboardAppStateSync';
 import useOfficePageSyncer from './helpers/hooks/useOfficePageSyncer';
-import { updateMousePointerLocation } from '../../store/slices/whiteboard';
 import {
   A4_BOUNDARY_GUIDE_ID,
   ensureAllImagesDataIsLoaded,
@@ -63,6 +60,7 @@ import {
   uploadCanvasBinaryFile,
 } from './helpers/handleFiles';
 import { getWhiteboardController } from './collab';
+import type { WhiteboardPresence } from './collab/types';
 import { getNatsConn } from '../../helpers/nats';
 import {
   A4_VIEWPORT_PADDING_LEFT,
@@ -87,7 +85,6 @@ interface WhiteboardProps {
 const CURSOR_SYNC_TIMEOUT = 33;
 
 const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
-  const dispatch = useAppDispatch();
   const { i18n, t } = useTranslation();
   // static variables
   const { currentUser, isRecorder, roomId, roomSid } = useMemo(() => {
@@ -414,13 +411,13 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     applySceneToExcalidraw,
   ]);
 
-  // clean up store during exit
+  // clean up during exit: drop presence from the room and clear image state.
   useEffect(() => {
     return () => {
-      dispatch(updateMousePointerLocation(''));
+      controller.clearLocalPresence();
       cleanProcessedImageElementsMap();
     };
-  }, [dispatch]);
+  }, [controller]);
 
   // on mount: point the CRDT at the current page/file and apply the scene.
   // Followers converge via the state-vector sync handshake; the presenter
@@ -588,7 +585,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         if (!canEdit || !currentUser || payload.pointersMap.size >= 2) {
           return;
         }
-        const msg: Partial<Collaborator> = {
+        const msg: WhiteboardPresence = {
           pointer: payload.pointer,
           button: payload.button || 'up',
           selectedElementIds: excalidrawAPI?.getAppState().selectedElementIds,
@@ -596,11 +593,11 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           username: currentUser.name,
           avatarUrl: currentUser.metadata?.profilePic,
         };
-        void broadcastMousePointerUpdate(msg);
+        controller.setLocalPresence(msg);
       },
       CURSOR_SYNC_TIMEOUT,
     ),
-    [canEdit, currentUser, excalidrawAPI],
+    [canEdit, currentUser, excalidrawAPI, controller],
   );
 
   const showSwitchingWarning = useCallback(() => {

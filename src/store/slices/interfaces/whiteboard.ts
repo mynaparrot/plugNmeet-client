@@ -3,7 +3,6 @@ import type { NormalizedZoomValue } from '@excalidraw/excalidraw/types';
 export interface IWhiteboardSlice {
   totalPages: number;
   currentPage: number;
-  mousePointerLocation: string;
   whiteboardAppState: IWhiteboardAppState | null;
   currentWhiteboardOfficeFileId: string;
   currentOfficeFilePages: string;
