@@ -209,7 +209,12 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       // This is crucial when receiving scenes from remote peers.
       ensureAllImagesDataIsLoaded(excalidrawAPI, reconciledElements);
 
-      // 7. Update the Excalidraw scene with the reconciled elements.
+      // 7. Record the received scene version so the follow-up onChange (fired
+      // by updateScene) doesn't re-broadcast the same scene back to the room.
+      lastBroadcastOrReceivedSceneVersion.current =
+        getSceneAndVersionWithoutBoundary(reconciledElements).version;
+
+      // 8. Update the Excalidraw scene with the reconciled elements.
       // `captureUpdate: NEVER` prevents this update from being added to the undo/redo history,
       // as it's a sync operation, not a user action.
       excalidrawAPI.updateScene({
@@ -218,11 +223,6 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           ? CaptureUpdateAction.IMMEDIATELY
           : CaptureUpdateAction.NEVER,
       });
-
-      // 8. Record the received scene version so the follow-up onChange (fired
-      // by updateScene) doesn't re-broadcast the same scene back to the room.
-      lastBroadcastOrReceivedSceneVersion.current =
-        getSceneAndVersionWithoutBoundary(reconciledElements).version;
 
       // 9. Clear the history to ensure a clean state after the remote update.
       excalidrawAPI.history.clear();
@@ -517,42 +517,43 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         return;
       }
 
-      const { elms, version: currentSceneVersion } =
-        getSceneAndVersionWithoutBoundary(elements);
+      // Presenters or unlocked users can broadcast scene changes.
+      if (canEdit) {
+        const { elms, version: currentSceneVersion } =
+          getSceneAndVersionWithoutBoundary(elements);
 
-      if (
-        elms.length &&
-        // Presenters or unlocked users can broadcast scene changes.
-        canEdit &&
-        // Prevent re-broadcasting the scene we just received/applied, and skip
-        // redundant CRDT writes when nothing actually changed.
-        currentSceneVersion !== lastBroadcastOrReceivedSceneVersion.current
-      ) {
-        lastBroadcastOrReceivedSceneVersion.current = currentSceneVersion;
+        if (
+          elms.length &&
+          // Prevent re-broadcasting the scene we just received/applied, and skip
+          // redundant CRDT writes when nothing actually changed.
+          currentSceneVersion !== lastBroadcastOrReceivedSceneVersion.current
+        ) {
+          lastBroadcastOrReceivedSceneVersion.current = currentSceneVersion;
 
-        // Pending images must be uploaded before they can be synced; they are
-        // written into the CRDT by the follow-up onChange after the upload
-        // flips `status` to 'saved' (uploadCanvasBinaryFile updates the scene
-        // element in place).
-        const syncableElements: ExcalidrawElement[] = [];
-        for (const elm of elms) {
-          if (isPendingImageElement(elm)) {
-            const fileData = elm.fileId && files && files[elm.fileId];
-            if (fileData) {
-              void uploadCanvasBinaryFile(elm, fileData, excalidrawAPI);
+          // Pending images must be uploaded before they can be synced; they are
+          // written into the CRDT by the follow-up onChange after the upload
+          // flips `status` to 'saved' (uploadCanvasBinaryFile updates the scene
+          // element in place).
+          const syncableElements: ExcalidrawElement[] = [];
+          for (const elm of elms) {
+            if (isPendingImageElement(elm)) {
+              const fileData = elm.fileId && files && files[elm.fileId];
+              if (fileData) {
+                void uploadCanvasBinaryFile(elm, fileData, excalidrawAPI);
+              }
+              continue;
             }
-            continue;
+            syncableElements.push(elm);
           }
-          syncableElements.push(elm);
-        }
-        if (syncableElements.length) {
-          controller.mergeElements(
-            syncableElements,
-            (id) =>
-              id === appState.editingTextElement?.id ||
-              id === appState.resizingElement?.id ||
-              id === appState.newElement?.id,
-          );
+          if (syncableElements.length) {
+            controller.mergeElements(
+              syncableElements,
+              (id) =>
+                id === appState.editingTextElement?.id ||
+                id === appState.resizingElement?.id ||
+                id === appState.newElement?.id,
+            );
+          }
         }
       }
 
