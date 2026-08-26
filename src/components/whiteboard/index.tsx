@@ -270,6 +270,14 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     };
   }, []);
 
+  // Backfill any pages the current presenter is missing from the server-side
+  // session data store (whiteboard snapshots only; gated to presenters).
+  useEffect(() => {
+    if (isPresenter) {
+      void getWhiteboardController().backfillMissingPages();
+    }
+  }, [isPresenter]);
+
   const resetWhiteboardState = useCallback(
     (excalidrawAPI: ExcalidrawImperativeAPI) => {
       // 1. Clean up the whiteboard canvas

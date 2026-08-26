@@ -4,15 +4,25 @@ import {
   applyAwarenessUpdate,
   encodeAwarenessUpdate,
 } from 'y-protocols/awareness';
-import { DataMsgBodyType } from 'plugnmeet-protocol-js';
+import { create, toJsonString } from '@bufbuild/protobuf';
+import {
+  DataMsgBodyType,
+  NatsMsgClientToServerEvents,
+  NatsMsgClientToServerSchema,
+  SessionDataHeaderSchema,
+  SessionDataType,
+} from 'plugnmeet-protocol-js';
+import type { SessionDataHeader } from 'plugnmeet-protocol-js';
 import type { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 import type { Collaborator, SocketId } from '@excalidraw/excalidraw/types';
 
 import { getNatsConn } from '../../../helpers/nats';
 import {
+  listWhiteboardPages,
   loadWhiteboardPageSnapshot,
   saveWhiteboardPageSnapshot,
 } from './whiteboardPersistence';
+import { DB_STORE_NAMES, idbStore } from '../../../helpers/libs/idb';
 import { isIncomingNewer, WHITEBOARD_ELEMENTS_MAP } from './utils';
 import { store } from '../../../store';
 import {
@@ -39,6 +49,7 @@ const SYNC_RETRY_DELAY_MS = 2000;
 const MAX_SYNC_REQUEST_ATTEMPTS = 3;
 const SAVE_DEBOUNCE_MS = 1000;
 const INITIAL_REQUEST_TIMEOUT_MS = 4000;
+const SERVER_FIRST_SYNC_TIMEOUT_MS = 1500;
 
 export class WhiteboardController {
   private doc: Y.Doc | null = null;
@@ -64,7 +75,10 @@ export class WhiteboardController {
     ((data: { fileId: string; page: number } | null) => void) | null = null;
   private initialRequestTimer: ReturnType<typeof setTimeout> | null = null;
   private saveTimer: ReturnType<typeof setTimeout> | null = null;
-
+  private sessionDataWaiters = new Map<
+    string,
+    { resolve: () => void; timer: ReturnType<typeof setTimeout> }
+  >();
   private listeners = new Set<() => void>();
   private snapshot: WhiteboardYjsSnapshot | null = null;
 
@@ -73,6 +87,50 @@ export class WhiteboardController {
    * quick succession never interleave teardown/hydration of the CRDT doc.
    */
   private syncChain: Promise<void> = Promise.resolve();
+
+  private pageKey = (fileId: string, page: number) => `${fileId}_${page}`;
+
+  private isCurrentUserPresenter = (): boolean =>
+    !!store.getState().session.currentUser?.metadata?.isPresenter;
+
+  private canParticipantEdit = (
+    participant: IParticipant,
+    defaultRoomLock: boolean | undefined,
+  ): boolean => {
+    if (participant.metadata?.isPresenter) {
+      return true;
+    }
+    if (isUserRecorder(participant.userId)) {
+      return false;
+    }
+    const lock = participant.metadata?.lockSettings?.lockWhiteboard;
+    if (typeof lock === 'boolean') {
+      return !lock;
+    }
+    return !(defaultRoomLock ?? true);
+  };
+
+  /**
+   * Tag every outbound yjs message with the `(fileId, page)` scope so peers
+   * can drop messages belonging to a different active page.
+   */
+  private buildScopeMessage = (extra: Record<string, unknown> = {}) =>
+    JSON.stringify({ fileId: this.fileId, page: this.page, ...extra });
+
+  private parseScope = (message?: string): WhiteboardScope | null => {
+    if (!message) return null;
+    try {
+      return JSON.parse(message) as WhiteboardScope;
+    } catch {
+      return null;
+    }
+  };
+
+  private matchesActiveScope = (scope: WhiteboardScope | null): boolean =>
+    !!scope &&
+    !!this.doc &&
+    scope.fileId === this.fileId &&
+    scope.page === this.page;
 
   subscribe = (cb: () => void) => {
     this.listeners.add(cb);
@@ -105,25 +163,12 @@ export class WhiteboardController {
     this.ensurePresence();
   };
 
-  private sendWhiteboardData = (
-    type: DataMsgBodyType,
-    binMessage: Uint8Array,
-    id?: string,
-    message?: string,
-    to?: string,
-  ) => {
-    const conn = getNatsConn();
-    if (conn) {
-      void conn.sendWhiteboardData(type, { binMessage, id, message, to });
-    }
-  };
-
   /**
    * Point the controller at a specific whiteboard page and start syncing it.
    * No-op when no config was provided or the requested page is already the
    * active session. Otherwise tears down the previous session (flushing the
-   * pending save), hydrates from IndexedDB, registers the update broadcaster
-   * and kicks off the state-vector sync request.
+   * pending save), fetches the authoritative snapshot from the server for the
+   * presenter, then kicks off the peer state-vector sync request.
    */
   sync = (
     fileId: string,
@@ -139,8 +184,9 @@ export class WhiteboardController {
 
   /**
    * Creates (or reuses) the active Yjs doc/elements map for a whiteboard page.
-   * Returns true when a new doc was created; false when no config was provided
-   * or the requested page is already active.
+   * For the presenter this awaits the authoritative server snapshot before
+   * returning. Returns true when a new doc was created; false when no config
+   * was provided or the requested page is already active.
    */
   private setupDoc = async (
     fileId: string,
@@ -167,19 +213,6 @@ export class WhiteboardController {
     const doc = new Y.Doc();
     const elementsMap = doc.getMap<string>(WHITEBOARD_ELEMENTS_MAP);
 
-    if (options?.hydrate) {
-      // Hydrate from persistence BEFORE registering the update broadcaster so
-      // the loaded update is neither re-broadcast nor re-persisted.
-      try {
-        const stored = await loadWhiteboardPageSnapshot(fileId, page);
-        if (stored && stored.length > 0) {
-          Y.applyUpdate(doc, stored, WHITEBOARD_REMOTE_ORIGIN);
-        }
-      } catch (e) {
-        console.error('[WhiteboardController] failed to load page', e);
-      }
-    }
-
     this.doc = doc;
     this.elementsMap = elementsMap;
     this.roomSid = config.roomSid;
@@ -187,6 +220,10 @@ export class WhiteboardController {
     this.page = page;
 
     doc.on('update', this.handleDocUpdate);
+
+    if (options?.hydrate) {
+      await this.fetchSessionData(this.pageKey(fileId, page));
+    }
 
     this.generation++;
     this.emitChange();
@@ -218,6 +255,45 @@ export class WhiteboardController {
     this.config = null;
   };
 
+  /**
+   * Flush the pending save, destroy the doc (detaching our handler first) and
+   * clear all timers/state. `Y.Doc` auto-removes its `update` listeners on
+   * destroy, but we still detach explicitly to avoid leaks.
+   */
+  private teardownDoc = async () => {
+    if (this.saveTimer) {
+      clearTimeout(this.saveTimer);
+      this.saveTimer = null;
+      // Flush the pending save before the doc is destroyed.
+      await this.saveNow();
+    }
+    if (this.syncRetryTimer) {
+      clearTimeout(this.syncRetryTimer);
+      this.syncRetryTimer = null;
+    }
+    for (const t of this.backupResponseTimers.values()) {
+      clearTimeout(t);
+    }
+    this.backupResponseTimers.clear();
+    this.pendingSyncRequestIds.clear();
+    this.syncRequestAttempts = 0;
+    for (const waiter of this.sessionDataWaiters.values()) {
+      clearTimeout(waiter.timer);
+      waiter.resolve();
+    }
+    this.sessionDataWaiters.clear();
+
+    if (this.doc) {
+      this.doc.off('update', this.handleDocUpdate);
+      this.doc.destroy();
+    }
+    this.doc = null;
+    this.elementsMap = null;
+    this.roomSid = '';
+    this.fileId = '';
+    this.page = 0;
+  };
+
   saveNow = async () => {
     if (this.saveTimer) {
       clearTimeout(this.saveTimer);
@@ -227,12 +303,152 @@ export class WhiteboardController {
     if (!this.config || !doc || !elementsMap || !fileId) {
       return;
     }
+    if (!this.isCurrentUserPresenter() || elementsMap.size === 0) {
+      return;
+    }
     try {
       const update = Y.encodeStateAsUpdate(doc);
+      // IndexedDB is now only an export cache.
       await saveWhiteboardPageSnapshot(fileId, this.page, update);
+      // Server is the source of truth for sync.
+      await this.uploadSessionData(update);
     } catch (e) {
       console.error('[WhiteboardController] failed to save page', e);
     }
+  };
+
+  private scheduleSave = () => {
+    if (this.saveTimer) {
+      clearTimeout(this.saveTimer);
+    }
+    this.saveTimer = setTimeout(() => {
+      this.saveTimer = null;
+      void this.saveNow();
+    }, SAVE_DEBOUNCE_MS);
+  };
+
+  /**
+   * `doc.on('update')` handler. Remote-originated updates are never
+   * re-broadcast. The presenter schedules a debounced snapshot upload to the
+   * server (and export cache); other writers broadcast live incremental
+   * updates to the room.
+   */
+  private handleDocUpdate = (update: Uint8Array, origin: unknown) => {
+    this.scheduleSave();
+
+    if (origin === WHITEBOARD_REMOTE_ORIGIN) {
+      return;
+    }
+    const config = this.config;
+    if (!config || !config.canWrite()) {
+      return;
+    }
+    this.sendWhiteboardData(
+      DataMsgBodyType.SCENE_UPDATE,
+      update,
+      undefined,
+      this.buildScopeMessage(),
+    );
+  };
+
+  uploadSessionData = async (update: Uint8Array) => {
+    const conn = getNatsConn();
+    if (!conn || !this.fileId) return;
+    let value = update;
+    if (conn.enableE2EE) {
+      const enc = await conn.encryptData(update);
+      if (typeof enc === 'undefined') return;
+      value = enc;
+    }
+    conn.sendMessageToSystemWorker(
+      create(NatsMsgClientToServerSchema, {
+        event: NatsMsgClientToServerEvents.SESSION_DATA_SAVE,
+        msg: toJsonString(
+          SessionDataHeaderSchema,
+          create(SessionDataHeaderSchema, {
+            dataType: SessionDataType.WHITEBOARD,
+            key: this.pageKey(this.fileId, this.page),
+          }),
+        ),
+        binMsg: value,
+      }),
+    );
+  };
+
+  fetchSessionData = (key: string) =>
+    new Promise<void>((resolve) => {
+      const conn = getNatsConn();
+      if (!conn) {
+        resolve();
+        return;
+      }
+      const timer = setTimeout(() => {
+        this.sessionDataWaiters.delete(key);
+        resolve();
+      }, SERVER_FIRST_SYNC_TIMEOUT_MS);
+      this.sessionDataWaiters.set(key, { resolve, timer });
+      conn.sendMessageToSystemWorker(
+        create(NatsMsgClientToServerSchema, {
+          event: NatsMsgClientToServerEvents.SESSION_DATA_FETCH_REQUEST,
+          msg: toJsonString(
+            SessionDataHeaderSchema,
+            create(SessionDataHeaderSchema, {
+              dataType: SessionDataType.WHITEBOARD,
+              key,
+            }),
+          ),
+        }),
+      );
+    });
+
+  handleSessionDataResponse = (
+    header: SessionDataHeader,
+    value: Uint8Array,
+  ) => {
+    if (header.dataType !== SessionDataType.WHITEBOARD) return;
+    const key = header.key;
+    if (!key) return;
+
+    const doc = this.doc;
+    const isActive = !!doc && key === this.pageKey(this.fileId, this.page);
+
+    const resolveWaiter = () => {
+      const waiter = this.sessionDataWaiters.get(key);
+      if (waiter) {
+        clearTimeout(waiter.timer);
+        this.sessionDataWaiters.delete(key);
+        waiter.resolve();
+      }
+    };
+
+    if (value && value.length > 0) {
+      // apply the active page live as a raw Yjs update (never decode+rebuild)
+      if (doc && isActive) {
+        Y.applyUpdate(doc, value, WHITEBOARD_REMOTE_ORIGIN);
+        this.config?.onRemoteUpdate?.();
+      }
+      // cache the raw snapshot for export, then let waiting callers proceed
+      void idbStore(DB_STORE_NAMES.WHITEBOARD, key, value).then(
+        resolveWaiter,
+        resolveWaiter,
+      );
+    } else {
+      resolveWaiter();
+    }
+  };
+
+  backfillMissingPages = async () => {
+    if (!this.isCurrentUserPresenter() || !this.fileId) return;
+    const fileId = this.fileId;
+    const totalPages = store.getState().whiteboard.totalPages;
+    if (!Number.isInteger(totalPages) || totalPages <= 0) return;
+
+    const expected = Array.from({ length: totalPages }, (_, i) => i + 1);
+    const local = await listWhiteboardPages(fileId);
+    const missing = expected.filter((p) => !local.includes(p));
+    await Promise.all(
+      missing.map((page) => this.fetchSessionData(this.pageKey(fileId, page))),
+    );
   };
 
   /**
@@ -312,27 +528,18 @@ export class WhiteboardController {
     return elements;
   };
 
-  /**
-   * Tag every outbound yjs message with the `(fileId, page)` scope so peers
-   * can drop messages belonging to a different active page.
-   */
-  private buildScopeMessage = (extra: Record<string, unknown> = {}) =>
-    JSON.stringify({ fileId: this.fileId, page: this.page, ...extra });
-
-  private parseScope = (message?: string): WhiteboardScope | null => {
-    if (!message) return null;
-    try {
-      return JSON.parse(message) as WhiteboardScope;
-    } catch {
-      return null;
+  private sendWhiteboardData = (
+    type: DataMsgBodyType,
+    binMessage: Uint8Array,
+    id?: string,
+    message?: string,
+    to?: string,
+  ) => {
+    const conn = getNatsConn();
+    if (conn) {
+      void conn.sendWhiteboardData(type, { binMessage, id, message, to });
     }
   };
-
-  private matchesActiveScope = (scope: WhiteboardScope | null): boolean =>
-    !!scope &&
-    !!this.doc &&
-    scope.fileId === this.fileId &&
-    scope.page === this.page;
 
   handleMessage = (
     type: DataMsgBodyType,
@@ -383,198 +590,6 @@ export class WhiteboardController {
     this.config?.onRemoteUpdate?.();
   };
 
-  /**
-   * Creates (or reuses) the room-scoped presence doc + Awareness instance.
-   * Idempotent: presence survives page/file switches and is only torn down in
-   * `destroy()`.
-   */
-  private ensurePresence = () => {
-    if (this.presenceDoc) {
-      return;
-    }
-    const presenceDoc = new Y.Doc();
-    const awareness = new Awareness(presenceDoc);
-    awareness.on('change', this.handleAwarenessChange);
-    this.presenceDoc = presenceDoc;
-    this.awareness = awareness;
-  };
-
-  private destroyPresence = () => {
-    if (this.awareness) {
-      this.awareness.off('change', this.handleAwarenessChange);
-      this.awareness.destroy();
-      this.awareness = null;
-    }
-    if (this.presenceDoc) {
-      this.presenceDoc.destroy();
-      this.presenceDoc = null;
-    }
-  };
-
-  /**
-   * Publishes this client's presence to the room (only when the current user
-   * can write to the whiteboard).
-   */
-  setLocalPresence = (presence: WhiteboardPresence) => {
-    if (this.config?.canWrite() && this.awareness) {
-      this.awareness.setLocalState(presence);
-    }
-  };
-
-  clearLocalPresence = () => {
-    if (this.awareness) {
-      this.awareness.setLocalState(null);
-    }
-  };
-
-  refreshCollaborators = () => {
-    this.syncCollaborators();
-  };
-
-  /**
-   * Awareness change handler. Always refreshes the rendered collaborators
-   * first, then only echoes *our own* local changes back into the room (remote
-   * updates must never be re-broadcast).
-   */
-  private handleAwarenessChange = (
-    {
-      added,
-      updated,
-      removed,
-    }: { added: number[]; updated: number[]; removed: number[] },
-    origin: unknown,
-  ) => {
-    this.syncCollaborators();
-
-    if (origin === WHITEBOARD_REMOTE_ORIGIN) {
-      return;
-    }
-
-    const changed = [...added, ...updated, ...removed];
-    if (changed.length === 0) {
-      return;
-    }
-    const { awareness, config } = this;
-    if (!awareness || !config || !config.canWrite()) {
-      return;
-    }
-    this.sendWhiteboardData(
-      DataMsgBodyType.POINTER_UPDATE,
-      encodeAwarenessUpdate(awareness, changed),
-    );
-  };
-
-  /**
-   * Rebuilds the `Map<SocketId, Collaborator>` rendered on the canvas from the
-   * awareness states. Skips our own client id, states without a truthy `id`,
-   * and any user that is no longer present / unlocked in the room.
-   */
-  private syncCollaborators = () => {
-    const { config, awareness } = this;
-    if (!config || !config.excalidrawAPI || !awareness) {
-      return;
-    }
-
-    const activeIds = new Set(
-      selectWhiteboardParticipants(store.getState())
-        .filter((p) => p.isPresent || !p.isWhiteboardLocked)
-        .map((p) => p.userId),
-    );
-
-    const collaborators = new Map<SocketId, Collaborator>();
-    awareness.getStates().forEach((state, clientId) => {
-      if (clientId === awareness.clientID) {
-        return;
-      }
-      if (!state.id) {
-        return;
-      }
-      const id = String(state.id);
-      if (!activeIds.has(id)) {
-        return;
-      }
-      collaborators.set(id as SocketId, state as unknown as Collaborator);
-    });
-
-    config.excalidrawAPI.updateScene({ collaborators });
-  };
-
-  /**
-   * Applies a remote awareness update received over NATS. The remote origin is
-   * supplied so the `change` listener does not re-broadcast it.
-   */
-  private applyRemoteAwareness = (update: Uint8Array) => {
-    if (!this.awareness) {
-      return;
-    }
-    try {
-      applyAwarenessUpdate(this.awareness, update, WHITEBOARD_REMOTE_ORIGIN);
-    } catch (e) {
-      console.error(
-        '[WhiteboardController] failed to apply remote awareness',
-        e,
-      );
-    }
-  };
-
-  private canParticipantEdit = (
-    participant: IParticipant,
-    defaultRoomLock: boolean | undefined,
-  ): boolean => {
-    if (participant.metadata?.isPresenter) {
-      return true;
-    }
-    if (isUserRecorder(participant.userId)) {
-      return false;
-    }
-    const lock = participant.metadata?.lockSettings?.lockWhiteboard;
-    if (typeof lock === 'boolean') {
-      return !lock;
-    }
-    return !(defaultRoomLock ?? true);
-  };
-
-  private getSyncRequestTargets = (): string[] => {
-    const state = store.getState();
-    const currentUserId = state.session.currentUser?.userId;
-    if (!currentUserId) {
-      return [];
-    }
-
-    const defaultRoomLock =
-      state.session.currentRoom.metadata?.defaultLockSettings?.lockWhiteboard;
-
-    return participantsSelector
-      .selectAll(state)
-      .filter(
-        (p) =>
-          p.userId !== currentUserId &&
-          p.isOnline &&
-          !p.metadata?.waitForApproval,
-      )
-      .sort((a, b) => {
-        const presenterDiff =
-          (b.metadata?.isPresenter ? 1 : 0) - (a.metadata?.isPresenter ? 1 : 0);
-        if (presenterDiff !== 0) {
-          return presenterDiff;
-        }
-        const editDiff =
-          (this.canParticipantEdit(b, defaultRoomLock) ? 1 : 0) -
-          (this.canParticipantEdit(a, defaultRoomLock) ? 1 : 0);
-        if (editDiff !== 0) {
-          return editDiff;
-        }
-        const adminDiff =
-          (b.metadata?.isAdmin ? 1 : 0) - (a.metadata?.isAdmin ? 1 : 0);
-        if (adminDiff !== 0) {
-          return adminDiff;
-        }
-        return a.joinedAt - b.joinedAt;
-      })
-      .slice(0, 3)
-      .map((p) => p.userId);
-  };
-
   private sendSyncRequest = () => {
     const { doc, config } = this;
     if (!doc || !config) {
@@ -617,6 +632,47 @@ export class WhiteboardController {
         this.sendSyncRequest();
       }
     }, SYNC_RETRY_DELAY_MS);
+  };
+
+  private getSyncRequestTargets = (): string[] => {
+    const state = store.getState();
+    const currentUserId = state.session.currentUser?.userId;
+    if (!currentUserId) {
+      return [];
+    }
+
+    const defaultRoomLock =
+      state.session.currentRoom.metadata?.defaultLockSettings?.lockWhiteboard;
+
+    return participantsSelector
+      .selectAll(state)
+      .filter(
+        (p) =>
+          p.userId !== currentUserId &&
+          p.isOnline &&
+          !p.metadata?.waitForApproval,
+      )
+      .sort((a, b) => {
+        const presenterDiff =
+          (b.metadata?.isPresenter ? 1 : 0) - (a.metadata?.isPresenter ? 1 : 0);
+        if (presenterDiff !== 0) {
+          return presenterDiff;
+        }
+        const editDiff =
+          (this.canParticipantEdit(b, defaultRoomLock) ? 1 : 0) -
+          (this.canParticipantEdit(a, defaultRoomLock) ? 1 : 0);
+        if (editDiff !== 0) {
+          return editDiff;
+        }
+        const adminDiff =
+          (b.metadata?.isAdmin ? 1 : 0) - (a.metadata?.isAdmin ? 1 : 0);
+        if (adminDiff !== 0) {
+          return adminDiff;
+        }
+        return a.joinedAt - b.joinedAt;
+      })
+      .slice(0, 3)
+      .map((p) => p.userId);
   };
 
   resync = () => {
@@ -713,11 +769,11 @@ export class WhiteboardController {
    *
    * For a newly joined user without scope information, sends the active
    * whiteboard metadata together with the full active Yjs document, falling
-   * back to its persisted snapshot when the document is empty.
+   * back to its cached snapshot when the document is empty.
    *
    * For an existing user requesting the active page, sends only the Yjs updates
    * missing from the requester's state vector. Requests for another page are
-   * served from that page's persisted snapshot.
+   * served from that page's cached snapshot.
    */
   private handleSyncRequest = async (
     binMessage: Uint8Array,
@@ -962,70 +1018,137 @@ export class WhiteboardController {
   };
 
   /**
-   * `doc.on('update')` broadcaster. Remote-originated state is persisted
-   * locally (debounced) but never re-broadcast; read-only users persist but
-   * never broadcast; everyone else broadcasts and persists.
+   * Creates (or reuses) the room-scoped presence doc + Awareness instance.
+   * Idempotent: presence survives page/file switches and is only torn down in
+   * `destroy()`.
    */
-  private handleDocUpdate = (update: Uint8Array, origin: unknown) => {
-    this.scheduleSave();
+  private ensurePresence = () => {
+    if (this.presenceDoc) {
+      return;
+    }
+    const presenceDoc = new Y.Doc();
+    const awareness = new Awareness(presenceDoc);
+    awareness.on('change', this.handleAwarenessChange);
+    this.presenceDoc = presenceDoc;
+    this.awareness = awareness;
+  };
+
+  private destroyPresence = () => {
+    if (this.awareness) {
+      this.awareness.off('change', this.handleAwarenessChange);
+      this.awareness.destroy();
+      this.awareness = null;
+    }
+    if (this.presenceDoc) {
+      this.presenceDoc.destroy();
+      this.presenceDoc = null;
+    }
+  };
+
+  /**
+   * Publishes this client's presence to the room (only when the current user
+   * can write to the whiteboard).
+   */
+  setLocalPresence = (presence: WhiteboardPresence) => {
+    if (this.config?.canWrite() && this.awareness) {
+      this.awareness.setLocalState(presence);
+    }
+  };
+
+  clearLocalPresence = () => {
+    if (this.awareness) {
+      this.awareness.setLocalState(null);
+    }
+  };
+
+  refreshCollaborators = () => {
+    this.syncCollaborators();
+  };
+
+  /**
+   * Awareness change handler. Always refreshes the rendered collaborators
+   * first, then only echoes *our own* local changes back into the room (remote
+   * updates must never be re-broadcast).
+   */
+  private handleAwarenessChange = (
+    {
+      added,
+      updated,
+      removed,
+    }: { added: number[]; updated: number[]; removed: number[] },
+    origin: unknown,
+  ) => {
+    this.syncCollaborators();
 
     if (origin === WHITEBOARD_REMOTE_ORIGIN) {
       return;
     }
-    const config = this.config;
-    if (!config || !config.canWrite()) {
+
+    const changed = [...added, ...updated, ...removed];
+    if (changed.length === 0) {
+      return;
+    }
+    const { awareness, config } = this;
+    if (!awareness || !config || !config.canWrite()) {
       return;
     }
     this.sendWhiteboardData(
-      DataMsgBodyType.SCENE_UPDATE,
-      update,
-      undefined,
-      this.buildScopeMessage(),
+      DataMsgBodyType.POINTER_UPDATE,
+      encodeAwarenessUpdate(awareness, changed),
     );
   };
 
-  private scheduleSave = () => {
-    if (this.saveTimer) {
-      clearTimeout(this.saveTimer);
+  /**
+   * Rebuilds the `Map<SocketId, Collaborator>` rendered on the canvas from the
+   * awareness states. Skips our own client id, states without a truthy `id`,
+   * and any user that is no longer present / unlocked in the room.
+   */
+  private syncCollaborators = () => {
+    const { config, awareness } = this;
+    if (!config || !config.excalidrawAPI || !awareness) {
+      return;
     }
-    this.saveTimer = setTimeout(() => {
-      this.saveTimer = null;
-      void this.saveNow();
-    }, SAVE_DEBOUNCE_MS);
+
+    const activeIds = new Set(
+      selectWhiteboardParticipants(store.getState())
+        .filter((p) => p.isPresent || !p.isWhiteboardLocked)
+        .map((p) => p.userId),
+    );
+
+    const collaborators = new Map<SocketId, Collaborator>();
+    awareness.getStates().forEach((state, clientId) => {
+      if (clientId === awareness.clientID) {
+        return;
+      }
+      if (!state.id) {
+        return;
+      }
+      const id = String(state.id);
+      if (!activeIds.has(id)) {
+        return;
+      }
+      collaborators.set(id as SocketId, state as unknown as Collaborator);
+    });
+
+    config.excalidrawAPI.updateScene({ collaborators });
   };
 
   /**
-   * Flush the pending save, destroy the doc (detaching our handler first) and
-   * clear all timers/state. `Y.Doc` auto-removes its `update` listeners on
-   * destroy, but we still detach explicitly to avoid leaks.
+   * Applies a remote awareness update received over NATS. The remote origin is
+   * supplied so the `change` listener does not re-broadcast it.
    */
-  private teardownDoc = async () => {
-    if (this.saveTimer) {
-      clearTimeout(this.saveTimer);
-      this.saveTimer = null;
-      // Flush the pending save before the doc is destroyed.
-      await this.saveNow();
+  private applyRemoteAwareness = (update: Uint8Array) => {
+    if (!this.awareness) {
+      return;
     }
-    if (this.syncRetryTimer) {
-      clearTimeout(this.syncRetryTimer);
-      this.syncRetryTimer = null;
+    try {
+      applyAwarenessUpdate(this.awareness, update, WHITEBOARD_REMOTE_ORIGIN);
+    } catch (e) {
+      console.error(
+        '[WhiteboardController] failed to apply remote awareness',
+        e,
+      );
     }
-    for (const t of this.backupResponseTimers.values()) {
-      clearTimeout(t);
-    }
-    this.backupResponseTimers.clear();
-    this.pendingSyncRequestIds.clear();
-    this.syncRequestAttempts = 0;
-
-    if (this.doc) {
-      this.doc.off('update', this.handleDocUpdate);
-      this.doc.destroy();
-    }
-    this.doc = null;
-    this.elementsMap = null;
-    this.roomSid = '';
-    this.fileId = '';
-    this.page = 0;
   };
 }
 
