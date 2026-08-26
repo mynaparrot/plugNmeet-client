@@ -16,7 +16,6 @@ import {
 import type { SessionDataHeader } from 'plugnmeet-protocol-js';
 
 import { getNatsConn } from '../../helpers/nats';
-import { DB_STORE_NAMES, idbStore } from '../../helpers/libs/idb';
 import { store } from '../../store';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import { base64ToUint8, uint8ToBase64 } from '../../helpers/utils';
@@ -278,8 +277,6 @@ export class NotepadController {
     }
     try {
       const update = Y.encodeStateAsUpdate(this.doc);
-      // IndexedDB is only a cache.
-      await idbStore(DB_STORE_NAMES.NOTEPAD, NOTEPAD_SNAPSHOT_KEY, update);
       // Server is the source of truth for sync.
       await this.uploadSessionData(update);
     } catch (e) {
@@ -345,8 +342,6 @@ export class NotepadController {
     if (header.dataType !== SessionDataType.NOTEPAD) return;
 
     if (value && value.length > 0) {
-      // persist the raw snapshot
-      void idbStore(DB_STORE_NAMES.NOTEPAD, NOTEPAD_SNAPSHOT_KEY, value);
       // apply live if the doc already exists
       if (this.doc) {
         Y.applyUpdate(this.doc, value, REMOTE_ORIGIN);
