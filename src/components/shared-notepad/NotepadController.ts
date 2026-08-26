@@ -4,10 +4,19 @@ import {
   applyAwarenessUpdate,
   encodeAwarenessUpdate,
 } from 'y-protocols/awareness';
-import { DataChannelMessage, DataMsgBodyType } from 'plugnmeet-protocol-js';
+import { create, toJsonString } from '@bufbuild/protobuf';
+import {
+  DataChannelMessage,
+  DataMsgBodyType,
+  NatsMsgClientToServerEvents,
+  NatsMsgClientToServerSchema,
+  SessionDataHeaderSchema,
+  SessionDataType,
+} from 'plugnmeet-protocol-js';
+import type { SessionDataHeader } from 'plugnmeet-protocol-js';
 
 import { getNatsConn } from '../../helpers/nats';
-import { DB_STORE_NAMES, idbGet, idbStore } from '../../helpers/libs/idb';
+import { DB_STORE_NAMES, idbStore } from '../../helpers/libs/idb';
 import { store } from '../../store';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import { base64ToUint8, uint8ToBase64 } from '../../helpers/utils';
@@ -16,6 +25,7 @@ const REMOTE_ORIGIN = 'nats-remote';
 const FRAGMENT_NAME = 'document-store';
 const SYNC_RETRY_DELAY = 2000;
 const SAVE_DEBOUNCE_MS = 1000;
+const SERVER_FIRST_SYNC_TIMEOUT_MS = 1500;
 const NOTEPAD_SNAPSHOT_KEY = 'snapshot';
 
 export type NotepadSnapshot = {
@@ -40,13 +50,68 @@ export class NotepadController {
   private boundConn = false;
   private boundVisibility = false;
   private saveTimer: ReturnType<typeof setTimeout> | null = null;
-
+  private pendingServerSync = false;
+  private serverFirstResolve: (() => void) | null = null;
+  private serverFirstTimer: ReturnType<typeof setTimeout> | null = null;
   private listeners = new Set<() => void>();
   private snapshot: NotepadSnapshot = {
     doc: null,
     fragment: null,
     awareness: null,
     generation: 0,
+  };
+
+  private canWrite = () => {
+    const state = store.getState();
+    const user = state.session.currentUser;
+    if (!user) {
+      return false;
+    }
+    if (user.isRecorder) {
+      return false;
+    }
+    if (user.metadata?.isAdmin) {
+      return true;
+    }
+    const lock = user.metadata?.lockSettings?.lockSharedNotepad;
+    if (typeof lock === 'boolean') {
+      return !lock;
+    }
+    const defaultRoomLock =
+      state.session.currentRoom.metadata?.defaultLockSettings
+        ?.lockSharedNotepad;
+    return !(defaultRoomLock ?? true);
+  };
+
+  private canAccessSessionData = (): boolean => {
+    const u = store.getState().session.currentUser;
+    return (
+      !!u && (u.metadata?.isPresenter === true || u.metadata?.isAdmin === true)
+    );
+  };
+
+  private waitForServerFirst = () =>
+    new Promise<void>((resolve) => {
+      this.serverFirstResolve = resolve;
+      this.serverFirstTimer = setTimeout(() => {
+        this.serverFirstTimer = null;
+        this.serverFirstResolve = null;
+        this.pendingServerSync = false;
+        resolve();
+      }, SERVER_FIRST_SYNC_TIMEOUT_MS);
+    });
+
+  private resolveServerFirst = () => {
+    if (this.serverFirstTimer) {
+      clearTimeout(this.serverFirstTimer);
+      this.serverFirstTimer = null;
+    }
+    this.pendingServerSync = false;
+    if (this.serverFirstResolve) {
+      const resolve = this.serverFirstResolve;
+      this.serverFirstResolve = null;
+      resolve();
+    }
   };
 
   subscribe = (cb: () => void) => {
@@ -72,54 +137,6 @@ export class NotepadController {
     this.emitChange();
   }
 
-  private canWrite = () => {
-    const state = store.getState();
-    const user = state.session.currentUser;
-    if (!user) {
-      return false;
-    }
-    if (user.isRecorder) {
-      return false;
-    }
-    if (user.metadata?.isAdmin) {
-      return true;
-    }
-    const lock = user.metadata?.lockSettings?.lockSharedNotepad;
-    if (typeof lock === 'boolean') {
-      return !lock;
-    }
-    const defaultRoomLock =
-      state.session.currentRoom.metadata?.defaultLockSettings
-        ?.lockSharedNotepad;
-    return !(defaultRoomLock ?? true);
-  };
-
-  private saveNow = async () => {
-    if (this.saveTimer) {
-      clearTimeout(this.saveTimer);
-      this.saveTimer = null;
-    }
-    if (!this.doc) {
-      return;
-    }
-    try {
-      const update = Y.encodeStateAsUpdate(this.doc);
-      await idbStore(DB_STORE_NAMES.NOTEPAD, NOTEPAD_SNAPSHOT_KEY, update);
-    } catch (e) {
-      console.error('[NotepadController] failed to save snapshot', e);
-    }
-  };
-
-  private scheduleSave = () => {
-    if (this.saveTimer) {
-      clearTimeout(this.saveTimer);
-    }
-    this.saveTimer = setTimeout(() => {
-      this.saveTimer = null;
-      void this.saveNow();
-    }, SAVE_DEBOUNCE_MS);
-  };
-
   async sync() {
     const features =
       store.getState().session.currentRoom.metadata?.roomFeatures
@@ -133,24 +150,6 @@ export class NotepadController {
     await this.setup();
   }
 
-  private bindLifecycle() {
-    if (!this.boundConn) {
-      const conn = getNatsConn();
-      if (conn) {
-        conn.onReconnect(() => this.resync());
-        this.boundConn = true;
-      }
-    }
-    if (!this.boundVisibility) {
-      document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible') {
-          this.resync();
-        }
-      });
-      this.boundVisibility = true;
-    }
-  }
-
   private async setup() {
     if (this.settingUp) {
       return;
@@ -160,19 +159,6 @@ export class NotepadController {
       await this.clearCurrentSession();
 
       const doc = new Y.Doc();
-
-      try {
-        const stored = await idbGet<Uint8Array>(
-          DB_STORE_NAMES.NOTEPAD,
-          NOTEPAD_SNAPSHOT_KEY,
-        );
-        if (stored instanceof Uint8Array && stored.length > 0) {
-          Y.applyUpdate(doc, stored, REMOTE_ORIGIN);
-        }
-      } catch (e) {
-        console.error('[NotepadController] failed to load snapshot', e);
-      }
-
       const awareness = new Awareness(doc);
       const fragment = doc.getXmlFragment(FRAGMENT_NAME);
 
@@ -203,6 +189,12 @@ export class NotepadController {
         );
       });
 
+      if (this.canAccessSessionData()) {
+        this.pendingServerSync = true;
+        this.fetchSessionData();
+        await this.waitForServerFirst();
+      }
+
       this.updateSnapshot();
       this.bindLifecycle();
       this.sendSyncRequest();
@@ -217,6 +209,10 @@ export class NotepadController {
     }
   }
 
+  async destroy() {
+    await this.teardown();
+  }
+
   private async clearCurrentSession() {
     if (this.syncRetryTimer) {
       clearTimeout(this.syncRetryTimer);
@@ -227,6 +223,12 @@ export class NotepadController {
     }
     this.backupResponseTimers.clear();
     this.pendingSyncRequestId = null;
+    this.pendingServerSync = false;
+    if (this.serverFirstTimer) {
+      clearTimeout(this.serverFirstTimer);
+      this.serverFirstTimer = null;
+    }
+    this.serverFirstResolve = null;
 
     if (this.saveTimer) {
       clearTimeout(this.saveTimer);
@@ -245,9 +247,118 @@ export class NotepadController {
     this.updateSnapshot();
   }
 
-  async destroy() {
-    await this.teardown();
+  private bindLifecycle() {
+    if (!this.boundConn) {
+      const conn = getNatsConn();
+      if (conn) {
+        conn.onReconnect(() => this.resync());
+        this.boundConn = true;
+      }
+    }
+    if (!this.boundVisibility) {
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+          this.resync();
+        }
+      });
+      this.boundVisibility = true;
+    }
   }
+
+  private saveNow = async () => {
+    if (this.saveTimer) {
+      clearTimeout(this.saveTimer);
+      this.saveTimer = null;
+    }
+    if (!this.doc) {
+      return;
+    }
+    if (!this.canAccessSessionData()) {
+      return;
+    }
+    try {
+      const update = Y.encodeStateAsUpdate(this.doc);
+      // IndexedDB is only a cache.
+      await idbStore(DB_STORE_NAMES.NOTEPAD, NOTEPAD_SNAPSHOT_KEY, update);
+      // Server is the source of truth for sync.
+      await this.uploadSessionData(update);
+    } catch (e) {
+      console.error('[NotepadController] failed to save snapshot', e);
+    }
+  };
+
+  private scheduleSave = () => {
+    if (this.saveTimer) {
+      clearTimeout(this.saveTimer);
+    }
+    this.saveTimer = setTimeout(() => {
+      this.saveTimer = null;
+      void this.saveNow();
+    }, SAVE_DEBOUNCE_MS);
+  };
+
+  uploadSessionData = async (update: Uint8Array) => {
+    const conn = getNatsConn();
+    if (!conn) return;
+    let value = update;
+    if (conn.enableE2EE) {
+      const enc = await conn.encryptData(update);
+      if (typeof enc === 'undefined') return;
+      value = enc;
+    }
+    conn.sendMessageToSystemWorker(
+      create(NatsMsgClientToServerSchema, {
+        event: NatsMsgClientToServerEvents.SESSION_DATA_SAVE,
+        msg: toJsonString(
+          SessionDataHeaderSchema,
+          create(SessionDataHeaderSchema, {
+            dataType: SessionDataType.NOTEPAD,
+            key: NOTEPAD_SNAPSHOT_KEY,
+          }),
+        ),
+        binMsg: value,
+      }),
+    );
+  };
+
+  fetchSessionData = () => {
+    const conn = getNatsConn();
+    if (!conn) return;
+    conn.sendMessageToSystemWorker(
+      create(NatsMsgClientToServerSchema, {
+        event: NatsMsgClientToServerEvents.SESSION_DATA_FETCH_REQUEST,
+        msg: toJsonString(
+          SessionDataHeaderSchema,
+          create(SessionDataHeaderSchema, {
+            dataType: SessionDataType.NOTEPAD,
+            key: NOTEPAD_SNAPSHOT_KEY,
+          }),
+        ),
+      }),
+    );
+  };
+
+  handleSessionDataResponse = (
+    header: SessionDataHeader,
+    value: Uint8Array,
+  ) => {
+    if (header.dataType !== SessionDataType.NOTEPAD) return;
+
+    if (value && value.length > 0) {
+      // persist the raw snapshot
+      void idbStore(DB_STORE_NAMES.NOTEPAD, NOTEPAD_SNAPSHOT_KEY, value);
+      // apply live if the doc already exists
+      if (this.doc) {
+        Y.applyUpdate(this.doc, value, REMOTE_ORIGIN);
+      }
+    }
+
+    // Resolve the server-first wait when this is the response we were waiting
+    // for. Empty responses still resolve it (server had no data).
+    if (this.pendingServerSync) {
+      this.resolveServerFirst();
+    }
+  };
 
   private send(
     type: DataMsgBodyType,
@@ -269,31 +380,38 @@ export class NotepadController {
     });
   }
 
-  private getSyncRequestTargets(): string[] {
-    const state = store.getState();
-    const currentUserId = state.session.currentUser?.userId;
-    if (!currentUserId) {
-      return [];
+  handleNotepadMessage(payload: DataChannelMessage) {
+    const conn = getNatsConn();
+    if (!conn || payload.fromUserId === conn.userId) {
+      return;
+    }
+    if (!payload.binMessage || payload.binMessage.length === 0) {
+      return;
     }
 
-    return participantsSelector
-      .selectAll(state)
-      .filter(
-        (p) =>
-          p.userId !== currentUserId &&
-          p.isOnline &&
-          !p.metadata?.waitForApproval,
-      )
-      .sort((a, b) => {
-        const adminDiff =
-          (b.metadata?.isAdmin ? 1 : 0) - (a.metadata?.isAdmin ? 1 : 0);
-        if (adminDiff !== 0) {
-          return adminDiff;
-        }
-        return a.joinedAt - b.joinedAt;
-      })
-      .slice(0, 3)
-      .map((p) => p.userId);
+    switch (payload.type) {
+      case DataMsgBodyType.NOTEPAD_UPDATE:
+        this.applyRemoteUpdate(payload.binMessage);
+        break;
+      case DataMsgBodyType.NOTEPAD_AWARENESS:
+        this.applyRemoteAwareness(payload.binMessage);
+        break;
+      case DataMsgBodyType.NOTEPAD_SYNC_REQUEST:
+        this.handleSyncRequest(payload);
+        break;
+      case DataMsgBodyType.NOTEPAD_SYNC_RESPONSE:
+        this.handleSyncResponse(payload);
+        break;
+      default:
+        break;
+    }
+  }
+
+  private applyRemoteUpdate(update: Uint8Array) {
+    if (!this.doc) {
+      return;
+    }
+    Y.applyUpdate(this.doc, update, REMOTE_ORIGIN);
   }
 
   private sendSyncRequest() {
@@ -331,51 +449,37 @@ export class NotepadController {
     }, SYNC_RETRY_DELAY);
   }
 
+  private getSyncRequestTargets(): string[] {
+    const state = store.getState();
+    const currentUserId = state.session.currentUser?.userId;
+    if (!currentUserId) {
+      return [];
+    }
+
+    return participantsSelector
+      .selectAll(state)
+      .filter(
+        (p) =>
+          p.userId !== currentUserId &&
+          p.isOnline &&
+          !p.metadata?.waitForApproval,
+      )
+      .sort((a, b) => {
+        const adminDiff =
+          (b.metadata?.isAdmin ? 1 : 0) - (a.metadata?.isAdmin ? 1 : 0);
+        if (adminDiff !== 0) {
+          return adminDiff;
+        }
+        return a.joinedAt - b.joinedAt;
+      })
+      .slice(0, 3)
+      .map((p) => p.userId);
+  }
+
   resync() {
     if (this.doc) {
       this.sendSyncRequest();
     }
-  }
-
-  handleNotepadMessage(payload: DataChannelMessage) {
-    const conn = getNatsConn();
-    if (!conn || payload.fromUserId === conn.userId) {
-      return;
-    }
-    if (!payload.binMessage || payload.binMessage.length === 0) {
-      return;
-    }
-
-    switch (payload.type) {
-      case DataMsgBodyType.NOTEPAD_UPDATE:
-        this.applyRemoteUpdate(payload.binMessage);
-        break;
-      case DataMsgBodyType.NOTEPAD_AWARENESS:
-        this.applyRemoteAwareness(payload.binMessage);
-        break;
-      case DataMsgBodyType.NOTEPAD_SYNC_REQUEST:
-        this.handleSyncRequest(payload);
-        break;
-      case DataMsgBodyType.NOTEPAD_SYNC_RESPONSE:
-        this.handleSyncResponse(payload);
-        break;
-      default:
-        break;
-    }
-  }
-
-  private applyRemoteUpdate(update: Uint8Array) {
-    if (!this.doc) {
-      return;
-    }
-    Y.applyUpdate(this.doc, update, REMOTE_ORIGIN);
-  }
-
-  private applyRemoteAwareness(update: Uint8Array) {
-    if (!this.awareness) {
-      return;
-    }
-    applyAwarenessUpdate(this.awareness, update, REMOTE_ORIGIN);
   }
 
   private handleSyncRequest(payload: DataChannelMessage) {
@@ -450,6 +554,13 @@ export class NotepadController {
         this.send(DataMsgBodyType.NOTEPAD_UPDATE, extra);
       }
     }
+  }
+
+  private applyRemoteAwareness(update: Uint8Array) {
+    if (!this.awareness) {
+      return;
+    }
+    applyAwarenessUpdate(this.awareness, update, REMOTE_ORIGIN);
   }
 }
 

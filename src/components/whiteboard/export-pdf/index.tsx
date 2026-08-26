@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 
 import Modal from '../../../helpers/ui/modal';
 import { useAppSelector } from '../../../store';
-import { listWhiteboardPages } from '../collab';
+import { getWhiteboardController, listWhiteboardPages } from '../collab';
 import { exportPdfService } from './ExportPdfService';
 
 type ExportMode = 'all' | 'current' | 'selected';
@@ -43,6 +43,8 @@ const ExportPDFModal = ({
   useEffect(() => {
     const fetchAvailablePages = async () => {
       if (!isOpen) return;
+      // Ensure the export cache has all pages (server is the source of truth).
+      await getWhiteboardController().backfillMissingPages();
       const pageNumbers = await listWhiteboardPages(fileId);
       setAvailablePages(pageNumbers);
     };

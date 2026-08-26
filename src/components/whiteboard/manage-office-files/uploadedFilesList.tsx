@@ -157,7 +157,7 @@ const UploadedFilesList = ({
           <div key={file.fileId} className={classNames}>
             <button
               type="button"
-              className="flex flex-1 items-center gap-4 text-start focus-ring"
+              className="flex flex-1 items-center gap-4 text-start focus-ring cursor-pointer"
               onClick={() => onSelectOfficeFile(file)}
             >
               <div className="icon w-9 h-9 rounded-full bg-Gray-100 dark:bg-Gray-700 text-Blue2-800 dark:text-white relative inline-flex items-center justify-center shrink-0">

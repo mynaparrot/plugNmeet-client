@@ -19,6 +19,8 @@ import {
   NatsMsgServerToClientEvents,
   NatsMsgServerToClientSchema,
   PrivateDataDeliverySchema,
+  SessionDataHeaderSchema,
+  SessionDataType,
 } from 'plugnmeet-protocol-js';
 
 import ConnectNats, { PrivateDataDeliveryType } from './ConnectNats';
@@ -43,6 +45,7 @@ import { formatNatsError, getChatDonors } from '../utils';
 import i18n from '../i18n';
 import { addToken } from '../../store/slices/sessionSlice';
 import { getNotepadController } from '../../components/shared-notepad/NotepadController';
+import { getWhiteboardController } from '../../components/whiteboard/collab/WhiteboardController';
 
 export default class SubscriptionHandler {
   private readonly connectNats: ConnectNats;
@@ -353,6 +356,9 @@ export default class SubscriptionHandler {
     [NatsMsgServerToClientEvents.DELIVERY_PRIVATE_DATA]: (p) =>
       this.handlePrivateDataDelivery(p),
     [NatsMsgServerToClientEvents.PONG]: () => this.connectNats.handlePong(),
+    [NatsMsgServerToClientEvents.SESSION_DATA_FETCH_RESPONSE]: async (p) => {
+      await this.handleSessionDataFetchResponse(p);
+    },
   };
 
   /**
@@ -364,6 +370,21 @@ export default class SubscriptionHandler {
     const handler = this.systemEventHandlers[payload.event];
     if (handler) {
       await handler(payload);
+    }
+  }
+
+  private async handleSessionDataFetchResponse(p: NatsMsgServerToClient) {
+    const header = fromJsonString(SessionDataHeaderSchema, p.msg);
+    let value = p.binMsg;
+    if (this.connectNats.enableE2EE && value && value.length > 0) {
+      const dec = await this.connectNats.decryptData(value);
+      if (typeof dec === 'undefined') return;
+      value = dec;
+    }
+    if (header.dataType === SessionDataType.WHITEBOARD) {
+      getWhiteboardController().handleSessionDataResponse(header, value);
+    } else if (header.dataType === SessionDataType.NOTEPAD) {
+      getNotepadController().handleSessionDataResponse(header, value);
     }
   }
 

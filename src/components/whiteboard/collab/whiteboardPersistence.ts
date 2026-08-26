@@ -5,6 +5,13 @@ import {
   idbStore,
 } from '../../../helpers/libs/idb';
 
+/**
+ * Export-cache helpers.
+ *
+ * These read/write whiteboard page snapshots in IndexedDB for PDF export only.
+ * They are intentionally NOT a sync source: live sync uses the server snapshot
+ * (presenter) and peer Yjs deltas.
+ */
 export const saveWhiteboardPageSnapshot = (
   fileId: string,
   page: number,
