@@ -12,8 +12,8 @@ import {
   NatsMsgClientToServerSchema,
   SessionDataHeaderSchema,
   SessionDataType,
+  SessionDataHeader,
 } from 'plugnmeet-protocol-js';
-import type { SessionDataHeader } from 'plugnmeet-protocol-js';
 
 import { getNatsConn } from '../../helpers/nats';
 import { store } from '../../store';
