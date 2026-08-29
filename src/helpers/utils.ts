@@ -282,26 +282,41 @@ export const getChatDonors = (): IParticipant[] => {
 export const generateAvatarInitial = (name: string) => {
   const trimmedName = name.trim();
 
+  // Return nothing for empty names.
+  if (!trimmedName) {
+    return '';
+  }
+
+  // Strip parenthesized annotations such as "(Guest)" or "(Host)".
+  const withoutParentheses = trimmedName.replace(/\([^)]*\)/g, ' ').trim();
+  const cleanedName = withoutParentheses || trimmedName;
+
   // Check if the name contains any digits, which may indicate a phone number.
-  if (/\d/.test(trimmedName)) {
-    const firstChar = trimmedName[0] || '';
+  if (/\d/.test(cleanedName)) {
+    const firstChar = cleanedName[0] || '';
     const lastChar =
-      trimmedName.length > 1 ? trimmedName[trimmedName.length - 1] : '';
+      cleanedName.length > 1 ? cleanedName[cleanedName.length - 1] : '';
     return `${firstChar}${lastChar}`.toLocaleUpperCase();
   }
 
-  // Fallback to the original logic for regular names.
-  const nameParts = trimmedName.split(/\s+/);
-  const firstNameInitial = nameParts[0]?.[0] || '';
-  let lastNameInitial = '';
+  // Keep only tokens that contain at least one letter or number, so stray
+  // punctuation (e.g. a leftover parenthesis) can't be used as an initial.
+  const nameParts = cleanedName
+    .split(/\s+/)
+    .filter((part) => /[\p{L}\p{N}]/u.test(part));
 
-  if (nameParts.length > 1) {
-    lastNameInitial = nameParts[nameParts.length - 1]?.[0] || '';
-  } else if (nameParts[0]?.length > 1) {
-    // If it's a single word, use the first and last characters.
-    lastNameInitial = nameParts[0].slice(-1);
+  if (nameParts.length === 0) {
+    return cleanedName[0]?.toLocaleUpperCase() ?? '';
   }
 
+  if (nameParts.length === 1) {
+    // Single name: use the first two letters ("Jibon" -> "JI").
+    return nameParts[0].slice(0, 2).toLocaleUpperCase();
+  }
+
+  // Full name: use the first letter of the first and last meaningful words.
+  const firstNameInitial = nameParts[0][0] ?? '';
+  const lastNameInitial = nameParts[nameParts.length - 1][0] ?? '';
   return `${firstNameInitial}${lastNameInitial}`.toLocaleUpperCase();
 };
 

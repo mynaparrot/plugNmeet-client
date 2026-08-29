@@ -8,6 +8,7 @@ import {
 } from 'livekit-client';
 
 import VideoComponent from './video';
+import Participant from './video/participant';
 import { useAppSelector } from '../../../store';
 import { selectIsSpeakingByUserId } from '../../../store/slices/activeSpeakersSlice';
 import { VideoParticipantType } from './';
@@ -82,11 +83,16 @@ const VideoParticipant = ({
         elements.push(
           <div
             key={userId}
-            className="camera-muted-fallback w-full h-full flex items-center justify-center bg-black"
+            className="camera-muted-fallback relative w-full h-full flex items-center justify-center bg-black"
           >
             <span className="avatar-initial font-bold text-white select-none">
               {generateAvatarInitial(participant.name ?? '')}
             </span>
+            <Participant
+              userId={userId}
+              name={participant.name ?? ''}
+              isLocal={participantType.isLocal}
+            />
           </div>,
         );
       }
