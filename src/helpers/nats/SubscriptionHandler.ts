@@ -32,6 +32,7 @@ import HandleChat from './HandleChat';
 import HandleSystemData from './HandleSystemData';
 
 import { store } from '../../store';
+import { decompress } from '../libs/sessionDataSync';
 import { setAllUserNotifications } from '../../store/slices/roomSettingsSlice';
 import { DB_STORE_NAMES, idbGet, idbGetAll, initIDB } from '../libs/idb';
 import { UserNotification } from '../../store/slices/interfaces/roomSettings';
@@ -380,6 +381,18 @@ export default class SubscriptionHandler {
       const dec = await this.connectNats.decryptData(value);
       if (typeof dec === 'undefined') return;
       value = dec;
+    }
+    // Decompress the gzip'd session-data payload (after decrypt) so both
+    // controllers receive raw Yjs update bytes.
+    try {
+      value = decompress(value);
+    } catch (e) {
+      console.warn('session-data payload is not valid gzip; dropping', {
+        dataType: header.dataType,
+        key: header.key,
+        error: e,
+      });
+      return;
     }
     if (header.dataType === SessionDataType.WHITEBOARD) {
       getWhiteboardController().handleSessionDataResponse(header, value);

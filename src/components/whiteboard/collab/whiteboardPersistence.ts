@@ -38,7 +38,13 @@ export const listWhiteboardPages = async (
     .filter(
       (key): key is string => typeof key === 'string' && key.startsWith(prefix),
     )
-    .map((key) => Number.parseInt(key.slice(prefix.length), 10))
+    .map((key) => {
+      // Strict parse: only accept a trailing pure-integer suffix so a key like
+      // `${fileId}_3~d` (a rolling-diff key) can never be listed as a page.
+      const suffix = key.slice(prefix.length);
+      const page = Number.parseInt(suffix, 10);
+      return Number.isInteger(page) && String(page) === suffix ? page : NaN;
+    })
     .filter((page) => Number.isInteger(page))
     .sort((a, b) => a - b);
 };

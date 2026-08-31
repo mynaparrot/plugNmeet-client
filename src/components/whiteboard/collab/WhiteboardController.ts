@@ -6,6 +6,8 @@ import {
 } from 'y-protocols/awareness';
 import { create, toJsonString } from '@bufbuild/protobuf';
 import {
+  AnalyticsEvents,
+  AnalyticsEventType,
   DataMsgBodyType,
   NatsMsgClientToServerEvents,
   NatsMsgClientToServerSchema,
@@ -17,6 +19,15 @@ import type { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 import type { Collaborator, SocketId } from '@excalidraw/excalidraw/types';
 
 import { getNatsConn } from '../../../helpers/nats';
+import {
+  SESSION_DATA_MAX_WIRE_BYTES,
+  SAVE_MAX_WAIT_MS,
+  SessionDataSyncState,
+  diffKeyOf,
+  isDiffKey,
+  canonicalKeyOf,
+  compress,
+} from '../../../helpers/libs/sessionDataSync';
 import {
   listWhiteboardPages,
   loadWhiteboardPageSnapshot,
@@ -47,7 +58,6 @@ import { addWhiteboardDataSentFromDonor } from '../../../store/slices/whiteboard
 export const WHITEBOARD_REMOTE_ORIGIN = 'whiteboard-remote';
 const SYNC_RETRY_DELAY_MS = 2000;
 const MAX_SYNC_REQUEST_ATTEMPTS = 3;
-const SAVE_DEBOUNCE_MS = 1000;
 const INITIAL_REQUEST_TIMEOUT_MS = 4000;
 const SERVER_FIRST_SYNC_TIMEOUT_MS = 1500;
 
@@ -75,6 +85,13 @@ export class WhiteboardController {
     ((data: { fileId: string; page: number } | null) => void) | null = null;
   private initialRequestTimer: ReturnType<typeof setTimeout> | null = null;
   private saveTimer: ReturnType<typeof setTimeout> | null = null;
+  // Local-origin doc updates (user annotations) counted since the last
+  // analytics flush. Sent as an INCRBY delta, so it resets after each send.
+  private pendingAnnotations = 0;
+  // Per-(fileId,page) checkpoint + rolling-diff save decision state. Retained
+  // across page switches so rejoining a page resumes diffing from its last
+  // checkpoint baseline instead of re-uploading a full state.
+  private syncStates = new Map<string, SessionDataSyncState>();
   private sessionDataWaiters = new Map<
     string,
     { resolve: () => void; timer: ReturnType<typeof setTimeout> }
@@ -222,7 +239,15 @@ export class WhiteboardController {
     doc.on('update', this.handleDocUpdate);
 
     if (options?.hydrate) {
-      await this.fetchSessionData(this.pageKey(fileId, page));
+      const canonicalKey = this.pageKey(fileId, page);
+      // Fetch both the canonical checkpoint and its rolling diff. Each uses its
+      // own waiter (sessionDataWaiters keyed by literal key); the server replies
+      // with an empty response for missing keys, and the 1.5s timeout bounds
+      // the total wait.
+      await Promise.all([
+        this.fetchSessionData(canonicalKey),
+        this.fetchSessionData(diffKeyOf(canonicalKey)),
+      ]);
     }
 
     this.generation++;
@@ -260,12 +285,28 @@ export class WhiteboardController {
    * clear all timers/state. `Y.Doc` auto-removes its `update` listeners on
    * destroy, but we still detach explicitly to avoid leaks.
    */
-  private teardownDoc = async () => {
+  private clearSaveTimers = () => {
     if (this.saveTimer) {
       clearTimeout(this.saveTimer);
       this.saveTimer = null;
-      // Flush the pending save before the doc is destroyed.
-      await this.saveNow();
+    }
+  };
+
+  private getSyncState = (key: string): SessionDataSyncState => {
+    let s = this.syncStates.get(key);
+    if (!s) {
+      s = new SessionDataSyncState();
+      this.syncStates.set(key, s);
+    }
+    return s;
+  };
+
+  private teardownDoc = async () => {
+    if (this.saveTimer) {
+      this.clearSaveTimers();
+      // Flush the pending save before the doc is destroyed. Force a full
+      // checkpoint so the server keeps a consistent latest full state.
+      await this.saveNow(true);
     }
     if (this.syncRetryTimer) {
       clearTimeout(this.syncRetryTimer);
@@ -292,13 +333,12 @@ export class WhiteboardController {
     this.roomSid = '';
     this.fileId = '';
     this.page = 0;
+    this.pendingAnnotations = 0;
   };
 
-  saveNow = async () => {
-    if (this.saveTimer) {
-      clearTimeout(this.saveTimer);
-      this.saveTimer = null;
-    }
+  saveNow = async (forceCheckpoint = false) => {
+    this.clearSaveTimers();
+    this.flushAnnotations();
     const { doc, elementsMap, fileId } = this;
     if (!this.config || !doc || !elementsMap || !fileId) {
       return;
@@ -307,29 +347,79 @@ export class WhiteboardController {
       return;
     }
     try {
-      const update = Y.encodeStateAsUpdate(doc);
-      // IndexedDB is now only an export cache.
-      await saveWhiteboardPageSnapshot(fileId, this.page, update);
+      const canonicalKey = this.pageKey(fileId, this.page);
+      const state = this.getSyncState(canonicalKey);
+      const plan = state.planSave(doc, canonicalKey, { forceCheckpoint });
+      if (plan.skipReason === 'empty-diff') {
+        // Nothing changed since the last checkpoint; skip the upload entirely.
+        return;
+      }
+      const wire = compress(plan.update);
+      if (wire.length > SESSION_DATA_MAX_WIRE_BYTES) {
+        // Oversize: the NATS max_payload would reject it. Skip the send but
+        // keep degradation safe (server keeps last good checkpoint; live peers
+        // remain authoritative). We deliberately do NOT noteCheckpointUploaded
+        // so the next flush retries the checkpoint rather than baselining diffs
+        // against an upload the server never received.
+        console.warn(
+          `[WhiteboardController] SESSION_DATA payload for ${plan.key} is too large (${wire.length} bytes); skipping upload`,
+        );
+        if (plan.kind === 'checkpoint') {
+          // Still refresh the local export cache for checkpoints.
+          await saveWhiteboardPageSnapshot(fileId, this.page, plan.update);
+        }
+        return;
+      }
+      if (plan.kind === 'checkpoint') {
+        // IndexedDB is now only an export cache.
+        await saveWhiteboardPageSnapshot(fileId, this.page, plan.update);
+      }
       // Server is the source of truth for sync.
-      await this.uploadSessionData(update);
+      await this.uploadSessionData(wire, plan.key);
+      if (plan.kind === 'checkpoint') {
+        state.noteCheckpointUploaded(doc, wire.length);
+      }
     } catch (e) {
       console.error('[WhiteboardController] failed to save page', e);
     }
   };
 
+  /**
+   * Flush the pending annotation count to analytics. The server applies
+   * event_value_integer with Redis INCRBY, so this sends the number of
+   * annotations since the last flush (a delta), not a running total.
+   */
+  private flushAnnotations = () => {
+    if (this.pendingAnnotations <= 0) return;
+    const conn = getNatsConn();
+    if (!conn) return; // keep the count; it rides the next flush
+    conn.sendAnalyticsData(
+      AnalyticsEvents.ANALYTICS_EVENT_USER_WHITEBOARD_ANNOTATED,
+      AnalyticsEventType.USER,
+      undefined,
+      undefined,
+      this.pendingAnnotations.toString(),
+    );
+    this.pendingAnnotations = 0;
+  };
+
+  /**
+   * Schedule a save. The first unsaved change arms a single flush timer;
+   * changes made during the window ride along in the same save, so no
+   * change waits longer than SAVE_MAX_WAIT_MS and at most one save
+   * happens per window.
+   */
   private scheduleSave = () => {
-    if (this.saveTimer) {
-      clearTimeout(this.saveTimer);
-    }
+    if (this.saveTimer) return; // a flush is already scheduled
     this.saveTimer = setTimeout(() => {
       this.saveTimer = null;
       void this.saveNow();
-    }, SAVE_DEBOUNCE_MS);
+    }, SAVE_MAX_WAIT_MS);
   };
 
   /**
    * `doc.on('update')` handler. Remote-originated updates are never
-   * re-broadcast. The presenter schedules a debounced snapshot upload to the
+   * re-broadcast. The presenter schedules a throttled snapshot upload to the
    * server (and export cache); other writers broadcast live incremental
    * updates to the room.
    */
@@ -339,6 +429,8 @@ export class WhiteboardController {
     if (origin === WHITEBOARD_REMOTE_ORIGIN) {
       return;
     }
+    this.pendingAnnotations++;
+
     const config = this.config;
     if (!config || !config.canWrite()) {
       return;
@@ -351,7 +443,7 @@ export class WhiteboardController {
     );
   };
 
-  uploadSessionData = async (update: Uint8Array) => {
+  uploadSessionData = async (update: Uint8Array, key: string) => {
     const conn = getNatsConn();
     if (!conn || !this.fileId) return;
     let value = update;
@@ -360,14 +452,14 @@ export class WhiteboardController {
       if (typeof enc === 'undefined') return;
       value = enc;
     }
-    conn.sendMessageToSystemWorker(
+    conn.sendMessageToCoreWorker(
       create(NatsMsgClientToServerSchema, {
         event: NatsMsgClientToServerEvents.SESSION_DATA_SAVE,
         msg: toJsonString(
           SessionDataHeaderSchema,
           create(SessionDataHeaderSchema, {
             dataType: SessionDataType.WHITEBOARD,
-            key: this.pageKey(this.fileId, this.page),
+            key,
           }),
         ),
         binMsg: value,
@@ -410,7 +502,11 @@ export class WhiteboardController {
     if (!key) return;
 
     const doc = this.doc;
-    const isActive = !!doc && key === this.pageKey(this.fileId, this.page);
+    // Treat diff keys as active: compare against the canonical key so a diff
+    // response still applies to the live doc, but resolve the waiter by the
+    // literal (possibly diff) key.
+    const isActive =
+      !!doc && canonicalKeyOf(key) === this.pageKey(this.fileId, this.page);
 
     const resolveWaiter = () => {
       const waiter = this.sessionDataWaiters.get(key);
@@ -427,11 +523,17 @@ export class WhiteboardController {
         Y.applyUpdate(doc, value, WHITEBOARD_REMOTE_ORIGIN);
         this.config?.onRemoteUpdate?.();
       }
-      // cache the raw snapshot for export, then let waiting callers proceed
-      void idbStore(DB_STORE_NAMES.WHITEBOARD, key, value).then(
-        resolveWaiter,
-        resolveWaiter,
-      );
+      // Never persist `~d` (diff) keys to IndexedDB — they would pollute
+      // listWhiteboardPages / peer-serving. Canonical responses keep their
+      // (already decompressed) value cached for export.
+      if (!isDiffKey(key)) {
+        void idbStore(DB_STORE_NAMES.WHITEBOARD, key, value).then(
+          resolveWaiter,
+          resolveWaiter,
+        );
+      } else {
+        resolveWaiter();
+      }
     } else {
       resolveWaiter();
     }

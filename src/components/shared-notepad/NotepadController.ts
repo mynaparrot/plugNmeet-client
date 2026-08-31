@@ -16,6 +16,14 @@ import {
 } from 'plugnmeet-protocol-js';
 
 import { getNatsConn } from '../../helpers/nats';
+import {
+  SESSION_DATA_MAX_WIRE_BYTES,
+  SAVE_MAX_WAIT_MS,
+  SessionDataSyncState,
+  diffKeyOf,
+  canonicalKeyOf,
+  compress,
+} from '../../helpers/libs/sessionDataSync';
 import { store } from '../../store';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import { base64ToUint8, uint8ToBase64 } from '../../helpers/utils';
@@ -23,7 +31,6 @@ import { base64ToUint8, uint8ToBase64 } from '../../helpers/utils';
 const REMOTE_ORIGIN = 'nats-remote';
 const FRAGMENT_NAME = 'document-store';
 const SYNC_RETRY_DELAY = 2000;
-const SAVE_DEBOUNCE_MS = 1000;
 const SERVER_FIRST_SYNC_TIMEOUT_MS = 1500;
 const NOTEPAD_SNAPSHOT_KEY = 'snapshot';
 
@@ -49,6 +56,10 @@ export class NotepadController {
   private boundConn = false;
   private boundVisibility = false;
   private saveTimer: ReturnType<typeof setTimeout> | null = null;
+  // Per-document checkpoint + rolling-diff save decision state. The notepad has
+  // a single document key, so a single state instance suffices. The baseline
+  // resets to `null` on first save after hydration/rejoin naturally.
+  private syncState = new SessionDataSyncState();
   private pendingServerSync = false;
   private serverFirstResolve: (() => void) | null = null;
   private serverFirstTimer: ReturnType<typeof setTimeout> | null = null;
@@ -190,7 +201,11 @@ export class NotepadController {
 
       if (this.canAccessSessionData()) {
         this.pendingServerSync = true;
-        this.fetchSessionData();
+        // Fetch both the canonical checkpoint and its rolling diff. The
+        // server-first wait resolves on the first response; the second response
+        // (whichever key) still applies live via handleSessionDataResponse.
+        this.fetchSessionData(NOTEPAD_SNAPSHOT_KEY);
+        this.fetchSessionData(diffKeyOf(NOTEPAD_SNAPSHOT_KEY));
         await this.waitForServerFirst();
       }
 
@@ -229,9 +244,17 @@ export class NotepadController {
     }
     this.serverFirstResolve = null;
 
+    const hadPendingSave = this.saveTimer !== null;
     if (this.saveTimer) {
       clearTimeout(this.saveTimer);
       this.saveTimer = null;
+    }
+
+    // Flush any pending save as a forced checkpoint before tearing down the doc
+    // so the server keeps a consistent full state. Oversize uploads are skipped
+    // inside saveNow and do not block teardown.
+    if (hadPendingSave) {
+      await this.saveNow(true);
     }
 
     if (this.awareness) {
@@ -264,11 +287,15 @@ export class NotepadController {
     }
   }
 
-  private saveNow = async () => {
+  private clearSaveTimers = () => {
     if (this.saveTimer) {
       clearTimeout(this.saveTimer);
       this.saveTimer = null;
     }
+  };
+
+  private saveNow = async (forceCheckpoint = false) => {
+    this.clearSaveTimers();
     if (!this.doc) {
       return;
     }
@@ -276,25 +303,53 @@ export class NotepadController {
       return;
     }
     try {
-      const update = Y.encodeStateAsUpdate(this.doc);
+      const plan = this.syncState.planSave(this.doc, NOTEPAD_SNAPSHOT_KEY, {
+        forceCheckpoint,
+      });
+      if (plan.skipReason === 'empty-diff') {
+        // Nothing changed since the last checkpoint; skip the upload entirely.
+        return;
+      }
+      const wire = compress(plan.update);
+      if (wire.length > SESSION_DATA_MAX_WIRE_BYTES) {
+        // Oversize: the NATS max_payload would reject it. Skip the send but keep
+        // degradation safe (server keeps last good checkpoint; live peers remain
+        // authoritative). We deliberately do NOT noteCheckpointUploaded so the
+        // next flush retries the checkpoint rather than baselining diffs
+        // against an upload the server never received. Notepad persists nothing
+        // to IndexedDB, so there is no local cache to refresh either.
+        console.warn(
+          `[NotepadController] SESSION_DATA payload for ${plan.key} is too large (${wire.length} bytes); skipping upload`,
+        );
+        return;
+      }
+      // Notepad persists nothing to IndexedDB (server is the source of truth),
+      // so neither checkpoints nor diffs are written locally.
       // Server is the source of truth for sync.
-      await this.uploadSessionData(update);
+      await this.uploadSessionData(wire, plan.key);
+      if (plan.kind === 'checkpoint') {
+        this.syncState.noteCheckpointUploaded(this.doc, wire.length);
+      }
     } catch (e) {
       console.error('[NotepadController] failed to save snapshot', e);
     }
   };
 
+  /**
+   * Schedule a save. The first unsaved change arms a single flush timer;
+   * changes made during the window ride along in the same save, so no
+   * change waits longer than SAVE_MAX_WAIT_MS and at most one save
+   * happens per window.
+   */
   private scheduleSave = () => {
-    if (this.saveTimer) {
-      clearTimeout(this.saveTimer);
-    }
+    if (this.saveTimer) return; // a flush is already scheduled
     this.saveTimer = setTimeout(() => {
       this.saveTimer = null;
       void this.saveNow();
-    }, SAVE_DEBOUNCE_MS);
+    }, SAVE_MAX_WAIT_MS);
   };
 
-  uploadSessionData = async (update: Uint8Array) => {
+  uploadSessionData = async (update: Uint8Array, key: string) => {
     const conn = getNatsConn();
     if (!conn) return;
     let value = update;
@@ -303,14 +358,14 @@ export class NotepadController {
       if (typeof enc === 'undefined') return;
       value = enc;
     }
-    conn.sendMessageToSystemWorker(
+    conn.sendMessageToCoreWorker(
       create(NatsMsgClientToServerSchema, {
         event: NatsMsgClientToServerEvents.SESSION_DATA_SAVE,
         msg: toJsonString(
           SessionDataHeaderSchema,
           create(SessionDataHeaderSchema, {
             dataType: SessionDataType.NOTEPAD,
-            key: NOTEPAD_SNAPSHOT_KEY,
+            key,
           }),
         ),
         binMsg: value,
@@ -318,7 +373,7 @@ export class NotepadController {
     );
   };
 
-  fetchSessionData = () => {
+  fetchSessionData = (key: string = NOTEPAD_SNAPSHOT_KEY) => {
     const conn = getNatsConn();
     if (!conn) return;
     conn.sendMessageToSystemWorker(
@@ -328,7 +383,7 @@ export class NotepadController {
           SessionDataHeaderSchema,
           create(SessionDataHeaderSchema, {
             dataType: SessionDataType.NOTEPAD,
-            key: NOTEPAD_SNAPSHOT_KEY,
+            key,
           }),
         ),
       }),
@@ -340,6 +395,14 @@ export class NotepadController {
     value: Uint8Array,
   ) => {
     if (header.dataType !== SessionDataType.NOTEPAD) return;
+    const key = header.key;
+    if (!key) return;
+
+    // Both the canonical 'snapshot' and its rolling diff 'snapshot~d' target the
+    // single notepad document. Canonicalize so a diff response still applies to
+    // the live doc. Notepad persists nothing to IndexedDB (server is the source
+    // of truth), so diff keys are never written to a local cache.
+    if (canonicalKeyOf(key) !== NOTEPAD_SNAPSHOT_KEY) return;
 
     if (value && value.length > 0) {
       // apply live if the doc already exists

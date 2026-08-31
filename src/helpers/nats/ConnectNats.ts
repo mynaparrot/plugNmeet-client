@@ -466,6 +466,20 @@ export default class ConnectNats {
     });
   };
 
+  /**
+   * Sends a message to the system worker over the lightweight core NATS pub/sub
+   * transport (fire-and-forget, no JetStream ack).
+   * @param data The message to send.
+   */
+  public sendMessageToCoreWorker = (data: NatsMsgClientToServer) => {
+    const subject =
+      this._subjects.systemCoreWorker + '.' + this._roomId + '.' + this._userId;
+    this.messageQueue.addToQueue({
+      subject,
+      payload: toBinary(NatsMsgClientToServerSchema, data),
+    });
+  };
+
   private sendPrivateData(
     payload: Uint8Array<ArrayBufferLike>,
     type: PrivateDataDeliveryType,
@@ -759,12 +773,7 @@ export default class ConnectNats {
       msg: toJsonString(AnalyticsDataMsgSchema, analyticsMsg),
     });
 
-    const subject =
-      this._subjects.systemCoreWorker + '.' + this._roomId + '.' + this._userId;
-    this.messageQueue.addToQueue({
-      subject,
-      payload: toBinary(NatsMsgClientToServerSchema, data),
-    });
+    this.sendMessageToCoreWorker(data);
   };
 
   private startTokenRenewInterval() {
