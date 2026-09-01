@@ -23,6 +23,7 @@ import {
   diffKeyOf,
   canonicalKeyOf,
   compress,
+  decompress,
 } from '../../helpers/libs/sessionDataSync';
 import { store } from '../../store';
 import { participantsSelector } from '../../store/slices/participantSlice';
@@ -554,9 +555,10 @@ export class NotepadController {
         clearTimeout(timer);
         this.backupResponseTimers.delete(requestId);
       }
+      // NOTEPAD_SYNC_RESPONSE payloads are always compressed
       this.send(
         DataMsgBodyType.NOTEPAD_SYNC_RESPONSE,
-        missing,
+        compress(missing),
         requestId,
         JSON.stringify({ stateVector }),
       );
@@ -592,8 +594,19 @@ export class NotepadController {
     }
     this.pendingSyncRequestId = null;
 
+    // NOTEPAD_SYNC_RESPONSE is always compressed
     if (payload.binMessage && payload.binMessage.length > 0) {
-      Y.applyUpdate(this.doc, payload.binMessage, REMOTE_ORIGIN);
+      let update: Uint8Array;
+      try {
+        update = decompress(payload.binMessage);
+      } catch (e) {
+        console.error(
+          '[NotepadController] failed to decompress sync response',
+          e,
+        );
+        return;
+      }
+      Y.applyUpdate(this.doc, update, REMOTE_ORIGIN);
     }
 
     let stateVector: Uint8Array | null = null;

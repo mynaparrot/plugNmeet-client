@@ -27,6 +27,7 @@ import {
   isDiffKey,
   canonicalKeyOf,
   compress,
+  decompress,
 } from '../../../helpers/libs/sessionDataSync';
 import {
   listWhiteboardPages,
@@ -435,6 +436,7 @@ export class WhiteboardController {
     if (!config || !config.canWrite()) {
       return;
     }
+    // Live edits stay raw (small and frequent — gzip overhead not worth it).
     this.sendWhiteboardData(
       DataMsgBodyType.SCENE_UPDATE,
       update,
@@ -661,7 +663,21 @@ export class WhiteboardController {
       case DataMsgBodyType.SCENE_UPDATE: {
         const scope = this.parseScope(message);
         if (this.matchesActiveScope(scope)) {
-          this.applyRemoteUpdate(binMessage);
+          let payload = binMessage;
+          // Full-state broadcasts arrive gzip-compressed (scope.gzip); live edits and
+          // diffs stay raw.
+          if (scope?.gzip) {
+            try {
+              payload = decompress(binMessage);
+            } catch (e) {
+              console.error(
+                '[WhiteboardController] failed to decompress scene update',
+                e,
+              );
+              break;
+            }
+          }
+          this.applyRemoteUpdate(payload);
         }
         break;
       }
@@ -857,11 +873,12 @@ export class WhiteboardController {
     }
     const update = Y.encodeStateAsUpdate(doc);
     if (update.length > 0) {
+      // Full-state broadcasts are gzip-compressed, flagged via scope.gzip.
       this.sendWhiteboardData(
         DataMsgBodyType.SCENE_UPDATE,
-        update,
+        compress(update),
         undefined,
-        this.buildScopeMessage(),
+        this.buildScopeMessage({ gzip: true }),
       );
     }
   };
@@ -924,12 +941,14 @@ export class WhiteboardController {
 
       responseMessage = this.buildScopeMessage({
         initial_data: JSON.stringify(initialData),
+        gzip: true,
       });
     }
 
     if (sendFullInitialData) {
       if (doc && elementsMap && elementsMap.size > 0) {
-        responseUpdate = Y.encodeStateAsUpdate(doc);
+        // Full-state payloads are gzip-compressed, flagged via scope.gzip.
+        responseUpdate = compress(Y.encodeStateAsUpdate(doc));
       } else {
         const stored = await loadWhiteboardPageSnapshot(this.fileId, this.page);
 
@@ -941,7 +960,8 @@ export class WhiteboardController {
           return;
         }
 
-        responseUpdate = stored;
+        // Full-state payloads are gzip-compressed, flagged via scope.gzip.
+        responseUpdate = compress(stored);
       }
     } else if (
       doc &&
@@ -972,10 +992,12 @@ export class WhiteboardController {
         return;
       }
 
-      responseUpdate = stored;
+      // Full-state payloads are gzip-compressed, flagged via scope.gzip.
+      responseUpdate = compress(stored);
       responseMessage = JSON.stringify({
         fileId: senderScope.fileId,
         page: senderScope.page,
+        gzip: true,
       });
     }
 
@@ -985,6 +1007,7 @@ export class WhiteboardController {
         clearTimeout(timer);
         this.backupResponseTimers.delete(id);
       }
+      // Compression is decided per-path above (full-state responses only).
       this.sendWhiteboardData(
         DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE,
         responseUpdate,
@@ -1075,7 +1098,20 @@ export class WhiteboardController {
     }
 
     if (binMessage.length > 0) {
-      this.applyRemoteUpdate(binMessage);
+      let payload = binMessage;
+      // Full-state responses arrive gzip-compressed (scope.gzip); diffs stay raw.
+      if (scope.gzip) {
+        try {
+          payload = decompress(binMessage);
+        } catch (e) {
+          console.error(
+            '[WhiteboardController] failed to decompress sync response',
+            e,
+          );
+          return;
+        }
+      }
+      this.applyRemoteUpdate(payload);
     }
 
     /*
@@ -1088,6 +1124,7 @@ export class WhiteboardController {
         const extra = Y.encodeStateAsUpdate(this.doc, stateVector);
 
         if (extra.length > 0) {
+          // Reverse-sync diff stays raw.
           this.sendWhiteboardData(
             DataMsgBodyType.SCENE_UPDATE,
             extra,

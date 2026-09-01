@@ -21,6 +21,8 @@ export interface WhiteboardScope {
   page?: number;
   stateVector?: string;
   initial_data?: string;
+  /** binMessage is gzip-compressed (full-state payloads only; live edits and diffs stay raw). */
+  gzip?: boolean;
 }
 
 export type WhiteboardControllerConfig = {
