@@ -201,11 +201,17 @@ export class NotepadController {
       });
 
       if (this.canAccessSessionData()) {
+        // Fetch the canonical checkpoint FIRST, then the rolling diff — sequential
+        // on purpose. handleSessionDataResponse applies each response before
+        // resolving its waiter, so awaiting the canonical guarantees the base
+        // snapshot is already in the doc before the diff is requested and applied.
+        // (The server processes the two requests concurrently in a worker pool, so
+        // parallel fetches can deliver the diff first.)
         this.pendingServerSync = true;
-        // Fetch both the canonical checkpoint and its rolling diff. The
-        // server-first wait resolves on the first response; the second response
-        // (whichever key) still applies live via handleSessionDataResponse.
         this.fetchSessionData(NOTEPAD_SNAPSHOT_KEY);
+        await this.waitForServerFirst();
+
+        this.pendingServerSync = true;
         this.fetchSessionData(diffKeyOf(NOTEPAD_SNAPSHOT_KEY));
         await this.waitForServerFirst();
       }
