@@ -95,8 +95,18 @@ export class WhiteboardController {
   private syncStates = new Map<string, SessionDataSyncState>();
   private sessionDataWaiters = new Map<
     string,
-    { resolve: () => void; timer: ReturnType<typeof setTimeout> }
+    {
+      resolve: (arrived: boolean) => void;
+      timer: ReturnType<typeof setTimeout>;
+    }
   >();
+  // Pages whose canonical checkpoint snapshot has NOT yet been confirmed
+  // present by the server. While a key is in this set, the local partial
+  // state for that page must not be treated as authoritative: saves and
+  // full-state broadcasts are paused until the canonical snapshot arrives
+  // (at which point the self-heal path persists a fresh checkpoint and
+  // re-broadcasts the now-complete state).
+  private readonly unconfirmedCanonicalKeys = new Set<string>();
   private listeners = new Set<() => void>();
   private snapshot: WhiteboardYjsSnapshot | null = null;
 
@@ -241,14 +251,28 @@ export class WhiteboardController {
 
     if (options?.hydrate) {
       const canonicalKey = this.pageKey(fileId, page);
-      // Fetch both the canonical checkpoint and its rolling diff. Each uses its
-      // own waiter (sessionDataWaiters keyed by literal key); the server replies
-      // with an empty response for missing keys, and the 1.5s timeout bounds
-      // the total wait.
-      await Promise.all([
-        this.fetchSessionData(canonicalKey),
-        this.fetchSessionData(diffKeyOf(canonicalKey)),
-      ]);
+      // Fetch the canonical checkpoint FIRST, then the rolling diff — sequential
+      // on purpose. handleSessionDataResponse applies each response before
+      // resolving its waiter, so awaiting the canonical guarantees the base
+      // snapshot is already in the doc before the diff is requested and applied.
+      // (The server processes the two requests concurrently in a worker pool, so
+      // parallel fetches can deliver the diff first.)
+      let canonicalArrived = await this.fetchSessionData(canonicalKey);
+      if (!canonicalArrived) {
+        // One retry — transient loss is plausible under the concurrent worker pool.
+        canonicalArrived = await this.fetchSessionData(canonicalKey);
+      }
+      if (canonicalArrived) {
+        this.unconfirmedCanonicalKeys.delete(canonicalKey);
+      } else {
+        this.unconfirmedCanonicalKeys.add(canonicalKey);
+        console.warn(
+          `[WhiteboardController] canonical snapshot for ${canonicalKey} did not arrive; saves and full-state broadcasts for this page are paused until it arrives`,
+        );
+      }
+      // The diff is still fetched and applied locally even when the canonical is
+      // unconfirmed; the gates below keep the partial state non-authoritative.
+      await this.fetchSessionData(diffKeyOf(canonicalKey));
     }
 
     this.generation++;
@@ -321,7 +345,8 @@ export class WhiteboardController {
     this.syncRequestAttempts = 0;
     for (const waiter of this.sessionDataWaiters.values()) {
       clearTimeout(waiter.timer);
-      waiter.resolve();
+      // Teardown means these fetches will never get their response.
+      waiter.resolve(false);
     }
     this.sessionDataWaiters.clear();
 
@@ -340,6 +365,7 @@ export class WhiteboardController {
   saveNow = async (forceCheckpoint = false) => {
     this.clearSaveTimers();
     this.flushAnnotations();
+
     const { doc, elementsMap, fileId } = this;
     if (!this.config || !doc || !elementsMap || !fileId) {
       return;
@@ -349,6 +375,12 @@ export class WhiteboardController {
     }
     try {
       const canonicalKey = this.pageKey(fileId, this.page);
+      if (this.unconfirmedCanonicalKeys.has(canonicalKey)) {
+        console.warn(
+          `[WhiteboardController] skipping save for ${canonicalKey}: canonical snapshot unconfirmed (partial hydration); retrying after the snapshot arrives`,
+        );
+        return;
+      }
       const state = this.getSyncState(canonicalKey);
       const plan = state.planSave(doc, canonicalKey, { forceCheckpoint });
       if (plan.skipReason === 'empty-diff') {
@@ -469,18 +501,27 @@ export class WhiteboardController {
     );
   };
 
+  /**
+   * Fetch a session-data value from the server. Resolves `true` once a response
+   * arrives — including an EMPTY response, which legitimately confirms the key
+   * is absent (e.g. a fresh page). Resolves `false` on timeout or when there is
+   * no NATS connection. `handleSessionDataResponse` applies the response before
+   * resolving the waiter, so awaiting the canonical key guarantees the base
+   * snapshot is in the doc before the rolling diff is requested/applied.
+   */
   fetchSessionData = (key: string) =>
-    new Promise<void>((resolve) => {
+    new Promise<boolean>((resolve) => {
       const conn = getNatsConn();
       if (!conn) {
-        resolve();
+        resolve(false);
         return;
       }
       const timer = setTimeout(() => {
         this.sessionDataWaiters.delete(key);
-        resolve();
+        resolve(false);
       }, SERVER_FIRST_SYNC_TIMEOUT_MS);
       this.sessionDataWaiters.set(key, { resolve, timer });
+
       conn.sendMessageToSystemWorker(
         create(NatsMsgClientToServerSchema, {
           event: NatsMsgClientToServerEvents.SESSION_DATA_FETCH_REQUEST,
@@ -515,7 +556,9 @@ export class WhiteboardController {
       if (waiter) {
         clearTimeout(waiter.timer);
         this.sessionDataWaiters.delete(key);
-        waiter.resolve();
+        // A response arrived (even if empty — the server confirmed the key is
+        // absent). Empty-but-present counts as "confirmed", so resolve(true).
+        waiter.resolve(true);
       }
     };
 
@@ -524,6 +567,13 @@ export class WhiteboardController {
       if (doc && isActive) {
         Y.applyUpdate(doc, value, WHITEBOARD_REMOTE_ORIGIN);
         this.config?.onRemoteUpdate?.();
+        if (!isDiffKey(key) && this.unconfirmedCanonicalKeys.delete(key)) {
+          // Late-arriving canonical for a page we marked unconfirmed: the doc
+          // is now complete — persist a fresh checkpoint and push the full
+          // state so everyone converges.
+          void this.saveNow(true);
+          this.broadcastFullState();
+        }
       }
       // Never persist `~d` (diff) keys to IndexedDB — they would pollute
       // listWhiteboardPages / peer-serving. Canonical responses keep their
@@ -869,6 +919,13 @@ export class WhiteboardController {
       return;
     }
     if (elementsMap.size === 0) {
+      return;
+    }
+    const currentCanonicalKey = this.pageKey(this.fileId, this.page);
+    if (this.unconfirmedCanonicalKeys.has(currentCanonicalKey)) {
+      console.warn(
+        `[WhiteboardController] skipping full-state broadcast for ${currentCanonicalKey}: canonical snapshot unconfirmed (partial hydration); retrying after the snapshot arrives`,
+      );
       return;
     }
     const update = Y.encodeStateAsUpdate(doc);
