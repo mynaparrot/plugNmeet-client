@@ -2,7 +2,8 @@ import { BackgroundConfig } from '../../../helpers/libs/TrackProcessor';
 
 export type DeviceOrientation = 'landscape' | 'portrait';
 
-export type SidePanelType = 'CHAT' | 'PARTICIPANTS' | 'POLLS' | null;
+export type SidePanelType =
+  'CHAT' | 'PARTICIPANTS' | 'POLLS' | 'BREAKOUT_ROOMS' | null;
 
 export interface IBottomIconsSlice {
   isActiveMicrophone: boolean;

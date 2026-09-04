@@ -1,6 +1,5 @@
 export interface IBreakoutRoomSlice {
   droppedUser: DroppedUser;
-  receivedInvitationFor: string;
   isReturningToMainRoom: boolean;
 }
 

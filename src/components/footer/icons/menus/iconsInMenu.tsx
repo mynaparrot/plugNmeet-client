@@ -12,6 +12,7 @@ import {
 import { WhiteBoardIconSVG } from '../../../../assets/Icons/WhiteBoardIconSVG';
 import { SharedNotepadIconSVG } from '../../../../assets/Icons/SharedNotepadIconSVG';
 import { PollsIconSVG } from '../../../../assets/Icons/PollsIconSVG';
+import { BreakoutRoomIconSVG } from '../../../../assets/Icons/BreakoutRoomIconSVG';
 import { SpeechIconSVG } from '../../../../assets/Icons/SpeechIconSVG';
 import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
 import { ShareScreenIconSVG } from '../../../../assets/Icons/ShareScreenIconSVG';
@@ -63,6 +64,20 @@ const IconsInMenu = () => {
   );
   const togglePollsPanel = useCallback(() => {
     dispatch(setActiveSidePanel('POLLS'));
+  }, [dispatch]);
+
+  const isActiveBreakoutRoomsPanel = useAppSelector(
+    (state) => state.bottomIconsActivity.activeSidePanel === 'BREAKOUT_ROOMS',
+  );
+  const isBreakoutRoomsPanelVisible = useAppSelector((state) => {
+    const meta = state.session.currentRoom?.metadata;
+    return (
+      !!meta?.roomFeatures?.breakoutRoomFeatures?.isActive &&
+      !meta?.isBreakoutRoom
+    );
+  });
+  const toggleBreakoutRoomsPanel = useCallback(() => {
+    dispatch(setActiveSidePanel('BREAKOUT_ROOMS'));
   }, [dispatch]);
 
   const isActiveDisplaySpeechSettingOptionsModal = useAppSelector(
@@ -146,6 +161,19 @@ const IconsInMenu = () => {
               : t('footer.icons.show-polls-panel')
           }
           isActive={isActivePollsPanel}
+          customClass="md:hidden"
+        />
+      )}
+      {isBreakoutRoomsPanelVisible && (
+        <MenuItemHelper
+          onClick={toggleBreakoutRoomsPanel}
+          icon={<BreakoutRoomIconSVG classes="w-auto" />}
+          text={
+            isActiveBreakoutRoomsPanel
+              ? t('footer.icons.hide-breakout-rooms-panel')
+              : t('footer.icons.show-breakout-rooms-panel')
+          }
+          isActive={isActiveBreakoutRoomsPanel}
           customClass="md:hidden"
         />
       )}

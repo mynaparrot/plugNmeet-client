@@ -18,7 +18,6 @@ import {
 } from '../../store/slices/roomSettingsSlice';
 import i18n from '../i18n';
 import { pollsApi } from '../../store/services/pollsApi';
-import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
 import { cleanHtmlForChat, getConfigValue, randomString } from '../utils';
 import { updateAiTextChat } from '../../store/slices/insightsAiTextChatSlice';
 import { handleNotepadAIStreamResult } from '../../components/shared-notepad/helpers/notepadAI';
@@ -149,11 +148,9 @@ export default class HandleSystemData {
               message: i18n.t('breakout-room.invitation-msg'),
               typeOption: 'info',
               notificationCat: 'breakout-room-invitation',
-              data: payload.msg,
-              disableToastNotification: true,
+              autoClose: false,
             }),
           );
-          store.dispatch(updateReceivedInvitationFor(payload.msg));
           store.dispatch(breakoutRoomApi.util.invalidateTags(['My_Rooms']));
         }
         break;

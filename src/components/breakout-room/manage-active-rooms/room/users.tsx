@@ -24,8 +24,10 @@ const BreakoutRoomUsers = ({
   const [reInvite, { isLoading }] = useReInviteMutation();
 
   const userChunks = useMemo(() => {
-    const sortedUsers = [...users].sort(
-      (a, b) => Number(b.joined) - Number(a.joined),
+    // proto3 JSON (toJson in handleProtobufResponse) omits empty repeated
+    // fields, so rooms created without assigned users have no `users` key.
+    const sortedUsers = [...(users ?? [])].sort(
+      (a, b) => (b.joined ? 1 : 0) - (a.joined ? 1 : 0),
     );
     return chunk(sortedUsers, 5);
   }, [users]);

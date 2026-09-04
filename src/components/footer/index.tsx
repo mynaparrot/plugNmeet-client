@@ -13,10 +13,10 @@ import ScreenshareIcon from './icons/screenshare';
 import MenusIcon from './icons/menus';
 import SharedNotePadIcon from './icons/sharedNotePad';
 import WhiteboardIcon from './icons/whiteboard';
-import BreakoutRoomInvitation from '../breakout-room/breakoutRoomInvitation';
 import EndMeetingButton from './icons/endMeeting';
 import RecordingIcon from './icons/recording';
 import PollsIcon from './icons/polls';
+import BreakoutRoomsIcon from './icons/breakoutRooms';
 import Translation from './icons/translation';
 import InsightsAiTextChatIcon from './icons/insightAiTextChat';
 
@@ -55,6 +55,7 @@ const Footer = () => {
           <ReactionsIcon />
           <SharedNotePadIcon />
           <PollsIcon />
+          <BreakoutRoomsIcon />
           <Translation />
           <InsightsAiTextChatIcon />
           <RecordingIcon />
@@ -78,7 +79,6 @@ const Footer = () => {
           <div className="line h-6 w-px bg-Gray-200 dark:bg-Gray-700"></div>
           <EndMeetingButton />
         </div>
-        <BreakoutRoomInvitation />
       </div>
     </footer>
   );

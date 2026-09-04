@@ -334,6 +334,8 @@
       "hide-whiteboard": "Hide Whiteboard",
       "show-polls-panel": "Show Polls",
       "hide-polls-panel": "Hide Polls",
+      "show-breakout-rooms-panel": "Show Breakout Rooms",
+      "hide-breakout-rooms-panel": "Hide Breakout Rooms",
       "show-translation-settings": "Show Transcription Settings",
       "hide-translation-settings": "Hide Transcription Settings",
       "promote-presenter": "Make Presenter",
@@ -579,7 +581,16 @@
     "notepad-shared": "Notepad shared with {{count}} breakout room(s)",
     "content-shared-partial": "Shared with {{shared}} of {{total}} breakout rooms",
     "content-share-failed": "Failed to share content with breakout rooms",
-    "content-share-skipped-notepad": "Shared notes were skipped because the notepad was not open on your screen"
+    "content-share-skipped-notepad": "Shared notes were skipped because the notepad was not open on your screen",
+    "allow-self-select": "Allow participants to choose their room",
+    "allow-self-select-desc": "Participants can join any breakout room themselves.",
+    "custom-title-placeholder": "Custom title (optional)",
+    "rooms-panel-title": "Breakout Rooms",
+    "joined-count": "{{count}} joined",
+    "current-room": "Current Room",
+    "no-rooms": "No breakout rooms available.",
+    "error-loading": "Failed to load breakout rooms.",
+    "not-assigned": "You haven't been assigned to a breakout room yet."
   },
   "landing": {
     "connecting-media-server": "Connecting to the meeting...",

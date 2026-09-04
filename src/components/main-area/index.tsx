@@ -19,6 +19,7 @@ import MainView from './mainView';
 import PollsComponent from '../polls';
 import ChatComponent from '../chat';
 import ParticipantsComponent from '../participants';
+import RoomsPanel from '../breakout-room/roomsPanel';
 import SidePanel from './sidePanel';
 
 const MainArea = () => {
@@ -34,6 +35,15 @@ const MainArea = () => {
       roomFeatures,
     };
   }, []);
+
+  const showBreakoutRoomsPanel = useAppSelector((state) => {
+    const meta = state.session.currentRoom?.metadata;
+    return (
+      !!meta?.roomFeatures?.breakoutRoomFeatures?.isActive &&
+      !meta?.isBreakoutRoom
+    );
+  });
+
   const isNatsServerConnected = useAppSelector(
     (state) => state.roomSettings.isNatsServerConnected,
   );
@@ -204,6 +214,16 @@ const MainArea = () => {
             onToggle={handleSidePanelToggled}
           >
             <PollsComponent />
+          </SidePanel>
+        )}
+        {showBreakoutRoomsPanel && (
+          <SidePanel
+            isActive={activeSidePanel === 'BREAKOUT_ROOMS'}
+            panelClass="breakout-rooms-panel"
+            ariaLabel={t('breakout-room.rooms-panel-title').toString()}
+            onToggle={handleSidePanelToggled}
+          >
+            <RoomsPanel />
           </SidePanel>
         )}
       </div>

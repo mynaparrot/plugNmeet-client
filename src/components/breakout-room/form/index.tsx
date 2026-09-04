@@ -84,6 +84,8 @@ const FromElems = ({
   );
   const [allowReturnToMainRoom, setAllowReturnToMainRoom] =
     useState<boolean>(true);
+  const [allowSelfSelect, setAllowSelfSelect] = useState<boolean>(false);
+  const [customTitles, setCustomTitles] = useState<Record<number, string>>({});
   const [users, setUsers] = useState<Array<UserType>>([]);
 
   // we'll clean during unmount
@@ -177,10 +179,10 @@ const FromElems = ({
     roomList.forEach((r) => {
       if (r.id !== 0) {
         const u = users.filter((u) => u.roomId === r.id);
-        if (u.length) {
+        if (u.length || allowSelfSelect) {
           const room = create(BreakoutRoomSchema, {
             id: `${r.id}`,
-            title: r.name,
+            title: customTitles[r.id]?.trim() || r.name,
             users: u,
             duration: String(roomDuration),
             started: false,
@@ -209,6 +211,7 @@ const FromElems = ({
       rooms: tmp,
       shareNotepad: shareNotepad && !contentShareDisabled,
       allowReturnToMainRoom: allowReturnToMainRoom,
+      allowSelfSelect: allowSelfSelect,
       ...(whiteboardShare ? { whiteboardShare } : {}),
       ...(sharePolls && sharePollIds.length > 0
         ? { pollShare: { pollIds: sharePollIds } }
@@ -227,6 +230,8 @@ const FromElems = ({
     sharePolls,
     sharePollIds,
     allowReturnToMainRoom,
+    allowSelfSelect,
+    customTitles,
     contentShareDisabled,
     whiteboardPagesSelected,
     selectedWhiteboardPages,
@@ -306,6 +311,30 @@ const FromElems = ({
         </div>
       </div>
 
+      <div className="item flex items-start mt-4 mb-4">
+        <div className="input">
+          <input
+            id="allow-self-select"
+            name="allow-self-select"
+            type="checkbox"
+            className="border cursor-pointer border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus focus-ring mt-1 dark:bg-dark-secondary dark:border-dark-text"
+            checked={allowSelfSelect}
+            onChange={(e) => setAllowSelfSelect(e.currentTarget.checked)}
+          />
+        </div>
+        <div className="text-base w-full ps-2 sm:ps-4">
+          <label
+            htmlFor="allow-self-select"
+            className="text-sm 3xl:text-base font-medium text-Gray-950 dark:text-dark-text cursor-pointer"
+          >
+            {t('breakout-room.allow-self-select')}
+            <p className="text-xs md:text-sm opacity-70 dark:opacity-80">
+              {t('breakout-room.allow-self-select-desc')}
+            </p>
+          </label>
+        </div>
+      </div>
+
       <div className="draggable-room-area overflow-hidden clear-both flex flex-wrap">
         {roomList.map((room) => {
           return (
@@ -317,6 +346,8 @@ const FromElems = ({
                 roomId={room.id}
                 name={room.name}
                 users={users.filter((user) => user.roomId === room.id)}
+                customTitles={customTitles}
+                setCustomTitles={setCustomTitles}
               />
             </div>
           );
