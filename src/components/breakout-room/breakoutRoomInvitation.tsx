@@ -1,6 +1,5 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { LocalAudioTrack, Track } from 'livekit-client';
 import {
   Button,
   Dialog,
@@ -9,23 +8,15 @@ import {
   TransitionChild,
 } from '@headlessui/react';
 import { toast } from 'react-toastify';
-import copy from 'copy-text-to-clipboard';
 import { JoinBreakoutRoomReqSchema } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
 
 import { useAppDispatch, useAppSelector } from '../../store';
 import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
 import { useJoinRoomMutation } from '../../store/services/breakoutRoomApi';
-import {
-  updateIsActiveWebcam,
-  updateIsMicMuted,
-  updateIsWebcamMuted,
-  updateVirtualBackground,
-} from '../../store/slices/bottomIconsActivitySlice';
-import { updateSelectedVideoDevice } from '../../store/slices/roomSettingsSlice';
 import { getMediaServerConnRoom } from '../../helpers/livekit/utils';
+import { buildAccessTokenUrl } from './utils/breakoutRoom';
 import { PopupCloseSVGIcon } from '../../assets/Icons/PopupCloseSVGIcon';
-import { isHybridMode } from '../../helpers/nativeBridge';
 
 const BreakoutRoomInvitation = () => {
   const { t } = useTranslation();
@@ -37,78 +28,22 @@ const BreakoutRoomInvitation = () => {
   );
   const [joinRoom, { isLoading, isSuccess, isError, data, error }] =
     useJoinRoomMutation();
-  const [joinLink, setJoinLink] = useState<string>('');
-  const [copyText, setCopyText] = useState<string>(
-    t('breakout-room.copy').toString(),
-  );
-
-  const closeLocalTracks = useCallback(() => {
-    currentRoom.localParticipant
-      .getTrackPublications()
-      .forEach(async (publication) => {
-        if (!publication.track) {
-          return;
-        }
-        if (publication.track.source === Track.Source.Camera) {
-          await currentRoom.localParticipant.unpublishTrack(
-            publication.track.mediaStreamTrack,
-            true,
-          );
-          dispatch(updateIsActiveWebcam(false));
-          dispatch(updateIsWebcamMuted(false));
-          dispatch(updateSelectedVideoDevice(''));
-          dispatch(
-            updateVirtualBackground({
-              type: 'none',
-            }),
-          );
-        } else if (publication.track.source === Track.Source.Microphone) {
-          if (!publication.isMuted) {
-            const track = publication.audioTrack as LocalAudioTrack;
-            await track.mute();
-            dispatch(updateIsMicMuted(true));
-          }
-        }
-      });
-  }, [currentRoom.localParticipant, dispatch]);
 
   useEffect(() => {
     if (isSuccess && data?.status && data.token) {
-      const searchParams = new URLSearchParams(window.location.search);
-      searchParams.set('access_token', data.token);
-      const url =
-        location.protocol +
-        '//' +
-        location.host +
-        window.location.pathname +
-        '?' +
-        searchParams.toString();
-
-      if (isHybridMode()) {
-        // Hybrid mode: webview can't open new tabs; reload the current view with the new token.
-        window.location.href = url;
-        return;
-      }
-      if (!window.open(url, '_blank')) {
-        // If popup was blocked, show the link to the user.
-        setJoinLink(url);
-        return;
-      }
-
-      // If popup opened successfully, close the invitation and local tracks.
-      dispatch(updateReceivedInvitationFor(''));
-      closeLocalTracks();
+      // Redirect the current tab to the breakout room. window.location.replace
+      // tears down the current room connection and ensures browser-back exits
+      // the session instead of landing on a stale token.
+      window.location.replace(buildAccessTokenUrl(data.token));
+      return;
     } else if ((isSuccess && !data?.status) || isError) {
       const msg = data?.msg ?? (error as any)?.data?.msg ?? 'Error';
       toast(t(msg), { type: 'error' });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess, isError, data, error, t]);
 
   const closeModal = () => {
     dispatch(updateReceivedInvitationFor(''));
-    // we should disable running tracks
-    closeLocalTracks();
   };
 
   const join = () => {
@@ -118,14 +53,6 @@ const BreakoutRoomInvitation = () => {
         userId: currentRoom.localParticipant.identity,
       }),
     );
-  };
-
-  const copyUrl = () => {
-    copy(joinLink);
-    setCopyText(t('breakout-room.copied').toString());
-    setTimeout(() => {
-      setCopyText(t('breakout-room.copy').toString());
-    }, 2000);
   };
 
   if (receivedInvitationFor === '') {
@@ -163,29 +90,6 @@ const BreakoutRoomInvitation = () => {
                 <span className="text-black dark:text-white text-sm">
                   {t('breakout-room.invitation-msg')}
                 </span>
-
-                {joinLink !== '' && (
-                  <div className="invite-link mt-2">
-                    <label className="text-black dark:text-white text-sm block mb-1">
-                      {t('breakout-room.join-text-label')}
-                    </label>
-                    <div className="wrap flex items-center gap-1">
-                      <input
-                        dir="auto"
-                        type="text"
-                        readOnly={true}
-                        value={joinLink}
-                        className="border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-dark-primary shadow-input block px-3 py-2 w-full h-7 rounded-[15px] outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-white hover:text-Gray-950"
-                      />
-                      <button
-                        onClick={copyUrl}
-                        className="primary-button h-7 ms-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
-                      >
-                        {copyText}
-                      </button>
-                    </div>
-                  </div>
-                )}
 
                 <div className="button-section flex items-center justify-start mt-4">
                   <button

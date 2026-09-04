@@ -1,23 +1,27 @@
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { BreakoutRoomUser, DataMsgBodyType } from 'plugnmeet-protocol-js';
+import { create } from '@bufbuild/protobuf';
+import {
+  BreakoutRoomUser,
+  ReInviteBreakoutRoomReqSchema,
+} from 'plugnmeet-protocol-js';
 import { chunk } from 'es-toolkit';
+import { toast } from 'react-toastify';
 
 import { generateAvatarInitial } from '../../../../helpers/utils';
-import { getNatsConn } from '../../../../helpers/nats';
-import { BreakoutRoomMessage } from '../../index';
+import { useReInviteMutation } from '../../../../store/services/breakoutRoomApi';
+import { store } from '../../../../store';
 
 interface IBreakoutRoomUsersProps {
   users: Array<BreakoutRoomUser>;
   breakoutRoomId: string;
-  setMessage: (message: BreakoutRoomMessage | null) => void;
 }
 const BreakoutRoomUsers = ({
   users,
   breakoutRoomId,
-  setMessage,
 }: IBreakoutRoomUsersProps) => {
   const { t } = useTranslation();
+  const [reInvite, { isLoading }] = useReInviteMutation();
 
   const userChunks = useMemo(() => {
     const sortedUsers = [...users].sort(
@@ -26,20 +30,39 @@ const BreakoutRoomUsers = ({
     return chunk(sortedUsers, 5);
   }, [users]);
 
-  const pushUser = (name: string, userId: string) => {
-    const conn = getNatsConn();
-    conn.sendDataMessage(
-      DataMsgBodyType.PUSH_JOIN_BREAKOUT_ROOM,
-      breakoutRoomId,
-      userId,
-    );
-    setMessage({
-      text: t('breakout-room.you-pushed-user', {
-        name,
-      }),
-      type: 'info',
-    });
-    setTimeout(() => setMessage(null), 5000);
+  const reInviteUser = (name: string, userId: string) => {
+    // The server resolves the parent room from the request's token, so passing
+    // the breakout room's roomId here is harmless; we still pass the parent id
+    // for clarity.
+    const currentRoom = store.getState().session.currentRoom;
+    const roomId =
+      currentRoom?.metadata?.parentRoomId || currentRoom?.roomId || '';
+
+    reInvite(
+      create(ReInviteBreakoutRoomReqSchema, { breakoutRoomId, userId, roomId }),
+    )
+      .unwrap()
+      .then((res) => {
+        if (res.status) {
+          toast(
+            t('breakout-room.invitation-sent', {
+              name,
+            }),
+            {
+              type: 'info',
+            },
+          );
+        } else {
+          toast(res.msg ?? t('breakout-room.invitation-sent-error'), {
+            type: 'error',
+          });
+        }
+      })
+      .catch((e) => {
+        const msg =
+          (e as any)?.data?.msg ?? t('breakout-room.invitation-sent-error');
+        toast(msg, { type: 'error' });
+      });
   };
 
   return (
@@ -68,10 +91,11 @@ const BreakoutRoomUsers = ({
               </span>
               {!user.joined && (
                 <button
-                  onClick={() => pushUser(user.name, user.id)}
-                  className="primary-button ms-auto h-6 px-3 cursor-pointer text-xs font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+                  onClick={() => reInviteUser(user.name, user.id)}
+                  className="primary-button ms-auto h-6 px-3 cursor-pointer text-xs font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isLoading}
                 >
-                  {t('breakout-room.push')}
+                  {t('breakout-room.invite')}
                 </button>
               )}
             </li>

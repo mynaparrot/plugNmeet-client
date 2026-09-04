@@ -96,9 +96,16 @@ export class NotepadController {
 
   private canAccessSessionData = (): boolean => {
     const u = store.getState().session.currentUser;
-    return (
-      !!u && (u.metadata?.isPresenter === true || u.metadata?.isAdmin === true)
-    );
+    if (!u) {
+      return false;
+    }
+    if (u.metadata?.isPresenter === true || u.metadata?.isAdmin === true) {
+      return true;
+    }
+    // Breakout rooms relax session-data fetch auth: any in-room member may
+    // fetch (saves stay presenter/admin-gated). This lets a non-presenter member
+    // hydrate the notepad directly from the server when no presenter is online.
+    return !!store.getState().session.currentRoom.metadata?.isBreakoutRoom;
   };
 
   private waitForServerFirst = () =>
@@ -356,7 +363,11 @@ export class NotepadController {
     }, SAVE_MAX_WAIT_MS);
   };
 
-  uploadSessionData = async (update: Uint8Array, key: string) => {
+  uploadSessionData = async (
+    update: Uint8Array,
+    key: string,
+    targetRoomId?: string,
+  ) => {
     const conn = getNatsConn();
     if (!conn) return;
     let value = update;
@@ -373,6 +384,7 @@ export class NotepadController {
           create(SessionDataHeaderSchema, {
             dataType: SessionDataType.NOTEPAD,
             key,
+            ...(targetRoomId ? { targetRoomId } : {}),
           }),
         ),
         binMsg: value,

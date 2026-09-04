@@ -7,6 +7,7 @@ const initialState: IBreakoutRoomSlice = {
     roomId: 0,
   },
   receivedInvitationFor: '',
+  isReturningToMainRoom: false,
 };
 
 const breakoutRoomSlice = createSlice({
@@ -22,10 +23,16 @@ const breakoutRoomSlice = createSlice({
     updateReceivedInvitationFor: (state, action: PayloadAction<string>) => {
       state.receivedInvitationFor = action.payload;
     },
+    setReturningToMainRoom: (state, action: PayloadAction<boolean>) => {
+      state.isReturningToMainRoom = action.payload;
+    },
   },
 });
 
-export const { updateBreakoutRoomDroppedUser, updateReceivedInvitationFor } =
-  breakoutRoomSlice.actions;
+export const {
+  updateBreakoutRoomDroppedUser,
+  updateReceivedInvitationFor,
+  setReturningToMainRoom,
+} = breakoutRoomSlice.actions;
 
 export default breakoutRoomSlice.reducer;

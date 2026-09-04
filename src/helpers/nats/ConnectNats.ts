@@ -56,6 +56,7 @@ import { executeChatTranslation } from '../../components/translation-transcripti
 import { teardownNativePublisher } from '../nativeBridge';
 import { getNotepadController } from '../../components/shared-notepad/NotepadController';
 import { getWhiteboardController } from '../../components/whiteboard/collab';
+import { autoReturnToMainRoom } from '../../components/breakout-room/utils/breakoutRoom';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000,
   PING_INTERVAL = 10 * 1000,
@@ -305,6 +306,19 @@ export default class ConnectNats {
   };
 
   public endSession = async (msg: string) => {
+    const meta = this._currentRoomInfo?.metadata;
+
+    // If we're inside a breakout room, try to auto-return to the main room
+    // immediately — before showing any disconnected / ended screen. Only fall
+    // back to the normal ended-session handling if the return call fails.
+    // The isReturningToMainRoom guard still prevents double-triggering.
+    if (meta?.isBreakoutRoom) {
+      const returned = await autoReturnToMainRoom();
+      if (returned) {
+        return;
+      }
+    }
+
     // Hybrid mode: tell the native host to release its LiveKit publisher + media
     // (no-op in a regular browser)
     teardownNativePublisher();
@@ -352,13 +366,9 @@ export default class ConnectNats {
 
     // Handle post-session navigation after a delay
     // This timeout allows the user time to read the disconnection message.
+    // (Breakout rooms are handled earlier via autoReturnToMainRoom.)
     setTimeout(() => {
       const meta = this._currentRoomInfo?.metadata;
-      if (meta?.isBreakoutRoom) {
-        window.close();
-        return; // Exit to avoid processing logoutUrl
-      }
-
       if (meta?.logoutUrl && isValidHttpUrl(meta.logoutUrl)) {
         window.location.href = meta.logoutUrl;
       }

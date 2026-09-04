@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { create } from '@bufbuild/protobuf';
-import copy from 'copy-text-to-clipboard';
 import { JoinBreakoutRoomReqSchema } from 'plugnmeet-protocol-js';
 
 import { store, useAppDispatch } from '../../../store';
@@ -10,6 +9,7 @@ import { updateReceivedInvitationFor } from '../../../store/slices/breakoutRoomS
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 import ActionButton from '../../../helpers/ui/actionButton';
 import { BreakoutRoomIconSVG } from '../../../assets/Icons/BreakoutRoomIconSVG';
+import { buildAccessTokenUrl } from '../../../components/breakout-room/utils/breakoutRoom';
 
 interface NewBreakoutRoomProps {
   receivedInvitationFor: string | undefined;
@@ -23,10 +23,6 @@ const NewBreakoutRoom = ({
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const [joinRoom, { isLoading, data }] = useJoinRoomMutation();
-  const [joinLink, setJoinLink] = useState<string>('');
-  const [copyText, setCopyText] = useState<string>(
-    t('breakout-room.copy').toString(),
-  );
   const userId = useMemo(
     () => store.getState().session.currentUser?.userId,
     [],
@@ -45,24 +41,10 @@ const NewBreakoutRoom = ({
         return;
       }
       if (data.token && data.token !== '') {
-        const searchParams = new URLSearchParams(window.location.search);
-        searchParams.set('access_token', data.token);
-        const url =
-          location.protocol +
-          '//' +
-          location.host +
-          window.location.pathname +
-          '?' +
-          searchParams.toString();
-
-        const opened = window.open(url, '_blank');
-        setJoinLink(url);
-
-        if (!opened) {
-          setJoinLink(url);
-          return;
-        }
-
+        // Redirect the current tab to the breakout room instead of opening a
+        // new tab (window.location.replace keeps a single connection and makes
+        // browser-back exit the session).
+        window.location.replace(buildAccessTokenUrl(data.token));
         dispatch(updateReceivedInvitationFor(''));
       }
     }
@@ -88,14 +70,6 @@ const NewBreakoutRoom = ({
     );
   }, [receivedInvitationFor, userId, joinRoom, dispatch, t]);
 
-  const copyUrl = useCallback(() => {
-    copy(joinLink);
-    setCopyText(t('breakout-room.copied').toString());
-    setTimeout(() => {
-      setCopyText(t('breakout-room.copy').toString());
-    }, 1000);
-  }, [joinLink, t]);
-
   const formatDate = (timeStamp?: number) => {
     const date = new Date(timeStamp ?? 0);
     return date.toLocaleString([], {
@@ -112,26 +86,6 @@ const NewBreakoutRoom = ({
       </div>
       <div className="text flex-1 text-Gray-800 dark:text-white text-sm">
         <p>{t('breakout-room.invitation-msg')}</p>
-        {joinLink !== '' && (
-          <div className="invite-link">
-            <label className="text-black dark:text-white text-sm">
-              {t('breakout-room.join-text-label')}
-            </label>
-            <input
-              dir="auto"
-              type="text"
-              readOnly={true}
-              value={joinLink}
-              className="inline-block outline-hidden border border-solid rounded-sm p-1 h-7 text-sm mx-1 bg-transparent dark:text-dark-text dark:border-dark-text"
-            />
-            <button
-              onClick={copyUrl}
-              className="text-center py-1 px-3 text-xs transition ease-in bg-primary-color hover:bg-secondary-color text-white font-semibold rounded-lg"
-            >
-              {copyText}
-            </button>
-          </div>
-        )}
         <div className="bottom flex justify-between text-Gray-800 text-xs items-center">
           <span className="">{formatDate(createdAt)}</span>{' '}
           <div className="btn-group">

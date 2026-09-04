@@ -121,6 +121,40 @@ export class WhiteboardController {
   private isCurrentUserPresenter = (): boolean =>
     !!store.getState().session.currentUser?.metadata?.isPresenter;
 
+  private isBreakoutRoom = (): boolean =>
+    !!store.getState().session.currentRoom.metadata?.isBreakoutRoom;
+
+  /**
+   * Whether a non-presenter in a presenter-less breakout room must hydrate the
+   * current page from the server (the breakout fetch-auth relaxation makes this
+   * safe) instead of relying on a peer Yjs sync that will never answer. Used by
+   * both the initial join path and page switches where no presenter is online.
+   */
+  needsServerHydration = () =>
+    this.isBreakoutRoom() && !this.hasPresenterOnline();
+
+  /**
+   * Whether any online peer (other than the current user) holds the presenter
+   * role. Used to detect the breakout-room case where a non-presenter has no
+   * presenter to request initial data from.
+   */
+  private hasPresenterOnline = () => {
+    const state = store.getState();
+    const currentUserId = state.session.currentUser?.userId;
+    if (!currentUserId) {
+      return false;
+    }
+    return participantsSelector
+      .selectAll(state)
+      .some(
+        (p) =>
+          p.userId !== currentUserId &&
+          p.isOnline &&
+          !p.metadata?.waitForApproval &&
+          p.metadata?.isPresenter,
+      );
+  };
+
   private canParticipantEdit = (
     participant: IParticipant,
     defaultRoomLock: boolean | undefined,
@@ -477,7 +511,11 @@ export class WhiteboardController {
     );
   };
 
-  uploadSessionData = async (update: Uint8Array, key: string) => {
+  uploadSessionData = async (
+    update: Uint8Array,
+    key: string,
+    targetRoomId?: string,
+  ) => {
     const conn = getNatsConn();
     if (!conn || !this.fileId) return;
     let value = update;
@@ -494,6 +532,7 @@ export class WhiteboardController {
           create(SessionDataHeaderSchema, {
             dataType: SessionDataType.WHITEBOARD,
             key,
+            ...(targetRoomId ? { targetRoomId } : {}),
           }),
         ),
         binMsg: value,
@@ -858,6 +897,25 @@ export class WhiteboardController {
         return;
       }
 
+      // Breakout-room fallback: the server relaxes SESSION_DATA_FETCH auth for
+      // breakout rooms, so when a non-presenter joins a breakout room with no
+      // presenter online (the peer sync request would otherwise get no answer),
+      // hydrate directly from the server instead of waiting for a peer. This is
+      // intentionally "upfront" detection: the no-presenter condition is a
+      // reliable signal that peer sync won't yield the canonical (server-seeded)
+      // state, and it avoids the 4s INITIAL_REQUEST_TIMEOUT_MS wait.
+      if (this.needsServerHydration()) {
+        void this.hydrateFromServerAsNonPresenter().then(() => {
+          const state = store.getState();
+          resolve({
+            fileId:
+              this.fileId || state.whiteboard.currentWhiteboardOfficeFileId,
+            page: this.page || state.whiteboard.currentPage,
+          });
+        });
+        return;
+      }
+
       // Single-flight: cancel any previous pending initial request.
       this.resolveInitialRequest(null);
 
@@ -888,6 +946,21 @@ export class WhiteboardController {
       }, INITIAL_REQUEST_TIMEOUT_MS);
     });
   };
+
+  /**
+   * Breakout-room fallback used by `requestInitialData` when a non-presenter
+   * joins a breakout room with no presenter online. Performs the same
+   * server-side hydration the presenter path uses (canonical checkpoint +
+   * rolling diff via SESSION_DATA_FETCH), so the newly joined user converges on
+   * the server-seeded whiteboard state. The server relaxes fetch auth for
+   * breakout rooms, so any in-room member may do this.
+   */
+  private async hydrateFromServerAsNonPresenter(): Promise<void> {
+    const state = store.getState();
+    const fileId = state.whiteboard.currentWhiteboardOfficeFileId;
+    const page = state.whiteboard.currentPage;
+    await this.sync(fileId, page, { hydrate: true });
+  }
 
   private resolveInitialRequest = (
     data: { fileId: string; page: number } | null,

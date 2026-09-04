@@ -15,6 +15,7 @@ import { HeaderMenuIcon } from '../../assets/Icons/HeaderMenuIcon';
 import UserNotifications from './user-notifications';
 import ConnectionStatus from './connectionStatus';
 import ConfirmationModal from '../../helpers/ui/confirmationModal';
+import BackToMainBtn from '../breakout-room/backToMainBtn';
 
 const Header = () => {
   const roomTitle = useAppSelector(
@@ -56,12 +57,13 @@ const Header = () => {
             <HeaderLogo />
             <DarkThemeSwitcher />
           </div>
-          <div className="middle flex-1 min-w-0 flex justify-center z-10 order-2 py-0.5 mx-2">
-            <h2 className="header-title text-xs sm:text-sm 3xl:text-base font-medium text-Gray-950 dark:text-white leading-tight text-center cursor-text truncate">
+          <div className="middle flex-1 min-w-0 flex items-center justify-center z-10 order-2 py-0.5 mx-2 gap-2">
+            <h2 className="header-title text-xs sm:text-sm 3xl:text-base font-medium text-Gray-950 dark:text-white leading-tight text-center cursor-text truncate min-w-0">
               {title}
             </h2>
           </div>
           <div className="right flex items-center justify-end relative -end-3 shrink-0 gap-0.5 z-30 order-3">
+            <BackToMainBtn />
             <DurationView />
             <UserNotifications />
             <ConnectionStatus />

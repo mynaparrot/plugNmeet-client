@@ -42,6 +42,9 @@ export interface IWhiteboardOfficeFile {
   pageFiles: string;
 }
 
+/** Sentinel file id used when no office whiteboard file is active (blank board). */
+export const DEFAULT_WHITEBOARD_OFFICE_FILE_ID = 'default';
+
 export interface IWhiteboardAppState {
   height: number;
   width: number;

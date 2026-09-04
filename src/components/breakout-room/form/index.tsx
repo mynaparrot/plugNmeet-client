@@ -16,6 +16,12 @@ import { BreakoutRoomMessage } from '..';
 import { selectBasicParticipants } from '../../../store/slices/participantSlice';
 import useStorePreviousInt from '../../../helpers/hooks/useStorePreviousInt';
 import { updateBreakoutRoomDroppedUser } from '../../../store/slices/breakoutRoomSlice';
+import {
+  buildWhiteboardShare,
+  useWhiteboardShareState,
+} from './useWhiteboardShareState';
+import WhiteboardShareSection from './whiteboardShareSection';
+import NotepadShareSection from './notepadShareSection';
 
 interface IFromElemsProps {
   createBreakoutRooms: (req: CreateBreakoutRoomsReq) => void;
@@ -32,6 +38,35 @@ const FromElems = ({
   const dispatch = useAppDispatch();
   const participants = useAppSelector(selectBasicParticipants);
   const droppedUser = useAppSelector((state) => state.breakoutRoom.droppedUser);
+
+  const isWhiteboardEnabled = useAppSelector(
+    (state) =>
+      !!state.session.currentRoom.metadata?.roomFeatures?.whiteboardFeatures
+        ?.isAllow,
+  );
+  const isNotepadEnabled = useAppSelector(
+    (state) =>
+      !!state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures
+        ?.isAllow,
+  );
+
+  // Whiteboard share state (selectors + default-checked + resync + builder).
+  const {
+    currentWhiteboardOfficeFileId,
+    whiteboardTotalPages,
+    whiteboardCurrentPage,
+    hasWhiteboardFile,
+    allWhiteboardPages,
+    shareWhiteboard,
+    setShareWhiteboard,
+    selectedWhiteboardPages,
+    setSelectedWhiteboardPages,
+    toggleWhiteboardPage,
+    whiteboardPagesSelected,
+    contentShareDisabled,
+  } = useWhiteboardShareState();
+
+  const [shareNotepad, setShareNotepad] = useState<boolean>(false);
 
   const [totalRooms, setTotalRooms] = useState<number>(1);
   const preTotalRooms = useStorePreviousInt(totalRooms);
@@ -151,10 +186,19 @@ const FromElems = ({
       return;
     }
 
+    const whiteboardShare = buildWhiteboardShare({
+      enabled: whiteboardPagesSelected,
+      fileId: currentWhiteboardOfficeFileId,
+      pages: selectedWhiteboardPages,
+      currentPage: whiteboardCurrentPage,
+    });
+
     const req = create(CreateBreakoutRoomsReqSchema, {
       duration: String(roomDuration),
       welcomeMsg: welcomeMsg,
       rooms: tmp,
+      shareNotepad: shareNotepad && !contentShareDisabled,
+      ...(whiteboardShare ? { whiteboardShare } : {}),
     });
     createBreakoutRooms(req);
   }, [
@@ -165,6 +209,12 @@ const FromElems = ({
     createBreakoutRooms,
     setMessage,
     t,
+    shareNotepad,
+    contentShareDisabled,
+    whiteboardPagesSelected,
+    selectedWhiteboardPages,
+    currentWhiteboardOfficeFileId,
+    whiteboardCurrentPage,
   ]);
 
   return (
@@ -231,11 +281,37 @@ const FromElems = ({
           );
         })}
       </div>
+
+      {isWhiteboardEnabled && (
+        <WhiteboardShareSection
+          hasWhiteboardFile={hasWhiteboardFile}
+          shareWhiteboard={shareWhiteboard}
+          setShareWhiteboard={setShareWhiteboard}
+          selectedWhiteboardPages={selectedWhiteboardPages}
+          setSelectedWhiteboardPages={setSelectedWhiteboardPages}
+          toggleWhiteboardPage={toggleWhiteboardPage}
+          allWhiteboardPages={allWhiteboardPages}
+          whiteboardTotalPages={whiteboardTotalPages}
+          disabled={contentShareDisabled}
+        />
+      )}
+
+      {isNotepadEnabled && (
+        <NotepadShareSection
+          shareNotepad={shareNotepad}
+          setShareNotepad={setShareNotepad}
+          disabled={contentShareDisabled}
+        />
+      )}
+
       <div className="flex justify-end mt-4">
         <button
           className="primary-button h-9 w-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
           onClick={handleStartBreakoutRooms}
-          disabled={isLoading}
+          disabled={
+            isLoading ||
+            (whiteboardPagesSelected && selectedWhiteboardPages.length === 0)
+          }
         >
           {t('breakout-room.start')}
         </button>
