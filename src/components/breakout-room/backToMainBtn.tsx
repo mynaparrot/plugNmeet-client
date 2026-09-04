@@ -15,6 +15,7 @@ const BackToMainBtn = () => {
     isBreakoutRoom,
     roomId,
     userId,
+    isAdmin,
     parentRoomId,
     allowReturnToMainRoom,
   } = useMemo(() => {
@@ -23,6 +24,7 @@ const BackToMainBtn = () => {
       isBreakoutRoom: session.currentRoom.metadata?.isBreakoutRoom,
       roomId: session.currentRoom.roomId,
       userId: session.currentUser?.userId,
+      isAdmin: session.currentUser?.metadata?.isAdmin,
       parentRoomId: session.currentRoom.metadata?.parentRoomId,
       allowReturnToMainRoom:
         session.currentRoom.metadata?.roomFeatures?.breakoutRoomFeatures
@@ -42,7 +44,7 @@ const BackToMainBtn = () => {
     }
   }, [isSuccess, isError, data, error, t]);
 
-  if (!isBreakoutRoom || allowReturnToMainRoom === false) {
+  if (!isBreakoutRoom || (allowReturnToMainRoom === false && !isAdmin)) {
     return null;
   }
 

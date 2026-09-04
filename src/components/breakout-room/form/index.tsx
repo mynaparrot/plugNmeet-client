@@ -74,6 +74,7 @@ const FromElems = ({
 
   const [shareNotepad, setShareNotepad] = useState<boolean>(false);
   const [sharePolls, setSharePolls] = useState<boolean>(false);
+  const [sharePollIds, setSharePollIds] = useState<string[]>([]);
 
   const [totalRooms, setTotalRooms] = useState<number>(1);
   const preTotalRooms = useStorePreviousInt(totalRooms);
@@ -207,9 +208,11 @@ const FromElems = ({
       welcomeMsg: welcomeMsg,
       rooms: tmp,
       shareNotepad: shareNotepad && !contentShareDisabled,
-      sharePolls: sharePolls,
       allowReturnToMainRoom: allowReturnToMainRoom,
       ...(whiteboardShare ? { whiteboardShare } : {}),
+      ...(sharePolls && sharePollIds.length > 0
+        ? { pollShare: { pollIds: sharePollIds } }
+        : {}),
     });
     createBreakoutRooms(req);
   }, [
@@ -222,6 +225,7 @@ const FromElems = ({
     t,
     shareNotepad,
     sharePolls,
+    sharePollIds,
     allowReturnToMainRoom,
     contentShareDisabled,
     whiteboardPagesSelected,
@@ -278,7 +282,7 @@ const FromElems = ({
           </button>
         </div>
       </div>
-      <div className="item flex items-start mt-4">
+      <div className="item flex items-start mt-4 mb-4">
         <div className="input">
           <input
             id="allow-return-to-main-room"
@@ -345,6 +349,8 @@ const FromElems = ({
         <PollsShareSection
           sharePolls={sharePolls}
           setSharePolls={setSharePolls}
+          sharePollIds={sharePollIds}
+          setSharePollIds={setSharePollIds}
         />
       )}
 

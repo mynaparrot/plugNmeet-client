@@ -42,11 +42,28 @@ export default class HandleSystemData {
     if (nt.msg === 'notifications.whiteboard-new-file-added') {
       store.dispatch(triggerRefreshWhiteboardFilesListSignal());
     }
+
+    // The server may send the notification message as JSON: {"key": "<i18n key>", ...values}
+    // so it can be translated with interpolation in the receiver's own locale.
+    // Plain strings and bare i18n keys pass through as before.
+    let message = nt.msg;
+    try {
+      const parsed = JSON.parse(nt.msg);
+      if (parsed && typeof parsed.key === 'string') {
+        const { key, ...values } = parsed;
+        message = i18n.t(key, values).toString();
+      } else {
+        message = i18n.t(nt.msg);
+      }
+    } catch {
+      message = i18n.t(nt.msg);
+    }
+
     switch (nt.type) {
       case NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_INFO:
         store.dispatch(
           addUserNotification({
-            message: i18n.t(nt.msg),
+            message,
             typeOption: 'info',
             newInstance: true,
           }),
@@ -59,7 +76,7 @@ export default class HandleSystemData {
       case NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_WARNING:
         store.dispatch(
           addUserNotification({
-            message: i18n.t(nt.msg),
+            message,
             typeOption: 'warning',
             newInstance: true,
           }),
@@ -71,7 +88,7 @@ export default class HandleSystemData {
       case NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_ERROR:
         store.dispatch(
           addUserNotification({
-            message: i18n.t(nt.msg),
+            message,
             typeOption: 'error',
             newInstance: true,
           }),
