@@ -25,6 +25,7 @@ import { handleWhiteboardAIStreamResult } from '../../components/whiteboard/ai/w
 import HandleChat from './HandleChat';
 import { triggerRefreshWhiteboardFilesListSignal } from '../../store/slices/whiteboard';
 import { breakoutRoomApi } from '../../store/services/breakoutRoomApi';
+import { buildAccessTokenUrl } from '../../components/breakout-room/utils/breakoutRoom';
 
 export default class HandleSystemData {
   private readonly _handleChat: HandleChat;
@@ -159,6 +160,20 @@ export default class HandleSystemData {
           breakoutRoomApi.util.invalidateTags(['List', 'My_Rooms']),
         );
         break;
+      case NatsMsgServerToClientEvents.BREAKOUT_ROOM_USER_MOVED: {
+        // Admin-initiated move: apply the new room token immediately (same-tab).
+        if (payload.msg !== '') {
+          try {
+            const parsed = JSON.parse(payload.msg) as { token?: string };
+            if (parsed.token) {
+              window.location.replace(buildAccessTokenUrl(parsed.token));
+            }
+          } catch {
+            // malformed payload — ignore
+          }
+        }
+        break;
+      }
     }
   };
 

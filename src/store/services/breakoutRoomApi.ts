@@ -17,6 +17,8 @@ import {
   IncreaseBreakoutRoomDurationReqSchema,
   JoinBreakoutRoomReq,
   JoinBreakoutRoomReqSchema,
+  MoveBreakoutRoomUserReq,
+  MoveBreakoutRoomUserReqSchema,
   ReInviteBreakoutRoomReq,
   ReInviteBreakoutRoomReqSchema,
 } from 'plugnmeet-protocol-js';
@@ -163,6 +165,18 @@ export const breakoutRoomApi = createApi({
       },
       transformErrorResponse: renewTokenOnError,
     }),
+    moveUser: builder.mutation<BreakoutRoomRes, MoveBreakoutRoomUserReq>({
+      query(body) {
+        return {
+          url: 'moveUser',
+          method: 'POST',
+          body: toBinary(MoveBreakoutRoomUserReqSchema, body),
+          responseHandler: handleProtobufResponse(BreakoutRoomResSchema),
+        };
+      },
+      transformErrorResponse: renewTokenOnError,
+      invalidatesTags: ['List'],
+    }),
   }),
 });
 
@@ -177,4 +191,5 @@ export const {
   useGetMyBreakoutRoomsQuery,
   useBackToMainMutation,
   useReInviteMutation,
+  useMoveUserMutation,
 } = breakoutRoomApi;

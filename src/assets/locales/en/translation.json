@@ -590,7 +590,28 @@
     "current-room": "Current Room",
     "no-rooms": "No breakout rooms available.",
     "error-loading": "Failed to load breakout rooms.",
-    "not-assigned": "You haven't been assigned to a breakout room yet."
+    "not-assigned": "You haven't been assigned to a breakout room yet.",
+    "move": "Move",
+    "move-success": "{{name}} was moved to {{room}}",
+    "move-failed": "Failed to move user.",
+    "unassigned-users": "Unassigned users",
+    "unassigned-users-desc": "Online in the main room but not assigned to any breakout room.",
+    "notifications": {
+      "only-admin": "Only admin can perform this task.",
+      "user-not-online": "User is not online in any room.",
+      "user-already-in-main": "User is already in the main room.",
+      "user-already-in-room": "User is already in this breakout room.",
+      "user-not-assigned": "User is not assigned to this breakout room.",
+      "user-not-allowed-join": "User is not allowed to join this breakout room.",
+      "user-already-joined": "User has already joined.",
+      "main-room-not-active": "Main room is not active anymore.",
+      "cannot-create-inside-breakout": "Breakout rooms cannot be created inside another breakout room.",
+      "max-rooms-exceeded": "Number of breakout rooms exceeds the allowed limit.",
+      "creation-failed": "Breakout room creation wasn't successful for any room.",
+      "unexpected-error": "Something went wrong. Please try again.",
+      "room-not-found": "Breakout room not found.",
+      "duration-exceeds-parent": "Breakout room duration cannot exceed the parent room's duration."
+    }
   },
   "landing": {
     "connecting-media-server": "Connecting to the meeting...",

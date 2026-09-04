@@ -102,6 +102,7 @@ const RoomItem = ({ room, setMessage }: RoomItemProps) => {
                     <BreakoutRoomUsers
                       users={room.users}
                       breakoutRoomId={room.id}
+                      setMessage={setMessage}
                     />
                   </div>
                 </div>
