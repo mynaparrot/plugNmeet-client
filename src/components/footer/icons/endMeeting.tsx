@@ -8,7 +8,7 @@ import {
 } from 'plugnmeet-protocol-js';
 import clsx from 'clsx';
 
-import { store } from '../../../store';
+import { store, useAppSelector } from '../../../store';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { getNatsConn } from '../../../helpers/nats';
 import ConfirmationModal from '../../../helpers/ui/confirmationModal';
@@ -78,6 +78,14 @@ const EndMeetingButton = () => {
     setIsBusy(false);
     setIsOpen(false);
   }, [isBusy, isAdmin, conn, roomId, t]);
+
+  const isBreakoutRoom = useAppSelector(
+    (state) => !!state.session.currentRoom.metadata?.isBreakoutRoom,
+  );
+
+  if (isBreakoutRoom) {
+    return null;
+  }
 
   const buttonClasses = clsx(
     'relative footer-icon cursor-pointer w-10 md:w-11 3xl:w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px]',

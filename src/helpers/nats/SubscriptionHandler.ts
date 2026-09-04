@@ -340,14 +340,21 @@ export default class SubscriptionHandler {
       this._handleParticipants.handleParticipantMetadataUpdate(p.msg),
     [NatsMsgServerToClientEvents.SESSION_ENDED]: (p) =>
       this.connectNats.endSession(p.msg),
+
+    // all poll related events
     [NatsMsgServerToClientEvents.POLL_CREATED]: (p) =>
       this._handleSystemData.handlePoll(p),
     [NatsMsgServerToClientEvents.POLL_CLOSED]: (p) =>
       this._handleSystemData.handlePoll(p),
+
+    // add breakout rooms related events
     [NatsMsgServerToClientEvents.JOIN_BREAKOUT_ROOM]: (p) =>
       this._handleSystemData.handleBreakoutRoom(p),
     [NatsMsgServerToClientEvents.BREAKOUT_ROOM_ENDED]: (p) =>
       this._handleSystemData.handleBreakoutRoom(p),
+    [NatsMsgServerToClientEvents.BREAKOUT_ROOM_USER_MOVED]: (p) =>
+      this._handleSystemData.handleBreakoutRoom(p),
+
     [NatsMsgServerToClientEvents.SYSTEM_CHAT_MSG]: (p) =>
       this._handleSystemData.handleSysChatMsg(p.msg),
     [NatsMsgServerToClientEvents.TRANSCRIPTION_OUTPUT_TEXT]: (p) =>

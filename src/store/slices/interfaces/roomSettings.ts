@@ -85,6 +85,7 @@ export interface UserNotification {
   autoClose?: number | false;
   created?: number;
   disableToastNotification?: boolean;
+  disablePersistentStorage?: boolean;
 }
 
 export type NotificationCats =

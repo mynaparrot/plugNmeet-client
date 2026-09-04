@@ -18,6 +18,7 @@ const BackToMainBtn = () => {
     isAdmin,
     parentRoomId,
     allowReturnToMainRoom,
+    allowSelfSelect,
   } = useMemo(() => {
     const session = store.getState().session;
     return {
@@ -29,6 +30,9 @@ const BackToMainBtn = () => {
       allowReturnToMainRoom:
         session.currentRoom.metadata?.roomFeatures?.breakoutRoomFeatures
           ?.allowReturnToMainRoom,
+      allowSelfSelect:
+        session.currentRoom.metadata?.roomFeatures?.breakoutRoomFeatures
+          ?.allowSelfSelect,
     };
   }, []);
 
@@ -44,7 +48,10 @@ const BackToMainBtn = () => {
     }
   }, [isSuccess, isError, data, error, t]);
 
-  if (!isBreakoutRoom || (allowReturnToMainRoom === false && !isAdmin)) {
+  if (
+    !isBreakoutRoom ||
+    (allowReturnToMainRoom === false && allowSelfSelect !== true && !isAdmin)
+  ) {
     return null;
   }
 

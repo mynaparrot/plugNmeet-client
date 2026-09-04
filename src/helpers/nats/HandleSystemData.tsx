@@ -29,6 +29,7 @@ import { buildAccessTokenUrl } from '../../components/breakout-room/utils/breako
 
 export default class HandleSystemData {
   private readonly _handleChat: HandleChat;
+  private hasHandledUserMoved = false;
 
   constructor(handleChat: HandleChat) {
     this._handleChat = handleChat;
@@ -161,12 +162,35 @@ export default class HandleSystemData {
         );
         break;
       case NatsMsgServerToClientEvents.BREAKOUT_ROOM_USER_MOVED: {
-        // Admin-initiated move: apply the new room token immediately (same-tab).
         if (payload.msg !== '') {
           try {
-            const parsed = JSON.parse(payload.msg) as { token?: string };
-            if (parsed.token) {
-              window.location.replace(buildAccessTokenUrl(parsed.token));
+            const parsed = JSON.parse(payload.msg) as {
+              token?: string;
+              targetRoomId?: string;
+              title?: string;
+            };
+            const token = parsed.token;
+            // a duplicate event must not re-trigger.
+            if (token && !this.hasHandledUserMoved) {
+              this.hasHandledUserMoved = true;
+              // An empty/missing targetRoomId means moving to the main room.
+              const roomLabel = parsed.targetRoomId
+                ? parsed.title
+                : i18n.t('breakout-room.main-room');
+              store.dispatch(
+                addUserNotification({
+                  message: i18n.t('breakout-room.user-moved', {
+                    room: roomLabel,
+                  }),
+                  typeOption: 'info',
+                  autoClose: false,
+                  disablePersistentStorage: true,
+                }),
+              );
+              // Give the user a moment to read the notification before redirecting.
+              setTimeout(() => {
+                window.location.replace(buildAccessTokenUrl(token));
+              }, 2000);
             }
           } catch {
             // malformed payload — ignore

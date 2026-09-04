@@ -172,7 +172,7 @@ const AdminMenus = () => {
           text={t('footer.menus.manage-waiting-room')}
         />
       )}
-      {(roomFeatures?.breakoutRoomFeatures?.isAllow || isBreakoutRoom) && (
+      {!isBreakoutRoom && roomFeatures?.breakoutRoomFeatures?.isAllow && (
         <MenuItemHelper
           onClick={openManageBreakoutRoomModal}
           icon={<BreakoutRoomIconSVG classes="w-6 h-auto" />}

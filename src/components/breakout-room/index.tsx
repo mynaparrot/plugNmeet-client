@@ -30,13 +30,6 @@ const BreakoutRoom = () => {
       !!state.session.currentRoom.metadata?.roomFeatures?.breakoutRoomFeatures
         ?.isActive,
   );
-  // Inside a breakout room the local breakout feature is disabled, but an admin
-  // must still be able to manage the parent's rooms. In that context we always
-  // show the management view (rooms are already created; creation is main-room
-  // only).
-  const isBreakoutRoom = useAppSelector(
-    (state) => !!state.session.currentRoom.metadata?.isBreakoutRoom,
-  );
 
   const [createBreakoutRoom, { isLoading, data, error, isSuccess }] =
     useCreateBreakoutRoomsMutation();
@@ -141,7 +134,7 @@ const BreakoutRoom = () => {
             {message.text}
           </div>
         )}
-        {breakoutRoomIsActive || isBreakoutRoom ? (
+        {breakoutRoomIsActive ? (
           <ManageActiveRooms setMessage={setMessage} />
         ) : (
           <FormElems

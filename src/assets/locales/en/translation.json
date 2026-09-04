@@ -594,6 +594,7 @@
     "move": "Move",
     "move-success": "{{name}} was moved to {{room}}",
     "move-failed": "Failed to move user.",
+    "user-moved": "You are being moved to {{room}}",
     "unassigned-users": "Unassigned users",
     "unassigned-users-desc": "Online in the main room but not assigned to any breakout room.",
     "notifications": {

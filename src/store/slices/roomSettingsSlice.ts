@@ -191,11 +191,14 @@ const roomSettingsSlice = createSlice({
         action.payload.created = Date.now();
       }
       state.userNotifications.push(action.payload);
-      idbStore(
+      if (action.payload.disablePersistentStorage) {
+        return;
+      }
+      void idbStore(
         DB_STORE_NAMES.USER_NOTIFICATIONS,
         action.payload.created.toString(),
         action.payload,
-      ).then();
+      );
     },
     setAllUserNotifications: (
       state,
