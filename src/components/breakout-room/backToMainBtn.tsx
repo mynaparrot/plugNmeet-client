@@ -11,13 +11,22 @@ import { ArrowLeft } from '../../assets/Icons/ArrowLeft';
 
 const BackToMainBtn = () => {
   const { t } = useTranslation();
-  const { isBreakoutRoom, roomId, userId, parentRoomId } = useMemo(() => {
+  const {
+    isBreakoutRoom,
+    roomId,
+    userId,
+    parentRoomId,
+    allowReturnToMainRoom,
+  } = useMemo(() => {
     const session = store.getState().session;
     return {
       isBreakoutRoom: session.currentRoom.metadata?.isBreakoutRoom,
       roomId: session.currentRoom.roomId,
       userId: session.currentUser?.userId,
       parentRoomId: session.currentRoom.metadata?.parentRoomId,
+      allowReturnToMainRoom:
+        session.currentRoom.metadata?.roomFeatures?.breakoutRoomFeatures
+          ?.allowReturnToMainRoom,
     };
   }, []);
 
@@ -33,7 +42,7 @@ const BackToMainBtn = () => {
     }
   }, [isSuccess, isError, data, error, t]);
 
-  if (!isBreakoutRoom) {
+  if (!isBreakoutRoom || allowReturnToMainRoom === false) {
     return null;
   }
 

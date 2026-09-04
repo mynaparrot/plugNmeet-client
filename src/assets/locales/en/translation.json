@@ -524,6 +524,10 @@
     "ask-question": "Ask a question"
   },
   "breakout-room": {
+    "share-polls": "Share polls with breakout rooms",
+    "share-polls-desc": "{{count}} polls will be shared with each breakout room.",
+    "allow-return-to-main-room": "Allow participants to return to main room",
+    "allow-return-to-main-room-desc": "Participants can leave their breakout room and return to the main room on their own.",
     "modal-title": "Manage Breakout Rooms",
     "num-rooms": "Number of Rooms",
     "duration": "Duration (minutes)",

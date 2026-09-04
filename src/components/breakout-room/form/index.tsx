@@ -22,6 +22,7 @@ import {
 } from './useWhiteboardShareState';
 import WhiteboardShareSection from './whiteboardShareSection';
 import NotepadShareSection from './notepadShareSection';
+import PollsShareSection from './pollsShareSection';
 
 interface IFromElemsProps {
   createBreakoutRooms: (req: CreateBreakoutRoomsReq) => void;
@@ -49,6 +50,11 @@ const FromElems = ({
       !!state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures
         ?.isAllow,
   );
+  const isPollsEnabled = useAppSelector(
+    (state) =>
+      !!state.session.currentRoom.metadata?.roomFeatures?.pollsFeatures
+        ?.isAllow,
+  );
 
   // Whiteboard share state (selectors + default-checked + resync + builder).
   const {
@@ -67,6 +73,7 @@ const FromElems = ({
   } = useWhiteboardShareState();
 
   const [shareNotepad, setShareNotepad] = useState<boolean>(false);
+  const [sharePolls, setSharePolls] = useState<boolean>(false);
 
   const [totalRooms, setTotalRooms] = useState<number>(1);
   const preTotalRooms = useStorePreviousInt(totalRooms);
@@ -74,6 +81,8 @@ const FromElems = ({
   const [welcomeMsg, setWelcomeMsg] = useState<string>(
     () => store.getState().session.currentRoom.metadata?.welcomeMessage ?? '',
   );
+  const [allowReturnToMainRoom, setAllowReturnToMainRoom] =
+    useState<boolean>(true);
   const [users, setUsers] = useState<Array<UserType>>([]);
 
   // we'll clean during unmount
@@ -198,6 +207,8 @@ const FromElems = ({
       welcomeMsg: welcomeMsg,
       rooms: tmp,
       shareNotepad: shareNotepad && !contentShareDisabled,
+      sharePolls: sharePolls,
+      allowReturnToMainRoom: allowReturnToMainRoom,
       ...(whiteboardShare ? { whiteboardShare } : {}),
     });
     createBreakoutRooms(req);
@@ -210,6 +221,8 @@ const FromElems = ({
     setMessage,
     t,
     shareNotepad,
+    sharePolls,
+    allowReturnToMainRoom,
     contentShareDisabled,
     whiteboardPagesSelected,
     selectedWhiteboardPages,
@@ -265,6 +278,30 @@ const FromElems = ({
           </button>
         </div>
       </div>
+      <div className="item flex items-start mt-4">
+        <div className="input">
+          <input
+            id="allow-return-to-main-room"
+            name="allow-return-to-main-room"
+            type="checkbox"
+            className="border cursor-pointer border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus focus-ring mt-1 dark:bg-dark-secondary dark:border-dark-text"
+            checked={allowReturnToMainRoom}
+            onChange={(e) => setAllowReturnToMainRoom(e.currentTarget.checked)}
+          />
+        </div>
+        <div className="text-base w-full ps-2 sm:ps-4">
+          <label
+            htmlFor="allow-return-to-main-room"
+            className="text-sm 3xl:text-base font-medium text-Gray-950 dark:text-dark-text cursor-pointer"
+          >
+            {t('breakout-room.allow-return-to-main-room')}
+            <p className="text-xs md:text-sm opacity-70 dark:opacity-80">
+              {t('breakout-room.allow-return-to-main-room-desc')}
+            </p>
+          </label>
+        </div>
+      </div>
+
       <div className="draggable-room-area overflow-hidden clear-both flex flex-wrap">
         {roomList.map((room) => {
           return (
@@ -301,6 +338,13 @@ const FromElems = ({
           shareNotepad={shareNotepad}
           setShareNotepad={setShareNotepad}
           disabled={contentShareDisabled}
+        />
+      )}
+
+      {isPollsEnabled && (
+        <PollsShareSection
+          sharePolls={sharePolls}
+          setSharePolls={setSharePolls}
         />
       )}
 
