@@ -1,10 +1,16 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { setActiveSidePanel } from '../../../store/slices/bottomIconsActivitySlice';
+import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
+import { useGetMyBreakoutRoomsQuery } from '../../../store/services/breakoutRoomApi';
 import { BreakoutRoomIconSVG } from '../../../assets/Icons/BreakoutRoomIconSVG';
+
+// page-load time; invitations delivered in this session suppress the
+// mount-time reminder, persisted notifications from older sessions do not
+const SESSION_START = Date.now();
 
 const BreakoutRoomsIcon = () => {
   const dispatch = useAppDispatch();
@@ -27,12 +33,51 @@ const BreakoutRoomsIcon = () => {
     );
   });
 
+  const isAdmin = useAppSelector(
+    (state) => !!state.session.currentUser?.metadata?.isAdmin,
+  );
+  const isBreakoutRoom = useAppSelector(
+    (state) => !!state.session.currentRoom?.metadata?.isBreakoutRoom,
+  );
+
+  // invites only matter to non-admins sitting in the main interface
+  const { data: myRoomRes, isSuccess } = useGetMyBreakoutRoomsQuery(undefined, {
+    skip: isAdmin || isBreakoutRoom,
+  });
+  const invitedRef = useRef(false);
+
   useEffect(() => {
     if (!isVisible && isActivePanel) {
       dispatch(setActiveSidePanel('BREAKOUT_ROOMS'));
     }
     //eslint-disable-next-line
   }, [isVisible]);
+
+  useEffect(() => {
+    if (invitedRef.current || !isSuccess || !myRoomRes?.status) return;
+    const room = myRoomRes.room;
+    if (!room) return;
+    // an invitation already delivered during THIS page-load session
+    // (create-time NATS invite while on the landing page or in the main
+    // interface, or an admin re-invite) must not produce a second toast
+    const alreadyInvited = (
+      store.getState().roomSettings.userNotifications ?? []
+    ).some(
+      (n) =>
+        n.notificationCat === 'breakout-room-invitation' &&
+        (n.created ?? 0) >= SESSION_START,
+    );
+    if (alreadyInvited) return;
+    invitedRef.current = true;
+    dispatch(
+      addUserNotification({
+        message: t('breakout-room.invitation-msg'),
+        typeOption: 'info',
+        notificationCat: 'breakout-room-invitation',
+        autoClose: false,
+      }),
+    );
+  }, [isSuccess, myRoomRes, dispatch, t]);
 
   const togglePanel = useCallback(() => {
     dispatch(setActiveSidePanel('BREAKOUT_ROOMS'));

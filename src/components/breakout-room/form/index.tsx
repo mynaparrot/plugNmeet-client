@@ -20,6 +20,10 @@ import {
   buildWhiteboardShare,
   useWhiteboardShareState,
 } from './useWhiteboardShareState';
+import {
+  mergeUsersWithPreassigned,
+  usePreassignedRooms,
+} from './usePreassignedRooms';
 import WhiteboardShareSection from './whiteboardShareSection';
 import NotepadShareSection from './notepadShareSection';
 import PollsShareSection from './pollsShareSection';
@@ -76,17 +80,32 @@ const FromElems = ({
   const [sharePolls, setSharePolls] = useState<boolean>(false);
   const [sharePollIds, setSharePollIds] = useState<string[]>([]);
 
-  const [totalRooms, setTotalRooms] = useState<number>(1);
+  // Pre-assignments (sent by the createRoom API) are captured once when the
+  // form opens and turned into the initial values below.
+  const {
+    preassignedUsers,
+    initialTotalRooms,
+    initialCustomTitles,
+    initialUsers,
+    initialAllowReturnToMainRoom,
+    initialAllowSelfSelect,
+  } = usePreassignedRooms(participants);
+
+  const [totalRooms, setTotalRooms] = useState<number>(initialTotalRooms);
   const preTotalRooms = useStorePreviousInt(totalRooms);
   const [roomDuration, setRoomDuration] = useState<number>(15);
   const [welcomeMsg, setWelcomeMsg] = useState<string>(
     () => store.getState().session.currentRoom.metadata?.welcomeMessage ?? '',
   );
-  const [allowReturnToMainRoom, setAllowReturnToMainRoom] =
-    useState<boolean>(true);
-  const [allowSelfSelect, setAllowSelfSelect] = useState<boolean>(false);
-  const [customTitles, setCustomTitles] = useState<Record<number, string>>({});
-  const [users, setUsers] = useState<Array<UserType>>([]);
+  const [allowReturnToMainRoom, setAllowReturnToMainRoom] = useState<boolean>(
+    initialAllowReturnToMainRoom,
+  );
+  const [allowSelfSelect, setAllowSelfSelect] = useState<boolean>(
+    initialAllowSelfSelect,
+  );
+  const [customTitles, setCustomTitles] =
+    useState<Record<number, string>>(initialCustomTitles);
+  const [users, setUsers] = useState<Array<UserType>>(initialUsers);
 
   // we'll clean during unmount
   useEffect(() => {
@@ -102,15 +121,7 @@ const FromElems = ({
 
   useEffect(() => {
     // Sync users state with participants from the store
-    const existingUsersMap = new Map(users.map((u) => [u.id, u]));
-    const newUsers = participants.map((p) => {
-      const existingUser = existingUsersMap.get(p.userId);
-      if (existingUser) {
-        return existingUser;
-      }
-      return { id: p.userId, name: p.name, roomId: 0, joined: false };
-    });
-    setUsers(newUsers);
+    setUsers(mergeUsersWithPreassigned(participants, users, preassignedUsers));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [participants]);
 

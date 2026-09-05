@@ -611,7 +611,11 @@
       "creation-failed": "Breakout room creation wasn't successful for any room.",
       "unexpected-error": "Something went wrong. Please try again.",
       "room-not-found": "Breakout room not found.",
-      "duration-exceeds-parent": "Breakout room duration cannot exceed the parent room's duration."
+      "duplicate-title": "Breakout room titles must be unique.",
+      "user-assigned-to-multiple-rooms": "User is assigned to multiple breakout rooms.",
+      "duration-exceeds-parent": "Breakout room duration cannot exceed the parent room's duration.",
+      "breakout-room-not-running": "Cannot increase the duration because the breakout room is not running.",
+      "breakout-room-unlimited-duration": "Cannot increase the duration because the breakout room has unlimited duration."
     }
   },
   "landing": {
