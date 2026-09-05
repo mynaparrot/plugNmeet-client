@@ -21,11 +21,22 @@ const WebcamPreview = ({ deviceId }: WebcamPreviewProps) => {
   );
 
   useEffect(() => {
-    if (deviceId && videoRef.current) {
-      // stop the previous track before creating a new one
-      if (localVideoTrack.current) {
-        localVideoTrack.current.detach();
-        localVideoTrack.current.stop();
+    // the track creation is async; if this effect run is cleaned up before
+    // the promise resolves (unmount, device switch or StrictMode re-run),
+    // the resolved track must be released immediately instead of being kept.
+    let disposed = false;
+
+    const startPreview = async () => {
+      // stop the previous track before creating a new one.
+      const previousTrack = localVideoTrack.current;
+      localVideoTrack.current = null;
+      if (previousTrack) {
+        previousTrack.detach();
+        previousTrack.stop();
+      }
+
+      if (!deviceId || !videoRef.current) {
+        return;
       }
 
       let processor: TwilioBackgroundProcessor | undefined;
@@ -38,39 +49,35 @@ const WebcamPreview = ({ deviceId }: WebcamPreviewProps) => {
         resolution.aspectRatio = undefined;
       }
 
-      createLocalVideoTrack({
+      const track = await createLocalVideoTrack({
         deviceId,
         resolution,
         processor,
-      }).then((track) => {
-        localVideoTrack.current = track;
-        if (videoRef.current) {
-          localVideoTrack.current.attach(videoRef.current);
-        }
       });
-    }
+
+      if (disposed) {
+        // resolved after cleanup: release right away
+        track.stop();
+        return;
+      }
+
+      localVideoTrack.current = track;
+      if (videoRef.current) {
+        track.attach(videoRef.current);
+      }
+    };
+
+    void startPreview();
 
     return () => {
-      // stop track on component unmount
+      disposed = true;
       if (localVideoTrack.current) {
-        localVideoTrack.current.stopProcessor(false).then(() => {
-          localVideoTrack.current?.detach();
-          localVideoTrack.current?.stop();
-        });
+        localVideoTrack.current.detach();
+        localVideoTrack.current.stop();
+        localVideoTrack.current = null;
       }
     };
   }, [deviceId, virtualBackground]);
-
-  useEffect(() => {
-    return () => {
-      if (localVideoTrack.current) {
-        localVideoTrack.current.stopProcessor(false).then(() => {
-          localVideoTrack.current?.detach();
-          localVideoTrack.current?.stop();
-        });
-      }
-    };
-  }, []);
 
   return <video ref={videoRef} className="w-full h-full" autoPlay muted />;
 };
