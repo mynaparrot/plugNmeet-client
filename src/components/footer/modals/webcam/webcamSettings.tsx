@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { isSupported } from '@twilio/video-processors';
 
 import { useAppDispatch } from '../../../../store';
-import { updateVirtualBackground } from '../../../../store/slices/bottomIconsActivitySlice';
+import { updateVirtualBackground } from '../../../../store/slices/roomSettingsSlice';
 import { BackgroundConfig } from '../../../../helpers/libs/TrackProcessor';
 import WebcamPreview from './webcamPreview';
 import BackgroundItems from './backgroundItems';

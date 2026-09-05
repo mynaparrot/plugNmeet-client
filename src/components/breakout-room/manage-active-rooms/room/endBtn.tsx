@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EndBreakoutRoomReqSchema } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
-import { toast } from 'react-toastify';
 
 import { useEndSingleRoomMutation } from '../../../../store/services/breakoutRoomApi';
 import { BreakoutRoomMessage } from '../..';
@@ -19,9 +18,6 @@ const EndBtn = ({ breakoutRoomId, setMessage }: IEndBtnProps) => {
   useEffect(() => {
     if (isSuccess && data) {
       if (data.status) {
-        toast(t('breakout-room.room-ended'), {
-          type: 'info',
-        });
         setMessage({ text: t('breakout-room.room-ended'), type: 'info' });
         setTimeout(() => setMessage(null), 5000);
       } else {

@@ -2,7 +2,7 @@ import React from 'react';
 import { MenuItem, MenuItems } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
-import { useAppDispatch } from '../../store';
+import { useAppDispatch, useAppSelector } from '../../store';
 import {
   updateShowKeyboardShortcutsModal,
   updateShowRoomSettingsModal,
@@ -15,6 +15,10 @@ interface IHeaderMenusProps {
 const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+
+  const isBreakoutRoom = useAppSelector(
+    (state) => !!state.session.currentRoom.metadata?.isBreakoutRoom,
+  );
 
   return (
     <MenuItems
@@ -45,16 +49,18 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
         </button>
       </MenuItem>
 
-      <MenuItem>
-        <button
-          type="button"
-          className="h-9 md:h-10 w-full cursor-pointer flex items-center hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 md:px-3 rounded-lg transition-all duration-300 relative"
-          onClick={() => onOpenAlert('logout')}
-        >
-          <i className="pnm-logout text-primary-color dark:text-Blue2-500 text-lg me-2 transition ease-in" />
-          {t('header.menus.logout')}
-        </button>
-      </MenuItem>
+      {!isBreakoutRoom && (
+        <MenuItem>
+          <button
+            type="button"
+            className="h-9 md:h-10 w-full cursor-pointer flex items-center hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 md:px-3 rounded-lg transition-all duration-300 relative"
+            onClick={() => onOpenAlert('logout')}
+          >
+            <i className="pnm-logout text-primary-color dark:text-Blue2-500 text-lg me-2 transition ease-in" />
+            {t('header.menus.logout')}
+          </button>
+        </MenuItem>
+      )}
     </MenuItems>
   );
 };

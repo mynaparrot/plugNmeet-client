@@ -5,7 +5,6 @@ import {
   IBottomIconsSlice,
   SidePanelType,
 } from './interfaces/bottomIcons';
-import { BackgroundConfig } from '../../helpers/libs/TrackProcessor';
 
 const initialState: IBottomIconsSlice = {
   isActiveMicrophone: false,
@@ -38,7 +37,7 @@ const initialState: IBottomIconsSlice = {
   showInsightsAISettingsModal: false,
 
   totalUnreadChatMsgs: 0,
-  virtualBackground: { type: 'none' },
+
   isEnabledExtendedVerticalCamView: false,
 };
 
@@ -171,12 +170,6 @@ const bottomIconsSlice = createSlice({
         state.totalUnreadChatMsgs += 1;
       }
     },
-    updateVirtualBackground: (
-      state,
-      action: PayloadAction<BackgroundConfig>,
-    ) => {
-      state.virtualBackground = action.payload;
-    },
     updateIsEnabledExtendedVerticalCamView: (
       state,
       action: PayloadAction<boolean>,
@@ -210,7 +203,6 @@ export const {
   updateScreenHeight,
   updateDeviceOrientation,
   updateTotalUnreadChatMsgs,
-  updateVirtualBackground,
   updateDisplaySpeechSettingsModal,
   updateDisplaySpeechSettingOptionsModal,
   updateIsEnabledExtendedVerticalCamView,

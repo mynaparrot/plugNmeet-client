@@ -1,6 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { toBinary } from '@bufbuild/protobuf';
 import {
+  BackToMainRoomReq,
+  BackToMainRoomReqSchema,
+  BackToMainRoomRes,
+  BackToMainRoomResSchema,
   BreakoutRoomRes,
   BreakoutRoomResSchema,
   BroadcastBreakoutRoomMsgReq,
@@ -13,6 +17,10 @@ import {
   IncreaseBreakoutRoomDurationReqSchema,
   JoinBreakoutRoomReq,
   JoinBreakoutRoomReqSchema,
+  MoveBreakoutRoomUserReq,
+  MoveBreakoutRoomUserReqSchema,
+  ReInviteBreakoutRoomReq,
+  ReInviteBreakoutRoomReqSchema,
 } from 'plugnmeet-protocol-js';
 
 import { RootState } from '..';
@@ -135,6 +143,40 @@ export const breakoutRoomApi = createApi({
       transformErrorResponse: renewTokenOnError,
       invalidatesTags: ['List'],
     }),
+    backToMain: builder.mutation<BackToMainRoomRes, BackToMainRoomReq>({
+      query(body) {
+        return {
+          url: 'backToMain',
+          method: 'POST',
+          body: toBinary(BackToMainRoomReqSchema, body),
+          responseHandler: handleProtobufResponse(BackToMainRoomResSchema),
+        };
+      },
+      transformErrorResponse: renewTokenOnError,
+    }),
+    reInvite: builder.mutation<BreakoutRoomRes, ReInviteBreakoutRoomReq>({
+      query(body) {
+        return {
+          url: 'reInvite',
+          method: 'POST',
+          body: toBinary(ReInviteBreakoutRoomReqSchema, body),
+          responseHandler: handleProtobufResponse(BreakoutRoomResSchema),
+        };
+      },
+      transformErrorResponse: renewTokenOnError,
+    }),
+    moveUser: builder.mutation<BreakoutRoomRes, MoveBreakoutRoomUserReq>({
+      query(body) {
+        return {
+          url: 'moveUser',
+          method: 'POST',
+          body: toBinary(MoveBreakoutRoomUserReqSchema, body),
+          responseHandler: handleProtobufResponse(BreakoutRoomResSchema),
+        };
+      },
+      transformErrorResponse: renewTokenOnError,
+      invalidatesTags: ['List'],
+    }),
   }),
 });
 
@@ -147,4 +189,7 @@ export const {
   useEndAllRoomsMutation,
   useBroadcastBreakoutRoomMsgMutation,
   useGetMyBreakoutRoomsQuery,
+  useBackToMainMutation,
+  useReInviteMutation,
+  useMoveUserMutation,
 } = breakoutRoomApi;

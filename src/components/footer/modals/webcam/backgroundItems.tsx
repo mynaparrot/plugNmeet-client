@@ -1,9 +1,15 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
-import { RoomUploadedFileType } from 'plugnmeet-protocol-js';
+import {
+  GetRoomUploadedFilesReqSchema,
+  GetRoomUploadedFilesResSchema,
+  RoomUploadedFileType,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import useResumableFilesUpload from '../../../../helpers/hooks/useResumableFilesUpload';
-import { useAppSelector } from '../../../../store';
+import { store, useAppSelector } from '../../../../store';
 import { getConfigValue } from '../../../../helpers/utils';
+import sendAPIRequest from '../../../../helpers/api/plugNmeetAPI';
 import {
   backgroundImageUrls,
   loadBackgroundImageUrls,
@@ -17,7 +23,7 @@ interface IBackgroundItemsProps {
 const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
   const allowedFileTypes = ['jpg', 'jpeg', 'png'];
   const selectedBg = useAppSelector(
-    (state) => state.bottomIconsActivity.virtualBackground,
+    (state) => state.roomSettings.virtualBackground,
   );
 
   const [bgImgs, setBgImgs] = useState<Array<string>>(backgroundImageUrls);
@@ -38,6 +44,49 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
         setBgImgs(urls);
       }
     });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // fetch previously-stored virtual backgrounds
+  useEffect(() => {
+    let cancelled = false;
+    const fetchStored = async () => {
+      try {
+        const body = create(GetRoomUploadedFilesReqSchema, {
+          roomId: store.getState().session.currentRoom.roomId,
+          fileType: RoomUploadedFileType.VIRTUAL_BACKGROUND,
+        });
+        const r = await sendAPIRequest(
+          'getRoomFilesByType',
+          toBinary(GetRoomUploadedFilesReqSchema, body),
+          false,
+          'application/protobuf',
+          'arraybuffer',
+        );
+        if (cancelled) return;
+
+        const res = fromBinary(
+          GetRoomUploadedFilesResSchema,
+          new Uint8Array(r),
+        );
+        if (!res.status || !res.files) return;
+
+        const serverUrl = getConfigValue<string>(
+          'serverUrl',
+          'http://localhost:8080',
+          'PLUG_N_MEET_SERVER_URL',
+        );
+        const storedUrls = res.files.map(
+          (f) => serverUrl + '/download/uploadedFile/' + f.filePath,
+        );
+        setBgImgs((prev) => Array.from(new Set([...prev, ...storedUrls])));
+      } catch (e) {
+        console.warn('Failed to fetch stored virtual backgrounds', e);
+      }
+    };
+    void fetchStored();
     return () => {
       cancelled = true;
     };

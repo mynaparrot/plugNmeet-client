@@ -5,6 +5,7 @@ import { Theme } from '@excalidraw/excalidraw/element/types';
 import {
   ColumnCameraPosition,
   ColumnCameraWidth,
+  DeviceSessionStorageKeys,
   IMaxNumDisplayWebcams,
   IMediaDevice,
   InitiatePrivateChat,
@@ -15,6 +16,7 @@ import {
 } from './interfaces/roomSettings';
 import { AzureTokenInfo } from '../../components/translation-transcription/helpers/apiConnections';
 import { DB_STORE_NAMES, idbStore } from '../../helpers/libs/idb';
+import { BackgroundConfig } from '../../helpers/libs/TrackProcessor';
 
 const initialState: IRoomSettings = {
   isShowRoomSettingsModal: false,
@@ -25,6 +27,8 @@ const initialState: IRoomSettings = {
   videoDevices: [],
   selectedAudioDevice: '',
   selectedVideoDevice: '',
+  virtualBackground: { type: 'none' },
+
   playAudioNotification: false,
   activateWebcamsView: true,
   activeScreenSharingView: true,
@@ -84,9 +88,39 @@ const roomSettingsSlice = createSlice({
     },
     updateSelectedAudioDevice: (state, action: PayloadAction<string>) => {
       state.selectedAudioDevice = action.payload;
+      if (action.payload) {
+        sessionStorage.setItem(
+          DeviceSessionStorageKeys.AUDIO_DEVICE,
+          action.payload,
+        );
+      } else {
+        sessionStorage.removeItem(DeviceSessionStorageKeys.AUDIO_DEVICE);
+      }
     },
     updateSelectedVideoDevice: (state, action: PayloadAction<string>) => {
       state.selectedVideoDevice = action.payload;
+      if (action.payload) {
+        sessionStorage.setItem(
+          DeviceSessionStorageKeys.VIDEO_DEVICE,
+          action.payload,
+        );
+      } else {
+        sessionStorage.removeItem(DeviceSessionStorageKeys.VIDEO_DEVICE);
+      }
+    },
+    updateVirtualBackground: (
+      state,
+      action: PayloadAction<BackgroundConfig>,
+    ) => {
+      state.virtualBackground = action.payload;
+      if (action.payload.type === 'none') {
+        sessionStorage.removeItem(DeviceSessionStorageKeys.VIRTUAL_BACKGROUND);
+      } else {
+        sessionStorage.setItem(
+          DeviceSessionStorageKeys.VIRTUAL_BACKGROUND,
+          JSON.stringify(action.payload),
+        );
+      }
     },
     updatePlayAudioNotification: (state, action: PayloadAction<boolean>) => {
       state.playAudioNotification = action.payload;
@@ -191,11 +225,14 @@ const roomSettingsSlice = createSlice({
         action.payload.created = Date.now();
       }
       state.userNotifications.push(action.payload);
-      idbStore(
+      if (action.payload.disablePersistentStorage) {
+        return;
+      }
+      void idbStore(
         DB_STORE_NAMES.USER_NOTIFICATIONS,
         action.payload.created.toString(),
         action.payload,
-      ).then();
+      );
     },
     setAllUserNotifications: (
       state,
@@ -229,6 +266,7 @@ export const {
   addVideoDevices,
   updateSelectedAudioDevice,
   updateSelectedVideoDevice,
+  updateVirtualBackground,
   updatePlayAudioNotification,
   updateShowRoomSettingsModal,
   updateActivateWebcamsView,

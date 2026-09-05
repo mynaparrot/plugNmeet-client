@@ -19,12 +19,12 @@ import {
   updateShowLockSettingsModal,
   updateShowMicrophoneModal,
   updateShowVideoShareModal,
-  updateVirtualBackground,
 } from '../../store/slices/bottomIconsActivitySlice';
 import {
   updateSelectedAudioDevice,
   updateSelectedVideoDevice,
   updateShowRoomSettingsModal,
+  updateVirtualBackground,
 } from '../../store/slices/roomSettingsSlice';
 import { getNatsConn } from '../nats';
 import {

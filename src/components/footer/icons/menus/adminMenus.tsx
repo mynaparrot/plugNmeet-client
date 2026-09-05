@@ -34,10 +34,11 @@ const AdminMenus = () => {
     (state) => state.session.isActiveRtmpBroadcasting,
   );
 
-  const { roomFeatures } = useMemo(() => {
+  const { roomFeatures, isBreakoutRoom } = useMemo(() => {
+    const currentRoom = store.getState().session.currentRoom;
     return {
-      roomFeatures:
-        store.getState().session.currentRoom?.metadata?.roomFeatures,
+      roomFeatures: currentRoom?.metadata?.roomFeatures,
+      isBreakoutRoom: !!currentRoom?.metadata?.isBreakoutRoom,
     };
   }, []);
 
@@ -171,7 +172,7 @@ const AdminMenus = () => {
           text={t('footer.menus.manage-waiting-room')}
         />
       )}
-      {roomFeatures?.breakoutRoomFeatures?.isAllow && (
+      {!isBreakoutRoom && roomFeatures?.breakoutRoomFeatures?.isAllow && (
         <MenuItemHelper
           onClick={openManageBreakoutRoomModal}
           icon={<BreakoutRoomIconSVG classes="w-6 h-auto" />}

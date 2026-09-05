@@ -371,7 +371,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     // syncs via yjs, so there is no sendClearWhiteboardSignal() anymore.
     try {
       await controller.sync(currentWhiteboardOfficeFileId, currentPage, {
-        hydrate: !!isPresenter,
+        hydrate: !!isPresenter || controller.needsServerHydration(),
       });
       applySceneToExcalidraw({ init: true });
 

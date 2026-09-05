@@ -17,7 +17,7 @@ const WebcamPreview = ({ deviceId }: WebcamPreviewProps) => {
   const localVideoTrack = useRef<LocalVideoTrack | null>(null);
 
   const virtualBackground = useAppSelector(
-    (state) => state.bottomIconsActivity.virtualBackground,
+    (state) => state.roomSettings.virtualBackground,
   );
 
   useEffect(() => {

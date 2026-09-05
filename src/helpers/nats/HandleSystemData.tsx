@@ -18,7 +18,6 @@ import {
 } from '../../store/slices/roomSettingsSlice';
 import i18n from '../i18n';
 import { pollsApi } from '../../store/services/pollsApi';
-import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
 import { cleanHtmlForChat, getConfigValue, randomString } from '../utils';
 import { updateAiTextChat } from '../../store/slices/insightsAiTextChatSlice';
 import { handleNotepadAIStreamResult } from '../../components/shared-notepad/helpers/notepadAI';
@@ -26,9 +25,11 @@ import { handleWhiteboardAIStreamResult } from '../../components/whiteboard/ai/w
 import HandleChat from './HandleChat';
 import { triggerRefreshWhiteboardFilesListSignal } from '../../store/slices/whiteboard';
 import { breakoutRoomApi } from '../../store/services/breakoutRoomApi';
+import { buildAccessTokenUrl } from '../../components/breakout-room/utils/breakoutRoom';
 
 export default class HandleSystemData {
   private readonly _handleChat: HandleChat;
+  private hasHandledUserMoved = false;
 
   constructor(handleChat: HandleChat) {
     this._handleChat = handleChat;
@@ -42,11 +43,28 @@ export default class HandleSystemData {
     if (nt.msg === 'notifications.whiteboard-new-file-added') {
       store.dispatch(triggerRefreshWhiteboardFilesListSignal());
     }
+
+    // The server may send the notification message as JSON: {"key": "<i18n key>", ...values}
+    // so it can be translated with interpolation in the receiver's own locale.
+    // Plain strings and bare i18n keys pass through as before.
+    let message = nt.msg;
+    try {
+      const parsed = JSON.parse(nt.msg);
+      if (parsed && typeof parsed.key === 'string') {
+        const { key, ...values } = parsed;
+        message = i18n.t(key, values).toString();
+      } else {
+        message = i18n.t(nt.msg);
+      }
+    } catch {
+      message = i18n.t(nt.msg);
+    }
+
     switch (nt.type) {
       case NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_INFO:
         store.dispatch(
           addUserNotification({
-            message: i18n.t(nt.msg),
+            message,
             typeOption: 'info',
             newInstance: true,
           }),
@@ -59,7 +77,7 @@ export default class HandleSystemData {
       case NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_WARNING:
         store.dispatch(
           addUserNotification({
-            message: i18n.t(nt.msg),
+            message,
             typeOption: 'warning',
             newInstance: true,
           }),
@@ -71,7 +89,7 @@ export default class HandleSystemData {
       case NatsSystemNotificationTypes.NATS_SYSTEM_NOTIFICATION_ERROR:
         store.dispatch(
           addUserNotification({
-            message: i18n.t(nt.msg),
+            message,
             typeOption: 'error',
             newInstance: true,
           }),
@@ -132,11 +150,9 @@ export default class HandleSystemData {
               message: i18n.t('breakout-room.invitation-msg'),
               typeOption: 'info',
               notificationCat: 'breakout-room-invitation',
-              data: payload.msg,
-              disableToastNotification: true,
+              autoClose: false,
             }),
           );
-          store.dispatch(updateReceivedInvitationFor(payload.msg));
           store.dispatch(breakoutRoomApi.util.invalidateTags(['My_Rooms']));
         }
         break;
@@ -145,6 +161,42 @@ export default class HandleSystemData {
           breakoutRoomApi.util.invalidateTags(['List', 'My_Rooms']),
         );
         break;
+      case NatsMsgServerToClientEvents.BREAKOUT_ROOM_USER_MOVED: {
+        if (payload.msg !== '') {
+          try {
+            const parsed = JSON.parse(payload.msg) as {
+              token?: string;
+              targetRoomId?: string;
+              title?: string;
+            };
+            const token = parsed.token;
+            // a duplicate event must not re-trigger.
+            if (token && !this.hasHandledUserMoved) {
+              this.hasHandledUserMoved = true;
+              // An empty/missing targetRoomId means moving to the main room.
+              const roomLabel = parsed.targetRoomId
+                ? parsed.title
+                : i18n.t('breakout-room.main-room');
+              store.dispatch(
+                addUserNotification({
+                  message: i18n.t('breakout-room.user-moved', {
+                    room: roomLabel,
+                  }),
+                  typeOption: 'info',
+                  autoClose: false,
+                }),
+              );
+              // Give the user a moment to read the notification before redirecting.
+              setTimeout(() => {
+                window.location.replace(buildAccessTokenUrl(token));
+              }, 2000);
+            }
+          } catch {
+            // malformed payload — ignore
+          }
+        }
+        break;
+      }
     }
   };
 

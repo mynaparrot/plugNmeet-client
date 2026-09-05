@@ -6,6 +6,7 @@ import { JoinBreakoutRoomReqSchema } from 'plugnmeet-protocol-js';
 import { useJoinRoomMutation } from '../../../../store/services/breakoutRoomApi';
 import { BreakoutRoomMessage } from '../..';
 import { store } from '../../../../store';
+import { buildAccessTokenUrl } from '../../utils/breakoutRoom';
 
 interface IJoinBtnProps {
   breakoutRoomId: string;
@@ -19,19 +20,9 @@ const JoinBtn = ({ breakoutRoomId, setMessage }: IJoinBtnProps) => {
 
   useEffect(() => {
     if (isSuccess && data?.status && data.token) {
-      const searchParams = new URLSearchParams(window.location.search);
-      searchParams.set('access_token', data.token);
-      const url =
-        location.protocol +
-        '//' +
-        location.host +
-        window.location.pathname +
-        '?' +
-        searchParams.toString();
-
-      if (!window.open(url, '_blank')) {
-        setMessage({ text: t('breakout-room.open-tab-error'), type: 'error' });
-      }
+      // Redirect the current tab to the breakout room instead of opening a new
+      // tab. The page unload naturally tears down the current connection.
+      window.location.replace(buildAccessTokenUrl(data.token));
     } else if ((isSuccess && !data?.status) || isError) {
       const msg = data?.msg ?? (error as any)?.data?.msg ?? 'Error';
       setMessage({ text: t(msg), type: 'error' });

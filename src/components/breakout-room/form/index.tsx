@@ -16,6 +16,17 @@ import { BreakoutRoomMessage } from '..';
 import { selectBasicParticipants } from '../../../store/slices/participantSlice';
 import useStorePreviousInt from '../../../helpers/hooks/useStorePreviousInt';
 import { updateBreakoutRoomDroppedUser } from '../../../store/slices/breakoutRoomSlice';
+import {
+  buildWhiteboardShare,
+  useWhiteboardShareState,
+} from './useWhiteboardShareState';
+import {
+  mergeUsersWithPreassigned,
+  usePreassignedRooms,
+} from './usePreassignedRooms';
+import WhiteboardShareSection from './whiteboardShareSection';
+import NotepadShareSection from './notepadShareSection';
+import PollsShareSection from './pollsShareSection';
 
 interface IFromElemsProps {
   createBreakoutRooms: (req: CreateBreakoutRoomsReq) => void;
@@ -33,13 +44,68 @@ const FromElems = ({
   const participants = useAppSelector(selectBasicParticipants);
   const droppedUser = useAppSelector((state) => state.breakoutRoom.droppedUser);
 
-  const [totalRooms, setTotalRooms] = useState<number>(1);
+  const isWhiteboardEnabled = useAppSelector(
+    (state) =>
+      !!state.session.currentRoom.metadata?.roomFeatures?.whiteboardFeatures
+        ?.isAllow,
+  );
+  const isNotepadEnabled = useAppSelector(
+    (state) =>
+      !!state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures
+        ?.isAllow,
+  );
+  const isPollsEnabled = useAppSelector(
+    (state) =>
+      !!state.session.currentRoom.metadata?.roomFeatures?.pollsFeatures
+        ?.isAllow,
+  );
+
+  // Whiteboard share state (selectors + default-checked + resync + builder).
+  const {
+    currentWhiteboardOfficeFileId,
+    whiteboardTotalPages,
+    whiteboardCurrentPage,
+    hasWhiteboardFile,
+    allWhiteboardPages,
+    shareWhiteboard,
+    setShareWhiteboard,
+    selectedWhiteboardPages,
+    setSelectedWhiteboardPages,
+    toggleWhiteboardPage,
+    whiteboardPagesSelected,
+    contentShareDisabled,
+  } = useWhiteboardShareState();
+
+  const [shareNotepad, setShareNotepad] = useState<boolean>(false);
+  const [sharePolls, setSharePolls] = useState<boolean>(false);
+  const [sharePollIds, setSharePollIds] = useState<string[]>([]);
+
+  // Pre-assignments (sent by the createRoom API) are captured once when the
+  // form opens and turned into the initial values below.
+  const {
+    preassignedUsers,
+    initialTotalRooms,
+    initialCustomTitles,
+    initialUsers,
+    initialAllowReturnToMainRoom,
+    initialAllowSelfSelect,
+  } = usePreassignedRooms(participants);
+
+  const [totalRooms, setTotalRooms] = useState<number>(initialTotalRooms);
   const preTotalRooms = useStorePreviousInt(totalRooms);
   const [roomDuration, setRoomDuration] = useState<number>(15);
   const [welcomeMsg, setWelcomeMsg] = useState<string>(
     () => store.getState().session.currentRoom.metadata?.welcomeMessage ?? '',
   );
-  const [users, setUsers] = useState<Array<UserType>>([]);
+  const [allowReturnToMainRoom, setAllowReturnToMainRoom] = useState<boolean>(
+    initialAllowReturnToMainRoom,
+  );
+  const [allowSelfSelect, setAllowSelfSelect] = useState<boolean>(
+    initialAllowSelfSelect,
+  );
+  const [customTitles, setCustomTitles] =
+    useState<Record<number, string>>(initialCustomTitles);
+  const [users, setUsers] = useState<Array<UserType>>(initialUsers);
 
   // we'll clean during unmount
   useEffect(() => {
@@ -55,15 +121,7 @@ const FromElems = ({
 
   useEffect(() => {
     // Sync users state with participants from the store
-    const existingUsersMap = new Map(users.map((u) => [u.id, u]));
-    const newUsers = participants.map((p) => {
-      const existingUser = existingUsersMap.get(p.userId);
-      if (existingUser) {
-        return existingUser;
-      }
-      return { id: p.userId, name: p.name, roomId: 0, joined: false };
-    });
-    setUsers(newUsers);
+    setUsers(mergeUsersWithPreassigned(participants, users, preassignedUsers));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [participants]);
 
@@ -132,10 +190,10 @@ const FromElems = ({
     roomList.forEach((r) => {
       if (r.id !== 0) {
         const u = users.filter((u) => u.roomId === r.id);
-        if (u.length) {
+        if (u.length || allowSelfSelect) {
           const room = create(BreakoutRoomSchema, {
             id: `${r.id}`,
-            title: r.name,
+            title: customTitles[r.id]?.trim() || r.name,
             users: u,
             duration: String(roomDuration),
             started: false,
@@ -151,10 +209,24 @@ const FromElems = ({
       return;
     }
 
+    const whiteboardShare = buildWhiteboardShare({
+      enabled: whiteboardPagesSelected,
+      fileId: currentWhiteboardOfficeFileId,
+      pages: selectedWhiteboardPages,
+      currentPage: whiteboardCurrentPage,
+    });
+
     const req = create(CreateBreakoutRoomsReqSchema, {
       duration: String(roomDuration),
       welcomeMsg: welcomeMsg,
       rooms: tmp,
+      shareNotepad: shareNotepad && !contentShareDisabled,
+      allowReturnToMainRoom: allowReturnToMainRoom,
+      allowSelfSelect: allowSelfSelect,
+      ...(whiteboardShare ? { whiteboardShare } : {}),
+      ...(sharePolls && sharePollIds.length > 0
+        ? { pollShare: { pollIds: sharePollIds } }
+        : {}),
     });
     createBreakoutRooms(req);
   }, [
@@ -165,6 +237,17 @@ const FromElems = ({
     createBreakoutRooms,
     setMessage,
     t,
+    shareNotepad,
+    sharePolls,
+    sharePollIds,
+    allowReturnToMainRoom,
+    allowSelfSelect,
+    customTitles,
+    contentShareDisabled,
+    whiteboardPagesSelected,
+    selectedWhiteboardPages,
+    currentWhiteboardOfficeFileId,
+    whiteboardCurrentPage,
   ]);
 
   return (
@@ -215,6 +298,54 @@ const FromElems = ({
           </button>
         </div>
       </div>
+      <div className="item flex items-start mt-4 mb-4">
+        <div className="input">
+          <input
+            id="allow-return-to-main-room"
+            name="allow-return-to-main-room"
+            type="checkbox"
+            className="border cursor-pointer border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus focus-ring mt-1 dark:bg-dark-secondary dark:border-dark-text"
+            checked={allowReturnToMainRoom}
+            onChange={(e) => setAllowReturnToMainRoom(e.currentTarget.checked)}
+          />
+        </div>
+        <div className="text-base w-full ps-2 sm:ps-4">
+          <label
+            htmlFor="allow-return-to-main-room"
+            className="text-sm 3xl:text-base font-medium text-Gray-950 dark:text-dark-text cursor-pointer"
+          >
+            {t('breakout-room.allow-return-to-main-room')}
+            <p className="text-xs md:text-sm opacity-70 dark:opacity-80">
+              {t('breakout-room.allow-return-to-main-room-desc')}
+            </p>
+          </label>
+        </div>
+      </div>
+
+      <div className="item flex items-start mt-4 mb-4">
+        <div className="input">
+          <input
+            id="allow-self-select"
+            name="allow-self-select"
+            type="checkbox"
+            className="border cursor-pointer border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus focus-ring mt-1 dark:bg-dark-secondary dark:border-dark-text"
+            checked={allowSelfSelect}
+            onChange={(e) => setAllowSelfSelect(e.currentTarget.checked)}
+          />
+        </div>
+        <div className="text-base w-full ps-2 sm:ps-4">
+          <label
+            htmlFor="allow-self-select"
+            className="text-sm 3xl:text-base font-medium text-Gray-950 dark:text-dark-text cursor-pointer"
+          >
+            {t('breakout-room.allow-self-select')}
+            <p className="text-xs md:text-sm opacity-70 dark:opacity-80">
+              {t('breakout-room.allow-self-select-desc')}
+            </p>
+          </label>
+        </div>
+      </div>
+
       <div className="draggable-room-area overflow-hidden clear-both flex flex-wrap">
         {roomList.map((room) => {
           return (
@@ -226,16 +357,53 @@ const FromElems = ({
                 roomId={room.id}
                 name={room.name}
                 users={users.filter((user) => user.roomId === room.id)}
+                customTitles={customTitles}
+                setCustomTitles={setCustomTitles}
               />
             </div>
           );
         })}
       </div>
+
+      {isWhiteboardEnabled && (
+        <WhiteboardShareSection
+          hasWhiteboardFile={hasWhiteboardFile}
+          shareWhiteboard={shareWhiteboard}
+          setShareWhiteboard={setShareWhiteboard}
+          selectedWhiteboardPages={selectedWhiteboardPages}
+          setSelectedWhiteboardPages={setSelectedWhiteboardPages}
+          toggleWhiteboardPage={toggleWhiteboardPage}
+          allWhiteboardPages={allWhiteboardPages}
+          whiteboardTotalPages={whiteboardTotalPages}
+          disabled={contentShareDisabled}
+        />
+      )}
+
+      {isNotepadEnabled && (
+        <NotepadShareSection
+          shareNotepad={shareNotepad}
+          setShareNotepad={setShareNotepad}
+          disabled={contentShareDisabled}
+        />
+      )}
+
+      {isPollsEnabled && (
+        <PollsShareSection
+          sharePolls={sharePolls}
+          setSharePolls={setSharePolls}
+          sharePollIds={sharePollIds}
+          setSharePollIds={setSharePollIds}
+        />
+      )}
+
       <div className="flex justify-end mt-4">
         <button
           className="primary-button h-9 w-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
           onClick={handleStartBreakoutRooms}
-          disabled={isLoading}
+          disabled={
+            isLoading ||
+            (whiteboardPagesSelected && selectedWhiteboardPages.length === 0)
+          }
         >
           {t('breakout-room.start')}
         </button>

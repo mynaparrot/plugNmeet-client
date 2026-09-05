@@ -85,7 +85,6 @@ const UserNotifications = () => {
         toastElm = (
           <NewBreakoutRoom
             key={lastNotif.created}
-            receivedInvitationFor={lastNotif.data}
             createdAt={lastNotif.created}
           />
         );
@@ -176,8 +175,8 @@ const UserNotifications = () => {
                       return (
                         <li key={notif.created}>
                           <NewBreakoutRoom
-                            receivedInvitationFor={notif.data}
                             createdAt={notif.created}
+                            onClosePopover={close}
                           />
                         </li>
                       );

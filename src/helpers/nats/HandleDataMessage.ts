@@ -18,7 +18,6 @@ import {
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import i18n from '../i18n';
 import { getNotepadController } from '../../components/shared-notepad/NotepadController';
-import { updateReceivedInvitationFor } from '../../store/slices/breakoutRoomSlice';
 import { fromJsonString } from '@bufbuild/protobuf';
 import { TextWithInfo } from '../../store/slices/interfaces/speechServices';
 import { addSpeechSubtitleText } from '../../store/slices/speechServicesSlice';
@@ -122,11 +121,6 @@ export default class HandleDataMessage {
             },
           }),
         );
-        break;
-      case DataMsgBodyType.PUSH_JOIN_BREAKOUT_ROOM:
-        if (payload.toUserId === this.connectNats.userId) {
-          store.dispatch(updateReceivedInvitationFor(payload.message));
-        }
         break;
       case DataMsgBodyType.NOTEPAD_UPDATE:
       case DataMsgBodyType.NOTEPAD_AWARENESS:

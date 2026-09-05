@@ -11,13 +11,23 @@ interface IRoomBoxProps {
   roomId: number;
   name: string;
   users: Array<UserType>;
+  customTitles?: Record<number, string>;
+  setCustomTitles?: React.Dispatch<
+    React.SetStateAction<Record<number, string>>
+  >;
 }
 
 interface DragItem {
   id: string;
 }
 
-const RoomBox = ({ roomId, name, users }: IRoomBoxProps) => {
+const RoomBox = ({
+  roomId,
+  name,
+  users,
+  customTitles,
+  setCustomTitles,
+}: IRoomBoxProps) => {
   const dispatch = useAppDispatch();
   const ref = useRef<HTMLDivElement>(null);
 
@@ -60,7 +70,22 @@ const RoomBox = ({ roomId, name, users }: IRoomBoxProps) => {
 
   return (
     <div ref={ref} className={roomBoxClasses}>
-      <p className={headerClasses}>{name}</p>
+      {roomId !== 0 ? (
+        <input
+          className="text-sm sm:text-base px-2 py-1 border-b-2 border-solid border-black dark:border-Gray-800 w-full bg-transparent text-Gray-950 dark:text-white outline-hidden focus:border-[rgba(0,161,242,1)]"
+          placeholder={name}
+          value={customTitles?.[roomId] ?? ''}
+          onChange={(e) => {
+            const value = e.currentTarget.value;
+            setCustomTitles?.((prev) => ({
+              ...prev,
+              [roomId]: value,
+            }));
+          }}
+        />
+      ) : (
+        <p className={headerClasses}>{name}</p>
+      )}
       {users.map((user) => {
         return <UserBox key={user.id} name={user.name} id={user.id} />;
       })}

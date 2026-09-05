@@ -12,6 +12,11 @@ import {
   addCurrentRoom,
   updateCurrentRoomMetadata,
 } from '../../store/slices/sessionSlice';
+import {
+  addWhiteboardUploadedOfficeFile,
+  updateCurrentWhiteboardOfficeFileId,
+} from '../../store/slices/whiteboard';
+import { DEFAULT_WHITEBOARD_OFFICE_FILE_ID } from '../../store/slices/interfaces/whiteboard';
 import i18n from '../i18n';
 import {
   addChatMessage,
@@ -74,10 +79,69 @@ export default class HandleRoomData {
     this.publishWelcomeMessage();
 
     store.dispatch(updateCurrentRoomMetadata(this._room.metadata));
+    // Seed the shared whiteboard file id from breakout room metadata (no-op in
+    // normal rooms — see applyBreakoutWhiteboardFile). Placed here so the store
+    // is populated before the whiteboard component mounts and closure-captures
+    // the file id.
+    this.applyBreakoutWhiteboardFile();
     if (!this.checkedPreloadedWhiteboardFile) {
       // we'll check whiteboard preloaded file
       this.addPreloadWhiteboardFile().then();
     }
+  }
+
+  /**
+   * Breakout-room-only: when a child room was created with a whiteboard share,
+   * seed the shared office file id from room metadata into the store so the
+   * whiteboard component mounts against the shared file (not the 'default'
+   * sentinel) and fetches the server-seeded per-page checkpoints.
+   *
+   * Restricted strictly to `isBreakoutRoom` — normal-room behavior is untouched.
+   * Idempotent: the sentinel guard means re-runs (later ROOM_METADATA_UPDATE
+   * events) are no-ops once a file has been selected via FILE_CHANGE/donor data.
+   */
+  private applyBreakoutWhiteboardFile() {
+    const metadata = this._room.metadata;
+    if (metadata?.isBreakoutRoom !== true) {
+      return;
+    }
+
+    const features = metadata.roomFeatures?.whiteboardFeatures;
+    if (!features) {
+      return;
+    }
+
+    const fileId = features.whiteboardFileId;
+    if (
+      !fileId ||
+      fileId === DEFAULT_WHITEBOARD_OFFICE_FILE_ID ||
+      features.totalPages < 1
+    ) {
+      // No valid shared whiteboard file in the breakout metadata.
+      return;
+    }
+
+    // Idempotency: never clobber a file already selected via FILE_CHANGE or
+    // donor data. The sentinel means nothing has been chosen yet.
+    if (
+      store.getState().whiteboard.currentWhiteboardOfficeFileId !==
+      DEFAULT_WHITEBOARD_OFFICE_FILE_ID
+    ) {
+      return;
+    }
+
+    const totalPages = features.totalPages;
+    store.dispatch(
+      addWhiteboardUploadedOfficeFile({
+        fileId,
+        fileName: features.fileName ?? '',
+        filePath: features.filePath ?? '',
+        totalPages,
+        pageFiles: '',
+        currentPage: 1,
+      }),
+    );
+    store.dispatch(updateCurrentWhiteboardOfficeFileId({ fileId, page: 1 }));
   }
 
   private setWindowTitle(title: string) {

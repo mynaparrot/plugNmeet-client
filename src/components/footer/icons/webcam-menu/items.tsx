@@ -5,11 +5,13 @@ import { useTranslation } from 'react-i18next';
 import { NativeMediaSource } from 'plugnmeet-protocol-js';
 
 import { useAppDispatch, useAppSelector } from '../../../../store';
-import { updateSelectedVideoDevice } from '../../../../store/slices/roomSettingsSlice';
+import {
+  updateSelectedVideoDevice,
+  updateVirtualBackground,
+} from '../../../../store/slices/roomSettingsSlice';
 import {
   updateIsActiveWebcam,
   updateIsWebcamMuted,
-  updateVirtualBackground,
 } from '../../../../store/slices/bottomIconsActivitySlice';
 import { CheckMarkIcon } from '../../../../assets/Icons/CheckMarkIcon';
 import { CameraOff } from '../../../../assets/Icons/CameraOff';
