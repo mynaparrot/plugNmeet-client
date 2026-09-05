@@ -542,6 +542,12 @@ export default class SubscriptionHandler {
         );
       }
       if (notifications && notifications.length) {
+        // Mark restored notifications so they show up in the bell history
+        // without re-triggering toasts/unread badges on fresh join.
+        // These are freshly deserialized IDB records, safe to mutate in place.
+        for (const notification of notifications) {
+          notification.disableToastNotification = true;
+        }
         store.dispatch(setAllUserNotifications(notifications));
       }
       // Restore speech-to-text data if the feature is enabled.

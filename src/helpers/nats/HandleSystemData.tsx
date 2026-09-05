@@ -184,7 +184,6 @@ export default class HandleSystemData {
                   }),
                   typeOption: 'info',
                   autoClose: false,
-                  disablePersistentStorage: true,
                 }),
               );
               // Give the user a moment to read the notification before redirecting.

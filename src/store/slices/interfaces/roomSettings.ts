@@ -3,10 +3,17 @@ import { Theme } from '@excalidraw/excalidraw/element/types';
 import type { TypeOptions } from 'react-toastify';
 
 import { AzureTokenInfo } from '../../../components/translation-transcription/helpers/apiConnections';
+import { BackgroundConfig } from '../../../helpers/libs/TrackProcessor';
 
 export enum VideoObjectFit {
   COVER = 'cover',
   CONTAIN = 'contain',
+}
+
+export enum DeviceSessionStorageKeys {
+  AUDIO_DEVICE = 'pnm-selected-audio-device',
+  VIDEO_DEVICE = 'pnm-selected-video-device',
+  VIRTUAL_BACKGROUND = 'pnm-selected-virtualbg',
 }
 
 export interface IRoomSettings {
@@ -18,6 +25,8 @@ export interface IRoomSettings {
   videoDevices: Array<IMediaDevice>;
   selectedAudioDevice: string;
   selectedVideoDevice: string;
+  virtualBackground: BackgroundConfig;
+
   playAudioNotification: boolean;
   activateWebcamsView: boolean;
   activeScreenSharingView: boolean;

@@ -23,7 +23,7 @@ interface IBackgroundItemsProps {
 const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
   const allowedFileTypes = ['jpg', 'jpeg', 'png'];
   const selectedBg = useAppSelector(
-    (state) => state.bottomIconsActivity.virtualBackground,
+    (state) => state.roomSettings.virtualBackground,
   );
 
   const [bgImgs, setBgImgs] = useState<Array<string>>(backgroundImageUrls);

@@ -70,7 +70,7 @@ const WebcamIcon = () => {
     (state) => state.session.currentUser?.metadata?.lockSettings?.lockWebcam,
   );
   const virtualBackground = useAppSelector(
-    (state) => state.bottomIconsActivity.virtualBackground,
+    (state) => state.roomSettings.virtualBackground,
   );
   const selectedVideoDevice = useAppSelector(
     (state) => state.roomSettings.selectedVideoDevice,

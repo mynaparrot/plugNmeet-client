@@ -1,5 +1,3 @@
-import { BackgroundConfig } from '../../../helpers/libs/TrackProcessor';
-
 export type DeviceOrientation = 'landscape' | 'portrait';
 
 export type SidePanelType =
@@ -38,6 +36,5 @@ export interface IBottomIconsSlice {
   showInsightsAISettingsModal: boolean;
 
   totalUnreadChatMsgs: number;
-  virtualBackground: BackgroundConfig;
   isEnabledExtendedVerticalCamView: boolean;
 }
