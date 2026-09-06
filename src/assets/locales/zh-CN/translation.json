@@ -505,14 +505,11 @@
     "remove-option": "移除",
     "add-new-option": "添加另一个选项",
     "create-poll": "创建投票",
-    "created-successfully": "投票已成功创建。",
     "you-voted": "您已投票。",
     "vote": "投票",
     "submit-vote-form-title": "提交您的投票",
     "select-option": "选择一个选项",
     "submit": "提交",
-    "response-added": "您的投票已提交。",
-    "new-poll": "一个新的投票已开始。",
     "poll-running": "进行中",
     "poll-closed": "已结束",
     "view-details": "详情",
@@ -520,11 +517,68 @@
     "view-details-title": "投票信息",
     "view-result-title": "投票结果",
     "end-poll": "结束投票",
-    "end-poll-success": "投票已结束。",
     "publish-result": "公布结果",
     "total": "总计: {{count}}",
     "not-respondents-total": "未回答: {{count}}",
-    "ask-question": "提问"
+    "ask-question": "提问",
+    "question-type": "问题类型",
+    "single-choice": "单选",
+    "multiple-choice": "选择题",
+    "anonymous-voting": "匿名投票",
+    "quiz-mode": "问答模式",
+    "correct-answer": "正确答案",
+    "duration": "持续时间",
+    "duration-no-limit": "无限制",
+    "duration-minutes": "{{count}} 明",
+    "total-votes": "{{votes}} 投票来自 {{count}} 受访者",
+    "anonymous": "匿名",
+    "time-remaining": "剩余时间",
+    "reopen-poll": "重新开放投票",
+    "quick-types": "快速类型",
+    "option-yes": "是的",
+    "option-no": "不",
+    "option-maybe": "也许吧",
+    "option-true": "确实如此",
+    "option-false": "错误",
+    "option-agree": "同意",
+    "option-disagree": "不同意",
+    "ai-generate": "用AI生成",
+    "ai-prompt-placeholder": "请描述你想要的投票…",
+    "ai-disabled-notice": "AI投票生成已被禁用。管理员可以通过更多选项（...）→AI工具→AI助手聊天来启用。",
+    "quiz-mode-desc": "请通过每个选项旁的复选框标记正确选项。参与者只有在投票结束后才能看到正确答案。",
+    "anonymous-voting-desc": "投票者的选择保持隐藏——甚至管理员也看不到谁投票了。",
+    "duration-desc": "投票在时间结束时自动关闭。",
+    "notifications": {
+      "created-successfully": "投票已经创建。",
+      "response-added": "您的投票已提交。",
+      "new-poll": "一项新的民调已经开始。",
+      "end-poll-success": "投票已经结束。",
+      "reopen-poll-success": "投票结果已重新开放。",
+      "ai-generated": "AI草稿准备好——审核并创建。",
+      "poll-reopened": "投票已重新开放。"
+    },
+    "errors": {
+      "generic": "出了点问题。请再试一次。",
+      "question-required": "请输入你的问题。",
+      "min-options": "投票至少要有两个选项。",
+      "option-required": "请为每个选项输入文字。",
+      "select-correct-option": "至少标记一个选项为正确答案。",
+      "quiz-needs-correct": "测验投票必须至少有一个正确答案。",
+      "duration-cap": "投票时长不得超过60分钟。",
+      "no-option-selected": "请在提交前选择一个选项。",
+      "already-voted": "你已经在这次投票中投票了。",
+      "poll-not-found": "未找到投票。",
+      "poll-closed": "本次投票已关闭。",
+      "wait-for-close": "投票结束后，结果将公布。",
+      "only-admin": "只有管理员才能完成这项任务。",
+      "only-admin-view-selection": "只有管理员才能查看其他用户的选择。",
+      "room-id-required": "需要出示房间证。",
+      "poll-id-required": "需要出示投票站身份证。",
+      "user-and-poll-id-required": "用户ID和投票ID都是必需的。",
+      "ai-disabled": "AI投票生成功能被禁用。",
+      "ai-invalid-response": "AI回复无法使用。请再试一次。",
+      "ai-request-timeout": "投票 AI 请求超时"
+    }
   },
   "breakout-room": {
     "share-polls": "与分组讨论室分享投票",
@@ -742,7 +796,10 @@
       "responding-placeholder": "AI 助手正在回应...",
       "response-timed-out": "AI助手回复太慢了。请再试一次。",
       "enable-notepad-ai": "在共享记事本中启用AI。",
-      "enable-whiteboard-ai": "在白板中启用AI。"
+      "enable-whiteboard-ai": "在白板中启用AI。",
+      "enable-poll-ai": "在投票中启用人工智能",
+      "feature-disabled": "该房间未启用AI功能。",
+      "not-allowed": "你不被允许使用这项服务。"
     },
     "meeting-summarization": {
       "enable": "启用会议摘要",
@@ -765,11 +822,17 @@
       "generating": "生成AI回应......",
       "done": "应用人工智能结果",
       "failed": "AI请求失败",
-      "disabled-message": "AI功能目前已禁用。管理员可以通过更多选项（...）→ AI 工具→ AI 助理聊天来启用。"
+      "disabled-message": "AI功能目前已禁用。管理员可以通过更多选项（...）→ AI 工具→ AI 助理聊天来启用。",
+      "errors": {
+        "ai-disabled": "共享记事本中的AI被禁用了。"
+      }
     },
     "whiteboard-ai": {
       "disabled-message": "AI功能目前已禁用。管理员可以通过更多选项（...）→ AI 工具→ AI 助理聊天来启用。",
-      "request-timeout": "白板AI请求超时"
+      "request-timeout": "白板AI请求超时",
+      "errors": {
+        "ai-disabled": "白板上的AI是被禁用的。"
+      }
     }
   },
   "sip-dial-in-features": {
