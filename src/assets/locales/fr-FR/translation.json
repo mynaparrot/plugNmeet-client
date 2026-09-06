@@ -505,14 +505,11 @@
     "remove-option": "Supprimer",
     "add-new-option": "Ajouter une autre option",
     "create-poll": "Créer le sondage",
-    "created-successfully": "Le sondage a été créé avec succès.",
     "you-voted": "Vous avez voté.",
     "vote": "Voter",
     "submit-vote-form-title": "Soumettre votre vote",
     "select-option": "Sélectionnez une option",
     "submit": "Soumettre",
-    "response-added": "Votre vote a été soumis.",
-    "new-poll": "Un nouveau sondage a été lancé.",
     "poll-running": "En cours",
     "poll-closed": "Fermé",
     "view-details": "Détails",
@@ -520,11 +517,68 @@
     "view-details-title": "Informations sur le sondage",
     "view-result-title": "Résultats du sondage",
     "end-poll": "Terminer le sondage",
-    "end-poll-success": "Le sondage est terminé.",
     "publish-result": "Publier les résultats",
     "total": "Total : {{count}}",
     "not-respondents-total": "N'ont pas répondu : {{count}}",
-    "ask-question": "Posez une question"
+    "ask-question": "Posez une question",
+    "question-type": "Type de question",
+    "single-choice": "Choix simple",
+    "multiple-choice": "Choix multiples",
+    "anonymous-voting": "Vote anonyme",
+    "quiz-mode": "Mode quiz",
+    "correct-answer": "Bonne réponse",
+    "duration": "Durée",
+    "duration-no-limit": "Aucune limite",
+    "duration-minutes": "{{count}} min",
+    "total-votes": "{{votes}} votes de {{count}} Répondants",
+    "anonymous": "Anonyme",
+    "time-remaining": "Temps restant",
+    "reopen-poll": "Sondage de réouverture",
+    "quick-types": "Types rapides",
+    "option-yes": "Oui",
+    "option-no": "Non",
+    "option-maybe": "Peut-être",
+    "option-true": "C’est vrai",
+    "option-false": "Faux",
+    "option-agree": "D’accord",
+    "option-disagree": "Je ne suis pas d’accord",
+    "ai-generate": "Générer avec l’IA",
+    "ai-prompt-placeholder": "Décrivez le sondage que vous souhaitez…",
+    "ai-disabled-notice": "La génération de sondages IA est désactivée. Un administrateur peut l’activer depuis Plus d’options (...) → AI Tools → AI Assistant Chat.",
+    "quiz-mode-desc": "Marquez la ou les bonnes options à l’aide de la case à cocher à côté de chaque option. Les participants ne voient la bonne réponse qu’après la fermeture du sondage.",
+    "anonymous-voting-desc": "Les choix des électeurs restent cachés — même les administrateurs ne peuvent pas voir qui a voté.",
+    "duration-desc": "Le sondage se ferme automatiquement lorsque le temps est écoulé.",
+    "notifications": {
+      "created-successfully": "Le sondage a été créé.",
+      "response-added": "Votre vote a été soumis.",
+      "new-poll": "Un nouveau sondage a commencé.",
+      "end-poll-success": "Le sondage est terminé.",
+      "reopen-poll-success": "Le scrutin a été rouvert.",
+      "ai-generated": "Prêt à brouillon IA — relisez et créez.",
+      "poll-reopened": "Un bureau de vote a été rouvert."
+    },
+    "errors": {
+      "generic": "Quelque chose a mal tourné. Veuillez réessayer.",
+      "question-required": "Veuillez saisir votre question.",
+      "min-options": "Un sondage doit comporter au moins deux options.",
+      "option-required": "Veuillez entrer le texte pour chaque option.",
+      "select-correct-option": "Marquez au moins une option comme la bonne réponse.",
+      "quiz-needs-correct": "Les sondages de quiz doivent avoir au moins une bonne réponse.",
+      "duration-cap": "La durée du sondage ne peut pas dépasser 60 minutes.",
+      "no-option-selected": "Veuillez sélectionner une option avant de soumettre.",
+      "already-voted": "Vous avez déjà voté dans ce sondage.",
+      "poll-not-found": "Sondage non trouvé.",
+      "poll-closed": "Ce sondage est fermé.",
+      "wait-for-close": "Les résultats seront disponibles une fois le bureau de vote fermé.",
+      "only-admin": "Seul l’administrateur peut effectuer cette tâche.",
+      "only-admin-view-selection": "Seuls les administrateurs peuvent consulter les sélections des autres utilisateurs.",
+      "room-id-required": "Un badge de chambre est requis.",
+      "poll-id-required": "Une pièce d’identité de bureau de vote est requise.",
+      "user-and-poll-id-required": "L’identifiant utilisateur et l’identifiant de sondage sont tous deux requis.",
+      "ai-disabled": "La génération de sondages par IA est désactivée.",
+      "ai-invalid-response": "La réponse IA n’a pas pu être utilisée. Veuillez réessayer.",
+      "ai-request-timeout": "Demande IA de sondage expirée"
+    }
   },
   "breakout-room": {
     "share-polls": "Partagez des sondages avec des salles de discussion",
@@ -742,7 +796,10 @@
       "responding-placeholder": "L'assistant IA est en train de répondre...",
       "response-timed-out": "L’assistant IA met trop de temps à répondre. Veuillez réessayer.",
       "enable-notepad-ai": "Activez l’IA dans un bloc-notes partagé",
-      "enable-whiteboard-ai": "Activez l’IA dans le tableau blanc"
+      "enable-whiteboard-ai": "Activez l’IA dans le tableau blanc",
+      "enable-poll-ai": "Activez l’IA dans les sondages",
+      "feature-disabled": "Les fonctions d’IA ne sont pas activées pour cette pièce.",
+      "not-allowed": "Vous n’êtes pas autorisé à utiliser ce service."
     },
     "meeting-summarization": {
       "enable": "Activer le résumé de la réunion",
@@ -765,11 +822,17 @@
       "generating": "Générer une réponse IA...",
       "done": "Résultat IA appliqué",
       "failed": "Requête IA échouée",
-      "disabled-message": "La fonction IA est actuellement désactivée. Un administrateur peut l’activer depuis Plus d’options (...) → AI Tools → AI Assistant Chat."
+      "disabled-message": "La fonction IA est actuellement désactivée. Un administrateur peut l’activer depuis Plus d’options (...) → AI Tools → AI Assistant Chat.",
+      "errors": {
+        "ai-disabled": "L’IA dans le bloc-notes partagé est désactivée."
+      }
     },
     "whiteboard-ai": {
       "disabled-message": "La fonction IA est actuellement désactivée. Un administrateur peut l’activer depuis Plus d’options (...) → AI Tools → AI Assistant Chat.",
-      "request-timeout": "Demande IA au tableau blanc expirée"
+      "request-timeout": "Demande IA au tableau blanc expirée",
+      "errors": {
+        "ai-disabled": "L’IA au tableau blanc est désactivée."
+      }
     }
   },
   "sip-dial-in-features": {
