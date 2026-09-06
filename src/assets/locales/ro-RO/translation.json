@@ -505,14 +505,11 @@
     "remove-option": "Depărta",
     "add-new-option": "Adăugați o altă opțiune",
     "create-poll": "Creați sondaj",
-    "created-successfully": "Sondajul a fost creat.",
     "you-voted": "Ai votat",
     "vote": "Vot",
     "submit-vote-form-title": "Trimiteți-vă votul",
     "select-option": "Selectați o opțiune",
     "submit": "Prezinte",
-    "response-added": "Votul dumneavoastră a fost trimis.",
-    "new-poll": "A început un nou sondaj.",
     "poll-running": "Rulează",
     "poll-closed": "Închis",
     "view-details": "Detalii",
@@ -520,11 +517,68 @@
     "view-details-title": "Informații despre sondaj",
     "view-result-title": "Rezultatele sondajului",
     "end-poll": "Încheiați sondajul",
-    "end-poll-success": "Sondajul s-a încheiat.",
     "publish-result": "Publicați rezultatele",
     "total": "Total: {{count}}",
     "not-respondents-total": "Nu a răspuns: {{count}}",
-    "ask-question": "Pune o întrebare"
+    "ask-question": "Pune o întrebare",
+    "question-type": "Tipul întrebării",
+    "single-choice": "Alegere unică",
+    "multiple-choice": "Grilă multiplă",
+    "anonymous-voting": "Vot anonim",
+    "quiz-mode": "Modul Quiz",
+    "correct-answer": "Răspuns corect",
+    "duration": "Durata",
+    "duration-no-limit": "Fără limită",
+    "duration-minutes": "{{count}} min",
+    "total-votes": "{{votes}} voturi de la {{count}} Respondenți",
+    "anonymous": "Anonim",
+    "time-remaining": "Timp rămas",
+    "reopen-poll": "Sondajul de redeschidere",
+    "quick-types": "Tipuri rapide",
+    "option-yes": "Da",
+    "option-no": "Nu",
+    "option-maybe": "Poate",
+    "option-true": "Adevărat",
+    "option-false": "Fals",
+    "option-agree": "Sunt de acord",
+    "option-disagree": "Nu sunt de acord",
+    "ai-generate": "Generează cu AI",
+    "ai-prompt-placeholder": "Descrie sondajul pe care îl dorești…",
+    "ai-disabled-notice": "Generarea sondajelor AI este dezactivată. Un administrator o poate activa din Mai multe opțiuni (...) → AI Tools → AI Assistant Chat.",
+    "quiz-mode-desc": "Marcați opțiunea corectă folosind căsuța de bifat de lângă fiecare opțiune. Participanții văd răspunsul corect doar după închiderea sondajului.",
+    "anonymous-voting-desc": "Alegerile alegătorilor rămân ascunse — chiar și administratorii nu pot vedea cine a votat.",
+    "duration-desc": "Sondajul se închide automat când timpul expiră.",
+    "notifications": {
+      "created-successfully": "Sondajul a fost creat.",
+      "response-added": "Votul tău a fost trimis.",
+      "new-poll": "A început un nou sondaj.",
+      "end-poll-success": "Sondajul s-a încheiat.",
+      "reopen-poll-success": "Secția de vot a fost redeschisă.",
+      "ai-generated": "Draft AI gata — revizuiește și creează.",
+      "poll-reopened": "A fost redeschis un sondaj."
+    },
+    "errors": {
+      "generic": "Ceva a mers prost. Te rog să încerci din nou.",
+      "question-required": "Vă rugăm să introduceți întrebarea.",
+      "min-options": "Un sondaj trebuie să aibă cel puțin două opțiuni.",
+      "option-required": "Vă rugăm să introduceți text pentru fiecare opțiune.",
+      "select-correct-option": "Marcați cel puțin o opțiune ca răspuns corect.",
+      "quiz-needs-correct": "Sondajele de tip quiz trebuie să aibă cel puțin un răspuns corect.",
+      "duration-cap": "Durata sondajului nu poate depăși 60 de minute.",
+      "no-option-selected": "Vă rugăm să selectați o opțiune înainte de a trimite.",
+      "already-voted": "Ai votat deja la acest sondaj.",
+      "poll-not-found": "Sondaj negăsit.",
+      "poll-closed": "Acest sondaj este închis.",
+      "wait-for-close": "Rezultatele vor fi disponibile odată ce sondajul va fi închis.",
+      "only-admin": "Doar administratorul poate îndeplini această sarcină.",
+      "only-admin-view-selection": "Doar administratorii pot vedea selecțiile celorlalți utilizatori.",
+      "room-id-required": "Este necesar ID-ul camerei.",
+      "poll-id-required": "Este necesară identificarea secției de vot.",
+      "user-and-poll-id-required": "Sunt necesare atât ID-ul utilizatorului, cât și ID-ul sondajului.",
+      "ai-disabled": "Generarea de sondaje AI este dezactivată.",
+      "ai-invalid-response": "Răspunsul AI nu a putut fi folosit. Vă rugăm să încercați din nou.",
+      "ai-request-timeout": "Cererea pentru sondaje AI expirată"
+    }
   },
   "breakout-room": {
     "share-polls": "Distribuie sondaje cu săli de tip breakout",
@@ -742,7 +796,10 @@
       "responding-placeholder": "AI Assistant răspunde...",
       "response-timed-out": "Asistentul AI răspunde prea mult. Vă rog să încercați din nou.",
       "enable-notepad-ai": "Activează AI în notenotebook-ul partajat",
-      "enable-whiteboard-ai": "Activează AI în tablă albă"
+      "enable-whiteboard-ai": "Activează AI în tablă albă",
+      "enable-poll-ai": "Activează AI în sondaje",
+      "feature-disabled": "Funcțiile AI nu sunt activate pentru această cameră.",
+      "not-allowed": "Nu ai voie să folosești acest serviciu."
     },
     "meeting-summarization": {
       "enable": "Permiterea rezumatizării ședințelor",
@@ -765,11 +822,17 @@
       "generating": "Generarea unui răspuns AI...",
       "done": "Rezultat AI aplicat",
       "failed": "Cererea AI a eșuat",
-      "disabled-message": "Funcția AI este în prezent dezactivată. Un administrator îl poate activa din Mai multe opțiuni (...) → AI Tools → AI Assistant Chat."
+      "disabled-message": "Funcția AI este în prezent dezactivată. Un administrator îl poate activa din Mai multe opțiuni (...) → AI Tools → AI Assistant Chat.",
+      "errors": {
+        "ai-disabled": "AI-ul din carnețelul comun este dezactivat."
+      }
     },
     "whiteboard-ai": {
       "disabled-message": "Funcția AI este în prezent dezactivată. Un administrator îl poate activa din Mai multe opțiuni (...) → AI Tools → AI Assistant Chat.",
-      "request-timeout": "Cererea de AI pe tablă albă expirată"
+      "request-timeout": "Cererea de AI pe tablă albă expirată",
+      "errors": {
+        "ai-disabled": "AI-ul din tablă albă este dezactivat."
+      }
     }
   },
   "sip-dial-in-features": {
