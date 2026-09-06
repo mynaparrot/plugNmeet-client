@@ -19,7 +19,7 @@ import {
 import i18n from '../i18n';
 import { pollsApi } from '../../store/services/pollsApi';
 import { cleanHtmlForChat, getConfigValue, randomString } from '../utils';
-import { updateAiTextChat } from '../../store/slices/insightsAiTextChatSlice';
+import { handleInsightsChatAIStreamResult } from '../../components/insights-ai/ai-text-chat/helpers/insightsChatAI';
 import { handleNotepadAIStreamResult } from '../../components/shared-notepad/helpers/notepadAI';
 import { handleWhiteboardAIStreamResult } from '../../components/whiteboard/ai/whiteboardAI';
 import { handlePollAIStreamResult } from '../../components/polls/create/pollAI';
@@ -296,7 +296,7 @@ export default class HandleSystemData {
       handlePollAIStreamResult(data);
       return;
     }
-    store.dispatch(updateAiTextChat(data));
+    handleInsightsChatAIStreamResult(data);
   };
 
   private playNotification() {

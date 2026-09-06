@@ -390,3 +390,84 @@ body[dir='rtl'] .rtl\:microphone-rtl-left::before {
     display: none;
   }
 }
+
+/* Rendered markdown inside the insights AI text chat bubbles (chat-bubble scale). */
+.markdown-content {
+  @apply text-sm leading-relaxed break-words;
+
+  & > :first-child {
+    @apply mt-0;
+  }
+  & > :last-child {
+    @apply mb-0;
+  }
+  & p {
+    @apply my-1.5;
+  }
+  & h1 {
+    @apply text-base font-bold mt-3 mb-1.5;
+  }
+  & h2 {
+    @apply text-[15px] font-bold mt-3 mb-1.5;
+  }
+  & h3 {
+    @apply text-sm font-semibold mt-2.5 mb-1;
+  }
+  & h4,
+  & h5,
+  & h6 {
+    @apply text-sm font-semibold mt-2 mb-1;
+  }
+  & ul {
+    @apply list-disc ps-5 my-1.5;
+  }
+  & ol {
+    @apply list-decimal ps-5 my-1.5;
+  }
+  & li {
+    @apply my-0.5;
+  }
+  & li > p {
+    @apply my-0.5;
+  }
+  /* nested lists slightly tighter */
+  & ul,
+  & ol {
+    & ul,
+    & ol {
+      @apply my-0.5 ps-4;
+    }
+  }
+  & blockquote {
+    @apply border-s-[3px] border-Gray-300 dark:border-Gray-600 ps-3 my-2 opacity-90;
+  }
+  & a {
+    @apply text-[#00A1F2] underline break-words;
+  }
+  & code {
+    @apply font-mono text-[0.85em] bg-Gray-100 dark:bg-Gray-800 rounded px-1 py-0.5;
+  }
+  & pre {
+    @apply my-2 p-3 rounded-lg overflow-x-auto text-xs text-gray-100 bg-[#0d1117] leading-normal;
+  }
+  /* reset the inline-code chip inside code blocks; must follow the `& code` rule */
+  & pre code {
+    @apply bg-transparent p-0 rounded-none text-inherit;
+  }
+  /* display:block trick makes wide tables scroll inside the bubble */
+  & table {
+    @apply my-2 block overflow-x-auto text-xs;
+  }
+  & th {
+    @apply border border-Gray-200 dark:border-Gray-700 bg-Gray-50 dark:bg-Gray-800 px-2 py-1 font-semibold text-start;
+  }
+  & td {
+    @apply border border-Gray-200 dark:border-Gray-700 px-2 py-1;
+  }
+  & hr {
+    @apply my-3 border-Gray-200 dark:border-Gray-700;
+  }
+  & img {
+    @apply max-w-full h-auto rounded-md my-2;
+  }
+}

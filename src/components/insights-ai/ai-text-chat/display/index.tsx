@@ -6,7 +6,6 @@ import React, {
   useState,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { marked } from 'marked';
 import Draggable from 'react-draggable';
 
 import { updateIsActiveInsightsAiTextChat } from '../../../../store/slices/bottomIconsActivitySlice';
@@ -15,7 +14,9 @@ import {
   AIMessage,
   MyMessage,
 } from '../../../chat/messages/message/messageTypes';
+import { renderMarkdown } from '../helpers/renderMarkdown';
 import TextBoxArea from './textBoxArea';
+import { useAiTextChat } from '../useAiTextChat';
 import { PopupCloseSVGIcon } from '../../../../assets/Icons/PopupCloseSVGIcon';
 import { ScrollToBottomIconSVG } from '../../../../assets/Icons/ScrollToBottom';
 
@@ -29,23 +30,17 @@ const InsightsAiTextChat = () => {
   const isActive = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveInsightsAiTextChat,
   );
-  const finalMessages = useAppSelector(
-    (state) => state.insightsAiTextChat.finalMessages,
-  );
-  const interimMessage = useAppSelector(
-    (state) => state.insightsAiTextChat.interimMessage,
-  );
   const isEnabled = useAppSelector(
     (state) =>
       state.session.currentRoom?.metadata?.roomFeatures?.insightsFeatures
         ?.aiFeatures?.aiTextChatFeatures?.isEnabled,
   );
+  const { finalMessages, interimMessage, isAwaitingResponse, send } =
+    useAiTextChat();
 
   const parsedFinalMessages = useMemo(() => {
     return finalMessages.map((msg) => {
-      const parsedMessage = marked.parse(msg.parts.join(''), {
-        async: false,
-      });
+      const parsedMessage = renderMarkdown(msg.parts.join(''));
       return {
         ...msg,
         parsedMessage,
@@ -56,9 +51,7 @@ const InsightsAiTextChat = () => {
   const allMessages = useMemo(() => {
     const messages = [...parsedFinalMessages];
     if (interimMessage) {
-      const parsedMessage = marked.parse(interimMessage.parts.join(''), {
-        async: false,
-      });
+      const parsedMessage = renderMarkdown(interimMessage.parts.join(''));
       messages.push({
         ...interimMessage,
         parsedMessage,
@@ -184,7 +177,7 @@ const InsightsAiTextChat = () => {
                       return (
                         <div
                           key={msg.id}
-                          className="wrapper flex gap-2 3xl:gap-3 my-4"
+                          className="wrapper flex gap-2 3xl:gap-3 my-2.5"
                         >
                           {msg.role === 'model' ? (
                             <AIMessage
@@ -192,11 +185,13 @@ const InsightsAiTextChat = () => {
                               message={msg.parsedMessage}
                               isStreaming={isStreaming}
                               sentAt={msg.createdAt}
+                              markdown
                             />
                           ) : (
                             <MyMessage
                               message={msg.parsedMessage}
                               sentAt={msg.createdAt}
+                              markdown
                             />
                           )}
                         </div>
@@ -206,7 +201,10 @@ const InsightsAiTextChat = () => {
                 </div>
 
                 <div className="message-form z-30 border-t border-Gray-200 dark:border-Gray-800 bg-white dark:bg-dark-primary w-full px-3 3xl:px-5 py-2 3xl:py-4 flex items-center shrink-0">
-                  <TextBoxArea />
+                  <TextBoxArea
+                    onSend={send}
+                    isAwaitingResponse={isAwaitingResponse}
+                  />
                 </div>
               </div>
             </div>

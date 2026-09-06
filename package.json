@@ -21,7 +21,7 @@
     "@blocknote/mantine": "0.54.0",
     "@blocknote/react": "0.54.0",
     "@bufbuild/protobuf": "2.14.1",
-    "@excalidraw/excalidraw": "0.18.0-abeeaeb",
+    "@excalidraw/excalidraw": "0.18.0-214cd6e",
     "@headlessui/react": "2.2.10",
     "@nats-io/jetstream": "3.4.0",
     "@nats-io/nats-core": "3.4.0",

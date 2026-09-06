@@ -25,7 +25,15 @@ export const SystemMessage = memo(({ message }: { message: string }) => {
 SystemMessage.displayName = 'SystemMessage';
 
 export const MyMessage = memo(
-  ({ message, sentAt }: { message: string; sentAt: string }) => {
+  ({
+    message,
+    sentAt,
+    markdown = false,
+  }: {
+    message: string;
+    sentAt: string;
+    markdown?: boolean;
+  }) => {
     const { t } = useTranslation();
     return (
       <div className="content me w-[calc(100%-36px)] 3xl:w-[calc(100%-48px)] ms-auto">
@@ -37,8 +45,14 @@ export const MyMessage = memo(
         </div>
         <div
           dir="auto"
-          className="message-content py-2 px-2.5 border border-Gray-200 dark:border-Gray-700 rounded-lg overflow-hidden rounded-ee-none text-sm text-Gray-950 dark:text-white break-words"
-          dangerouslySetInnerHTML={{ __html: cleanHtmlForChat(message) }}
+          className={`message-content py-2 px-2.5 border border-Gray-200 dark:border-Gray-700 rounded-lg overflow-hidden rounded-ee-none text-sm text-Gray-950 dark:text-white break-words${
+            markdown
+              ? ' markdown-content bg-[#00A1F2]/10 dark:bg-[#00A1F2]/15 border-[#00A1F2]/40'
+              : ''
+          }`}
+          dangerouslySetInnerHTML={{
+            __html: markdown ? message : cleanHtmlForChat(message),
+          }}
         />
       </div>
     );
@@ -84,11 +98,13 @@ export const AIMessage = memo(
     message,
     sentAt,
     isStreaming,
+    markdown = false,
   }: {
     name: string;
     message: string;
     sentAt: string;
     isStreaming: boolean;
+    markdown?: boolean;
   }) => {
     return (
       <>
@@ -107,8 +123,10 @@ export const AIMessage = memo(
           <div className="message-content py-2 px-2.5 border border-Gray-200 dark:border-Gray-700 rounded-lg overflow-hidden text-sm text-Gray-950 dark:text-white break-words rounded-ss-none bg-Gray-50 dark:bg-Gray-800">
             <div
               dir="auto"
-              className="break-words"
-              dangerouslySetInnerHTML={{ __html: cleanHtmlForChat(message) }}
+              className={`break-words${markdown ? ' markdown-content' : ''}`}
+              dangerouslySetInnerHTML={{
+                __html: markdown ? message : cleanHtmlForChat(message),
+              }}
             />
             {isStreaming && (
               <span className="blinking-cursor inline-block h-4 w-0.5 ms-1 bg-gray-900" />
