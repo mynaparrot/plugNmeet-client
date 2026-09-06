@@ -505,14 +505,11 @@
     "remove-option": "Avlägsna",
     "add-new-option": "Lägg till ytterligare ett alternativ",
     "create-poll": "Skapa omröstning",
-    "created-successfully": "Omröstningen har skapats.",
     "you-voted": "Du har röstat",
     "vote": "Rösta",
     "submit-vote-form-title": "Skicka in din röst",
     "select-option": "Välj ett alternativ",
     "submit": "Inlämna",
-    "response-added": "Din röst har skickats.",
-    "new-poll": "En ny omröstning har startat.",
     "poll-running": "Löpning",
     "poll-closed": "Stängd",
     "view-details": "Detaljer",
@@ -520,11 +517,68 @@
     "view-details-title": "Information om omröstning",
     "view-result-title": "Resultat av omröstningar",
     "end-poll": "Avsluta omröstning",
-    "end-poll-success": "Omröstningen är avslutad.",
     "publish-result": "Publicera resultat",
     "total": "Totalt: {{count}}",
     "not-respondents-total": "Svarade inte: {{count}}",
-    "ask-question": "Ställ en fråga"
+    "ask-question": "Ställ en fråga",
+    "question-type": "Frågetyp",
+    "single-choice": "Enhandsval",
+    "multiple-choice": "Flervalsfrågor",
+    "anonymous-voting": "Anonym röstning",
+    "quiz-mode": "Quizläge",
+    "correct-answer": "Rätt svar",
+    "duration": "Varaktighet",
+    "duration-no-limit": "Ingen gräns",
+    "duration-minutes": "{{count}} Min",
+    "total-votes": "{{votes}} Röster från {{count}} Svarande",
+    "anonymous": "Anonym",
+    "time-remaining": "Återstående tid",
+    "reopen-poll": "Återöppning av omröstning",
+    "quick-types": "Snabba typer",
+    "option-yes": "Ja",
+    "option-no": "Nej",
+    "option-maybe": "Kanske",
+    "option-true": "Sant",
+    "option-false": "Falskt",
+    "option-agree": "Instämmer",
+    "option-disagree": "Håller inte med",
+    "ai-generate": "Generera med AI",
+    "ai-prompt-placeholder": "Beskriv den undersökning du vill ha…",
+    "ai-disabled-notice": "AI-omröstningsgenerering är inaktiverad. En administratör kan aktivera det från Fler alternativ (...) → AI-verktyg → AI Assistant Chat.",
+    "quiz-mode-desc": "Markera rätt alternativ med kryssrutan bredvid varje alternativ. Deltagarna ser bara det korrekta svaret efter att omröstningen stängt.",
+    "anonymous-voting-desc": "Väljarvalen förblir dolda — inte ens administratörer kan se vem som röstade.",
+    "duration-desc": "Poll stängs automatiskt när tiden tar slut.",
+    "notifications": {
+      "created-successfully": "Omröstningen har skapats.",
+      "response-added": "Din röst har lämnats in.",
+      "new-poll": "En ny omröstning har startat.",
+      "end-poll-success": "Omröstningen är avslutad.",
+      "reopen-poll-success": "Vallokalen har öppnats igen.",
+      "ai-generated": "AI-utkast redo — granska och skapa.",
+      "poll-reopened": "En vallokal har öppnats igen."
+    },
+    "errors": {
+      "generic": "Något gick fel. Försök igen.",
+      "question-required": "Vänligen skriv in din fråga.",
+      "min-options": "En omröstning måste ha minst två alternativ.",
+      "option-required": "Vänligen skriv in text för varje alternativ.",
+      "select-correct-option": "Markera minst ett alternativ som det korrekta svaret.",
+      "quiz-needs-correct": "Frågeformulär måste ha minst ett korrekt svar.",
+      "duration-cap": "Omröstningens längd får inte överstiga 60 minuter.",
+      "no-option-selected": "Vänligen välj ett alternativ innan du skickar in.",
+      "already-voted": "Du har redan röstat i den här omröstningen.",
+      "poll-not-found": "Undersökning ej hittad.",
+      "poll-closed": "Den här omröstningen är stängd.",
+      "wait-for-close": "Resultaten kommer att finnas tillgängliga när omröstningen är stängd.",
+      "only-admin": "Endast administratörer kan utföra denna uppgift.",
+      "only-admin-view-selection": "Endast administratören kan se andra användares val.",
+      "room-id-required": "Rums-ID krävs.",
+      "poll-id-required": "Röstlegitimation krävs.",
+      "user-and-poll-id-required": "Både användar-ID och poll-ID krävs.",
+      "ai-disabled": "AI-omröstningsgenerering är inaktiverad.",
+      "ai-invalid-response": "AI-svaret kunde inte användas. Försök igen.",
+      "ai-request-timeout": "Omröstnings-AI-begäran har löpt ut på tiden"
+    }
   },
   "breakout-room": {
     "share-polls": "Dela omröstningar med breakout-rum",
@@ -742,7 +796,10 @@
       "responding-placeholder": "AI-assistenten svarar...",
       "response-timed-out": "AI-assistenten tar för lång tid på sig att svara. Försök igen, tack.",
       "enable-notepad-ai": "Aktivera AI i delad anteckningsbok",
-      "enable-whiteboard-ai": "Aktivera AI i whiteboard"
+      "enable-whiteboard-ai": "Aktivera AI i whiteboard",
+      "enable-poll-ai": "Aktivera AI i omröstningar",
+      "feature-disabled": "AI-funktioner är inte aktiverade för detta rum.",
+      "not-allowed": "Du får inte använda denna tjänst."
     },
     "meeting-summarization": {
       "enable": "Aktivera mötessammanfattning",
@@ -765,11 +822,17 @@
       "generating": "Genererar AI-respons...",
       "done": "AI-resultat tillämpat",
       "failed": "AI-förfrågan misslyckades",
-      "disabled-message": "AI-funktionen är för närvarande inaktiverad. En administratör kan aktivera det från Fler alternativ (...) → AI-verktyg → AI Assistant Chat."
+      "disabled-message": "AI-funktionen är för närvarande inaktiverad. En administratör kan aktivera det från Fler alternativ (...) → AI-verktyg → AI Assistant Chat.",
+      "errors": {
+        "ai-disabled": "AI i det delade anteckningsblocket är avstängt."
+      }
     },
     "whiteboard-ai": {
       "disabled-message": "AI-funktionen är för närvarande inaktiverad. En administratör kan aktivera det från Fler alternativ (...) → AI-verktyg → AI Assistant Chat.",
-      "request-timeout": "Whiteboard AI-förfrågan har gått ut på tid"
+      "request-timeout": "Whiteboard AI-förfrågan har gått ut på tid",
+      "errors": {
+        "ai-disabled": "AI:n i whiteboarden är avstängd."
+      }
     }
   },
   "sip-dial-in-features": {
