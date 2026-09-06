@@ -505,14 +505,11 @@
     "remove-option": "Odstranit",
     "add-new-option": "Přidat další možnost",
     "create-poll": "Vytvořit anketu",
-    "created-successfully": "Anketa byla vytvořena.",
     "you-voted": "Hlasovali jste",
     "vote": "Volit",
     "submit-vote-form-title": "Odešlete svůj hlas",
     "select-option": "Vyberte možnost",
     "submit": "Podat",
-    "response-added": "Váš hlas byl odeslán.",
-    "new-poll": "Byla zahájena nová anketa.",
     "poll-running": "Tekoucí",
     "poll-closed": "Uzavřený",
     "view-details": "Podrobnosti",
@@ -520,11 +517,68 @@
     "view-details-title": "Informace o anketě",
     "view-result-title": "Výsledky ankety",
     "end-poll": "Ukončit anketu",
-    "end-poll-success": "Anketa skončila.",
     "publish-result": "Publikování výsledků",
     "total": "Totální: {{count}}",
     "not-respondents-total": "Neodpověděl: {{count}}",
-    "ask-question": "Zeptejte se"
+    "ask-question": "Zeptejte se",
+    "question-type": "Typ otázky",
+    "single-choice": "Jediná volba",
+    "multiple-choice": "Výběr z možností",
+    "anonymous-voting": "Anonymní hlasování",
+    "quiz-mode": "Kvízový režim",
+    "correct-answer": "Správná odpověď",
+    "duration": "Délka trvání",
+    "duration-no-limit": "Žádný limit",
+    "duration-minutes": "{{count}} min",
+    "total-votes": "{{votes}} hlasy od {{count}} Respondenti",
+    "anonymous": "Anonymní",
+    "time-remaining": "Zbývající čas",
+    "reopen-poll": "Znovuotevření hlasování",
+    "quick-types": "Rychlé typy",
+    "option-yes": "Ano",
+    "option-no": "Ne",
+    "option-maybe": "Možná",
+    "option-true": "To je pravda",
+    "option-false": "Nepravda",
+    "option-agree": "Souhlasím",
+    "option-disagree": "Nesouhlasím",
+    "ai-generate": "Generujte pomocí AI",
+    "ai-prompt-placeholder": "Popište anketu, kterou chcete…",
+    "ai-disabled-notice": "Generování AI anket je zakázáno. Administrátor jej může povolit z Více možností (...) → AI nástroje → AI Assistant Chat.",
+    "quiz-mode-desc": "Označte správnou možnost pomocí zaškrtávacího políčka vedle každé možnosti. Účastníci uvidí správnou odpověď až po uzavření ankety.",
+    "anonymous-voting-desc": "Volby voličů zůstávají skryté — ani administrátoři nemohou vidět, kdo hlasoval.",
+    "duration-desc": "Anketa se automaticky uzavře, když vyprší čas.",
+    "notifications": {
+      "created-successfully": "Průzkum byl vytvořen.",
+      "response-added": "Váš hlas byl odevzdán.",
+      "new-poll": "Začalo nové hlasování.",
+      "end-poll-success": "Hlasování skončilo.",
+      "reopen-poll-success": "Hlasování bylo znovu otevřeno.",
+      "ai-generated": "AI připravena na návrh — zkontrolovat a tvořit.",
+      "poll-reopened": "Hlasování bylo znovu otevřeno."
+    },
+    "errors": {
+      "generic": "Něco se pokazilo. Zkuste to prosím znovu.",
+      "question-required": "Prosím, zadejte svou otázku.",
+      "min-options": "Anketa musí obsahovat alespoň dvě možnosti.",
+      "option-required": "Prosím, zadejte text pro každou možnost.",
+      "select-correct-option": "Označte alespoň jednu možnost jako správnou odpověď.",
+      "quiz-needs-correct": "Kvízové ankety musí obsahovat alespoň jednu správnou odpověď.",
+      "duration-cap": "Doba hlasování nesmí přesáhnout 60 minut.",
+      "no-option-selected": "Před odesláním prosím vyberte jednu možnost.",
+      "already-voted": "Už jste v tomto hlasování hlasovali.",
+      "poll-not-found": "Průzkum nenalezen.",
+      "poll-closed": "Tato anketa je uzavřena.",
+      "wait-for-close": "Výsledky budou k dispozici po uzavření hlasování.",
+      "only-admin": "Tento úkol může vykonávat pouze administrátor.",
+      "only-admin-view-selection": "Pouze administrátor může zobrazit výběr ostatních uživatelů.",
+      "room-id-required": "Je vyžadována identifikace pokoje.",
+      "poll-id-required": "Je vyžadován průkaz volb.",
+      "user-and-poll-id-required": "Je vyžadováno jak uživatelské ID, tak ID ankety.",
+      "ai-disabled": "Generování AI je deaktivováno.",
+      "ai-invalid-response": "Odpověď AI nebyla použita. Zkuste to prosím znovu.",
+      "ai-request-timeout": "Žádost o průzkum AI vypršela"
+    }
   },
   "breakout-room": {
     "share-polls": "Sdílejte ankety s oddělenými místnostmi",
@@ -742,7 +796,10 @@
       "responding-placeholder": "AI Assistant reaguje...",
       "response-timed-out": "AI asistent reaguje příliš dlouho. Zkuste to prosím znovu.",
       "enable-notepad-ai": "Povolte AI ve sdíleném poznámkovém bloku",
-      "enable-whiteboard-ai": "Povolit AI na tabuli"
+      "enable-whiteboard-ai": "Povolit AI na tabuli",
+      "enable-poll-ai": "Povolte AI v průzkumech",
+      "feature-disabled": "AI funkce nejsou v této místnosti povoleny.",
+      "not-allowed": "Tuto službu nesmíte používat."
     },
     "meeting-summarization": {
       "enable": "Umožnit shrnutí schůzky",
@@ -765,11 +822,17 @@
       "generating": "Generování AI odpovědi...",
       "done": "Aplikovaný výsledek AI",
       "failed": "Žádost AI neúspěšná",
-      "disabled-message": "Funkce AI je momentálně deaktivovaná. Administrátor ji může povolit z Více možností (...) → AI Tools → AI Assistant Chat."
+      "disabled-message": "Funkce AI je momentálně deaktivovaná. Administrátor ji může povolit z Více možností (...) → AI Tools → AI Assistant Chat.",
+      "errors": {
+        "ai-disabled": "AI ve sdíleném poznámkovém bloku je deaktivována."
+      }
     },
     "whiteboard-ai": {
       "disabled-message": "Funkce AI je momentálně deaktivovaná. Administrátor ji může povolit z Více možností (...) → AI Tools → AI Assistant Chat.",
-      "request-timeout": "Požadavek AI na tabuli vypršel"
+      "request-timeout": "Požadavek AI na tabuli vypršel",
+      "errors": {
+        "ai-disabled": "AI na tabuli je deaktivovaná."
+      }
     }
   },
   "sip-dial-in-features": {
