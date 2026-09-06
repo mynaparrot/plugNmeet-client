@@ -505,14 +505,11 @@
     "remove-option": "Usuń",
     "add-new-option": "Dodaj kolejną opcję",
     "create-poll": "Utwórz ankietę",
-    "created-successfully": "Ankieta została utworzona pomyślnie.",
     "you-voted": "Zagłosowałeś.",
     "vote": "Głosuj",
     "submit-vote-form-title": "Prześlij swój głos",
     "select-option": "Wybierz opcję",
     "submit": "Prześlij",
-    "response-added": "Twój głos został przesłany.",
-    "new-poll": "Rozpoczęła się nowa ankieta.",
     "poll-running": "W toku",
     "poll-closed": "Zamknięta",
     "view-details": "Szczegóły",
@@ -520,11 +517,68 @@
     "view-details-title": "Informacje o ankiecie",
     "view-result-title": "Wyniki ankiety",
     "end-poll": "Zakończ ankietę",
-    "end-poll-success": "Ankieta została zakończona.",
     "publish-result": "Opublikuj wyniki",
     "total": "Łącznie: {{count}}",
     "not-respondents-total": "Nie odpowiedziało: {{count}}",
-    "ask-question": "Zadaj pytanie"
+    "ask-question": "Zadaj pytanie",
+    "question-type": "Typ pytania",
+    "single-choice": "Jeden wybór",
+    "multiple-choice": "Wielokrotny wybór",
+    "anonymous-voting": "Głosowanie anonimowe",
+    "quiz-mode": "Tryb quizu",
+    "correct-answer": "Poprawna odpowiedź",
+    "duration": "Czas trwania",
+    "duration-no-limit": "Bez limitu",
+    "duration-minutes": "{{count}} min",
+    "total-votes": "{{votes}} głosy od {{count}} Respondenci",
+    "anonymous": "Anonim",
+    "time-remaining": "Pozostał czas",
+    "reopen-poll": "Ponowne otwarcie głosowania",
+    "quick-types": "Szybkie typy",
+    "option-yes": "Tak",
+    "option-no": "Nie",
+    "option-maybe": "Może",
+    "option-true": "Prawda",
+    "option-false": "Fałsz",
+    "option-agree": "Zgadzam się",
+    "option-disagree": "Nie zgadzam się",
+    "ai-generate": "Generuj z pomocą AI",
+    "ai-prompt-placeholder": "Opisz ankietę, którą chcesz…",
+    "ai-disabled-notice": "Generowanie ankiet przez AI jest wyłączone. Administrator może je włączyć z opcji Więcej opcji (...) → narzędzi AI → czatu asystenta AI.",
+    "quiz-mode-desc": "Zaznacz poprawną opcję (lub opcje) za pomocą pola wyboru obok każdej opcji. Uczestnicy widzą poprawną odpowiedź dopiero po zamknięciu ankiety.",
+    "anonymous-voting-desc": "Wybory wyborców pozostają ukryte — nawet administratorzy nie mogą zobaczyć, kto głosował.",
+    "duration-desc": "Ankieta zamyka się automatycznie, gdy czas się skończy.",
+    "notifications": {
+      "created-successfully": "Ankieta została stworzona.",
+      "response-added": "Twój głos został oddany.",
+      "new-poll": "Rozpoczęło się nowe sondaże.",
+      "end-poll-success": "Sondaż się zakończył.",
+      "reopen-poll-success": "Głosowanie zostało wznowione.",
+      "ai-generated": "AI gotowy do szkicowania — przeglądaj i tworzysz.",
+      "poll-reopened": "Ponownie otwarto ankietę."
+    },
+    "errors": {
+      "generic": "Coś poszło nie tak. Proszę spróbować ponownie.",
+      "question-required": "Proszę wpisać swoje pytanie.",
+      "min-options": "Ankieta musi zawierać co najmniej dwie opcje.",
+      "option-required": "Proszę wpisać tekst dla każdej opcji.",
+      "select-correct-option": "Zaznacz przynajmniej jedną opcję jako poprawną odpowiedź.",
+      "quiz-needs-correct": "Ankiety quizowe muszą zawierać przynajmniej jedną poprawną odpowiedź.",
+      "duration-cap": "Czas trwania ankiety nie może przekroczyć 60 minut.",
+      "no-option-selected": "Prosimy o zaznaczenie opcji przed przesłaniem.",
+      "already-voted": "Już głosowałeś w tym ankiecie.",
+      "poll-not-found": "Ankieta nie znaleziona.",
+      "poll-closed": "Głosowanie jest zamknięte.",
+      "wait-for-close": "Wyniki będą dostępne po zamknięciu głosowania.",
+      "only-admin": "Tylko administracja może wykonać to zadanie.",
+      "only-admin-view-selection": "Tylko administrator może przeglądać wybory innych użytkowników.",
+      "room-id-required": "Wymagane jest podanie identyfikatora pokoju.",
+      "poll-id-required": "Wymagany jest identyfikator wyborczy.",
+      "user-and-poll-id-required": "Wymagane są zarówno identyfikatory użytkownika, jak i identyfikatora ankiety.",
+      "ai-disabled": "Generowanie ankiet przez AI jest wyłączone.",
+      "ai-invalid-response": "Odpowiedź AI nie została użyta. Proszę spróbować ponownie.",
+      "ai-request-timeout": "Prośba o ankietę AI wygasła"
+    }
   },
   "breakout-room": {
     "share-polls": "Udostępniaj ankiety z pokojem tematycznym",
@@ -742,7 +796,10 @@
       "responding-placeholder": "Asystent AI odpowiada...",
       "response-timed-out": "Asystent AI zbyt długo nie odpowiada. Proszę, spróbuj ponownie.",
       "enable-notepad-ai": "Włącz AI w współdzielonym notatniku",
-      "enable-whiteboard-ai": "Włącz AI na tablicy suchościeralnej"
+      "enable-whiteboard-ai": "Włącz AI na tablicy suchościeralnej",
+      "enable-poll-ai": "Włącz AI w sondażach",
+      "feature-disabled": "Funkcje AI nie są włączone w tym pokoju.",
+      "not-allowed": "Nie wolno korzystać z tej usługi."
     },
     "meeting-summarization": {
       "enable": "Włącz podsumowanie spotkania",
@@ -765,11 +822,17 @@
       "generating": "Generowanie odpowiedzi AI...",
       "done": "Zastosowanie wyniku AI",
       "failed": "Żądanie AI nie powiodło się",
-      "disabled-message": "Funkcja AI jest obecnie wyłączona. Administrator może włączyć to z opcji Więcej opcji (...) → narzędzi AI → Czatu Asystenta AI."
+      "disabled-message": "Funkcja AI jest obecnie wyłączona. Administrator może włączyć to z opcji Więcej opcji (...) → narzędzi AI → Czatu Asystenta AI.",
+      "errors": {
+        "ai-disabled": "AI w współdzielonym notatniku jest wyłączone."
+      }
     },
     "whiteboard-ai": {
       "disabled-message": "Funkcja AI jest obecnie wyłączona. Administrator może włączyć to z opcji Więcej opcji (...) → narzędzi AI → Czatu Asystenta AI.",
-      "request-timeout": "Żądanie AI tablicy zakończone"
+      "request-timeout": "Żądanie AI tablicy zakończone",
+      "errors": {
+        "ai-disabled": "AI na tablicy suchościeralnej jest wyłączone."
+      }
     }
   },
   "sip-dial-in-features": {
