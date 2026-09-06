@@ -505,14 +505,11 @@
     "remove-option": "Rimuovi",
     "add-new-option": "Aggiungi un'altra opzione",
     "create-poll": "Crea sondaggio",
-    "created-successfully": "Sondaggio creato con successo.",
     "you-voted": "Lei ha votato.",
     "vote": "Vota",
     "submit-vote-form-title": "Invia il suo voto",
     "select-option": "Selezioni un'opzione",
     "submit": "Invia",
-    "response-added": "Il suo voto è stato inviato.",
-    "new-poll": "È iniziato un nuovo sondaggio.",
     "poll-running": "In corso",
     "poll-closed": "Chiuso",
     "view-details": "Dettagli",
@@ -520,11 +517,68 @@
     "view-details-title": "Informazioni sul sondaggio",
     "view-result-title": "Risultati del sondaggio",
     "end-poll": "Termina sondaggio",
-    "end-poll-success": "Il sondaggio è terminato.",
     "publish-result": "Pubblica risultati",
     "total": "Totale: {{count}}",
     "not-respondents-total": "Non hanno risposto: {{count}}",
-    "ask-question": "Fai una domanda"
+    "ask-question": "Fai una domanda",
+    "question-type": "Tipo di domanda",
+    "single-choice": "Scelta unica",
+    "multiple-choice": "A scelta multipla",
+    "anonymous-voting": "Voto anonimo",
+    "quiz-mode": "Modalità quiz",
+    "correct-answer": "Risposta corretta",
+    "duration": "Durata",
+    "duration-no-limit": "Nessun limite",
+    "duration-minutes": "{{count}} min",
+    "total-votes": "{{votes}} voti da {{count}} Rispondenti",
+    "anonymous": "Anonimo",
+    "time-remaining": "Tempo rimanente",
+    "reopen-poll": "Sondaggio di riapertura",
+    "quick-types": "Tipi rapidi",
+    "option-yes": "Sì",
+    "option-no": "No",
+    "option-maybe": "Forse",
+    "option-true": "Vero",
+    "option-false": "Falso",
+    "option-agree": "Concordo",
+    "option-disagree": "Non sono d'accordo",
+    "ai-generate": "Genera con l'IA",
+    "ai-prompt-placeholder": "Descrivi il sondaggio che vuoi…",
+    "ai-disabled-notice": "La generazione di sondaggi tramite IA è disabilitata. Un amministratore può abilitarla da Più opzioni (...) → AI Tools → AI Assistant Chat.",
+    "quiz-mode-desc": "Segna l'opzione corretta usando la casella accanto a ciascuna opzione. I partecipanti vedono la risposta corretta solo dopo la chiusura del sondaggio.",
+    "anonymous-voting-desc": "Le scelte degli elettori rimangono nascoste — nemmeno gli amministratori possono vedere chi ha votato.",
+    "duration-desc": "Il sondaggio si chiude automaticamente quando il tempo scade.",
+    "notifications": {
+      "created-successfully": "Il sondaggio è stato creato.",
+      "response-added": "Il tuo voto è stato sottomesso.",
+      "new-poll": "È iniziato un nuovo sondaggio.",
+      "end-poll-success": "Il sondaggio è finito.",
+      "reopen-poll-success": "Il seggio è stato riaperto.",
+      "ai-generated": "Pronta alla bozza dell'IA — revisiona e crea.",
+      "poll-reopened": "Un seggio è stato riaperto."
+    },
+    "errors": {
+      "generic": "Qualcosa è andato storto. Per favore, riprova.",
+      "question-required": "Per favore, inserisci la tua domanda.",
+      "min-options": "Un sondaggio deve avere almeno due opzioni.",
+      "option-required": "Per favore, inserisci il testo per ogni opzione.",
+      "select-correct-option": "Segna almeno un'opzione come risposta corretta.",
+      "quiz-needs-correct": "I sondaggi quiz devono avere almeno una risposta corretta.",
+      "duration-cap": "La durata del sondaggio non può superare i 60 minuti.",
+      "no-option-selected": "Si prega di selezionare un'opzione prima di inviare.",
+      "already-voted": "Hai già votato in questo sondaggio.",
+      "poll-not-found": "Sondaggio non trovato.",
+      "poll-closed": "Questo sondaggio è chiuso.",
+      "wait-for-close": "I risultati saranno disponibili una volta chiuso il segno.",
+      "only-admin": "Solo l'amministratore può svolgere questo compito.",
+      "only-admin-view-selection": "Solo l'amministratore può vedere le selezioni degli altri utenti.",
+      "room-id-required": "È richiesta la carta d'identità della stanza.",
+      "poll-id-required": "È richiesta la carta d'identità elettorale.",
+      "user-and-poll-id-required": "Sono richiesti sia l'ID utente che l'ID del sondaggio.",
+      "ai-disabled": "La generazione dei sondaggi tramite IA è disabilitata.",
+      "ai-invalid-response": "La risposta AI non poteva essere utilizzata. Per favore, riprova.",
+      "ai-request-timeout": "Richiesta di sondaggio AI in scadenze"
+    }
   },
   "breakout-room": {
     "share-polls": "Condividi sondaggi con le sale di raccolta",
@@ -742,7 +796,10 @@
       "responding-placeholder": "L'Assistente AI sta rispondendo...",
       "response-timed-out": "L'assistente AI sta mettendo troppo tempo a rispondere. Per favore, riprova.",
       "enable-notepad-ai": "Abilita l'IA nel blocco note condiviso",
-      "enable-whiteboard-ai": "Abilita l'IA nella lavagna"
+      "enable-whiteboard-ai": "Abilita l'IA nella lavagna",
+      "enable-poll-ai": "Abilita l'IA nei sondaggi",
+      "feature-disabled": "Le funzionalità di IA non sono abilitate per questa stanza.",
+      "not-allowed": "Non è permesso utilizzare questo servizio."
     },
     "meeting-summarization": {
       "enable": "Abilita riassunto della riunione",
@@ -765,11 +822,17 @@
       "generating": "Generare una risposta IA...",
       "done": "Risultato AI applicato",
       "failed": "Richiesta AI fallita",
-      "disabled-message": "La funzione AI è attualmente disabilitata. Un amministratore può abilitarlo tramite Più opzioni (...) → AI Tools → AI Assistant Chat."
+      "disabled-message": "La funzione AI è attualmente disabilitata. Un amministratore può abilitarlo tramite Più opzioni (...) → AI Tools → AI Assistant Chat.",
+      "errors": {
+        "ai-disabled": "L'IA nel blocco note condiviso è disabilitata."
+      }
     },
     "whiteboard-ai": {
       "disabled-message": "La funzione AI è attualmente disabilitata. Un amministratore può abilitarlo tramite Più opzioni (...) → AI Tools → AI Assistant Chat.",
-      "request-timeout": "Richiesta IA della lavagna con tempi di scadenza"
+      "request-timeout": "Richiesta IA della lavagna con tempi di scadenza",
+      "errors": {
+        "ai-disabled": "L'IA nella lavagna è disabilitata."
+      }
     }
   },
   "sip-dial-in-features": {
