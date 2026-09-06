@@ -505,14 +505,11 @@
     "remove-option": "Kaldır",
     "add-new-option": "Başka bir seçenek ekle",
     "create-poll": "Anket Oluştur",
-    "created-successfully": "Anket başarıyla oluşturuldu.",
     "you-voted": "Oy verdiniz.",
     "vote": "Oy Ver",
     "submit-vote-form-title": "Oyunuzu Gönderin",
     "select-option": "Bir seçenek seçin",
     "submit": "Gönder",
-    "response-added": "Oyunuz gönderildi.",
-    "new-poll": "Yeni bir anket başlatıldı.",
     "poll-running": "Devam Ediyor",
     "poll-closed": "Kapalı",
     "view-details": "Detaylar",
@@ -520,11 +517,68 @@
     "view-details-title": "Anket Bilgileri",
     "view-result-title": "Anket Sonuçları",
     "end-poll": "Anketi Bitir",
-    "end-poll-success": "Anket sona erdi.",
     "publish-result": "Sonuçları Yayınla",
     "total": "Toplam: {{count}}",
     "not-respondents-total": "Yanıtlamayan: {{count}}",
-    "ask-question": "Bir soru sorun"
+    "ask-question": "Bir soru sorun",
+    "question-type": "Soru türü",
+    "single-choice": "Tek seçim",
+    "multiple-choice": "Çoktan seçmeli",
+    "anonymous-voting": "Anonim oy verme",
+    "quiz-mode": "Quiz modu",
+    "correct-answer": "Doğru cevap",
+    "duration": "Süre",
+    "duration-no-limit": "Sınır yok",
+    "duration-minutes": "{{count}} min",
+    "total-votes": "{{votes}} Oylar {{count}} Yanıtıcılar",
+    "anonymous": "Anonim",
+    "time-remaining": "Kalan zaman",
+    "reopen-poll": "Yeniden Açılma Anketi",
+    "quick-types": "Hızlı tipler",
+    "option-yes": "Evet",
+    "option-no": "Hayır",
+    "option-maybe": "Belki",
+    "option-true": "Doğru",
+    "option-false": "Yanlış",
+    "option-agree": "Katılıyorum",
+    "option-disagree": "Katılmıyorum",
+    "ai-generate": "Yapay Zeka ile Üret",
+    "ai-prompt-placeholder": "İstediğiniz anketi tarif edin…",
+    "ai-disabled-notice": "Yapay zeka anket oluşturma devre dışı bırakıldı. Bir yönetici, bunu Daha Fazla Seçenek (...) → Yapay Zeka Araçları → Yapay Zeka Asistan Sohbeti'nden etkinleştirebilir.",
+    "quiz-mode-desc": "Her seçeneğin yanındaki kutuyu kullanarak doğru seçenek(ler)i işaretleyin. Katılımcılar, sadece anket kapandıktan sonra doğru cevabı görür.",
+    "anonymous-voting-desc": "Seçmen tercihleri gizli kalır — yöneticiler bile kimin oy verdiğini göremez.",
+    "duration-desc": "Zaman dolduğunda anket otomatik olarak kapanır.",
+    "notifications": {
+      "created-successfully": "Anket oluşturuldu.",
+      "response-added": "Oylünüz sunuldu.",
+      "new-poll": "Yeni bir anket başladı.",
+      "end-poll-success": "Anket sona erdi.",
+      "reopen-poll-success": "Anket yeniden açıldı.",
+      "ai-generated": "Yapay zeka taslağı hazır — inceleyin ve oluşturun.",
+      "poll-reopened": "Bir sandık yeniden açıldı."
+    },
+    "errors": {
+      "generic": "Bir şeyler ters gitti. Lütfen tekrar dene.",
+      "question-required": "Lütfen sorunuzu ekleyin.",
+      "min-options": "Bir anketin en az iki seçeneği olmalıdır.",
+      "option-required": "Lütfen her seçenek için metin girin.",
+      "select-correct-option": "En az bir seçeneği doğru cevap olarak işaretleyin.",
+      "quiz-needs-correct": "Quiz anketlerinde en az bir doğru cevap olmalıdır.",
+      "duration-cap": "Anket süresi 60 dakikayı geçemez.",
+      "no-option-selected": "Lütfen göndermeden önce bir seçenek seçin.",
+      "already-voted": "Bu ankette zaten oy kullandınız.",
+      "poll-not-found": "Anket bulunamadı.",
+      "poll-closed": "Bu anket kapandı.",
+      "wait-for-close": "Sonuçlar, anket kapandığında açıklanacaktır.",
+      "only-admin": "Bu görevi sadece yönetici yapabilir.",
+      "only-admin-view-selection": "Sadece yönetici diğer kullanıcıların seçimlerini görebilir.",
+      "room-id-required": "Oda kimliği gereklidir.",
+      "poll-id-required": "Anket Kimliği gereklidir.",
+      "user-and-poll-id-required": "Hem kullanıcı kimliği hem de anket kimliği gereklidir.",
+      "ai-disabled": "Yapay zeka anket oluşturma devre dışı bırakıldı.",
+      "ai-invalid-response": "Yapay zeka yanıtı kullanılamadı. Lütfen tekrar deneyin.",
+      "ai-request-timeout": "Anket yapay zeka talebi zamanla doldu"
+    }
   },
   "breakout-room": {
     "share-polls": "Anketleri dağılma odalarıyla paylaşın",
@@ -742,7 +796,10 @@
       "responding-placeholder": "Yapay Zeka Asistanı yanıtlıyor...",
       "response-timed-out": "Yapay zeka asistanı yanıt vermekte çok geç kalıyor. Lütfen tekrar dene.",
       "enable-notepad-ai": "Paylaşılan not defterinde yapay zekayı etkinleştirin",
-      "enable-whiteboard-ai": "Beyaz tahtada yapay zekayı etkinleştirin"
+      "enable-whiteboard-ai": "Beyaz tahtada yapay zekayı etkinleştirin",
+      "enable-poll-ai": "Anketlerde yapay zekayı etkinleştirin",
+      "feature-disabled": "Bu odada yapay zeka özellikleri etkinleştirilmemiştir.",
+      "not-allowed": "Bu hizmeti kullanmanıza izin verilmiyor."
     },
     "meeting-summarization": {
       "enable": "Toplantı özetini etkinleştir",
@@ -765,11 +822,17 @@
       "generating": "Yapay zeka tepkisi oluşturmak...",
       "done": "Yapay zeka sonucu uygulandı",
       "failed": "Yapay zeka talebi başarısız oldu",
-      "disabled-message": "Yapay zeka özelliği şu anda devre dışı bırakılmış. Bir yönetici, bunu Daha Fazla Seçenek (...) → AI Tools → AI Assistant Chat'ten etkinleştirebilir."
+      "disabled-message": "Yapay zeka özelliği şu anda devre dışı bırakılmış. Bir yönetici, bunu Daha Fazla Seçenek (...) → AI Tools → AI Assistant Chat'ten etkinleştirebilir.",
+      "errors": {
+        "ai-disabled": "Paylaşılan not defterindeki yapay zeka devre dışı bırakılmış."
+      }
     },
     "whiteboard-ai": {
       "disabled-message": "Yapay zeka özelliği şu anda devre dışı bırakılmış. Bir yönetici, bunu Daha Fazla Seçenek (...) → AI Tools → AI Assistant Chat'ten etkinleştirebilir.",
-      "request-timeout": "Beyaz tahta yapay zeka talebi zamanlama doldu"
+      "request-timeout": "Beyaz tahta yapay zeka talebi zamanlama doldu",
+      "errors": {
+        "ai-disabled": "Beyaz tahtadaki yapay zeka devre dışı bırakılmış."
+      }
     }
   },
   "sip-dial-in-features": {
