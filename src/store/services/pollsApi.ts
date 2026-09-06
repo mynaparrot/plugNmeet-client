@@ -7,6 +7,8 @@ import {
   CreatePollReqSchema,
   PollResponse,
   PollResponseSchema,
+  ReopenPollReq,
+  ReopenPollReqSchema,
   SubmitPollResponseReq,
   SubmitPollResponseReqSchema,
 } from 'plugnmeet-protocol-js';
@@ -158,6 +160,18 @@ export const pollsApi = createApi({
       transformErrorResponse: renewTokenOnError,
       invalidatesTags: ['List', 'PollsStats'],
     }),
+    reopenPoll: builder.mutation<PollResponse, ReopenPollReq>({
+      query(body) {
+        return {
+          url: 'reopen',
+          method: 'POST',
+          body: toBinary(ReopenPollReqSchema, body),
+          responseHandler: handleProtobufResponse(PollResponseSchema),
+        };
+      },
+      transformErrorResponse: renewTokenOnError,
+      invalidatesTags: ['List', 'PollsStats'],
+    }),
   }),
 });
 
@@ -169,6 +183,7 @@ export const {
   useCreatePollMutation,
   useAddResponseMutation,
   useClosePollMutation,
+  useReopenPollMutation,
   useGetPollResponsesResultQuery,
   useGetPollsStatsQuery,
 } = pollsApi;

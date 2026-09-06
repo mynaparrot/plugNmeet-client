@@ -386,9 +386,46 @@ export const isFirefoxMobile = () => {
 
 export const cleanHtmlForChat = (rawText: string) => {
   return sanitizeHtml(rawText, {
-    allowedTags: ['b', 'i', 'strong', 'br', 'a'],
+    // Static markup only: no scripts, styles, event handlers or url-bearing
+    // attributes beyond this list; svg/path is the static attachment icon.
+    // prettier-ignore
+    allowedTags: ['b', 'i', 'strong', 'em', 'del', 'br', 'hr', 'a', 'span', 'div', 'p', 'ul', 'ol', 'li', 'code', 'pre', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'table', 'thead', 'tbody', 'tr', 'td', 'th', 'svg', 'path'],
     allowedAttributes: {
-      a: ['href', 'target', 'class'],
+      a: ['href', 'target', 'class', 'title'],
+      span: ['class', 'dir'],
+      strong: ['class'],
+      div: ['dir'],
+      p: ['dir'],
+      ul: ['dir'],
+      ol: ['dir', 'start'],
+      li: ['dir'],
+      code: ['dir'],
+      pre: ['dir'],
+      blockquote: ['dir'],
+      h1: ['dir'],
+      h2: ['dir'],
+      h3: ['dir'],
+      h4: ['dir'],
+      h5: ['dir'],
+      h6: ['dir'],
+      table: ['dir'],
+      thead: ['dir'],
+      tbody: ['dir'],
+      tr: ['dir'],
+      td: ['dir', 'align'],
+      th: ['dir', 'align'],
+      svg: ['xmlns', 'width', 'height', 'viewbox', 'fill'],
+      // prettier-ignore
+      path: [ 'd', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin' ],
+    },
+    // Class values are whitelisted: Tailwind utilities ship in the app bundle,
+    // so arbitrary classes in chat markup could spoof the UI. The whitelist
+    // covers the trusted senders: attachment card, linkified urls, poll card.
+    // prettier-ignore
+    allowedClasses: {
+      a: ['attachment-message', 'flex', 'items-center', 'gap-3', 'break-all', 'text-[#24aef7]', 'hover:underline'],
+      span: ['block', 'flex', 'items-center', 'justify-between', 'gap-3', 'min-w-0', 'flex-1', 'break-words', 'text-start', 'me-1', 'font-medium', 'text-Green-700', 'shrink-0', 'text-xs', 'text-Gray-600', 'text-Gray-700', 'dark:text-dark-text', 'mt-1.5', 'mt-2', 'border-t', 'border-Gray-200', 'pt-2', 'dark:border-Gray-700', 'h-10', 'w-10', 'rounded-xl', 'bg-Gray-50', 'justify-center'],
+      strong: ['block', 'break-words', 'text-sm', 'font-semibold', 'text-Gray-950', 'dark:text-white'],
     },
     allowedSchemes: ['http', 'https', 'mailto', 'tel'],
   });

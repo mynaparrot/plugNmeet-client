@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { FooterMenuIconSVG } from '../../../assets/Icons/FooterMenuIconSVG';
 import { PollDataWithOption, publishPollResultByChat } from '../utils';
 import { useEndPoll } from '../hooks/useEndPoll';
+import { useReopenPoll } from '../hooks/useReopenPoll';
 
 interface PollActionsMenuProps {
   isRunning: boolean;
@@ -19,6 +20,7 @@ const PollActionsMenu = ({
 }: PollActionsMenuProps) => {
   const { t } = useTranslation();
   const { endPoll, isEndingPoll } = useEndPoll();
+  const { reopenPoll, isReopeningPoll } = useReopenPoll();
   const [isPublishing, setIsPublishing] = useState(false);
 
   const handlePublish = () => {
@@ -69,6 +71,17 @@ const PollActionsMenu = ({
                   disabled={isPublishing}
                 >
                   {t('polls.publish-result')}
+                </button>
+              </MenuItem>
+            )}
+            {!isRunning && (
+              <MenuItem>
+                <button
+                  className="h-7 cursor-pointer w-full flex items-center hover:bg-Gray-50 dark:hover:bg-dark-secondary2 text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 3xl:px-3 rounded-lg transition-all duration-300 relative disabled:opacity-50 disabled:cursor-wait"
+                  onClick={() => reopenPoll(pollDataWithOption.pollId)}
+                  disabled={isReopeningPoll}
+                >
+                  {t('polls.reopen-poll')}
                 </button>
               </MenuItem>
             )}

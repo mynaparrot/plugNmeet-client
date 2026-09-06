@@ -1,47 +1,48 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { create } from '@bufbuild/protobuf';
-import { ClosePollReqSchema } from 'plugnmeet-protocol-js';
+import { ReopenPollReqSchema } from 'plugnmeet-protocol-js';
 
-import { useClosePollMutation } from '../../../store/services/pollsApi';
+import { useReopenPollMutation } from '../../../store/services/pollsApi';
 import { useAppDispatch } from '../../../store';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 
-export const useEndPoll = () => {
+export const useReopenPoll = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const [closePoll, { data: closePollRes, isLoading }] = useClosePollMutation();
+  const [reopenPoll, { data: reopenPollRes, isLoading }] =
+    useReopenPollMutation();
 
   useEffect(() => {
-    if (closePollRes) {
-      if (closePollRes.status) {
+    if (reopenPollRes) {
+      if (reopenPollRes.status) {
         dispatch(
           addUserNotification({
-            message: t('polls.notifications.end-poll-success'),
+            message: t('polls.notifications.reopen-poll-success'),
             typeOption: 'info',
           }),
         );
       } else {
         dispatch(
           addUserNotification({
-            message: t(closePollRes.msg),
+            message: t(reopenPollRes.msg),
             typeOption: 'error',
           }),
         );
       }
     }
-  }, [closePollRes, dispatch, t]);
+  }, [reopenPollRes, dispatch, t]);
 
-  const endPoll = (pollId: string) => {
+  const reopen = (pollId: string) => {
     if (isLoading) {
       return;
     }
-    closePoll(
-      create(ClosePollReqSchema, {
+    reopenPoll(
+      create(ReopenPollReqSchema, {
         pollId,
       }),
     );
   };
 
-  return { endPoll, isEndingPoll: isLoading };
+  return { reopenPoll: reopen, isReopeningPoll: isLoading };
 };

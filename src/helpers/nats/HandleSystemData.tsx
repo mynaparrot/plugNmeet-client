@@ -22,6 +22,7 @@ import { cleanHtmlForChat, getConfigValue, randomString } from '../utils';
 import { updateAiTextChat } from '../../store/slices/insightsAiTextChatSlice';
 import { handleNotepadAIStreamResult } from '../../components/shared-notepad/helpers/notepadAI';
 import { handleWhiteboardAIStreamResult } from '../../components/whiteboard/ai/whiteboardAI';
+import { handlePollAIStreamResult } from '../../components/polls/create/pollAI';
 import HandleChat from './HandleChat';
 import { triggerRefreshWhiteboardFilesListSignal } from '../../store/slices/whiteboard';
 import { breakoutRoomApi } from '../../store/services/breakoutRoomApi';
@@ -106,7 +107,7 @@ export default class HandleSystemData {
       case NatsMsgServerToClientEvents.POLL_CREATED:
         store.dispatch(
           addUserNotification({
-            message: i18n.t('polls.new-poll'),
+            message: i18n.t('polls.notifications.new-poll'),
             typeOption: 'info',
             notificationCat: 'new-poll-created',
             autoClose: false,
@@ -115,6 +116,17 @@ export default class HandleSystemData {
         store.dispatch(pollsApi.util.invalidateTags(['List', 'PollsStats']));
         break;
       case NatsMsgServerToClientEvents.POLL_CLOSED:
+      case NatsMsgServerToClientEvents.POLL_REOPENED:
+        // parity with POLL_CREATED: everyone gets notified when a poll reopens
+        if (payload.event === NatsMsgServerToClientEvents.POLL_REOPENED) {
+          store.dispatch(
+            addUserNotification({
+              message: i18n.t('polls.notifications.poll-reopened'),
+              typeOption: 'info',
+              autoClose: false,
+            }),
+          );
+        }
         store.dispatch(
           pollsApi.util.invalidateTags([
             'List',
@@ -275,6 +287,13 @@ export default class HandleSystemData {
       InsightsAIRequestSource.INSIGHTS_AI_REQUEST_SOURCE_WHITEBOARD
     ) {
       handleWhiteboardAIStreamResult(data);
+      return;
+    }
+    if (
+      data.requestFrom ===
+      InsightsAIRequestSource.INSIGHTS_AI_REQUEST_SOURCE_POLL
+    ) {
+      handlePollAIStreamResult(data);
       return;
     }
     store.dispatch(updateAiTextChat(data));

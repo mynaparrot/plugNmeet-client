@@ -14,9 +14,10 @@ import { CreatePollOptions } from './index';
 interface OptionsProps {
   options: CreatePollOptions[];
   setOptions: Dispatch<SetStateAction<CreatePollOptions[]>>;
+  isQuiz?: boolean;
 }
 
-const OptionsView = ({ options, setOptions }: OptionsProps) => {
+const OptionsView = ({ options, setOptions, isQuiz }: OptionsProps) => {
   const { t } = useTranslation();
 
   // update option text
@@ -24,6 +25,17 @@ const OptionsView = ({ options, setOptions }: OptionsProps) => {
     (index: number, e: ChangeEvent<HTMLInputElement>) => {
       const newOptions = options.map((option, i) =>
         i === index ? { ...option, text: e.target.value } : option,
+      );
+      setOptions(newOptions);
+    },
+    [options, setOptions],
+  );
+
+  // update option correct flag (quiz mode)
+  const onCorrectChange = useCallback(
+    (index: number, checked: boolean) => {
+      const newOptions = options.map((option, i) =>
+        i === index ? { ...option, isCorrect: checked } : option,
       );
       setOptions(newOptions);
     },
@@ -45,6 +57,7 @@ const OptionsView = ({ options, setOptions }: OptionsProps) => {
       {
         id: (prev[prev.length - 1]?.id ?? 0) + 1,
         text: '',
+        isCorrect: false,
       },
     ]);
   }, [setOptions]);
@@ -61,6 +74,22 @@ const OptionsView = ({ options, setOptions }: OptionsProps) => {
           {options.map((elm, index) => (
             <div className="form-inline" key={elm.id}>
               <div className="input-wrapper w-full flex items-center gap-2">
+                {isQuiz && (
+                  <label
+                    title={t('polls.correct-answer')}
+                    className="shrink-0 flex items-center cursor-pointer"
+                  >
+                    <input
+                      type="checkbox"
+                      aria-label={t('polls.correct-answer')}
+                      checked={elm.isCorrect}
+                      onChange={(e) =>
+                        onCorrectChange(index, e.currentTarget.checked)
+                      }
+                      className="border cursor-pointer border-Gray-300 bg-white shadow-input w-4 h-4 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus dark:bg-dark-secondary dark:border-dark-text"
+                    />
+                  </label>
+                )}
                 <input
                   dir="auto"
                   type="text"

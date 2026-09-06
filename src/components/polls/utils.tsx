@@ -13,12 +13,19 @@ export interface PollDataWithOption {
     [key: string]: PollDataOption;
   };
   totalRespondents: number;
+  totalVotes: number;
+  isAnonymous: boolean;
+  isMultiple: boolean;
+  isQuiz: boolean;
+  expiresAt: number;
   allRespondents: Respondents[];
 }
 
 interface PollDataOption {
   id: number;
   text: string;
+  votes: number;
+  isCorrect: boolean;
   responsesPercentage: number;
   respondents: Respondents[];
 }
@@ -74,28 +81,52 @@ export const publishPollResultByChat = async (
   pollDataWithOption: PollDataWithOption,
 ) => {
   const conn = getNatsConn();
-  // Map over the options to create a list of results.
+  // Aggregate counts only (votes), so no voter names can ever leak for anonymous polls.
+  const hasTotals = pollDataWithOption.totalRespondents > 0;
   const formattedOptions = Object.values(pollDataWithOption.options).map(
     (option) => (
-      <li key={option.id}>{`${option.text} (${option.respondents.length})`}</li>
+      <span className="mt-1.5 block" key={option.id}>
+        <span className="flex items-center justify-between gap-3">
+          <span className="min-w-0 flex-1 break-words text-start">
+            {pollDataWithOption.isQuiz && option.isCorrect && (
+              <span className="me-1 font-medium text-Green-700">✓</span>
+            )}
+            {option.text}
+          </span>
+          <span
+            className="shrink-0 text-xs text-Gray-700 dark:text-dark-text"
+            dir="ltr"
+          >
+            {option.votes}
+            {hasTotals ? ` (${option.responsesPercentage}%)` : ''}
+          </span>
+        </span>
+      </span>
     ),
   );
 
   const elm = ReactDOMServer.renderToString(
-    // Using more semantic HTML for better structure and readability in chat.
-    <div style={{ padding: '5px' }}>
-      <strong style={{ display: 'block', marginBottom: '4px' }}>
+    // Phrasing tags only (span/strong): block tags would break out of the chat
+    // bubble's <p> wrapper, so the card is built from styled spans instead.
+    <>
+      <span className="block text-xs font-medium text-Gray-600 dark:text-dark-text">
+        {i18n.t('polls.view-result-title')}
+      </span>
+      <strong className="block break-words text-sm font-semibold text-Gray-950 dark:text-white">
         {pollDataWithOption.question}
       </strong>
-      <p style={{ margin: '2px 0' }}>
-        {i18n.t('polls.total-responses', {
-          count: pollDataWithOption.totalRespondents,
-        })}
-      </p>
-      <ul style={{ margin: '4px 0 0 0', paddingInlineStart: '20px' }}>
-        {formattedOptions}
-      </ul>
-    </div>,
+      {formattedOptions}
+      <span className="mt-2 block border-t border-Gray-200 pt-2 text-xs text-Gray-600 dark:border-Gray-700 dark:text-dark-text">
+        {pollDataWithOption.isMultiple
+          ? i18n.t('polls.total-votes', {
+              votes: pollDataWithOption.totalVotes,
+              count: pollDataWithOption.totalRespondents,
+            })
+          : i18n.t('polls.total-responses', {
+              count: pollDataWithOption.totalRespondents,
+            })}
+      </span>
+    </>,
   );
   if (conn) {
     await conn.sendChatMsg('public', elm);
