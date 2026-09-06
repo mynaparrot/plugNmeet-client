@@ -7,6 +7,7 @@ import Modal from '../../../helpers/ui/modal';
 export interface CreatePollOptions {
   id: number;
   text: string;
+  isCorrect: boolean;
 }
 
 const Create = () => {
@@ -19,7 +20,7 @@ const Create = () => {
         show={isOpen}
         onClose={() => setIsOpen(false)}
         title={t('polls.create')}
-        maxWidth="max-w-xl"
+        maxWidth="max-w-2xl"
         customBodyClass="rounded-b-xl"
       >
         <FormView setIsOpen={setIsOpen} />

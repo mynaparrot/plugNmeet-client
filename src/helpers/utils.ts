@@ -386,9 +386,37 @@ export const isFirefoxMobile = () => {
 
 export const cleanHtmlForChat = (rawText: string) => {
   return sanitizeHtml(rawText, {
-    allowedTags: ['b', 'i', 'strong', 'br', 'a'],
+    // Static markup only: no scripts, styles, event handlers or url-bearing
+    // attributes beyond this list; svg/path is the static attachment icon.
+    // prettier-ignore
+    allowedTags: ['b', 'i', 'strong', 'em', 'del', 'br', 'hr', 'a', 'span', 'div', 'p', 'ul', 'ol', 'li', 'code', 'pre', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'table', 'thead', 'tbody', 'tr', 'td', 'th', 'svg', 'path'],
     allowedAttributes: {
-      a: ['href', 'target', 'class'],
+      a: ['href', 'target', 'class', 'title'],
+      span: ['class', 'dir'],
+      strong: ['class'],
+      div: ['class', 'dir'],
+      p: ['class', 'dir'],
+      ul: ['class', 'dir'],
+      ol: ['class', 'dir', 'start'],
+      li: ['class', 'dir'],
+      code: ['class', 'dir'],
+      pre: ['class', 'dir'],
+      blockquote: ['class', 'dir'],
+      h1: ['class', 'dir'],
+      h2: ['class', 'dir'],
+      h3: ['class', 'dir'],
+      h4: ['class', 'dir'],
+      h5: ['class', 'dir'],
+      h6: ['class', 'dir'],
+      table: ['class', 'dir'],
+      thead: ['class', 'dir'],
+      tbody: ['class', 'dir'],
+      tr: ['class', 'dir'],
+      td: ['class', 'dir', 'align'],
+      th: ['class', 'dir', 'align'],
+      svg: ['xmlns', 'width', 'height', 'viewbox', 'fill'],
+      // prettier-ignore
+      path: [ 'd', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin' ],
     },
     allowedSchemes: ['http', 'https', 'mailto', 'tel'],
   });

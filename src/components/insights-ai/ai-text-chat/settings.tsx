@@ -41,6 +41,9 @@ const AiTextChatSettings = ({
   const [isWhiteboardAiDisabled, setIsWhiteboardAiDisabled] = useState(
     !!aiTextChatFeatures?.isWhiteboardAiDisabled,
   );
+  const [isPollAiDisabled, setIsPollAiDisabled] = useState(
+    !!aiTextChatFeatures?.isPollAiDisabled,
+  );
 
   const enableOrUpdateService = useCallback(async () => {
     if (!isAllowedEveryone && allowedUsers.length == 0) {
@@ -55,6 +58,7 @@ const AiTextChatSettings = ({
       allowedUserIds: allowedUsers,
       isNotepadAiDisabled,
       isWhiteboardAiDisabled,
+      isPollAiDisabled,
     });
 
     const r = await sendAPIRequest(
@@ -84,6 +88,7 @@ const AiTextChatSettings = ({
     allowedUsers,
     isNotepadAiDisabled,
     isWhiteboardAiDisabled,
+    isPollAiDisabled,
   ]);
 
   const stopService = useCallback(async () => {
@@ -135,6 +140,14 @@ const AiTextChatSettings = ({
                     label={t('insights.ai-text-chat.enable-whiteboard-ai')}
                     enabled={!isWhiteboardAiDisabled}
                     onChange={(enabled) => setIsWhiteboardAiDisabled(!enabled)}
+                    customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
+                  />
+                </div>
+                <div className="bg-Gray-25 dark:bg-dark-primary border-y border-dotted border-Gray-100 dark:border-Gray-800 -mx-4 px-4 py-4">
+                  <SettingsSwitch
+                    label={t('insights.ai-text-chat.enable-poll-ai')}
+                    enabled={!isPollAiDisabled}
+                    onChange={(enabled) => setIsPollAiDisabled(!enabled)}
                     customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
                   />
                 </div>

@@ -13,7 +13,7 @@ export const SystemMessage = memo(({ message }: { message: string }) => {
   return (
     <div className="content w-full system flex items-center gap-2 text-center my-2">
       <div className="flex-1 border-t border-dashed border-Gray-300 dark:border-Gray-800" />
-      <p
+      <div
         dir="auto"
         className="message-content text-xs text-Gray-600 dark:text-dark-text px-2"
         dangerouslySetInnerHTML={{ __html: cleanHtmlForChat(message) }}
@@ -35,7 +35,7 @@ export const MyMessage = memo(
             {formatDate(sentAt)}
           </p>
         </div>
-        <p
+        <div
           dir="auto"
           className="message-content py-2 px-2.5 border border-Gray-200 dark:border-Gray-700 rounded-lg overflow-hidden rounded-ee-none text-sm text-Gray-950 dark:text-white break-words"
           dangerouslySetInnerHTML={{ __html: cleanHtmlForChat(message) }}
@@ -67,7 +67,7 @@ export const OtherUserMessage = memo(({ body }: { body: ChatMessage }) => {
             {formatDate(body.sentAt)}
           </p>
         </div>
-        <p
+        <div
           dir="auto"
           className="message-content py-2 px-2.5 border border-Gray-200 dark:border-Gray-700 rounded-lg overflow-hidden text-sm text-Gray-950 dark:text-white break-words rounded-ss-none bg-Gray-50 dark:bg-Gray-800"
           dangerouslySetInnerHTML={{ __html: cleanHtmlForChat(body.message) }}

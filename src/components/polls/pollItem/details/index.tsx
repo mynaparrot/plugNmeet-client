@@ -82,11 +82,16 @@ const DetailsModal = ({
                 </button>
               </div>
               <div className="q-headline px-5 py-3 border border-Gray-100 dark:border-Gray-800 bg-Gray-25 dark:bg-dark-secondary text-sm font-medium text-Gray-800 dark:text-white">
-                <p className="">Q: {pollDataWithOption.question}</p>
+                <p className="break-words">Q: {pollDataWithOption.question}</p>
               </div>
               <Respondents pollDataWithOption={pollDataWithOption} />
-              <div className="line h-1 w-full bg-Gray-50 dark:bg-Gray-800"></div>
-              <NotRespondents pollDataWithOption={pollDataWithOption} />
+              {/* anonymous polls are aggregate-only; who voted stays unknown */}
+              {!pollDataWithOption.isAnonymous && (
+                <>
+                  <div className="line h-1 w-full bg-Gray-50 dark:bg-Gray-800"></div>
+                  <NotRespondents pollDataWithOption={pollDataWithOption} />
+                </>
+              )}
               <div className="px-5 py-5 flex justify-end bg-Gray-25 dark:bg-dark-secondary border-t border-Gray-100 dark:border-Gray-800">
                 {isRunning ? (
                   <EndPollBtn pollId={pollDataWithOption.pollId} />

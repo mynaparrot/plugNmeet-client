@@ -66,6 +66,12 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
       pollId: item.id,
       question: item.question,
       totalRespondents: 0,
+      totalVotes: 0,
+      isAnonymous: item.isAnonymous,
+      isMultiple: item.isMultiple,
+      isQuiz: item.isQuiz,
+      // expires_at is a JS_STRING int64 over the wire; Number() for the countdown
+      expiresAt: Number(item.expiresAt ?? 0),
       allRespondents: [],
     };
 
@@ -73,6 +79,9 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
       baseObj.options[option.id] = {
         id: option.id,
         text: option.text,
+        votes: 0,
+        // real is_correct is revealed by the server only once the poll is closed
+        isCorrect: option.isCorrect,
         responsesPercentage: 0,
         respondents: [],
       };
@@ -85,6 +94,8 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
 
       for (const option of item.options) {
         const count = Number(details[`${option.id}_count`] ?? 0);
+        baseObj.options[option.id].votes = count;
+        baseObj.totalVotes += count;
         if (count > 0 && baseObj.totalRespondents > 0) {
           baseObj.options[option.id].responsesPercentage = Math.round(
             (count / baseObj.totalRespondents + Number.EPSILON) * 100,
@@ -98,11 +109,15 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
             details.all_respondents,
           );
           for (const r of respondents) {
-            // format => userId:optionSelected:name
+            // format => userId:optionId(s):name, ids comma-joined for multi-select
             const data = r.split(':');
-            if (data.length === 3 && baseObj.options[data[1]]) {
+            if (data.length === 3) {
               const respondent = { userId: data[0], name: data[2] };
-              baseObj.options[data[1]].respondents.push(respondent);
+              for (const id of data[1].split(',')) {
+                if (baseObj.options[id]) {
+                  baseObj.options[id].respondents.push(respondent);
+                }
+              }
               baseObj.allRespondents.push(respondent);
             }
           }
@@ -118,12 +133,17 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
       const result = pollResponsesResult.pollResponsesResult;
       const totalResponses = Number(result.totalResponses);
       baseObj.totalRespondents = totalResponses;
+      baseObj.totalVotes = Number(result.totalVotes);
 
       for (const option of result.options) {
-        if (baseObj.options[option.id]) {
+        const target = baseObj.options[option.id];
+        if (target) {
           const voteCount = Number(option.voteCount);
+          target.votes = voteCount;
+          // closed polls reveal the correct answers here
+          target.isCorrect = option.isCorrect;
           if (voteCount > 0 && totalResponses > 0) {
-            baseObj.options[option.id].responsesPercentage = Math.round(
+            target.responsesPercentage = Math.round(
               (voteCount / totalResponses + Number.EPSILON) * 100,
             );
           }
@@ -179,13 +199,13 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
           {({ open }) => (
             <>
               <DisclosureButton className="flex items-center justify-between gap-3 w-full cursor-pointer">
-                <span className="text-sm text-Gray-800 dark:text-white font-medium block text-start">
+                <span className="text-sm text-Gray-800 dark:text-white font-medium block text-start min-w-0 break-words">
                   {item.question}
                 </span>
                 <motion.div
                   animate={{ rotate: open ? 180 : 0 }}
                   transition={{ duration: 0.2 }}
-                  className="group-hover:opacity-100 transition-opacity duration-200 text-Gray-800 dark:text-white"
+                  className="shrink-0 group-hover:opacity-100 transition-opacity duration-200 text-Gray-800 dark:text-white"
                 >
                   <svg
                     width="16"
@@ -230,9 +250,14 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
         <div className="bottom-wrap flex items-center justify-between gap-3 mt-4">
           {canViewTotal() && (
             <div className="total-vote text-sm text-Gray-700 dark:text-dark-text">
-              {t('polls.total-responses', {
-                count: pollDataWithOption?.totalRespondents ?? 0,
-              })}
+              {pollDataWithOption?.isMultiple
+                ? t('polls.total-votes', {
+                    votes: pollDataWithOption.totalVotes,
+                    count: pollDataWithOption.totalRespondents,
+                  })
+                : t('polls.total-responses', {
+                    count: pollDataWithOption?.totalRespondents ?? 0,
+                  })}
             </div>
           )}
           {isAdmin && (

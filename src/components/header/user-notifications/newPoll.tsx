@@ -37,7 +37,7 @@ const NewPoll = ({ createdAt, onClosePopover }: INewPollProps) => {
         <PollsIconSVG classes="w-[15px]" />
       </div>
       <div className="text flex-1 text-Gray-800 dark:text-white text-sm">
-        <p>{t('polls.new-poll')}</p>
+        <p>{t('polls.notifications.new-poll')}</p>
         <div className="bottom flex justify-between text-Gray-800 dark:text-white text-xs items-center">
           <span className="">{formatDate(createdAt)}</span>{' '}
           <ActionButton

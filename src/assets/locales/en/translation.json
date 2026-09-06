@@ -505,14 +505,11 @@
     "remove-option": "Remove",
     "add-new-option": "Add another option",
     "create-poll": "Create Poll",
-    "created-successfully": "The poll has been created.",
     "you-voted": "You voted",
     "vote": "Vote",
     "submit-vote-form-title": "Submit Your Vote",
     "select-option": "Select an option",
     "submit": "Submit",
-    "response-added": "Your vote has been submitted.",
-    "new-poll": "A new poll has started.",
     "poll-running": "Running",
     "poll-closed": "Closed",
     "view-details": "Details",
@@ -520,11 +517,68 @@
     "view-details-title": "Poll Information",
     "view-result-title": "Poll Results",
     "end-poll": "End Poll",
-    "end-poll-success": "The poll has ended.",
     "publish-result": "Publish Results",
     "total": "Total: {{count}}",
     "not-respondents-total": "Did not respond: {{count}}",
-    "ask-question": "Ask a question"
+    "ask-question": "Ask a question",
+    "question-type": "Question type",
+    "single-choice": "Single choice",
+    "multiple-choice": "Multiple choice",
+    "anonymous-voting": "Anonymous voting",
+    "quiz-mode": "Quiz mode",
+    "correct-answer": "Correct answer",
+    "duration": "Duration",
+    "duration-no-limit": "No limit",
+    "duration-minutes": "{{count}} min",
+    "total-votes": "{{votes}} votes from {{count}} respondents",
+    "anonymous": "Anonymous",
+    "time-remaining": "Time remaining",
+    "reopen-poll": "Reopen Poll",
+    "quick-types": "Quick types",
+    "option-yes": "Yes",
+    "option-no": "No",
+    "option-maybe": "Maybe",
+    "option-true": "True",
+    "option-false": "False",
+    "option-agree": "Agree",
+    "option-disagree": "Disagree",
+    "ai-generate": "Generate with AI",
+    "ai-prompt-placeholder": "Describe the poll you want…",
+    "ai-disabled-notice": "AI poll generation is disabled. An administrator can enable it from More Options (...) → AI Tools → AI Assistant Chat.",
+    "quiz-mode-desc": "Mark the correct option(s) using the checkbox next to each option. Participants only see the correct answer after the poll closes.",
+    "anonymous-voting-desc": "Voter choices stay hidden — even admins can't see who voted.",
+    "duration-desc": "Poll closes automatically when time runs out.",
+    "notifications": {
+      "created-successfully": "The poll has been created.",
+      "response-added": "Your vote has been submitted.",
+      "new-poll": "A new poll has started.",
+      "end-poll-success": "The poll has ended.",
+      "reopen-poll-success": "The poll has been reopened.",
+      "ai-generated": "AI draft ready — review and create.",
+      "poll-reopened": "A poll has been reopened."
+    },
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "question-required": "Please enter your question.",
+      "min-options": "A poll must have at least two options.",
+      "option-required": "Please enter text for every option.",
+      "select-correct-option": "Mark at least one option as the correct answer.",
+      "quiz-needs-correct": "Quiz polls must have at least one correct answer.",
+      "duration-cap": "Poll duration cannot exceed 60 minutes.",
+      "no-option-selected": "Please select an option before submitting.",
+      "already-voted": "You have already voted in this poll.",
+      "poll-not-found": "Poll not found.",
+      "poll-closed": "This poll is closed.",
+      "wait-for-close": "Results will be available once the poll is closed.",
+      "only-admin": "Only admin can perform this task.",
+      "only-admin-view-selection": "Only admin can view other users' selections.",
+      "room-id-required": "Room ID is required.",
+      "poll-id-required": "Poll ID is required.",
+      "user-and-poll-id-required": "Both user ID and poll ID are required.",
+      "ai-disabled": "AI poll generation is disabled.",
+      "ai-invalid-response": "The AI response could not be used. Please try again.",
+      "ai-request-timeout": "Poll AI request timed out"
+    }
   },
   "breakout-room": {
     "share-polls": "Share polls with breakout rooms",
@@ -742,7 +796,10 @@
       "responding-placeholder": "AI Assistant is responding...",
       "response-timed-out": "The AI assistant is taking too long to respond. Please try again.",
       "enable-notepad-ai": "Enable AI in shared notepad",
-      "enable-whiteboard-ai": "Enable AI in whiteboard"
+      "enable-whiteboard-ai": "Enable AI in whiteboard",
+      "enable-poll-ai": "Enable AI in polls",
+      "feature-disabled": "AI features are not enabled for this room.",
+      "not-allowed": "You are not allowed to use this service."
     },
     "meeting-summarization": {
       "enable": "Enable meeting summarization",
@@ -765,11 +822,17 @@
       "generating": "Generating AI response...",
       "done": "AI result applied",
       "failed": "AI request failed",
-      "disabled-message": "The AI feature is currently disabled. An administrator can enable it from More Options (...) → AI Tools → AI Assistant Chat."
+      "disabled-message": "The AI feature is currently disabled. An administrator can enable it from More Options (...) → AI Tools → AI Assistant Chat.",
+      "errors": {
+        "ai-disabled": "AI in the shared notepad is disabled."
+      }
     },
     "whiteboard-ai": {
       "disabled-message": "The AI feature is currently disabled. An administrator can enable it from More Options (...) → AI Tools → AI Assistant Chat.",
-      "request-timeout": "Whiteboard AI request timed out"
+      "request-timeout": "Whiteboard AI request timed out",
+      "errors": {
+        "ai-disabled": "AI in the whiteboard is disabled."
+      }
     }
   },
   "sip-dial-in-features": {

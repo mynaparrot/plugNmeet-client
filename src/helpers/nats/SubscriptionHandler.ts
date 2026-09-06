@@ -346,6 +346,8 @@ export default class SubscriptionHandler {
       this._handleSystemData.handlePoll(p),
     [NatsMsgServerToClientEvents.POLL_CLOSED]: (p) =>
       this._handleSystemData.handlePoll(p),
+    [NatsMsgServerToClientEvents.POLL_REOPENED]: (p) =>
+      this._handleSystemData.handlePoll(p),
 
     // add breakout rooms related events
     [NatsMsgServerToClientEvents.JOIN_BREAKOUT_ROOM]: (p) =>
