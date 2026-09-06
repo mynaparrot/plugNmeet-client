@@ -505,14 +505,11 @@
     "remove-option": "Verwijderen",
     "add-new-option": "Voeg nog een optie toe",
     "create-poll": "Poll maken",
-    "created-successfully": "De poll is gemaakt.",
     "you-voted": "Je hebt gestemd",
     "vote": "Stemmen",
     "submit-vote-form-title": "Dien uw stem in",
     "select-option": "Selecteer een optie",
     "submit": "Opslaan",
-    "response-added": "Uw stem is uitgebracht.",
-    "new-poll": "Er is een nieuwe peiling gestart.",
     "poll-running": "Lopend",
     "poll-closed": "Gesloten",
     "view-details": "Bijzonderheden",
@@ -520,11 +517,68 @@
     "view-details-title": "Poll Informatie",
     "view-result-title": "Resultaten van de peiling",
     "end-poll": "Einde Poll",
-    "end-poll-success": "De peiling is afgelopen.",
     "publish-result": "Resultaten publiceren",
     "total": "Totaal: {{count}}",
     "not-respondents-total": "Niet gereageerd: {{count}}",
-    "ask-question": "Stel een vraag"
+    "ask-question": "Stel een vraag",
+    "question-type": "Vraagtype",
+    "single-choice": "Enkele keuze",
+    "multiple-choice": "Meerkeuzevragen",
+    "anonymous-voting": "Anoniem stemmen",
+    "quiz-mode": "Quizmodus",
+    "correct-answer": "Correct antwoord",
+    "duration": "Duur",
+    "duration-no-limit": "Geen limiet",
+    "duration-minutes": "{{count}} Min",
+    "total-votes": "{{votes}} Stemmen uit {{count}} Respondenten",
+    "anonymous": "Anoniem",
+    "time-remaining": "Resterende tijd",
+    "reopen-poll": "Heropende Peiling",
+    "quick-types": "Snelle typen",
+    "option-yes": "Ja",
+    "option-no": "Nee",
+    "option-maybe": "Misschien",
+    "option-true": "Dat klopt",
+    "option-false": "Vals",
+    "option-agree": "Mee eens.",
+    "option-disagree": "Oneens",
+    "ai-generate": "Genereer met AI",
+    "ai-prompt-placeholder": "Beschrijf de poll die je wilt uitvoeren…",
+    "ai-disabled-notice": "AI-pollgeneratie is uitgeschakeld. Een beheerder kan het inschakelen via More Options (...) → AI Tools → AI Assistant Chat.",
+    "quiz-mode-desc": "Markeer de juiste optie (of de juiste opties) met het selectievakje naast elke optie. Deelnemers zien het juiste antwoord pas nadat de poll is gesloten.",
+    "anonymous-voting-desc": "Kiezerskeuzes blijven verborgen — zelfs beheerders kunnen niet zien wie er heeft gestemd.",
+    "duration-desc": "De poll sluit automatisch wanneer de tijd om is.",
+    "notifications": {
+      "created-successfully": "De peiling is opgezet.",
+      "response-added": "Uw stem is ingediend.",
+      "new-poll": "Er is een nieuwe peiling gestart.",
+      "end-poll-success": "De peiling is afgelopen.",
+      "reopen-poll-success": "De stembus is heropend.",
+      "ai-generated": "AI-conceptklaar — review en creëer.",
+      "poll-reopened": "Er is een stembureau heropend."
+    },
+    "errors": {
+      "generic": "Er is iets misgegaan. Probeer het alsjeblieft opnieuw.",
+      "question-required": "Voer alsjeblieft je vraag in.",
+      "min-options": "Een peiling moet minstens twee opties hebben.",
+      "option-required": "Voer voor elke optie een tekst in.",
+      "select-correct-option": "Markeer ten minste één optie als het juiste antwoord.",
+      "quiz-needs-correct": "Quizpolls moeten minstens één goed antwoord bevatten.",
+      "duration-cap": "De duur van de poll mag niet langer zijn dan 60 minuten.",
+      "no-option-selected": "Selecteer alstublieft een optie voordat u het indient.",
+      "already-voted": "Je hebt al gestemd in deze peiling.",
+      "poll-not-found": "Peiling niet gevonden.",
+      "poll-closed": "Deze poll is gesloten.",
+      "wait-for-close": "De resultaten zullen beschikbaar zijn zodra de stembus is gesloten.",
+      "only-admin": "Alleen de administratie kan deze taak uitvoeren.",
+      "only-admin-view-selection": "Alleen de beheerders kunnen de keuzes van andere gebruikers bekijken.",
+      "room-id-required": "Kamer-ID is vereist.",
+      "poll-id-required": "Poll-ID is vereist.",
+      "user-and-poll-id-required": "Zowel gebruikers-ID als poll-ID zijn vereist.",
+      "ai-disabled": "AI-pollgeneratie is uitgeschakeld.",
+      "ai-invalid-response": "De AI-reactie kon niet worden gebruikt. Probeer het alsjeblieft opnieuw.",
+      "ai-request-timeout": "Poll AI-verzoek verlopen op tijd"
+    }
   },
   "breakout-room": {
     "share-polls": "Deel polls met breakout rooms",
@@ -742,7 +796,10 @@
       "responding-placeholder": "AI Assistant reageert...",
       "response-timed-out": "De AI-assistent doet er te lang over om te reageren. Probeer het alsjeblieft opnieuw.",
       "enable-notepad-ai": "Schakel AI in in gedeeld notitieblok in",
-      "enable-whiteboard-ai": "AI inschakelen in whiteboard"
+      "enable-whiteboard-ai": "AI inschakelen in whiteboard",
+      "enable-poll-ai": "Schakel AI in peilingen in",
+      "feature-disabled": "AI-functies zijn niet ingeschakeld voor deze kamer.",
+      "not-allowed": "Je mag deze dienst niet gebruiken."
     },
     "meeting-summarization": {
       "enable": "Schakel vergaderingssamenvatting in",
@@ -765,11 +822,17 @@
       "generating": "AI-reactie genereren...",
       "done": "AI-resultaat toegepast",
       "failed": "AI-verzoek mislukt",
-      "disabled-message": "De AI-functie is momenteel uitgeschakeld. Een beheerder kan het inschakelen via Meer opties (...) → AI-tools → AI Assistant Chat."
+      "disabled-message": "De AI-functie is momenteel uitgeschakeld. Een beheerder kan het inschakelen via Meer opties (...) → AI-tools → AI Assistant Chat.",
+      "errors": {
+        "ai-disabled": "AI in het gedeelde notitieblok is uitgeschakeld."
+      }
     },
     "whiteboard-ai": {
       "disabled-message": "De AI-functie is momenteel uitgeschakeld. Een beheerder kan het inschakelen via Meer opties (...) → AI-tools → AI Assistant Chat.",
-      "request-timeout": "Whiteboard AI-verzoek is getimed"
+      "request-timeout": "Whiteboard AI-verzoek is getimed",
+      "errors": {
+        "ai-disabled": "AI in het whiteboard is uitgeschakeld."
+      }
     }
   },
   "sip-dial-in-features": {
