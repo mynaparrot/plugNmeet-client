@@ -505,14 +505,11 @@
     "remove-option": "Eliminar",
     "add-new-option": "Añadir otra opción",
     "create-poll": "Crear encuesta",
-    "created-successfully": "La encuesta ha sido creada",
     "you-voted": "Ha votado.",
     "vote": "Votar",
     "submit-vote-form-title": "Envíe su voto",
     "select-option": "Seleccione una opción",
     "submit": "Enviar",
-    "response-added": "Su voto ha sido enviado.",
-    "new-poll": "Ha comenzado una nueva encuesta.",
     "poll-running": "En curso",
     "poll-closed": "Cerrada",
     "view-details": "Detalles",
@@ -520,11 +517,68 @@
     "view-details-title": "Información de la encuesta",
     "view-result-title": "Resultados de la encuesta",
     "end-poll": "Finalizar encuesta",
-    "end-poll-success": "La encuesta ha finalizado.",
     "publish-result": "Publicar resultados",
     "total": "Total: {{count}}",
     "not-respondents-total": "No respondieron: {{count}}",
-    "ask-question": "Haga una pregunta"
+    "ask-question": "Haga una pregunta",
+    "question-type": "Tipo de pregunta",
+    "single-choice": "Opción simple",
+    "multiple-choice": "Opción múltiple",
+    "anonymous-voting": "Votación anónima",
+    "quiz-mode": "Modo concurso",
+    "correct-answer": "Respuesta correcta",
+    "duration": "Duración",
+    "duration-no-limit": "Sin límite",
+    "duration-minutes": "{{count}} min",
+    "total-votes": "{{votes}} votos de {{count}} Encuestados",
+    "anonymous": "Anónimo",
+    "time-remaining": "Tiempo restante",
+    "reopen-poll": "Reapertura de la encuesta",
+    "quick-types": "Tipos rápidos",
+    "option-yes": "Sí",
+    "option-no": "No",
+    "option-maybe": "Quizá",
+    "option-true": "Cierto",
+    "option-false": "Falso",
+    "option-agree": "De acuerdo",
+    "option-disagree": "No estoy de acuerdo",
+    "ai-generate": "Generar con IA",
+    "ai-prompt-placeholder": "Describe la encuesta que quieres…",
+    "ai-disabled-notice": "La generación de encuestas con IA está desactivada. Un administrador puede activarla desde Más opciones (...) → Herramientas de IA → Chat de Asistente de IA.",
+    "quiz-mode-desc": "Marca la(s) opción(es) correcta(s) usando la casilla de verificación junto a cada opción. Los participantes solo ven la respuesta correcta después de que la encuesta cierre.",
+    "anonymous-voting-desc": "Las opciones de votantes permanecen ocultas — ni siquiera los administradores pueden ver quién votó.",
+    "duration-desc": "La encuesta se cierra automáticamente cuando se acaba el tiempo.",
+    "notifications": {
+      "created-successfully": "La encuesta ya ha sido creada.",
+      "response-added": "Tu voto ha sido presentado.",
+      "new-poll": "Ha comenzado una nueva encuesta.",
+      "end-poll-success": "La encuesta ha terminado.",
+      "reopen-poll-success": "La votación ha sido reabierta.",
+      "ai-generated": "Borrador de IA listo — revisa y crea.",
+      "poll-reopened": "Se ha reabierto una votación."
+    },
+    "errors": {
+      "generic": "Algo salió mal. Por favor, inténtalo de nuevo.",
+      "question-required": "Por favor, introduce tu pregunta.",
+      "min-options": "Una encuesta debe tener al menos dos opciones.",
+      "option-required": "Por favor, introduce el texto para cada opción.",
+      "select-correct-option": "Marca al menos una opción como respuesta correcta.",
+      "quiz-needs-correct": "Las encuestas de concurso deben tener al menos una respuesta correcta.",
+      "duration-cap": "La duración de la encuesta no puede superar los 60 minutos.",
+      "no-option-selected": "Por favor, selecciona una opción antes de enviarla.",
+      "already-voted": "Ya has votado en esta encuesta.",
+      "poll-not-found": "Encuesta no encontrada.",
+      "poll-closed": "Esta encuesta está cerrada.",
+      "wait-for-close": "Los resultados estarán disponibles una vez que se cierre la encuesta.",
+      "only-admin": "Solo el administrador puede realizar esta tarea.",
+      "only-admin-view-selection": "Solo el administrador puede ver las selecciones de otros usuarios.",
+      "room-id-required": "Se requiere identificación de habitación.",
+      "poll-id-required": "Se requiere identificación de urna.",
+      "user-and-poll-id-required": "Se requieren tanto el ID de usuario como el de encuesta.",
+      "ai-disabled": "La generación de encuestas por IA está desactivada.",
+      "ai-invalid-response": "La respuesta de la IA no pudo usarse. Por favor, inténtalo de nuevo.",
+      "ai-request-timeout": "Solicitud de IA de encuestas agotada"
+    }
   },
   "breakout-room": {
     "share-polls": "Comparte encuestas con salas de trabajo",
@@ -742,7 +796,10 @@
       "responding-placeholder": "El asistente de IA está respondiendo...",
       "response-timed-out": "El asistente de IA tarda demasiado en responder. Por favor, inténtelo de nuevo.",
       "enable-notepad-ai": "Habilitar la IA en el bloc de notas compartido",
-      "enable-whiteboard-ai": "Activar la IA en la pizarra"
+      "enable-whiteboard-ai": "Activar la IA en la pizarra",
+      "enable-poll-ai": "Habilitar la IA en las encuestas",
+      "feature-disabled": "Las funciones de IA no están activadas en esta sala.",
+      "not-allowed": "No está permitido usar este servicio."
     },
     "meeting-summarization": {
       "enable": "Activar resumen de la reunión",
@@ -765,11 +822,17 @@
       "generating": "Generar respuesta de IA...",
       "done": "Resultado de IA aplicado",
       "failed": "La solicitud de IA falló",
-      "disabled-message": "La función de IA está actualmente desactivada. Un administrador puede activarlo desde Más opciones (...) → AI Tools → AI Assistant Chat."
+      "disabled-message": "La función de IA está actualmente desactivada. Un administrador puede activarlo desde Más opciones (...) → AI Tools → AI Assistant Chat.",
+      "errors": {
+        "ai-disabled": "La IA en el bloc de notas compartido está desactivada."
+      }
     },
     "whiteboard-ai": {
       "disabled-message": "La función de IA está actualmente desactivada. Un administrador puede activarlo desde Más opciones (...) → AI Tools → AI Assistant Chat.",
-      "request-timeout": "Solicitud de IA en la pizarra blanca con tiempo de expiración"
+      "request-timeout": "Solicitud de IA en la pizarra blanca con tiempo de expiración",
+      "errors": {
+        "ai-disabled": "La IA en la pizarra está desactivada."
+      }
     }
   },
   "sip-dial-in-features": {
