@@ -505,14 +505,11 @@
     "remove-option": "Entfernen",
     "add-new-option": "Weitere Option hinzufügen",
     "create-poll": "Umfrage erstellen",
-    "created-successfully": "Die Umfrage wurde erfolgreich erstellt.",
     "you-voted": "Sie haben abgestimmt.",
     "vote": "Abstimmen",
     "submit-vote-form-title": "Ihre Stimme abgeben",
     "select-option": "Wählen Sie eine Option",
     "submit": "Senden",
-    "response-added": "Ihre Stimme wurde abgegeben.",
-    "new-poll": "Eine neue Umfrage wurde gestartet.",
     "poll-running": "Laufend",
     "poll-closed": "Geschlossen",
     "view-details": "Details",
@@ -520,11 +517,68 @@
     "view-details-title": "Umfrageinformationen",
     "view-result-title": "Umfrageergebnisse",
     "end-poll": "Umfrage beenden",
-    "end-poll-success": "Die Umfrage wurde beendet.",
     "publish-result": "Ergebnisse veröffentlichen",
     "total": "Gesamt: {{count}}",
     "not-respondents-total": "Keine Antwort: {{count}}",
-    "ask-question": "Stellen Sie eine Frage"
+    "ask-question": "Stellen Sie eine Frage",
+    "question-type": "Fragetyp",
+    "single-choice": "Einzelwahl",
+    "multiple-choice": "Multiple-Choice",
+    "anonymous-voting": "Anonyme Abstimmung",
+    "quiz-mode": "Quizmodus",
+    "correct-answer": "Richtige Antwort",
+    "duration": "Dauer",
+    "duration-no-limit": "Keine Grenze",
+    "duration-minutes": "{{count}} Min",
+    "total-votes": "{{votes}} Stimmen aus {{count}} Beklagte",
+    "anonymous": "Anonym",
+    "time-remaining": "Verbleibende Zeit",
+    "reopen-poll": "Wiedereröffnungswahl",
+    "quick-types": "Schnelle Typen",
+    "option-yes": "Ja",
+    "option-no": "Nein",
+    "option-maybe": "Vielleicht",
+    "option-true": "Stimmt",
+    "option-false": "Falsch",
+    "option-agree": "Stimme zu",
+    "option-disagree": "Uneinverstanden",
+    "ai-generate": "Generiere mit KI",
+    "ai-prompt-placeholder": "Beschreibe die Umfrage, die du möchtest…",
+    "ai-disabled-notice": "Die KI-Umfragegenerierung ist deaktiviert. Ein Administrator kann sie über Mehr Optionen (...) → KI-Tools → KI-Assistenten-Chat aktivieren.",
+    "quiz-mode-desc": "Markieren Sie die korrekten Option(en) mit dem Kontrollkästchen neben jeder Option. Die Teilnehmer sehen die richtige Antwort erst nach Schließung der Umfrage.",
+    "anonymous-voting-desc": "Wählerwahlmöglichkeiten bleiben verborgen – selbst Administratoren können nicht sehen, wer gewählt hat.",
+    "duration-desc": "Die Umfrage schließt automatisch, wenn die Zeit abläuft.",
+    "notifications": {
+      "created-successfully": "Die Umfrage wurde erstellt.",
+      "response-added": "Ihre Stimme wurde eingereicht.",
+      "new-poll": "Eine neue Umfrage wurde gestartet.",
+      "end-poll-success": "Die Umfrage ist beendet.",
+      "reopen-poll-success": "Die Wahlstätte wurde wieder geöffnet.",
+      "ai-generated": "KI-Entwurf bereit – überprüfen und erstellen.",
+      "poll-reopened": "Eine Wahllokale wurde wieder eröffnet."
+    },
+    "errors": {
+      "generic": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
+      "question-required": "Bitte geben Sie Ihre Frage ein.",
+      "min-options": "Eine Umfrage muss mindestens zwei Optionen haben.",
+      "option-required": "Bitte geben Sie für jede Option eine SMS ein.",
+      "select-correct-option": "Markiere mindestens eine Option als die richtige Antwort.",
+      "quiz-needs-correct": "Quiz-Umfragen müssen mindestens eine richtige Antwort enthalten.",
+      "duration-cap": "Die Umfrage darf nicht länger als 60 Minuten sein.",
+      "no-option-selected": "Bitte wählen Sie vor der Einreichung eine Option aus.",
+      "already-voted": "Sie haben bereits in dieser Umfrage abgestimmt.",
+      "poll-not-found": "Umfrage nicht gefunden.",
+      "poll-closed": "Diese Umfrage ist geschlossen.",
+      "wait-for-close": "Die Ergebnisse werden verfügbar sein, sobald die Umfrage geschlossen ist.",
+      "only-admin": "Nur die Verwaltung kann diese Aufgabe übernehmen.",
+      "only-admin-view-selection": "Nur der Admin kann die Auswahl anderer Nutzer einsehen.",
+      "room-id-required": "Zimmer-ID ist erforderlich.",
+      "poll-id-required": "Ein Wahlausweis ist erforderlich.",
+      "user-and-poll-id-required": "Sowohl Benutzer-ID als auch Wahl-ID sind erforderlich.",
+      "ai-disabled": "Die KI-Umfragegenerierung ist deaktiviert.",
+      "ai-invalid-response": "Die KI-Antwort konnte nicht verwendet werden. Bitte versuchen Sie es erneut.",
+      "ai-request-timeout": "Umfrage-KI-Anfrage zeitlich abgelaufen"
+    }
   },
   "breakout-room": {
     "share-polls": "Teile Umfragen mit Breakout-Räumen",
@@ -742,7 +796,10 @@
       "responding-placeholder": "KI-Assistent antwortet...",
       "response-timed-out": "Der KI-Assistent braucht zu lange, um zu antworten. Bitte versuchen Sie es erneut.",
       "enable-notepad-ai": "KI im gemeinsamen Notizblock aktivieren",
-      "enable-whiteboard-ai": "KI im Whiteboard aktivieren"
+      "enable-whiteboard-ai": "KI im Whiteboard aktivieren",
+      "enable-poll-ai": "KI in Umfragen aktivieren",
+      "feature-disabled": "KI-Funktionen sind für diesen Raum nicht aktiviert.",
+      "not-allowed": "Sie dürfen diesen Dienst nicht nutzen."
     },
     "meeting-summarization": {
       "enable": "Meeting-Zusammenfassung aktivieren",
@@ -765,11 +822,17 @@
       "generating": "KI-Reaktion wird erzeugt...",
       "done": "KI-Ergebnis angewandt",
       "failed": "KI-Anfrage gescheitert",
-      "disabled-message": "Die KI-Funktion ist derzeit deaktiviert. Ein Administrator kann es über Mehr Optionen (...) → KI-Tools → KI-Assistenten-Chat aktivieren."
+      "disabled-message": "Die KI-Funktion ist derzeit deaktiviert. Ein Administrator kann es über Mehr Optionen (...) → KI-Tools → KI-Assistenten-Chat aktivieren.",
+      "errors": {
+        "ai-disabled": "Die KI im gemeinsamen Notizblock ist deaktiviert."
+      }
     },
     "whiteboard-ai": {
       "disabled-message": "Die KI-Funktion ist derzeit deaktiviert. Ein Administrator kann es über Mehr Optionen (...) → KI-Tools → KI-Assistenten-Chat aktivieren.",
-      "request-timeout": "Whiteboard-KI-Anfrage hat abgelaufen"
+      "request-timeout": "Whiteboard-KI-Anfrage hat abgelaufen",
+      "errors": {
+        "ai-disabled": "Die KI im Whiteboard ist deaktiviert."
+      }
     }
   },
   "sip-dial-in-features": {
