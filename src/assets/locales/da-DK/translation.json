@@ -505,14 +505,11 @@
     "remove-option": "Fjerne",
     "add-new-option": "Tilføj en anden mulighed",
     "create-poll": "Opret afstemning",
-    "created-successfully": "Afstemningen er blevet oprettet.",
     "you-voted": "Du stemte",
     "vote": "Stemme",
     "submit-vote-form-title": "Indsend din stemme",
     "select-option": "Vælg en indstilling",
     "submit": "Indsende",
-    "response-added": "Deres stemme er afgivet.",
-    "new-poll": "En ny meningsmåling er startet.",
     "poll-running": "Løb",
     "poll-closed": "Lukket",
     "view-details": "Detaljer",
@@ -520,11 +517,68 @@
     "view-details-title": "Oplysninger om afstemning",
     "view-result-title": "Resultater af meningsmålinger",
     "end-poll": "Afslut afstemning",
-    "end-poll-success": "Afstemningen er afsluttet.",
     "publish-result": "Offentliggør resultater",
     "total": "Total: {{count}}",
     "not-respondents-total": "Besvarede ikke: {{count}}",
-    "ask-question": "Stil et spørgsmål"
+    "ask-question": "Stil et spørgsmål",
+    "question-type": "Spørgsmålstype",
+    "single-choice": "Enkeltvalg",
+    "multiple-choice": "Multiple choice",
+    "anonymous-voting": "Anonym afstemning",
+    "quiz-mode": "Quiz-tilstand",
+    "correct-answer": "Korrekt svar",
+    "duration": "Varighed",
+    "duration-no-limit": "Ingen grænse",
+    "duration-minutes": "{{count}} Min",
+    "total-votes": "{{votes}} Stemmer fra {{count}} Respondenter",
+    "anonymous": "Anonym",
+    "time-remaining": "Tid tilbage",
+    "reopen-poll": "Genåbningsafstemning",
+    "quick-types": "Hurtige typer",
+    "option-yes": "Ja",
+    "option-no": "Nej",
+    "option-maybe": "Måske",
+    "option-true": "Sandt",
+    "option-false": "Falsk",
+    "option-agree": "Enig",
+    "option-disagree": "Uenig",
+    "ai-generate": "Generer med AI",
+    "ai-prompt-placeholder": "Beskriv den afstemning, du ønsker…",
+    "ai-disabled-notice": "AI-afstemningsgenerering er deaktiveret. En administrator kan aktivere det fra Flere indstillinger (...) → AI-værktøjer → AI Assistant Chat.",
+    "quiz-mode-desc": "Marker de korrekte muligheder ved at krydse afkrydsningsfeltet ved siden af hver mulighed. Deltagerne ser kun det korrekte svar, efter afstemningen lukker.",
+    "anonymous-voting-desc": "Vælgervalgene forbliver skjulte — selv administratorer kan ikke se, hvem der stemte.",
+    "duration-desc": "Poll lukker automatisk, når tiden løber ud.",
+    "notifications": {
+      "created-successfully": "Afstemningen er blevet oprettet.",
+      "response-added": "Din stemme er blevet afleveret.",
+      "new-poll": "En ny afstemning er startet.",
+      "end-poll-success": "Afstemningen er afsluttet.",
+      "reopen-poll-success": "Afstemningsstedet er genåbnet.",
+      "ai-generated": "AI-udkast klar — gennemgå og skab.",
+      "poll-reopened": "En afstemning er genåbnet."
+    },
+    "errors": {
+      "generic": "Noget gik galt. Prøv venligst igen.",
+      "question-required": "Indtast venligst dit spørgsmål.",
+      "min-options": "En afstemning skal have mindst to muligheder.",
+      "option-required": "Indtast venligst tekst for alle muligheder.",
+      "select-correct-option": "Marker mindst én mulighed som det korrekte svar.",
+      "quiz-needs-correct": "Quiz-afstemninger skal have mindst ét korrekt svar.",
+      "duration-cap": "Afstemningens varighed må ikke overstige 60 minutter.",
+      "no-option-selected": "Vælg venligst en mulighed, før du indsender.",
+      "already-voted": "Du har allerede stemt i denne afstemning.",
+      "poll-not-found": "Afstemning ikke fundet.",
+      "poll-closed": "Denne afstemning er lukket.",
+      "wait-for-close": "Resultaterne vil være tilgængelige, når afstemningen lukker.",
+      "only-admin": "Kun admin kan udføre denne opgave.",
+      "only-admin-view-selection": "Kun admin kan se andre brugeres valg.",
+      "room-id-required": "Room-ID er påkrævet.",
+      "poll-id-required": "Valg-ID er påkrævet.",
+      "user-and-poll-id-required": "Både bruger-ID og afstemnings-ID er påkrævet.",
+      "ai-disabled": "AI-afstemningsgenerering er deaktiveret.",
+      "ai-invalid-response": "AI-svaret kunne ikke bruges. Prøv venligst igen.",
+      "ai-request-timeout": "Afstemning AI-anmodning udløb på tid"
+    }
   },
   "breakout-room": {
     "share-polls": "Del afstemninger med breakout rooms",
@@ -742,7 +796,10 @@
       "responding-placeholder": "AI Assistant reagerer...",
       "response-timed-out": "AI-assistenten tager for lang tid om at svare. Prøv venligst igen.",
       "enable-notepad-ai": "Aktiver AI i delt notesblok",
-      "enable-whiteboard-ai": "Aktiver AI i whiteboard"
+      "enable-whiteboard-ai": "Aktiver AI i whiteboard",
+      "enable-poll-ai": "Aktiver AI i afstemninger",
+      "feature-disabled": "AI-funktioner er ikke aktiveret i dette rum.",
+      "not-allowed": "Du har ikke tilladelse til at bruge denne service."
     },
     "meeting-summarization": {
       "enable": "Aktiver mødeopsummering",
@@ -765,11 +822,17 @@
       "generating": "Genererer AI-respons...",
       "done": "AI-resultat anvendt",
       "failed": "AI-anmodning mislykkedes",
-      "disabled-message": "AI-funktionen er i øjeblikket deaktiveret. En administrator kan aktivere det fra Flere muligheder (...) → AI-værktøjer → AI Assistant Chat."
+      "disabled-message": "AI-funktionen er i øjeblikket deaktiveret. En administrator kan aktivere det fra Flere muligheder (...) → AI-værktøjer → AI Assistant Chat.",
+      "errors": {
+        "ai-disabled": "AI i den delte notesblok er deaktiveret."
+      }
     },
     "whiteboard-ai": {
       "disabled-message": "AI-funktionen er i øjeblikket deaktiveret. En administrator kan aktivere det fra Flere muligheder (...) → AI-værktøjer → AI Assistant Chat.",
-      "request-timeout": "Whiteboard AI-anmodning udløber tidsmæssigt"
+      "request-timeout": "Whiteboard AI-anmodning udløber tidsmæssigt",
+      "errors": {
+        "ai-disabled": "AI i whiteboardet er deaktiveret."
+      }
     }
   },
   "sip-dial-in-features": {
