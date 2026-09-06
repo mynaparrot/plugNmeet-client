@@ -505,14 +505,11 @@
     "remove-option": "削除",
     "add-new-option": "別の選択肢を追加",
     "create-poll": "投票を作成",
-    "created-successfully": "投票が正常に作成されました。",
     "you-voted": "あなたは投票しました。",
     "vote": "投票",
     "submit-vote-form-title": "投票を送信",
     "select-option": "選択肢を選んでください",
     "submit": "送信",
-    "response-added": "投票が送信されました。",
-    "new-poll": "新しい投票が開始されました。",
     "poll-running": "実施中",
     "poll-closed": "終了",
     "view-details": "詳細",
@@ -520,11 +517,68 @@
     "view-details-title": "投票情報",
     "view-result-title": "投票結果",
     "end-poll": "投票を終了",
-    "end-poll-success": "投票が終了しました。",
     "publish-result": "結果を公開",
     "total": "合計: {{count}}",
     "not-respondents-total": "未回答: {{count}}",
-    "ask-question": "質問をしてください"
+    "ask-question": "質問をしてください",
+    "question-type": "問題の種類",
+    "single-choice": "単一選択",
+    "multiple-choice": "選択式",
+    "anonymous-voting": "匿名投票",
+    "quiz-mode": "クイズモード",
+    "correct-answer": "正解です",
+    "duration": "期間",
+    "duration-no-limit": "制限なし",
+    "duration-minutes": "{{count}} ミン",
+    "total-votes": "{{votes}} 投票結果 {{count}} 回答者",
+    "anonymous": "匿名",
+    "time-remaining": "残り時間",
+    "reopen-poll": "投票再開",
+    "quick-types": "クイックタイプ",
+    "option-yes": "はい",
+    "option-no": "いいえ",
+    "option-maybe": "たぶん",
+    "option-true": "確かに",
+    "option-false": "間違いです",
+    "option-agree": "同意します",
+    "option-disagree": "反対です",
+    "ai-generate": "AIで生成",
+    "ai-prompt-placeholder": "望むアンケートを説明してください…",
+    "ai-disabled-notice": "AI投票生成は無効です。管理者は「More Options(...)」→AIツール→AIアシスタントチャットから有効化できます。",
+    "quiz-mode-desc": "各選択肢の横にあるチェックボックスで正しい選択肢にマークしてください。参加者は投票終了後にのみ正しい答えを見ることができます。",
+    "anonymous-voting-desc": "有権者の選択は隠されたままで、管理者でさえ誰が投票したかを見ることはできません。",
+    "duration-desc": "投票は時間切れで自動的に終了します。",
+    "notifications": {
+      "created-successfully": "この投票は作成されました。",
+      "response-added": "あなたの投票は提出されました。",
+      "new-poll": "新しい世論調査が始まった。",
+      "end-poll-success": "世論調査は終了しました。",
+      "reopen-poll-success": "投票は再開されました。",
+      "ai-generated": "AIドラフト準備完了 — レビューと作成。",
+      "poll-reopened": "投票が再開されました。"
+    },
+    "errors": {
+      "generic": "何かがうまくいかなかった。もう一度お願いします。",
+      "question-required": "質問を入力してください。",
+      "min-options": "投票には少なくとも2つの選択肢が必要です。",
+      "option-required": "すべての選択肢にテキストを入力してください。",
+      "select-correct-option": "正解として少なくとも1つの選択肢をマークしてください。",
+      "quiz-needs-correct": "クイズ投票には少なくとも1つの正解が必要です。",
+      "duration-cap": "投票時間は60分を超えてはなりません。",
+      "no-option-selected": "提出前にオプションを選択してください。",
+      "already-voted": "あなたはすでにこの投票に投票しています。",
+      "poll-not-found": "アンケートは見つかりません。",
+      "poll-closed": "この投票は終了しました。",
+      "wait-for-close": "投票終了後に結果が公開されます。",
+      "only-admin": "この作業は管理者のみが行えます。",
+      "only-admin-view-selection": "管理者のみが他のユーザーの選択を見ることができます。",
+      "room-id-required": "部屋番号の提示が必要です。",
+      "poll-id-required": "投票所IDの提示が必要です。",
+      "user-and-poll-id-required": "ユーザーIDと投票IDの両方が必要です。",
+      "ai-disabled": "AI投票生成は無効化されています。",
+      "ai-invalid-response": "AI応答は使用できませんでした。もう一度お試しください。",
+      "ai-request-timeout": "投票AIリクエストのタイムアウト"
+    }
   },
   "breakout-room": {
     "share-polls": "ブレイクアウトルームで投票を共有する",
@@ -742,7 +796,10 @@
       "responding-placeholder": "AIアシスタントが応答中です...",
       "response-timed-out": "AIアシスタントの返信が遅すぎます。もう一度お試しください。",
       "enable-notepad-ai": "共有ノートでAIを有効にする",
-      "enable-whiteboard-ai": "ホワイトボードでAIを有効にする"
+      "enable-whiteboard-ai": "ホワイトボードでAIを有効にする",
+      "enable-poll-ai": "世論調査でAIを有効にする",
+      "feature-disabled": "この部屋ではAI機能は有効になっていません。",
+      "not-allowed": "このサービスを利用することは許可されていません。"
     },
     "meeting-summarization": {
       "enable": "会議の要約を有効にする",
@@ -765,11 +822,17 @@
       "generating": "AI応答を生成中...",
       "done": "AI結果の適用",
       "failed": "AIリクエストは失敗しました",
-      "disabled-message": "AI機能は現在無効化されています。管理者は「More Options(...)」→AIツール→AIアシスタントチャットから有効化できます。"
+      "disabled-message": "AI機能は現在無効化されています。管理者は「More Options(...)」→AIツール→AIアシスタントチャットから有効化できます。",
+      "errors": {
+        "ai-disabled": "共有ノートのAIは無効になっています。"
+      }
     },
     "whiteboard-ai": {
       "disabled-message": "AI機能は現在無効化されています。管理者は「More Options(...)」→AIツール→AIアシスタントチャットから有効化できます。",
-      "request-timeout": "ホワイトボードAIリクエストのタイムアウト"
+      "request-timeout": "ホワイトボードAIリクエストのタイムアウト",
+      "errors": {
+        "ai-disabled": "ホワイトボードのAIは無効になっています。"
+      }
     }
   },
   "sip-dial-in-features": {
