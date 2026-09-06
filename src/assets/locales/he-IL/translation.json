@@ -505,14 +505,11 @@
     "remove-option": "להסיר",
     "add-new-option": "הוספת אפשרות נוספת",
     "create-poll": "צור סקר",
-    "created-successfully": "הסקר נוצר.",
     "you-voted": "הצבעתם",
     "vote": "קול",
     "submit-vote-form-title": "שלח את הצבעתך",
     "select-option": "בחר אפשרות",
     "submit": "שלח",
-    "response-added": "הצבעתך הוגשה.",
-    "new-poll": "סקר חדש החל.",
     "poll-running": "פועל",
     "poll-closed": "סגור",
     "view-details": "פרטים",
@@ -520,11 +517,68 @@
     "view-details-title": "מידע על סקר",
     "view-result-title": "תוצאות הסקר",
     "end-poll": "סוף סקר",
-    "end-poll-success": "הסקר הסתיים.",
     "publish-result": "פרסום תוצאות",
     "total": "סך: {{count}}",
     "not-respondents-total": "לא הגיב: {{count}}",
-    "ask-question": "שאל שאלה"
+    "ask-question": "שאל שאלה",
+    "question-type": "סוג שאלה",
+    "single-choice": "בחירה אחת",
+    "multiple-choice": "רב-ברירה",
+    "anonymous-voting": "הצבעה אנונימית",
+    "quiz-mode": "מצב חידון",
+    "correct-answer": "תשובה נכונה",
+    "duration": "משך",
+    "duration-no-limit": "ללא הגבלה",
+    "duration-minutes": "{{count}} מינימום",
+    "total-votes": "{{votes}} קולות מ {{count}} המשיבים",
+    "anonymous": "אנונימי",
+    "time-remaining": "הזמן שנותר",
+    "reopen-poll": "סקר פתיחה מחדש",
+    "quick-types": "טיפוסים מהירים",
+    "option-yes": "כן",
+    "option-no": "לא",
+    "option-maybe": "אולי",
+    "option-true": "נכון",
+    "option-false": "שקרי",
+    "option-agree": "מסכים",
+    "option-disagree": "לא מסכים",
+    "ai-generate": "ליצור עם בינה מלאכותית",
+    "ai-prompt-placeholder": "תאר את הסקר שאתה רוצה…",
+    "ai-disabled-notice": "יצירת סקרים בבינה מלאכותית מושבתת. מנהל יכול להפעיל זאת דרך אפשרויות נוספות (...) → כלי AI → צ'אט עוזר AI.",
+    "quiz-mode-desc": "סמן את האפשרויות/ות הנכונות באמצעות תיבת הסימון ליד כל אפשרות. המשתתפים רואים את התשובה הנכונה רק לאחר סגירת הסקר.",
+    "anonymous-voting-desc": "בחירות הבוחרים נשארות מוסתרות — אפילו מנהלים לא יכולים לראות מי הצביע.",
+    "duration-desc": "הקלף נסגר אוטומטית כשהזמן נגמר.",
+    "notifications": {
+      "created-successfully": "הסקר נוצר.",
+      "response-added": "הקול שלך הוגש.",
+      "new-poll": "סקר חדש החל.",
+      "end-poll-success": "הסקר הסתיים.",
+      "reopen-poll-success": "הסקר נפתח מחדש.",
+      "ai-generated": "טיוטת בינה מלאכותית מוכנה — סקירה ויצור.",
+      "poll-reopened": "סקר נפתח מחדש."
+    },
+    "errors": {
+      "generic": "משהו השתבש. בבקשה נסה שוב.",
+      "question-required": "אנא הזן את שאלתך.",
+      "min-options": "סקר חייב לכלול לפחות שתי אפשרויות.",
+      "option-required": "אנא הזן טקסט לכל אפשרות.",
+      "select-correct-option": "סמן לפחות אפשרות אחת כתשובה הנכונה.",
+      "quiz-needs-correct": "סקרי חידונים חייבים לכלול לפחות תשובה נכונה אחת.",
+      "duration-cap": "משך ההצבעה לא יכול לעלות על 60 דקות.",
+      "no-option-selected": "אנא בחרו אפשרות לפני ההגשה.",
+      "already-voted": "כבר הצבעתם בסקר הזה.",
+      "poll-not-found": "סקר לא נמצא.",
+      "poll-closed": "הסקר הזה סגור.",
+      "wait-for-close": "התוצאות יהיו זמינות לאחר סגירת ההצבעה.",
+      "only-admin": "רק מנהל יכול לבצע את המשימה הזו.",
+      "only-admin-view-selection": "רק מנהל יכול לצפות בבחירות של משתמשים אחרים.",
+      "room-id-required": "נדרש מזהה חדר.",
+      "poll-id-required": "נדרש תעודת זהות קלפי.",
+      "user-and-poll-id-required": "נדרשים גם מזהה משתמש וגם מזהה הצבעה.",
+      "ai-disabled": "יצירת סקרים באמצעות בינה מלאכותית מושבתת.",
+      "ai-invalid-response": "לא ניתן היה להשתמש בתגובת הבינה המלאכותית. אנא נסה שוב.",
+      "ai-request-timeout": "בקשת ה-AI לסקר הסתיימה"
+    }
   },
   "breakout-room": {
     "share-polls": "שתפו סקרים עם חדרי פריצה",
@@ -742,7 +796,10 @@
       "responding-placeholder": "עוזר בינה מלאכותית מגיב...",
       "response-timed-out": "העוזר של הבינה המלאכותית לוקח יותר מדי זמן להגיב. אנא נסה שוב.",
       "enable-notepad-ai": "הפעל AI במחברת משותפת",
-      "enable-whiteboard-ai": "הפעל בינה מלאכותית בלוח הלבן"
+      "enable-whiteboard-ai": "הפעל בינה מלאכותית בלוח הלבן",
+      "enable-poll-ai": "הפעלת בינה מלאכותית בסקרים",
+      "feature-disabled": "תכונות בינה מלאכותית לא מופעלות בחדר זה.",
+      "not-allowed": "אסור לך להשתמש בשירות זה."
     },
     "meeting-summarization": {
       "enable": "הפעלת סיכום פגישות",
@@ -765,11 +822,17 @@
       "generating": "מייצר תגובת בינה מלאכותית...",
       "done": "תוצאה של בינה מלאכותית מיושמת",
       "failed": "בקשת הבינה המלאכותית נכשלה",
-      "disabled-message": "תכונת הבינה המלאכותית כרגע מושבתת. מנהל יכול להפעיל זאת דרך More Options (...) → AI Tools → AI Assistant Chat."
+      "disabled-message": "תכונת הבינה המלאכותית כרגע מושבתת. מנהל יכול להפעיל זאת דרך More Options (...) → AI Tools → AI Assistant Chat.",
+      "errors": {
+        "ai-disabled": "הבינה המלאכותית במחברת המשותף מושבתת."
+      }
     },
     "whiteboard-ai": {
       "disabled-message": "תכונת הבינה המלאכותית כרגע מושבתת. מנהל יכול להפעיל זאת דרך More Options (...) → AI Tools → AI Assistant Chat.",
-      "request-timeout": "בקשת בינה מלאכותית ללוח לבן נגמרה בזמן."
+      "request-timeout": "בקשת בינה מלאכותית ללוח לבן נגמרה בזמן.",
+      "errors": {
+        "ai-disabled": "הבינה המלאכותית בלוח הלבן מושבתת."
+      }
     }
   },
   "sip-dial-in-features": {
