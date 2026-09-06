@@ -505,14 +505,11 @@
     "remove-option": "Poistaa",
     "add-new-option": "Lisää toinen vaihtoehto",
     "create-poll": "Luo kysely",
-    "created-successfully": "Kysely on luotu.",
     "you-voted": "Äänestit",
     "vote": "Äänestys",
     "submit-vote-form-title": "Lähetä äänesi",
     "select-option": "Valitse vaihtoehto",
     "submit": "Alistua",
-    "response-added": "Äänenne on lähetetty.",
-    "new-poll": "Uusi kysely on alkanut.",
     "poll-running": "Juokseva",
     "poll-closed": "Suljettu",
     "view-details": "Tiedot",
@@ -520,11 +517,68 @@
     "view-details-title": "Kyselyn tiedot",
     "view-result-title": "Kyselyn tulokset",
     "end-poll": "Lopeta kysely",
-    "end-poll-success": "Äänestys on päättynyt.",
     "publish-result": "Julkaise tulokset",
     "total": "Koko: {{count}}",
     "not-respondents-total": "Ei vastannut: {{count}}",
-    "ask-question": "Kysy kysymys"
+    "ask-question": "Kysy kysymys",
+    "question-type": "Kysymystyyppi",
+    "single-choice": "Yksivalinta",
+    "multiple-choice": "Monivalinta",
+    "anonymous-voting": "Anonyymi äänestys",
+    "quiz-mode": "Tietokilpailutila",
+    "correct-answer": "Oikea vastaus",
+    "duration": "Kesto",
+    "duration-no-limit": "Ei rajaa",
+    "duration-minutes": "{{count}} min",
+    "total-votes": "{{votes}} Äänet {{count}} Vastaajat",
+    "anonymous": "Anonyymi",
+    "time-remaining": "Jäljellä oleva aika",
+    "reopen-poll": "Uudelleenavausäänestys",
+    "quick-types": "Nopeat tyypit",
+    "option-yes": "Kyllä",
+    "option-no": "Ei",
+    "option-maybe": "Ehkä",
+    "option-true": "Totta",
+    "option-false": "Väärin",
+    "option-agree": "Samaa mieltä",
+    "option-disagree": "Eri mieltä",
+    "ai-generate": "Luo tekoälyllä",
+    "ai-prompt-placeholder": "Kuvaile haluamasi kysely…",
+    "ai-disabled-notice": "Tekoälykyselyjen generointi on pois päältä. Järjestelmänvalvoja voi ottaa sen käyttöön Lisävaihtoehdoista (...) → AI Tools → AI Assistant Chatista.",
+    "quiz-mode-desc": "Merkitse oikeat vaihtoehdot valintaruudulla kunkin vaihtoehdon vieressä. Osallistujat näkevät oikean vastauksen vasta äänestyksen sulkeuduttua.",
+    "anonymous-voting-desc": "Äänestäjien valinnat pysyvät piilossa — edes ylläpitäjät eivät näe, kuka äänesti.",
+    "duration-desc": "Äänestys sulkeutuu automaattisesti, kun aika loppuu.",
+    "notifications": {
+      "created-successfully": "Kysely on luotu.",
+      "response-added": "Äänesi on toimitettu.",
+      "new-poll": "Uusi äänestys on alkanut.",
+      "end-poll-success": "Äänestys on päättynyt.",
+      "reopen-poll-success": "Äänestyspaikka on avattu uudelleen.",
+      "ai-generated": "Tekoälyluonnos valmiina — tarkista ja luo.",
+      "poll-reopened": "Äänestys on avattu uudelleen."
+    },
+    "errors": {
+      "generic": "Jokin meni pieleen. Yritä uudelleen.",
+      "question-required": "Syötä kysymyksesi.",
+      "min-options": "Kyselyssä täytyy olla vähintään kaksi vaihtoehtoa.",
+      "option-required": "Syötäthän tekstiä jokaiseen vaihtoehtoon.",
+      "select-correct-option": "Merkitse ainakin yksi vaihtoehto oikeaksi vastaukseksi.",
+      "quiz-needs-correct": "Tietokilpailukyselyissä täytyy olla vähintään yksi oikea vastaus.",
+      "duration-cap": "Äänestyksen kesto ei saa ylittää 60 minuuttia.",
+      "no-option-selected": "Valitse vaihtoehto ennen lähettämistä.",
+      "already-voted": "Olet jo äänestänyt tässä äänestyksessä.",
+      "poll-not-found": "Kyselyä ei löytynyt.",
+      "poll-closed": "Tämä äänestys on suljettu.",
+      "wait-for-close": "Tulokset ovat saatavilla, kun äänestys on suljettu.",
+      "only-admin": "Vain ylläpitäjä voi hoitaa tämän tehtävän.",
+      "only-admin-view-selection": "Vain ylläpitäjä voi nähdä muiden käyttäjien valinnat.",
+      "room-id-required": "Huoneen tunnistus vaaditaan.",
+      "poll-id-required": "Äänestystunnistus vaaditaan.",
+      "user-and-poll-id-required": "Sekä käyttäjätunnus että äänestystunnus vaaditaan.",
+      "ai-disabled": "Tekoälykyselyjen generointi on pois päältä.",
+      "ai-invalid-response": "Tekoälyvastausta ei voitu käyttää. Yritä uudelleen.",
+      "ai-request-timeout": "Kyselyn tekoälypyyntö aikakatkaistu"
+    }
   },
   "breakout-room": {
     "share-polls": "Jaa kyselyt ryhmähuoneiden kanssa",
@@ -742,7 +796,10 @@
       "responding-placeholder": "Tekoälyavustaja vastaa...",
       "response-timed-out": "Tekoälyavustaja vastaa liian hitaasti. Ole hyvä ja yritä uudelleen.",
       "enable-notepad-ai": "Ota tekoäly käyttöön jaetussa muistikirjassa",
-      "enable-whiteboard-ai": "Ota tekoäly käyttöön valkotaululla"
+      "enable-whiteboard-ai": "Ota tekoäly käyttöön valkotaululla",
+      "enable-poll-ai": "Ota tekoäly käyttöön kyselyissä",
+      "feature-disabled": "Tekoälyominaisuuksia ei ole käytössä tässä huoneessa.",
+      "not-allowed": "Et saa käyttää tätä palvelua."
     },
     "meeting-summarization": {
       "enable": "Ota käyttöön kokouksen yhteenveto",
@@ -765,11 +822,17 @@
       "generating": "Tekoälyn vastauksen tuottaminen...",
       "done": "AI-tulos sovellettu",
       "failed": "AI-pyyntö epäonnistui",
-      "disabled-message": "Tekoälyominaisuus on tällä hetkellä pois päältä. Ylläpitäjä voi ottaa sen käyttöön Lisää vaihtoehtoja (...) → AI Tools → AI Assistant Chat -osiosta."
+      "disabled-message": "Tekoälyominaisuus on tällä hetkellä pois päältä. Ylläpitäjä voi ottaa sen käyttöön Lisää vaihtoehtoja (...) → AI Tools → AI Assistant Chat -osiosta.",
+      "errors": {
+        "ai-disabled": "Jaetussa muistikirjassa oleva tekoäly on pois päältä."
+      }
     },
     "whiteboard-ai": {
       "disabled-message": "Tekoälyominaisuus on tällä hetkellä pois päältä. Ylläpitäjä voi ottaa sen käyttöön Lisää vaihtoehtoja (...) → AI Tools → AI Assistant Chat -osiosta.",
-      "request-timeout": "Valkotaulun tekoälypyyntö aikakatkaistu"
+      "request-timeout": "Valkotaulun tekoälypyyntö aikakatkaistu",
+      "errors": {
+        "ai-disabled": "Valkotaulun tekoäly on pois päältä."
+      }
     }
   },
   "sip-dial-in-features": {
