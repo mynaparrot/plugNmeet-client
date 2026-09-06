@@ -505,14 +505,11 @@
     "remove-option": "제거",
     "add-new-option": "別の選択肢を追加",
     "create-poll": "投票を作成",
-    "created-successfully": "설문조사가 성공적으로 만들어졌습니다.",
     "you-voted": "투표했습니다.",
     "vote": "投票",
     "submit-vote-form-title": "投票を送信",
     "select-option": "옵션을 선택하세요",
     "submit": "제출",
-    "response-added": "投票が送信されました。",
-    "new-poll": "새로운 설문조사가 시작되었습니다.",
     "poll-running": "진행 중",
     "poll-closed": "종료됨",
     "view-details": "詳細",
@@ -520,11 +517,68 @@
     "view-details-title": "설문조사 정보",
     "view-result-title": "설문조사 결과",
     "end-poll": "설문조사 종료",
-    "end-poll-success": "설문조사가 종료되었습니다.",
     "publish-result": "結果を公開",
     "total": "총계: {{count}}",
     "not-respondents-total": "응답하지 않음: {{count}}",
-    "ask-question": "질문하세요"
+    "ask-question": "질문하세요",
+    "question-type": "질문 유형",
+    "single-choice": "단일선택",
+    "multiple-choice": "객관식",
+    "anonymous-voting": "익명 투표",
+    "quiz-mode": "퀴즈 모드",
+    "correct-answer": "정답",
+    "duration": "지속 기간",
+    "duration-no-limit": "한계 없음",
+    "duration-minutes": "{{count}} 민",
+    "total-votes": "{{votes}} 투표 결과는 {{count}} 응답자",
+    "anonymous": "익명",
+    "time-remaining": "남은 시간",
+    "reopen-poll": "투표 재개시",
+    "quick-types": "빠른 유형",
+    "option-yes": "네",
+    "option-no": "아니",
+    "option-maybe": "아마도",
+    "option-true": "맞아요",
+    "option-false": "거짓",
+    "option-agree": "동의합니다",
+    "option-disagree": "동의하지 않습니다",
+    "ai-generate": "AI로 생성하기",
+    "ai-prompt-placeholder": "원하는 설문조사를 설명하세요…",
+    "ai-disabled-notice": "AI 설문조사 생성은 비활성화되어 있습니다. 관리자는 AI 도구 → AI 어시스턴트 채팅→ 더 옵션에서 활성화할 수 있습니다.",
+    "quiz-mode-desc": "각 옵션 옆의 체크박스를 사용해 올바른 선택지를 표시하세요. 참가자들은 투표가 종료된 후에야 올바른 답을 볼 수 있습니다.",
+    "anonymous-voting-desc": "유권자 선택은 숨겨져 있어요 — 관리자조차 누가 투표했는지 볼 수 없어요.",
+    "duration-desc": "시간이 다 되면 투표가 자동으로 종료됩니다.",
+    "notifications": {
+      "created-successfully": "투표가 만들어졌습니다.",
+      "response-added": "투표가 제출되었습니다.",
+      "new-poll": "새로운 여론조사가 시작되었습니다.",
+      "end-poll-success": "투표가 종료되었습니다.",
+      "reopen-poll-success": "투표가 다시 열렸습니다.",
+      "ai-generated": "AI 초안 준비 — 검토 및 작성.",
+      "poll-reopened": "투표가 다시 열렸습니다."
+    },
+    "errors": {
+      "generic": "뭔가 잘못됐어. 다시 시도해 주세요.",
+      "question-required": "질문을 입력해 주세요.",
+      "min-options": "투표에는 최소 두 가지 옵션이 있어야 합니다.",
+      "option-required": "모든 옵션에 텍스트를 입력해 주세요.",
+      "select-correct-option": "정답으로 적어도 한 가지 옵션을 표시하세요.",
+      "quiz-needs-correct": "퀴즈 투표에는 최소 한 개의 정답이 있어야 합니다.",
+      "duration-cap": "투표 시간은 60분을 초과할 수 없습니다.",
+      "no-option-selected": "제출 전에 옵션을 선택해 주세요.",
+      "already-voted": "이미 이 투표에 참여하셨습니다.",
+      "poll-not-found": "설문조사를 찾지 못했습니다.",
+      "poll-closed": "이 투표는 종료되었습니다.",
+      "wait-for-close": "투표가 마감된 후 결과가 공개될 예정입니다.",
+      "only-admin": "이 작업은 관리자만 수행할 수 있습니다.",
+      "only-admin-view-selection": "관리자만 다른 사용자의 선택을 볼 수 있습니다.",
+      "room-id-required": "방 ID가 필요합니다.",
+      "poll-id-required": "투표 ID가 필요합니다.",
+      "user-and-poll-id-required": "사용자 ID와 투표 ID 모두 필요합니다.",
+      "ai-disabled": "AI 투표 생성은 비활성화되어 있습니다.",
+      "ai-invalid-response": "AI 응답을 사용할 수 없었습니다. 다시 시도해 주세요.",
+      "ai-request-timeout": "투표 AI 요청 시간 초과"
+    }
   },
   "breakout-room": {
     "share-polls": "분과 방에서 투표를 공유하세요",
@@ -742,7 +796,10 @@
       "responding-placeholder": "AIアシスタントが応答中です...",
       "response-timed-out": "AI 비서가 응답하는 데 너무 오래 걸리고 있습니다. 다시 시도해 주세요.",
       "enable-notepad-ai": "공유 노트에서 AI 활성화하기",
-      "enable-whiteboard-ai": "화이트보드에서 AI 활성화"
+      "enable-whiteboard-ai": "화이트보드에서 AI 활성화",
+      "enable-poll-ai": "투표에서 AI 활성화하기",
+      "feature-disabled": "이 방에서는 AI 기능이 활성화되어 있지 않습니다.",
+      "not-allowed": "이 서비스는 사용할 수 없습니다."
     },
     "meeting-summarization": {
       "enable": "会議の要約を有効にする",
@@ -765,11 +822,17 @@
       "generating": "AI 응답 생성...",
       "done": "AI 결과 적용",
       "failed": "AI 요청 실패",
-      "disabled-message": "현재 AI 기능은 비활성화되어 있습니다. 관리자는 AI 도구 → AI 어시스턴트 채팅→ 더 많은 옵션에서 활성화할 수 있습니다."
+      "disabled-message": "현재 AI 기능은 비활성화되어 있습니다. 관리자는 AI 도구 → AI 어시스턴트 채팅→ 더 많은 옵션에서 활성화할 수 있습니다.",
+      "errors": {
+        "ai-disabled": "공유 노트패드의 AI는 비활성화되어 있습니다."
+      }
     },
     "whiteboard-ai": {
       "disabled-message": "현재 AI 기능은 비활성화되어 있습니다. 관리자는 AI 도구 → AI 어시스턴트 채팅→ 더 많은 옵션에서 활성화할 수 있습니다.",
-      "request-timeout": "화이트보드 AI 요청 시간 초과"
+      "request-timeout": "화이트보드 AI 요청 시간 초과",
+      "errors": {
+        "ai-disabled": "화이트보드의 AI는 비활성화되어 있습니다."
+      }
     }
   },
   "sip-dial-in-features": {
