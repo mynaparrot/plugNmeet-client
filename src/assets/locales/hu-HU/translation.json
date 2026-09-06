@@ -505,14 +505,11 @@
     "remove-option": "Eltávolít",
     "add-new-option": "Adjon hozzá egy másik lehetőséget",
     "create-poll": "Szavazás létrehozása",
-    "created-successfully": "A szavazás létrejött.",
     "you-voted": "Ön szavazott",
     "vote": "Szavaz",
     "submit-vote-form-title": "Adja meg szavazatát",
     "select-option": "Válasszon egy lehetőséget",
     "submit": "Előterjeszt",
-    "response-added": "Leadtuk a szavazatot.",
-    "new-poll": "Új közvélemény-kutatás indult.",
     "poll-running": "Futás",
     "poll-closed": "Zárt",
     "view-details": "Részletek",
@@ -520,11 +517,68 @@
     "view-details-title": "Szavazási információk",
     "view-result-title": "Szavazás eredményei",
     "end-poll": "Szavazás vége",
-    "end-poll-success": "A szavazás véget ért.",
     "publish-result": "Eredmények közzététele",
     "total": "Teljes: {{count}}",
     "not-respondents-total": "Nem válaszolt: {{count}}",
-    "ask-question": "Tegyél fel egy kérdést"
+    "ask-question": "Tegyél fel egy kérdést",
+    "question-type": "Kérdés típusa",
+    "single-choice": "Egyválasztási lehetőség",
+    "multiple-choice": "Feleletválasztós",
+    "anonymous-voting": "Névtelen szavazás",
+    "quiz-mode": "Kvíz mód",
+    "correct-answer": "Helyes válasz",
+    "duration": "Időtartam",
+    "duration-no-limit": "Nincs korlát",
+    "duration-minutes": "{{count}} min",
+    "total-votes": "{{votes}} Szavazatok {{count}} Válaszadók",
+    "anonymous": "Névtelen",
+    "time-remaining": "Hátralévő idő",
+    "reopen-poll": "Újranyitási szavazás",
+    "quick-types": "Gyors típusok",
+    "option-yes": "Igen",
+    "option-no": "Nem",
+    "option-maybe": "Talán",
+    "option-true": "Igaz",
+    "option-false": "Hamis",
+    "option-agree": "Egyetértek",
+    "option-disagree": "Nem értek egyet",
+    "ai-generate": "Generálj MI-vel",
+    "ai-prompt-placeholder": "Írd le a kívánt szavazást…",
+    "ai-disabled-notice": "Az AI szavazói generálás le van tiltva. Az adminisztrátor engedélyezheti a további opciók (...) → AI eszközök → AI asszisztens csevegés menüpontból.",
+    "quiz-mode-desc": "Jelöld meg a helyes opciót a mellette lévő jelölőnégyzetben. A résztvevők csak a szavazás lezárása után látják a helyes választ.",
+    "anonymous-voting-desc": "A választói választások rejtettek maradnak — még az adminok sem látják, ki szavazott.",
+    "duration-desc": "A szavazás automatikusan bezárul, amikor lejár az idő.",
+    "notifications": {
+      "created-successfully": "A szavazás elkészült.",
+      "response-added": "A szavazatát benyújtották.",
+      "new-poll": "Új szavazás indult.",
+      "end-poll-success": "A szavazás véget ért.",
+      "reopen-poll-success": "A szavazóhelyiséget újra megnyitották.",
+      "ai-generated": "AI draft kész — nézd át és készítsd el.",
+      "poll-reopened": "Újranyitottak egy szavazóhelyiséget."
+    },
+    "errors": {
+      "generic": "Valami félresikerült. Kérem, próbálja újra.",
+      "question-required": "Kérem, írja meg a kérdését.",
+      "min-options": "Egy felmérésnek legalább két lehetősége kell legyen.",
+      "option-required": "Kérjük, minden opcióhoz írj be szöveget.",
+      "select-correct-option": "Jelölj meg legalább egy opciót helyes válaszként.",
+      "quiz-needs-correct": "A kvízszavazásoknak legalább egy helyes válasznak kell lennie.",
+      "duration-cap": "A szavazás időtartama nem haladhatja meg a 60 percet.",
+      "no-option-selected": "Kérjük, válasszon egy opciót a beküldés előtt.",
+      "already-voted": "Már szavaztál ebben a szavazásban.",
+      "poll-not-found": "A felmérés nem talált.",
+      "poll-closed": "Ez a szavazás le van zárva.",
+      "wait-for-close": "Az eredmények a szavazás lezárása után lesznek elérhetők.",
+      "only-admin": "Csak adminisztrátor tudja ezt a feladatot elvégezni.",
+      "only-admin-view-selection": "Csak az admin nézheti meg más felhasználók választásait.",
+      "room-id-required": "Szobaazonosító szükséges.",
+      "poll-id-required": "A választói azonosító szükséges",
+      "user-and-poll-id-required": "Mind felhasználói azonosító, mind szavazási azonosító szükséges.",
+      "ai-disabled": "Az AI szavazói generálása le van tiltva.",
+      "ai-invalid-response": "Az AI válasz nem volt használható. Kérem, próbálja újra.",
+      "ai-request-timeout": "A felmérési MI kérés időlejárt"
+    }
   },
   "breakout-room": {
     "share-polls": "Ossza meg a szavazásokat a szparteerszobákkal",
@@ -742,7 +796,10 @@
       "responding-placeholder": "Az MI asszisztens válaszol...",
       "response-timed-out": "Az MI asszisztens túl sokáig tart a válaszadással. Kérlek, próbáld meg újra.",
       "enable-notepad-ai": "Kapcsold be az MI a közös jegyzetfüzetben",
-      "enable-whiteboard-ai": "Kapcsold be az MI a táblán"
+      "enable-whiteboard-ai": "Kapcsold be az MI a táblán",
+      "enable-poll-ai": "Engedélyezze az MI használatát a szavazásokban",
+      "feature-disabled": "Ebben a szobában nem engedélyezett az AI funkciók.",
+      "not-allowed": "Nem használhatod ezt a szolgáltatást."
     },
     "meeting-summarization": {
       "enable": "Engedélyezze a találkozók összefoglalását",
@@ -765,11 +822,17 @@
       "generating": "MI válasz generálása...",
       "done": "AI eredmény alkalmazása",
       "failed": "Az MI kérés sikertelen",
-      "disabled-message": "Az AI funkció jelenleg le van tiltva. Egy adminisztrátor engedélyezheti a További opciók (...) → AI Tools → AI Assistant Chat menüpontból."
+      "disabled-message": "Az AI funkció jelenleg le van tiltva. Egy adminisztrátor engedélyezheti a További opciók (...) → AI Tools → AI Assistant Chat menüpontból.",
+      "errors": {
+        "ai-disabled": "A közös jegyzetfüzetben lévő mesterséges intelligencia le van tiltva."
+      }
     },
     "whiteboard-ai": {
       "disabled-message": "Az AI funkció jelenleg le van tiltva. Egy adminisztrátor engedélyezheti a További opciók (...) → AI Tools → AI Assistant Chat menüpontból.",
-      "request-timeout": "Whiteboard MI kérés időlejárt"
+      "request-timeout": "Whiteboard MI kérés időlejárt",
+      "errors": {
+        "ai-disabled": "A fehértáblán lévő MI le van tiltva."
+      }
     }
   },
   "sip-dial-in-features": {
