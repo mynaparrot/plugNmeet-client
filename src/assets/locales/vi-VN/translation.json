@@ -505,14 +505,11 @@
     "remove-option": "Xóa",
     "add-new-option": "Thêm tùy chọn khác",
     "create-poll": "Tạo cuộc thăm dò ý kiến",
-    "created-successfully": "Cuộc thăm dò đã được tạo.",
     "you-voted": "Bạn đã bình chọn",
     "vote": "Bỏ phiếu",
     "submit-vote-form-title": "Gửi phiếu bầu của bạn",
     "select-option": "Chọn một tùy chọn",
     "submit": "Gửi",
-    "response-added": "Phiếu bầu của bạn đã được gửi.",
-    "new-poll": "Một cuộc thăm dò mới đã bắt đầu.",
     "poll-running": "Đang hoạt động",
     "poll-closed": "Đóng",
     "view-details": "Chi tiết",
@@ -520,11 +517,68 @@
     "view-details-title": "Thông tin thăm dò ý kiến",
     "view-result-title": "Kết quả thăm dò ý kiến",
     "end-poll": "Kết thúc cuộc thăm dò ý kiến",
-    "end-poll-success": "Cuộc thăm dò đã kết thúc.",
     "publish-result": "Xuất bản kết quả",
     "total": "Tất cả: {{count}}",
     "not-respondents-total": "Không trả lời: {{count}}",
-    "ask-question": "Đặt câu hỏi"
+    "ask-question": "Đặt câu hỏi",
+    "question-type": "Loại câu hỏi",
+    "single-choice": "Lựa chọn đơn",
+    "multiple-choice": "Trắc nghiệm",
+    "anonymous-voting": "Bỏ phiếu ẩn danh",
+    "quiz-mode": "Chế độ đố vui",
+    "correct-answer": "Đáp án đúng",
+    "duration": "Thời gian hoạt động",
+    "duration-no-limit": "Không giới hạn",
+    "duration-minutes": "{{count}} phút",
+    "total-votes": "{{votes}} phiếu bầu từ {{count}} những người trả lời",
+    "anonymous": "ẩn danh",
+    "time-remaining": "Thời gian còn lại",
+    "reopen-poll": "Mở lại cuộc thăm dò",
+    "quick-types": "Các loại nhanh",
+    "option-yes": "Đúng vậy",
+    "option-no": "Không",
+    "option-maybe": "Có thể",
+    "option-true": "Đúng vậy",
+    "option-false": "Sai",
+    "option-agree": "Đồng ý",
+    "option-disagree": "Không đồng ý",
+    "ai-generate": "Tạo ra bằng AI",
+    "ai-prompt-placeholder": "Mô tả cuộc thăm dò bạn muốn…",
+    "ai-disabled-notice": "Việc tạo khảo sát AI đã bị vô hiệu hóa. Quản trị viên có thể bật nó từ Tùy chọn Thêm (...) → Công cụ AI → Chat Trợ lý AI.",
+    "quiz-mode-desc": "Đánh dấu đúng tùy chọn bằng ô bên cạnh mỗi tùy chọn. Người tham gia chỉ thấy đáp án đúng sau khi cuộc thăm dò kết thúc.",
+    "anonymous-voting-desc": "Các lựa chọn của cử tri vẫn bị ẩn — ngay cả quản trị viên cũng không thể biết ai đã bỏ phiếu.",
+    "duration-desc": "Poll sẽ tự động đóng khi hết thời gian.",
+    "notifications": {
+      "created-successfully": "Cuộc thăm dò đã được tạo ra.",
+      "response-added": "Phiếu bầu của quý vị đã được nộp.",
+      "new-poll": "Một cuộc thăm dò mới đã bắt đầu.",
+      "end-poll-success": "Cuộc thăm dò đã kết thúc.",
+      "reopen-poll-success": "Cuộc bỏ phiếu đã được mở lại.",
+      "ai-generated": "Bản thảo AI đã sẵn sàng — xem xét và tạo.",
+      "poll-reopened": "Một cuộc bỏ phiếu đã được mở lại."
+    },
+    "errors": {
+      "generic": "Có chuyện gì đó đã xảy ra. Vui lòng thử lại.",
+      "question-required": "Vui lòng nhập câu hỏi của bạn.",
+      "min-options": "Một cuộc thăm dò phải có ít nhất hai lựa chọn.",
+      "option-required": "Vui lòng nhập văn bản cho mọi tùy chọn.",
+      "select-correct-option": "Đánh dấu ít nhất một lựa chọn là đáp án đúng.",
+      "quiz-needs-correct": "Các cuộc thăm dò đố vui phải có ít nhất một đáp án đúng.",
+      "duration-cap": "Thời lượng thăm dò không được vượt quá 60 phút.",
+      "no-option-selected": "Vui lòng chọn một tùy chọn trước khi gửi.",
+      "already-voted": "Ông đã bỏ phiếu trong cuộc thăm dò này rồi.",
+      "poll-not-found": "Không tìm thấy khảo sát.",
+      "poll-closed": "Cuộc thăm dò này đã đóng.",
+      "wait-for-close": "Kết quả sẽ được công bố sau khi kết thúc cuộc bỏ phiếu.",
+      "only-admin": "Chỉ quản trị viên mới có thể thực hiện tác vụ này.",
+      "only-admin-view-selection": "Chỉ quản trị viên mới có thể xem các lựa chọn của người dùng khác.",
+      "room-id-required": "Cần có giấy tờ tùy thân phòng.",
+      "poll-id-required": "Cần có ID thăm dò.",
+      "user-and-poll-id-required": "Cả ID người dùng và ID thăm dò đều bắt buộc.",
+      "ai-disabled": "Việc tạo khảo sát AI đã bị vô hiệu hóa.",
+      "ai-invalid-response": "Không thể sử dụng phản hồi AI. Vui lòng thử lại.",
+      "ai-request-timeout": "Yêu cầu Poll AI đã hết thời gian"
+    }
   },
   "breakout-room": {
     "share-polls": "Chia sẻ các cuộc thăm dò với phòng tách nhỏ",
@@ -742,7 +796,10 @@
       "responding-placeholder": "Trợ lý AI đang phản hồi...",
       "response-timed-out": "Trợ lý AI phản hồi quá lâu. Vui lòng thử lại.",
       "enable-notepad-ai": "Kích hoạt AI trong sổ tay chia sẻ",
-      "enable-whiteboard-ai": "Kích hoạt AI trên bảng trắng"
+      "enable-whiteboard-ai": "Kích hoạt AI trên bảng trắng",
+      "enable-poll-ai": "Kích hoạt AI trong các cuộc thăm dò ý kiến",
+      "feature-disabled": "Các tính năng AI không được bật cho phòng này.",
+      "not-allowed": "Bạn không được phép sử dụng dịch vụ này."
     },
     "meeting-summarization": {
       "enable": "Bật tính năng tóm tắt cuộc họp",
@@ -765,11 +822,17 @@
       "generating": "Tạo phản hồi AI...",
       "done": "Kết quả AI được áp dụng",
       "failed": "Yêu cầu AI thất bại",
-      "disabled-message": "Tính năng AI hiện đang bị vô hiệu hóa. Quản trị viên có thể kích hoạt nó từ Tùy chọn Thêm (...) → Công cụ AI → Chat Trợ lý AI."
+      "disabled-message": "Tính năng AI hiện đang bị vô hiệu hóa. Quản trị viên có thể kích hoạt nó từ Tùy chọn Thêm (...) → Công cụ AI → Chat Trợ lý AI.",
+      "errors": {
+        "ai-disabled": "AI trong sổ tay chia sẻ đã bị vô hiệu hóa."
+      }
     },
     "whiteboard-ai": {
       "disabled-message": "Tính năng AI hiện đang bị vô hiệu hóa. Quản trị viên có thể kích hoạt nó từ Tùy chọn Thêm (...) → Công cụ AI → Chat Trợ lý AI.",
-      "request-timeout": "Yêu cầu AI trên bảng trắng đã hết thời gian"
+      "request-timeout": "Yêu cầu AI trên bảng trắng đã hết thời gian",
+      "errors": {
+        "ai-disabled": "AI trên bảng trắng đã bị vô hiệu hóa."
+      }
     }
   },
   "sip-dial-in-features": {
