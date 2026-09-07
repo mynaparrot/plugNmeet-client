@@ -5,6 +5,7 @@ export interface IRadioOption {
   value: string | number;
   label: React.ReactNode;
   description?: string;
+  helpText?: string;
   disabled?: boolean;
 }
 
@@ -46,6 +47,11 @@ const RadioOptions = ({
               {option.label}
             </label>
           </div>
+          {option.helpText && (
+            <p className="text-xs text-Gray-600 dark:text-Gray-300 ps-[26px] mt-1">
+              {option.helpText}
+            </p>
+          )}
           {option.description && (
             <p className="text-xs text-Red-400 ps-[26px]">
               {option.description}

@@ -11,6 +11,7 @@ interface IFormattedInputFieldProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: string;
   helpText?: string;
+  maxWidthClass?: string;
 }
 
 const FormattedInputField = ({
@@ -22,6 +23,7 @@ const FormattedInputField = ({
   onChange,
   type = 'text',
   helpText,
+  maxWidthClass = 'sm:max-w-[250px]',
 }: IFormattedInputFieldProps) => {
   const inputClasses = clsx(
     'default-input rounded-[8px] h-10 w-full',
@@ -29,7 +31,7 @@ const FormattedInputField = ({
       'dark:border-dark-text bg-transparent dark:text-dark-text cursor-default':
         readOnly,
     },
-    label ? 'max-w-full sm:max-w-[250px]' : '',
+    label ? `max-w-full ${maxWidthClass}` : '',
   );
 
   return (
@@ -55,7 +57,7 @@ const FormattedInputField = ({
         />
       </Field>
       {helpText ? (
-        <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+        <p className="mt-2 text-xs text-gray-600 dark:text-gray-300">
           {helpText}
         </p>
       ) : null}

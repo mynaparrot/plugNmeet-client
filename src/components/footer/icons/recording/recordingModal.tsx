@@ -83,6 +83,7 @@ const RecordingModal = ({ showModal, onCloseModal }: IRecordingModalProps) => {
         id: 'local',
         value: RecordingType.RECORDING_TYPE_LOCAL,
         label: t('footer.icons.local-recording'),
+        helpText: t('footer.icons.local-recording-des'),
       });
     }
     if (recordingFeatures?.isAllowCloud) {
@@ -94,6 +95,9 @@ const RecordingModal = ({ showModal, onCloseModal }: IRecordingModalProps) => {
         description: e2eeFeatures?.enabledSelfInsertEncryptionKey
           ? t('notifications.cloud-recording-not-supported-self-key')
           : undefined,
+        helpText: !e2eeFeatures?.enabledSelfInsertEncryptionKey
+          ? t('footer.icons.cloud-recording-des')
+          : undefined,
       });
       if (isCloud) {
         options.push({
@@ -103,6 +107,9 @@ const RecordingModal = ({ showModal, onCloseModal }: IRecordingModalProps) => {
           disabled: !!e2eeFeatures?.isEnabled,
           description: e2eeFeatures?.isEnabled
             ? t('notifications.media-only-recording-not-support-e2ee')
+            : undefined,
+          helpText: !e2eeFeatures?.isEnabled
+            ? t('footer.icons.cloud-media-only-recording-des')
             : undefined,
         });
       }
@@ -148,9 +155,6 @@ const RecordingModal = ({ showModal, onCloseModal }: IRecordingModalProps) => {
         method="POST"
         onSubmit={(e) => startRecording(e)}
       >
-        <p className="text-sm text-Gray-950 dark:text-white">
-          {t('footer.icons.recording-types-des')}
-        </p>
         <RadioOptions
           name="recording-type"
           options={radioOptions}
@@ -159,12 +163,12 @@ const RecordingModal = ({ showModal, onCloseModal }: IRecordingModalProps) => {
         />
         {recordingType?.variant ===
           CloudRecordingVariants.FULL_SCREEN_CLOUD_RECORDING && (
-          <div className="mt-4">
+          <div className="mt-2 border-t border-Gray-100 dark:border-Gray-800 pt-4">
             <SettingsSwitch
               label={t('recorder-bot-options.enable-auto-close-chat-panel')}
               enabled={enableAutoCloseChatPanel}
               onChange={setEnableAutoCloseChatPanel}
-              customCss="my-4"
+              customCss="mb-5"
             />
             {enableAutoCloseChatPanel && (
               <FormattedInputField

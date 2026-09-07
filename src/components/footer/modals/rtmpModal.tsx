@@ -19,6 +19,8 @@ import Modal from '../../../helpers/ui/modal';
 import { getConfigValue } from '../../../helpers/utils';
 import SettingsSwitch from '../../../helpers/ui/settingsSwitch';
 
+type Provider = 'youtube' | 'facebook' | 'other' | 'whip';
+
 const RtmpModal = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
@@ -41,7 +43,7 @@ const RtmpModal = () => {
       externalBroadcastingFeatures?.recorderBotOptions
         ?.durationAfterLastMessage ?? 300,
     );
-  const [provider, setProvider] = useState<string>('youtube');
+  const [provider, setProvider] = useState<Provider>('youtube');
   const [showServerUrl, setShowServerUrl] = useState<boolean>(false);
   const [serverUrl, setServerUrl] = useState<string>('');
   const [serverKey, setServerKey] = useState<string>('');
@@ -53,7 +55,7 @@ const RtmpModal = () => {
   };
 
   useEffect(() => {
-    if (provider === 'other') {
+    if (provider === 'other' || provider === 'whip') {
       setShowServerUrl(true);
     } else {
       setShowServerUrl(false);
@@ -69,32 +71,46 @@ const RtmpModal = () => {
       e.preventDefault();
       setDisplayError('');
 
-      if (provider === 'other' && serverUrl.trim() === '') {
+      if (
+        (provider === 'other' || provider === 'whip') &&
+        serverUrl.trim() === ''
+      ) {
         setDisplayError(t('footer.notice.external-media-player-url-required'));
         return;
       }
-      if (serverKey.trim() === '') {
+      if (provider !== 'whip' && serverKey.trim() === '') {
         setDisplayError(t('footer.notice.rtmp-stream-key-required'));
         return;
       }
       let url: string;
-      if (provider === 'other') {
+      if (provider === 'other' || provider === 'whip') {
         url = serverUrl;
       } else {
         url = providers[provider];
       }
 
-      const rtmpUrlRegex = /^rtmps?:\/\/[^\s/$.?#].\S*$/i;
-      if (!rtmpUrlRegex.test(url)) {
-        setDisplayError(t('footer.notice.rtmp-url-invalid'));
-        return;
+      if (provider === 'whip') {
+        const whipUrlRegex = /^https?:\/\//i;
+        if (!whipUrlRegex.test(url)) {
+          setDisplayError(t('footer.notice.whip-url-invalid'));
+          return;
+        }
+      } else {
+        const rtmpUrlRegex = /^rtmps?:\/\/[^\s/$.?#].\S*$/i;
+        if (!rtmpUrlRegex.test(url)) {
+          setDisplayError(t('footer.notice.rtmp-url-invalid'));
+          return;
+        }
       }
 
       setIsLoading(true);
       const body = create(RecordingReqSchema, {
         task: RecordingTasks.START_RTMP,
         sid: store.getState().session.currentRoom.sid,
-        rtmpUrl: [url.replace(/\/$/, ''), serverKey].join('/'),
+        rtmpUrl:
+          provider === 'whip'
+            ? url
+            : [url.replace(/\/$/, ''), serverKey].join('/'),
         recorderBotOptions: {
           enableAutoCloseChatPanel,
           durationAfterLastMessage,
@@ -159,7 +175,7 @@ const RtmpModal = () => {
         )}
         customClass="StartBroadcastModal"
       >
-        <div className="flex flex-col gap-1 min-h-[150px]">
+        <div className="flex flex-col min-h-[150px]">
           {displayError && (
             <div className="mb-2 rounded-lg bg-red-100 p-2 text-sm text-red-700 dark:bg-gray-800 dark:text-red-400">
               {displayError}
@@ -174,13 +190,24 @@ const RtmpModal = () => {
               { value: 'youtube', text: 'YouTube' },
               { value: 'facebook', text: 'Facebook' },
               { value: 'other', text: t('other') },
+              { value: 'whip', text: t('footer.modal.rtmp-select-whip') },
             ]}
             direction="horizontal"
           />
           {showServerUrl && (
             <FormattedInputField
-              label={t('footer.modal.rtmp-server-url')}
+              label={
+                provider === 'whip'
+                  ? t('footer.modal.whip-server-url')
+                  : t('footer.modal.rtmp-server-url')
+              }
               id="stream-url"
+              maxWidthClass="sm:max-w-[300px]"
+              placeholder={
+                provider === 'whip'
+                  ? 'https://example.com/whip/?token=...'
+                  : 'rtmp://your-server.com/live'
+              }
               value={serverUrl}
               onChange={(e) => {
                 setServerUrl(e.currentTarget.value);
@@ -188,26 +215,31 @@ const RtmpModal = () => {
               }}
             />
           )}
-          <FormattedInputField
-            label={t('footer.modal.rtmp-stream-key')}
-            id="stream-key"
-            value={serverKey}
-            onChange={(e) => {
-              setServerKey(e.currentTarget.value);
-              setDisplayError('');
-            }}
-          />
-          <div className="mt-4">
+          {provider !== 'whip' && (
+            <FormattedInputField
+              label={t('footer.modal.rtmp-stream-key')}
+              id="stream-key"
+              maxWidthClass="sm:max-w-[300px]"
+              placeholder="xxxx-xxxx-xxxx-xxxx"
+              value={serverKey}
+              onChange={(e) => {
+                setServerKey(e.currentTarget.value);
+                setDisplayError('');
+              }}
+            />
+          )}
+          <div className="mt-2 border-t border-Gray-100 dark:border-Gray-800 pt-4">
             <SettingsSwitch
               label={t('recorder-bot-options.enable-auto-close-chat-panel')}
               enabled={enableAutoCloseChatPanel}
               onChange={setEnableAutoCloseChatPanel}
-              customCss="my-4"
+              customCss="mb-5"
             />
             {enableAutoCloseChatPanel && (
               <FormattedInputField
                 label={t('recorder-bot-options.duration-after-last-message')}
                 id="duration"
+                maxWidthClass="sm:max-w-[300px]"
                 value={String(durationAfterLastMessage / 60)}
                 onChange={(e) =>
                   setDurationAfterLastMessage(Number(e.target.value) * 60)
