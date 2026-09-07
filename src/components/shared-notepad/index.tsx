@@ -89,10 +89,10 @@ const SharedNotepad = () => {
             className="h-[calc(100%-80px)] w-full max-w-[550px] max-h-[500px] relative pointer-events-auto rounded-xl"
             ref={nodeRef}
           >
-            <div className="inner w-full h-full pt-[45px] relative bg-Gray-25 dark:bg-dark-primary rounded-xl">
+            <div className="inner w-full h-full pt-[45px] relative bg-Gray-25 dark:bg-[#1f1f1f] rounded-xl">
               <div
                 id="draggable-h1"
-                className="absolute top-0 w-full flex items-center justify-between cursor-move text-base font-medium leading-7 text-Gray-950 dark:text-white px-4 py-2 border border-Gray-100 dark:border-Gray-800! bg-white dark:bg-dark-primary rounded-t-xl"
+                className="absolute top-0 w-full flex items-center justify-between cursor-move text-base font-medium leading-7 text-Gray-950 dark:text-white px-4 py-2 border border-Gray-100 dark:border-Gray-800! bg-white dark:bg-[#1f1f1f] rounded-t-xl"
               >
                 <span>{t('footer.modal.shared-notepad')}</span>
                 <div className="flex items-center gap-2">
