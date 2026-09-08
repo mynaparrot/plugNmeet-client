@@ -5,7 +5,10 @@ export const useAutosizeTextArea = (
   value: string,
 ) => {
   useEffect(() => {
-    if (textAreaRef) {
+    if (textAreaRef && textAreaRef.getClientRects().length > 0) {
+      // A hidden (display: none) element has no layout and scrollHeight === 0;
+      // measuring it would permanently lock the inline height to 0px. Skip and
+      // keep the CSS class height until the element is visible again.
       // Get the computed style of the textarea
       const style = window.getComputedStyle(textAreaRef);
       const boxSizing = style.getPropertyValue('box-sizing');

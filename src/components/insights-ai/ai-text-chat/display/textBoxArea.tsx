@@ -55,7 +55,7 @@ const TextBoxArea = ({ onSend, isAwaitingResponse }: TextBoxAreaProps) => {
         dir="auto"
         name="message-textarea"
         id="message-textarea"
-        className="flex-1 outline-hidden text-xs 3xl:text-sm text-Gray-600 dark:text-dark-text placeholder:dark:text-dark-text  font-normal h-10 mr-2 overflow-hidden px-2"
+        className="flex-1 outline-hidden text-xs 3xl:text-sm text-Gray-600 dark:text-dark-text placeholder:dark:text-dark-text font-normal h-4 mr-2 overflow-hidden px-2"
         value={message}
         onChange={handleChange}
         readOnly={isAwaitingResponse}
