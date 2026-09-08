@@ -121,24 +121,8 @@ export class WhiteboardController {
   private isCurrentUserPresenter = (): boolean =>
     !!store.getState().session.currentUser?.metadata?.isPresenter;
 
-  private isBreakoutRoom = (): boolean =>
-    !!store.getState().session.currentRoom.metadata?.isBreakoutRoom;
-
-  /**
-   * Whether a non-presenter in a presenter-less breakout room must hydrate the
-   * current page from the server (the breakout fetch-auth relaxation makes this
-   * safe) instead of relying on a peer Yjs sync that will never answer. Used by
-   * both the initial join path and page switches where no presenter is online.
-   */
-  needsServerHydration = () =>
-    this.isBreakoutRoom() && !this.hasPresenterOnline();
-
-  /**
-   * Whether any online peer (other than the current user) holds the presenter
-   * role. Used to detect the breakout-room case where a non-presenter has no
-   * presenter to request initial data from.
-   */
-  private hasPresenterOnline = () => {
+  /** Whether any online peer other than the current user is the presenter. */
+  hasPresenterOnline = () => {
     const state = store.getState();
     const currentUserId = state.session.currentUser?.userId;
     if (!currentUserId) {
@@ -897,14 +881,9 @@ export class WhiteboardController {
         return;
       }
 
-      // Breakout-room fallback: the server relaxes SESSION_DATA_FETCH auth for
-      // breakout rooms, so when a non-presenter joins a breakout room with no
-      // presenter online (the peer sync request would otherwise get no answer),
-      // hydrate directly from the server instead of waiting for a peer. This is
-      // intentionally "upfront" detection: the no-presenter condition is a
-      // reliable signal that peer sync won't yield the canonical (server-seeded)
-      // state, and it avoids the 4s INITIAL_REQUEST_TIMEOUT_MS wait.
-      if (this.needsServerHydration()) {
+      // No presenter online: hydrate from the server instead of waiting for
+      // a peer sync that would never answer (skips the 4s timeout).
+      if (!this.hasPresenterOnline()) {
         void this.hydrateFromServerAsNonPresenter().then(() => {
           const state = store.getState();
           resolve({
@@ -947,14 +926,7 @@ export class WhiteboardController {
     });
   };
 
-  /**
-   * Breakout-room fallback used by `requestInitialData` when a non-presenter
-   * joins a breakout room with no presenter online. Performs the same
-   * server-side hydration the presenter path uses (canonical checkpoint +
-   * rolling diff via SESSION_DATA_FETCH), so the newly joined user converges on
-   * the server-seeded whiteboard state. The server relaxes fetch auth for
-   * breakout rooms, so any in-room member may do this.
-   */
+  /** Server-side hydration (canonical checkpoint + diff) for a presenter-less join. */
   private async hydrateFromServerAsNonPresenter(): Promise<void> {
     const state = store.getState();
     const fileId = state.whiteboard.currentWhiteboardOfficeFileId;

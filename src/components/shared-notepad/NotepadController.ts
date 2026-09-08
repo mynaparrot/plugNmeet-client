@@ -96,16 +96,27 @@ export class NotepadController {
 
   private canAccessSessionData = (): boolean => {
     const u = store.getState().session.currentUser;
-    if (!u) {
+    return (
+      !!u && (u.metadata?.isPresenter === true || u.metadata?.isAdmin === true)
+    );
+  };
+
+  /** Whether any online peer other than the current user is the presenter. */
+  private hasPresenterOnline = (): boolean => {
+    const state = store.getState();
+    const currentUserId = state.session.currentUser?.userId;
+    if (!currentUserId) {
       return false;
     }
-    if (u.metadata?.isPresenter === true || u.metadata?.isAdmin === true) {
-      return true;
-    }
-    // Breakout rooms relax session-data fetch auth: any in-room member may
-    // fetch (saves stay presenter/admin-gated). This lets a non-presenter member
-    // hydrate the notepad directly from the server when no presenter is online.
-    return !!store.getState().session.currentRoom.metadata?.isBreakoutRoom;
+    return participantsSelector
+      .selectAll(state)
+      .some(
+        (p) =>
+          p.userId !== currentUserId &&
+          p.isOnline &&
+          !p.metadata?.waitForApproval &&
+          p.metadata?.isPresenter,
+      );
   };
 
   private waitForServerFirst = () =>
@@ -207,7 +218,7 @@ export class NotepadController {
         );
       });
 
-      if (this.canAccessSessionData()) {
+      if (!this.hasPresenterOnline()) {
         // Fetch the canonical checkpoint FIRST, then the rolling diff — sequential
         // on purpose. handleSessionDataResponse applies each response before
         // resolving its waiter, so awaiting the canonical guarantees the base
