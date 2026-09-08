@@ -12,6 +12,7 @@ export const DB_STORE_NAMES = {
   USER_NOTIFICATIONS: 'userNotifications',
   SPEECH_TO_TEXT_FINAL_TEXTS: 'speechToTextFinalTexts',
   WHITEBOARD_AI_CHATS: 'whiteboardAiChats',
+  INSIGHTS_AI_TEXT_CHATS: 'insightsAiTextChats',
 } as const; // 'as const' makes the object readonly and its values literal types.
 
 // Derive the type from the values of the object.
