@@ -106,7 +106,8 @@
     "error-occurred": "Feil oppsto",
     "native-bridge-error": "Søknaden rapporterte en feil: {{error}}",
     "cannot-lock-admin": "Du kan ikke endre låseinnstillinger for andre administratorbrukere.",
-    "breakout-room-raised-hand": "{{name}} Løftet hånden inn {{room}}"
+    "breakout-room-raised-hand": "{{name}} Løftet hånden inn {{room}}",
+    "switching-room": "Bytterom..."
   },
   "room-metadata": {
     "session-recording": "Dette møtet blir tatt opp.",
