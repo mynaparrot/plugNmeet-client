@@ -106,7 +106,8 @@
     "error-occurred": "Wystąpił błąd",
     "native-bridge-error": "Aplikacja zgłosiła błąd: {{error}}",
     "cannot-lock-admin": "Nie możesz zmieniać ustawień blokad dla innych użytkowników administratorów.",
-    "breakout-room-raised-hand": "{{name}} Podnieśli rękę {{room}}"
+    "breakout-room-raised-hand": "{{name}} Podnieśli rękę {{room}}",
+    "switching-room": "Zmiana pokoju..."
   },
   "room-metadata": {
     "session-recording": "To spotkanie jest nagrywane.",
