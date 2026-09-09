@@ -106,7 +106,8 @@
     "error-occurred": "エラーが発生しました",
     "native-bridge-error": "申請書にはエラーが報告されました: {{error}}",
     "cannot-lock-admin": "他の管理者ユーザーのロック設定を変更することはできません。",
-    "breakout-room-raised-hand": "{{name}} 手を挙げて {{room}}"
+    "breakout-room-raised-hand": "{{name}} 手を挙げて {{room}}",
+    "switching-room": "部屋を切り替える..."
   },
   "room-metadata": {
     "session-recording": "この会議は録画されています。",
