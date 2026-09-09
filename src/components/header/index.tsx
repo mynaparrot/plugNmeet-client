@@ -66,8 +66,12 @@ const Header = () => {
             <BackToMainBtn />
             <DurationView />
             <UserNotifications />
-            <ConnectionStatus />
-            <VolumeControl />
+            <div className="hidden md:block">
+              <ConnectionStatus />
+            </div>
+            <div className="hidden md:block">
+              <VolumeControl />
+            </div>
             <Menu>
               {({ open }) => (
                 <div>
