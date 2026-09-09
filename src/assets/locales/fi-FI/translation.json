@@ -107,7 +107,7 @@
     "native-bridge-error": "Hakemus ilmoitti virheen: {{error}}",
     "cannot-lock-admin": "Et voi muuttaa lukitusasetuksia muille ylläpitäjille.",
     "breakout-room-raised-hand": "{{name}} nosti kätensä {{room}}",
-    "switching-room": "Switching room..."
+    "switching-room": "Vaihtohuone..."
   },
   "room-metadata": {
     "session-recording": "Tämä kokous tallennetaan.",
