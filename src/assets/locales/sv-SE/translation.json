@@ -106,7 +106,8 @@
     "error-occurred": "Fel uppstod",
     "native-bridge-error": "Applikationen rapporterade ett fel: {{error}}",
     "cannot-lock-admin": "Du kan inte ändra låsinställningar för andra administratörsanvändare.",
-    "breakout-room-raised-hand": "{{name}} höjde handen i {{room}}"
+    "breakout-room-raised-hand": "{{name}} höjde handen i {{room}}",
+    "switching-room": "Byter rum..."
   },
   "room-metadata": {
     "session-recording": "Detta möte spelas in.",
