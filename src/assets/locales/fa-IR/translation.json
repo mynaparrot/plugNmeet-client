@@ -106,7 +106,8 @@
     "error-occurred": "خطایی رخ داد",
     "native-bridge-error": "برنامه خطایی گزارش کرد: {{error}}",
     "cannot-lock-admin": "شما نمی‌توانید تنظیمات قفل را برای سایر مدیران تغییر دهید.",
-    "breakout-room-raised-hand": "{{name}} دستش را بالا برد {{room}}"
+    "breakout-room-raised-hand": "{{name}} دستش را بالا برد {{room}}",
+    "switching-room": "اتاق تعویض..."
   },
   "room-metadata": {
     "session-recording": "این جلسه در حال ضبط است.",
