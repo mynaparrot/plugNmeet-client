@@ -106,7 +106,8 @@
     "error-occurred": "Đã xảy ra lỗi",
     "native-bridge-error": "Ứng dụng đã báo lỗi: {{error}}",
     "cannot-lock-admin": "Bạn không thể thay đổi cài đặt khóa cho người dùng quản trị khác.",
-    "breakout-room-raised-hand": "{{name}} giơ tay vào {{room}}"
+    "breakout-room-raised-hand": "{{name}} giơ tay vào {{room}}",
+    "switching-room": "Chuyển phòng..."
   },
   "room-metadata": {
     "session-recording": "Cuộc họp này đang được ghi lại.",
