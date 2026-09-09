@@ -106,7 +106,8 @@
     "error-occurred": "Si è verificato un errore",
     "native-bridge-error": "L'applicazione ha segnalato un errore: {{error}}",
     "cannot-lock-admin": "Non puoi cambiare le impostazioni della serratura per altri utenti amministratori.",
-    "breakout-room-raised-hand": "{{name}} Alzò la mano in {{room}}"
+    "breakout-room-raised-hand": "{{name}} Alzò la mano in {{room}}",
+    "switching-room": "Cambio di stanza..."
   },
   "room-metadata": {
     "session-recording": "Questa riunione è in fase di registrazione.",
