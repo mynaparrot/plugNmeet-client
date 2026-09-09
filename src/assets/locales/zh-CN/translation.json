@@ -106,7 +106,8 @@
     "error-occurred": "发生错误",
     "native-bridge-error": "该应用程序报告了一个错误： {{error}}",
     "cannot-lock-admin": "你不能更改其他管理员用户的锁设置。",
-    "breakout-room-raised-hand": "{{name}} 他们举起了手 {{room}}"
+    "breakout-room-raised-hand": "{{name}} 他们举起了手 {{room}}",
+    "switching-room": "换房间......"
   },
   "room-metadata": {
     "session-recording": "此会议正在录制中。",
