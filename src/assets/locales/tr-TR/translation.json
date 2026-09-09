@@ -106,7 +106,8 @@
     "error-occurred": "Hata meydana geldi",
     "native-bridge-error": "Uygulama bir hata bildirdi: {{error}}",
     "cannot-lock-admin": "Diğer yönetici kullanıcılar için kilit ayarlarını değiştiremezsiniz.",
-    "breakout-room-raised-hand": "{{name}} Ellerini kaldırdı {{room}}"
+    "breakout-room-raised-hand": "{{name}} Ellerini kaldırdı {{room}}",
+    "switching-room": "Odayı değiştirmek..."
   },
   "room-metadata": {
     "session-recording": "Bu toplantı kaydedilmektedir.",
