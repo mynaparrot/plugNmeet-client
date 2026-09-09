@@ -106,7 +106,8 @@
     "error-occurred": "Hiba történt",
     "native-bridge-error": "A kérelem hibát jelentett: {{error}}",
     "cannot-lock-admin": "Nem lehet más adminisztrátor felhasználók számára lock beállításokat változtatni.",
-    "breakout-room-raised-hand": "{{name}} Felemelte a kezét {{room}}"
+    "breakout-room-raised-hand": "{{name}} Felemelte a kezét {{room}}",
+    "switching-room": "Szobáváltás..."
   },
   "room-metadata": {
     "session-recording": "Ezt a találkozót rögzítik.",
