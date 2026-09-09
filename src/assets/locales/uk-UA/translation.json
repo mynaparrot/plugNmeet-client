@@ -106,7 +106,8 @@
     "error-occurred": "Сталася помилка",
     "native-bridge-error": "Додаток повідомив про помилку: {{error}}",
     "cannot-lock-admin": "Ви не можете змінювати налаштування блокування для інших користувачів адміністратора.",
-    "breakout-room-raised-hand": "{{name}} підняли руку всередину {{room}}"
+    "breakout-room-raised-hand": "{{name}} підняли руку всередину {{room}}",
+    "switching-room": "Зміна кімнати..."
   },
   "room-metadata": {
     "session-recording": "Ця зустріч ведеться в протоколі.",
