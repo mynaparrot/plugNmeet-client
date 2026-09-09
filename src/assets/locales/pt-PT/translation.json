@@ -106,7 +106,8 @@
     "error-occurred": "Ocorreu um erro",
     "native-bridge-error": "A aplicação reportou um erro: {{error}}",
     "cannot-lock-admin": "Não podes alterar as definições de bloqueio para outros utilizadores administradores.",
-    "breakout-room-raised-hand": "{{name}} Levantaram a mão para {{room}}"
+    "breakout-room-raised-hand": "{{name}} Levantaram a mão para {{room}}",
+    "switching-room": "Troca de quarto..."
   },
   "room-metadata": {
     "session-recording": "Esta reunião está a ser gravada.",
