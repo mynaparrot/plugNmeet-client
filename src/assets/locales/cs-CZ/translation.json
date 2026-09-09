@@ -106,7 +106,8 @@
     "error-occurred": "Došlo k chybě",
     "native-bridge-error": "Aplikace hlásila chybu: {{error}}",
     "cannot-lock-admin": "Nemůžeš měnit nastavení zámků pro ostatní administrátory.",
-    "breakout-room-raised-hand": "{{name}} Zvedli ruku dovnitř {{room}}"
+    "breakout-room-raised-hand": "{{name}} Zvedli ruku dovnitř {{room}}",
+    "switching-room": "Switching room..."
   },
   "room-metadata": {
     "session-recording": "Tato schůzka je nahrávána.",
