@@ -106,7 +106,8 @@
     "error-occurred": "오류가 발생했습니다",
     "native-bridge-error": "신청서에는 오류가 보고되었습니다: {{error}}",
     "cannot-lock-admin": "다른 관리자 사용자에 대해서는 잠금 설정을 변경할 수 없습니다.",
-    "breakout-room-raised-hand": "{{name}} 손을 들어 {{room}}"
+    "breakout-room-raised-hand": "{{name}} 손을 들어 {{room}}",
+    "switching-room": "방 바꿔가기..."
   },
   "room-metadata": {
     "session-recording": "이 회의는 녹화되고 있습니다.",
