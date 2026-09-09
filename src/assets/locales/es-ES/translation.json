@@ -107,7 +107,7 @@
     "native-bridge-error": "La aplicación informó un error: {{error}}",
     "cannot-lock-admin": "No puedes cambiar la configuración de bloqueo para otros usuarios administradores.",
     "breakout-room-raised-hand": "{{name}} levantó la mano en {{room}}",
-    "switching-room": "Switching room..."
+    "switching-room": "Cambio de habitación..."
   },
   "room-metadata": {
     "session-recording": "Esta reunión está siendo grabada.",
