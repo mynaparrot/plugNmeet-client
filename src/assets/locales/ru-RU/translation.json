@@ -106,7 +106,8 @@
     "error-occurred": "Произошла ошибка",
     "native-bridge-error": "В приложении была обнаружена ошибка: {{error}}",
     "cannot-lock-admin": "Вы не можете изменить настройки замков для других администраторов.",
-    "breakout-room-raised-hand": "{{name}} Подняли руку {{room}}"
+    "breakout-room-raised-hand": "{{name}} Подняли руку {{room}}",
+    "switching-room": "Смена комнаты..."
   },
   "room-metadata": {
     "session-recording": "Эта встреча записывается.",
