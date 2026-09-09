@@ -107,7 +107,7 @@
     "native-bridge-error": "Η εφαρμογή ανέφερε ένα σφάλμα: {{error}}",
     "cannot-lock-admin": "Δεν μπορείτε να αλλάξετε τις ρυθμίσεις κλειδώματος για άλλους διαχειριστές.",
     "breakout-room-raised-hand": "{{name}} σήκωσαν το χέρι τους {{room}}",
-    "switching-room": "Switching room..."
+    "switching-room": "Αίθουσα αλλαγής..."
   },
   "room-metadata": {
     "session-recording": "Αυτή η σύσκεψη καταγράφεται.",
