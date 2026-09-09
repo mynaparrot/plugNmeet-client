@@ -106,7 +106,8 @@
     "error-occurred": "Erreur survenue",
     "native-bridge-error": "La demande a signalé une erreur : {{error}}",
     "cannot-lock-admin": "Vous ne pouvez pas changer les paramètres de verrouillage pour d’autres utilisateurs administrateurs.",
-    "breakout-room-raised-hand": "{{name}} levèrent la main dans {{room}}"
+    "breakout-room-raised-hand": "{{name}} levèrent la main dans {{room}}",
+    "switching-room": "Switching room..."
   },
   "room-metadata": {
     "session-recording": "Cette réunion est en cours d'enregistrement.",
