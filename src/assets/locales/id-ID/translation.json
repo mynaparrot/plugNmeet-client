@@ -106,7 +106,8 @@
     "error-occurred": "Terjadi kesalahan",
     "native-bridge-error": "Aplikasi melaporkan kesalahan: {{error}}",
     "cannot-lock-admin": "Anda tidak dapat mengubah pengaturan kunci untuk pengguna admin lain.",
-    "breakout-room-raised-hand": "{{name}} mengangkat tangan {{room}}"
+    "breakout-room-raised-hand": "{{name}} mengangkat tangan {{room}}",
+    "switching-room": "Ruang ganti..."
   },
   "room-metadata": {
     "session-recording": "Rapat ini sedang direkam.",
