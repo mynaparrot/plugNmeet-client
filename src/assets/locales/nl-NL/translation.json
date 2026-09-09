@@ -106,7 +106,8 @@
     "error-occurred": "Er is een fout opgetreden",
     "native-bridge-error": "De applicatie meldde een foutmelding: {{error}}",
     "cannot-lock-admin": "Je kunt de vergrendelingsinstellingen niet wijzigen voor andere beheerders.",
-    "breakout-room-raised-hand": "{{name}} Ze staken hun hand op {{room}}"
+    "breakout-room-raised-hand": "{{name}} Ze staken hun hand op {{room}}",
+    "switching-room": "Wisselkamer wisselen..."
   },
   "room-metadata": {
     "session-recording": "Deze vergadering wordt opgenomen.",
