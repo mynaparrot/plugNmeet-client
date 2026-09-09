@@ -106,7 +106,8 @@
     "error-occurred": "حدث خطأ",
     "native-bridge-error": "أبلغ التطبيق عن خطأ: {{error}}",
     "cannot-lock-admin": "لا يمكنك تغيير إعدادات القفل لمستخدمي المسؤولين الآخرين.",
-    "breakout-room-raised-hand": "{{name}} رفع يده {{room}}"
+    "breakout-room-raised-hand": "{{name}} رفع يده {{room}}",
+    "switching-room": "Switching room..."
   },
   "room-metadata": {
     "session-recording": "يتم تسجيل هذا الاجتماع.",
