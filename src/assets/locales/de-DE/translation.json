@@ -106,7 +106,8 @@
     "error-occurred": "Fehler ist aufgetreten",
     "native-bridge-error": "Die Anwendung meldete einen Fehler: {{error}}",
     "cannot-lock-admin": "Du kannst die Schlosseinstellungen für andere Administratoren nicht ändern.",
-    "breakout-room-raised-hand": "{{name}} hob die Hand in {{room}}"
+    "breakout-room-raised-hand": "{{name}} hob die Hand in {{room}}",
+    "switching-room": "Switching room..."
   },
   "room-metadata": {
     "session-recording": "Dieses Meeting wird aufgezeichnet.",
