@@ -8,6 +8,7 @@ import { store } from '../../store';
 import { useBackToMainMutation } from '../../store/services/breakoutRoomApi';
 import { buildAccessTokenUrl } from './utils/breakoutRoom';
 import { ArrowLeft } from '../../assets/Icons/ArrowLeft';
+import { getNatsConn } from '../../helpers/nats';
 
 const BackToMainBtn = () => {
   const { t } = useTranslation();
@@ -41,7 +42,13 @@ const BackToMainBtn = () => {
 
   useEffect(() => {
     if (isSuccess && data?.status && data.token) {
-      window.location.replace(buildAccessTokenUrl(data.token));
+      // ensure we've diconnected from current room
+      const conn = getNatsConn();
+      const toUrl = buildAccessTokenUrl(data.token);
+      conn.endSession('notifications.switching-room', true).then(() => {
+        // Switch to the selected breakout room in the current tab.
+        window.location.replace(toUrl);
+      });
     } else if ((isSuccess && !data?.status) || isError) {
       const msg = data?.msg ?? (error as any)?.data?.msg ?? 'Error';
       toast(t(msg), { type: 'error' });

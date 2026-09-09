@@ -14,6 +14,7 @@ import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { buildAccessTokenUrl } from '../utils/breakoutRoom';
 import { CloseIconSVG } from '../../../assets/Icons/CloseIconSVG';
 import { LoadingIcon } from '../../../assets/Icons/Loading';
+import { getNatsConn } from '../../../helpers/nats';
 
 const RoomsPanel = () => {
   const { t } = useTranslation();
@@ -54,8 +55,13 @@ const RoomsPanel = () => {
       joinResult.data?.status &&
       joinResult.data.token
     ) {
-      // Switch to the selected breakout room in the current tab (no confirm).
-      window.location.replace(buildAccessTokenUrl(joinResult.data.token));
+      // ensure we've diconnected from current room
+      const conn = getNatsConn();
+      const toUrl = buildAccessTokenUrl(joinResult.data.token);
+      conn.endSession('notifications.switching-room').then(() => {
+        // Switch to the selected breakout room in the current tab.
+        window.location.replace(toUrl);
+      });
       return;
     } else if (
       (joinResult.isSuccess && !joinResult.data?.status) ||

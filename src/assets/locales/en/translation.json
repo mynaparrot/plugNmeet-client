@@ -106,7 +106,8 @@
     "error-occurred": "Error occurred",
     "native-bridge-error": "The application reported an error: {{error}}",
     "cannot-lock-admin": "You can't change lock settings for other admin users.",
-    "breakout-room-raised-hand": "{{name}} raised their hand in {{room}}"
+    "breakout-room-raised-hand": "{{name}} raised their hand in {{room}}",
+    "switching-room": "Switching room..."
   },
   "room-metadata": {
     "session-recording": "This meeting is being recorded.",

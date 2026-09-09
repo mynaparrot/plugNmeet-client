@@ -305,20 +305,7 @@ export default class ConnectNats {
     );
   };
 
-  public endSession = async (msg: string) => {
-    const meta = this._currentRoomInfo?.metadata;
-
-    // If we're inside a breakout room, try to auto-return to the main room
-    // immediately — before showing any disconnected / ended screen. Only fall
-    // back to the normal ended-session handling if the return call fails.
-    // The isReturningToMainRoom guard still prevents double-triggering.
-    if (meta?.isBreakoutRoom) {
-      const returned = await autoReturnToMainRoom();
-      if (returned) {
-        return;
-      }
-    }
-
+  public endSession = async (msg: string, backToMainRoom?: boolean) => {
     // Hybrid mode: tell the native host to release its LiveKit publisher + media
     // (no-op in a regular browser)
     teardownNativePublisher();
@@ -364,13 +351,19 @@ export default class ConnectNats {
     // Final resource cleanup
     destroyAudioManager();
 
+    const meta = this._currentRoomInfo?.metadata;
+    // If we're inside a breakout room, try to auto-return to the main room
+    if (meta?.isBreakoutRoom && !backToMainRoom) {
+      const returned = await autoReturnToMainRoom();
+      if (returned) {
+        return;
+      }
+    }
+
     // Handle post-session navigation after a delay
-    // This timeout allows the user time to read the disconnection message.
-    // (Breakout rooms are handled earlier via autoReturnToMainRoom.)
     setTimeout(() => {
-      const meta = this._currentRoomInfo?.metadata;
       if (meta?.logoutUrl && isValidHttpUrl(meta.logoutUrl)) {
-        window.location.href = meta.logoutUrl;
+        window.location.replace(meta.logoutUrl);
       }
     }, 3000);
   };
