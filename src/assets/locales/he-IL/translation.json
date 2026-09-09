@@ -106,7 +106,8 @@
     "error-occurred": "אירעה טעות",
     "native-bridge-error": "האפליקציה דיווחה על שגיאה: {{error}}",
     "cannot-lock-admin": "אי אפשר לשנות את הגדרות הנעילה עבור משתמשי מנהל אחרים.",
-    "breakout-room-raised-hand": "{{name}} הרימו יד פנימה {{room}}"
+    "breakout-room-raised-hand": "{{name}} הרימו יד פנימה {{room}}",
+    "switching-room": "חדר החלפה..."
   },
   "room-metadata": {
     "session-recording": "פגישה זו מוקלטת.",
