@@ -106,7 +106,8 @@
     "error-occurred": "A avut loc o eroare",
     "native-bridge-error": "Cererea a raportat o eroare: {{error}}",
     "cannot-lock-admin": "Nu poți schimba setările încuietorilor pentru alți utilizatori administratori.",
-    "breakout-room-raised-hand": "{{name}} și-au ridicat mâna în {{room}}"
+    "breakout-room-raised-hand": "{{name}} și-au ridicat mâna în {{room}}",
+    "switching-room": "Switching room..."
   },
   "room-metadata": {
     "session-recording": "Această întâlnire este înregistrată.",
