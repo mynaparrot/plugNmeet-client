@@ -106,7 +106,8 @@
     "error-occurred": "ত্রুটি ঘটেছে",
     "native-bridge-error": "অ্যাপ্লিকেশনটি একটি ত্রুটি রিপোর্ট করেছে: {{error}}",
     "cannot-lock-admin": "আপনি অন্যান্য প্রশাসক ব্যবহারকারীদের জন্য লক সেটিংস পরিবর্তন করতে পারবেন না।",
-    "breakout-room-raised-hand": "{{name}} তাদের হাত বাড়িয়ে ভিতরে {{room}}"
+    "breakout-room-raised-hand": "{{name}} তাদের হাত বাড়িয়ে ভিতরে {{room}}",
+    "switching-room": "রুম স্যুইচ করা..."
   },
   "room-metadata": {
     "session-recording": "এই মিটিংটি রেকর্ড করা হচ্ছে।",
