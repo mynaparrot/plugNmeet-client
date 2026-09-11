@@ -307,11 +307,11 @@
     "message-deleted-by-admin": "Denne meldingen ble slettet av en administrator",
     "delete-confirm-title": "Slette denne meldingen?",
     "delete-confirm-body": "Dette vil fjerne budskapet for alle i denne samtalen. Dette kan ikke gjøres om.",
-    "replying-to": "Replying to {{name}}",
-    "editing-message": "Editing message",
-    "new-messages": "New messages",
-    "scroll-to-bottom": "Scroll to bottom",
-    "sync-chat": "Sync chat with peers"
+    "replying-to": "Svar på {{name}}",
+    "editing-message": "Redigeringsmelding",
+    "new-messages": "Nye meldinger",
+    "scroll-to-bottom": "Scroll til bunnen",
+    "sync-chat": "Synkroniser chat med jevnaldrende"
   },
   "footer": {
     "aria-label": "Møtekontroller",
