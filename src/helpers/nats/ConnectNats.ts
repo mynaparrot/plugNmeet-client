@@ -346,7 +346,17 @@ export default class ConnectNats {
     if (this._nc && !this._nc.isClosed()) {
       cleanupPromises.push(this._nc.close());
     }
-    cleanupPromises.push(deleteRoomDB());
+
+    if (msg === 'notifications.switching-room') {
+      // when back from breakout room to main room then we'll only do cleanup
+      // NOT: when we're going from main room to breakout room otherwise we'll lose data
+      if (backToMainRoom) {
+        cleanupPromises.push(deleteRoomDB());
+      }
+    } else {
+      cleanupPromises.push(deleteRoomDB());
+    }
+
     cleanupPromises.push(getNotepadController().destroy());
     cleanupPromises.push(getWhiteboardController().destroy());
 
@@ -366,7 +376,11 @@ export default class ConnectNats {
 
     // Handle post-session navigation after a delay
     setTimeout(() => {
-      if (meta?.logoutUrl && isValidHttpUrl(meta.logoutUrl)) {
+      if (
+        !meta?.isBreakoutRoom &&
+        meta?.logoutUrl &&
+        isValidHttpUrl(meta.logoutUrl)
+      ) {
         window.location.replace(meta.logoutUrl);
       }
     }, 3000);
