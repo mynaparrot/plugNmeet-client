@@ -307,11 +307,11 @@
     "message-deleted-by-admin": "Acest mesaj a fost șters de un administrator",
     "delete-confirm-title": "Să șterg acest mesaj?",
     "delete-confirm-body": "Acest lucru va elimina mesajul pentru toți cei implicați în această conversație. Acest lucru nu poate fi anulat.",
-    "replying-to": "Replying to {{name}}",
-    "editing-message": "Editing message",
-    "new-messages": "New messages",
-    "scroll-to-bottom": "Scroll to bottom",
-    "sync-chat": "Sync chat with peers"
+    "replying-to": "Răspunzând la {{name}}",
+    "editing-message": "Editare a mesajului",
+    "new-messages": "Mesaje noi",
+    "scroll-to-bottom": "Derulează până jos",
+    "sync-chat": "Chat sincronizat cu colegii"
   },
   "footer": {
     "aria-label": "Controlul ședințelor",
