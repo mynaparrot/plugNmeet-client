@@ -307,11 +307,11 @@
     "message-deleted-by-admin": "此消息已被管理员删除",
     "delete-confirm-title": "删除这条消息？",
     "delete-confirm-body": "这会删除对话中所有人的留言。此事无法撤销。",
-    "replying-to": "Replying to {{name}}",
-    "editing-message": "Editing message",
-    "new-messages": "New messages",
-    "scroll-to-bottom": "Scroll to bottom",
-    "sync-chat": "Sync chat with peers"
+    "replying-to": "回复 {{name}}",
+    "editing-message": "编辑信息",
+    "new-messages": "新消息",
+    "scroll-to-bottom": "滚动到底部",
+    "sync-chat": "与对等者同步聊天"
   },
   "footer": {
     "aria-label": "会议控制",
