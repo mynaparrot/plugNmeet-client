@@ -307,11 +307,11 @@
     "message-deleted-by-admin": "Αυτό το μήνυμα διαγράφηκε από έναν διαχειριστή",
     "delete-confirm-title": "Διαγραφή αυτού του μηνύματος;",
     "delete-confirm-body": "Αυτό θα καταργήσει το μήνυμα για όλους σε αυτήν τη συνομιλία. Αυτό δεν μπορεί να αναιρεθεί.",
-    "replying-to": "Replying to {{name}}",
-    "editing-message": "Editing message",
-    "new-messages": "New messages",
-    "scroll-to-bottom": "Scroll to bottom",
-    "sync-chat": "Sync chat with peers"
+    "replying-to": "Απαντώντας στην {{name}}",
+    "editing-message": "Επεξεργασία μηνύματος",
+    "new-messages": "Νέα μηνύματα",
+    "scroll-to-bottom": "Κύλιση προς τα κάτω",
+    "sync-chat": "Συγχρονισμός συνομιλίας με συνομηλίκους"
   },
   "footer": {
     "aria-label": "Στοιχεία ελέγχου σύσκεψης",
