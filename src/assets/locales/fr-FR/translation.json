@@ -307,11 +307,11 @@
     "message-deleted-by-admin": "Ce message a été supprimé par un administrateur",
     "delete-confirm-title": "Supprimer ce message ?",
     "delete-confirm-body": "Cela supprimera le message pour tout le monde dans cette conversation. Cela ne peut pas être annulé.",
-    "replying-to": "Replying to {{name}}",
-    "editing-message": "Editing message",
-    "new-messages": "New messages",
-    "scroll-to-bottom": "Scroll to bottom",
-    "sync-chat": "Sync chat with peers"
+    "replying-to": "Réponse à {{name}}",
+    "editing-message": "Message de modification",
+    "new-messages": "Nouveaux messages",
+    "scroll-to-bottom": "Défiler jusqu’en bas",
+    "sync-chat": "Synchronisez le chat avec vos pairs"
   },
   "footer": {
     "aria-label": "Contrôles de réunion",
