@@ -307,11 +307,11 @@
     "message-deleted-by-admin": "Dit bericht is verwijderd door een beheerder",
     "delete-confirm-title": "Dit bericht verwijderen?",
     "delete-confirm-body": "Dit zal de boodschap voor iedereen in dit gesprek wegnemen. Dit kan niet ongedaan worden gemaakt.",
-    "replying-to": "Replying to {{name}}",
-    "editing-message": "Editing message",
-    "new-messages": "New messages",
-    "scroll-to-bottom": "Scroll to bottom",
-    "sync-chat": "Sync chat with peers"
+    "replying-to": "Reageren op {{name}}",
+    "editing-message": "Bewerkingsbericht",
+    "new-messages": "Nieuwe berichten",
+    "scroll-to-bottom": "Scroll naar beneden",
+    "sync-chat": "Synchroniseer chat met peers"
   },
   "footer": {
     "aria-label": "Vergadercontroles",
