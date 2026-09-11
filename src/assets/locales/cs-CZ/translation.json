@@ -307,11 +307,11 @@
     "message-deleted-by-admin": "Tato zpráva byla smazána administrátorem",
     "delete-confirm-title": "Smazat tuto zprávu?",
     "delete-confirm-body": "Tím odstraníte poselství pro všechny v této konverzaci. To nelze vzít zpět.",
-    "replying-to": "Replying to {{name}}",
-    "editing-message": "Editing message",
-    "new-messages": "New messages",
-    "scroll-to-bottom": "Scroll to bottom",
-    "sync-chat": "Sync chat with peers"
+    "replying-to": "Odpověď na {{name}}",
+    "editing-message": "Editační zpráva",
+    "new-messages": "Nové zprávy",
+    "scroll-to-bottom": "Posuňte se na konec",
+    "sync-chat": "Synchronizujte chat s kolegy"
   },
   "footer": {
     "aria-label": "Řízení setkání",
