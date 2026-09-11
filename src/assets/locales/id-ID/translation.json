@@ -307,11 +307,11 @@
     "message-deleted-by-admin": "Pesan ini dihapus oleh admin",
     "delete-confirm-title": "Hapus pesan ini?",
     "delete-confirm-body": "Ini akan menghapus pesan untuk semua orang dalam percakapan ini. Ini tidak bisa dibatalkan.",
-    "replying-to": "Replying to {{name}}",
-    "editing-message": "Editing message",
-    "new-messages": "New messages",
-    "scroll-to-bottom": "Scroll to bottom",
-    "sync-chat": "Sync chat with peers"
+    "replying-to": "Membalas {{name}}",
+    "editing-message": "Mengedit pesan",
+    "new-messages": "Pesan baru",
+    "scroll-to-bottom": "Gulir ke bawah",
+    "sync-chat": "Sinkronkan obrolan dengan rekan sesama"
   },
   "footer": {
     "aria-label": "Kontrol rapat",
