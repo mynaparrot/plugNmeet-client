@@ -307,11 +307,11 @@
     "message-deleted-by-admin": "این پیام توسط یک مدیر حذف شده است",
     "delete-confirm-title": "این پیام را حذف کنم؟",
     "delete-confirm-body": "این کار پیام را برای همه افراد حاضر در این گفتگو پاک می کند. این موضوع قابل بازگشت نیست.",
-    "replying-to": "Replying to {{name}}",
-    "editing-message": "Editing message",
-    "new-messages": "New messages",
-    "scroll-to-bottom": "Scroll to bottom",
-    "sync-chat": "Sync chat with peers"
+    "replying-to": "پاسخ به {{name}}",
+    "editing-message": "ویرایش پیام",
+    "new-messages": "پیام های جدید",
+    "scroll-to-bottom": "به پایین صفحه بروید",
+    "sync-chat": "همگام سازی چت با همتایان"
   },
   "footer": {
     "aria-label": "کنترل‌های جلسه",
