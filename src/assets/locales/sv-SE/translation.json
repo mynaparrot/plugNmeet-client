@@ -307,11 +307,11 @@
     "message-deleted-by-admin": "Detta meddelande raderades av en administratör",
     "delete-confirm-title": "Radera detta meddelande?",
     "delete-confirm-body": "Detta kommer att ta bort budskapet för alla i denna konversation. Detta kan inte göras ogjort.",
-    "replying-to": "Replying to {{name}}",
-    "editing-message": "Editing message",
-    "new-messages": "New messages",
-    "scroll-to-bottom": "Scroll to bottom",
-    "sync-chat": "Sync chat with peers"
+    "replying-to": "Svarar på {{name}}",
+    "editing-message": "Redigeringsmeddelande",
+    "new-messages": "Nya budskap",
+    "scroll-to-bottom": "Scrolla ner",
+    "sync-chat": "Synkronisera chatten med peers"
   },
   "footer": {
     "aria-label": "Möteskontroller",
