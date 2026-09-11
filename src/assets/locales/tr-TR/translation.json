@@ -307,11 +307,11 @@
     "message-deleted-by-admin": "Bu mesaj bir yönetici tarafından silindi",
     "delete-confirm-title": "Bu mesajı silmek mi?",
     "delete-confirm-body": "Bu, bu konuşmadaki herkes için mesajı kaldıracaktır. Bu geri alınamaz.",
-    "replying-to": "Replying to {{name}}",
-    "editing-message": "Editing message",
-    "new-messages": "New messages",
-    "scroll-to-bottom": "Scroll to bottom",
-    "sync-chat": "Sync chat with peers"
+    "replying-to": "Cevap veriyorum {{name}}",
+    "editing-message": "Düzenleme mesajı",
+    "new-messages": "Yeni mesajlar",
+    "scroll-to-bottom": "Aşağıya kaydırın",
+    "sync-chat": "Arkadaşlarınızla senkronize sohbet"
   },
   "footer": {
     "aria-label": "Toplantı kontrolleri",
