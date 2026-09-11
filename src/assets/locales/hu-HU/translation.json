@@ -307,11 +307,11 @@
     "message-deleted-by-admin": "Ezt az üzenetet egy admin törölte",
     "delete-confirm-title": "Törölni ezt az üzenetet?",
     "delete-confirm-body": "Ez eltávolítja az üzenetet mindenki számára ebben a beszélgetésben. Ezt nem lehet visszavonni.",
-    "replying-to": "Replying to {{name}}",
-    "editing-message": "Editing message",
-    "new-messages": "New messages",
-    "scroll-to-bottom": "Scroll to bottom",
-    "sync-chat": "Sync chat with peers"
+    "replying-to": "Válasz {{name}}",
+    "editing-message": "Szerkesztési üzenet",
+    "new-messages": "Új üzenetek",
+    "scroll-to-bottom": "Görgess le az alulra",
+    "sync-chat": "Szinkronizált chat társakkal"
   },
   "footer": {
     "aria-label": "Találkozók vezérlése",
