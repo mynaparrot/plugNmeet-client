@@ -10,6 +10,7 @@ import {
 
 import { useMainAreaState } from './hooks/useMainAreaState';
 import { useMainAreaCustomCSS } from './hooks/useMainAreaCustomCSS';
+import { useSidePanelResize } from './hooks/useSidePanelResize';
 import { triggerRefreshWhiteboard } from '../../store/slices/whiteboard';
 import { updateIsSidePanelOpened } from '../../store/slices/roomSettingsSlice';
 import { getMediaServerConn } from '../../helpers/livekit/utils';
@@ -157,10 +158,18 @@ const MainArea = () => {
     }
   }, [dispatch, debouncedRefresh, isActiveWhiteboard, isRecorder]);
 
-  const mainAreaClasses = `plugNmeet-app-main-area overflow-hidden relative flex flex-1 w-full ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition}`;
+  const { panelWidth, isResizing, dragHandleProps, nudgeWidth, resetWidth } =
+    useSidePanelResize({
+      isRecorder,
+      onResizeEnd: isActiveWhiteboard ? () => debouncedRefresh() : undefined,
+    });
+
+  const mainAreaClasses = `plugNmeet-app-main-area overflow-hidden relative flex flex-1 w-full ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition} ${isResizing ? 'side-panel-resizing' : ''}`;
   const middleAreaClasses = `middle-area relative transition-all duration-300 w-full ${
-    activeSidePanel ? 'pb-[300px] md:pb-0 md:pe-[300px] 3xl:pe-[340px]' : ''
-  }`;
+    activeSidePanel
+      ? 'pb-[300px] md:pb-0 md:pe-[var(--side-panel-width,300px)] 3xl:pe-[var(--side-panel-width,340px)]'
+      : ''
+  } ${isResizing ? 'transition-none!' : ''}`;
 
   return (
     <div id="main-area" className={mainAreaClasses}>
@@ -193,6 +202,10 @@ const MainArea = () => {
             .toString()
             .replace(' ()', '')}
           onToggle={handleSidePanelToggled}
+          dragHandleProps={dragHandleProps}
+          panelWidthForA11y={panelWidth}
+          onNudgeWidth={nudgeWidth}
+          onResetWidth={resetWidth}
         >
           <ParticipantsComponent />
         </SidePanel>
@@ -202,6 +215,10 @@ const MainArea = () => {
             panelClass="chat-panel"
             ariaLabel="Chat panel"
             onToggle={handleSidePanelToggled}
+            dragHandleProps={dragHandleProps}
+            panelWidthForA11y={panelWidth}
+            onNudgeWidth={nudgeWidth}
+            onResetWidth={resetWidth}
           >
             <ChatComponent />
           </SidePanel>
@@ -212,6 +229,10 @@ const MainArea = () => {
             panelClass="polls-panel"
             ariaLabel="Polls panel"
             onToggle={handleSidePanelToggled}
+            dragHandleProps={dragHandleProps}
+            panelWidthForA11y={panelWidth}
+            onNudgeWidth={nudgeWidth}
+            onResetWidth={resetWidth}
           >
             <PollsComponent />
           </SidePanel>
@@ -222,6 +243,10 @@ const MainArea = () => {
             panelClass="breakout-rooms-panel"
             ariaLabel={t('breakout-room.rooms-panel-title').toString()}
             onToggle={handleSidePanelToggled}
+            dragHandleProps={dragHandleProps}
+            panelWidthForA11y={panelWidth}
+            onNudgeWidth={nudgeWidth}
+            onResetWidth={resetWidth}
           >
             <RoomsPanel />
           </SidePanel>

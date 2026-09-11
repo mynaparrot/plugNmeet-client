@@ -472,6 +472,14 @@ body[dir='rtl'] .rtl\:microphone-rtl-left::before {
   }
 }
 
+/* Draggable side panel (PC only): width is driven by the
+   `--side-panel-width` var set on #main-area. Mobile/tablet keep the
+   bottom-sheet layout, so the var is only consumed at md+ via Tailwind. */
+#main-area.side-panel-resizing,
+#main-area.side-panel-resizing .middle-area {
+  transition: none !important;
+}
+
 /* Fenced code blocks inside regular chat bubbles. Same dark block look as
    markdown-content, scoped to chat so AI styles stay untouched. */
 .message-content {
