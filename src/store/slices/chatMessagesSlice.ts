@@ -5,6 +5,11 @@ import { RootState } from '..';
 
 export const WELCOME_MESSAGE_ID = 'system:welcome';
 
+export interface ChatDraftRef {
+  id: string;
+  key: string;
+}
+
 interface ChatMessagesState {
   messages: {
     [key: string]: ChatMessage[]; // key: 'public' or userId
@@ -16,6 +21,8 @@ interface ChatMessagesState {
     [messageId: string]: number;
   };
   nextDisplayOrder: number;
+  replyDraft: ChatDraftRef | null;
+  editDraft: ChatDraftRef | null;
 }
 
 const createInitialState = (): ChatMessagesState => ({
@@ -25,6 +32,8 @@ const createInitialState = (): ChatMessagesState => ({
   messageIds: {},
   displayOrder: {},
   nextDisplayOrder: 0,
+  replyDraft: null,
+  editDraft: null,
 });
 
 const initialState = createInitialState();
@@ -176,7 +185,25 @@ const chatMessagesSlice = createSlice({
         const messagesToAdd = [...sortedMessages].reverse();
 
         messagesToAdd.forEach((message) => {
-          if (state.messageIds[message.id]) {
+          const existingKey = state.messageIds[message.id];
+          if (existingKey) {
+            // merge live updates (edit/delete/reply meta) in place
+            const list = state.messages[existingKey];
+            if (list) {
+              const idx = list.findIndex((m) => m.id === message.id);
+              if (idx !== -1) {
+                const current = list[idx];
+                list[idx] = {
+                  ...current,
+                  message: message.message,
+                  translations: message.translations,
+                  sourceLang: message.sourceLang,
+                  meta: message.meta,
+                  toUserId: message.toUserId,
+                };
+                affectedKeys.add(existingKey);
+              }
+            }
             return;
           }
 
@@ -209,6 +236,77 @@ const chatMessagesSlice = createSlice({
           sortByDisplayOrder(state.messages[key], state.displayOrder);
         });
       },
+    },
+
+    updateChatMessage: (
+      state,
+      action: PayloadAction<{
+        message: ChatMessage;
+        currentUserId: string;
+      }>,
+    ) => {
+      const { message, currentUserId } = action.payload;
+      const existingKey = state.messageIds[message.id];
+
+      if (!existingKey) {
+        // fall back to add-path for out-of-order updates
+        const key = getChatKey(message, currentUserId);
+        if (!state.messages[key]) {
+          state.messages[key] = [];
+        }
+        state.messageIds[message.id] = key;
+        if (isWelcomeMessage(message)) {
+          state.displayOrder[message.id] =
+            getLowestDisplayOrder(state.messages[key], state.displayOrder) - 1;
+        } else {
+          state.displayOrder[message.id] = state.nextDisplayOrder++;
+        }
+        state.messages[key].push(message);
+        sortByDisplayOrder(state.messages[key], state.displayOrder);
+        return;
+      }
+
+      const list = state.messages[existingKey];
+      if (!list) {
+        return;
+      }
+      const idx = list.findIndex((m) => m.id === message.id);
+      if (idx === -1) {
+        return;
+      }
+      // replace in place, preserve displayOrder (no reorder)
+      const current = list[idx];
+      list[idx] = {
+        ...current,
+        message: message.message,
+        translations: message.translations,
+        sourceLang: message.sourceLang,
+        meta: message.meta,
+        toUserId: message.toUserId,
+      };
+    },
+
+    setReplyDraft: (state, action: PayloadAction<ChatDraftRef>) => {
+      state.replyDraft = action.payload;
+      state.editDraft = null;
+    },
+
+    clearReplyDraft: (state) => {
+      state.replyDraft = null;
+    },
+
+    setEditDraft: (state, action: PayloadAction<ChatDraftRef>) => {
+      state.editDraft = action.payload;
+      state.replyDraft = null;
+    },
+
+    clearEditDraft: (state) => {
+      state.editDraft = null;
+    },
+
+    clearChatDrafts: (state) => {
+      state.replyDraft = null;
+      state.editDraft = null;
     },
 
     resetChatMessages: () => createInitialState(),
@@ -246,7 +344,59 @@ export const selectPublicChatMessages = createSelector(
   (chatMessages) => chatMessages.messages['public'] ?? [],
 );
 
+export interface ChatDraftWithTarget {
+  draft: ChatDraftRef | null;
+  target?: ChatMessage;
+}
+
+export const selectReplyDraftWithTarget = createSelector(
+  [chatMessagesStateSelector],
+  (chatMessages): ChatDraftWithTarget => {
+    const draft = chatMessages.replyDraft;
+    if (!draft) {
+      return { draft: null, target: undefined };
+    }
+    const target = chatMessages.messages[draft.key]?.find(
+      (m) => m.id === draft.id,
+    );
+    return { draft, target };
+  },
+);
+
+export const selectEditDraftWithTarget = createSelector(
+  [chatMessagesStateSelector],
+  (chatMessages): ChatDraftWithTarget => {
+    const draft = chatMessages.editDraft;
+    if (!draft) {
+      return { draft: null, target: undefined };
+    }
+    const target = chatMessages.messages[draft.key]?.find(
+      (m) => m.id === draft.id,
+    );
+    return { draft, target };
+  },
+);
+
+export const selectMessageById = createSelector(
+  [
+    chatMessagesStateSelector,
+    (_state: RootState, key: string) => key,
+    (_state: RootState, _key: string, id: string) => id,
+  ],
+  (chatMessages, key, id) =>
+    chatMessages.messages[key]?.find((m) => m.id === id),
+);
+
 export default chatMessagesSlice.reducer;
 
-export const { addChatMessage, addAllChatMessages, resetChatMessages } =
-  chatMessagesSlice.actions;
+export const {
+  addChatMessage,
+  addAllChatMessages,
+  updateChatMessage,
+  setReplyDraft,
+  clearReplyDraft,
+  setEditDraft,
+  clearEditDraft,
+  clearChatDrafts,
+  resetChatMessages,
+} = chatMessagesSlice.actions;

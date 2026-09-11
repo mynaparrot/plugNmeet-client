@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Listbox,
@@ -19,7 +19,9 @@ import {
 import { CloseIconSVG } from '../../assets/Icons/CloseIconSVG';
 import { setActiveSidePanel } from '../../store/slices/bottomIconsActivitySlice';
 import { CheckMarkIcon } from '../../assets/Icons/CheckMarkIcon';
+import { ChatSyncIconSVG } from '../../assets/Icons/ChatSyncIconSVG';
 import i18n from '../../helpers/i18n';
+import { getNatsConn } from '../../helpers/nats';
 import ChatTranslation from './chatTranslation';
 import { DropdownIconSVG } from '../../assets/Icons/DropdownIconSVG';
 
@@ -115,6 +117,24 @@ const ChatTabs = ({ isRecorder }: ChatTabsProps) => {
     dispatch(setActiveSidePanel(null));
   };
 
+  const [isSyncing, setIsSyncing] = useState(false);
+  const syncChat = useCallback(async () => {
+    if (isSyncing) {
+      return;
+    }
+    const conn = getNatsConn();
+    if (!conn) {
+      return;
+    }
+    setIsSyncing(true);
+    try {
+      await conn.requestPublicChatSync();
+    } finally {
+      // keep the spin visible briefly so the click feels acknowledged
+      setTimeout(() => setIsSyncing(false), 800);
+    }
+  }, [isSyncing]);
+
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -144,15 +164,29 @@ const ChatTabs = ({ isRecorder }: ChatTabsProps) => {
           </p>
           <ChatTranslation />
         </div>
-        <button
-          ref={closeBtnRef}
-          type="button"
-          aria-label={t('close').toString()}
-          className="text-Gray-600 cursor-pointer focus-ring"
-          onClick={closePanel}
-        >
-          <CloseIconSVG />
-        </button>
+        <div className="flex items-center gap-1">
+          {selectedChatOption === 'public' && (
+            <button
+              type="button"
+              aria-label={t('right-panel.sync-chat').toString()}
+              title={t('right-panel.sync-chat').toString()}
+              disabled={isSyncing}
+              className="flex h-7 w-7 items-center justify-center text-Gray-600 cursor-pointer focus-ring disabled:opacity-50 disabled:cursor-wait"
+              onClick={() => void syncChat()}
+            >
+              <ChatSyncIconSVG spinning={isSyncing} />
+            </button>
+          )}
+          <button
+            ref={closeBtnRef}
+            type="button"
+            aria-label={t('close').toString()}
+            className="flex h-7 w-7 items-center justify-center text-Gray-600 cursor-pointer focus-ring"
+            onClick={closePanel}
+          >
+            <CloseIconSVG />
+          </button>
+        </div>
       </div>
       <Listbox value={selectedChatOption} onChange={onChange}>
         <div className="relative z-10 chat-tabs">

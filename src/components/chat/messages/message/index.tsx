@@ -6,18 +6,43 @@ import { MyMessage, OtherUserMessage, SystemMessage } from './messageTypes';
 
 interface IMessageProps {
   body: ChatMessage;
+  chatKey: string;
   currentUser?: ICurrentUser;
+  onJumpQuote?: (id: string) => void;
 }
 
-const Message = ({ body, currentUser }: IMessageProps) => {
+const Message = ({
+  body,
+  chatKey,
+  currentUser,
+  onJumpQuote,
+}: IMessageProps) => {
   let content: ReactElement | null;
 
   if (body.fromUserId === 'system') {
     content = <SystemMessage message={body.message} />;
   } else if (currentUser?.userId === body.fromUserId) {
-    content = <MyMessage message={body.message} sentAt={body.sentAt} />;
+    content = (
+      <MyMessage
+        body={body}
+        chatKey={chatKey}
+        currentUserId={currentUser?.userId ?? ''}
+        isAdmin={!!currentUser?.metadata?.isAdmin}
+        onEditStart={() => document.getElementById('message-textarea')?.focus()}
+        onJumpQuote={onJumpQuote}
+      />
+    );
   } else {
-    content = <OtherUserMessage body={body} />;
+    content = (
+      <OtherUserMessage
+        body={body}
+        chatKey={chatKey}
+        currentUserId={currentUser?.userId ?? ''}
+        isAdmin={!!currentUser?.metadata?.isAdmin}
+        onEditStart={() => document.getElementById('message-textarea')?.focus()}
+        onJumpQuote={onJumpQuote}
+      />
+    );
   }
 
   return <div className="wrapper flex gap-2 3xl:gap-3">{content}</div>;

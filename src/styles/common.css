@@ -471,3 +471,17 @@ body[dir='rtl'] .rtl\:microphone-rtl-left::before {
     @apply max-w-full h-auto rounded-md my-2;
   }
 }
+
+/* Fenced code blocks inside regular chat bubbles. Same dark block look as
+   markdown-content, scoped to chat so AI styles stay untouched. */
+.message-content {
+  & pre {
+    @apply my-2 p-3 rounded-lg overflow-x-auto text-xs text-gray-100 bg-[#0d1117] leading-normal font-mono whitespace-pre;
+  }
+  & pre code {
+    @apply bg-transparent p-0 rounded-none text-inherit font-mono;
+  }
+  & code {
+    @apply font-mono text-[0.85em] bg-Gray-100 dark:bg-Gray-800 rounded px-1 py-0.5;
+  }
+}

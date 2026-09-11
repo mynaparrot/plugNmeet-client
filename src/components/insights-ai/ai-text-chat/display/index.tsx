@@ -10,10 +10,8 @@ import Draggable from 'react-draggable';
 
 import { updateIsActiveInsightsAiTextChat } from '../../../../store/slices/bottomIconsActivitySlice';
 import { useAppDispatch, useAppSelector } from '../../../../store';
-import {
-  AIMessage,
-  MyMessage,
-} from '../../../chat/messages/message/messageTypes';
+import { AIMessage } from '../../../chat/messages/message/messageTypes';
+import { AiUserMessage } from '../aiUserMessage';
 import { renderMarkdown } from '../helpers/renderMarkdown';
 import TextBoxArea from './textBoxArea';
 import { useAiTextChat } from '../useAiTextChat';
@@ -188,10 +186,9 @@ const InsightsAiTextChat = () => {
                               markdown
                             />
                           ) : (
-                            <MyMessage
+                            <AiUserMessage
                               message={msg.parsedMessage}
                               sentAt={msg.createdAt}
-                              markdown
                             />
                           )}
                         </div>

@@ -12,7 +12,10 @@ import {
   AnalyticsDataMsgSchema,
   AnalyticsEvents,
   AnalyticsEventType,
+  ChatMessage,
   ChatMessageSchema,
+  ChatMeta,
+  ChatMetaSchema,
   DataChannelMessageSchema,
   DataMsgBodyType,
   EndToEndEncryptionFeatures,
@@ -23,6 +26,7 @@ import {
   NatsSubjects,
   PrivateDataDeliverySchema,
 } from 'plugnmeet-protocol-js';
+import { canDeleteMessage, canEditMessage } from '../../components/chat/utils';
 
 import MessageQueue from './MessageQueue';
 import SubscriptionHandler from './SubscriptionHandler';
@@ -39,9 +43,9 @@ import {
 import { ICurrentRoom } from '../../store/slices/interfaces/session';
 import {
   formatNatsError,
+  getChatDonors,
   isUserRecorder,
   isValidHttpUrl,
-  randomString,
 } from '../utils';
 import {
   addSelfInsertedE2EESecretKey,
@@ -542,20 +546,67 @@ export default class ConnectNats {
     return undefined;
   }
 
+  private deliverChatMessage = async (chatMessage: ChatMessage) => {
+    let payload: Uint8Array = toBinary(ChatMessageSchema, chatMessage);
+
+    if (this._enableE2EEChat) {
+      const data = await this.encryptData(payload);
+      if (typeof data === 'undefined') {
+        return;
+      }
+      payload = data;
+    }
+
+    if (chatMessage.isPrivate) {
+      this.sendPrivateData(payload, 'CHAT', chatMessage.toUserId!, false);
+    } else {
+      const subject = `${this._subjects.chat}.${this._roomId}`;
+      this.messageQueue.addToQueue({
+        subject,
+        payload,
+      });
+    }
+
+    if (chatMessage.isPrivate) {
+      this.sendAnalyticsData(
+        AnalyticsEvents.ANALYTICS_EVENT_USER_PRIVATE_CHAT,
+        AnalyticsEventType.USER,
+        '',
+        '',
+        '1',
+      );
+    } else {
+      this.sendAnalyticsData(
+        AnalyticsEvents.ANALYTICS_EVENT_USER_PUBLIC_CHAT,
+        AnalyticsEventType.USER,
+        '',
+        '',
+        '1',
+      );
+    }
+
+    // to add original message as own
+    await this.subscriptionHandler.handleChat.handleMsg(
+      create(ChatMessageSchema, { ...chatMessage }),
+    );
+  };
+
   /**
-   * Sends a chat message.
-   * Private messages are sent via the system worker with JetStream's guaranteed delivery.
-   * Public messages are sent as fire-and-forget core NATS messages to the public chat subject.
-   * Both are managed by the MessageQueue.
+   * Sends a new chat message. Translation applies to new messages only;
+   * edits/deletes reuse the original payload via deliverChatMessage.
    */
-  public sendChatMsg = async (to: string, msg: string) => {
+  public sendChatMsg = async (
+    to: string,
+    msg: string,
+    meta?: Omit<ChatMeta, '$typeName' | '$unknown'>,
+  ) => {
     if (!this._nc || this._nc.isClosed()) {
       return;
     }
 
     const isPrivate = to !== 'public';
-    const data = {
-      id: randomString(),
+    const chatMessage = create(ChatMessageSchema, {
+      id: window.crypto.randomUUID(),
       fromName: this._userName,
       fromUserId: this._userId,
       sentAt: Date.now().toString(),
@@ -563,8 +614,8 @@ export default class ConnectNats {
       isPrivate: isPrivate,
       message: msg,
       fromAdmin: this.isAdmin,
-    };
-    const chatMessage = create(ChatMessageSchema, data);
+      meta: meta ? create(ChatMetaSchema, meta) : undefined,
+    });
 
     // check translation settings
     const state = store.getState();
@@ -595,48 +646,60 @@ export default class ConnectNats {
       }
     }
 
-    let payload: Uint8Array = toBinary(ChatMessageSchema, chatMessage);
+    await this.deliverChatMessage(chatMessage);
+  };
 
-    if (this._enableE2EEChat) {
-      const data = await this.encryptData(payload);
-      if (typeof data === 'undefined') {
-        return;
-      }
-      payload = data;
+  public editChatMessage = async (
+    original: ChatMessage,
+    newHtmlMessage: string,
+  ) => {
+    if (!this._nc || this._nc.isClosed()) {
+      return;
     }
-
-    if (isPrivate) {
-      this.sendPrivateData(payload, 'CHAT', to, false);
-    } else {
-      const subject = `${this._subjects.chat}.${this._roomId}`;
-      this.messageQueue.addToQueue({
-        subject,
-        payload,
-      });
+    if (!canEditMessage(original, this._userId)) {
+      return;
     }
+    const updated = create(ChatMessageSchema, {
+      ...original,
+      message: newHtmlMessage,
+      meta: create(ChatMetaSchema, {
+        replyToId: original.meta?.replyToId,
+        replyToName: original.meta?.replyToName,
+        replyToText: original.meta?.replyToText,
+        editedAt: Date.now().toString(),
+        isDeleted: false,
+      }),
+    });
+    await this.deliverChatMessage(updated);
+  };
 
-    if (isPrivate) {
-      this.sendAnalyticsData(
-        AnalyticsEvents.ANALYTICS_EVENT_USER_PRIVATE_CHAT,
-        AnalyticsEventType.USER,
-        '',
-        '',
-        '1',
-      );
-    } else {
-      this.sendAnalyticsData(
-        AnalyticsEvents.ANALYTICS_EVENT_USER_PUBLIC_CHAT,
-        AnalyticsEventType.USER,
-        '',
-        '',
-        '1',
-      );
+  public deleteChatMessage = async (
+    original: ChatMessage,
+    deleterUserId: string,
+    deleterIsAdmin: boolean,
+  ) => {
+    if (!this._nc || this._nc.isClosed()) {
+      return;
     }
-
-    // to add original message as own
-    await this.subscriptionHandler.handleChat.handleMsg(
-      create(ChatMessageSchema, data),
-    );
+    if (!canDeleteMessage(original, deleterUserId, deleterIsAdmin)) {
+      return;
+    }
+    const deletedByOther = original.fromUserId !== deleterUserId;
+    const updated = create(ChatMessageSchema, {
+      ...original,
+      message: '',
+      translations: {},
+      sourceLang: undefined,
+      meta: create(ChatMetaSchema, {
+        replyToId: original.meta?.replyToId,
+        replyToName: original.meta?.replyToName,
+        replyToText: original.meta?.replyToText,
+        editedAt: original.meta?.editedAt,
+        isDeleted: true,
+        deletedBy: deletedByOther ? deleterUserId : undefined,
+      }),
+    });
+    await this.deliverChatMessage(updated);
   };
 
   /**
@@ -698,6 +761,27 @@ export default class ConnectNats {
       message: msg,
       to,
     });
+  };
+
+  /**
+   * Asks the earliest-joined peers to resend their current public chat
+   * snapshot (REQ_PUBLIC_CHAT_DATA). Responses merge via addAllChatMessages,
+   * which dedupes by id — so this is safe to call on demand (manual sync
+   * button) as well as on join. Useful when messages were missed because
+   * chat is peer-to-peer with no server store.
+   */
+  public requestPublicChatSync = async () => {
+    if (!this._nc || this._nc.isClosed()) {
+      return;
+    }
+    const donors = getChatDonors();
+    for (let i = 0; i < donors.length; i++) {
+      await this.sendDataMessage(
+        DataMsgBodyType.REQ_PUBLIC_CHAT_DATA,
+        '',
+        donors[i].userId,
+      );
+    }
   };
 
   public publishData = async (

@@ -8,7 +8,6 @@ import {
   ChatMessage,
   ChatMessageSchema,
   DataChannelMessageSchema,
-  DataMsgBodyType,
   MediaServerConnInfoSchema,
   NatsInitialData,
   NatsInitialDataSchema,
@@ -42,11 +41,11 @@ import {
 } from '../../store/slices/interfaces/speechServices';
 import { addAllChatMessages } from '../../store/slices/chatMessagesSlice';
 import { setSpeechToTextLastFinalTexts } from '../../store/slices/speechServicesSlice';
-import { formatNatsError, getChatDonors } from '../utils';
+import { formatNatsError } from '../utils';
 import i18n from '../i18n';
 import { addToken } from '../../store/slices/sessionSlice';
 import { getNotepadController } from '../../components/shared-notepad/NotepadController';
-import { getWhiteboardController } from '../../components/whiteboard/collab/WhiteboardController';
+import { getWhiteboardController } from '../../components/whiteboard/collab';
 
 export default class SubscriptionHandler {
   private readonly connectNats: ConnectNats;
@@ -186,16 +185,7 @@ export default class SubscriptionHandler {
     const subject = `${this.connectNats.subjects.chat}.${this.connectNats.roomId}`;
     const sub = this.connectNats.nc.subscribe(subject);
 
-    const donors = getChatDonors();
-    for (let i = 0; i < donors.length; i++) {
-      this.connectNats
-        .sendDataMessage(
-          DataMsgBodyType.REQ_PUBLIC_CHAT_DATA,
-          '',
-          donors[i].userId,
-        )
-        .then();
-    }
+    void this.connectNats.requestPublicChatSync();
 
     for await (const m of sub) {
       try {

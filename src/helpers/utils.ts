@@ -270,13 +270,14 @@ export const formatNatsError = (err: any) => {
  */
 export const getChatDonors = (): IParticipant[] => {
   const s = store.getState();
+  const currentUserId = s.session.currentUser?.userId;
   const allParticipants = participantsSelector.selectAll(s);
 
   // Sort participants by their joinedAt timestamp in ascending order (earliest first).
   allParticipants.sort((a, b) => a.joinedAt - b.joinedAt);
 
-  // Return the first two participants.
-  return allParticipants.slice(0, 2);
+  // Return the first two participants other than ourselves.
+  return allParticipants.filter((p) => p.userId !== currentUserId).slice(0, 2);
 };
 
 export const generateAvatarInitial = (name: string) => {
@@ -399,7 +400,7 @@ export const cleanHtmlForChat = (rawText: string) => {
       ul: ['dir'],
       ol: ['dir', 'start'],
       li: ['dir'],
-      code: ['dir'],
+      code: ['class', 'dir'],
       pre: ['dir'],
       blockquote: ['dir'],
       h1: ['dir'],
@@ -420,12 +421,14 @@ export const cleanHtmlForChat = (rawText: string) => {
     },
     // Class values are whitelisted: Tailwind utilities ship in the app bundle,
     // so arbitrary classes in chat markup could spoof the UI. The whitelist
-    // covers the trusted senders: attachment card, linkified urls, poll card.
+    // covers the trusted senders: attachment card, linkified urls, poll card,
+    // plus language-* emitted by our own fenced code formatter.
     // prettier-ignore
     allowedClasses: {
       a: ['attachment-message', 'flex', 'items-center', 'gap-3', 'break-all', 'text-[#24aef7]', 'hover:underline'],
       span: ['block', 'flex', 'items-center', 'justify-between', 'gap-3', 'min-w-0', 'flex-1', 'break-words', 'text-start', 'me-1', 'font-medium', 'text-Green-700', 'shrink-0', 'text-xs', 'text-Gray-600', 'text-Gray-700', 'dark:text-dark-text', 'mt-1.5', 'mt-2', 'border-t', 'border-Gray-200', 'pt-2', 'dark:border-Gray-700', 'h-10', 'w-10', 'rounded-xl', 'bg-Gray-50', 'justify-center'],
       strong: ['block', 'break-words', 'text-sm', 'font-semibold', 'text-Gray-950', 'dark:text-white'],
+      code: [/^language-[a-z0-9+-]+$/],
     },
     allowedSchemes: ['http', 'https', 'mailto', 'tel'],
   });

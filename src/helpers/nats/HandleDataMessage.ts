@@ -27,6 +27,32 @@ import {
 } from '../../store/slices/chatMessagesSlice';
 import { PnmConnectionQuality } from '../livekit/ConnectionQualityMonitor';
 
+const CHAT_SYNC_CHUNK_SIZE = 50;
+// Hard cap on a single received sync chunk: a malicious/buggy peer could
+// send a huge JSON blob, so refuse to JSON.parse anything unbounded.
+const CHAT_SYNC_MAX_CHUNK_BYTES = 512 * 1024;
+
+const getSentAtMs = (msg: ChatMessage): number => {
+  const sentAt = Number(msg.sentAt);
+  return Number.isFinite(sentAt) ? sentAt : 0;
+};
+
+const isSyncableChatMessage = (msg: unknown): msg is ChatMessage => {
+  if (typeof msg !== 'object' || msg === null) {
+    return false;
+  }
+  const m = msg as Record<string, unknown>;
+  return (
+    typeof m.id === 'string' &&
+    m.id !== '' &&
+    typeof m.fromUserId === 'string' &&
+    m.fromUserId !== '' &&
+    typeof m.sentAt === 'string' &&
+    typeof m.message === 'string' &&
+    typeof m.isPrivate === 'boolean'
+  );
+};
+
 export default class HandleDataMessage {
   private connectNats: ConnectNats;
 
@@ -39,7 +65,7 @@ export default class HandleDataMessage {
       case DataMsgBodyType.REQ_PUBLIC_CHAT_DATA:
         if (payload.toUserId === this.connectNats.userId) {
           // only if was sent for me
-          this.handlePublicChatDataReq(payload.fromUserId);
+          await this.handlePublicChatDataReq(payload.fromUserId);
         }
         break;
       case DataMsgBodyType.RES_PUBLIC_CHAT_DATA:
@@ -186,24 +212,47 @@ export default class HandleDataMessage {
     }
   }
 
-  private handlePublicChatDataReq(fromUserId: string) {
+  private async handlePublicChatDataReq(fromUserId: string) {
+    // Stream all messages in small chunks so a single RES_PUBLIC_CHAT_DATA
+    // blob can't exceed NATS ~1MB max payload. Chunks arrive in order; the
+    // receiver dedupes by id via addAllChatMessages.
     const publicChats = selectPublicChatMessages(store.getState()).filter(
       (msg) => msg.fromUserId !== 'system',
     );
-    if (publicChats.length) {
-      this.connectNats
-        .sendDataMessage(
-          DataMsgBodyType.RES_PUBLIC_CHAT_DATA,
-          JSON.stringify(publicChats),
-          fromUserId,
-        )
-        .then();
+    if (!publicChats.length) {
+      return;
+    }
+
+    const ordered = publicChats
+      .slice()
+      .sort((a, b) => getSentAtMs(a) - getSentAtMs(b));
+
+    for (let i = 0; i < ordered.length; i += CHAT_SYNC_CHUNK_SIZE) {
+      const chunk = ordered.slice(i, i + CHAT_SYNC_CHUNK_SIZE);
+      await this.connectNats.sendDataMessage(
+        DataMsgBodyType.RES_PUBLIC_CHAT_DATA,
+        JSON.stringify(chunk),
+        fromUserId,
+      );
     }
   }
 
   private handlePublicChatDataRes(msg: string) {
     try {
-      const data: ChatMessage[] = JSON.parse(msg);
+      if (msg.length > CHAT_SYNC_MAX_CHUNK_BYTES) {
+        console.warn('chat sync chunk too large, ignoring');
+        return;
+      }
+      const parsed: unknown = JSON.parse(msg);
+      if (!Array.isArray(parsed)) {
+        return;
+      }
+      const data = parsed
+        .filter(isSyncableChatMessage)
+        .slice(0, CHAT_SYNC_CHUNK_SIZE);
+      if (!data.length) {
+        return;
+      }
       store.dispatch(
         addAllChatMessages({
           messages: data,

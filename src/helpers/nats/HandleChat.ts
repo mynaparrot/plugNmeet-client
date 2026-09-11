@@ -2,7 +2,10 @@ import { ChatMessage } from 'plugnmeet-protocol-js';
 
 import ConnectNats from './ConnectNats';
 import { store } from '../../store';
-import { addChatMessage } from '../../store/slices/chatMessagesSlice';
+import {
+  addChatMessage,
+  updateChatMessage,
+} from '../../store/slices/chatMessagesSlice';
 import {
   setActiveSidePanel,
   updateTotalUnreadChatMsgs,
@@ -47,30 +50,43 @@ export default class HandleChat {
       return;
     }
 
-    // check translation
-    const selectedChatTransLang =
-      store.getState().roomSettings.selectedChatTransLang;
-    if (selectedChatTransLang !== '') {
-      if (payload.sourceLang && payload.sourceLang !== selectedChatTransLang) {
-        // so, we'll need to pickup from translation
+    const isDeleted = !!payload.meta?.isDeleted;
+
+    if (!isDeleted) {
+      // check translation
+      const selectedChatTransLang =
+        store.getState().roomSettings.selectedChatTransLang;
+      if (selectedChatTransLang !== '') {
         if (
-          typeof payload.translations[selectedChatTransLang] !== 'undefined'
+          payload.sourceLang &&
+          payload.sourceLang !== selectedChatTransLang
         ) {
-          payload.message = payload.translations[selectedChatTransLang];
+          // so, we'll need to pickup from translation
+          if (
+            typeof payload.translations[selectedChatTransLang] !== 'undefined'
+          ) {
+            payload.message = payload.translations[selectedChatTransLang];
+          }
         }
       }
+
+      // Sanitize after any translation swap and before store/dispatch
+      payload.message = cleanHtmlForChat(payload.message);
+    } else {
+      payload.message = '';
     }
 
-    // Sanitize after any translation swap and before store/dispatch
-    payload.message = cleanHtmlForChat(payload.message);
-
+    const isUpdate = !!store.getState().chatMessages.messageIds[payload.id];
     store.dispatch(
-      addChatMessage({
+      (isUpdate ? updateChatMessage : addChatMessage)({
         message: payload,
         currentUserId: this.connectNats.userId,
       }),
     );
     await idbStore(DB_STORE_NAMES.CHAT_MESSAGES, payload.id, payload);
+    if (isUpdate) {
+      return;
+    }
 
     const isActiveChatPanel =
       store.getState().bottomIconsActivity.activeSidePanel === 'CHAT';
