@@ -307,11 +307,11 @@
     "message-deleted-by-admin": "Ta wiadomość została usunięta przez administratora",
     "delete-confirm-title": "Usunąć tę wiadomość?",
     "delete-confirm-body": "To odbiera przekaz dla wszystkich uczestników tej rozmowy. Tego nie da się cofnąć.",
-    "replying-to": "Replying to {{name}}",
-    "editing-message": "Editing message",
-    "new-messages": "New messages",
-    "scroll-to-bottom": "Scroll to bottom",
-    "sync-chat": "Sync chat with peers"
+    "replying-to": "Odpowiadając do {{name}}",
+    "editing-message": "Wiadomość edycja",
+    "new-messages": "Nowe wiadomości",
+    "scroll-to-bottom": "Przewiń na dół",
+    "sync-chat": "Synchronizuj czat z rówieśnikami"
   },
   "footer": {
     "aria-label": "Kontrola spotkań",
