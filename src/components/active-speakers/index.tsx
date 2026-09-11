@@ -6,6 +6,7 @@ import { selectSpeakingParticipants } from '../../store/slices/activeSpeakersSli
 import { participantsSelector } from '../../store/slices/participantSlice';
 import SpeakerComponent from './speaker';
 import { getMediaServerConn } from '../../helpers/livekit/utils';
+import { APP_LAYOUT_CLASSES } from '../../helpers/dimensions';
 import { IActiveSpeaker } from '../../store/slices/interfaces/activeSpeakers';
 
 const ACTIVE_SPEAKER_VIDEO_REARRANGE_DURATION = 8000;
@@ -82,7 +83,7 @@ const ActiveSpeakers = ({ activeSidePanel }) => {
   return (
     activeSpeakersElms && (
       <div
-        className={`active-speakers-wrap flex items-center justify-center absolute top-0 start-0 pointer-events-none ${activeSidePanel ? 'md:w-[calc(100%-var(--side-panel-width,300px))] 3xl:w-[calc(100%-var(--side-panel-width,340px))]' : 'w-full'}`}
+        className={`active-speakers-wrap flex items-center justify-center absolute top-0 start-0 pointer-events-none ${activeSidePanel ? APP_LAYOUT_CLASSES.activeSpeakersOpen : 'w-full'}`}
       >
         {activeSpeakersElms}
       </div>

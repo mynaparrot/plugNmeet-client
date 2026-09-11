@@ -15,6 +15,7 @@ import NewBreakoutRoom from './newBreakoutRoom';
 import GenericNotification from './genericNotification';
 
 import { store, useAppSelector } from '../../../store';
+import { APP_LAYOUT_CLASSES } from '../../../helpers/dimensions';
 import { UserNotification } from '../../../store/slices/interfaces/roomSettings';
 import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
 import { NotifyIconSVG } from '../../../assets/Icons/NotifyIconSVG';
@@ -132,7 +133,7 @@ const UserNotifications = () => {
           <PopoverPanel
             transition
             className={clsx([
-              'side-panel-bg-color notifications-panel fixed w-[300px] 3xl:w-[340px] end-0 h-[calc(100%-110px)] 3xl:h-[calc(100%-144px)] top-[54px] 3xl:top-[68px] bg-Gray-25 dark:bg-dark-primary border-s border-Gray-200 dark:border-Gray-800',
+              `side-panel-bg-color notifications-panel fixed ${APP_LAYOUT_CLASSES.notificationsPanel} end-0 bg-Gray-25 dark:bg-dark-primary border-s border-Gray-200 dark:border-Gray-800`,
               'flex flex-col',
               'transition ease-out',
               'data-[closed]:opacity-0',
@@ -156,7 +157,7 @@ const UserNotifications = () => {
               </button>
             </div>
             <div
-              className="scrollBar overflow-auto h-[calc(100vh-148px)] 3xl:h-[calc(100vh-184px)] py-4"
+              className={`scrollBar overflow-auto ${APP_LAYOUT_CLASSES.notificationsScroll} py-4`}
               tabIndex={0}
             >
               <ul className="inner grid gap-2 list-none">

@@ -16,6 +16,7 @@ import UserNotifications from './user-notifications';
 import ConnectionStatus from './connectionStatus';
 import ConfirmationModal from '../../helpers/ui/confirmationModal';
 import BackToMainBtn from '../breakout-room/backToMainBtn';
+import { APP_LAYOUT_CLASSES } from '../../helpers/dimensions';
 
 const Header = () => {
   const roomTitle = useAppSelector(
@@ -51,7 +52,7 @@ const Header = () => {
         <header
           id="main-header"
           aria-label={t('header.aria-label').toString()}
-          className={`relative z-99999 px-4 min-h-[54px] 3xl:min-h-[68px] py-1 md:py-0 flex flex-nowrap items-center justify-between bg-white dark:bg-dark-primary transition-transform border-b border-Gray-200 dark:border-Gray-800`}
+          className={`relative z-99999 px-4 ${APP_LAYOUT_CLASSES.headerHeight} py-1 md:py-0 flex flex-nowrap items-center justify-between bg-white dark:bg-dark-primary transition-transform border-b border-Gray-200 dark:border-Gray-800`}
         >
           <div className="left relative z-20 flex items-center gap-2 md:gap-2.5 lg:gap-5 shrink-0 justify-start">
             <HeaderLogo />

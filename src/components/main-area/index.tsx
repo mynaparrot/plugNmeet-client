@@ -10,6 +10,10 @@ import {
 
 import { useMainAreaState } from './hooks/useMainAreaState';
 import { useMainAreaCustomCSS } from './hooks/useMainAreaCustomCSS';
+import {
+  APP_LAYOUT_CLASSES,
+  MAIN_AREA_DIMENSIONS,
+} from '../../helpers/dimensions';
 import { useSidePanelResize } from './hooks/useSidePanelResize';
 import { triggerRefreshWhiteboard } from '../../store/slices/whiteboard';
 import { updateIsSidePanelOpened } from '../../store/slices/roomSettingsSlice';
@@ -149,9 +153,12 @@ const MainArea = () => {
       extendedViewPreference.current
     ) {
       // Restore extended view only if the screen is wide enough to accommodate
-      // the side panel (max 340px) + extended strip (416px) + reasonable content area.
+      // the side panel + extended strip + reasonable content area.
       const screenWidth = store.getState().bottomIconsActivity.screenWidth;
-      if (screenWidth >= 1400) {
+      if (
+        screenWidth >=
+        MAIN_AREA_DIMENSIONS.verticalWebcams.extendedRestoreMinWidth
+      ) {
         dispatch(updateIsEnabledExtendedVerticalCamView(true));
       }
       extendedViewPreference.current = false;
@@ -166,9 +173,7 @@ const MainArea = () => {
 
   const mainAreaClasses = `plugNmeet-app-main-area overflow-hidden relative flex flex-1 w-full ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition} ${isResizing ? 'side-panel-resizing' : ''}`;
   const middleAreaClasses = `middle-area relative transition-all duration-300 w-full ${
-    activeSidePanel
-      ? 'pb-[300px] md:pb-0 md:pe-[var(--side-panel-width,300px)] 3xl:pe-[var(--side-panel-width,340px)]'
-      : ''
+    activeSidePanel ? APP_LAYOUT_CLASSES.middleAreaOpen : ''
   } ${isResizing ? 'transition-none!' : ''}`;
 
   return (
@@ -183,12 +188,8 @@ const MainArea = () => {
               <MainView
                 isRecorder={isRecorder}
                 isActiveWhiteboard={isActiveWhiteboard}
-                isActiveExternalMediaPlayer={
-                  isActiveExternalMediaPlayer ?? false
-                }
-                isActiveDisplayExternalLink={
-                  isActiveDisplayExternalLink ?? false
-                }
+                isActiveExternalMediaPlayer={!!isActiveExternalMediaPlayer}
+                isActiveDisplayExternalLink={!!isActiveDisplayExternalLink}
                 hasScreenShareSubscribers={hasScreenShareSubscribers}
                 hasVideoSubscribers={hasVideoSubscribers}
               />

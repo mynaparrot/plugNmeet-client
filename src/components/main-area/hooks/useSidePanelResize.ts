@@ -3,16 +3,19 @@ import type { PointerEvent as ReactPointerEvent } from 'react';
 
 import { store, useAppDispatch } from '../../../store';
 import { updateIsEnabledExtendedVerticalCamView } from '../../../store/slices/bottomIconsActivitySlice';
+import {
+  APP_LAYOUT_CLASSES,
+  MAIN_AREA_DIMENSIONS,
+} from '../../../helpers/dimensions';
 
-export const SIDE_PANEL_MIN_WIDTH = 280;
-export const SIDE_PANEL_MAX_WIDTH = 480;
-export const SIDE_PANEL_DEFAULT_WIDTH = 300;
-export const SIDE_PANEL_DEFAULT_WIDTH_WIDE = 340;
+export const SIDE_PANEL_MIN_WIDTH = MAIN_AREA_DIMENSIONS.sidePanel.minWidth;
+export const SIDE_PANEL_MAX_WIDTH = MAIN_AREA_DIMENSIONS.sidePanel.maxWidth;
 
-// Must stay in sync with the `3xl` breakpoint (110rem) and the `lg`
-// breakpoint (1024px) used for the PC-only drag handle.
-const WIDE_BREAKPOINT_PX = 1760;
-const PC_BREAKPOINT_PX = 1024;
+// Fallbacks mirror the var() defaults in APP_LAYOUT_CLASSES.sidePanel.width.
+const DEFAULT_WIDTH = APP_LAYOUT_CLASSES.sidePanel.defaultWidth;
+const DEFAULT_WIDTH_WIDE = APP_LAYOUT_CLASSES.sidePanel.defaultWidthWide;
+const WIDE_BREAKPOINT_PX = MAIN_AREA_DIMENSIONS.breakpoints.wide;
+const PC_BREAKPOINT_PX = MAIN_AREA_DIMENSIONS.breakpoints.pc;
 const STORAGE_KEY = 'pnm-sidePanel-width';
 
 export interface ISidePanelDragHandleProps {
@@ -34,9 +37,7 @@ const clampWidth = (width: number) =>
   );
 
 const getDefaultPanelWidth = () =>
-  window.innerWidth >= WIDE_BREAKPOINT_PX
-    ? SIDE_PANEL_DEFAULT_WIDTH_WIDE
-    : SIDE_PANEL_DEFAULT_WIDTH;
+  window.innerWidth >= WIDE_BREAKPOINT_PX ? DEFAULT_WIDTH_WIDE : DEFAULT_WIDTH;
 
 const loadStoredWidth = (): number | null => {
   try {

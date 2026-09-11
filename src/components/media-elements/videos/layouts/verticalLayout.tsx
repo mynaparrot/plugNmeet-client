@@ -23,6 +23,7 @@ import {
   PIP_WINDOW_WIDTH,
 } from './pip/utils';
 import { useDeviceInfo } from '../helpers/useDeviceInfo';
+import { APP_LAYOUT_CLASSES } from '../../../../helpers/dimensions';
 
 interface IVerticalLayoutProps {
   pipParticipants: ReactElement<VideoParticipantProps>[];
@@ -147,18 +148,15 @@ const VerticalLayout = ({
 
   // Only push to bottom in portrait; landscape has more horizontal space → right-side.
   const shouldBeAtBottom = (isMobile || isTablet) && isPortrait;
-
-  // Landscape mobile/tablet: narrower right strip than desktop (212px).
-  const rightSideWidth =
-    isMobile || isTablet ? 'w-[140px]' : 'md:w-[212px] w-[212px]';
+  const strip = APP_LAYOUT_CLASSES.verticalWebcams;
 
   const wrapperClasses = `vertical-webcams-wrapper group absolute z-20 transition-all duration-300 bg-Gray-25 dark:bg-dark-primary border-Gray-200 dark:border-Gray-800 ${
     shouldBeAtBottom
-      ? 'vertical-bottom-layout bottom-0 start-0 end-0 h-[110px] border-t w-full flex flex-row justify-center items-center px-2 py-1.5 not-extended'
+      ? `vertical-bottom-layout bottom-0 start-0 end-0 ${strip.bottomBarHeight} border-t w-full flex flex-row justify-center items-center px-2 py-1.5 not-extended`
       : `p-2 top-0 end-0 h-full border-s flex flex-col justify-center ${
           isEnabledExtendedVerticalCamView
-            ? 'xl:w-[416px] extended-view-wrap'
-            : `${rightSideWidth} not-extended`
+            ? `${strip.stripWidthExtended} extended-view-wrap`
+            : `${isMobile || isTablet ? strip.stripWidthCompact : `${strip.stripWidth} w-[212px]`} not-extended`
         }`
   }`;
 

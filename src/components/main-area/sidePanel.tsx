@@ -5,6 +5,7 @@ import {
   SIDE_PANEL_MIN_WIDTH,
   type ISidePanelDragHandleProps,
 } from './hooks/useSidePanelResize';
+import { APP_LAYOUT_CLASSES } from '../../helpers/dimensions';
 
 interface SidePanelProps {
   isActive: boolean;
@@ -42,7 +43,7 @@ const SidePanel = ({
       afterLeave={() => onToggle(false)}
     >
       <div
-        className={`${panelClass} group/sidepanel bottom-0 absolute w-full md:w-[var(--side-panel-width,300px)] 3xl:w-[var(--side-panel-width,340px)] end-0 h-[300px] md:h-full`}
+        className={`${panelClass} group/sidepanel bottom-0 absolute w-full ${APP_LAYOUT_CLASSES.sidePanel.width} end-0 ${APP_LAYOUT_CLASSES.sidePanel.mobileHeight} md:h-full`}
         role="complementary"
         aria-label={ariaLabel}
       >
