@@ -307,11 +307,11 @@
     "message-deleted-by-admin": "Tämä viesti poistettiin ylläpitäjän toimesta",
     "delete-confirm-title": "Poistatko tämä viesti?",
     "delete-confirm-body": "Tämä poistaa viestin kaikilta tässä keskustelussa. Tätä ei voi perua.",
-    "replying-to": "Replying to {{name}}",
-    "editing-message": "Editing message",
-    "new-messages": "New messages",
-    "scroll-to-bottom": "Scroll to bottom",
-    "sync-chat": "Sync chat with peers"
+    "replying-to": "Vastaus {{name}}",
+    "editing-message": "Muokkausviesti",
+    "new-messages": "Uudet viestit",
+    "scroll-to-bottom": "Selaa alas",
+    "sync-chat": "Synkronoi chat vertaisten kanssa"
   },
   "footer": {
     "aria-label": "Kokousten ohjaus",
