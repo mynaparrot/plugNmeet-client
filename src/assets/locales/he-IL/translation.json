@@ -307,11 +307,11 @@
     "message-deleted-by-admin": "הודעה זו נמחקה על ידי מנהל",
     "delete-confirm-title": "למחוק את ההודעה הזו?",
     "delete-confirm-body": "זה יסיר את המסר מכל מי שהיה בשיחה הזו. זה לא ניתן לביטול.",
-    "replying-to": "Replying to {{name}}",
-    "editing-message": "Editing message",
-    "new-messages": "New messages",
-    "scroll-to-bottom": "Scroll to bottom",
-    "sync-chat": "Sync chat with peers"
+    "replying-to": "תגובה ל {{name}}",
+    "editing-message": "הודעה עריכה",
+    "new-messages": "מסרים חדשים",
+    "scroll-to-bottom": "גלול למטה",
+    "sync-chat": "סנכרון צ'אט עם עמיתים"
   },
   "footer": {
     "aria-label": "בקרות פגישות",
