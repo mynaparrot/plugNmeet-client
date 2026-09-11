@@ -307,11 +307,11 @@
     "message-deleted-by-admin": "이 메시지는 관리자에 의해 삭제되었습니다",
     "delete-confirm-title": "이 메시지를 삭제할까요?",
     "delete-confirm-body": "이렇게 하면 대화에 참여한 모든 사람에게 메시지가 사라집니다. 이 일은 되돌릴 수 없습니다.",
-    "replying-to": "Replying to {{name}}",
-    "editing-message": "Editing message",
-    "new-messages": "New messages",
-    "scroll-to-bottom": "Scroll to bottom",
-    "sync-chat": "Sync chat with peers"
+    "replying-to": "답변 {{name}}",
+    "editing-message": "편집 메시지",
+    "new-messages": "새로운 메시지",
+    "scroll-to-bottom": "맨 아래로 스크롤하세요",
+    "sync-chat": "동료와 채팅 동기화"
   },
   "footer": {
     "aria-label": "회의 제어",
