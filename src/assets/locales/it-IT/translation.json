@@ -307,11 +307,11 @@
     "message-deleted-by-admin": "Questo messaggio è stato cancellato da un amministratore",
     "delete-confirm-title": "Cancellare questo messaggio?",
     "delete-confirm-body": "Questo rimuoverà il messaggio per tutti in questa conversazione. Questo non si può annullare.",
-    "replying-to": "Replying to {{name}}",
-    "editing-message": "Editing message",
-    "new-messages": "New messages",
-    "scroll-to-bottom": "Scroll to bottom",
-    "sync-chat": "Sync chat with peers"
+    "replying-to": "Rispondere a {{name}}",
+    "editing-message": "Messaggio di modifica",
+    "new-messages": "Nuovi messaggi",
+    "scroll-to-bottom": "Scorri fino in fondo",
+    "sync-chat": "Chat sincronizzata con i colleghi"
   },
   "footer": {
     "aria-label": "Controlli delle riunioni",
