@@ -307,11 +307,11 @@
     "message-deleted-by-admin": "Это сообщение было удалено администратором",
     "delete-confirm-title": "Удалить это сообщение?",
     "delete-confirm-body": "Это устранит послание для всех участников этого разговора. Это нельзя отменить.",
-    "replying-to": "Replying to {{name}}",
-    "editing-message": "Editing message",
-    "new-messages": "New messages",
-    "scroll-to-bottom": "Scroll to bottom",
-    "sync-chat": "Sync chat with peers"
+    "replying-to": "Ответ на {{name}}",
+    "editing-message": "Сообщение для редактирования",
+    "new-messages": "Новые сообщения",
+    "scroll-to-bottom": "Прокрутите вниз",
+    "sync-chat": "Синхронизируйте чат с коллегами"
   },
   "footer": {
     "aria-label": "Контроль собраний",
