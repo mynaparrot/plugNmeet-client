@@ -307,11 +307,11 @@
     "message-deleted-by-admin": "এই বার্তাটি একজন প্রশাসক দ্বারা মুছে ফেলা হয়েছে",
     "delete-confirm-title": "এই বার্তাটি মুছবেন?",
     "delete-confirm-body": "এটি এই কথোপকথনের প্রত্যেকের জন্য বার্তাটি সরিয়ে ফেলবে। এটি পূর্বাবস্থায় ফিরিয়ে আনা যাবে না।",
-    "replying-to": "Replying to {{name}}",
-    "editing-message": "Editing message",
-    "new-messages": "New messages",
-    "scroll-to-bottom": "Scroll to bottom",
-    "sync-chat": "Sync chat with peers"
+    "replying-to": "এর উত্তর দেওয়া হচ্ছে {{name}}",
+    "editing-message": "বার্তা সম্পাদনা করা হচ্ছে",
+    "new-messages": "নতুন বার্তা",
+    "scroll-to-bottom": "নীচে স্ক্রোল করুন",
+    "sync-chat": "সহকর্মীদের সাথে চ্যাট সিঙ্ক করুন"
   },
   "footer": {
     "aria-label": "মিটিং নিয়ন্ত্রণ",
