@@ -307,11 +307,11 @@
     "message-deleted-by-admin": "Diese Nachricht wurde von einem Admin gelöscht",
     "delete-confirm-title": "Diese Nachricht löschen?",
     "delete-confirm-body": "Das wird die Botschaft für alle in diesem Gespräch entfernen. Das kann nicht rückgängig gemacht werden.",
-    "replying-to": "Replying to {{name}}",
-    "editing-message": "Editing message",
-    "new-messages": "New messages",
-    "scroll-to-bottom": "Scroll to bottom",
-    "sync-chat": "Sync chat with peers"
+    "replying-to": "Antwort auf {{name}}",
+    "editing-message": "Bearbeitungsnachricht",
+    "new-messages": "Neue Botschaften",
+    "scroll-to-bottom": "Scrollen Sie nach unten",
+    "sync-chat": "Chat mit Peers synchronisieren"
   },
   "footer": {
     "aria-label": "Sitzungskontrollen",
