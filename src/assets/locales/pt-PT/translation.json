@@ -307,11 +307,11 @@
     "message-deleted-by-admin": "Esta mensagem foi apagada por um administrador",
     "delete-confirm-title": "Apagar esta mensagem?",
     "delete-confirm-body": "Isto vai remover a mensagem para todos nesta conversa. Isto não pode ser desfeito.",
-    "replying-to": "Replying to {{name}}",
-    "editing-message": "Editing message",
-    "new-messages": "New messages",
-    "scroll-to-bottom": "Scroll to bottom",
-    "sync-chat": "Sync chat with peers"
+    "replying-to": "A responder a {{name}}",
+    "editing-message": "A editar a mensagem",
+    "new-messages": "Novas mensagens",
+    "scroll-to-bottom": "Deslocar até ao fim",
+    "sync-chat": "Chat sincronizado com pares"
   },
   "footer": {
     "aria-label": "Controlo de reuniões",
