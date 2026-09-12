@@ -107,7 +107,19 @@
     "native-bridge-error": "Søknaden rapporterte en feil: {{error}}",
     "cannot-lock-admin": "Du kan ikke endre låseinnstillinger for andre administratorbrukere.",
     "breakout-room-raised-hand": "{{name}} Løftet hånden inn {{room}}",
-    "switching-room": "Bytterom..."
+    "switching-room": "Bytterom...",
+    "video-paused-weak-connection": "Svak tilkobling — video pauset for å holde lyden klar.",
+    "video-paused-audio-protection": "Videoen ble satt på pause fordi lyden din brøt opp.",
+    "presentation-paused-weak-connection": "Presentasjonen pauset — forbindelsen din er svak.",
+    "suggest-pause-screenshare": "Forbindelsen din er svak. Vurder å pause skjermdelingen for å holde lyden klar.",
+    "connection-still-weak": "Forbindelsen er fortsatt svak — video kan fryse.",
+    "video-resumed": "Tilkoblingen ble bedre — videoen fortsatte.",
+    "video-stays-paused": "Videoen vil forbli pauset til du aktiverer den igjen.",
+    "video-paused": "Video pauset",
+    "audio-only-mode-weak-connection": "Forbindelsen din er kritisk ustabil. Videoen er satt på pause for å holde lyden i gang.",
+    "connection-recovered-restore-video": "Tilkoblingen din virker stabil igjen. Du kan prøve å gjenopprette videoen.",
+    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
+    "presentation-resumed": "The presentation has resumed."
   },
   "room-metadata": {
     "session-recording": "Dette møtet blir tatt opp.",
@@ -202,7 +214,11 @@
         "good": "Bra",
         "poor": "Stakkars",
         "lost": "Tapt"
-      }
+      },
+      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
+      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
+      "re-enable-video": "Re-enable video",
+      "resume-presentation": "Resume presentation"
     }
   },
   "app": {
@@ -363,7 +379,8 @@
       "promote-presenter": "Gjør presentatør",
       "demote-presenter": "Fjern som presentatør",
       "you-are-muted": "Ingen kan høre deg. Du er mutet.",
-      "menu": "Flere alternativer"
+      "menu": "Flere alternativer",
+      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
     },
     "menus": {
       "mute-all-users": "Demp alle",
