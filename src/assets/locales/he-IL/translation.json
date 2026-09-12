@@ -118,8 +118,8 @@
     "video-paused": "הווידאו נעצר",
     "audio-only-mode-weak-connection": "החיבור שלך לא יציב באופן קריטי. הווידאו הופסק כדי לשמור על האודיו עובד.",
     "connection-recovered-restore-video": "החיבור שלך נראה יציב שוב. אתה יכול לנסות לשחזר את הווידאו.",
-    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
-    "presentation-resumed": "The presentation has resumed."
+    "media-restored-camera-unavailable": "המדיה הנכנסת שוחזרה, אך המצלמה שלך לא יכלה להיות מופעלת.",
+    "presentation-resumed": "ההצגה חודשה."
   },
   "room-metadata": {
     "session-recording": "פגישה זו מוקלטת.",
@@ -215,10 +215,10 @@
         "poor": "גרוע",
         "lost": "אבודים"
       },
-      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
-      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
-      "re-enable-video": "Re-enable video",
-      "resume-presentation": "Resume presentation"
+      "video-paused-banner": "חיבור חלש — הווידאו נעצר כדי לשמור על צליל נקי.",
+      "video-stays-paused-banner": "חיבור חלש — הווידאו נעצר עד שמפעילים אותו מחדש.",
+      "re-enable-video": "הפעלת וידאו מחדש",
+      "resume-presentation": "הצגת קורות חיים"
     }
   },
   "app": {
@@ -380,7 +380,7 @@
       "demote-presenter": "הסר כמציג",
       "you-are-muted": "אף אחד לא שומע אותך. אתה מושתק.",
       "menu": "אפשרויות נוספות",
-      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
+      "paused-by-connection-tooltip": "נעצר אוטומטית בגלל חיבור חלש — לחץ להפעלה מחדש"
     },
     "menus": {
       "mute-all-users": "השתק את כולם",
