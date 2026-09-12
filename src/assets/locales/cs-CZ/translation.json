@@ -107,7 +107,19 @@
     "native-bridge-error": "Aplikace hlásila chybu: {{error}}",
     "cannot-lock-admin": "Nemůžeš měnit nastavení zámků pro ostatní administrátory.",
     "breakout-room-raised-hand": "{{name}} Zvedli ruku dovnitř {{room}}",
-    "switching-room": "Výměna místností..."
+    "switching-room": "Výměna místností...",
+    "video-paused-weak-connection": "Slabé připojení — video pozastaveno, aby zvuk zůstal čistý.",
+    "video-paused-audio-protection": "Video se zastavilo, protože se vám přerušoval zvuk.",
+    "presentation-paused-weak-connection": "Prezentace pozastavena — vaše spojení je slabé.",
+    "suggest-pause-screenshare": "Máte slabé připojení. Zvažte pozastavení sdílení obrazovky, abyste udrželi zvuk čistý.",
+    "connection-still-weak": "Připojení je stále slabé — video může zamrznout.",
+    "video-resumed": "Připojení bylo zlepšeno — video obnoveno.",
+    "video-stays-paused": "Video zůstane pozastavené, dokud ho znovu nepovolíte.",
+    "video-paused": "Video pozastaveno",
+    "audio-only-mode-weak-connection": "Vaše připojení je kriticky nestabilní. Video bylo pozastaveno, aby zvuk fungoval.",
+    "connection-recovered-restore-video": "Vaše připojení se zdá být opět stabilní. Můžete zkusit obnovit video.",
+    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
+    "presentation-resumed": "The presentation has resumed."
   },
   "room-metadata": {
     "session-recording": "Tato schůzka je nahrávána.",
@@ -202,7 +214,11 @@
         "good": "Dobře",
         "poor": "Chudák",
         "lost": "Ztraceno"
-      }
+      },
+      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
+      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
+      "re-enable-video": "Re-enable video",
+      "resume-presentation": "Resume presentation"
     }
   },
   "app": {
@@ -363,7 +379,8 @@
       "promote-presenter": "Vytvoření prezentéru",
       "demote-presenter": "Odebrat jako prezentujícího",
       "you-are-muted": "Nikdo tě neslyší. Jsi ztlumený.",
-      "menu": "Další možnosti"
+      "menu": "Další možnosti",
+      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
     },
     "menus": {
       "mute-all-users": "Ztlumit všechny",
