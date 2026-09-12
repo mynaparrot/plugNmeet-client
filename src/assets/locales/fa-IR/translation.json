@@ -107,7 +107,19 @@
     "native-bridge-error": "برنامه خطایی گزارش کرد: {{error}}",
     "cannot-lock-admin": "شما نمی‌توانید تنظیمات قفل را برای سایر مدیران تغییر دهید.",
     "breakout-room-raised-hand": "{{name}} دستش را بالا برد {{room}}",
-    "switching-room": "اتاق تعویض..."
+    "switching-room": "اتاق تعویض...",
+    "video-paused-weak-connection": "اتصال ضعیف — ویدئو متوقف شد تا صدا واضح بماند.",
+    "video-paused-audio-protection": "ویدیو متوقف شد چون صدای شما قطع و وصل می شد.",
+    "presentation-paused-weak-connection": "ارائه متوقف شد — اتصال شما ضعیف است.",
+    "suggest-pause-screenshare": "اتصال شما ضعیف است. در نظر بگیرید که اشتراک گذاری صفحه را متوقف کنید تا صدا واضح بماند.",
+    "connection-still-weak": "اتصال هنوز ضعیف است — ممکن است ویدیو هنگ کند.",
+    "video-resumed": "اتصال بهبود یافت — ویدئو ادامه یافت.",
+    "video-stays-paused": "ویدیو تا زمانی که دوباره فعال نشود، متوقف خواهد ماند.",
+    "video-paused": "ویدیو متوقف شد",
+    "audio-only-mode-weak-connection": "اتصال شما به شدت ناپایدار است. ویدئو متوقف شده تا صدا کار کند.",
+    "connection-recovered-restore-video": "اتصال شما دوباره پایدار به نظر می رسد. می توانید ویدئو را بازیابی کنید.",
+    "media-restored-camera-unavailable": "رسانه ورودی بازیابی شد، اما دوربین شما فعال نشد.",
+    "presentation-resumed": "ارائه از سر گرفته شده است."
   },
   "room-metadata": {
     "session-recording": "این جلسه در حال ضبط است.",
@@ -202,7 +214,11 @@
         "good": "خوب",
         "poor": "ضعیف",
         "lost": "قطع"
-      }
+      },
+      "video-paused-banner": "اتصال ضعیف — ویدئو متوقف شد تا صدا واضح بماند.",
+      "video-stays-paused-banner": "اتصال ضعیف — ویدیو متوقف می شود تا دوباره فعال شود.",
+      "re-enable-video": "فعال سازی مجدد ویدیو",
+      "resume-presentation": "ارائه رزومه"
     }
   },
   "app": {
@@ -363,7 +379,8 @@
       "promote-presenter": "انتخاب به‌عنوان ارائه‌دهنده",
       "demote-presenter": "حذف از ارائه‌دهندگی",
       "you-are-muted": "هیچ‌کس صدای شما را نمی‌شنود. شما بی‌صدا هستید.",
-      "menu": "گزینه‌های بیشتر"
+      "menu": "گزینه‌های بیشتر",
+      "paused-by-connection-tooltip": "به دلیل اتصال ضعیف به طور خودکار متوقف شد — برای فعال سازی مجدد کلیک کنید"
     },
     "menus": {
       "mute-all-users": "بی‌صدا کردن همه",
