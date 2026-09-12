@@ -118,8 +118,8 @@
     "video-paused": "Vídeo pausado",
     "audio-only-mode-weak-connection": "Tu conexión es críticamente inestable. El vídeo ha sido pausado para que el audio siga funcionando.",
     "connection-recovered-restore-video": "Tu conexión parece estable de nuevo. Puedes intentar restaurar el vídeo.",
-    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
-    "presentation-resumed": "The presentation has resumed."
+    "media-restored-camera-unavailable": "Se restauró el contenido entrante, pero tu cámara no pudo activarse.",
+    "presentation-resumed": "La presentación se ha reanudado."
   },
   "room-metadata": {
     "session-recording": "Esta reunión está siendo grabada.",
@@ -215,10 +215,10 @@
         "poor": "Pobre",
         "lost": "Perdida"
       },
-      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
-      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
-      "re-enable-video": "Re-enable video",
-      "resume-presentation": "Resume presentation"
+      "video-paused-banner": "Conexión débil — vídeo pausado para mantener el audio claro.",
+      "video-stays-paused-banner": "Conexión débil — vídeo pausado hasta que lo vuelves a activar.",
+      "re-enable-video": "Reactivar el vídeo",
+      "resume-presentation": "Presentación del currículum"
     }
   },
   "app": {
@@ -380,7 +380,7 @@
       "demote-presenter": "Quitar como presentador",
       "you-are-muted": "Nadie puede oírle. Su micrófono está silenciado.",
       "menu": "Más opciones",
-      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
+      "paused-by-connection-tooltip": "Pausado automáticamente por conexión débil — haz clic para volver a activar"
     },
     "menus": {
       "mute-all-users": "Silenciar a todos",
