@@ -118,8 +118,8 @@
     "video-paused": "Videó szünetelt",
     "audio-only-mode-weak-connection": "A kapcsolatod kritikus instabil. A videót meg is állították, hogy a hang működjön.",
     "connection-recovered-restore-video": "A kapcsolatod ismét stabilnak tűnik. Megpróbálhatod visszaállítani a videót.",
-    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
-    "presentation-resumed": "The presentation has resumed."
+    "media-restored-camera-unavailable": "A bejövő média visszaállt, de a kamerát nem lehetett engedélyezni.",
+    "presentation-resumed": "Az előadás folytatódott."
   },
   "room-metadata": {
     "session-recording": "Ezt a találkozót rögzítik.",
@@ -215,10 +215,10 @@
         "poor": "Szegény",
         "lost": "Elveszett"
       },
-      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
-      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
-      "re-enable-video": "Re-enable video",
-      "resume-presentation": "Resume presentation"
+      "video-paused-banner": "Gyenge kapcsolat — a videó szünetelt, hogy tiszta legyen a hang.",
+      "video-stays-paused-banner": "Gyenge kapcsolat — a videó szünetelt, amíg újra be nem kapcsolod.",
+      "re-enable-video": "Kapcsold újra a videót",
+      "resume-presentation": "Önéletrajz bemutatása"
     }
   },
   "app": {
@@ -380,7 +380,7 @@
       "demote-presenter": "Eltávolítás előadóként",
       "you-are-muted": "Senki sem hall téged. Némított vagy.",
       "menu": "További lehetőségek",
-      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
+      "paused-by-connection-tooltip": "Automatikusan megállítva a gyenge kapcsolat miatt — kattints az újraengedélyezéshez"
     },
     "menus": {
       "mute-all-users": "Mindenki elnémítása",
