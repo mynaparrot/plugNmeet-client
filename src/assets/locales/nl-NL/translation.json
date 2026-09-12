@@ -107,7 +107,19 @@
     "native-bridge-error": "De applicatie meldde een foutmelding: {{error}}",
     "cannot-lock-admin": "Je kunt de vergrendelingsinstellingen niet wijzigen voor andere beheerders.",
     "breakout-room-raised-hand": "{{name}} Ze staken hun hand op {{room}}",
-    "switching-room": "Wisselkamer wisselen..."
+    "switching-room": "Wisselkamer wisselen...",
+    "video-paused-weak-connection": "Zwakke verbinding — video gepauzeerd om het geluid helder te houden.",
+    "video-paused-audio-protection": "De video pauzeerde omdat je audio verbrak.",
+    "presentation-paused-weak-connection": "Presentatie gepauzeerd — je verbinding is zwak.",
+    "suggest-pause-screenshare": "Je verbinding is zwak. Overweeg om je schermdeling te pauzeren om het geluid helder te houden.",
+    "connection-still-weak": "De verbinding is nog steeds zwak — de video kan vastlopen.",
+    "video-resumed": "Verbinding verbeterd — video hervat.",
+    "video-stays-paused": "De video blijft gepauzeerd totdat je het weer inschakelt.",
+    "video-paused": "Video gepauzeerd",
+    "audio-only-mode-weak-connection": "Je verbinding is kritiek instabiel. De video is gepauzeerd om het geluid werkend te houden.",
+    "connection-recovered-restore-video": "Je verbinding lijkt weer stabiel. Je kunt proberen de video te herstellen.",
+    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
+    "presentation-resumed": "The presentation has resumed."
   },
   "room-metadata": {
     "session-recording": "Deze vergadering wordt opgenomen.",
@@ -202,7 +214,11 @@
         "good": "Goed",
         "poor": "Arme",
         "lost": "Verloren"
-      }
+      },
+      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
+      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
+      "re-enable-video": "Re-enable video",
+      "resume-presentation": "Resume presentation"
     }
   },
   "app": {
@@ -363,7 +379,8 @@
       "promote-presenter": "Presentator maken",
       "demote-presenter": "Verwijderen als presentator",
       "you-are-muted": "Niemand kan je horen. Je bent gedempt.",
-      "menu": "Meer opties"
+      "menu": "Meer opties",
+      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
     },
     "menus": {
       "mute-all-users": "Iedereen dempen",
