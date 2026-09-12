@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.5.1](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.0...v2.5.1) (2026-09-12)
+
+
+### Bug Fixes
+
+* centralized all dimensions ([c91a327](https://github.com/mynaparrot/plugNmeet-client/commit/c91a32718ec875ca3510a3b20ddab2a0b42bbc79))
+* **chat:** added option to edit/delete/reply chat messages ([141e3ff](https://github.com/mynaparrot/plugNmeet-client/commit/141e3ff6a8d951a95c15ae6f3629a897017de32b))
+* don't clean IDB when switching from main room to breakout room ([abbf6e5](https://github.com/mynaparrot/plugNmeet-client/commit/abbf6e5aa6cd8e6e638993248ef26f7428ba9b46))
+* implemented our own `AdaptiveMediaController` ([327c628](https://github.com/mynaparrot/plugNmeet-client/commit/327c628f4d84d44c9603df629b308988818c9708))
+* **side-panel:** added ability to resize side panel ([2aada53](https://github.com/mynaparrot/plugNmeet-client/commit/2aada539b6bb2a08f42b533c6efabb278b94a59e))
+
 ## [2.5.0](https://github.com/mynaparrot/plugNmeet-client/compare/v2.4.0...v2.5.0) (2026-09-09)
 
 
