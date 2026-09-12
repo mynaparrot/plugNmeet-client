@@ -107,7 +107,19 @@
     "native-bridge-error": "האפליקציה דיווחה על שגיאה: {{error}}",
     "cannot-lock-admin": "אי אפשר לשנות את הגדרות הנעילה עבור משתמשי מנהל אחרים.",
     "breakout-room-raised-hand": "{{name}} הרימו יד פנימה {{room}}",
-    "switching-room": "חדר החלפה..."
+    "switching-room": "חדר החלפה...",
+    "video-paused-weak-connection": "חיבור חלש — הווידאו נעצר כדי לשמור על צליל נקי.",
+    "video-paused-audio-protection": "הווידאו נעצר כי האודיו שלך התפצל.",
+    "presentation-paused-weak-connection": "ההצגה נעצרה — החיבור שלך חלש.",
+    "suggest-pause-screenshare": "החיבור שלך חלש. שקול לעצור את שיתוף המסך כדי לשמור על צליל נקי.",
+    "connection-still-weak": "החיבור עדיין חלש — הווידאו עלול להיתפס.",
+    "video-resumed": "החיבור שופר — הווידאו חודש.",
+    "video-stays-paused": "הווידאו יישאר מושהה עד שתפעיל אותו מחדש.",
+    "video-paused": "הווידאו נעצר",
+    "audio-only-mode-weak-connection": "החיבור שלך לא יציב באופן קריטי. הווידאו הופסק כדי לשמור על האודיו עובד.",
+    "connection-recovered-restore-video": "החיבור שלך נראה יציב שוב. אתה יכול לנסות לשחזר את הווידאו.",
+    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
+    "presentation-resumed": "The presentation has resumed."
   },
   "room-metadata": {
     "session-recording": "פגישה זו מוקלטת.",
@@ -202,7 +214,11 @@
         "good": "טוב",
         "poor": "גרוע",
         "lost": "אבודים"
-      }
+      },
+      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
+      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
+      "re-enable-video": "Re-enable video",
+      "resume-presentation": "Resume presentation"
     }
   },
   "app": {
@@ -363,7 +379,8 @@
       "promote-presenter": "הפוך למציג",
       "demote-presenter": "הסר כמציג",
       "you-are-muted": "אף אחד לא שומע אותך. אתה מושתק.",
-      "menu": "אפשרויות נוספות"
+      "menu": "אפשרויות נוספות",
+      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
     },
     "menus": {
       "mute-all-users": "השתק את כולם",
