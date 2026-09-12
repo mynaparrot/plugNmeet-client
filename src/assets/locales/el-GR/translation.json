@@ -107,7 +107,19 @@
     "native-bridge-error": "Η εφαρμογή ανέφερε ένα σφάλμα: {{error}}",
     "cannot-lock-admin": "Δεν μπορείτε να αλλάξετε τις ρυθμίσεις κλειδώματος για άλλους διαχειριστές.",
     "breakout-room-raised-hand": "{{name}} σήκωσαν το χέρι τους {{room}}",
-    "switching-room": "Αίθουσα αλλαγής..."
+    "switching-room": "Αίθουσα αλλαγής...",
+    "video-paused-weak-connection": "Αδύναμη σύνδεση — το βίντεο τέθηκε σε παύση για να διατηρείται καθαρός ο ήχος.",
+    "video-paused-audio-protection": "Το βίντεο διακόπηκε επειδή ο ήχος σας διακόπηκε.",
+    "presentation-paused-weak-connection": "Η παρουσίαση τέθηκε σε παύση — η σύνδεσή σας είναι αδύναμη.",
+    "suggest-pause-screenshare": "Η σύνδεσή σας είναι αδύναμη. Εξετάστε το ενδεχόμενο να θέσετε σε παύση την κοινή χρήση οθόνης για να διατηρήσετε καθαρό τον ήχο.",
+    "connection-still-weak": "Η σύνδεση εξακολουθεί να είναι αδύναμη — το βίντεο μπορεί να παγώσει.",
+    "video-resumed": "Η σύνδεση βελτιώθηκε — το βίντεο συνεχίστηκε.",
+    "video-stays-paused": "Το βίντεο θα παραμείνει σε παύση μέχρι να το ενεργοποιήσετε ξανά.",
+    "video-paused": "Το βίντεο έχει τεθεί σε παύση",
+    "audio-only-mode-weak-connection": "Η σύνδεσή σας είναι εξαιρετικά ασταθής. Το βίντεο έχει τεθεί σε παύση για να συνεχίσει να λειτουργεί ο ήχος.",
+    "connection-recovered-restore-video": "Η σύνδεσή σας φαίνεται και πάλι σταθερή. Μπορείτε να δοκιμάσετε να επαναφέρετε το βίντεο.",
+    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
+    "presentation-resumed": "The presentation has resumed."
   },
   "room-metadata": {
     "session-recording": "Αυτή η σύσκεψη καταγράφεται.",
@@ -202,7 +214,11 @@
         "good": "Καλός",
         "poor": "Κακή",
         "lost": "Χαμένος"
-      }
+      },
+      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
+      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
+      "re-enable-video": "Re-enable video",
+      "resume-presentation": "Resume presentation"
     }
   },
   "app": {
@@ -363,7 +379,8 @@
       "promote-presenter": "Ορισμός ως παρουσιαστή",
       "demote-presenter": "Αφαίρεση από παρουσιαστή",
       "you-are-muted": "Κανείς δεν μπορεί να σας ακούσει. Είστε σε σίγαση.",
-      "menu": "Περισσότερες επιλογές"
+      "menu": "Περισσότερες επιλογές",
+      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
     },
     "menus": {
       "mute-all-users": "Σίγαση όλων",
