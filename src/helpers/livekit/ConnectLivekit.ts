@@ -47,6 +47,7 @@ import ConnectionQualityMonitor, {
   PnmConnectionQuality,
   QualityStats,
 } from './ConnectionQualityMonitor';
+import AdaptiveMediaController from './AdaptiveMediaController';
 import { updateOverallConnectionQuality } from '../../store/slices/sessionSlice';
 import {
   initializeNativePublisher,
@@ -83,6 +84,7 @@ export default class ConnectLivekit
   private lastReportedConnectionQuality: PnmConnectionQuality | null = null;
   private lastDispatchedOverallQuality: PnmConnectionQuality | null = null;
   private readonly connectionQualityMonitor: ConnectionQualityMonitor;
+  private readonly adaptiveMediaController: AdaptiveMediaController;
 
   constructor(
     errorState: Dispatch<IErrorPageProps>,
@@ -109,10 +111,15 @@ export default class ConnectLivekit
     void this.configureRoom();
 
     this.connectionQualityMonitor = new ConnectionQualityMonitor();
+    this.adaptiveMediaController = new AdaptiveMediaController(
+      () => this._room,
+      { enabled: !isUserRecorder(this.localUserId) },
+    );
     window.addEventListener('beforeunload', this.onBeforeUnload);
   }
 
   private onBeforeUnload = () => {
+    this.adaptiveMediaController.dispose();
     this.connectionQualityMonitor.stop();
     teardownNativePublisher();
   };
@@ -144,6 +151,10 @@ export default class ConnectLivekit
 
   public get qualityMonitor(): ConnectionQualityMonitor {
     return this.connectionQualityMonitor;
+  }
+
+  public get adaptiveMedia(): AdaptiveMediaController {
+    return this.adaptiveMediaController;
   }
 
   public initializeConnection = async (serverInfo: MediaServerConnInfo) => {
@@ -186,6 +197,8 @@ export default class ConnectLivekit
         this._room,
         this.checkConnectionQualityForFallback,
       );
+
+      this.adaptiveMediaController.attach();
 
       // Hybrid mode: if the server sent a native publish token, hand it to the
       // native host over the bridge and start the liveness heartbeat.
@@ -419,6 +432,7 @@ export default class ConnectLivekit
   private onDisconnected = (reason?: DisconnectReason) => {
     window.removeEventListener('beforeunload', this.onBeforeUnload);
     this.connectionQualityMonitor.stop();
+    this.adaptiveMediaController.dispose();
     // Hybrid mode: tear down native publisher on disconnect (beforeunload fallback removed above)
     teardownNativePublisher();
 
@@ -514,6 +528,8 @@ export default class ConnectLivekit
         );
       }
     }
+
+    this.adaptiveMediaController.evaluate(stats);
 
     if (!this.serverInfo?.turnCredentials?.fallbackTurn || isFirefoxMobile()) {
       return;

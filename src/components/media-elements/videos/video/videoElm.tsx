@@ -19,10 +19,11 @@ const LOADED_FALLBACK_MS = 3000;
 
 interface IVideoElmProps {
   track: RemoteTrackPublication | LocalTrackPublication;
+  mirrored?: boolean;
 }
 
 const VideoElm = forwardRef<HTMLVideoElement, IVideoElmProps>(
-  ({ track }, fRef) => {
+  ({ track, mirrored }, fRef) => {
     const ref = useRef<HTMLVideoElement>(null);
     useImperativeHandle(fRef, () => ref.current!, []);
 
@@ -124,7 +125,10 @@ const VideoElm = forwardRef<HTMLVideoElement, IVideoElmProps>(
         <video
           className="camera-video"
           ref={ref}
-          style={{ objectFit: videoFit }}
+          style={{
+            objectFit: videoFit,
+            transform: mirrored ? 'scaleX(-1)' : undefined,
+          }}
         />
       </>
     );

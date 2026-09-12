@@ -9,6 +9,7 @@ import type {
 import type EventEmitter from 'eventemitter3';
 import { MediaServerConnInfo } from 'plugnmeet-protocol-js';
 import ConnectionQualityMonitor from './ConnectionQualityMonitor';
+import AdaptiveMediaController from './AdaptiveMediaController';
 
 export enum CurrentConnectionEvents {
   ScreenShareStatus = 'screenShareStatus',
@@ -21,6 +22,7 @@ export enum CurrentConnectionEvents {
 export interface IConnectLivekit extends EventEmitter {
   get room(): Room;
   get qualityMonitor(): ConnectionQualityMonitor;
+  get adaptiveMedia(): AdaptiveMediaController;
   get videoSubscribersMap(): Map<
     string,
     Participant | LocalParticipant | RemoteParticipant

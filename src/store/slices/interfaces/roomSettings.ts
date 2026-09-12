@@ -30,6 +30,7 @@ export interface IRoomSettings {
   playAudioNotification: boolean;
   activateWebcamsView: boolean;
   activeScreenSharingView: boolean;
+  mediaDegradation: IMediaDegradation;
   allowPlayAudioNotification: boolean;
   roomAudioVolume: number;
   roomScreenShareAudioVolume: number;
@@ -56,6 +57,13 @@ export interface IRoomSettings {
   isSidePanelOpened: boolean;
   hasWebcamPages: boolean;
   maxNumDisplayWebcams: IMaxNumDisplayWebcams;
+}
+
+export interface IMediaDegradation {
+  incomingWebcamPaused: boolean;
+  incomingScreensharePaused: boolean;
+  outgoingCameraPaused: boolean;
+  autoRestoreSuspended: boolean;
 }
 
 export interface IMediaDevice {

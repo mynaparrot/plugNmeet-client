@@ -62,6 +62,10 @@ const WebcamIcon = () => {
     (state) => state.bottomIconsActivity.isWebcamMuted,
   );
 
+  const outgoingCameraPaused = useAppSelector(
+    (state) => state.roomSettings.mediaDegradation.outgoingCameraPaused,
+  );
+
   const hybrid = isHybridMode();
   const { available: nativeAvailable } = useNativePublisherStatus();
   const isMuted = isWebcamMuted;
@@ -244,6 +248,9 @@ const WebcamIcon = () => {
     if (!isActiveWebcam && !isWebcamLocked) {
       return t('footer.icons.start-webcam');
     }
+    if (isActiveWebcam && isMuted && outgoingCameraPaused) {
+      return t('footer.icons.paused-by-connection-tooltip');
+    }
     if (isActiveWebcam && isMuted) {
       return t('footer.icons.start-webcam');
     }
@@ -298,8 +305,10 @@ const WebcamIcon = () => {
       'border-Red-100! dark:!border-Red-600 cursor-not-allowed': isWebcamLocked,
       'border-Red-100!':
         !isWebcamLocked &&
-        ((isActiveWebcam && isMuted) ||
+        ((isActiveWebcam && isMuted && !outgoingCameraPaused) ||
           (!isActiveWebcam && selectedVideoDevice !== '')),
+      'border-amber-400':
+        !isWebcamLocked && isActiveWebcam && isMuted && outgoingCameraPaused,
       'border-[rgba(124,206,247,0.25)]':
         !isWebcamLocked && isActiveWebcam && !isMuted,
       'border-transparent':
@@ -313,8 +322,10 @@ const WebcamIcon = () => {
       'border-Red-200! dark:!border-Red-400 text-Red-400': isWebcamLocked,
       'border-Red-200!':
         !isWebcamLocked &&
-        ((isActiveWebcam && isMuted) ||
+        ((isActiveWebcam && isMuted && !outgoingCameraPaused) ||
           (!isActiveWebcam && selectedVideoDevice !== '')),
+      'border-amber-300 text-amber-400':
+        !isWebcamLocked && isActiveWebcam && isMuted && outgoingCameraPaused,
     },
   );
 

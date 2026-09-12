@@ -14,6 +14,7 @@ import { getNatsConn } from '../../helpers/nats';
 import { HeaderMenuIcon } from '../../assets/Icons/HeaderMenuIcon';
 import UserNotifications from './user-notifications';
 import ConnectionStatus from './connectionStatus';
+import MediaDegradationBanner from './mediaDegradationBanner';
 import ConfirmationModal from '../../helpers/ui/confirmationModal';
 import BackToMainBtn from '../breakout-room/backToMainBtn';
 import { APP_LAYOUT_CLASSES } from '../../helpers/dimensions';
@@ -91,6 +92,7 @@ const Header = () => {
             </Menu>
           </div>
         </header>
+        <MediaDegradationBanner />
         <ConfirmationModal
           show={showModal}
           onClose={() => setShowModal(false)}

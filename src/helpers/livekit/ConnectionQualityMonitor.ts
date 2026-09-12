@@ -155,8 +155,21 @@ export default class ConnectionQualityMonitor {
     this.room = room;
     this.isStopped = false;
 
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
+
     const checkQuality = async () => {
       if (this.isStopped || this.isCheckingQuality) return;
+
+      /*
+       * Skip measurement while the tab is hidden. Browser timer throttling
+       * and adaptiveStream pausing incoming video make hidden-tab stats
+       * unreliable (stale deltas, distorted receive analysis). Keep
+       * rescheduling so measurement resumes once the tab is visible again.
+       */
+      if (document.hidden) {
+        this.qualityCheckTimeout = setTimeout(checkQuality, INTERVAL);
+        return;
+      }
 
       this.isCheckingQuality = true;
 
@@ -182,6 +195,11 @@ export default class ConnectionQualityMonitor {
   public stop = () => {
     this.isStopped = true;
 
+    document.removeEventListener(
+      'visibilitychange',
+      this.handleVisibilityChange,
+    );
+
     if (this.qualityCheckTimeout) {
       clearTimeout(this.qualityCheckTimeout);
       this.qualityCheckTimeout = null;
@@ -202,6 +220,20 @@ export default class ConnectionQualityMonitor {
 
   public getStats = () => {
     return this.lastStats;
+  };
+
+  /*
+   * Stat baselines collected before the tab was hidden are stale: timers
+   * were throttled and streams may have been adaptive-paused. Drop them (and
+   * the poor-connection history) so the first visible check computes fresh
+   * deltas instead of mixing pre-hide evidence with new samples.
+   */
+  private handleVisibilityChange = () => {
+    if (document.visibilityState !== 'visible') return;
+
+    this.prevInboundStats = {};
+    this.prevOutboundStats = {};
+    this.poorConnectionHistory = [];
   };
 
   public getOverallQuality = () => this.currentQuality;
@@ -542,6 +574,21 @@ export default class ConnectionQualityMonitor {
         })
       : PnmConnectionQuality.Excellent;
 
+    /*
+     * A frozen outbound video stream on an otherwise healthy transport is
+     * almost always a consumption pause, not a network stall: with dynacast
+     * enabled the layer stops being encoded as soon as no viewer is
+     * consuming it (e.g. every participant's tab is hidden). Only report
+     * video as stuck when transport distress (Poor/Lost loss or RTT) or a
+     * simultaneous audio freeze corroborates a real uplink problem. Audio
+     * stuck is never suppressed: a frozen active audio stream has no benign
+     * explanation.
+     */
+    const videoFreezeIsBenign =
+      uploadQuality !== PnmConnectionQuality.Poor &&
+      uploadQuality !== PnmConnectionQuality.Lost &&
+      !input.isUploadAudioStuck;
+
     const isLikelyDownloadIssue = this.isLikelyMyDownloadIssue(
       input.remoteReceiveStats,
     );
@@ -608,7 +655,7 @@ export default class ConnectionQualityMonitor {
         receiveQuality === PnmConnectionQuality.Lost,
 
       isUploadAudioStuck: input.isUploadAudioStuck,
-      isUploadVideoStuck: input.isUploadVideoStuck,
+      isUploadVideoStuck: input.isUploadVideoStuck && !videoFreezeIsBenign,
     };
   }
 

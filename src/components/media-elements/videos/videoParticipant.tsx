@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useReducer, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   LocalParticipant,
   ParticipantEvent,
@@ -32,6 +33,10 @@ const VideoParticipant = ({
   const isSpeaking = useAppSelector(selectIsSpeakingByUserId(userId));
   const activateWebcamsView = useAppSelector(
     (state) => state.roomSettings.activateWebcamsView,
+  );
+  const { t } = useTranslation();
+  const incomingWebcamPaused = useAppSelector(
+    (state) => state.roomSettings.mediaDegradation.incomingWebcamPaused,
   );
   const [floatView, setFloatView] = useState<boolean>(true);
 
@@ -67,7 +72,7 @@ const VideoParticipant = ({
       const showVideo =
         !track.isMuted &&
         track.videoTrack &&
-        (!isRemote || activateWebcamsView);
+        (!isRemote || (activateWebcamsView && !incomingWebcamPaused));
       if (showVideo) {
         elements.push(
           <VideoComponent
@@ -88,6 +93,11 @@ const VideoParticipant = ({
             <span className="avatar-initial font-bold text-white select-none">
               {generateAvatarInitial(participant.name ?? '')}
             </span>
+            {incomingWebcamPaused && isRemote && (
+              <span className="absolute top-2 inset-x-0 text-center text-[10px] font-medium text-amber-400">
+                {t('notifications.video-paused')}
+              </span>
+            )}
             <Participant
               userId={userId}
               name={participant.name ?? ''}
@@ -105,6 +115,7 @@ const VideoParticipant = ({
     participantType,
     version,
     activateWebcamsView,
+    incomingWebcamPaused,
   ]);
 
   return (

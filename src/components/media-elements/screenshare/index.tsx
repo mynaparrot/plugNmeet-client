@@ -18,6 +18,9 @@ const ScreenShareElements = () => {
   const isActiveScreenSharingView = useAppSelector(
     (state) => state.roomSettings.activeScreenSharingView,
   );
+  const incomingScreensharePaused = useAppSelector(
+    (state) => state.roomSettings.mediaDegradation.incomingScreensharePaused,
+  );
   const [screenShareTracks, setScreenShareTracks] =
     useState<
       Map<string, Array<LocalTrackPublication | RemoteTrackPublication>>
@@ -75,6 +78,31 @@ const ScreenShareElements = () => {
                   </div>
                 </div>,
               );
+            } else if (
+              track instanceof RemoteTrackPublication &&
+              incomingScreensharePaused
+            ) {
+              elm.push(
+                <div
+                  key={track.trackSid}
+                  className="w-full h-full flex items-center justify-center p-4"
+                >
+                  <div className="w-full max-w-xl aspect-video bg-gray-900 overflow-hidden rounded-md flex flex-col items-center justify-center gap-3">
+                    <p className="text-sm 3xl:text-base text-white text-center px-4">
+                      {t('notifications.presentation-paused-weak-connection')}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        currentConnection.adaptiveMedia?.resumeIncomingScreenshare()
+                      }
+                      className="px-3 py-1.5 rounded-lg text-xs font-medium bg-white text-gray-900 hover:bg-gray-100 cursor-pointer"
+                    >
+                      {t('header.connection-status.resume-presentation')}
+                    </button>
+                  </div>
+                </div>,
+              );
             } else {
               elm.push(<VideoElm key={track.trackSid} track={track} />);
             }
@@ -95,7 +123,13 @@ const ScreenShareElements = () => {
     } else {
       return null;
     }
-  }, [screenShareTracks, isActiveScreenSharingView, t]);
+  }, [
+    screenShareTracks,
+    isActiveScreenSharingView,
+    incomingScreensharePaused,
+    currentConnection,
+    t,
+  ]);
 };
 
 export default ScreenShareElements;

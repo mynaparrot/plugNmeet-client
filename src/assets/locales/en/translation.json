@@ -107,7 +107,19 @@
     "native-bridge-error": "The application reported an error: {{error}}",
     "cannot-lock-admin": "You can't change lock settings for other admin users.",
     "breakout-room-raised-hand": "{{name}} raised their hand in {{room}}",
-    "switching-room": "Switching room..."
+    "switching-room": "Switching room...",
+    "video-paused-weak-connection": "Weak connection — video paused to keep audio clear.",
+    "video-paused-audio-protection": "Video paused because your audio was breaking up.",
+    "presentation-paused-weak-connection": "Presentation paused — your connection is weak.",
+    "suggest-pause-screenshare": "Your connection is weak. Consider pausing your screen share to keep audio clear.",
+    "connection-still-weak": "Connection is still weak — video may freeze.",
+    "video-resumed": "Connection improved — video resumed.",
+    "video-stays-paused": "Video will stay paused until you re-enable it.",
+    "video-paused": "Video paused",
+    "audio-only-mode-weak-connection": "Your connection is critically unstable. Video has been paused to keep audio working.",
+    "connection-recovered-restore-video": "Your connection appears stable again. You can try restoring video.",
+    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
+    "presentation-resumed": "The presentation has resumed."
   },
   "room-metadata": {
     "session-recording": "This meeting is being recorded.",
@@ -202,7 +214,11 @@
         "good": "Good",
         "poor": "Poor",
         "lost": "Lost"
-      }
+      },
+      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
+      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
+      "re-enable-video": "Re-enable video",
+      "resume-presentation": "Resume presentation"
     }
   },
   "app": {
@@ -363,7 +379,8 @@
       "promote-presenter": "Make Presenter",
       "demote-presenter": "Remove as Presenter",
       "you-are-muted": "No one can hear you. You're muted.",
-      "menu": "More options"
+      "menu": "More options",
+      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
     },
     "menus": {
       "mute-all-users": "Mute Everyone",

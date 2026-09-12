@@ -7,6 +7,7 @@ import {
   ColumnCameraWidth,
   DeviceSessionStorageKeys,
   IMaxNumDisplayWebcams,
+  IMediaDegradation,
   IMediaDevice,
   InitiatePrivateChat,
   IRoomSettings,
@@ -32,6 +33,12 @@ const initialState: IRoomSettings = {
   playAudioNotification: false,
   activateWebcamsView: true,
   activeScreenSharingView: true,
+  mediaDegradation: {
+    incomingWebcamPaused: false,
+    incomingScreensharePaused: false,
+    outgoingCameraPaused: false,
+    autoRestoreSuspended: false,
+  },
   allowPlayAudioNotification: true,
   roomAudioVolume: 1,
   roomScreenShareAudioVolume: 1,
@@ -130,6 +137,15 @@ const roomSettingsSlice = createSlice({
     },
     updateActiveScreenSharingView: (state, action: PayloadAction<boolean>) => {
       state.activeScreenSharingView = action.payload;
+    },
+    updateMediaDegradation: (
+      state,
+      action: PayloadAction<Partial<IMediaDegradation>>,
+    ) => {
+      state.mediaDegradation = {
+        ...state.mediaDegradation,
+        ...action.payload,
+      };
     },
     updateAllowPlayAudioNotification: (
       state,
@@ -271,6 +287,7 @@ export const {
   updateShowRoomSettingsModal,
   updateActivateWebcamsView,
   updateActiveScreenSharingView,
+  updateMediaDegradation,
   updateAllowPlayAudioNotification,
   updateShowKeyboardShortcutsModal,
   updateRoomAudioVolume,
