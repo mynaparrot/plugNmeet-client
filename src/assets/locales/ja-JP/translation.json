@@ -107,7 +107,19 @@
     "native-bridge-error": "申請書にはエラーが報告されました: {{error}}",
     "cannot-lock-admin": "他の管理者ユーザーのロック設定を変更することはできません。",
     "breakout-room-raised-hand": "{{name}} 手を挙げて {{room}}",
-    "switching-room": "部屋を切り替える..."
+    "switching-room": "部屋を切り替える...",
+    "video-paused-weak-connection": "接続が弱い — 音声をクリアに保つために映像が一時停止。",
+    "video-paused-audio-protection": "音声が途切れて映像が一時停止しました。",
+    "presentation-paused-weak-connection": "プレゼンテーションが一時停止 — あなたの接続が弱い。",
+    "suggest-pause-screenshare": "接続が弱いです。画面共有を一時停止して音声をクリアに保つことを検討してください。",
+    "connection-still-weak": "接続はまだ弱く、映像がフリーズすることがあります。",
+    "video-resumed": "接続が改善し、映像が再開されました。",
+    "video-stays-paused": "ビデオは再有効化するまで一時停止のままです。",
+    "video-paused": "映像が一時停止",
+    "audio-only-mode-weak-connection": "接続が深刻に不安定です。音声を再生させるために映像は一時停止されています。",
+    "connection-recovered-restore-video": "接続は再び安定しているように見えます。映像の復元を試してみてください。",
+    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
+    "presentation-resumed": "The presentation has resumed."
   },
   "room-metadata": {
     "session-recording": "この会議は録画されています。",
@@ -202,7 +214,11 @@
         "good": "よし",
         "poor": "かわいそうに",
         "lost": "失われた"
-      }
+      },
+      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
+      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
+      "re-enable-video": "Re-enable video",
+      "resume-presentation": "Resume presentation"
     }
   },
   "app": {
@@ -363,7 +379,8 @@
       "promote-presenter": "発表者にする",
       "demote-presenter": "発表者から降ろす",
       "you-are-muted": "あなたはミュートされています。他の人には聞こえません。",
-      "menu": "さらに多くの選択肢があります"
+      "menu": "さらに多くの選択肢があります",
+      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
     },
     "menus": {
       "mute-all-users": "全員をミュート",
