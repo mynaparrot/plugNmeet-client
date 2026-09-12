@@ -118,8 +118,8 @@
     "video-paused": "Video pysäytetty",
     "audio-only-mode-weak-connection": "Yhteytesi on kriittisen epävakaa. Video on keskeytetty, jotta ääni pysyy toiminnassa.",
     "connection-recovered-restore-video": "Yhteytesi näyttää taas vakaalta. Voit kokeilla videon palauttamista.",
-    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
-    "presentation-resumed": "The presentation has resumed."
+    "media-restored-camera-unavailable": "Saapuva media palautettiin, mutta kameraa ei voitu ottaa käyttöön.",
+    "presentation-resumed": "Esitys on jatkunut."
   },
   "room-metadata": {
     "session-recording": "Tämä kokous tallennetaan.",
@@ -215,10 +215,10 @@
         "poor": "Voi",
         "lost": "Kadonnut"
       },
-      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
-      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
-      "re-enable-video": "Re-enable video",
-      "resume-presentation": "Resume presentation"
+      "video-paused-banner": "Heikko yhteys — video pysäytetty äänen pitämiseksi selkeänä.",
+      "video-stays-paused-banner": "Heikko yhteys — video pysäytetty, kunnes otat sen uudelleen käyttöön.",
+      "re-enable-video": "Ota video uudelleen käyttöön",
+      "resume-presentation": "Ansioluettelon esittely"
     }
   },
   "app": {
@@ -380,7 +380,7 @@
       "demote-presenter": "Poista esittäjänä",
       "you-are-muted": "Kukaan ei kuule sinua. Olet mykistetty.",
       "menu": "Lisää vaihtoehtoja",
-      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
+      "paused-by-connection-tooltip": "Keskeytetty automaattisesti heikon yhteyden vuoksi — klikkaa ottaaksesi uudelleen käyttöön"
     },
     "menus": {
       "mute-all-users": "Mykistä kaikki",
