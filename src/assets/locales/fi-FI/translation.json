@@ -107,7 +107,19 @@
     "native-bridge-error": "Hakemus ilmoitti virheen: {{error}}",
     "cannot-lock-admin": "Et voi muuttaa lukitusasetuksia muille ylläpitäjille.",
     "breakout-room-raised-hand": "{{name}} nosti kätensä {{room}}",
-    "switching-room": "Vaihtohuone..."
+    "switching-room": "Vaihtohuone...",
+    "video-paused-weak-connection": "Heikko yhteys — video pysäytetty äänen pitämiseksi selkeänä.",
+    "video-paused-audio-protection": "Video pysähtyi, koska ääni katkesi.",
+    "presentation-paused-weak-connection": "Esitys tauolla — yhteytesi on heikko.",
+    "suggest-pause-screenshare": "Yhteytesi on heikko. Harkitse näytön jakamisen tauottamista, jotta ääni pysyy selkeänä.",
+    "connection-still-weak": "Yhteys on edelleen heikko — video voi jäätyä.",
+    "video-resumed": "Yhteys parani — video jatkui.",
+    "video-stays-paused": "Video pysyy tauolla, kunnes otat sen uudelleen käyttöön.",
+    "video-paused": "Video pysäytetty",
+    "audio-only-mode-weak-connection": "Yhteytesi on kriittisen epävakaa. Video on keskeytetty, jotta ääni pysyy toiminnassa.",
+    "connection-recovered-restore-video": "Yhteytesi näyttää taas vakaalta. Voit kokeilla videon palauttamista.",
+    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
+    "presentation-resumed": "The presentation has resumed."
   },
   "room-metadata": {
     "session-recording": "Tämä kokous tallennetaan.",
@@ -202,7 +214,11 @@
         "good": "Hyvä",
         "poor": "Voi",
         "lost": "Kadonnut"
-      }
+      },
+      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
+      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
+      "re-enable-video": "Re-enable video",
+      "resume-presentation": "Resume presentation"
     }
   },
   "app": {
@@ -363,7 +379,8 @@
       "promote-presenter": "Tee esittäjästä",
       "demote-presenter": "Poista esittäjänä",
       "you-are-muted": "Kukaan ei kuule sinua. Olet mykistetty.",
-      "menu": "Lisää vaihtoehtoja"
+      "menu": "Lisää vaihtoehtoja",
+      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
     },
     "menus": {
       "mute-all-users": "Mykistä kaikki",
