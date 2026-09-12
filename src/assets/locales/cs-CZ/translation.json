@@ -118,8 +118,8 @@
     "video-paused": "Video pozastaveno",
     "audio-only-mode-weak-connection": "Vaše připojení je kriticky nestabilní. Video bylo pozastaveno, aby zvuk fungoval.",
     "connection-recovered-restore-video": "Vaše připojení se zdá být opět stabilní. Můžete zkusit obnovit video.",
-    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
-    "presentation-resumed": "The presentation has resumed."
+    "media-restored-camera-unavailable": "Příchozí média byla obnovena, ale kamera nemohla být zapnuta.",
+    "presentation-resumed": "Prezentace byla obnovena."
   },
   "room-metadata": {
     "session-recording": "Tato schůzka je nahrávána.",
@@ -215,10 +215,10 @@
         "poor": "Chudák",
         "lost": "Ztraceno"
       },
-      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
-      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
-      "re-enable-video": "Re-enable video",
-      "resume-presentation": "Resume presentation"
+      "video-paused-banner": "Slabé připojení — video pozastaveno, aby zvuk zůstal čistý.",
+      "video-stays-paused-banner": "Slabé připojení — video pozastavené, dokud ho znovu nezapnete.",
+      "re-enable-video": "Znovu povolit video",
+      "resume-presentation": "Prezentace životopisu"
     }
   },
   "app": {
@@ -380,7 +380,7 @@
       "demote-presenter": "Odebrat jako prezentujícího",
       "you-are-muted": "Nikdo tě neslyší. Jsi ztlumený.",
       "menu": "Další možnosti",
-      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
+      "paused-by-connection-tooltip": "Automaticky pozastaveno kvůli slabému připojení — klikněte pro opětovné povolení"
     },
     "menus": {
       "mute-all-users": "Ztlumit všechny",
