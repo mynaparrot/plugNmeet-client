@@ -107,7 +107,19 @@
     "native-bridge-error": "La aplicación informó un error: {{error}}",
     "cannot-lock-admin": "No puedes cambiar la configuración de bloqueo para otros usuarios administradores.",
     "breakout-room-raised-hand": "{{name}} levantó la mano en {{room}}",
-    "switching-room": "Cambiando de sala..."
+    "switching-room": "Cambiando de sala...",
+    "video-paused-weak-connection": "Conexión débil — vídeo pausado para mantener el audio claro.",
+    "video-paused-audio-protection": "El vídeo se pausó porque el audio se estaba interrumpiendo.",
+    "presentation-paused-weak-connection": "Presentación pausada — tu conexión es débil.",
+    "suggest-pause-screenshare": "Tu conexión es débil. Considera pausar el compartir pantalla para mantener el audio claro.",
+    "connection-still-weak": "La conexión sigue siendo débil — el vídeo puede congelarse.",
+    "video-resumed": "Conexión mejorada — vídeo reanudado.",
+    "video-stays-paused": "El vídeo permanecerá pausado hasta que lo vuelvas a activar.",
+    "video-paused": "Vídeo pausado",
+    "audio-only-mode-weak-connection": "Tu conexión es críticamente inestable. El vídeo ha sido pausado para que el audio siga funcionando.",
+    "connection-recovered-restore-video": "Tu conexión parece estable de nuevo. Puedes intentar restaurar el vídeo.",
+    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
+    "presentation-resumed": "The presentation has resumed."
   },
   "room-metadata": {
     "session-recording": "Esta reunión está siendo grabada.",
@@ -202,7 +214,11 @@
         "good": "Buena",
         "poor": "Pobre",
         "lost": "Perdida"
-      }
+      },
+      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
+      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
+      "re-enable-video": "Re-enable video",
+      "resume-presentation": "Resume presentation"
     }
   },
   "app": {
@@ -363,7 +379,8 @@
       "promote-presenter": "Hacer presentador",
       "demote-presenter": "Quitar como presentador",
       "you-are-muted": "Nadie puede oírle. Su micrófono está silenciado.",
-      "menu": "Más opciones"
+      "menu": "Más opciones",
+      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
     },
     "menus": {
       "mute-all-users": "Silenciar a todos",
