@@ -118,8 +118,8 @@
     "video-paused": "Video pauset",
     "audio-only-mode-weak-connection": "Forbindelsen din er kritisk ustabil. Videoen er satt på pause for å holde lyden i gang.",
     "connection-recovered-restore-video": "Tilkoblingen din virker stabil igjen. Du kan prøve å gjenopprette videoen.",
-    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
-    "presentation-resumed": "The presentation has resumed."
+    "media-restored-camera-unavailable": "Innkommende medier ble gjenopprettet, men kameraet ditt kunne ikke aktiveres.",
+    "presentation-resumed": "Presentasjonen er gjenopptatt."
   },
   "room-metadata": {
     "session-recording": "Dette møtet blir tatt opp.",
@@ -215,10 +215,10 @@
         "poor": "Stakkars",
         "lost": "Tapt"
       },
-      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
-      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
-      "re-enable-video": "Re-enable video",
-      "resume-presentation": "Resume presentation"
+      "video-paused-banner": "Svak tilkobling — video pauset for å holde lyden klar.",
+      "video-stays-paused-banner": "Svak tilkobling — video pauset til du aktiverer den igjen.",
+      "re-enable-video": "Aktiver video igjen",
+      "resume-presentation": "Presentasjon av CV"
     }
   },
   "app": {
@@ -380,7 +380,7 @@
       "demote-presenter": "Fjern som presentatør",
       "you-are-muted": "Ingen kan høre deg. Du er mutet.",
       "menu": "Flere alternativer",
-      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
+      "paused-by-connection-tooltip": "Satt automatisk på pause på grunn av svak tilkobling — klikk for å aktivere på nytt"
     },
     "menus": {
       "mute-all-users": "Demp alle",
