@@ -118,8 +118,8 @@
     "video-paused": "Video pus pe pauză",
     "audio-only-mode-weak-connection": "Conexiunea ta este extrem de instabilă. Videoclipul a fost pus pe pauză pentru a menține sunetul funcțional.",
     "connection-recovered-restore-video": "Conexiunea ta pare din nou stabilă. Poți încerca să restaurezi video-ul.",
-    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
-    "presentation-resumed": "The presentation has resumed."
+    "media-restored-camera-unavailable": "Media primită a fost restaurată, dar camera ta nu a putut fi activată.",
+    "presentation-resumed": "Prezentarea a fost reluată."
   },
   "room-metadata": {
     "session-recording": "Această întâlnire este înregistrată.",
@@ -215,10 +215,10 @@
         "poor": "Sărac",
         "lost": "Pierdut"
       },
-      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
-      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
-      "re-enable-video": "Re-enable video",
-      "resume-presentation": "Resume presentation"
+      "video-paused-banner": "Conexiune slabă — video pus pe pauză pentru a menține sunetul clar.",
+      "video-stays-paused-banner": "Conexiune slabă — videoclipul este pus pe pauză până îl reactivezi.",
+      "re-enable-video": "Reactivează videoclipul",
+      "resume-presentation": "Prezentarea CV-ului"
     }
   },
   "app": {
@@ -380,7 +380,7 @@
       "demote-presenter": "Eliminare ca prezentator",
       "you-are-muted": "Nimeni nu te poate auzi. Ești mut.",
       "menu": "Mai multe opțiuni",
-      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
+      "paused-by-connection-tooltip": "Pauză automată din cauza conexiunii slabe — apasă pentru a reactiva"
     },
     "menus": {
       "mute-all-users": "Dezactivați sunetul tuturor",
