@@ -118,8 +118,8 @@
     "video-paused": "Wideo przerwane",
     "audio-only-mode-weak-connection": "Twoje połączenie jest krytycznie niestabilne. Obraz został wstrzymany, aby utrzymać działanie dźwięku.",
     "connection-recovered-restore-video": "Twoje połączenie znów wydaje się stabilne. Możesz spróbować przywrócić obraz.",
-    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
-    "presentation-resumed": "The presentation has resumed."
+    "media-restored-camera-unavailable": "Przywracano przychodzące media, ale kamera nie została włączona.",
+    "presentation-resumed": "Prezentacja została wznowiona."
   },
   "room-metadata": {
     "session-recording": "To spotkanie jest nagrywane.",
@@ -215,10 +215,10 @@
         "poor": "Biedny",
         "lost": "Zagubiony"
       },
-      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
-      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
-      "re-enable-video": "Re-enable video",
-      "resume-presentation": "Resume presentation"
+      "video-paused-banner": "Słabe połączenie — wideo zatrzymane, aby utrzymać wyraźny dźwięk.",
+      "video-stays-paused-banner": "Słabe połączenie — wideo zostało wstrzymane, dopóki nie włączysz go ponownie.",
+      "re-enable-video": "Ponowne włączenie wideo",
+      "resume-presentation": "Prezentacja CV"
     }
   },
   "app": {
@@ -380,7 +380,7 @@
       "demote-presenter": "Usuń jako prezentera",
       "you-are-muted": "Nikt Cię nie słyszy. Jesteś wyciszony.",
       "menu": "Więcej opcji",
-      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
+      "paused-by-connection-tooltip": "Automatycznie zatrzymane z powodu słabego połączenia — kliknij, aby ponownie włączyć"
     },
     "menus": {
       "mute-all-users": "Wycisz wszystkich",
