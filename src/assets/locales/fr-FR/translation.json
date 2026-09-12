@@ -107,7 +107,19 @@
     "native-bridge-error": "La demande a signalé une erreur : {{error}}",
     "cannot-lock-admin": "Vous ne pouvez pas changer les paramètres de verrouillage pour d’autres utilisateurs administrateurs.",
     "breakout-room-raised-hand": "{{name}} levèrent la main dans {{room}}",
-    "switching-room": "Changer de chambre..."
+    "switching-room": "Changer de chambre...",
+    "video-paused-weak-connection": "Connexion faible — vidéo mise en pause pour garder l’audio clair.",
+    "video-paused-audio-protection": "La vidéo a été mise en pause parce que ton son se coupait.",
+    "presentation-paused-weak-connection": "Présentation en pause — votre connexion est faible.",
+    "suggest-pause-screenshare": "Votre connexion est faible. Envisagez de mettre votre partage d’écran en pause pour garder le son clair.",
+    "connection-still-weak": "La connexion reste faible — la vidéo peut geler.",
+    "video-resumed": "La connexion s’est améliorée — la vidéo a repris.",
+    "video-stays-paused": "La vidéo restera en pause jusqu’à ce que vous la réactiviez.",
+    "video-paused": "Vidéo mise en pause",
+    "audio-only-mode-weak-connection": "Votre connexion est critiquement instable. La vidéo a été mise en pause pour maintenir le son en marche.",
+    "connection-recovered-restore-video": "Votre connexion semble de nouveau stable. Vous pouvez essayer de restaurer la vidéo.",
+    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
+    "presentation-resumed": "The presentation has resumed."
   },
   "room-metadata": {
     "session-recording": "Cette réunion est en cours d'enregistrement.",
@@ -202,7 +214,11 @@
         "good": "Bien",
         "poor": "Pauvre",
         "lost": "Perdu"
-      }
+      },
+      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
+      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
+      "re-enable-video": "Re-enable video",
+      "resume-presentation": "Resume presentation"
     }
   },
   "app": {
@@ -363,7 +379,8 @@
       "promote-presenter": "Nommer présentateur",
       "demote-presenter": "Retirer le rôle de présentateur",
       "you-are-muted": "Personne ne peut vous entendre. Votre micro est coupé.",
-      "menu": "Plus d’options"
+      "menu": "Plus d’options",
+      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
     },
     "menus": {
       "mute-all-users": "Couper le micro de tous les participants",
