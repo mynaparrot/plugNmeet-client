@@ -107,7 +107,19 @@
     "native-bridge-error": "Applikationen rapporterede en fejl: {{error}}",
     "cannot-lock-admin": "Du kan ikke ændre låseindstillinger for andre administratorbrugere.",
     "breakout-room-raised-hand": "{{name}} Løftede hånden ind {{room}}",
-    "switching-room": "Skifter rum..."
+    "switching-room": "Skifter rum...",
+    "video-paused-weak-connection": "Svag forbindelse — video pauset for at holde lyden klar.",
+    "video-paused-audio-protection": "Videoen blev sat på pause, fordi din lyd brød sammen.",
+    "presentation-paused-weak-connection": "Præsentationen er sat på pause — din forbindelse er svag.",
+    "suggest-pause-screenshare": "Din forbindelse er svag. Overvej at sætte din skærmdeling på pause for at holde lyden klar.",
+    "connection-still-weak": "Forbindelsen er stadig svag — video kan fryse.",
+    "video-resumed": "Forbindelsen forbedret — videoen genoptages.",
+    "video-stays-paused": "Videoen forbliver på pause, indtil du aktiverer den igen.",
+    "video-paused": "Video pauset",
+    "audio-only-mode-weak-connection": "Din forbindelse er kritisk ustabil. Videoen er blevet sat på pause for at holde lyden kørende.",
+    "connection-recovered-restore-video": "Din forbindelse ser stabil ud igen. Du kan prøve at gendanne videoen.",
+    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
+    "presentation-resumed": "The presentation has resumed."
   },
   "room-metadata": {
     "session-recording": "Dette møde er ved at blive optaget.",
@@ -202,7 +214,11 @@
         "good": "Godt",
         "poor": "Fattigt",
         "lost": "Lost"
-      }
+      },
+      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
+      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
+      "re-enable-video": "Re-enable video",
+      "resume-presentation": "Resume presentation"
     }
   },
   "app": {
@@ -363,7 +379,8 @@
       "promote-presenter": "Gør oplægsholder",
       "demote-presenter": "Fjern som præsentationsvært",
       "you-are-muted": "Ingen kan høre dig. Du er muted.",
-      "menu": "Flere muligheder"
+      "menu": "Flere muligheder",
+      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
     },
     "menus": {
       "mute-all-users": "Slå lyden fra for alle",
