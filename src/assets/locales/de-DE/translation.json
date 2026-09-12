@@ -118,8 +118,8 @@
     "video-paused": "Video pausiert",
     "audio-only-mode-weak-connection": "Ihre Verbindung ist kritisch instabil. Das Video wurde pausiert, um den Ton am Laufen zu halten.",
     "connection-recovered-restore-video": "Deine Verbindung scheint wieder stabil zu sein. Du kannst versuchen, das Video wiederherzustellen.",
-    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
-    "presentation-resumed": "The presentation has resumed."
+    "media-restored-camera-unavailable": "Eingehende Medien wurden wiederhergestellt, aber deine Kamera konnte nicht aktiviert werden.",
+    "presentation-resumed": "Die Präsentation wurde fortgesetzt."
   },
   "room-metadata": {
     "session-recording": "Dieses Meeting wird aufgezeichnet.",
@@ -215,10 +215,10 @@
         "poor": "Schlecht",
         "lost": "Verbindung verloren"
       },
-      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
-      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
-      "re-enable-video": "Re-enable video",
-      "resume-presentation": "Resume presentation"
+      "video-paused-banner": "Schwache Verbindung – Video pausiert, um den Ton klar zu halten.",
+      "video-stays-paused-banner": "Schwache Verbindung – Video pausiert, bis du es wieder aktivierst.",
+      "re-enable-video": "Video wieder aktivieren",
+      "resume-presentation": "Lebenslaufpräsentation"
     }
   },
   "app": {
@@ -380,7 +380,7 @@
       "demote-presenter": "Als Präsentator entfernen",
       "you-are-muted": "Niemand kann Sie hören. Sie sind stummgeschaltet.",
       "menu": "Mehr Optionen",
-      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
+      "paused-by-connection-tooltip": "Automatisch wegen schwacher Verbindung pausiert – zum Wiederaktivieren klicken."
     },
     "menus": {
       "mute-all-users": "Alle stummschalten",
