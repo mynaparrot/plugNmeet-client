@@ -107,7 +107,19 @@
     "native-bridge-error": "أبلغ التطبيق عن خطأ: {{error}}",
     "cannot-lock-admin": "لا يمكنك تغيير إعدادات القفل لمستخدمي المسؤولين الآخرين.",
     "breakout-room-raised-hand": "{{name}} رفع يده {{room}}",
-    "switching-room": "غرفة التبديل..."
+    "switching-room": "غرفة التبديل...",
+    "video-paused-weak-connection": "اتصال ضعيف — الفيديو توقف للحفاظ على وضوح الصوت.",
+    "video-paused-audio-protection": "توقف الفيديو لأن الصوت كان يتقطع.",
+    "presentation-paused-weak-connection": "توقفت اللحظة — اتصالك ضعيف.",
+    "suggest-pause-screenshare": "الاتصال ضعيف. فكر في إيقاف مشاركة الشاشة مؤقتا للحفاظ على وضوح الصوت.",
+    "connection-still-weak": "الاتصال لا يزال ضعيفا — قد يتجمد الفيديو.",
+    "video-resumed": "تم تحسين الاتصال — استؤنف الفيديو.",
+    "video-stays-paused": "سيبقى الفيديو مؤقتا حتى تعيد تفعيله.",
+    "video-paused": "توقف الفيديو مؤقتا",
+    "audio-only-mode-weak-connection": "اتصالك غير مستقر بشكل حرج. تم إيقاف الفيديو للحفاظ على عمل الصوت.",
+    "connection-recovered-restore-video": "يبدو أن اتصالك مستقر مرة أخرى. يمكنك محاولة استعادة الفيديو.",
+    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
+    "presentation-resumed": "The presentation has resumed."
   },
   "room-metadata": {
     "session-recording": "يتم تسجيل هذا الاجتماع.",
@@ -202,7 +214,11 @@
         "good": "جيد",
         "poor": "فقير",
         "lost": "مفقود"
-      }
+      },
+      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
+      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
+      "re-enable-video": "Re-enable video",
+      "resume-presentation": "Resume presentation"
     }
   },
   "app": {
@@ -363,7 +379,8 @@
       "promote-presenter": "تعيين كمقدِّم",
       "demote-presenter": "إزالة من دور المقدِّم",
       "you-are-muted": "لا أحد يستطيع سماعك. الميكروفون مكتوم.",
-      "menu": "خيارات أكثر"
+      "menu": "خيارات أكثر",
+      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
     },
     "menus": {
       "mute-all-users": "كتم صوت الجميع",
