@@ -118,8 +118,8 @@
     "video-paused": "영상 일시정지",
     "audio-only-mode-weak-connection": "연결 상태가 심각하게 불안정합니다. 오디오를 유지하기 위해 영상이 일시정지되었습니다.",
     "connection-recovered-restore-video": "연결이 다시 안정적으로 보입니다. 비디오 복원을 시도해 보세요.",
-    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
-    "presentation-resumed": "The presentation has resumed."
+    "media-restored-camera-unavailable": "들어오는 미디어는 복원되었지만, 카메라는 활성화되지 않았습니다.",
+    "presentation-resumed": "발표가 재개되었습니다."
   },
   "room-metadata": {
     "session-recording": "이 회의는 녹화되고 있습니다.",
@@ -215,10 +215,10 @@
         "poor": "불쌍하네요",
         "lost": "잃어버렸다"
       },
-      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
-      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
-      "re-enable-video": "Re-enable video",
-      "resume-presentation": "Resume presentation"
+      "video-paused-banner": "연결 약함 — 오디오를 선명하게 유지하기 위해 영상이 일시정지됨.",
+      "video-stays-paused-banner": "연결이 약해 — 영상이 일시정지되어 다시 활성화할 때까지 계속됩니다.",
+      "re-enable-video": "비디오 재활성화",
+      "resume-presentation": "이력서 제출"
     }
   },
   "app": {
@@ -380,7 +380,7 @@
       "demote-presenter": "발표자에서 제외",
       "you-are-muted": "음소거되었습니다. 아무도 당신의 말을 들을 수 없습니다.",
       "menu": "더 많은 선택지",
-      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
+      "paused-by-connection-tooltip": "연결이 약해 자동으로 일시정지됨 — 클릭하여 다시 활성화하세요"
     },
     "menus": {
       "mute-all-users": "모두 음소거",
