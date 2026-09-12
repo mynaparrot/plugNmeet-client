@@ -118,8 +118,8 @@
     "video-paused": "Video gepauzeerd",
     "audio-only-mode-weak-connection": "Je verbinding is kritiek instabiel. De video is gepauzeerd om het geluid werkend te houden.",
     "connection-recovered-restore-video": "Je verbinding lijkt weer stabiel. Je kunt proberen de video te herstellen.",
-    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
-    "presentation-resumed": "The presentation has resumed."
+    "media-restored-camera-unavailable": "Binnenkomende media werd hersteld, maar je camera kon niet worden ingeschakeld.",
+    "presentation-resumed": "De presentatie is hervat."
   },
   "room-metadata": {
     "session-recording": "Deze vergadering wordt opgenomen.",
@@ -215,10 +215,10 @@
         "poor": "Arme",
         "lost": "Verloren"
       },
-      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
-      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
-      "re-enable-video": "Re-enable video",
-      "resume-presentation": "Resume presentation"
+      "video-paused-banner": "Zwakke verbinding — video gepauzeerd om het geluid helder te houden.",
+      "video-stays-paused-banner": "Zwakke verbinding — video gepauzeerd totdat je hem weer inschakelt.",
+      "re-enable-video": "Video opnieuw inschakelen",
+      "resume-presentation": "Presentatie van het cv"
     }
   },
   "app": {
@@ -380,7 +380,7 @@
       "demote-presenter": "Verwijderen als presentator",
       "you-are-muted": "Niemand kan je horen. Je bent gedempt.",
       "menu": "Meer opties",
-      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
+      "paused-by-connection-tooltip": "Automatisch gepauzeerd vanwege zwakke verbinding — klik om opnieuw in te schakelen"
     },
     "menus": {
       "mute-all-users": "Iedereen dempen",
