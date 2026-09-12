@@ -107,7 +107,19 @@
     "native-bridge-error": "Cererea a raportat o eroare: {{error}}",
     "cannot-lock-admin": "Nu poți schimba setările încuietorilor pentru alți utilizatori administratori.",
     "breakout-room-raised-hand": "{{name}} și-au ridicat mâna în {{room}}",
-    "switching-room": "Schimb de cameră..."
+    "switching-room": "Schimb de cameră...",
+    "video-paused-weak-connection": "Conexiune slabă — video pus pe pauză pentru a menține sunetul clar.",
+    "video-paused-audio-protection": "Videoclipul s-a pus pe pauză pentru că sunetul tău se întrerupea.",
+    "presentation-paused-weak-connection": "Prezentarea s-a întrerupt — conexiunea ta este slabă.",
+    "suggest-pause-screenshare": "Conexiunea ta este slabă. Ia în considerare să pui pauză partajării ecranului pentru a păstra sunetul clar.",
+    "connection-still-weak": "Conexiunea este încă slabă — video-ul poate îngheța.",
+    "video-resumed": "Conexiunea s-a îmbunătățit — videoclipul a fost reluat.",
+    "video-stays-paused": "Videoclipul va rămâne pus pe pauză până îl reactivezi.",
+    "video-paused": "Video pus pe pauză",
+    "audio-only-mode-weak-connection": "Conexiunea ta este extrem de instabilă. Videoclipul a fost pus pe pauză pentru a menține sunetul funcțional.",
+    "connection-recovered-restore-video": "Conexiunea ta pare din nou stabilă. Poți încerca să restaurezi video-ul.",
+    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
+    "presentation-resumed": "The presentation has resumed."
   },
   "room-metadata": {
     "session-recording": "Această întâlnire este înregistrată.",
@@ -202,7 +214,11 @@
         "good": "Bine",
         "poor": "Sărac",
         "lost": "Pierdut"
-      }
+      },
+      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
+      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
+      "re-enable-video": "Re-enable video",
+      "resume-presentation": "Resume presentation"
     }
   },
   "app": {
@@ -363,7 +379,8 @@
       "promote-presenter": "Faceți prezentator",
       "demote-presenter": "Eliminare ca prezentator",
       "you-are-muted": "Nimeni nu te poate auzi. Ești mut.",
-      "menu": "Mai multe opțiuni"
+      "menu": "Mai multe opțiuni",
+      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
     },
     "menus": {
       "mute-all-users": "Dezactivați sunetul tuturor",
