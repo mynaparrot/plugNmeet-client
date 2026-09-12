@@ -107,7 +107,19 @@
     "native-bridge-error": "Aplikacja zgłosiła błąd: {{error}}",
     "cannot-lock-admin": "Nie możesz zmieniać ustawień blokad dla innych użytkowników administratorów.",
     "breakout-room-raised-hand": "{{name}} Podnieśli rękę {{room}}",
-    "switching-room": "Zmiana pokoju..."
+    "switching-room": "Zmiana pokoju...",
+    "video-paused-weak-connection": "Słabe połączenie — wideo zatrzymane, aby utrzymać wyraźny dźwięk.",
+    "video-paused-audio-protection": "Obraz zatrzymał się, bo dźwięk się zaciął.",
+    "presentation-paused-weak-connection": "Prezentacja zatrzymana — wasze połączenie jest słabe.",
+    "suggest-pause-screenshare": "Twoje połączenie jest słabe. Rozważ wstrzymanie udostępniania ekranu, aby zachować wyraźny dźwięk.",
+    "connection-still-weak": "Połączenie nadal jest słabe — obraz może się zawieszać.",
+    "video-resumed": "Połączenie poprawione — wideo wznowione.",
+    "video-stays-paused": "Wideo pozostanie wstrzymane, dopóki nie włączysz go ponownie.",
+    "video-paused": "Wideo przerwane",
+    "audio-only-mode-weak-connection": "Twoje połączenie jest krytycznie niestabilne. Obraz został wstrzymany, aby utrzymać działanie dźwięku.",
+    "connection-recovered-restore-video": "Twoje połączenie znów wydaje się stabilne. Możesz spróbować przywrócić obraz.",
+    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
+    "presentation-resumed": "The presentation has resumed."
   },
   "room-metadata": {
     "session-recording": "To spotkanie jest nagrywane.",
@@ -202,7 +214,11 @@
         "good": "Dobrze",
         "poor": "Biedny",
         "lost": "Zagubiony"
-      }
+      },
+      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
+      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
+      "re-enable-video": "Re-enable video",
+      "resume-presentation": "Resume presentation"
     }
   },
   "app": {
@@ -363,7 +379,8 @@
       "promote-presenter": "Ustaw jako prezentera",
       "demote-presenter": "Usuń jako prezentera",
       "you-are-muted": "Nikt Cię nie słyszy. Jesteś wyciszony.",
-      "menu": "Więcej opcji"
+      "menu": "Więcej opcji",
+      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
     },
     "menus": {
       "mute-all-users": "Wycisz wszystkich",
