@@ -107,7 +107,19 @@
     "native-bridge-error": "A kérelem hibát jelentett: {{error}}",
     "cannot-lock-admin": "Nem lehet más adminisztrátor felhasználók számára lock beállításokat változtatni.",
     "breakout-room-raised-hand": "{{name}} Felemelte a kezét {{room}}",
-    "switching-room": "Szobáváltás..."
+    "switching-room": "Szobáváltás...",
+    "video-paused-weak-connection": "Gyenge kapcsolat — a videó szünetelt, hogy tiszta legyen a hang.",
+    "video-paused-audio-protection": "A videó megállt, mert a hangod elromlott.",
+    "presentation-paused-weak-connection": "A prezentáció megszünetelt — gyenge a kapcsolatod.",
+    "suggest-pause-screenshare": "A kapcsolatod gyenge. Fontold meg, hogy megállítod a képernyőmegosztást, hogy tiszta legyen a hang.",
+    "connection-still-weak": "A kapcsolat még mindig gyenge — a videó lefagyhat.",
+    "video-resumed": "A kapcsolat javult — videó folytatódott.",
+    "video-stays-paused": "A videó szünetbe nem tart, amíg újra be nem kapcsolod.",
+    "video-paused": "Videó szünetelt",
+    "audio-only-mode-weak-connection": "A kapcsolatod kritikus instabil. A videót meg is állították, hogy a hang működjön.",
+    "connection-recovered-restore-video": "A kapcsolatod ismét stabilnak tűnik. Megpróbálhatod visszaállítani a videót.",
+    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
+    "presentation-resumed": "The presentation has resumed."
   },
   "room-metadata": {
     "session-recording": "Ezt a találkozót rögzítik.",
@@ -202,7 +214,11 @@
         "good": "Jó",
         "poor": "Szegény",
         "lost": "Elveszett"
-      }
+      },
+      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
+      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
+      "re-enable-video": "Re-enable video",
+      "resume-presentation": "Resume presentation"
     }
   },
   "app": {
@@ -363,7 +379,8 @@
       "promote-presenter": "Készítsen előadót",
       "demote-presenter": "Eltávolítás előadóként",
       "you-are-muted": "Senki sem hall téged. Némított vagy.",
-      "menu": "További lehetőségek"
+      "menu": "További lehetőségek",
+      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
     },
     "menus": {
       "mute-all-users": "Mindenki elnémítása",
