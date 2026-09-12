@@ -118,8 +118,8 @@
     "video-paused": "Το βίντεο έχει τεθεί σε παύση",
     "audio-only-mode-weak-connection": "Η σύνδεσή σας είναι εξαιρετικά ασταθής. Το βίντεο έχει τεθεί σε παύση για να συνεχίσει να λειτουργεί ο ήχος.",
     "connection-recovered-restore-video": "Η σύνδεσή σας φαίνεται και πάλι σταθερή. Μπορείτε να δοκιμάσετε να επαναφέρετε το βίντεο.",
-    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
-    "presentation-resumed": "The presentation has resumed."
+    "media-restored-camera-unavailable": "Έγινε επαναφορά των εισερχόμενων μέσων, αλλά δεν ήταν δυνατή η ενεργοποίηση της κάμερας.",
+    "presentation-resumed": "Η παρουσίαση συνεχίστηκε."
   },
   "room-metadata": {
     "session-recording": "Αυτή η σύσκεψη καταγράφεται.",
@@ -215,10 +215,10 @@
         "poor": "Κακή",
         "lost": "Χαμένος"
       },
-      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
-      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
-      "re-enable-video": "Re-enable video",
-      "resume-presentation": "Resume presentation"
+      "video-paused-banner": "Αδύναμη σύνδεση — το βίντεο τέθηκε σε παύση για να διατηρείται καθαρός ο ήχος.",
+      "video-stays-paused-banner": "Αδύναμη σύνδεση — το βίντεο έχει τεθεί σε παύση μέχρι να το ενεργοποιήσετε ξανά.",
+      "re-enable-video": "Επανενεργοποίηση βίντεο",
+      "resume-presentation": "Παρουσίαση βιογραφικού"
     }
   },
   "app": {
@@ -380,7 +380,7 @@
       "demote-presenter": "Αφαίρεση από παρουσιαστή",
       "you-are-muted": "Κανείς δεν μπορεί να σας ακούσει. Είστε σε σίγαση.",
       "menu": "Περισσότερες επιλογές",
-      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
+      "paused-by-connection-tooltip": "Αυτόματη παύση λόγω αδύναμης σύνδεσης — κάντε κλικ για να την ενεργοποιήσετε ξανά"
     },
     "menus": {
       "mute-all-users": "Σίγαση όλων",
