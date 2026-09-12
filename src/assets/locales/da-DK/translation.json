@@ -107,7 +107,19 @@
     "native-bridge-error": "Applikationen rapporterede en fejl: {{error}}",
     "cannot-lock-admin": "Du kan ikke ændre låseindstillinger for andre administratorbrugere.",
     "breakout-room-raised-hand": "{{name}} Løftede hånden ind {{room}}",
-    "switching-room": "Skifter rum..."
+    "switching-room": "Skifter rum...",
+    "video-paused-weak-connection": "Svag forbindelse — video pauset for at holde lyden klar.",
+    "video-paused-audio-protection": "Videoen blev sat på pause, fordi din lyd brød sammen.",
+    "presentation-paused-weak-connection": "Præsentationen er sat på pause — din forbindelse er svag.",
+    "suggest-pause-screenshare": "Din forbindelse er svag. Overvej at sætte din skærmdeling på pause for at holde lyden klar.",
+    "connection-still-weak": "Forbindelsen er stadig svag — video kan fryse.",
+    "video-resumed": "Forbindelsen forbedret — videoen genoptages.",
+    "video-stays-paused": "Videoen forbliver på pause, indtil du aktiverer den igen.",
+    "video-paused": "Video pauset",
+    "audio-only-mode-weak-connection": "Din forbindelse er kritisk ustabil. Videoen er blevet sat på pause for at holde lyden kørende.",
+    "connection-recovered-restore-video": "Din forbindelse ser stabil ud igen. Du kan prøve at gendanne videoen.",
+    "media-restored-camera-unavailable": "Indkommende medier blev gendannet, men dit kamera kunne ikke aktiveres.",
+    "presentation-resumed": "Præsentationen er genoptaget."
   },
   "room-metadata": {
     "session-recording": "Dette møde er ved at blive optaget.",
@@ -202,7 +214,11 @@
         "good": "Godt",
         "poor": "Fattigt",
         "lost": "Lost"
-      }
+      },
+      "video-paused-banner": "Svag forbindelse — video pauset for at holde lyden klar.",
+      "video-stays-paused-banner": "Svag forbindelse — video er sat på pause, indtil du aktiverer den igen.",
+      "re-enable-video": "Genaktiver video",
+      "resume-presentation": "CV-præsentation"
     }
   },
   "app": {
@@ -292,7 +308,26 @@
     "file-upload-success": "Filen blev uploadet",
     "file-upload-default-error": "Der opstod en fejl under upload af filen.",
     "chat-box-placeholder": "Send en meddelelse, indsæt et billede, eller slip en fil her (Ny linje: Skift + Enter)",
-    "sending-message": "Vent venligst, sender..."
+    "sending-message": "Vent venligst, sender...",
+    "reply": "Svar",
+    "edit-message": "Rediger besked",
+    "delete-message": "Slet",
+    "cancel": "Annuller",
+    "save": "Gem",
+    "edited": "redigeret",
+    "edited-at-title": "Redigeret",
+    "copy-message": "Kopier besked",
+    "message-options": "Beskedmuligheder",
+    "message-deleted": "Denne besked blev slettet",
+    "message-deleted-by-you": "Du slettede denne besked",
+    "message-deleted-by-admin": "Denne besked blev slettet af en administrator",
+    "delete-confirm-title": "Slette denne besked?",
+    "delete-confirm-body": "Dette vil fjerne budskabet for alle i denne samtale. Det kan ikke gøres om.",
+    "replying-to": "Svar til {{name}}",
+    "editing-message": "Redigeringsmeddelelse",
+    "new-messages": "Nye beskeder",
+    "scroll-to-bottom": "Scroll ned til bunden",
+    "sync-chat": "Synkroniser chat med ligesindede"
   },
   "footer": {
     "aria-label": "Mødekontroller",
@@ -344,7 +379,8 @@
       "promote-presenter": "Gør oplægsholder",
       "demote-presenter": "Fjern som præsentationsvært",
       "you-are-muted": "Ingen kan høre dig. Du er muted.",
-      "menu": "Flere muligheder"
+      "menu": "Flere muligheder",
+      "paused-by-connection-tooltip": "Automatisk sat på pause på grund af svag forbindelse — klik for at aktivere det igen"
     },
     "menus": {
       "mute-all-users": "Slå lyden fra for alle",

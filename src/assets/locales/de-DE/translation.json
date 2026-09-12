@@ -107,7 +107,19 @@
     "native-bridge-error": "Die Anwendung meldete einen Fehler: {{error}}",
     "cannot-lock-admin": "Du kannst die Schlosseinstellungen für andere Administratoren nicht ändern.",
     "breakout-room-raised-hand": "{{name}} hob die Hand in {{room}}",
-    "switching-room": "Raum wechseln..."
+    "switching-room": "Raum wechseln...",
+    "video-paused-weak-connection": "Schwache Verbindung – Video pausiert, um den Ton klar zu halten.",
+    "video-paused-audio-protection": "Das Video wurde pausiert, weil dein Audio abgebrochen ist.",
+    "presentation-paused-weak-connection": "Präsentation pausiert – deine Verbindung ist schwach.",
+    "suggest-pause-screenshare": "Deine Verbindung ist schwach. Überlege, deine Bildschirmfreigabe zu pausieren, um den Ton klar zu halten.",
+    "connection-still-weak": "Die Verbindung ist immer noch schwach – das Video könnte einfrieren.",
+    "video-resumed": "Verbindung verbessert – Video fortgesetzt.",
+    "video-stays-paused": "Das Video bleibt pausiert, bis du es wieder aktivierst.",
+    "video-paused": "Video pausiert",
+    "audio-only-mode-weak-connection": "Ihre Verbindung ist kritisch instabil. Das Video wurde pausiert, um den Ton am Laufen zu halten.",
+    "connection-recovered-restore-video": "Deine Verbindung scheint wieder stabil zu sein. Du kannst versuchen, das Video wiederherzustellen.",
+    "media-restored-camera-unavailable": "Eingehende Medien wurden wiederhergestellt, aber deine Kamera konnte nicht aktiviert werden.",
+    "presentation-resumed": "Die Präsentation wurde fortgesetzt."
   },
   "room-metadata": {
     "session-recording": "Dieses Meeting wird aufgezeichnet.",
@@ -202,7 +214,11 @@
         "good": "Gut",
         "poor": "Schlecht",
         "lost": "Verbindung verloren"
-      }
+      },
+      "video-paused-banner": "Schwache Verbindung – Video pausiert, um den Ton klar zu halten.",
+      "video-stays-paused-banner": "Schwache Verbindung – Video pausiert, bis du es wieder aktivierst.",
+      "re-enable-video": "Video wieder aktivieren",
+      "resume-presentation": "Lebenslaufpräsentation"
     }
   },
   "app": {
@@ -292,7 +308,26 @@
     "file-upload-success": "Datei erfolgreich hochgeladen.",
     "file-upload-default-error": "Beim Hochladen der Datei ist ein Fehler aufgetreten.",
     "chat-box-placeholder": "Senden Sie eine Nachricht, fügen Sie ein Bild ein oder legen Sie eine Datei hier ab (Neue Zeile: Umschalt + Eingabe)",
-    "sending-message": "Wird gesendet, bitte warten..."
+    "sending-message": "Wird gesendet, bitte warten...",
+    "reply": "Antwort",
+    "edit-message": "Nachricht bearbeiten",
+    "delete-message": "Löschen",
+    "cancel": "Stornieren",
+    "save": "Speichern",
+    "edited": "Bearbeitet",
+    "edited-at-title": "Bearbeitet",
+    "copy-message": "Nachricht kopieren",
+    "message-options": "Nachrichtenoptionen",
+    "message-deleted": "Diese Nachricht wurde gelöscht",
+    "message-deleted-by-you": "Du hast diese Nachricht gelöscht",
+    "message-deleted-by-admin": "Diese Nachricht wurde von einem Admin gelöscht",
+    "delete-confirm-title": "Diese Nachricht löschen?",
+    "delete-confirm-body": "Das wird die Botschaft für alle in diesem Gespräch entfernen. Das kann nicht rückgängig gemacht werden.",
+    "replying-to": "Antwort auf {{name}}",
+    "editing-message": "Bearbeitungsnachricht",
+    "new-messages": "Neue Botschaften",
+    "scroll-to-bottom": "Scrollen Sie nach unten",
+    "sync-chat": "Chat mit Peers synchronisieren"
   },
   "footer": {
     "aria-label": "Sitzungskontrollen",
@@ -344,7 +379,8 @@
       "promote-presenter": "Zum Präsentator ernennen",
       "demote-presenter": "Als Präsentator entfernen",
       "you-are-muted": "Niemand kann Sie hören. Sie sind stummgeschaltet.",
-      "menu": "Mehr Optionen"
+      "menu": "Mehr Optionen",
+      "paused-by-connection-tooltip": "Automatisch wegen schwacher Verbindung pausiert – zum Wiederaktivieren klicken."
     },
     "menus": {
       "mute-all-users": "Alle stummschalten",

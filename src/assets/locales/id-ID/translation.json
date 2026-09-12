@@ -107,7 +107,19 @@
     "native-bridge-error": "Aplikasi melaporkan kesalahan: {{error}}",
     "cannot-lock-admin": "Anda tidak dapat mengubah pengaturan kunci untuk pengguna admin lain.",
     "breakout-room-raised-hand": "{{name}} mengangkat tangan {{room}}",
-    "switching-room": "Ruang ganti..."
+    "switching-room": "Ruang ganti...",
+    "video-paused-weak-connection": "Koneksi lemah — video dijeda untuk menjaga audio tetap jelas.",
+    "video-paused-audio-protection": "Video berhenti karena audio Anda terputus.",
+    "presentation-paused-weak-connection": "Presentasi terhenti — koneksi Anda lemah.",
+    "suggest-pause-screenshare": "Koneksi Anda lemah. Pertimbangkan untuk menjeda berbagi layar agar audio tetap jelas.",
+    "connection-still-weak": "Koneksi masih lemah — video bisa saja membeku.",
+    "video-resumed": "Koneksi membaik — video dilanjutkan.",
+    "video-stays-paused": "Video akan tetap dipause sampai Anda mengaktifkannya kembali.",
+    "video-paused": "Video dijeda",
+    "audio-only-mode-weak-connection": "Koneksi Anda sangat tidak stabil. Video telah dijeda untuk menjaga audio tetap berfungsi.",
+    "connection-recovered-restore-video": "Koneksi Anda tampak stabil lagi. Anda dapat mencoba memulihkan video.",
+    "media-restored-camera-unavailable": "Media yang masuk telah dipulihkan, tetapi kamera Anda tidak dapat diaktifkan.",
+    "presentation-resumed": "Presentasi telah dilanjutkan."
   },
   "room-metadata": {
     "session-recording": "Rapat ini sedang direkam.",
@@ -202,7 +214,11 @@
         "good": "Baik",
         "poor": "Miskin",
         "lost": "Hilang"
-      }
+      },
+      "video-paused-banner": "Koneksi lemah — video dijeda untuk menjaga audio tetap jelas.",
+      "video-stays-paused-banner": "Koneksi lemah — video dijeda sampai Anda mengaktifkannya kembali.",
+      "re-enable-video": "Aktifkan kembali video",
+      "resume-presentation": "Presentasi resume"
     }
   },
   "app": {
@@ -292,7 +308,26 @@
     "file-upload-success": "File berhasil diunggah.",
     "file-upload-default-error": "Terjadi kesalahan saat mengunggah file.",
     "chat-box-placeholder": "Kirim pesan, tempel gambar, atau letakkan file di sini (Baris baru: Shift + Enter)",
-    "sending-message": "Mengirim, harap tunggu..."
+    "sending-message": "Mengirim, harap tunggu...",
+    "reply": "Balas",
+    "edit-message": "Edit pesan",
+    "delete-message": "Hapus",
+    "cancel": "Batal",
+    "save": "Simpan",
+    "edited": "diedit",
+    "edited-at-title": "Diedit",
+    "copy-message": "Salin pesan",
+    "message-options": "Opsi pesan",
+    "message-deleted": "Pesan ini telah dihapus",
+    "message-deleted-by-you": "Anda menghapus pesan ini",
+    "message-deleted-by-admin": "Pesan ini dihapus oleh admin",
+    "delete-confirm-title": "Hapus pesan ini?",
+    "delete-confirm-body": "Ini akan menghapus pesan untuk semua orang dalam percakapan ini. Ini tidak bisa dibatalkan.",
+    "replying-to": "Membalas {{name}}",
+    "editing-message": "Mengedit pesan",
+    "new-messages": "Pesan baru",
+    "scroll-to-bottom": "Gulir ke bawah",
+    "sync-chat": "Sinkronkan obrolan dengan rekan sesama"
   },
   "footer": {
     "aria-label": "Kontrol rapat",
@@ -344,7 +379,8 @@
       "promote-presenter": "Jadikan Presenter",
       "demote-presenter": "Hapus sebagai Presenter",
       "you-are-muted": "Anda dibisukan. Tidak ada yang bisa mendengar Anda.",
-      "menu": "Lebih banyak opsi"
+      "menu": "Lebih banyak opsi",
+      "paused-by-connection-tooltip": "Dijeda secara otomatis karena koneksi lemah — klik untuk mengaktifkan kembali"
     },
     "menus": {
       "mute-all-users": "Bisukan Semua",

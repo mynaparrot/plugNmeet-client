@@ -107,7 +107,19 @@
     "native-bridge-error": "신청서에는 오류가 보고되었습니다: {{error}}",
     "cannot-lock-admin": "다른 관리자 사용자에 대해서는 잠금 설정을 변경할 수 없습니다.",
     "breakout-room-raised-hand": "{{name}} 손을 들어 {{room}}",
-    "switching-room": "방 바꿔가기..."
+    "switching-room": "방 바꿔가기...",
+    "video-paused-weak-connection": "연결 약함 — 오디오를 선명하게 유지하기 위해 영상이 일시정지됨.",
+    "video-paused-audio-protection": "영상이 일시정지된 이유는 당신의 오디오가 끊겨졌기 때문입니다.",
+    "presentation-paused-weak-connection": "프레젠테이션이 일시정지됨 — 연결이 약해졌습니다.",
+    "suggest-pause-screenshare": "연결이 약합니다. 음성 선명을 위해 화면 공유를 일시정지하는 것을 고려해 보세요.",
+    "connection-still-weak": "연결 상태가 여전히 약해 영상이 멈출 수 있습니다.",
+    "video-resumed": "연결이 개선되었고 — 영상이 재개되었습니다.",
+    "video-stays-paused": "비디오는 다시 활성화할 때까지 일시정지 상태로 유지됩니다.",
+    "video-paused": "영상 일시정지",
+    "audio-only-mode-weak-connection": "연결 상태가 심각하게 불안정합니다. 오디오를 유지하기 위해 영상이 일시정지되었습니다.",
+    "connection-recovered-restore-video": "연결이 다시 안정적으로 보입니다. 비디오 복원을 시도해 보세요.",
+    "media-restored-camera-unavailable": "들어오는 미디어는 복원되었지만, 카메라는 활성화되지 않았습니다.",
+    "presentation-resumed": "발표가 재개되었습니다."
   },
   "room-metadata": {
     "session-recording": "이 회의는 녹화되고 있습니다.",
@@ -202,7 +214,11 @@
         "good": "좋아",
         "poor": "불쌍하네요",
         "lost": "잃어버렸다"
-      }
+      },
+      "video-paused-banner": "연결 약함 — 오디오를 선명하게 유지하기 위해 영상이 일시정지됨.",
+      "video-stays-paused-banner": "연결이 약해 — 영상이 일시정지되어 다시 활성화할 때까지 계속됩니다.",
+      "re-enable-video": "비디오 재활성화",
+      "resume-presentation": "이력서 제출"
     }
   },
   "app": {
@@ -292,7 +308,26 @@
     "file-upload-success": "ファイルが正常にアップロードされました。",
     "file-upload-default-error": "파일을 업로드하는 중에 오류가 발생했습니다.",
     "chat-box-placeholder": "여기에 메시지를 보내거나, 이미지를 붙여넣거나, 파일을 드롭하세요 (새 줄: Shift + Enter)",
-    "sending-message": "보내는 중입니다. 잠시 기다려 주십시오..."
+    "sending-message": "보내는 중입니다. 잠시 기다려 주십시오...",
+    "reply": "답글",
+    "edit-message": "수정 메시지",
+    "delete-message": "삭제",
+    "cancel": "취소",
+    "save": "저장",
+    "edited": "편집됨",
+    "edited-at-title": "편집됨",
+    "copy-message": "메시지 복사",
+    "message-options": "메시지 옵션",
+    "message-deleted": "이 메시지는 삭제되었습니다",
+    "message-deleted-by-you": "이 메시지를 삭제하셨습니다",
+    "message-deleted-by-admin": "이 메시지는 관리자에 의해 삭제되었습니다",
+    "delete-confirm-title": "이 메시지를 삭제할까요?",
+    "delete-confirm-body": "이렇게 하면 대화에 참여한 모든 사람에게 메시지가 사라집니다. 이 일은 되돌릴 수 없습니다.",
+    "replying-to": "답변 {{name}}",
+    "editing-message": "편집 메시지",
+    "new-messages": "새로운 메시지",
+    "scroll-to-bottom": "맨 아래로 스크롤하세요",
+    "sync-chat": "동료와 채팅 동기화"
   },
   "footer": {
     "aria-label": "회의 제어",
@@ -344,7 +379,8 @@
       "promote-presenter": "발표자로 지정",
       "demote-presenter": "발표자에서 제외",
       "you-are-muted": "음소거되었습니다. 아무도 당신의 말을 들을 수 없습니다.",
-      "menu": "더 많은 선택지"
+      "menu": "더 많은 선택지",
+      "paused-by-connection-tooltip": "연결이 약해 자동으로 일시정지됨 — 클릭하여 다시 활성화하세요"
     },
     "menus": {
       "mute-all-users": "모두 음소거",

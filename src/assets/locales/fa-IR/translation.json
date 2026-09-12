@@ -107,7 +107,19 @@
     "native-bridge-error": "برنامه خطایی گزارش کرد: {{error}}",
     "cannot-lock-admin": "شما نمی‌توانید تنظیمات قفل را برای سایر مدیران تغییر دهید.",
     "breakout-room-raised-hand": "{{name}} دستش را بالا برد {{room}}",
-    "switching-room": "اتاق تعویض..."
+    "switching-room": "اتاق تعویض...",
+    "video-paused-weak-connection": "اتصال ضعیف — ویدئو متوقف شد تا صدا واضح بماند.",
+    "video-paused-audio-protection": "ویدیو متوقف شد چون صدای شما قطع و وصل می شد.",
+    "presentation-paused-weak-connection": "ارائه متوقف شد — اتصال شما ضعیف است.",
+    "suggest-pause-screenshare": "اتصال شما ضعیف است. در نظر بگیرید که اشتراک گذاری صفحه را متوقف کنید تا صدا واضح بماند.",
+    "connection-still-weak": "اتصال هنوز ضعیف است — ممکن است ویدیو هنگ کند.",
+    "video-resumed": "اتصال بهبود یافت — ویدئو ادامه یافت.",
+    "video-stays-paused": "ویدیو تا زمانی که دوباره فعال نشود، متوقف خواهد ماند.",
+    "video-paused": "ویدیو متوقف شد",
+    "audio-only-mode-weak-connection": "اتصال شما به شدت ناپایدار است. ویدئو متوقف شده تا صدا کار کند.",
+    "connection-recovered-restore-video": "اتصال شما دوباره پایدار به نظر می رسد. می توانید ویدئو را بازیابی کنید.",
+    "media-restored-camera-unavailable": "رسانه ورودی بازیابی شد، اما دوربین شما فعال نشد.",
+    "presentation-resumed": "ارائه از سر گرفته شده است."
   },
   "room-metadata": {
     "session-recording": "این جلسه در حال ضبط است.",
@@ -202,7 +214,11 @@
         "good": "خوب",
         "poor": "ضعیف",
         "lost": "قطع"
-      }
+      },
+      "video-paused-banner": "اتصال ضعیف — ویدئو متوقف شد تا صدا واضح بماند.",
+      "video-stays-paused-banner": "اتصال ضعیف — ویدیو متوقف می شود تا دوباره فعال شود.",
+      "re-enable-video": "فعال سازی مجدد ویدیو",
+      "resume-presentation": "ارائه رزومه"
     }
   },
   "app": {
@@ -292,7 +308,26 @@
     "file-upload-success": "فایل با موفقیت بارگذاری شد",
     "file-upload-default-error": "در بارگذاری فایل خطایی رخ داد.",
     "chat-box-placeholder": "پیام بنویسید، تصویر جای‌گذاری کنید یا فایل را اینجا رها کنید (خط جدید: Shift + Enter)",
-    "sending-message": "لطفاً صبر کنید، در حال ارسال..."
+    "sending-message": "لطفاً صبر کنید، در حال ارسال...",
+    "reply": "پاسخ بده",
+    "edit-message": "ویرایش پیام",
+    "delete-message": "حذف",
+    "cancel": "لغو",
+    "save": "ذخیره",
+    "edited": "ویرایش شده",
+    "edited-at-title": "ویرایش شده",
+    "copy-message": "کپی پیام",
+    "message-options": "گزینه های پیام",
+    "message-deleted": "این پیام حذف شد",
+    "message-deleted-by-you": "تو این پیام را حذف کردی",
+    "message-deleted-by-admin": "این پیام توسط یک مدیر حذف شده است",
+    "delete-confirm-title": "این پیام را حذف کنم؟",
+    "delete-confirm-body": "این کار پیام را برای همه افراد حاضر در این گفتگو پاک می کند. این موضوع قابل بازگشت نیست.",
+    "replying-to": "پاسخ به {{name}}",
+    "editing-message": "ویرایش پیام",
+    "new-messages": "پیام های جدید",
+    "scroll-to-bottom": "به پایین صفحه بروید",
+    "sync-chat": "همگام سازی چت با همتایان"
   },
   "footer": {
     "aria-label": "کنترل‌های جلسه",
@@ -344,7 +379,8 @@
       "promote-presenter": "انتخاب به‌عنوان ارائه‌دهنده",
       "demote-presenter": "حذف از ارائه‌دهندگی",
       "you-are-muted": "هیچ‌کس صدای شما را نمی‌شنود. شما بی‌صدا هستید.",
-      "menu": "گزینه‌های بیشتر"
+      "menu": "گزینه‌های بیشتر",
+      "paused-by-connection-tooltip": "به دلیل اتصال ضعیف به طور خودکار متوقف شد — برای فعال سازی مجدد کلیک کنید"
     },
     "menus": {
       "mute-all-users": "بی‌صدا کردن همه",

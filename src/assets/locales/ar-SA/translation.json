@@ -107,7 +107,19 @@
     "native-bridge-error": "أبلغ التطبيق عن خطأ: {{error}}",
     "cannot-lock-admin": "لا يمكنك تغيير إعدادات القفل لمستخدمي المسؤولين الآخرين.",
     "breakout-room-raised-hand": "{{name}} رفع يده {{room}}",
-    "switching-room": "غرفة التبديل..."
+    "switching-room": "غرفة التبديل...",
+    "video-paused-weak-connection": "اتصال ضعيف — الفيديو توقف للحفاظ على وضوح الصوت.",
+    "video-paused-audio-protection": "توقف الفيديو لأن الصوت كان يتقطع.",
+    "presentation-paused-weak-connection": "توقفت اللحظة — اتصالك ضعيف.",
+    "suggest-pause-screenshare": "الاتصال ضعيف. فكر في إيقاف مشاركة الشاشة مؤقتا للحفاظ على وضوح الصوت.",
+    "connection-still-weak": "الاتصال لا يزال ضعيفا — قد يتجمد الفيديو.",
+    "video-resumed": "تم تحسين الاتصال — استؤنف الفيديو.",
+    "video-stays-paused": "سيبقى الفيديو مؤقتا حتى تعيد تفعيله.",
+    "video-paused": "توقف الفيديو مؤقتا",
+    "audio-only-mode-weak-connection": "اتصالك غير مستقر بشكل حرج. تم إيقاف الفيديو للحفاظ على عمل الصوت.",
+    "connection-recovered-restore-video": "يبدو أن اتصالك مستقر مرة أخرى. يمكنك محاولة استعادة الفيديو.",
+    "media-restored-camera-unavailable": "تم استعادة الوسائط الواردة، لكن لم يكن بالإمكان تفعيل الكاميرا.",
+    "presentation-resumed": "استؤنف العرض التقديمي."
   },
   "room-metadata": {
     "session-recording": "يتم تسجيل هذا الاجتماع.",
@@ -202,7 +214,11 @@
         "good": "جيد",
         "poor": "فقير",
         "lost": "مفقود"
-      }
+      },
+      "video-paused-banner": "اتصال ضعيف — الفيديو توقف للحفاظ على وضوح الصوت.",
+      "video-stays-paused-banner": "اتصال ضعيف — الفيديو توقف مؤقتا حتى تعيد تفعيله.",
+      "re-enable-video": "إعادة تفعيل الفيديو",
+      "resume-presentation": "عرض السيرة الذاتية"
     }
   },
   "app": {
@@ -292,7 +308,26 @@
     "file-upload-success": "تم رفع الملف بنجاح.",
     "file-upload-default-error": "حدث خطأ أثناء رفع الملف.",
     "chat-box-placeholder": "أرسل رسالة، الصق صورة، أو اسحب ملفاً هنا (سطر جديد: Shift + Enter)",
-    "sending-message": "جارٍ الإرسال، يرجى الانتظار..."
+    "sending-message": "جارٍ الإرسال، يرجى الانتظار...",
+    "reply": "رد",
+    "edit-message": "تعديل الرسالة",
+    "delete-message": "حذف",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "edited": "تم التحرير",
+    "edited-at-title": "تم التعديل",
+    "copy-message": "نسخة الرسالة",
+    "message-options": "خيارات الرسائل",
+    "message-deleted": "تم حذف هذه الرسالة",
+    "message-deleted-by-you": "لقد حذفت هذه الرسالة",
+    "message-deleted-by-admin": "تم حذف هذه الرسالة بواسطة مسؤول",
+    "delete-confirm-title": "هل تحذف هذه الرسالة؟",
+    "delete-confirm-body": "هذا سيزيل الرسالة من الجميع في هذه المحادثة. لا يمكن التراجع عن هذا.",
+    "replying-to": "الرد على {{name}}",
+    "editing-message": "رسالة تحرير",
+    "new-messages": "رسائل جديدة",
+    "scroll-to-bottom": "التمرير إلى الأسفل",
+    "sync-chat": "مزامنة الدردشة مع الأقران"
   },
   "footer": {
     "aria-label": "ضوابط الاجتماعات",
@@ -344,7 +379,8 @@
       "promote-presenter": "تعيين كمقدِّم",
       "demote-presenter": "إزالة من دور المقدِّم",
       "you-are-muted": "لا أحد يستطيع سماعك. الميكروفون مكتوم.",
-      "menu": "خيارات أكثر"
+      "menu": "خيارات أكثر",
+      "paused-by-connection-tooltip": "تم إيقاف التشغيل تلقائيا بسبب ضعف الاتصال — انقر لإعادة التفعيل"
     },
     "menus": {
       "mute-all-users": "كتم صوت الجميع",

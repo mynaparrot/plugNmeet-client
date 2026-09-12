@@ -107,7 +107,19 @@
     "native-bridge-error": "該應用程式報告了一個錯誤： {{error}}",
     "cannot-lock-admin": "你無法更改其他管理員使用者的鎖定設定。",
     "breakout-room-raised-hand": "{{name}} 他們舉起手 {{room}}",
-    "switching-room": "換房......"
+    "switching-room": "換房......",
+    "video-paused-weak-connection": "連線弱 — 影片暫停以保持音訊清晰。",
+    "video-paused-audio-protection": "影片暫停是因為你的音訊開始斷斷續續。",
+    "presentation-paused-weak-connection": "簡報暫停——你的連線很弱。",
+    "suggest-pause-screenshare": "你的連線很弱。考慮暫停螢幕分享，讓音訊保持清晰。",
+    "connection-still-weak": "連線仍然很弱——影片可能會凍結。",
+    "video-resumed": "連線改善——影片恢復。",
+    "video-stays-paused": "影片會暫停，直到你重新啟用。",
+    "video-paused": "影片暫停",
+    "audio-only-mode-weak-connection": "你的連線非常不穩定。為了保持音訊正常，影片已暫停。",
+    "connection-recovered-restore-video": "你的連線看起來又穩定了。你可以試著還原影片。",
+    "media-restored-camera-unavailable": "媒體已恢復，但相機無法啟用。",
+    "presentation-resumed": "簡報已經恢復。"
   },
   "room-metadata": {
     "session-recording": "此會議正在錄製中。",
@@ -202,7 +214,11 @@
         "good": "很好",
         "poor": "可憐",
         "lost": "迷失"
-      }
+      },
+      "video-paused-banner": "連線弱 — 影片暫停以保持音訊清晰。",
+      "video-stays-paused-banner": "連線弱 — 影片暫停，直到你重新啟用。",
+      "re-enable-video": "重新啟用影片",
+      "resume-presentation": "履歷呈現"
     }
   },
   "app": {
@@ -292,7 +308,26 @@
     "file-upload-success": "檔案上傳成功。",
     "file-upload-default-error": "上傳檔案時出錯。",
     "chat-box-placeholder": "在此處傳送訊息、貼上圖片或拖放檔案（換行：Shift + Enter）",
-    "sending-message": "正在傳送，請稍候..."
+    "sending-message": "正在傳送，請稍候...",
+    "reply": "回覆",
+    "edit-message": "編輯訊息",
+    "delete-message": "刪除",
+    "cancel": "取消",
+    "save": "存檔",
+    "edited": "編輯",
+    "edited-at-title": "編輯",
+    "copy-message": "收到訊息",
+    "message-options": "訊息選項",
+    "message-deleted": "此訊息已被刪除",
+    "message-deleted-by-you": "你刪除了這則訊息",
+    "message-deleted-by-admin": "此訊息已被管理員刪除",
+    "delete-confirm-title": "刪除這則訊息？",
+    "delete-confirm-body": "這會移除對話中所有人的訊息。此事無法撤銷。",
+    "replying-to": "回覆至此 {{name}}",
+    "editing-message": "編輯訊息",
+    "new-messages": "新訊息",
+    "scroll-to-bottom": "往最底部捲動",
+    "sync-chat": "與同儕同步聊天"
   },
   "footer": {
     "aria-label": "會議控制",
@@ -344,7 +379,8 @@
       "promote-presenter": "設為主講人",
       "demote-presenter": "取消主講人",
       "you-are-muted": "您已被靜音，其他人聽不到您的聲音。",
-      "menu": "更多選擇"
+      "menu": "更多選擇",
+      "paused-by-connection-tooltip": "因連線不良自動暫停 — 點擊可重新啟用"
     },
     "menus": {
       "mute-all-users": "將所有人靜音",

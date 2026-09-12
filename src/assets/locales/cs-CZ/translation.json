@@ -107,7 +107,19 @@
     "native-bridge-error": "Aplikace hlásila chybu: {{error}}",
     "cannot-lock-admin": "Nemůžeš měnit nastavení zámků pro ostatní administrátory.",
     "breakout-room-raised-hand": "{{name}} Zvedli ruku dovnitř {{room}}",
-    "switching-room": "Výměna místností..."
+    "switching-room": "Výměna místností...",
+    "video-paused-weak-connection": "Slabé připojení — video pozastaveno, aby zvuk zůstal čistý.",
+    "video-paused-audio-protection": "Video se zastavilo, protože se vám přerušoval zvuk.",
+    "presentation-paused-weak-connection": "Prezentace pozastavena — vaše spojení je slabé.",
+    "suggest-pause-screenshare": "Máte slabé připojení. Zvažte pozastavení sdílení obrazovky, abyste udrželi zvuk čistý.",
+    "connection-still-weak": "Připojení je stále slabé — video může zamrznout.",
+    "video-resumed": "Připojení bylo zlepšeno — video obnoveno.",
+    "video-stays-paused": "Video zůstane pozastavené, dokud ho znovu nepovolíte.",
+    "video-paused": "Video pozastaveno",
+    "audio-only-mode-weak-connection": "Vaše připojení je kriticky nestabilní. Video bylo pozastaveno, aby zvuk fungoval.",
+    "connection-recovered-restore-video": "Vaše připojení se zdá být opět stabilní. Můžete zkusit obnovit video.",
+    "media-restored-camera-unavailable": "Příchozí média byla obnovena, ale kamera nemohla být zapnuta.",
+    "presentation-resumed": "Prezentace byla obnovena."
   },
   "room-metadata": {
     "session-recording": "Tato schůzka je nahrávána.",
@@ -202,7 +214,11 @@
         "good": "Dobře",
         "poor": "Chudák",
         "lost": "Ztraceno"
-      }
+      },
+      "video-paused-banner": "Slabé připojení — video pozastaveno, aby zvuk zůstal čistý.",
+      "video-stays-paused-banner": "Slabé připojení — video pozastavené, dokud ho znovu nezapnete.",
+      "re-enable-video": "Znovu povolit video",
+      "resume-presentation": "Prezentace životopisu"
     }
   },
   "app": {
@@ -292,7 +308,26 @@
     "file-upload-success": "Soubor byl úspěšně nahrán",
     "file-upload-default-error": "Při nahrávání souboru došlo k chybě.",
     "chat-box-placeholder": "Odešlete zprávu, vložte obrázek nebo sem přetáhněte soubor (Nový řádek: Shift + Enter)",
-    "sending-message": "Prosím, počkejte, posílám..."
+    "sending-message": "Prosím, počkejte, posílám...",
+    "reply": "Odpověď",
+    "edit-message": "Editační zpráva",
+    "delete-message": "Smazat",
+    "cancel": "Zrušit",
+    "save": "Uložit",
+    "edited": "upraveno",
+    "edited-at-title": "Upraveno",
+    "copy-message": "Zkopírovat zprávu",
+    "message-options": "Možnosti zpráv",
+    "message-deleted": "Tato zpráva byla smazána",
+    "message-deleted-by-you": "Smazal jsi tuto zprávu",
+    "message-deleted-by-admin": "Tato zpráva byla smazána administrátorem",
+    "delete-confirm-title": "Smazat tuto zprávu?",
+    "delete-confirm-body": "Tím odstraníte poselství pro všechny v této konverzaci. To nelze vzít zpět.",
+    "replying-to": "Odpověď na {{name}}",
+    "editing-message": "Editační zpráva",
+    "new-messages": "Nové zprávy",
+    "scroll-to-bottom": "Posuňte se na konec",
+    "sync-chat": "Synchronizujte chat s kolegy"
   },
   "footer": {
     "aria-label": "Řízení setkání",
@@ -344,7 +379,8 @@
       "promote-presenter": "Vytvoření prezentéru",
       "demote-presenter": "Odebrat jako prezentujícího",
       "you-are-muted": "Nikdo tě neslyší. Jsi ztlumený.",
-      "menu": "Další možnosti"
+      "menu": "Další možnosti",
+      "paused-by-connection-tooltip": "Automaticky pozastaveno kvůli slabému připojení — klikněte pro opětovné povolení"
     },
     "menus": {
       "mute-all-users": "Ztlumit všechny",

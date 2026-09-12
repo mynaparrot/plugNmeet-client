@@ -107,7 +107,19 @@
     "native-bridge-error": "De applicatie meldde een foutmelding: {{error}}",
     "cannot-lock-admin": "Je kunt de vergrendelingsinstellingen niet wijzigen voor andere beheerders.",
     "breakout-room-raised-hand": "{{name}} Ze staken hun hand op {{room}}",
-    "switching-room": "Wisselkamer wisselen..."
+    "switching-room": "Wisselkamer wisselen...",
+    "video-paused-weak-connection": "Zwakke verbinding — video gepauzeerd om het geluid helder te houden.",
+    "video-paused-audio-protection": "De video pauzeerde omdat je audio verbrak.",
+    "presentation-paused-weak-connection": "Presentatie gepauzeerd — je verbinding is zwak.",
+    "suggest-pause-screenshare": "Je verbinding is zwak. Overweeg om je schermdeling te pauzeren om het geluid helder te houden.",
+    "connection-still-weak": "De verbinding is nog steeds zwak — de video kan vastlopen.",
+    "video-resumed": "Verbinding verbeterd — video hervat.",
+    "video-stays-paused": "De video blijft gepauzeerd totdat je het weer inschakelt.",
+    "video-paused": "Video gepauzeerd",
+    "audio-only-mode-weak-connection": "Je verbinding is kritiek instabiel. De video is gepauzeerd om het geluid werkend te houden.",
+    "connection-recovered-restore-video": "Je verbinding lijkt weer stabiel. Je kunt proberen de video te herstellen.",
+    "media-restored-camera-unavailable": "Binnenkomende media werd hersteld, maar je camera kon niet worden ingeschakeld.",
+    "presentation-resumed": "De presentatie is hervat."
   },
   "room-metadata": {
     "session-recording": "Deze vergadering wordt opgenomen.",
@@ -202,7 +214,11 @@
         "good": "Goed",
         "poor": "Arme",
         "lost": "Verloren"
-      }
+      },
+      "video-paused-banner": "Zwakke verbinding — video gepauzeerd om het geluid helder te houden.",
+      "video-stays-paused-banner": "Zwakke verbinding — video gepauzeerd totdat je hem weer inschakelt.",
+      "re-enable-video": "Video opnieuw inschakelen",
+      "resume-presentation": "Presentatie van het cv"
     }
   },
   "app": {
@@ -292,7 +308,26 @@
     "file-upload-success": "Bestand succesvol geüpload",
     "file-upload-default-error": "Er is een fout opgetreden bij het uploaden van het bestand.",
     "chat-box-placeholder": "Stuur hier een bericht, plak een afbeelding of zet hier een bestand neer (Nieuwe regel: Shift + Enter)",
-    "sending-message": "Wacht alstublieft, ik stuur..."
+    "sending-message": "Wacht alstublieft, ik stuur...",
+    "reply": "Antwoord",
+    "edit-message": "Bewerkingsbericht",
+    "delete-message": "Verwijderen",
+    "cancel": "Annuleren",
+    "save": "Sla op",
+    "edited": "Bewerkt",
+    "edited-at-title": "Bewerkt",
+    "copy-message": "Kopieer bericht",
+    "message-options": "Berichtopties",
+    "message-deleted": "Dit bericht is verwijderd",
+    "message-deleted-by-you": "Je hebt dit bericht verwijderd",
+    "message-deleted-by-admin": "Dit bericht is verwijderd door een beheerder",
+    "delete-confirm-title": "Dit bericht verwijderen?",
+    "delete-confirm-body": "Dit zal de boodschap voor iedereen in dit gesprek wegnemen. Dit kan niet ongedaan worden gemaakt.",
+    "replying-to": "Reageren op {{name}}",
+    "editing-message": "Bewerkingsbericht",
+    "new-messages": "Nieuwe berichten",
+    "scroll-to-bottom": "Scroll naar beneden",
+    "sync-chat": "Synchroniseer chat met peers"
   },
   "footer": {
     "aria-label": "Vergadercontroles",
@@ -344,7 +379,8 @@
       "promote-presenter": "Presentator maken",
       "demote-presenter": "Verwijderen als presentator",
       "you-are-muted": "Niemand kan je horen. Je bent gedempt.",
-      "menu": "Meer opties"
+      "menu": "Meer opties",
+      "paused-by-connection-tooltip": "Automatisch gepauzeerd vanwege zwakke verbinding — klik om opnieuw in te schakelen"
     },
     "menus": {
       "mute-all-users": "Iedereen dempen",

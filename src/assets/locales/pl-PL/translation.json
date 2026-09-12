@@ -107,7 +107,19 @@
     "native-bridge-error": "Aplikacja zgłosiła błąd: {{error}}",
     "cannot-lock-admin": "Nie możesz zmieniać ustawień blokad dla innych użytkowników administratorów.",
     "breakout-room-raised-hand": "{{name}} Podnieśli rękę {{room}}",
-    "switching-room": "Zmiana pokoju..."
+    "switching-room": "Zmiana pokoju...",
+    "video-paused-weak-connection": "Słabe połączenie — wideo zatrzymane, aby utrzymać wyraźny dźwięk.",
+    "video-paused-audio-protection": "Obraz zatrzymał się, bo dźwięk się zaciął.",
+    "presentation-paused-weak-connection": "Prezentacja zatrzymana — wasze połączenie jest słabe.",
+    "suggest-pause-screenshare": "Twoje połączenie jest słabe. Rozważ wstrzymanie udostępniania ekranu, aby zachować wyraźny dźwięk.",
+    "connection-still-weak": "Połączenie nadal jest słabe — obraz może się zawieszać.",
+    "video-resumed": "Połączenie poprawione — wideo wznowione.",
+    "video-stays-paused": "Wideo pozostanie wstrzymane, dopóki nie włączysz go ponownie.",
+    "video-paused": "Wideo przerwane",
+    "audio-only-mode-weak-connection": "Twoje połączenie jest krytycznie niestabilne. Obraz został wstrzymany, aby utrzymać działanie dźwięku.",
+    "connection-recovered-restore-video": "Twoje połączenie znów wydaje się stabilne. Możesz spróbować przywrócić obraz.",
+    "media-restored-camera-unavailable": "Przywracano przychodzące media, ale kamera nie została włączona.",
+    "presentation-resumed": "Prezentacja została wznowiona."
   },
   "room-metadata": {
     "session-recording": "To spotkanie jest nagrywane.",
@@ -202,7 +214,11 @@
         "good": "Dobrze",
         "poor": "Biedny",
         "lost": "Zagubiony"
-      }
+      },
+      "video-paused-banner": "Słabe połączenie — wideo zatrzymane, aby utrzymać wyraźny dźwięk.",
+      "video-stays-paused-banner": "Słabe połączenie — wideo zostało wstrzymane, dopóki nie włączysz go ponownie.",
+      "re-enable-video": "Ponowne włączenie wideo",
+      "resume-presentation": "Prezentacja CV"
     }
   },
   "app": {
@@ -292,7 +308,26 @@
     "file-upload-success": "Plik został przesłany pomyślnie.",
     "file-upload-default-error": "Wystąpił błąd podczas przesyłania pliku.",
     "chat-box-placeholder": "Wyślij wiadomość, wklej obraz lub upuść plik tutaj (Nowy wiersz: Shift + Enter)",
-    "sending-message": "Proszę czekać, wysyłanie..."
+    "sending-message": "Proszę czekać, wysyłanie...",
+    "reply": "Odpowiedź",
+    "edit-message": "Edytuj wiadomość",
+    "delete-message": "Usuń",
+    "cancel": "Anuluj",
+    "save": "Zapisz",
+    "edited": "edytowane",
+    "edited-at-title": "Redakcja",
+    "copy-message": "Kopiuj wiadomość",
+    "message-options": "Opcje wiadomości",
+    "message-deleted": "Ta wiadomość została usunięta",
+    "message-deleted-by-you": "Usunąłeś tę wiadomość",
+    "message-deleted-by-admin": "Ta wiadomość została usunięta przez administratora",
+    "delete-confirm-title": "Usunąć tę wiadomość?",
+    "delete-confirm-body": "To odbiera przekaz dla wszystkich uczestników tej rozmowy. Tego nie da się cofnąć.",
+    "replying-to": "Odpowiadając do {{name}}",
+    "editing-message": "Wiadomość edycja",
+    "new-messages": "Nowe wiadomości",
+    "scroll-to-bottom": "Przewiń na dół",
+    "sync-chat": "Synchronizuj czat z rówieśnikami"
   },
   "footer": {
     "aria-label": "Kontrola spotkań",
@@ -344,7 +379,8 @@
       "promote-presenter": "Ustaw jako prezentera",
       "demote-presenter": "Usuń jako prezentera",
       "you-are-muted": "Nikt Cię nie słyszy. Jesteś wyciszony.",
-      "menu": "Więcej opcji"
+      "menu": "Więcej opcji",
+      "paused-by-connection-tooltip": "Automatycznie zatrzymane z powodu słabego połączenia — kliknij, aby ponownie włączyć"
     },
     "menus": {
       "mute-all-users": "Wycisz wszystkich",

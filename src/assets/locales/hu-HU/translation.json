@@ -107,7 +107,19 @@
     "native-bridge-error": "A kérelem hibát jelentett: {{error}}",
     "cannot-lock-admin": "Nem lehet más adminisztrátor felhasználók számára lock beállításokat változtatni.",
     "breakout-room-raised-hand": "{{name}} Felemelte a kezét {{room}}",
-    "switching-room": "Szobáváltás..."
+    "switching-room": "Szobáváltás...",
+    "video-paused-weak-connection": "Gyenge kapcsolat — a videó szünetelt, hogy tiszta legyen a hang.",
+    "video-paused-audio-protection": "A videó megállt, mert a hangod elromlott.",
+    "presentation-paused-weak-connection": "A prezentáció megszünetelt — gyenge a kapcsolatod.",
+    "suggest-pause-screenshare": "A kapcsolatod gyenge. Fontold meg, hogy megállítod a képernyőmegosztást, hogy tiszta legyen a hang.",
+    "connection-still-weak": "A kapcsolat még mindig gyenge — a videó lefagyhat.",
+    "video-resumed": "A kapcsolat javult — videó folytatódott.",
+    "video-stays-paused": "A videó szünetbe nem tart, amíg újra be nem kapcsolod.",
+    "video-paused": "Videó szünetelt",
+    "audio-only-mode-weak-connection": "A kapcsolatod kritikus instabil. A videót meg is állították, hogy a hang működjön.",
+    "connection-recovered-restore-video": "A kapcsolatod ismét stabilnak tűnik. Megpróbálhatod visszaállítani a videót.",
+    "media-restored-camera-unavailable": "A bejövő média visszaállt, de a kamerát nem lehetett engedélyezni.",
+    "presentation-resumed": "Az előadás folytatódott."
   },
   "room-metadata": {
     "session-recording": "Ezt a találkozót rögzítik.",
@@ -202,7 +214,11 @@
         "good": "Jó",
         "poor": "Szegény",
         "lost": "Elveszett"
-      }
+      },
+      "video-paused-banner": "Gyenge kapcsolat — a videó szünetelt, hogy tiszta legyen a hang.",
+      "video-stays-paused-banner": "Gyenge kapcsolat — a videó szünetelt, amíg újra be nem kapcsolod.",
+      "re-enable-video": "Kapcsold újra a videót",
+      "resume-presentation": "Önéletrajz bemutatása"
     }
   },
   "app": {
@@ -292,7 +308,26 @@
     "file-upload-success": "A fájl feltöltése sikeresen",
     "file-upload-default-error": "Hiba történt a fájl feltöltésekor.",
     "chat-box-placeholder": "Üzenet küldése, kép beillesztése vagy fájl eldobása ide (Új sor: Shift + Enter)",
-    "sending-message": "Kérlek, várj, küldöm..."
+    "sending-message": "Kérlek, várj, küldöm...",
+    "reply": "Válasz",
+    "edit-message": "Üzenet szerkesztése",
+    "delete-message": "Törlés",
+    "cancel": "Törlés",
+    "save": "Mentés",
+    "edited": "szerkesztve",
+    "edited-at-title": "Szerkesztve",
+    "copy-message": "Másolj üzenetet",
+    "message-options": "Üzenetopciók",
+    "message-deleted": "Ezt az üzenetet törölték",
+    "message-deleted-by-you": "Ezt az üzenetet törölted",
+    "message-deleted-by-admin": "Ezt az üzenetet egy admin törölte",
+    "delete-confirm-title": "Törölni ezt az üzenetet?",
+    "delete-confirm-body": "Ez eltávolítja az üzenetet mindenki számára ebben a beszélgetésben. Ezt nem lehet visszavonni.",
+    "replying-to": "Válasz {{name}}",
+    "editing-message": "Szerkesztési üzenet",
+    "new-messages": "Új üzenetek",
+    "scroll-to-bottom": "Görgess le az alulra",
+    "sync-chat": "Szinkronizált chat társakkal"
   },
   "footer": {
     "aria-label": "Találkozók vezérlése",
@@ -344,7 +379,8 @@
       "promote-presenter": "Készítsen előadót",
       "demote-presenter": "Eltávolítás előadóként",
       "you-are-muted": "Senki sem hall téged. Némított vagy.",
-      "menu": "További lehetőségek"
+      "menu": "További lehetőségek",
+      "paused-by-connection-tooltip": "Automatikusan megállítva a gyenge kapcsolat miatt — kattints az újraengedélyezéshez"
     },
     "menus": {
       "mute-all-users": "Mindenki elnémítása",

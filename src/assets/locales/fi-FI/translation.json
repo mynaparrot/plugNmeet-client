@@ -107,7 +107,19 @@
     "native-bridge-error": "Hakemus ilmoitti virheen: {{error}}",
     "cannot-lock-admin": "Et voi muuttaa lukitusasetuksia muille ylläpitäjille.",
     "breakout-room-raised-hand": "{{name}} nosti kätensä {{room}}",
-    "switching-room": "Vaihtohuone..."
+    "switching-room": "Vaihtohuone...",
+    "video-paused-weak-connection": "Heikko yhteys — video pysäytetty äänen pitämiseksi selkeänä.",
+    "video-paused-audio-protection": "Video pysähtyi, koska ääni katkesi.",
+    "presentation-paused-weak-connection": "Esitys tauolla — yhteytesi on heikko.",
+    "suggest-pause-screenshare": "Yhteytesi on heikko. Harkitse näytön jakamisen tauottamista, jotta ääni pysyy selkeänä.",
+    "connection-still-weak": "Yhteys on edelleen heikko — video voi jäätyä.",
+    "video-resumed": "Yhteys parani — video jatkui.",
+    "video-stays-paused": "Video pysyy tauolla, kunnes otat sen uudelleen käyttöön.",
+    "video-paused": "Video pysäytetty",
+    "audio-only-mode-weak-connection": "Yhteytesi on kriittisen epävakaa. Video on keskeytetty, jotta ääni pysyy toiminnassa.",
+    "connection-recovered-restore-video": "Yhteytesi näyttää taas vakaalta. Voit kokeilla videon palauttamista.",
+    "media-restored-camera-unavailable": "Saapuva media palautettiin, mutta kameraa ei voitu ottaa käyttöön.",
+    "presentation-resumed": "Esitys on jatkunut."
   },
   "room-metadata": {
     "session-recording": "Tämä kokous tallennetaan.",
@@ -202,7 +214,11 @@
         "good": "Hyvä",
         "poor": "Voi",
         "lost": "Kadonnut"
-      }
+      },
+      "video-paused-banner": "Heikko yhteys — video pysäytetty äänen pitämiseksi selkeänä.",
+      "video-stays-paused-banner": "Heikko yhteys — video pysäytetty, kunnes otat sen uudelleen käyttöön.",
+      "re-enable-video": "Ota video uudelleen käyttöön",
+      "resume-presentation": "Ansioluettelon esittely"
     }
   },
   "app": {
@@ -292,7 +308,26 @@
     "file-upload-success": "Tiedoston lataus onnistui",
     "file-upload-default-error": "Tiedoston lataamisessa tapahtui virhe.",
     "chat-box-placeholder": "Lähetä viesti, liitä kuva tai pudota tiedosto tähän (Uusi rivi: Vaihto + Enter)",
-    "sending-message": "Odottakaa, lähettäen..."
+    "sending-message": "Odottakaa, lähettäen...",
+    "reply": "Vastaa",
+    "edit-message": "Muokkausviesti",
+    "delete-message": "Poista",
+    "cancel": "Peruuta",
+    "save": "Tallenna",
+    "edited": "muokattu",
+    "edited-at-title": "Toimitettu",
+    "copy-message": "Kopioi viesti",
+    "message-options": "Viestivaihtoehdot",
+    "message-deleted": "Tämä viesti poistettiin",
+    "message-deleted-by-you": "Poistit tämän viestin",
+    "message-deleted-by-admin": "Tämä viesti poistettiin ylläpitäjän toimesta",
+    "delete-confirm-title": "Poistatko tämä viesti?",
+    "delete-confirm-body": "Tämä poistaa viestin kaikilta tässä keskustelussa. Tätä ei voi perua.",
+    "replying-to": "Vastaus {{name}}",
+    "editing-message": "Muokkausviesti",
+    "new-messages": "Uudet viestit",
+    "scroll-to-bottom": "Selaa alas",
+    "sync-chat": "Synkronoi chat vertaisten kanssa"
   },
   "footer": {
     "aria-label": "Kokousten ohjaus",
@@ -344,7 +379,8 @@
       "promote-presenter": "Tee esittäjästä",
       "demote-presenter": "Poista esittäjänä",
       "you-are-muted": "Kukaan ei kuule sinua. Olet mykistetty.",
-      "menu": "Lisää vaihtoehtoja"
+      "menu": "Lisää vaihtoehtoja",
+      "paused-by-connection-tooltip": "Keskeytetty automaattisesti heikon yhteyden vuoksi — klikkaa ottaaksesi uudelleen käyttöön"
     },
     "menus": {
       "mute-all-users": "Mykistä kaikki",

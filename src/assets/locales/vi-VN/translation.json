@@ -107,7 +107,19 @@
     "native-bridge-error": "Ứng dụng đã báo lỗi: {{error}}",
     "cannot-lock-admin": "Bạn không thể thay đổi cài đặt khóa cho người dùng quản trị khác.",
     "breakout-room-raised-hand": "{{name}} giơ tay vào {{room}}",
-    "switching-room": "Chuyển phòng..."
+    "switching-room": "Chuyển phòng...",
+    "video-paused-weak-connection": "Kết nối yếu — video tạm dừng để giữ âm thanh rõ ràng.",
+    "video-paused-audio-protection": "Video tạm dừng vì âm thanh bị gián đoạn.",
+    "presentation-paused-weak-connection": "Bài thuyết trình đã tạm dừng — kết nối của bạn yếu.",
+    "suggest-pause-screenshare": "Kết nối của bạn yếu. Hãy cân nhắc tạm dừng chia sẻ màn hình để giữ âm thanh rõ ràng.",
+    "connection-still-weak": "Kết nối vẫn yếu — video có thể bị treo.",
+    "video-resumed": "Kết nối cải thiện — video được tiếp tục.",
+    "video-stays-paused": "Video sẽ tạm dừng cho đến khi bạn bật lại.",
+    "video-paused": "Video tạm dừng",
+    "audio-only-mode-weak-connection": "Kết nối của bạn đang rất bất ổn. Video đã tạm dừng để âm thanh hoạt động.",
+    "connection-recovered-restore-video": "Kết nối của bạn sẽ ổn định trở lại. Bạn có thể thử khôi phục video.",
+    "media-restored-camera-unavailable": "Phương tiện truyền thông đầu vào đã được khôi phục, nhưng camera của bạn không thể được bật.",
+    "presentation-resumed": "Phần trình bày đã tiếp tục."
   },
   "room-metadata": {
     "session-recording": "Cuộc họp này đang được ghi lại.",
@@ -202,7 +214,11 @@
         "good": "Tốt",
         "poor": "Nghèo",
         "lost": "Mất"
-      }
+      },
+      "video-paused-banner": "Kết nối yếu — video tạm dừng để giữ âm thanh rõ ràng.",
+      "video-stays-paused-banner": "Kết nối yếu — video tạm dừng cho đến khi bạn bật lại.",
+      "re-enable-video": "Bật lại video",
+      "resume-presentation": "Trình bày sơ yếu lý lịch"
     }
   },
   "app": {
@@ -292,7 +308,26 @@
     "file-upload-success": "Tệp được tải lên thành công",
     "file-upload-default-error": "Đã xảy ra lỗi khi tải tệp lên.",
     "chat-box-placeholder": "Gửi tin nhắn, dán hình ảnh hoặc thả file tại đây (Dòng mới: Shift + Enter)",
-    "sending-message": "Vui lòng đợi, gửi..."
+    "sending-message": "Vui lòng đợi, gửi...",
+    "reply": "Trả lời",
+    "edit-message": "Chỉnh sửa tin nhắn",
+    "delete-message": "Xóa",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "edited": "đã chỉnh sửa",
+    "edited-at-title": "đã chỉnh sửa",
+    "copy-message": "Sao chép tin nhắn",
+    "message-options": "Tùy chọn tin nhắn",
+    "message-deleted": "Tin nhắn này đã bị xóa",
+    "message-deleted-by-you": "Bạn đã xóa tin nhắn này",
+    "message-deleted-by-admin": "Tin nhắn này đã bị một quản trị viên xóa",
+    "delete-confirm-title": "Xóa tin nhắn này?",
+    "delete-confirm-body": "Điều này sẽ xóa thông điệp cho tất cả mọi người trong cuộc trò chuyện này. Điều này không thể hoàn tác.",
+    "replying-to": "Trả lời {{name}}",
+    "editing-message": "Chỉnh sửa tin nhắn",
+    "new-messages": "Tin nhắn mới",
+    "scroll-to-bottom": "Cuộn xuống cuối",
+    "sync-chat": "Đồng bộ trò chuyện với các trang web ngang hàng"
   },
   "footer": {
     "aria-label": "Điều khiển cuộc họp",
@@ -344,7 +379,8 @@
       "promote-presenter": "Làm người thuyết trình",
       "demote-presenter": "Xóa với tư cách là người thuyết trình",
       "you-are-muted": "Không ai có thể nghe thấy bạn. Bạn bị tắt tiếng.",
-      "menu": "Nhiều tùy chọn hơn"
+      "menu": "Nhiều tùy chọn hơn",
+      "paused-by-connection-tooltip": "Tự động tạm dừng do kết nối yếu — nhấp để kích hoạt lại"
     },
     "menus": {
       "mute-all-users": "Tắt tiếng mọi người",

@@ -107,7 +107,19 @@
     "native-bridge-error": "该应用程序报告了一个错误： {{error}}",
     "cannot-lock-admin": "你不能更改其他管理员用户的锁设置。",
     "breakout-room-raised-hand": "{{name}} 他们举起了手 {{room}}",
-    "switching-room": "换房间......"
+    "switching-room": "换房间......",
+    "video-paused-weak-connection": "连接弱——视频暂停以保持音频清晰。",
+    "video-paused-audio-protection": "视频暂停是因为你的音频断断续续。",
+    "presentation-paused-weak-connection": "演示暂停——你的连接很弱。",
+    "suggest-pause-screenshare": "你的连接很弱。考虑暂停屏幕共享以保持音频清晰。",
+    "connection-still-weak": "连接仍然很弱——视频可能会冻结。",
+    "video-resumed": "连接改善——视频恢复。",
+    "video-stays-paused": "视频会暂停，直到你重新启用。",
+    "video-paused": "视频暂停",
+    "audio-only-mode-weak-connection": "你的连接极度不稳定。视频已暂停以保持音频正常。",
+    "connection-recovered-restore-video": "你的连接看起来又稳定了。你可以尝试恢复视频。",
+    "media-restored-camera-unavailable": "接收媒体恢复了，但摄像头无法启用。",
+    "presentation-resumed": "演讲已经恢复。"
   },
   "room-metadata": {
     "session-recording": "此会议正在录制中。",
@@ -202,7 +214,11 @@
         "good": "很好",
         "poor": "可怜",
         "lost": "迷失"
-      }
+      },
+      "video-paused-banner": "连接弱——视频暂停以保持音频清晰。",
+      "video-stays-paused-banner": "连接弱——视频暂停，直到你重新启用。",
+      "re-enable-video": "重新启用视频",
+      "resume-presentation": "简历呈现"
     }
   },
   "app": {
@@ -292,7 +308,26 @@
     "file-upload-success": "文件上传成功。",
     "file-upload-default-error": "上传文件时出错。",
     "chat-box-placeholder": "在此处发送消息、粘贴图片或拖放文件（换行：Shift + Enter）",
-    "sending-message": "正在发送，请稍候..."
+    "sending-message": "正在发送，请稍候...",
+    "reply": "回复",
+    "edit-message": "编辑消息",
+    "delete-message": "删除",
+    "cancel": "取消",
+    "save": "保存",
+    "edited": "编辑",
+    "edited-at-title": "编辑",
+    "copy-message": "复制消息",
+    "message-options": "消息选项",
+    "message-deleted": "这条消息已被删除",
+    "message-deleted-by-you": "你删除了这条消息",
+    "message-deleted-by-admin": "此消息已被管理员删除",
+    "delete-confirm-title": "删除这条消息？",
+    "delete-confirm-body": "这会删除对话中所有人的留言。此事无法撤销。",
+    "replying-to": "回复 {{name}}",
+    "editing-message": "编辑信息",
+    "new-messages": "新消息",
+    "scroll-to-bottom": "滚动到底部",
+    "sync-chat": "与对等者同步聊天"
   },
   "footer": {
     "aria-label": "会议控制",
@@ -344,7 +379,8 @@
       "promote-presenter": "设为主讲人",
       "demote-presenter": "取消主讲人",
       "you-are-muted": "您已被静音，其他人听不到您的声音。",
-      "menu": "更多选择"
+      "menu": "更多选择",
+      "paused-by-connection-tooltip": "因连接较弱自动暂停——点击重新启用"
     },
     "menus": {
       "mute-all-users": "将所有人静音",

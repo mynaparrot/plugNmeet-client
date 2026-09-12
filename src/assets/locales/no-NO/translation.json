@@ -107,7 +107,19 @@
     "native-bridge-error": "Søknaden rapporterte en feil: {{error}}",
     "cannot-lock-admin": "Du kan ikke endre låseinnstillinger for andre administratorbrukere.",
     "breakout-room-raised-hand": "{{name}} Løftet hånden inn {{room}}",
-    "switching-room": "Bytterom..."
+    "switching-room": "Bytterom...",
+    "video-paused-weak-connection": "Svak tilkobling — video pauset for å holde lyden klar.",
+    "video-paused-audio-protection": "Videoen ble satt på pause fordi lyden din brøt opp.",
+    "presentation-paused-weak-connection": "Presentasjonen pauset — forbindelsen din er svak.",
+    "suggest-pause-screenshare": "Forbindelsen din er svak. Vurder å pause skjermdelingen for å holde lyden klar.",
+    "connection-still-weak": "Forbindelsen er fortsatt svak — video kan fryse.",
+    "video-resumed": "Tilkoblingen ble bedre — videoen fortsatte.",
+    "video-stays-paused": "Videoen vil forbli pauset til du aktiverer den igjen.",
+    "video-paused": "Video pauset",
+    "audio-only-mode-weak-connection": "Forbindelsen din er kritisk ustabil. Videoen er satt på pause for å holde lyden i gang.",
+    "connection-recovered-restore-video": "Tilkoblingen din virker stabil igjen. Du kan prøve å gjenopprette videoen.",
+    "media-restored-camera-unavailable": "Innkommende medier ble gjenopprettet, men kameraet ditt kunne ikke aktiveres.",
+    "presentation-resumed": "Presentasjonen er gjenopptatt."
   },
   "room-metadata": {
     "session-recording": "Dette møtet blir tatt opp.",
@@ -202,7 +214,11 @@
         "good": "Bra",
         "poor": "Stakkars",
         "lost": "Tapt"
-      }
+      },
+      "video-paused-banner": "Svak tilkobling — video pauset for å holde lyden klar.",
+      "video-stays-paused-banner": "Svak tilkobling — video pauset til du aktiverer den igjen.",
+      "re-enable-video": "Aktiver video igjen",
+      "resume-presentation": "Presentasjon av CV"
     }
   },
   "app": {
@@ -292,7 +308,26 @@
     "file-upload-success": "Filen ble lastet opp",
     "file-upload-default-error": "Det oppsto en feil under opplasting av filen.",
     "chat-box-placeholder": "Send en melding, lim inn et bilde eller slipp en fil her (Ny linje: Shift + Enter)",
-    "sending-message": "Vennligst vent, sender..."
+    "sending-message": "Vennligst vent, sender...",
+    "reply": "Svar",
+    "edit-message": "Rediger melding",
+    "delete-message": "Slett",
+    "cancel": "Avbryt",
+    "save": "Lagre",
+    "edited": "redigert",
+    "edited-at-title": "Redigert",
+    "copy-message": "Kopier melding",
+    "message-options": "Meldingsalternativer",
+    "message-deleted": "Denne meldingen ble slettet",
+    "message-deleted-by-you": "Du slettet denne meldingen",
+    "message-deleted-by-admin": "Denne meldingen ble slettet av en administrator",
+    "delete-confirm-title": "Slette denne meldingen?",
+    "delete-confirm-body": "Dette vil fjerne budskapet for alle i denne samtalen. Dette kan ikke gjøres om.",
+    "replying-to": "Svar på {{name}}",
+    "editing-message": "Redigeringsmelding",
+    "new-messages": "Nye meldinger",
+    "scroll-to-bottom": "Scroll til bunnen",
+    "sync-chat": "Synkroniser chat med jevnaldrende"
   },
   "footer": {
     "aria-label": "Møtekontroller",
@@ -344,7 +379,8 @@
       "promote-presenter": "Gjør presentatør",
       "demote-presenter": "Fjern som presentatør",
       "you-are-muted": "Ingen kan høre deg. Du er mutet.",
-      "menu": "Flere alternativer"
+      "menu": "Flere alternativer",
+      "paused-by-connection-tooltip": "Satt automatisk på pause på grunn av svak tilkobling — klikk for å aktivere på nytt"
     },
     "menus": {
       "mute-all-users": "Demp alle",

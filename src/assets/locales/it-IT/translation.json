@@ -107,7 +107,19 @@
     "native-bridge-error": "L'applicazione ha segnalato un errore: {{error}}",
     "cannot-lock-admin": "Non puoi cambiare le impostazioni della serratura per altri utenti amministratori.",
     "breakout-room-raised-hand": "{{name}} Alzò la mano in {{room}}",
-    "switching-room": "Cambio di stanza..."
+    "switching-room": "Cambio di stanza...",
+    "video-paused-weak-connection": "Connessione debole — video messo in pausa per mantenere l'audio chiaro.",
+    "video-paused-audio-protection": "Il video si è messo in pausa perché l'audio si interrompeva.",
+    "presentation-paused-weak-connection": "Presentazione interrotta — la tua connessione è debole.",
+    "suggest-pause-screenshare": "La tua connessione è debole. Considera di mettere in pausa la condivisione schermo per mantenere l'audio chiaro.",
+    "connection-still-weak": "La connessione è ancora debole — il video potrebbe bloccarsi.",
+    "video-resumed": "Connessione migliorata — il video è ripreso.",
+    "video-stays-paused": "Il video rimarrà in pausa finché non lo riabiliti.",
+    "video-paused": "Video in pausa",
+    "audio-only-mode-weak-connection": "La tua connessione è criticamente instabile. Il video è stato messo in pausa per mantenere l'audio in funzione.",
+    "connection-recovered-restore-video": "La tua connessione sembra di nuovo stabile. Puoi provare a ripristinare il video.",
+    "media-restored-camera-unavailable": "I media in ingresso venivano ripristinati, ma la tua telecamera non poteva essere attivata.",
+    "presentation-resumed": "La presentazione è ripresa."
   },
   "room-metadata": {
     "session-recording": "Questa riunione è in fase di registrazione.",
@@ -202,7 +214,11 @@
         "good": "Bene",
         "poor": "Poveri",
         "lost": "Perso"
-      }
+      },
+      "video-paused-banner": "Connessione debole — video messo in pausa per mantenere l'audio chiaro.",
+      "video-stays-paused-banner": "Connessione debole — video in pausa finché non lo riabiliti.",
+      "re-enable-video": "Riabilita il video",
+      "resume-presentation": "Presentazione del curriculum"
     }
   },
   "app": {
@@ -292,7 +308,26 @@
     "file-upload-success": "File caricato con successo.",
     "file-upload-default-error": "Si è verificato un errore durante il caricamento del file.",
     "chat-box-placeholder": "Invia un messaggio, incolla un'immagine o trascina un file qui (Nuova riga: Maiusc + Invio)",
-    "sending-message": "Invio in corso, attendere prego..."
+    "sending-message": "Invio in corso, attendere prego...",
+    "reply": "Risposta",
+    "edit-message": "Modifica messaggio",
+    "delete-message": "Elimina",
+    "cancel": "Cancella",
+    "save": "Salva",
+    "edited": "Modificato",
+    "edited-at-title": "Modificato",
+    "copy-message": "Copia messaggio",
+    "message-options": "Opzioni messaggi",
+    "message-deleted": "Questo messaggio è stato cancellato",
+    "message-deleted-by-you": "Hai cancellato questo messaggio",
+    "message-deleted-by-admin": "Questo messaggio è stato cancellato da un amministratore",
+    "delete-confirm-title": "Cancellare questo messaggio?",
+    "delete-confirm-body": "Questo rimuoverà il messaggio per tutti in questa conversazione. Questo non si può annullare.",
+    "replying-to": "Rispondere a {{name}}",
+    "editing-message": "Messaggio di modifica",
+    "new-messages": "Nuovi messaggi",
+    "scroll-to-bottom": "Scorri fino in fondo",
+    "sync-chat": "Chat sincronizzata con i colleghi"
   },
   "footer": {
     "aria-label": "Controlli delle riunioni",
@@ -344,7 +379,8 @@
       "promote-presenter": "Rendi presentatore",
       "demote-presenter": "Rimuovi come presentatore",
       "you-are-muted": "Nessuno può sentirla. Il suo microfono è disattivato.",
-      "menu": "Più opzioni"
+      "menu": "Più opzioni",
+      "paused-by-connection-tooltip": "Pausato automaticamente a causa di connessione debole — clicca per riabilitare"
     },
     "menus": {
       "mute-all-users": "Disattiva l'audio di tutti",
