@@ -118,8 +118,8 @@
     "video-paused": "Vidéo mise en pause",
     "audio-only-mode-weak-connection": "Votre connexion est critiquement instable. La vidéo a été mise en pause pour maintenir le son en marche.",
     "connection-recovered-restore-video": "Votre connexion semble de nouveau stable. Vous pouvez essayer de restaurer la vidéo.",
-    "media-restored-camera-unavailable": "Incoming media was restored, but your camera could not be enabled.",
-    "presentation-resumed": "The presentation has resumed."
+    "media-restored-camera-unavailable": "Les médias entrants ont été rétablis, mais votre caméra n’a pas pu être activée.",
+    "presentation-resumed": "La présentation a repris."
   },
   "room-metadata": {
     "session-recording": "Cette réunion est en cours d'enregistrement.",
@@ -215,10 +215,10 @@
         "poor": "Pauvre",
         "lost": "Perdu"
       },
-      "video-paused-banner": "Weak connection — video paused to keep audio clear.",
-      "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
-      "re-enable-video": "Re-enable video",
-      "resume-presentation": "Resume presentation"
+      "video-paused-banner": "Connexion faible — vidéo mise en pause pour garder l’audio clair.",
+      "video-stays-paused-banner": "Connexion faible — vidéo mise en pause jusqu’à ce que vous la réactiviez.",
+      "re-enable-video": "Réactiver la vidéo",
+      "resume-presentation": "Présentation du CV"
     }
   },
   "app": {
@@ -380,7 +380,7 @@
       "demote-presenter": "Retirer le rôle de présentateur",
       "you-are-muted": "Personne ne peut vous entendre. Votre micro est coupé.",
       "menu": "Plus d’options",
-      "paused-by-connection-tooltip": "Paused automatically due to weak connection — click to re-enable"
+      "paused-by-connection-tooltip": "Pause automatique en raison d’une connexion faible — cliquez pour réactiver"
     },
     "menus": {
       "mute-all-users": "Couper le micro de tous les participants",
