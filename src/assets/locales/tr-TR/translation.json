@@ -107,7 +107,19 @@
     "native-bridge-error": "Uygulama bir hata bildirdi: {{error}}",
     "cannot-lock-admin": "Diğer yönetici kullanıcılar için kilit ayarlarını değiştiremezsiniz.",
     "breakout-room-raised-hand": "{{name}} Ellerini kaldırdı {{room}}",
-    "switching-room": "Odayı değiştirmek..."
+    "switching-room": "Odayı değiştirmek...",
+    "video-paused-weak-connection": "Zayıf bağlantı — ses açık tutmak için video durakladı.",
+    "video-paused-audio-protection": "Video durakladı çünkü ses kesiliyordu.",
+    "presentation-paused-weak-connection": "Sunum durakladı — bağlantınız zayıf.",
+    "suggest-pause-screenshare": "Bağlantınız zayıf. Sesi net tutmak için ekran paylaşımınızı durdurmayı düşünün.",
+    "connection-still-weak": "Bağlantı hâlâ zayıf — video donabilir.",
+    "video-resumed": "Bağlantı düzeltildi — video devam etti.",
+    "video-stays-paused": "Video, tekrar etkinleştirene kadar duraklı kalacak.",
+    "video-paused": "Video duraklatıldı",
+    "audio-only-mode-weak-connection": "Bağlantınız kritik derecede istikrarsız. Sesin çalışması için video duraklatıldı.",
+    "connection-recovered-restore-video": "Bağlantınız tekrar stabil görünüyor. Videoyu geri yüklemeyi deneyebilirsiniz.",
+    "media-restored-camera-unavailable": "Gelen medya geri yüklendi ama kameranız etkinleştirilemezdi.",
+    "presentation-resumed": "Sunum yeniden başladı."
   },
   "room-metadata": {
     "session-recording": "Bu toplantı kaydedilmektedir.",
@@ -202,7 +214,11 @@
         "good": "İyi.",
         "poor": "Zavallı",
         "lost": "Kayıp"
-      }
+      },
+      "video-paused-banner": "Zayıf bağlantı — ses açık tutmak için video durakladı.",
+      "video-stays-paused-banner": "Zayıf bağlantı — video tekrar etkinleştirene kadar durakladı.",
+      "re-enable-video": "Videoyu yeniden etkinleştirin",
+      "resume-presentation": "Özgeçmiş sunumu"
     }
   },
   "app": {
@@ -363,7 +379,8 @@
       "promote-presenter": "Sunucu Yap",
       "demote-presenter": "Sunuculuktan Çıkar",
       "you-are-muted": "Sesiniz kapalı. Kimse sizi duyamıyor.",
-      "menu": "Daha fazla seçenek"
+      "menu": "Daha fazla seçenek",
+      "paused-by-connection-tooltip": "Zayıf bağlantı nedeniyle otomatik olarak duraklatıldı — tekrar etkinleştirmek için tıklayın"
     },
     "menus": {
       "mute-all-users": "Herkesi Sessize Al",
