@@ -107,7 +107,19 @@
     "native-bridge-error": "A aplicação reportou um erro: {{error}}",
     "cannot-lock-admin": "Não podes alterar as definições de bloqueio para outros utilizadores administradores.",
     "breakout-room-raised-hand": "{{name}} Levantaram a mão para {{room}}",
-    "switching-room": "Troca de quarto..."
+    "switching-room": "Troca de quarto...",
+    "video-paused-weak-connection": "Ligação fraca — vídeo pausado para manter o áudio claro.",
+    "video-paused-audio-protection": "O vídeo ficou pausado porque o áudio estava a falhar.",
+    "presentation-paused-weak-connection": "Apresentação pausada — a tua ligação é fraca.",
+    "suggest-pause-screenshare": "A sua ligação está fraca. Considere pausar a partilha de ecrã para manter o áudio limpo.",
+    "connection-still-weak": "A ligação continua fraca — o vídeo pode congelar.",
+    "video-resumed": "A ligação melhorou — o vídeo foi retomado.",
+    "video-stays-paused": "O vídeo ficará pausado até o voltares a ativar.",
+    "video-paused": "Vídeo pausado",
+    "audio-only-mode-weak-connection": "A sua ligação está criticamente instável. O vídeo foi pausado para manter o áudio a funcionar.",
+    "connection-recovered-restore-video": "A sua ligação parece estável novamente. Pode tentar restaurar o vídeo.",
+    "media-restored-camera-unavailable": "A multimédia recebida foi restaurada, mas a sua câmara não pôde ser ativada.",
+    "presentation-resumed": "A apresentação foi retomada."
   },
   "room-metadata": {
     "session-recording": "Esta reunião está a ser gravada.",
@@ -202,7 +214,11 @@
         "good": "Bom",
         "poor": "Pobre",
         "lost": "Perdido"
-      }
+      },
+      "video-paused-banner": "Ligação fraca — vídeo pausado para manter o áudio claro.",
+      "video-stays-paused-banner": "Ligação fraca — vídeo pausado até o reativar.",
+      "re-enable-video": "Reativar vídeo",
+      "resume-presentation": "Apresentação do currículo"
     }
   },
   "app": {
@@ -363,7 +379,8 @@
       "promote-presenter": "Tornar apresentador",
       "demote-presenter": "Remover como apresentador",
       "you-are-muted": "Ninguém o consegue ouvir. O seu microfone está silenciado.",
-      "menu": "Mais opções"
+      "menu": "Mais opções",
+      "paused-by-connection-tooltip": "Pauso automático devido a ligação fraca — clique para reativar"
     },
     "menus": {
       "mute-all-users": "Silenciar todos",
