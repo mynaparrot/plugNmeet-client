@@ -107,7 +107,19 @@
     "native-bridge-error": "Applikationen rapporterade ett fel: {{error}}",
     "cannot-lock-admin": "Du kan inte ändra låsinställningar för andra administratörsanvändare.",
     "breakout-room-raised-hand": "{{name}} höjde handen i {{room}}",
-    "switching-room": "Byter rum..."
+    "switching-room": "Byter rum...",
+    "video-paused-weak-connection": "Svag anslutning — videon pausad för att hålla ljudet klart.",
+    "video-paused-audio-protection": "Videon pausades eftersom ditt ljud höll på att brytas upp.",
+    "presentation-paused-weak-connection": "Presentation pausad — din kontakt är svag.",
+    "suggest-pause-screenshare": "Din anslutning är svag. Överväg att pausa skärmdelningen för att hålla ljudet klart.",
+    "connection-still-weak": "Anslutningen är fortfarande svag — videon kan frysa.",
+    "video-resumed": "Anslutningen förbättrad — videon återupptogs.",
+    "video-stays-paused": "Videon kommer att förbli pausad tills du aktiverar den igen.",
+    "video-paused": "Videon pausas",
+    "audio-only-mode-weak-connection": "Din anslutning är kritiskt instabil. Videon har pausats för att hålla ljudet igång.",
+    "connection-recovered-restore-video": "Din anslutning verkar stabil igen. Du kan försöka återställa videon.",
+    "media-restored-camera-unavailable": "Inkommande media återställdes, men din kamera kunde inte aktiveras.",
+    "presentation-resumed": "Presentationen har återupptagits."
   },
   "room-metadata": {
     "session-recording": "Detta möte spelas in.",
@@ -202,7 +214,11 @@
         "good": "Bra",
         "poor": "Fattigt",
         "lost": "Lost"
-      }
+      },
+      "video-paused-banner": "Svag anslutning — videon pausad för att hålla ljudet klart.",
+      "video-stays-paused-banner": "Svag anslutning — videon pausas tills du aktiverar den igen.",
+      "re-enable-video": "Återaktivera video",
+      "resume-presentation": "Presentation av CV"
     }
   },
   "app": {
@@ -363,7 +379,8 @@
       "promote-presenter": "Gör till presentatör",
       "demote-presenter": "Ta bort som presentatör",
       "you-are-muted": "Ingen kan höra dig. Du är tyst.",
-      "menu": "Fler alternativ"
+      "menu": "Fler alternativ",
+      "paused-by-connection-tooltip": "Pausad automatiskt på grund av svag anslutning — klicka för att aktivera igen"
     },
     "menus": {
       "mute-all-users": "Stäng av ljudet för alla",
