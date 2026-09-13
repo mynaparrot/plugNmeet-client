@@ -33,9 +33,16 @@ const MicrophoneLevel = ({
 
   const pct = Math.round(Math.min(1, Math.max(0, level)) * 100);
 
-  // Peak-hold: jumps with the level, then decays so clipping is visible.
+  // Peak-hold: tracks the loudest recent moment, then falls steadily so
+  // the marker keeps gliding while talking instead of freezing at 100.
   useEffect(() => {
-    setPeak((prev) => Math.max(prev * 0.985, pct));
+    setPeak((prev) => {
+      if (pct > prev) {
+        return pct;
+      }
+      // ~1.5s fall from 100 to 0 at 20fps emission rate
+      return Math.max(0, prev - 3.5);
+    });
     if (peakDecayRef.current) {
       clearTimeout(peakDecayRef.current);
     }
@@ -46,6 +53,11 @@ const MicrophoneLevel = ({
       }
     };
   }, [pct]);
+
+  // Live vs heard: the dot is green only while the bar is actually moving
+  // (pct >= 4). Below that the mic may be silent/wrong — stay neutral so
+  // users don't read "Great" while the meter is dead flat.
+  const heard = active && pct >= 4;
 
   const status = useMemo(() => {
     if (failed) {
@@ -72,7 +84,7 @@ const MicrophoneLevel = ({
         pulse: true,
       };
     }
-    if (pct < 4) {
+    if (!heard) {
       return {
         text: t('footer.modal.mic-test-speak'),
         cls: 'text-Gray-600 dark:text-Gray-300',
@@ -86,7 +98,7 @@ const MicrophoneLevel = ({
       dot: 'bg-Green-500',
       pulse: false,
     };
-  }, [active, failed, hasSelection, pct, t]);
+  }, [active, failed, hasSelection, heard, t]);
 
   return (
     <div className="w-full rounded-xl border border-Gray-200 dark:border-Gray-700 bg-Gray-50 dark:bg-dark-secondary2 px-3 py-2.5">

@@ -10,12 +10,15 @@ interface MicrophonePreview {
  * Opens the given mic with getUserMedia and reports a smoothed 0-1 level.
  * Everything is released on device change / unmount.
  *
- * Two deliberate choices that fix the old "dead bar":
+ * Calibration (deliberately desensitized so the bar stays calm):
  * 1. echoCancellation/noiseSuppression/autoGainControl are DISABLED for the
  *    preview stream — those processors gate silence and made normal speech
  *    read as ~0 on many laptops.
- * 2. The RMS -> 0..1 curve is perceptual (sqrt) not linear, so quiet
- *    speech visibly moves the bar instead of sitting at 5%.
+ * 2. Raw RMS is mapped with a noise floor (0.018) + reference level (0.22)
+ *    so normal speech sits ~10-50%, loud speech ~70%, and only shouting
+ *    pegs at 100%. Peak is down-weighted and smoothing uses calm attack
+ *    (0.35) + slow release (0.15) with a deadband, so room noise and tiny
+ *    fluctuations barely move the bar.
  */
 export const useMicrophonePreview = (
   deviceId: string,
@@ -43,7 +46,7 @@ export const useMicrophonePreview = (
     let analyser: AnalyserNode | undefined;
     let raf = 0;
     let lastEmit = 0;
-    const data = new Uint8Array(1024);
+    let data = new Uint8Array(2048);
     let smoothed = 0;
 
     const cleanup = () => {
@@ -69,6 +72,11 @@ export const useMicrophonePreview = (
       if (disposed || !analyser) {
         return;
       }
+      // getByteTimeDomainData writes into dataArray with the analyser's
+      // fftSize; guard length in case the context was recreated.
+      if (data.length !== analyser.fftSize) {
+        data = new Uint8Array(analyser.fftSize);
+      }
       analyser.getByteTimeDomainData(
         data as unknown as Uint8Array<ArrayBuffer>,
       );
@@ -82,20 +90,34 @@ export const useMicrophonePreview = (
         sum += v * v;
       }
       const rms = Math.sqrt(sum / data.length);
-      // Blend RMS (stable) with peak (responsive); sqrt curve lifts quiet
-      // speech out of the noise floor so the bar visibly answers.
-      const mixed = rms * 0.6 + peak * 0.4;
-      const target = Math.min(1, Math.sqrt(Math.max(0, mixed)) * 2.1);
-      smoothed += (target - smoothed) * 0.4;
+      // Map raw level to meter with a noise floor and a reference point:
+      // - below NOISE_FLOOR (~room noise) reads 0 so silence looks silent
+      // - REF (loud speech rms) reads ~0.8, leaving headroom above it.
+      // Deliberately desensitized: higher floor + higher ref + gentler
+      // exponent so normal speech sits ~10-50% and small room noises
+      // barely move the bar. Peak is down-weighted to avoid spike jumps.
+      const NOISE_FLOOR = 0.018;
+      const REF = 0.22;
+      const clean = Math.max(0, rms - NOISE_FLOOR);
+      const fromRms = Math.pow(clean / REF, 0.7) * 0.8;
+      const fromPeak = Math.max(0, peak - NOISE_FLOOR * 3) * 0.6;
+      const target = Math.min(1, Math.max(fromRms, fromPeak * 0.35));
+      // Calm meter: moderate attack (no jumpy spikes), slow release.
+      const alpha = target > smoothed ? 0.35 : 0.15;
+      smoothed += (target - smoothed) * alpha;
 
-      // emit at ~15fps to avoid re-render storm
+      // emit at ~15fps — calm motion without re-render storm
       if (now - lastEmit > 66) {
         lastEmit = now;
         if (!disposed) {
-          // round to reduce renders on silence
+          // round + deadband to reduce renders on silence/jitter
           const rounded = Math.round(smoothed * 100) / 100;
           setLevel((prev) =>
-            Math.abs(prev - rounded) > 0.005 ? rounded : prev,
+            prev === 0 && rounded === 0
+              ? prev
+              : Math.abs(prev - rounded) > 0.008
+                ? rounded
+                : prev,
           );
         }
       }
