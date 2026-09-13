@@ -15,7 +15,10 @@ import { inputMediaDeviceKind } from '../../helpers/utils';
 
 interface WebcamIconProps {
   videoDevices: IMediaDevice[];
-  enableMediaDevices(type: inputMediaDeviceKind): Promise<void>;
+  enableMediaDevices(
+    type: inputMediaDeviceKind,
+    opts?: { quickEnable?: boolean },
+  ): Promise<void>;
   disableWebcam(): void;
   setSelectedVideoDevice: (value: SetStateAction<string>) => void;
   selectedVideoDevice: string;
@@ -42,6 +45,7 @@ const WebcamIcon = ({
           displayWebcamSelection={false}
           onSelectedDevice={setSelectedVideoDevice}
           selectedDeviceId={selectedVideoDevice}
+          initialDevices={videoDevices}
         />
       )}
       <button

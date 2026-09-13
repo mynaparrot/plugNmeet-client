@@ -166,16 +166,18 @@ const Landing = ({
     return t('landing.join-prompt');
   }, [hybrid, lockMicrophone, lockWebcam, isWebcamAllowed, t]);
 
-  // Enumerate devices, then open the picker modal (mic cases) so the user
-  // explicitly picks + tests a mic instead of silently going "active".
+  // "Enable microphone" single-device case: enumerate, then open the mic
+  // picker modal so the user explicitly picks + tests a mic.
   const enableMicAndOpenPicker = useCallback(async () => {
     await enableMediaDevices('audio');
     setShowMicPicker(true);
   }, [enableMediaDevices]);
 
-  const enableBothAndOpenPicker = useCallback(async () => {
-    await enableMediaDevices('both');
-    setShowMicPicker(true);
+  // "Enable mic+cam" quick path: check permission, enumerate, auto-select
+  // stored-or-first-real for both mic and cam. No popup — the preview tile
+  // + menu icons stay available for change/test afterwards.
+  const enableBothQuick = useCallback(async () => {
+    await enableMediaDevices('both', { quickEnable: true });
   }, [enableMediaDevices]);
 
   const closeMicPicker = useCallback(
@@ -203,7 +205,7 @@ const Landing = ({
     }
     return {
       text: t('landing.enable-mic-cam-btn'),
-      action: enableBothAndOpenPicker,
+      action: enableBothQuick,
     };
   }, [
     t,
@@ -212,7 +214,7 @@ const Landing = ({
     isWebcamAllowed,
     enableMediaDevices,
     enableMicAndOpenPicker,
-    enableBothAndOpenPicker,
+    enableBothQuick,
   ]);
 
   return (

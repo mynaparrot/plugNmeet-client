@@ -79,6 +79,9 @@ const WebcamIcon = () => {
   const selectedVideoDevice = useAppSelector(
     (state) => state.roomSettings.selectedVideoDevice,
   );
+  const knownVideoDevices = useAppSelector(
+    (state) => state.roomSettings.videoDevices,
+  );
 
   // Lock if not an admin & user-specific lock is set, or fall back to room default.
   const isWebcamLocked = useMemo(
@@ -368,6 +371,7 @@ const WebcamIcon = () => {
           onSelectedDevice={onSelectedDevice}
           selectedDeviceId={selectedVideoDevice}
           displayWebcamSelection={true}
+          initialDevices={knownVideoDevices}
         />
       )}
     </>

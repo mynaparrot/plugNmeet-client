@@ -10,9 +10,10 @@ import BackgroundItems from './backgroundItems';
 
 interface WebcamSettingsProps {
   deviceId: string;
+  onRetry?: () => void;
 }
 
-const WebcamSettings = ({ deviceId }: WebcamSettingsProps) => {
+const WebcamSettings = ({ deviceId, onRetry }: WebcamSettingsProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
@@ -20,10 +21,14 @@ const WebcamSettings = ({ deviceId }: WebcamSettingsProps) => {
     dispatch(updateVirtualBackground(bg));
   };
 
+  if (!deviceId) {
+    return null;
+  }
+
   return (
     <div className="">
       <div className="w-full overflow-hidden rounded-lg relative bg-black h-64 3xl:h-80">
-        <WebcamPreview deviceId={deviceId} />
+        <WebcamPreview deviceId={deviceId} onRetry={onRetry} />
       </div>
       {isSupported && (
         <>

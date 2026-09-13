@@ -11,9 +11,14 @@ import { useAppDispatch } from '../../../store';
 import { updateVirtualBackground } from '../../../store/slices/roomSettingsSlice';
 import { BackgroundConfig } from '../../../helpers/libs/TrackProcessor';
 import {
+  getFirstRealVideoDeviceId,
   getStoredAudioDeviceId,
+  getStoredVideoDeviceId,
   resolveInitialDeviceId,
+  resolveStoredOrFirstRealAudio,
+  resolveStoredOrFirstRealVideo,
   sortAudioDevices,
+  sortVideoDevices,
 } from '../../footer/modals/microphone/deviceUtils';
 
 export const useMediaDevices = () => {
@@ -24,8 +29,12 @@ export const useMediaDevices = () => {
   const [selectedVideoDevice, setSelectedVideoDevice] = useState<string>('');
 
   const enableMediaDevices = useCallback(
-    async (kind: inputMediaDeviceKind = 'both') => {
+    async (
+      kind: inputMediaDeviceKind = 'both',
+      opts?: { quickEnable?: boolean },
+    ) => {
       const inputDevices = await getInputMediaDevices(kind);
+      const quickEnable = opts?.quickEnable ?? false;
 
       if (
         inputDevices.audio.length > 0 &&
@@ -34,12 +43,19 @@ export const useMediaDevices = () => {
         const sorted = sortAudioDevices(inputDevices.audio);
         setAudioDevices(sorted);
         if (!selectedAudioDevice) {
-          // Never auto-pick sorted[0]: it is often a monitor/loopback.
-          // Only restore an explicitly stored id; else force manual choice.
           const stored = getStoredAudioDeviceId();
-          const initial = resolveInitialDeviceId(sorted, stored);
-          if (initial) {
-            setSelectedAudioDevice(initial);
+          if (quickEnable) {
+            // "Enable mic+cam" quick path: stored id or first real mic, no popup.
+            setSelectedAudioDevice(
+              resolveStoredOrFirstRealAudio(sorted, stored),
+            );
+          } else {
+            // Never auto-pick sorted[0]: it is often a monitor/loopback.
+            // Only restore an explicitly stored id; else force manual choice.
+            const initial = resolveInitialDeviceId(sorted, stored);
+            if (initial) {
+              setSelectedAudioDevice(initial);
+            }
           }
         } else if (
           !sorted.some((device) => device.id === selectedAudioDevice)
@@ -52,16 +68,25 @@ export const useMediaDevices = () => {
         inputDevices.video.length > 0 &&
         (kind === 'both' || kind === 'video')
       ) {
-        setVideoDevices(inputDevices.video);
+        const sorted = sortVideoDevices(inputDevices.video);
+        setVideoDevices(sorted);
         if (!selectedVideoDevice) {
-          setSelectedVideoDevice(inputDevices.video[0].id);
+          const stored = getStoredVideoDeviceId();
+          if (quickEnable) {
+            // "Enable mic+cam" quick path: stored id or first real cam, no popup.
+            setSelectedVideoDevice(
+              resolveStoredOrFirstRealVideo(sorted, stored),
+            );
+          } else if (stored && sorted.some((device) => device.id === stored)) {
+            setSelectedVideoDevice(stored);
+          } else if (sorted.length > 0) {
+            setSelectedVideoDevice(sorted[0].id);
+          }
         } else if (
-          !inputDevices.video.some(
-            (device) => device.id === selectedVideoDevice,
-          )
+          !sorted.some((device) => device.id === selectedVideoDevice)
         ) {
-          // remembered device is no longer available; fall back to the first one
-          setSelectedVideoDevice(inputDevices.video[0].id);
+          // remembered device is no longer available; fall back to the first real one
+          setSelectedVideoDevice(getFirstRealVideoDeviceId(sorted));
         }
       }
     },
