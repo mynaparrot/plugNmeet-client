@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.5.1](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.0...v2.5.1) (2026-09-13)
+
+
+### Bug Fixes
+
+* centralized all dimensions ([c91a327](https://github.com/mynaparrot/plugNmeet-client/commit/c91a32718ec875ca3510a3b20ddab2a0b42bbc79))
+* **chat:** added option to edit/delete/reply chat messages ([141e3ff](https://github.com/mynaparrot/plugNmeet-client/commit/141e3ff6a8d951a95c15ae6f3629a897017de32b))
+* don't clean IDB when switching from main room to breakout room ([abbf6e5](https://github.com/mynaparrot/plugNmeet-client/commit/abbf6e5aa6cd8e6e638993248ef26f7428ba9b46))
+* don't depend on mic ([86cb737](https://github.com/mynaparrot/plugNmeet-client/commit/86cb737bcc4c4773d142481ebfc1307fa4d250eb))
+* implemented our own `AdaptiveMediaController` ([327c628](https://github.com/mynaparrot/plugNmeet-client/commit/327c628f4d84d44c9603df629b308988818c9708))
+* **side-panel:** added ability to resize side panel ([2aada53](https://github.com/mynaparrot/plugNmeet-client/commit/2aada539b6bb2a08f42b533c6efabb278b94a59e))
+* sorted real webcam devices first ([c119325](https://github.com/mynaparrot/plugNmeet-client/commit/c11932504b137e6f86cefc459ecf33fd9ec912e5))
+* **UI:** added mic tester + UI improvement ([d506e6d](https://github.com/mynaparrot/plugNmeet-client/commit/d506e6dcad3c90f40a4bb33708c7c95a5c9a2ec5))
+* **UI:** desensitized the meter: higher noise floor, higher reference level ([90c5fff](https://github.com/mynaparrot/plugNmeet-client/commit/90c5fff7830851210d3ead0c4137d7a26f024f8c))
+
 ## [2.5.0](https://github.com/mynaparrot/plugNmeet-client/compare/v2.4.0...v2.5.0) (2026-09-09)
 
 
