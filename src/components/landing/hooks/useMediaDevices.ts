@@ -10,6 +10,11 @@ import {
 import { useAppDispatch } from '../../../store';
 import { updateVirtualBackground } from '../../../store/slices/roomSettingsSlice';
 import { BackgroundConfig } from '../../../helpers/libs/TrackProcessor';
+import {
+  getStoredAudioDeviceId,
+  resolveInitialDeviceId,
+  sortAudioDevices,
+} from '../../footer/modals/microphone/deviceUtils';
 
 export const useMediaDevices = () => {
   const dispatch = useAppDispatch();
@@ -26,16 +31,21 @@ export const useMediaDevices = () => {
         inputDevices.audio.length > 0 &&
         (kind === 'both' || kind === 'audio')
       ) {
-        setAudioDevices(inputDevices.audio);
+        const sorted = sortAudioDevices(inputDevices.audio);
+        setAudioDevices(sorted);
         if (!selectedAudioDevice) {
-          setSelectedAudioDevice(inputDevices.audio[0].id);
+          // Never auto-pick sorted[0]: it is often a monitor/loopback.
+          // Only restore an explicitly stored id; else force manual choice.
+          const stored = getStoredAudioDeviceId();
+          const initial = resolveInitialDeviceId(sorted, stored);
+          if (initial) {
+            setSelectedAudioDevice(initial);
+          }
         } else if (
-          !inputDevices.audio.some(
-            (device) => device.id === selectedAudioDevice,
-          )
+          !sorted.some((device) => device.id === selectedAudioDevice)
         ) {
-          // remembered device is no longer available; fall back to the first one
-          setSelectedAudioDevice(inputDevices.audio[0].id);
+          // remembered mic unplugged: clear so user must explicitly re-pick
+          setSelectedAudioDevice('');
         }
       }
       if (
@@ -106,6 +116,7 @@ export const useMediaDevices = () => {
     videoDevices,
     selectedAudioDevice,
     selectedVideoDevice,
+    setAudioDevices,
     setSelectedAudioDevice,
     setSelectedVideoDevice,
     enableMediaDevices,

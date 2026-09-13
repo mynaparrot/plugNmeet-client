@@ -9,6 +9,7 @@ import { updateSelectedAudioDevice } from '../../../../store/slices/roomSettings
 import {
   updateIsActiveMicrophone,
   updateIsMicMuted,
+  updateShowMicrophoneModal,
 } from '../../../../store/slices/bottomIconsActivitySlice';
 import { isHybridMode } from '../../../../helpers/nativeBridge';
 import {
@@ -111,24 +112,40 @@ const MicMenuItems = ({
           <div className="title h-8 w-full flex items-center text-xs leading-none text-Gray-700 dark:text-dark-text px-2 uppercase">
             {t('footer.icons.select-microphone')}
           </div>
-          {audioDevices.map((device) => (
-            <MenuItem key={device.id}>
-              {() => (
-                <button
-                  type="button"
-                  className={`${
-                    selectedAudioDevice === device.id
-                      ? 'bg-Gray-50 dark:bg-dark-secondary2'
-                      : ''
-                  } h-8 w-full flex items-center justify-between text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus-ring`}
-                  onClick={() => handleDeviceChange(device.id)}
-                >
-                  <span dir="ltr">{device.label}</span>
-                  {selectedAudioDevice === device.id ? <CheckMarkIcon /> : ''}
-                </button>
-              )}
-            </MenuItem>
-          ))}
+          <div className="max-h-56 overflow-auto scrollBar">
+            {audioDevices.map((device) => (
+              <MenuItem key={device.id}>
+                {() => (
+                  <button
+                    type="button"
+                    title={device.label}
+                    className={`${
+                      selectedAudioDevice === device.id
+                        ? 'bg-Gray-50 dark:bg-dark-secondary2'
+                        : ''
+                    } h-8 w-full flex items-center justify-between text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus-ring`}
+                    onClick={() => handleDeviceChange(device.id)}
+                  >
+                    <span dir="ltr" className="max-w-56 truncate">
+                      {device.label}
+                    </span>
+                    {selectedAudioDevice === device.id ? <CheckMarkIcon /> : ''}
+                  </button>
+                )}
+              </MenuItem>
+            ))}
+          </div>
+          <MenuItem disabled={isLocked}>
+            {() => (
+              <button
+                type="button"
+                className="h-8 w-full flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus-ring cursor-pointer"
+                onClick={() => dispatch(updateShowMicrophoneModal(true))}
+              >
+                {t('footer.modal.change-microphone')}
+              </button>
+            )}
+          </MenuItem>
           <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ms-3 my-1"></div>
         </>
       )}

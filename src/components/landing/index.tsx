@@ -26,6 +26,7 @@ import { LoadingIcon } from '../../assets/Icons/Loading';
 import MicrophoneIcon from './microphone';
 import WebcamIcon from './webcam';
 import WebcamPreview from '../footer/modals/webcam/webcamPreview';
+import MicrophoneModal from '../footer/modals/microphone';
 import { isHybridMode } from '../../helpers/nativeBridge';
 import useLogo from '../../helpers/hooks/useLogo';
 
@@ -83,6 +84,7 @@ const Landing = ({
     videoDevices,
     selectedAudioDevice,
     selectedVideoDevice,
+    setAudioDevices,
     setSelectedAudioDevice,
     setSelectedVideoDevice,
     enableMediaDevices,
@@ -96,6 +98,9 @@ const Landing = ({
   const [isReadyToConn, setIsReadyToConn] = useState<boolean | undefined>(
     undefined,
   );
+  // Picker modal state lives here so the "Enable microphone" button
+  // can open the same picker (not just enumerate devices silently).
+  const [showMicPicker, setShowMicPicker] = useState(false);
 
   useEffect(() => {
     switch (roomConnectionStatus) {
@@ -161,6 +166,29 @@ const Landing = ({
     return t('landing.join-prompt');
   }, [hybrid, lockMicrophone, lockWebcam, isWebcamAllowed, t]);
 
+  // Enumerate devices, then open the picker modal (mic cases) so the user
+  // explicitly picks + tests a mic instead of silently going "active".
+  const enableMicAndOpenPicker = useCallback(async () => {
+    await enableMediaDevices('audio');
+    setShowMicPicker(true);
+  }, [enableMediaDevices]);
+
+  const enableBothAndOpenPicker = useCallback(async () => {
+    await enableMediaDevices('both');
+    setShowMicPicker(true);
+  }, [enableMediaDevices]);
+
+  const closeMicPicker = useCallback(
+    (deviceId?: string) => {
+      setShowMicPicker(false);
+      if (typeof deviceId === 'string' && deviceId) {
+        setSelectedAudioDevice(deviceId);
+      }
+      // cancel / no pick -> stay inactive, selection untouched
+    },
+    [setSelectedAudioDevice],
+  );
+
   const getEnableDeviceButton = useCallback(() => {
     if (lockMicrophone) {
       return {
@@ -170,14 +198,22 @@ const Landing = ({
     } else if (lockWebcam || !isWebcamAllowed) {
       return {
         text: t('landing.enable-mic-btn'),
-        action: () => enableMediaDevices('audio'),
+        action: enableMicAndOpenPicker,
       };
     }
     return {
       text: t('landing.enable-mic-cam-btn'),
-      action: () => enableMediaDevices('both'),
+      action: enableBothAndOpenPicker,
     };
-  }, [t, lockMicrophone, lockWebcam, isWebcamAllowed, enableMediaDevices]);
+  }, [
+    t,
+    lockMicrophone,
+    lockWebcam,
+    isWebcamAllowed,
+    enableMediaDevices,
+    enableMicAndOpenPicker,
+    enableBothAndOpenPicker,
+  ]);
 
   return (
     isStartup && (
@@ -225,8 +261,8 @@ const Landing = ({
                     ) : (
                       <MicrophoneIcon
                         audioDevices={audioDevices}
-                        enableMediaDevices={enableMediaDevices}
                         disableMic={disableMic}
+                        setAudioDevices={setAudioDevices}
                         setSelectedAudioDevice={setSelectedAudioDevice}
                         selectedAudioDevice={selectedAudioDevice}
                       />
@@ -357,6 +393,16 @@ const Landing = ({
             </div>
           </div>
         </div>
+        {showMicPicker && !lockMicrophone && (
+          <MicrophoneModal
+            show={showMicPicker}
+            mode="select"
+            initialDeviceId={selectedAudioDevice}
+            initialDevices={audioDevices}
+            onCloseMicrophoneModal={closeMicPicker}
+            onDevicesLoaded={setAudioDevices}
+          />
+        )}
       </div>
     )
   );

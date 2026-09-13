@@ -12,16 +12,12 @@ import {
   updateShowMicrophoneModal,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import MicMenu from './mic-menu';
-import MicrophoneModal from '../modals/microphoneModal';
+import MicrophoneModal from '../modals/microphone';
 import {
   addAudioDevices,
   updateSelectedAudioDevice,
 } from '../../../store/slices/roomSettingsSlice';
-import {
-  getAudioPreset,
-  getInputMediaDevices,
-  sleep,
-} from '../../../helpers/utils';
+import { getAudioPreset, sleep } from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { Microphone } from '../../../assets/Icons/Microphone';
 import { MicrophoneOff } from '../../../assets/Icons/MicrophoneOff';
@@ -67,6 +63,9 @@ const MicrophoneIcon = () => {
   );
   const selectedAudioDevice = useAppSelector(
     (state) => state.roomSettings.selectedAudioDevice,
+  );
+  const knownAudioDevices = useAppSelector(
+    (state) => state.roomSettings.audioDevices,
   );
 
   const hybrid = isHybridMode();
@@ -133,10 +132,7 @@ const MicrophoneIcon = () => {
     }
 
     if (!isActiveMicrophone && !isLocked) {
-      // get devices before showing the modal
-      const devices = await getInputMediaDevices('audio');
-      dispatch(addAudioDevices(devices.audio));
-
+      // Picker enumerates + sorts itself; don't pre-fill [0] here.
       dispatch(updateShowMicrophoneModal(true));
     }
 
@@ -312,7 +308,9 @@ const MicrophoneIcon = () => {
       {showMicrophoneModal && (
         <MicrophoneModal
           show={showMicrophoneModal}
+          initialDevices={knownAudioDevices}
           onCloseMicrophoneModal={onCloseMicrophoneModal}
+          onDevicesLoaded={(devices) => dispatch(addAudioDevices(devices))}
         />
       )}
     </>
