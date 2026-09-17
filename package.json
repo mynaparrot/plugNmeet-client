@@ -64,7 +64,7 @@
     "@prettier/plugin-oxc": "0.2.3",
     "@tailwindcss/vite": "4.3.3",
     "@types/emscripten": "1.41.6",
-    "@types/node": "26.5.0",
+    "@types/node": "26.6.1",
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.7",
     "@types/sanitize-html": "2.16.1",
