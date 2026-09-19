@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.5.2](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.1...v2.5.2) (2026-09-19)
+
+
+### Bug Fixes
+
+* broadcast online/offline events to everyone as single event ([6a5821c](https://github.com/mynaparrot/plugNmeet-client/commit/6a5821c5dbda96abbd46c905381c09d41c20f56c))
+* long labels should be left-aligned ([f839c8a](https://github.com/mynaparrot/plugNmeet-client/commit/f839c8aa7e311c8efd3b25b0b5b9e5d508346f47))
+* send users' list more efficiently ([c8b39f6](https://github.com/mynaparrot/plugNmeet-client/commit/c8b39f6e90d9b709777e0ff71f5f6239c3cdbf8d))
+
 ## [2.5.1](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.0...v2.5.1) (2026-09-17)
 
 
