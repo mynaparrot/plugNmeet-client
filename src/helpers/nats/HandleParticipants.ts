@@ -300,6 +300,11 @@ export default class HandleParticipants {
       return Promise.resolve();
     }
 
+    // ignore the echo of our own event
+    if (participant.userId === this._localUserId) {
+      return Promise.resolve();
+    }
+
     return this._runPrimaryUserTask(participant.userId, async () => {
       this._handleParticipantCleanup(participant.userId, false);
     });

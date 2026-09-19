@@ -921,7 +921,7 @@ export default class ConnectNats {
         return;
       }
 
-      this.sendMessageToSystemWorker(
+      this.sendMessageToCoreWorker(
         create(NatsMsgClientToServerSchema, {
           event: NatsMsgClientToServerEvents.PING,
         }),
@@ -930,7 +930,7 @@ export default class ConnectNats {
     };
     this.pingInterval = setInterval(ping, PING_INTERVAL);
     // start instantly
-    ping().then();
+    void ping();
   }
 
   public startUsersSync = () => {
@@ -938,7 +938,7 @@ export default class ConnectNats {
       return;
     }
     this.reconciliationInterval = setInterval(() => {
-      this.sendMessageToSystemWorker(
+      this.sendMessageToCoreWorker(
         create(NatsMsgClientToServerSchema, {
           event: NatsMsgClientToServerEvents.REQ_ONLINE_USERS_LIST,
         }),
