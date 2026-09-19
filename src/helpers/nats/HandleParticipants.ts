@@ -2,12 +2,14 @@ import { RemoteTrackPublication, Track } from 'livekit-client';
 import {
   NatsKvUserInfo,
   NatsKvUserInfoSchema,
+  NatsMsgClientToServerEvents,
+  NatsMsgClientToServerSchema,
   NatsUserMetadataUpdateSchema,
   UserMetadata,
   UserMetadataSchema,
   UserRaisedHandSchema,
 } from 'plugnmeet-protocol-js';
-import { create, fromJson, fromJsonString } from '@bufbuild/protobuf';
+import { create, fromJsonString } from '@bufbuild/protobuf';
 
 import ConnectNats from './ConnectNats';
 import {
@@ -41,6 +43,7 @@ import { isUserRecorder, toLiveKitUserId } from '../utils';
 import { PnmConnectionQuality } from '../livekit/ConnectionQualityMonitor';
 
 const EMPTY_ROOM_CHECK_INTERVAL = 3000;
+const USERS_RESYNC_MIN_INTERVAL = 60 * 1000;
 
 export default class HandleParticipants {
   private connectNats: ConnectNats;
@@ -53,6 +56,7 @@ export default class HandleParticipants {
 
   private activeUserTasks: Set<string> = new Set();
   private participantTaskChain: Promise<any> = Promise.resolve();
+  private _lastUsersResyncReqAt = 0;
 
   constructor(connectNats: ConnectNats) {
     this.connectNats = connectNats;
@@ -330,63 +334,73 @@ export default class HandleParticipants {
   };
 
   /**
-   * Reconciles the local participant list with a fresh list from the server.
-   * This ensures the client's state is consistent, correcting any discrepancies
-   * caused by missed real-time events.
-   * @param msg A JSON string containing an array of NatsKvUserInfo objects.
+   * Reconciles the local participant list against the server's online user ids.
+   * Ghosts (local but not on server) are removed; missing users are repaired by
+   * requesting the full chunked users list (rate limited).
+   * Hidden users (recorder bots, internal ids like TTS agents) are never
+   * ghost-removed — their cleanup is handled by USER_DISCONNECTED / USER_OFFLINE
+   * events, which are broadcast to everyone.
+   * @param msg A JSON string: {"ids":[...], "hiddenIds":[...]}.
    */
   public reconcileParticipants = (msg: string) => {
     return this.serialTask(async () => {
       try {
-        const serverUsersRaw: string[] = JSON.parse(msg);
-        const serverUsers = serverUsersRaw.map((u) =>
-          fromJson(NatsKvUserInfoSchema, u, {
-            ignoreUnknownFields: true,
-          }),
-        );
-        const serverUserIds = new Set(serverUsers.map((u) => u.userId));
-        const currentParticipantsInStore = participantsSelector.selectAll(
-          store.getState(),
+        const payload = JSON.parse(msg) as {
+          ids: string[];
+          hiddenIds: string[];
+        };
+        const serverIds = new Set(payload.ids);
+        const protectedIds = new Set([...payload.ids, ...payload.hiddenIds]);
+        const localIds = new Set(
+          participantsSelector.selectIds(store.getState()),
         );
 
-        for (const u of serverUsers) {
-          if (isUserRecorder(u.userId)) {
+        // users online on the server but missing locally
+        const missing: string[] = [];
+        for (const id of serverIds) {
+          if (isUserRecorder(id)) {
             continue;
           }
-          if (this.activeUserTasks.has(u.userId)) {
+          if (this.activeUserTasks.has(id)) {
             console.log(
-              `Reconciliation: Deferring addition of ${u.userId} because a primary task is active.`,
+              `Reconciliation: Deferring check of ${id} because a primary task is active.`,
             );
             continue;
           }
-
-          const isPresentLocally = currentParticipantsInStore.some(
-            (p) => p.userId === u.userId,
-          );
-          if (!isPresentLocally) {
-            console.log(
-              `Reconciliation: Adding missing participant ${u.userId}`,
-            );
-            await this._addRemoteParticipant(u);
+          if (!localIds.has(id)) {
+            missing.push(id);
           }
         }
 
-        for (const p of currentParticipantsInStore) {
-          if (p.isLocal) {
+        for (const id of localIds) {
+          // never touch our own entry
+          if (id === this._localUserId) {
             continue;
           }
-          if (!serverUserIds.has(p.userId)) {
-            if (this.activeUserTasks.has(p.userId)) {
+          if (!protectedIds.has(id)) {
+            if (this.activeUserTasks.has(id)) {
               console.log(
-                `Reconciliation: Deferring removal of ${p.userId} because a primary task is active.`,
+                `Reconciliation: Deferring removal of ${id} because a primary task is active.`,
               );
-              continue; // Hands off!
+              continue;
             }
+            console.log(`Reconciliation: Removing stale participant ${id}`);
+            this._handleParticipantCleanup(id, true);
+          }
+        }
 
+        if (missing.length > 0) {
+          const now = Date.now();
+          if (now - this._lastUsersResyncReqAt >= USERS_RESYNC_MIN_INTERVAL) {
+            this._lastUsersResyncReqAt = now;
             console.log(
-              `Reconciliation: Removing stale participant ${p.userId}`,
+              `Reconciliation: ${missing.length} missing users, requesting users list resync`,
             );
-            this._handleParticipantCleanup(p.userId, true);
+            this.connectNats.sendMessageToSystemWorker(
+              create(NatsMsgClientToServerSchema, {
+                event: NatsMsgClientToServerEvents.REQ_JOINED_USERS_LIST,
+              }),
+            );
           }
         }
       } catch (e) {

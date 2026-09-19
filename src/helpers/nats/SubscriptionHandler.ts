@@ -454,14 +454,24 @@ export default class SubscriptionHandler {
 
   private async handleJoinedUsersList(msg: string) {
     try {
-      const onlineUsers: string[] = JSON.parse(msg);
-      for (let i = 0; i < onlineUsers.length; i++) {
-        const user = fromJson(NatsKvUserInfoSchema, onlineUsers[i], {
+      const envelope = JSON.parse(msg) as {
+        chunk: number;
+        total: number;
+        users: string[];
+      };
+
+      for (let i = 0; i < envelope.users.length; i++) {
+        const user = fromJson(NatsKvUserInfoSchema, envelope.users[i], {
           ignoreUnknownFields: true,
         });
         await this._handleParticipants.addRemoteParticipant(user);
       }
-      await this.onAfterUserReady();
+
+      // messages arrive in order, so the last chunk means the list is complete;
+      // onAfterUserReady has its own once-guard for later repair bursts
+      if (envelope.chunk === envelope.total - 1) {
+        await this.onAfterUserReady();
+      }
     } catch (e) {
       console.error(e);
       this.connectNats.setErrorStatus(
