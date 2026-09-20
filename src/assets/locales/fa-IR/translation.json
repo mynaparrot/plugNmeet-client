@@ -327,7 +327,8 @@
     "editing-message": "ویرایش پیام",
     "new-messages": "پیام های جدید",
     "scroll-to-bottom": "به پایین صفحه بروید",
-    "sync-chat": "همگام سازی چت با همتایان"
+    "sync-chat": "همگام سازی چت با همتایان",
+    "load-earlier-messages": "بارگذاری پیام های قبلی"
   },
   "footer": {
     "aria-label": "کنترل‌های جلسه",
