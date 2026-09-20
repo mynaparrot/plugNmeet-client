@@ -327,7 +327,8 @@
     "editing-message": "編集メッセージ",
     "new-messages": "新しいメッセージ",
     "scroll-to-bottom": "一番下までスクロール",
-    "sync-chat": "ピアとチャットを同期する"
+    "sync-chat": "ピアとチャットを同期する",
+    "load-earlier-messages": "以前のメッセージを読み込む"
   },
   "footer": {
     "aria-label": "会議制御",
