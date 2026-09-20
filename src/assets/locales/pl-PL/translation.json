@@ -327,7 +327,8 @@
     "editing-message": "Wiadomość edycja",
     "new-messages": "Nowe wiadomości",
     "scroll-to-bottom": "Przewiń na dół",
-    "sync-chat": "Synchronizuj czat z rówieśnikami"
+    "sync-chat": "Synchronizuj czat z rówieśnikami",
+    "load-earlier-messages": "Załaduj wcześniejsze wiadomości"
   },
   "footer": {
     "aria-label": "Kontrola spotkań",
