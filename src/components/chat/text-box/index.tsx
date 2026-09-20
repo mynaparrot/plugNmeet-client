@@ -86,6 +86,13 @@ const TextBoxArea = () => {
     // oxlint-disable-next-line exhaustive-deps
   }, [editTarget?.id, editDraft?.id]);
 
+  // Focus the editor when a reply is activated, mirroring edit mode.
+  useEffect(() => {
+    if (replyDraft?.id) {
+      textAreaRef.current?.focus();
+    }
+  }, [replyDraft?.id]);
+
   useEffect(() => {
     if (replyDraft && !replyTarget) {
       dispatch(clearReplyDraft());

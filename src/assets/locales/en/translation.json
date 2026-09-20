@@ -327,7 +327,8 @@
     "editing-message": "Editing message",
     "new-messages": "New messages",
     "scroll-to-bottom": "Scroll to bottom",
-    "sync-chat": "Sync chat with peers"
+    "sync-chat": "Sync chat with peers",
+    "load-earlier-messages": "Load earlier messages"
   },
   "footer": {
     "aria-label": "Meeting controls",

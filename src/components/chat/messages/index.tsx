@@ -2,6 +2,7 @@ import React, {
   Fragment,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -23,6 +24,10 @@ interface IMessagesProps {
 
 // Distance from the bottom (px) within which the user still counts as "at the bottom".
 const NEAR_BOTTOM_THRESHOLD_PX = 200;
+
+// Number of most-recent messages rendered at once. Older history is loaded in
+// batches via the "load earlier messages" button; the store keeps everything.
+const CHAT_WINDOW_SIZE = 100;
 
 const isNearBottom = (el: HTMLUListElement) =>
   el.scrollHeight - el.scrollTop - el.clientHeight <= NEAR_BOTTOM_THRESHOLD_PX;
@@ -60,6 +65,20 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
   // id of the first message that arrived while the user was scrolled up
   const [dividerId, setDividerId] = useState<string | null>(null);
   const prevLengthRef = useRef(chatMessages.length);
+  // Index into chatMessages where the rendered window starts. While the user is
+  // at the bottom the window slides forward (capped at CHAT_WINDOW_SIZE); while
+  // they are scrolled up it stays anchored so incoming messages never shift
+  // what they are reading.
+  const [windowStart, setWindowStart] = useState(() =>
+    Math.max(0, chatMessages.length - CHAT_WINDOW_SIZE),
+  );
+  // Captured list metrics before a window growth, to restore scroll position.
+  const pendingScrollAdjustRef = useRef<{
+    scrollTop: number;
+    scrollHeight: number;
+  } | null>(null);
+  // A quote-jump target that needed the window grown; scrolled to after render.
+  const pendingJumpRef = useRef<string | null>(null);
 
   // Timer logic for recorder
   useEffect(() => {
@@ -81,6 +100,13 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
     };
   }, [chatMessages, isRecorder, recorderBotOptions, dispatch]);
 
+  // Cap the rendered window while at the bottom; freeze it while scrolled up.
+  useEffect(() => {
+    if (isAtBottom) {
+      setWindowStart(Math.max(0, chatMessages.length - CHAT_WINDOW_SIZE));
+    }
+  }, [isAtBottom, chatMessages.length]);
+
   const setAtBottom = useCallback((atBottom: boolean) => {
     atBottomRef.current = atBottom;
     setIsAtBottom(atBottom);
@@ -91,6 +117,7 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
     setDividerId(null);
     prevLengthRef.current = chatMessages.length;
     setAtBottom(true);
+    setWindowStart(Math.max(0, chatMessages.length - CHAT_WINDOW_SIZE));
     // oxlint-disable-next-line exhaustive-deps
   }, [messageKey]);
 
@@ -160,22 +187,75 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
     }
   };
 
-  const handleJumpToMessage = useCallback((id: string) => {
-    const el = document.getElementById(`chat-msg-${id}`);
+  const scrollAndHighlight = (target: HTMLElement) => {
+    target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    target.classList.add('ring-2', 'ring-[#00A1F2]', 'rounded-lg');
+    setTimeout(() => {
+      target.classList.remove('ring-2', 'ring-[#00A1F2]', 'rounded-lg');
+    }, 1200);
+  };
+
+  const handleJumpToMessage = useCallback(
+    (id: string) => {
+      const el = document.getElementById(`chat-msg-${id}`);
+      if (el) {
+        scrollAndHighlight(el);
+        return;
+      }
+      // Target is older than the rendered window: grow the window to include
+      // it, then scroll after the DOM updates.
+      const idx = chatMessages.findIndex((m) => m.id === id);
+      if (idx < 0 || idx >= windowStart) {
+        return;
+      }
+      pendingJumpRef.current = id;
+      setWindowStart(Math.max(0, idx - 20));
+    },
+    [chatMessages, windowStart],
+  );
+
+  const handleLoadEarlier = () => {
+    const el = messagesContainerRef.current;
+    if (el) {
+      pendingScrollAdjustRef.current = {
+        scrollTop: el.scrollTop,
+        scrollHeight: el.scrollHeight,
+      };
+    }
+    setWindowStart((w) => Math.max(0, w - CHAT_WINDOW_SIZE));
+  };
+
+  // After growing the window upward, restore the scroll position so the view
+  // does not jump. Native scroll anchoring is disabled on the list, so this
+  // manual adjustment is the single source of truth.
+  useLayoutEffect(() => {
+    const el = messagesContainerRef.current;
     if (!el) {
       return;
     }
-    el.scrollIntoView({ block: 'center', behavior: 'smooth' });
-    el.classList.add('ring-2', 'ring-[#00A1F2]', 'rounded-lg');
-    setTimeout(() => {
-      el.classList.remove('ring-2', 'ring-[#00A1F2]', 'rounded-lg');
-    }, 1200);
-  }, []);
+    const adjust = pendingScrollAdjustRef.current;
+    if (adjust) {
+      el.scrollTop = adjust.scrollTop + (el.scrollHeight - adjust.scrollHeight);
+      pendingScrollAdjustRef.current = null;
+      return;
+    }
+    const jumpId = pendingJumpRef.current;
+    if (jumpId) {
+      pendingJumpRef.current = null;
+      const target = document.getElementById(`chat-msg-${jumpId}`);
+      if (target) {
+        scrollAndHighlight(target);
+      }
+    }
+  }, [windowStart]);
+
+  const renderedMessages = chatMessages.slice(windowStart);
 
   return (
     <div className="relative h-full">
       <ul
         className="relative h-full overflow-auto scrollBar messages-item-wrap px-3 3xl:px-5 list-none"
+        style={{ overflowAnchor: 'none' }}
         ref={messagesContainerRef}
         onScroll={handleScroll}
         tabIndex={0}
@@ -183,7 +263,18 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
         aria-label="Chat messages"
         aria-live="polite"
       >
-        {chatMessages.map((message) => (
+        {windowStart > 0 && (
+          <li className="flex justify-center py-2">
+            <button
+              type="button"
+              onClick={handleLoadEarlier}
+              className="flex items-center gap-1.5 rounded-full bg-[#00A1F2] text-white shadow-lg px-3 py-1.5 text-xs font-medium cursor-pointer hover:bg-[#08C] focus-ring"
+            >
+              {t('right-panel.load-earlier-messages')}
+            </button>
+          </li>
+        )}
+        {renderedMessages.map((message) => (
           <Fragment key={message.id}>
             {dividerId === message.id && (
               <li aria-hidden="true" className="flex items-center gap-2 py-1">
