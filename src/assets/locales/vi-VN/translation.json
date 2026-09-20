@@ -327,7 +327,8 @@
     "editing-message": "Chỉnh sửa tin nhắn",
     "new-messages": "Tin nhắn mới",
     "scroll-to-bottom": "Cuộn xuống cuối",
-    "sync-chat": "Đồng bộ trò chuyện với các trang web ngang hàng"
+    "sync-chat": "Đồng bộ trò chuyện với các trang web ngang hàng",
+    "load-earlier-messages": "Tải các tin nhắn trước đó"
   },
   "footer": {
     "aria-label": "Điều khiển cuộc họp",
