@@ -327,7 +327,8 @@
     "editing-message": "Editando mensaje",
     "new-messages": "Nuevos mensajes",
     "scroll-to-bottom": "Ir al final",
-    "sync-chat": "Sincronizar chat con contactos"
+    "sync-chat": "Sincronizar chat con contactos",
+    "load-earlier-messages": "Cargar mensajes anteriores"
   },
   "footer": {
     "aria-label": "Controles de reuniones",
