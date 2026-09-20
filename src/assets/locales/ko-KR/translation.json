@@ -327,7 +327,8 @@
     "editing-message": "편집 메시지",
     "new-messages": "새로운 메시지",
     "scroll-to-bottom": "맨 아래로 스크롤하세요",
-    "sync-chat": "동료와 채팅 동기화"
+    "sync-chat": "동료와 채팅 동기화",
+    "load-earlier-messages": "이전 메시지 불러오기"
   },
   "footer": {
     "aria-label": "회의 제어",
