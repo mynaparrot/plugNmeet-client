@@ -327,7 +327,8 @@
     "editing-message": "Szerkesztési üzenet",
     "new-messages": "Új üzenetek",
     "scroll-to-bottom": "Görgess le az alulra",
-    "sync-chat": "Szinkronizált chat társakkal"
+    "sync-chat": "Szinkronizált chat társakkal",
+    "load-earlier-messages": "Korábbi üzenetek betöltése"
   },
   "footer": {
     "aria-label": "Találkozók vezérlése",
