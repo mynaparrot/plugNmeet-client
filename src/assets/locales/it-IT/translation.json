@@ -327,7 +327,8 @@
     "editing-message": "Messaggio di modifica",
     "new-messages": "Nuovi messaggi",
     "scroll-to-bottom": "Scorri fino in fondo",
-    "sync-chat": "Chat sincronizzata con i colleghi"
+    "sync-chat": "Chat sincronizzata con i colleghi",
+    "load-earlier-messages": "Carica i messaggi precedenti"
   },
   "footer": {
     "aria-label": "Controlli delle riunioni",
