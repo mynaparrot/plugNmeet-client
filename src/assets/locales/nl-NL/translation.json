@@ -327,7 +327,8 @@
     "editing-message": "Bewerkingsbericht",
     "new-messages": "Nieuwe berichten",
     "scroll-to-bottom": "Scroll naar beneden",
-    "sync-chat": "Synchroniseer chat met peers"
+    "sync-chat": "Synchroniseer chat met peers",
+    "load-earlier-messages": "Laad eerdere berichten"
   },
   "footer": {
     "aria-label": "Vergadercontroles",
