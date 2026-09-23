@@ -108,7 +108,10 @@ const NotepadAIMenu = ({
 
   return (
     <div className="flex w-full flex-col gap-1">
-      <Components.Generic.Form.Root>
+      <Components.Generic.Form.Root
+        onSubmit={runCustomPrompt}
+        submitButton="none"
+      >
         <Components.Generic.Form.TextInput
           className="bn-combobox-input"
           name="notepad-ai-prompt"
