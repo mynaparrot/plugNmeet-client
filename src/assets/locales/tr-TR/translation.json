@@ -327,7 +327,8 @@
     "editing-message": "Düzenleme mesajı",
     "new-messages": "Yeni mesajlar",
     "scroll-to-bottom": "Aşağıya kaydırın",
-    "sync-chat": "Arkadaşlarınızla senkronize sohbet"
+    "sync-chat": "Arkadaşlarınızla senkronize sohbet",
+    "load-earlier-messages": "Daha erken mesajları yükle"
   },
   "footer": {
     "aria-label": "Toplantı kontrolleri",

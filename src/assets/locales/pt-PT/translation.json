@@ -327,7 +327,8 @@
     "editing-message": "A editar a mensagem",
     "new-messages": "Novas mensagens",
     "scroll-to-bottom": "Deslocar até ao fim",
-    "sync-chat": "Chat sincronizado com pares"
+    "sync-chat": "Chat sincronizado com pares",
+    "load-earlier-messages": "Carregar mensagens anteriores"
   },
   "footer": {
     "aria-label": "Controlo de reuniões",

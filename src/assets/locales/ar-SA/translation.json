@@ -327,7 +327,8 @@
     "editing-message": "رسالة تحرير",
     "new-messages": "رسائل جديدة",
     "scroll-to-bottom": "التمرير إلى الأسفل",
-    "sync-chat": "مزامنة الدردشة مع الأقران"
+    "sync-chat": "مزامنة الدردشة مع الأقران",
+    "load-earlier-messages": "تحميل الرسائل السابقة"
   },
   "footer": {
     "aria-label": "ضوابط الاجتماعات",

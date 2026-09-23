@@ -327,7 +327,8 @@
     "editing-message": "Redigeringsmeddelande",
     "new-messages": "Nya budskap",
     "scroll-to-bottom": "Scrolla ner",
-    "sync-chat": "Synkronisera chatten med peers"
+    "sync-chat": "Synkronisera chatten med peers",
+    "load-earlier-messages": "Ladda tidigare meddelanden"
   },
   "footer": {
     "aria-label": "Möteskontroller",

@@ -327,7 +327,8 @@
     "editing-message": "编辑信息",
     "new-messages": "新消息",
     "scroll-to-bottom": "滚动到底部",
-    "sync-chat": "与对等者同步聊天"
+    "sync-chat": "与对等者同步聊天",
+    "load-earlier-messages": "加载早期消息"
   },
   "footer": {
     "aria-label": "会议控制",

@@ -327,7 +327,8 @@
     "editing-message": "Bearbeitungsnachricht",
     "new-messages": "Neue Botschaften",
     "scroll-to-bottom": "Scrollen Sie nach unten",
-    "sync-chat": "Chat mit Peers synchronisieren"
+    "sync-chat": "Chat mit Peers synchronisieren",
+    "load-earlier-messages": "Frühere Nachrichten laden"
   },
   "footer": {
     "aria-label": "Sitzungskontrollen",
