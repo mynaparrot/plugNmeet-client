@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.5.2](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.1...v2.5.2) (2026-09-23)
+
+
+### Bug Fixes
+
+* broadcast online/offline events to everyone as single event ([6a5821c](https://github.com/mynaparrot/plugNmeet-client/commit/6a5821c5dbda96abbd46c905381c09d41c20f56c))
+* fan-out notification to everyone no need private ([28baa3b](https://github.com/mynaparrot/plugNmeet-client/commit/28baa3bc0c93f0fb3ab950f200a36551c5fca6a1))
+* load max 100 messages + load more button added ([6d39b44](https://github.com/mynaparrot/plugNmeet-client/commit/6d39b44d7145a7d0addbd3a481a52433caeae00b))
+* long labels should be left-aligned ([f839c8a](https://github.com/mynaparrot/plugNmeet-client/commit/f839c8aa7e311c8efd3b25b0b5b9e5d508346f47))
+* new submit event handler added ([d95290d](https://github.com/mynaparrot/plugNmeet-client/commit/d95290d634dd4d8c9d2ee668da00a2387f9202d8))
+* send users' list more efficiently ([c8b39f6](https://github.com/mynaparrot/plugNmeet-client/commit/c8b39f6e90d9b709777e0ff71f5f6239c3cdbf8d))
+* **whiteboard:** keep totalPages in sync for non-uploader presenters ([ab6e33d](https://github.com/mynaparrot/plugNmeet-client/commit/ab6e33dda2b264b059846e5a820eddc972c141ca))
+* **whiteboard:** keep totalPages in sync for non-uploader presenters ([#1122](https://github.com/mynaparrot/plugNmeet-client/issues/1122)) ([1a2a34c](https://github.com/mynaparrot/plugNmeet-client/commit/1a2a34ca5f090c4f52dba48473a72b4c15e35de0))
+
 ## [2.5.1](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.0...v2.5.1) (2026-09-17)
 
 
