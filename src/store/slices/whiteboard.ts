@@ -64,6 +64,20 @@ const whiteboardSlice = createSlice({
     },
     updateCurrentOfficeFilePages: (state, action: PayloadAction<string>) => {
       state.currentOfficeFilePages = action.payload;
+      // Non-presenters usually don't have the office file in their local list,
+      // so `updateCurrentWhiteboardOfficeFileId` can't set `totalPages` for them.
+      // The presenter's page list is authoritative: derive the count from it so
+      // a later presenter take-over doesn't inherit a stale value.
+      if (action.payload !== '') {
+        try {
+          const pages = JSON.parse(action.payload);
+          if (pages && isArray(pages) && pages.length > 0) {
+            state.totalPages = pages.length;
+          }
+        } catch {
+          // keep the previous totalPages on a malformed payload
+        }
+      }
     },
     addWhiteboardUploadedOfficeFile: (
       state,
@@ -77,6 +91,16 @@ const whiteboardSlice = createSlice({
       );
       if (!exists) {
         state.whiteboardUploadedOfficeFiles.push(action.payload);
+      }
+      // If this file is already the active one (registered late, e.g. right
+      // after a presenter take-over), refresh the active view from the
+      // server-provided metadata. Keep an existing page list: it carries the
+      // element ids the previous presenter already placed on the canvas.
+      if (state.currentWhiteboardOfficeFileId === action.payload.fileId) {
+        state.totalPages = action.payload.totalPages;
+        if (state.currentOfficeFilePages === '') {
+          state.currentOfficeFilePages = action.payload.pageFiles;
+        }
       }
     },
     triggerRefreshWhiteboard: (state) => {

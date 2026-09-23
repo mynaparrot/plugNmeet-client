@@ -7,7 +7,13 @@ import {
   OrderedExcalidrawElement,
 } from '@excalidraw/excalidraw/element/types';
 import { getConfigValue, randomString } from '../../../helpers/utils';
-import { RoomUploadedFileType } from 'plugnmeet-protocol-js';
+import {
+  GetRoomUploadedFilesReqSchema,
+  GetRoomUploadedFilesResSchema,
+  RoomUploadedFileType,
+} from 'plugnmeet-protocol-js';
+import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
+import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { store } from '../../../store';
 import { uploadResumableFile } from '../../../helpers/fileUpload';
 import {
@@ -96,6 +102,46 @@ export const createAndRegisterOfficeFile = (
 
   store.dispatch(addWhiteboardUploadedOfficeFile(newFile));
   return newFile;
+};
+
+/**
+ * Fetches the room's converted whiteboard files from the server and registers
+ * any that are missing from the local store. The server record carries the
+ * authoritative `totalPages`, which a user who didn't upload the file (e.g. an
+ * admin promoted to presenter) has no other way to learn.
+ */
+export const registerRoomWhiteboardFiles = async (roomId: string) => {
+  const body = create(GetRoomUploadedFilesReqSchema, {
+    roomId,
+    fileType: RoomUploadedFileType.WHITEBOARD_CONVERTED_FILE,
+  });
+  const r = await sendAPIRequest(
+    'getRoomFilesByType',
+    toBinary(GetRoomUploadedFilesReqSchema, body),
+    false,
+    'application/protobuf',
+    'arraybuffer',
+  );
+  const res = fromBinary(GetRoomUploadedFilesResSchema, new Uint8Array(r));
+  if (!res.status || !res.files) {
+    return;
+  }
+
+  // Page orientation is always loaded from page_N_meta.json on page open.
+  const known = store.getState().whiteboard.whiteboardUploadedOfficeFiles;
+  res.files.forEach((file) => {
+    const exist = known.find((f) => f.fileId === file.fileId);
+    if (!exist) {
+      createAndRegisterOfficeFile({
+        msg: '',
+        status: true,
+        fileId: file.fileId,
+        fileName: file.fileName,
+        filePath: file.filePath,
+        totalPages: file.totalPages ?? 0,
+      });
+    }
+  });
 };
 
 const getDownloadBaseUrl = () =>
