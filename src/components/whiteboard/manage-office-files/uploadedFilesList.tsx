@@ -1,21 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  GetRoomUploadedFilesReqSchema,
-  GetRoomUploadedFilesResSchema,
-  RoomUploadedFileType,
-} from 'plugnmeet-protocol-js';
-import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { useAppSelector } from '../../../store';
 import { FileIconSVG } from '../../../assets/Icons/FileIconSVG';
-import {
-  IWhiteboardOfficeFile,
-  WhiteboardFileConversionRes,
-} from '../../../store/slices/interfaces/whiteboard';
+import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboard';
 import { SelectedIcon } from '../../../assets/Icons/SelectedIcon';
-import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
-import { createAndRegisterOfficeFile } from '../helpers/handleFiles';
+import { registerRoomWhiteboardFiles } from '../helpers/handleFiles';
 import { sleep } from '../../../helpers/utils';
 import { publishFileAttachmentToChat } from '../../chat/utils';
 import { DownloadIconSVG } from '../../../assets/Icons/DownloadIconSVG';
@@ -53,45 +43,13 @@ const UploadedFilesList = ({
   const fetchAndUpdateFiles = useCallback(async () => {
     setIsLoading(true);
     try {
-      const body = create(GetRoomUploadedFilesReqSchema, {
-        roomId: roomId,
-        fileType: RoomUploadedFileType.WHITEBOARD_CONVERTED_FILE,
-      });
-      const r = await sendAPIRequest(
-        'getRoomFilesByType',
-        toBinary(GetRoomUploadedFilesReqSchema, body),
-        false,
-        'application/protobuf',
-        'arraybuffer',
-      );
-      const res = fromBinary(GetRoomUploadedFilesResSchema, new Uint8Array(r));
-      if (!res.status || !res.files) {
-        return;
-      }
-
       // Register any room files missing from local store.
-      // Page orientation is always loaded from page_N_meta.json on page open.
-      res.files.forEach((file) => {
-        const exist = whiteboardUploadedOfficeFiles.find(
-          (f) => f.fileId === file.fileId,
-        );
-        if (!exist) {
-          const newFile: WhiteboardFileConversionRes = {
-            msg: '',
-            status: true,
-            fileId: file.fileId,
-            fileName: file.fileName,
-            filePath: file.filePath,
-            totalPages: file.totalPages ?? 0,
-          };
-          createAndRegisterOfficeFile(newFile);
-        }
-      });
+      await registerRoomWhiteboardFiles(roomId);
     } finally {
       await sleep(500);
       setIsLoading(false);
     }
-  }, [whiteboardUploadedOfficeFiles, roomId]);
+  }, [roomId]);
 
   const handleShareDownloadLink = async (
     e: React.MouseEvent,

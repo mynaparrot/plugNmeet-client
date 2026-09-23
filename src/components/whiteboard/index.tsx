@@ -57,6 +57,7 @@ import {
 } from './helpers/utils';
 import {
   cleanProcessedImageElementsMap,
+  registerRoomWhiteboardFiles,
   uploadCanvasBinaryFile,
 } from './helpers/handleFiles';
 import { getWhiteboardController } from './collab';
@@ -272,11 +273,14 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
   // Backfill any pages the current presenter is missing from the server-side
   // session data store (whiteboard snapshots only; gated to presenters).
+  // Also register the room's office files so a promoted presenter gets the
+  // authoritative page count for the active file instead of the store default.
   useEffect(() => {
     if (isPresenter) {
       void getWhiteboardController().backfillMissingPages();
+      void registerRoomWhiteboardFiles(roomId);
     }
-  }, [isPresenter]);
+  }, [isPresenter, roomId]);
 
   const resetWhiteboardState = useCallback(
     (excalidrawAPI: ExcalidrawImperativeAPI) => {
