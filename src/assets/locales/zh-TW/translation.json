@@ -327,7 +327,8 @@
     "editing-message": "編輯訊息",
     "new-messages": "新訊息",
     "scroll-to-bottom": "往最底部捲動",
-    "sync-chat": "與同儕同步聊天"
+    "sync-chat": "與同儕同步聊天",
+    "load-earlier-messages": "載入先前訊息"
   },
   "footer": {
     "aria-label": "會議控制",

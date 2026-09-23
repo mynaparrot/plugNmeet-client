@@ -327,7 +327,8 @@
     "editing-message": "Muokkausviesti",
     "new-messages": "Uudet viestit",
     "scroll-to-bottom": "Selaa alas",
-    "sync-chat": "Synkronoi chat vertaisten kanssa"
+    "sync-chat": "Synkronoi chat vertaisten kanssa",
+    "load-earlier-messages": "Lataa aikaisempia viestejä"
   },
   "footer": {
     "aria-label": "Kokousten ohjaus",

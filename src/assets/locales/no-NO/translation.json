@@ -327,7 +327,8 @@
     "editing-message": "Redigeringsmelding",
     "new-messages": "Nye meldinger",
     "scroll-to-bottom": "Scroll til bunnen",
-    "sync-chat": "Synkroniser chat med jevnaldrende"
+    "sync-chat": "Synkroniser chat med jevnaldrende",
+    "load-earlier-messages": "Last inn tidligere meldinger"
   },
   "footer": {
     "aria-label": "Møtekontroller",

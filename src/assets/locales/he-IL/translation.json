@@ -327,7 +327,8 @@
     "editing-message": "הודעה עריכה",
     "new-messages": "מסרים חדשים",
     "scroll-to-bottom": "גלול למטה",
-    "sync-chat": "סנכרון צ'אט עם עמיתים"
+    "sync-chat": "סנכרון צ'אט עם עמיתים",
+    "load-earlier-messages": "טעין הודעות מוקדמות"
   },
   "footer": {
     "aria-label": "בקרות פגישות",

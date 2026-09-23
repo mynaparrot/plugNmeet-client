@@ -327,7 +327,8 @@
     "editing-message": "Message de modification",
     "new-messages": "Nouveaux messages",
     "scroll-to-bottom": "Défiler jusqu’en bas",
-    "sync-chat": "Synchronisez le chat avec vos pairs"
+    "sync-chat": "Synchronisez le chat avec vos pairs",
+    "load-earlier-messages": "Charger les messages précédents"
   },
   "footer": {
     "aria-label": "Contrôles de réunion",

@@ -327,7 +327,8 @@
     "editing-message": "Editační zpráva",
     "new-messages": "Nové zprávy",
     "scroll-to-bottom": "Posuňte se na konec",
-    "sync-chat": "Synchronizujte chat s kolegy"
+    "sync-chat": "Synchronizujte chat s kolegy",
+    "load-earlier-messages": "Načíst dřívější zprávy"
   },
   "footer": {
     "aria-label": "Řízení setkání",

@@ -327,7 +327,8 @@
     "editing-message": "Editare a mesajului",
     "new-messages": "Mesaje noi",
     "scroll-to-bottom": "Derulează până jos",
-    "sync-chat": "Chat sincronizat cu colegii"
+    "sync-chat": "Chat sincronizat cu colegii",
+    "load-earlier-messages": "Încarcă mesajele anterioare"
   },
   "footer": {
     "aria-label": "Controlul ședințelor",

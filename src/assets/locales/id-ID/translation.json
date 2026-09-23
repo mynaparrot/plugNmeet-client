@@ -327,7 +327,8 @@
     "editing-message": "Mengedit pesan",
     "new-messages": "Pesan baru",
     "scroll-to-bottom": "Gulir ke bawah",
-    "sync-chat": "Sinkronkan obrolan dengan rekan sesama"
+    "sync-chat": "Sinkronkan obrolan dengan rekan sesama",
+    "load-earlier-messages": "Muat pesan sebelumnya"
   },
   "footer": {
     "aria-label": "Kontrol rapat",
