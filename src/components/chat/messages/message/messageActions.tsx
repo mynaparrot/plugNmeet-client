@@ -85,15 +85,11 @@ const MessageActions = ({
   const menuItemClass =
     'w-full flex items-center gap-2 px-2 3xl:px-3 h-8 cursor-pointer text-sm font-medium text-Gray-950 dark:text-white rounded-lg hover:bg-Gray-50 dark:hover:bg-dark-secondary2 transition-all duration-200';
 
-  // Single inline ••• in the header row (all devices). Menu opens below it,
-  // so it never overlays the timestamp or message body. HeadlessUI Menu owns
-  // open state internally: item click, Escape, or outside click closes it.
   return (
     <>
       <Menu as="div" className="relative shrink-0">
         <MenuButton
           aria-label={t('right-panel.message-options').toString()}
-          data-chat-menu-btn="true"
           className="flex h-6 w-6 items-center justify-center rounded-full text-Gray-500 dark:text-dark-text hover:bg-Gray-100 dark:hover:bg-Gray-700 cursor-pointer focus-ring"
         >
           <FooterMenuIconSVG />
@@ -142,34 +138,36 @@ const MessageActions = ({
         </MenuItems>
       </Menu>
 
-      <Modal
-        show={confirmDelete}
-        onClose={() => setConfirmDelete(false)}
-        title={t('right-panel.delete-confirm-title')}
-        maxWidth="max-w-xs"
-        renderButtons={() => (
-          <>
-            <button
-              type="button"
-              className="h-10 px-5 w-32 flex items-center justify-center rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow cursor-pointer"
-              onClick={confirmDeleteMsg}
-            >
-              {t('right-panel.delete-message')}
-            </button>
-            <button
-              type="button"
-              className="primary-button h-10 px-5 w-32 flex items-center justify-center text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow cursor-pointer ms-4"
-              onClick={() => setConfirmDelete(false)}
-            >
-              {t('cancel')}
-            </button>
-          </>
-        )}
-      >
-        <p className="text-sm text-Gray-900 dark:text-white">
-          {t('right-panel.delete-confirm-body')}
-        </p>
-      </Modal>
+      {confirmDelete && (
+        <Modal
+          show={confirmDelete}
+          onClose={() => setConfirmDelete(false)}
+          title={t('right-panel.delete-confirm-title')}
+          maxWidth="max-w-xs"
+          renderButtons={() => (
+            <>
+              <button
+                type="button"
+                className="h-10 px-5 w-32 flex items-center justify-center rounded-[15px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Red-400 border border-Red-600 transition-all duration-300 hover:bg-Red-600 shadow-button-shadow cursor-pointer"
+                onClick={confirmDeleteMsg}
+              >
+                {t('right-panel.delete-message')}
+              </button>
+              <button
+                type="button"
+                className="primary-button h-10 px-5 w-32 flex items-center justify-center text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow cursor-pointer ms-4"
+                onClick={() => setConfirmDelete(false)}
+              >
+                {t('cancel')}
+              </button>
+            </>
+          )}
+        >
+          <p className="text-sm text-Gray-900 dark:text-white">
+            {t('right-panel.delete-confirm-body')}
+          </p>
+        </Modal>
+      )}
     </>
   );
 };

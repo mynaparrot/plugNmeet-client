@@ -9,6 +9,7 @@ import { APP_LAYOUT_CLASSES } from '../../helpers/dimensions';
 
 interface SidePanelProps {
   isActive: boolean;
+  anyPanelActive: boolean;
   panelClass: string;
   children: ReactNode;
   onToggle: (isOpen: boolean) => void;
@@ -21,6 +22,7 @@ interface SidePanelProps {
 
 const SidePanel = ({
   isActive,
+  anyPanelActive,
   panelClass,
   children,
   onToggle,
@@ -30,15 +32,23 @@ const SidePanel = ({
   onNudgeWidth,
   onResetWidth,
 }: SidePanelProps) => {
+  // On panel switch the old panel unmounts instantly; a real close keeps the slide-out.
+  const instantLeave = !isActive && anyPanelActive;
   return (
     <Transition
       show={isActive}
       enter="transform transition ease-in-out duration-300"
       enterFrom="translate-y-full md:translate-y-0 md:ltr:translate-x-full md:rtl:-translate-x-full"
       enterTo="translate-y-0 md:translate-x-0"
-      leave="transform transition ease-in-out duration-300"
-      leaveFrom="translate-y-0 md:translate-x-0"
-      leaveTo="translate-y-full md:translate-y-0 md:ltr:translate-x-full md:rtl:-translate-x-full"
+      leave={
+        instantLeave ? '' : 'transform transition ease-in-out duration-300'
+      }
+      leaveFrom={instantLeave ? '' : 'translate-y-0 md:translate-x-0'}
+      leaveTo={
+        instantLeave
+          ? ''
+          : 'translate-y-full md:translate-y-0 md:ltr:translate-x-full md:rtl:-translate-x-full'
+      }
       afterEnter={() => onToggle(true)}
       afterLeave={() => onToggle(false)}
     >

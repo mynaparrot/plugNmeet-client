@@ -29,6 +29,14 @@ const NEAR_BOTTOM_THRESHOLD_PX = 200;
 // batches via the "load earlier messages" button; the store keeps everything.
 const CHAT_WINDOW_SIZE = 100;
 
+const scrollAndHighlight = (target: HTMLElement) => {
+  target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  target.classList.add('ring-2', 'ring-[#00A1F2]', 'rounded-lg');
+  setTimeout(() => {
+    target.classList.remove('ring-2', 'ring-[#00A1F2]', 'rounded-lg');
+  }, 1200);
+};
+
 const isNearBottom = (el: HTMLUListElement) =>
   el.scrollHeight - el.scrollTop - el.clientHeight <= NEAR_BOTTOM_THRESHOLD_PX;
 
@@ -79,6 +87,28 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
   } | null>(null);
   // A quote-jump target that needed the window grown; scrolled to after render.
   const pendingJumpRef = useRef<string | null>(null);
+  // Instant jump on mount/tab switch; smooth scroll afterwards.
+  const instantScrollRef = useRef(true);
+
+  // Reset tab-scoped state during render so a new tab's first commit is already windowed.
+  const [prevMessageKey, setPrevMessageKey] = useState(messageKey);
+  if (messageKey !== prevMessageKey) {
+    setPrevMessageKey(messageKey);
+    setDividerId(null);
+    setIsAtBottom(true);
+    setWindowStart(Math.max(0, chatMessages.length - CHAT_WINDOW_SIZE));
+    atBottomRef.current = true;
+    prevLengthRef.current = chatMessages.length;
+    instantScrollRef.current = true;
+  }
+
+  // Latest-refs keep handleJumpToMessage identity-stable so Message memo holds.
+  const chatMessagesRef = useRef(chatMessages);
+  const windowStartRef = useRef(windowStart);
+  useEffect(() => {
+    chatMessagesRef.current = chatMessages;
+    windowStartRef.current = windowStart;
+  }, [chatMessages, windowStart]);
 
   // Timer logic for recorder
   useEffect(() => {
@@ -112,15 +142,6 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
     setIsAtBottom(atBottom);
   }, []);
 
-  // Reset divider when switching conversations
-  useEffect(() => {
-    setDividerId(null);
-    prevLengthRef.current = chatMessages.length;
-    setAtBottom(true);
-    setWindowStart(Math.max(0, chatMessages.length - CHAT_WINDOW_SIZE));
-    // oxlint-disable-next-line exhaustive-deps
-  }, [messageKey]);
-
   // Mark the first new message that arrives while scrolled up
   useEffect(() => {
     if (chatMessages.length > prevLengthRef.current) {
@@ -137,10 +158,12 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
   const scrollToBottom = useCallback(() => {
     // Only stick to the bottom when the user is already scrolled there.
     // Reading from the ref (not state) avoids stale closures inside debounce.
+    const instant = instantScrollRef.current;
+    instantScrollRef.current = false;
     if (atBottomRef.current && messagesContainerRef.current) {
       messagesContainerRef.current.scrollTo({
         top: messagesContainerRef.current.scrollHeight,
-        behavior: 'smooth',
+        behavior: instant ? 'auto' : 'smooth',
       });
     }
   }, []);
@@ -187,32 +210,21 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
     }
   };
 
-  const scrollAndHighlight = (target: HTMLElement) => {
-    target.scrollIntoView({ block: 'center', behavior: 'smooth' });
-    target.classList.add('ring-2', 'ring-[#00A1F2]', 'rounded-lg');
-    setTimeout(() => {
-      target.classList.remove('ring-2', 'ring-[#00A1F2]', 'rounded-lg');
-    }, 1200);
-  };
-
-  const handleJumpToMessage = useCallback(
-    (id: string) => {
-      const el = document.getElementById(`chat-msg-${id}`);
-      if (el) {
-        scrollAndHighlight(el);
-        return;
-      }
-      // Target is older than the rendered window: grow the window to include
-      // it, then scroll after the DOM updates.
-      const idx = chatMessages.findIndex((m) => m.id === id);
-      if (idx < 0 || idx >= windowStart) {
-        return;
-      }
-      pendingJumpRef.current = id;
-      setWindowStart(Math.max(0, idx - 20));
-    },
-    [chatMessages, windowStart],
-  );
+  const handleJumpToMessage = useCallback((id: string) => {
+    const el = document.getElementById(`chat-msg-${id}`);
+    if (el) {
+      scrollAndHighlight(el);
+      return;
+    }
+    // Target is older than the rendered window: grow the window to include
+    // it, then scroll after the DOM updates.
+    const idx = chatMessagesRef.current.findIndex((m) => m.id === id);
+    if (idx < 0 || idx >= windowStartRef.current) {
+      return;
+    }
+    pendingJumpRef.current = id;
+    setWindowStart(Math.max(0, idx - 20));
+  }, []);
 
   const handleLoadEarlier = () => {
     const el = messagesContainerRef.current;

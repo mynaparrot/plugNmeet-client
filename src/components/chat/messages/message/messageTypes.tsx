@@ -6,7 +6,7 @@ import { useAppSelector } from '../../../../store';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
 import { selectMessageById } from '../../../../store/slices/chatMessagesSlice';
 import Avatar from './avatar';
-import MessageActions from './messageActions';
+import DeferredMessageActions from './deferredMessageActions';
 import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
 import { cleanHtmlForChat } from '../../../../helpers/utils';
 import { IBubbleProps, IReplyQuoteProps } from './types';
@@ -136,7 +136,7 @@ export const MyMessage = memo(
               {formatDate(body.sentAt)}
               <EditedMark editedAt={body.meta?.editedAt} />
             </p>
-            <MessageActions
+            <DeferredMessageActions
               body={body}
               chatKey={chatKey}
               currentUserId={currentUserId}
@@ -216,7 +216,7 @@ export const OtherUserMessage = memo(
                 {formatDate(body.sentAt)}
                 <EditedMark editedAt={body.meta?.editedAt} />
               </p>
-              <MessageActions
+              <DeferredMessageActions
                 body={body}
                 chatKey={chatKey}
                 currentUserId={currentUserId}

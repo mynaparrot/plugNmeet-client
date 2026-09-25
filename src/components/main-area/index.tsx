@@ -171,6 +171,7 @@ const MainArea = () => {
       onResizeEnd: isActiveWhiteboard ? () => debouncedRefresh() : undefined,
     });
 
+  const anyPanelActive = activeSidePanel !== null;
   const mainAreaClasses = `plugNmeet-app-main-area overflow-hidden relative flex flex-1 w-full ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition} ${isResizing ? 'side-panel-resizing' : ''}`;
   const middleAreaClasses = `middle-area relative transition-all duration-300 w-full ${
     activeSidePanel ? APP_LAYOUT_CLASSES.middleAreaOpen : ''
@@ -207,6 +208,7 @@ const MainArea = () => {
           panelWidthForA11y={panelWidth}
           onNudgeWidth={nudgeWidth}
           onResetWidth={resetWidth}
+          anyPanelActive={anyPanelActive}
         >
           <ParticipantsComponent />
         </SidePanel>
@@ -220,6 +222,7 @@ const MainArea = () => {
             panelWidthForA11y={panelWidth}
             onNudgeWidth={nudgeWidth}
             onResetWidth={resetWidth}
+            anyPanelActive={anyPanelActive}
           >
             <ChatComponent />
           </SidePanel>
@@ -234,6 +237,7 @@ const MainArea = () => {
             panelWidthForA11y={panelWidth}
             onNudgeWidth={nudgeWidth}
             onResetWidth={resetWidth}
+            anyPanelActive={anyPanelActive}
           >
             <PollsComponent />
           </SidePanel>
@@ -248,6 +252,7 @@ const MainArea = () => {
             panelWidthForA11y={panelWidth}
             onNudgeWidth={nudgeWidth}
             onResetWidth={resetWidth}
+            anyPanelActive={anyPanelActive}
           >
             <RoomsPanel />
           </SidePanel>
