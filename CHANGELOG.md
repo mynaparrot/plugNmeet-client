@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.3](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.2...v2.5.3) (2026-09-25)
+
+
+### Bug Fixes
+
+* when too many messages arrive switching tab was delaying ([f5c7f44](https://github.com/mynaparrot/plugNmeet-client/commit/f5c7f44a2bfcb4bf026242704833604a33b2f3f3))
+
 ## [2.5.2](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.1...v2.5.2) (2026-09-23)
 
 
