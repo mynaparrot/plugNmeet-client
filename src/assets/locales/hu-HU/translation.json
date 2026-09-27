@@ -143,7 +143,11 @@
       "alert": {
         "confirm": "Biztos vagy benne?",
         "logout": "Hamarosan elhagyja a találkozót.",
-        "end": "Mindjárt befejezed a találkozót mindenki számára."
+        "end": "Mindjárt befejezed a találkozót mindenki számára.",
+        "leave-or-end-title": "Elmenni vagy befejezni a találkozót?",
+        "end-for-everyone": "Mindenki számára a találkozó vége",
+        "logout-desc": "El fogod hagyni a találkozót. A többi résztvevő folytathatja az ülést.",
+        "end-desc": "Ez véget vet a találkozónak, és minden résztvevőt elszakít az üléstől."
       }
     },
     "room-settings": {
