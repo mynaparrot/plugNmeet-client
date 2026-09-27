@@ -143,7 +143,11 @@
       "alert": {
         "confirm": "Opravdu?",
         "logout": "Chystáte se opustit schůzku.",
-        "end": "Chystáte se ukončit schůzku pro všechny."
+        "end": "Chystáte se ukončit schůzku pro všechny.",
+        "leave-or-end-title": "Odejít nebo ukončit schůzku?",
+        "end-for-everyone": "Závěrečné setkání pro všechny",
+        "logout-desc": "Opustíte schůzku. Ostatní účastníci mohou pokračovat v sezení.",
+        "end-desc": "Tím skončí schůzka a všichni účastníci se odpojí od sezení."
       }
     },
     "room-settings": {
