@@ -143,7 +143,11 @@
       "alert": {
         "confirm": "Är du säker?",
         "logout": "Du är på väg att lämna mötet.",
-        "end": "Du är på väg att avsluta mötet för alla."
+        "end": "Du är på väg att avsluta mötet för alla.",
+        "leave-or-end-title": "Lämna eller avsluta mötet?",
+        "end-for-everyone": "Slutmöte för alla",
+        "logout-desc": "Du lämnar mötet. Andra deltagare kan fortsätta sessionen.",
+        "end-desc": "Detta avslutar mötet och kopplar bort alla deltagare från sessionen."
       }
     },
     "room-settings": {
