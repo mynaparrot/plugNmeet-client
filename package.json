@@ -21,7 +21,7 @@
     "@blocknote/mantine": "0.55.0",
     "@blocknote/react": "0.55.0",
     "@bufbuild/protobuf": "2.14.1",
-    "@excalidraw/excalidraw": "0.18.0-214cd6e",
+    "@excalidraw/excalidraw": "0.18.0-1118751",
     "@headlessui/react": "2.2.10",
     "@nats-io/jetstream": "3.4.0",
     "@nats-io/nats-core": "3.4.0",
@@ -58,7 +58,7 @@
     "sanitize-html": "2.17.7",
     "y-prosemirror": "1.3.7",
     "y-protocols": "1.0.7",
-    "yjs": "13.6.32"
+    "yjs": "13.6.33"
   },
   "devDependencies": {
     "@prettier/plugin-oxc": "0.2.3",
@@ -71,10 +71,10 @@
     "@vitejs/plugin-react": "6.1.1",
     "husky": "9.1.7",
     "oxlint": "1.78.0",
-    "prettier": "3.9.8",
+    "prettier": "3.9.9",
     "tailwindcss": "4.3.3",
     "typescript": "6.0.3",
-    "vite": "8.3.0",
+    "vite": "8.3.1",
     "vite-plugin-clean": "2.0.1",
     "vite-plugin-oxlint": "2.2.0",
     "vite-plugin-static-copy": "4.1.1"
