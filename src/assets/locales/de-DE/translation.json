@@ -143,7 +143,11 @@
       "alert": {
         "confirm": "Sind Sie sicher?",
         "logout": "Sie sind dabei, das Meeting zu verlassen.",
-        "end": "Sie sind dabei, das Meeting für alle zu beenden."
+        "end": "Sie sind dabei, das Meeting für alle zu beenden.",
+        "leave-or-end-title": "Verlassen oder das Meeting beenden?",
+        "end-for-everyone": "Ende des Treffens für alle",
+        "logout-desc": "Sie werden das Meeting verlassen. Andere Teilnehmer können die Sitzung fortsetzen.",
+        "end-desc": "Dies beendet das Treffen und alle Teilnehmer werden von der Sitzung getrennt."
       }
     },
     "room-settings": {
