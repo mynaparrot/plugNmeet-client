@@ -143,7 +143,11 @@
       "alert": {
         "confirm": "Czy na pewno?",
         "logout": "Za chwilę opuścisz spotkanie.",
-        "end": "Za chwilę zakończysz spotkanie dla wszystkich."
+        "end": "Za chwilę zakończysz spotkanie dla wszystkich.",
+        "leave-or-end-title": "Odejść czy zakończyć spotkanie?",
+        "end-for-everyone": "Spotkanie końcowe dla wszystkich",
+        "logout-desc": "Opuścisz spotkanie. Pozostali uczestnicy mogą kontynuować sesję.",
+        "end-desc": "To zakończy spotkanie i odłączy wszystkich uczestników od sesji."
       }
     },
     "room-settings": {
