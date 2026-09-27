@@ -143,7 +143,11 @@
       "alert": {
         "confirm": "您確定嗎？",
         "logout": "您即將離開會議。",
-        "end": "您即將為所有人結束會議。"
+        "end": "您即將為所有人結束會議。",
+        "leave-or-end-title": "離開還是結束會議？",
+        "end-for-everyone": "會議結束，大家都參加",
+        "logout-desc": "你必須離開會議。其他參與者可以繼續會議。",
+        "end-desc": "此舉會結束會議，並讓所有參與者與會議中斷線。"
       }
     },
     "room-settings": {
