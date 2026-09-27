@@ -143,7 +143,11 @@
       "alert": {
         "confirm": "Are you sure?",
         "logout": "You are about to leave the meeting.",
-        "end": "You are about to end the meeting for everyone."
+        "end": "You are about to end the meeting for everyone.",
+        "leave-or-end-title": "Leave or end meeting?",
+        "end-for-everyone": "End Meeting for Everyone",
+        "logout-desc": "You will leave the meeting. Other participants can continue the session.",
+        "end-desc": "This will end the meeting and disconnect all participants from the session."
       }
     },
     "room-settings": {
