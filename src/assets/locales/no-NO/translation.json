@@ -143,7 +143,11 @@
       "alert": {
         "confirm": "Er du sikker?",
         "logout": "Du er i ferd med å forlate møtet.",
-        "end": "Du er i ferd med å avslutte møtet for alle."
+        "end": "Du er i ferd med å avslutte møtet for alle.",
+        "leave-or-end-title": "Gå eller avslutte møtet?",
+        "end-for-everyone": "Sluttmøte for alle",
+        "logout-desc": "Du forlater møtet. Andre deltakere kan fortsette økten.",
+        "end-desc": "Dette avslutter møtet og kobler alle deltakere fra økten."
       }
     },
     "room-settings": {
