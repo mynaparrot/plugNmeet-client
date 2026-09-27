@@ -143,7 +143,11 @@
       "alert": {
         "confirm": "Oletko varma?",
         "logout": "Olet poistumassa kokouksesta.",
-        "end": "Olet lopettamassa kokouksen kaikilta."
+        "end": "Olet lopettamassa kokouksen kaikilta.",
+        "leave-or-end-title": "Lähteä vai lopettaa tapaaminen?",
+        "end-for-everyone": "Kokous päättyy kaikille",
+        "logout-desc": "Poistut kokouksesta. Muut osallistujat voivat jatkaa istuntoa.",
+        "end-desc": "Tämä päättää kokouksen ja katkaisee kaikki osallistujat pois sessiosta."
       }
     },
     "room-settings": {
