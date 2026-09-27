@@ -143,7 +143,11 @@
       "alert": {
         "confirm": "Anda yakin?",
         "logout": "Anda akan meninggalkan rapat.",
-        "end": "Anda akan mengakhiri rapat untuk semua orang."
+        "end": "Anda akan mengakhiri rapat untuk semua orang.",
+        "leave-or-end-title": "Keluar atau akhiri rapat?",
+        "end-for-everyone": "Akhiri Pertemuan untuk Semua",
+        "logout-desc": "Anda akan meninggalkan pertemuan. Peserta lain dapat melanjutkan sesi.",
+        "end-desc": "Ini akan mengakhiri pertemuan dan memutuskan semua peserta dari sesi."
       }
     },
     "room-settings": {
