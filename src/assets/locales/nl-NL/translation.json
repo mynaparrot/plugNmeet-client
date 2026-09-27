@@ -143,7 +143,11 @@
       "alert": {
         "confirm": "Weet je het zeker?",
         "logout": "U staat op het punt de vergadering te verlaten.",
-        "end": "Je staat op het punt de vergadering voor iedereen te beëindigen."
+        "end": "Je staat op het punt de vergadering voor iedereen te beëindigen.",
+        "leave-or-end-title": "Vertrek of beëindig de vergadering?",
+        "end-for-everyone": "Eindbijeenkomst voor iedereen",
+        "logout-desc": "Je verlaat de vergadering. Andere deelnemers kunnen de sessie voortzetten.",
+        "end-desc": "Dit beëindigt de vergadering en ontkoppelt alle deelnemers aan de sessie."
       }
     },
     "room-settings": {
