@@ -143,7 +143,11 @@
       "alert": {
         "confirm": "Bạn có chắc không?",
         "logout": "Bạn sắp rời khỏi cuộc họp.",
-        "end": "Bạn sắp kết thúc cuộc họp cho tất cả mọi người."
+        "end": "Bạn sắp kết thúc cuộc họp cho tất cả mọi người.",
+        "leave-or-end-title": "Rời đi hay kết thúc cuộc họp?",
+        "end-for-everyone": "Kết thúc cuộc họp cho tất cả mọi người",
+        "logout-desc": "Bạn sẽ rời khỏi cuộc họp. Những người tham gia khác có thể tiếp tục phiên họp.",
+        "end-desc": "Điều này sẽ kết thúc cuộc họp và ngắt kết nối tất cả người tham gia khỏi phiên họp."
       }
     },
     "room-settings": {
