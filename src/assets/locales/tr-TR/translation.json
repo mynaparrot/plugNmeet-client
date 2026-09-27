@@ -143,7 +143,11 @@
       "alert": {
         "confirm": "Emin misiniz?",
         "logout": "Toplantıdan ayrılmak üzeresiniz.",
-        "end": "Toplantıyı herkes için sonlandırmak üzeresiniz."
+        "end": "Toplantıyı herkes için sonlandırmak üzeresiniz.",
+        "leave-or-end-title": "Toplantıyı bitirmek mi yoksa bitirmek mi?",
+        "end-for-everyone": "Herkes için Toplantıyı Bitir",
+        "logout-desc": "Toplantıdan ayrılacaksınız. Diğer katılımcılar oturuma devam edebilir.",
+        "end-desc": "Bu durum toplantıyı sona erdirir ve tüm katılımcıları oturumdan koparır."
       }
     },
     "room-settings": {
