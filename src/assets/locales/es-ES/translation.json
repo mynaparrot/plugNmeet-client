@@ -143,7 +143,11 @@
       "alert": {
         "confirm": "¿Está seguro?",
         "logout": "Está a punto de salir de la reunión.",
-        "end": "Está a punto de finalizar la reunión para todos."
+        "end": "Está a punto de finalizar la reunión para todos.",
+        "leave-or-end-title": "¿Dejar o terminar la reunión?",
+        "end-for-everyone": "Fin de la reunión para todos",
+        "logout-desc": "Abandonarás la reunión. Los demás participantes pueden continuar la sesión.",
+        "end-desc": "Esto pondrá fin a la reunión y desconectará a todos los participantes de la sesión."
       }
     },
     "room-settings": {
