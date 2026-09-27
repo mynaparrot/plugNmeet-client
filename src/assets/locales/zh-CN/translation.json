@@ -143,7 +143,11 @@
       "alert": {
         "confirm": "您确定吗？",
         "logout": "您即将离开会议。",
-        "end": "您即将为所有人结束会议。"
+        "end": "您即将为所有人结束会议。",
+        "leave-or-end-title": "离开还是结束会议？",
+        "end-for-everyone": "会议结束，大家都参加",
+        "logout-desc": "你将离开会议。其他参与者可以继续会议。",
+        "end-desc": "这将结束会议，所有参与者与会话断开连接。"
       }
     },
     "room-settings": {
