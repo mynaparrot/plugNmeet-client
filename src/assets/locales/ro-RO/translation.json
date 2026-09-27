@@ -143,7 +143,11 @@
       "alert": {
         "confirm": "Eşti sigur?",
         "logout": "Sunteți pe cale să părăsiți întâlnirea.",
-        "end": "Sunteți pe cale să încheiați întâlnirea pentru toată lumea."
+        "end": "Sunteți pe cale să încheiați întâlnirea pentru toată lumea.",
+        "leave-or-end-title": "Să pleci sau să închei întâlnirea?",
+        "end-for-everyone": "Încheierea întâlnirii pentru toată lumea",
+        "logout-desc": "Vei părăsi întâlnirea. Alți participanți pot continua sesiunea.",
+        "end-desc": "Acest lucru va încheia întâlnirea și va deconecta toți participanții de la sesiune."
       }
     },
     "room-settings": {
