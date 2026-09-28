@@ -53,9 +53,7 @@ const VerticalLayout = ({
   const { t } = useTranslation();
   const { isMobile, isTablet, isPortrait } = useDeviceInfo();
 
-  // The pinned cam stays on top of the strip, but ONLY on the first page —
-  // it must not be duplicated on top of paginated pages (2+).
-  // `currentPage` starts at 0 before the page-reset effect settles, hence <= 1.
+  // Pin on top of the strip, page 1 only (currentPage starts at 0, hence <= 1).
   const showPinInStrip = !!pinParticipant && currentPage <= 1;
 
   const [pipWindow, setPipWindow] = useState<Window | null>(null);

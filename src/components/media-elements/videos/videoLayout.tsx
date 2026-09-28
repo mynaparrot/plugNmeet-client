@@ -77,11 +77,8 @@ const VideoLayout = ({
   const [webcamPerPage, setWebcamPerPage] = useState<number>(DESKTOP_PER_PAGE);
   const [currentPage, setCurrentPage] = useState<number>(0);
 
-  // The pin cam renders inside the vertical strip on the FIRST page only
-  // (screen share / whiteboard / external media / external link active).
-  // It consumes strip slots there — 1 slot in normal view, 2 slots (a full
-  // row of two) in extended view — but ONLY on page 1. Pages 2+ never render
-  // the pin, so they must use the FULL per-page capacity.
+  // The pin renders in the strip on page 1 only — it consumes strip
+  // slots there (1 normal, 2 extended), never on pages 2+.
   const pinInStrip = !!pinParticipant && !!isVertical;
   const pinStripSlots = pinInStrip
     ? isEnabledExtendedVerticalCamView
@@ -152,8 +149,6 @@ const VideoLayout = ({
     } else {
       // PC
       if (enabledVerticalViewMode) {
-        // Pin slot accounting moved to the pagination capacity math below —
-        // it applies to page 1 only, so pages 2+ keep the full capacity.
         perPage = isEnabledExtendedVerticalCamView
           ? PC_EXTENDED_VERTICAL_PER_PAGE
           : PC_VERTICAL_PER_PAGE;
@@ -216,17 +211,9 @@ const VideoLayout = ({
     // Determine if a "Previous" button is needed.
     const hasPrevPage = safeCurrentPage > 1;
 
-    /**
-     * Calculate the starting index for the slice.
-     *
-     * This logic accounts for the shifting number of participant items on each page:
-     * - Page 1 reserves one slot for the "Next" button PLUS the pin cam slots
-     *   (the pin renders in the strip on page 1 only).
-     * - Middle pages can reserve two slots for "Previous" and "Next" buttons.
-     * - Last page can reserve one slot for the "Previous" button.
-     *
-     * This prevents participants from being skipped when pagination buttons consume slots.
-     */
+    // Slot accounting: page 1 reserves the "Next" button slot plus the pin
+    // cam slots (pin renders on page 1 only); middle pages reserve both
+    // button slots; the last page only the "Previous" one.
     const firstPageParticipantCapacity = webcamPerPage - 1 - pinStripSlots;
     const middlePageParticipantCapacity = webcamPerPage - 2;
 
@@ -274,12 +261,15 @@ const VideoLayout = ({
         <button
           key="next-page"
           className="video-camera-item webcam-next-page order-3 relative bg-Gray-900 text-white cursor-pointer flex items-center justify-between"
+          title={potentialNextItems
+            .map((p) => p.props.participant.name)
+            .join(', ')}
           onClick={nextPage}
         >
           <div className="left flex-1 flex justify-center items-center absolute top-0 start-0 w-full h-full">
             {formatNextPreButton(potentialNextItems)}
           </div>
-          <div className="right pb-4 ltr:-rotate-90 rtl:rotate-90 absolute top-[calc(50%-12px)] end-0">
+          <div className="right ltr:-rotate-90 rtl:rotate-90 absolute top-1/2 -translate-y-1/2 end-3">
             <AngleDown />
           </div>
         </button>,
@@ -296,9 +286,10 @@ const VideoLayout = ({
         <button
           key="prev-page"
           className="video-camera-item webcam-prev-page order-1 relative bg-Gray-900 text-white cursor-pointer flex items-center justify-between"
+          title={prevItems.map((p) => p.props.participant.name).join(', ')}
           onClick={prePage}
         >
-          <div className="right ltr:rotate-90 rtl:-rotate-90 absolute top-[calc(50%-12px)] start-3">
+          <div className="right ltr:rotate-90 rtl:-rotate-90 absolute top-1/2 -translate-y-1/2 start-3">
             <AngleDown />
           </div>
           <div className="left flex-1 flex justify-center items-center absolute top-0 start-0 w-full h-full">
@@ -332,9 +323,7 @@ const VideoLayout = ({
 
     const participantsToRender = paginatedParticipants.participantsToRender;
 
-    // Non-extended: prepend the pin tile into the list so it becomes a regular
-    // first tile inside the strip list (page 1 only). Extended renders it via
-    // the separate pinCam-item wrapper in VerticalLayout instead.
+    // Non-extended: the pin becomes a regular first tile of the list (page 1 only).
     const prependPinToList =
       pinInStrip && currentPage <= 1 && !isEnabledExtendedVerticalCamView;
     const items = prependPinToList
@@ -360,8 +349,7 @@ const VideoLayout = ({
     } else {
       // PC
       if (enabledVerticalViewMode && isEnabledExtendedVerticalCamView) {
-        // Extended: the pin is rendered via the pinCam-item wrapper in
-        // VerticalLayout — use the raw list without the pin.
+        // Extended: the pin renders via the pinCam-item wrapper in VerticalLayout.
         layout = getElmsForPCExtendedVerticalView(participantsToRender);
       } else {
         layout = getElmsForPc(items, enabledVerticalViewMode);
@@ -425,8 +413,8 @@ const VideoLayout = ({
   }
 
   if (pinParticipant && !isVertical) {
-    // Pin cam takes the middle area ONLY when no screen share / whiteboard /
-    // external media / external link is active (isVertical is false).
+    // Pin cam takes the middle area only when no content
+    // (screen share / whiteboard / external media / link) is active.
     return (
       <PinnedLayout
         pipParticipants={paginatedParticipants.pipParticipants}
@@ -442,8 +430,8 @@ const VideoLayout = ({
   }
 
   if (isVertical) {
-    // Screen share / whiteboard / external media / external link has priority for
-    // the middle area. A pinned cam (if any) moves into the vertical strip on top.
+    // Content takes priority for the middle area; a pinned cam (if any)
+    // moves into the vertical strip on top.
     return (
       <VerticalLayout
         pipParticipants={paginatedParticipants.pipParticipants}

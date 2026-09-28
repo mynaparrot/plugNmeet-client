@@ -671,10 +671,7 @@
   @apply hidden;
 }
 .vertical-webcams-wrapper.not-extended .webcam-next-page .middle-area {
-  @apply ps-5;
-}
-.vertical-webcams-wrapper.not-extended .webcam-next-page .middle-area span {
-  @apply h-9 w-9 text-sm;
+  @apply pe-5;
 }
 .vertical-webcams-wrapper.not-extended .webcam-next-page .icon svg {
   @apply rotate-90;
@@ -688,14 +685,16 @@
 .vertical-webcams-wrapper.not-extended .webcam-prev-page .middle-area {
   @apply ps-5;
 }
-.vertical-webcams-wrapper.not-extended .webcam-prev-page .middle-area span {
-  @apply h-9 w-9 text-sm;
-}
 .vertical-webcams-wrapper.not-extended .webcam-prev-page .icon {
   @apply start-auto end-4;
 }
 .vertical-webcams-wrapper.not-extended .webcam-prev-page .icon svg {
   @apply rotate-90;
+}
+
+.vertical-webcams-wrapper .webcam-next-page .middle-area span,
+.vertical-webcams-wrapper .webcam-prev-page .middle-area span {
+  @apply h-7 text-xs;
 }
 
 .vertical-webcams-wrapper .video-camera-item {
@@ -872,4 +871,23 @@
     .video-camera-item {
     width: 100%;
   }
+}
+
+/* Extended view + pinned cam (strip, page 1 only): the pin block gets a
+   natural 16/9 height at full strip width; the rows below flex-share the
+   remaining height equally. Additive overrides scoped to has-pin-cam,
+   placed last to win the !important ties. */
+
+.vertical-webcams-wrapper.extended-view-wrap .inner.has-pin-cam > .pinCam-item {
+  height: auto !important;
+  aspect-ratio: 16 / 9;
+  flex: 0 0 auto;
+}
+
+.vertical-webcams-wrapper.extended-view-wrap
+  .inner.has-pin-cam
+  .camera-row-wrap:not(.pinCam-item) {
+  height: auto !important;
+  flex: 1 1 0;
+  min-height: 0;
 }

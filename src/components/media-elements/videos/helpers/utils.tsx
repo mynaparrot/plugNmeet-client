@@ -361,14 +361,6 @@ export const getElmsForPCExtendedVerticalView = (
   return elms;
 };
 
-const sliceFirstLetterOfText = (name?: string) =>
-  (name ?? '')
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((word) => word[0]?.toUpperCase() ?? '')
-    .join('');
-
 const getParticipantKey = (
   participantElement: ReactElement<VideoParticipantProps>,
   suffix: string,
@@ -386,16 +378,27 @@ const getParticipantKey = (
 export const formatNextPreButton = (
   remaining: ReactElement<VideoParticipantProps>[],
 ) => {
-  const MAX_AVATARS_TO_SHOW = 2;
-  const participantsToShow = remaining.slice(0, MAX_AVATARS_TO_SHOW);
+  const MAX_NAMES_TO_SHOW = 2;
+  const MAX_NAME_CHARS = 6;
+
+  // Readable short label: first name; names over 6 chars collapse to 3 letters.
+  const shortName = (name?: string) => {
+    const firstWord = (name ?? '').trim().split(/\s+/)[0] ?? '';
+    if (!firstWord) return '?';
+    return firstWord.length > MAX_NAME_CHARS
+      ? firstWord.slice(0, 3)
+      : firstWord;
+  };
+
+  const participantsToShow = remaining.slice(0, MAX_NAMES_TO_SHOW);
   const remainingCount = remaining.length - participantsToShow.length;
 
-  const shortNameElms = participantsToShow.map((p) => (
+  const nameChipElms = participantsToShow.map((p) => (
     <span
       key={getParticipantKey(p, 'short')}
-      className="inline-flex items-center justify-center order-1 pe-1 bg-[#003C59] rounded-[13px] border-2 border-Gray-900 w-8 md:w-10 h-8 md:h-10 -ms-2 overflow-hidden"
+      className="inline-flex items-center justify-center order-1 px-2 h-8 md:h-10 rounded-full border-2 border-Gray-900 bg-[#003C59] overflow-hidden text-sm md:text-base"
     >
-      {sliceFirstLetterOfText(p.props.participant.name)}
+      {shortName(p.props.participant.name)}
     </span>
   ));
 
@@ -410,25 +413,25 @@ export const formatNextPreButton = (
   ));
 
   if (remainingCount > 0) {
-    shortNameElms.push(
+    nameChipElms.push(
       <span
         key="more-users-short"
-        className="inline-flex items-center justify-center order-2 pe-1 bg-[rgba(0,102,153,1)] rounded-[13px] border-2 border-Gray-900 w-8 md:w-10 h-8 md:h-10 -ms-2 overflow-hidden"
+        className="inline-flex items-center justify-center order-2 px-2 h-8 md:h-10 rounded-full border-2 border-Gray-900 bg-[rgba(0,102,153,1)] overflow-hidden text-sm md:text-base"
       >
-        {remainingCount}+
+        +{remainingCount}
       </span>,
     );
     fullNameElms.push(
       <span key="more-users-full" className="inline-block order-2">
-        and {remainingCount}+ others
+        and {remainingCount} others
       </span>,
     );
   }
 
   return (
     <>
-      <div className="middle-area flex text-xs md:text-base font-medium">
-        {shortNameElms}
+      <div className="middle-area flex flex-wrap justify-center items-center gap-1 text-xs md:text-base font-medium">
+        {nameChipElms}
       </div>
       <div className="bottom-area flex flex-wrap text-sm font-medium absolute bottom-4 start-4">
         {fullNameElms}
@@ -443,22 +446,17 @@ export const getTotalWebcamPages = (
   isRecorder?: boolean,
   pinStripSlots = 0,
 ) => {
-  // The pin cam renders in the strip on the FIRST page only, consuming
-  // `pinStripSlots` slots there (1 in normal view, 2 in extended view).
-  // Pages 2+ never render the pin, so they use the full capacity.
+  // The pin consumes pinStripSlots on page 1 only.
   if (totalItems <= perPage - pinStripSlots) return 1;
   if (isRecorder) return 1;
 
-  // Page 1 shows at most perPage - 1 - pinStripSlots participants
-  // (one slot for the "Next" button plus the pin cam slots).
+  // Page 1: "Next" button slot plus the pin cam slots.
   const firstPageParticipantCapacity = perPage - 1 - pinStripSlots;
 
   const remainingAfterFirstPage = totalItems - firstPageParticipantCapacity;
   if (remainingAfterFirstPage <= 0) return 1;
 
-  // Every subsequent page reserves two slots for the "Previous" and "Next"
-  // buttons — except the last page, which has no "Next" button and can
-  // therefore show one more participant.
+  // Middle pages reserve 2 button slots; the last page has no "Next" button.
   const middlePageParticipantCapacity = perPage - 2;
   const lastPageParticipantCapacity = perPage - 1;
 
