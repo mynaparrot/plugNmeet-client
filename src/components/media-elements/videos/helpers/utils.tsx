@@ -441,18 +441,36 @@ export const getTotalWebcamPages = (
   totalItems: number,
   perPage: number,
   isRecorder?: boolean,
+  pinStripSlots = 0,
 ) => {
-  if (totalItems <= perPage) return 1;
+  // The pin cam renders in the strip on the FIRST page only, consuming
+  // `pinStripSlots` slots there (1 in normal view, 2 in extended view).
+  // Pages 2+ never render the pin, so they use the full capacity.
+  if (totalItems <= perPage - pinStripSlots) return 1;
   if (isRecorder) return 1;
 
-  const firstPageParticipantCapacity = perPage - 1;
-  const middlePageParticipantCapacity = perPage - 2;
-
-  if (totalItems <= firstPageParticipantCapacity) {
-    return 1;
-  }
+  // Page 1 shows at most perPage - 1 - pinStripSlots participants
+  // (one slot for the "Next" button plus the pin cam slots).
+  const firstPageParticipantCapacity = perPage - 1 - pinStripSlots;
 
   const remainingAfterFirstPage = totalItems - firstPageParticipantCapacity;
+  if (remainingAfterFirstPage <= 0) return 1;
 
-  return 1 + Math.ceil(remainingAfterFirstPage / middlePageParticipantCapacity);
+  // Every subsequent page reserves two slots for the "Previous" and "Next"
+  // buttons — except the last page, which has no "Next" button and can
+  // therefore show one more participant.
+  const middlePageParticipantCapacity = perPage - 2;
+  const lastPageParticipantCapacity = perPage - 1;
+
+  if (remainingAfterFirstPage <= lastPageParticipantCapacity) {
+    return 2;
+  }
+
+  return (
+    2 +
+    Math.ceil(
+      (remainingAfterFirstPage - lastPageParticipantCapacity) /
+        middlePageParticipantCapacity,
+    )
+  );
 };

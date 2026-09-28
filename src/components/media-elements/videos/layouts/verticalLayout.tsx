@@ -53,6 +53,11 @@ const VerticalLayout = ({
   const { t } = useTranslation();
   const { isMobile, isTablet, isPortrait } = useDeviceInfo();
 
+  // The pinned cam stays on top of the strip, but ONLY on the first page —
+  // it must not be duplicated on top of paginated pages (2+).
+  // `currentPage` starts at 0 before the page-reset effect settles, hence <= 1.
+  const showPinInStrip = !!pinParticipant && currentPage <= 1;
+
   const [pipWindow, setPipWindow] = useState<Window | null>(null);
 
   const pipWindowRef = useRef<Window | null>(null);
@@ -162,7 +167,7 @@ const VerticalLayout = ({
 
   const innerClasses = `inner row-count-${participantsToRender.length} total-cam-${totalNumWebcams} group-total-cam-${totalNumWebcams} page-${currentPage} h-full w-full flex gap-3 z-20 ${
     shouldBeAtBottom ? 'flex-row justify-center items-center' : 'flex-col'
-  } ${pinParticipant ? 'has-pin-cam' : ''}`;
+  } ${showPinInStrip ? 'has-pin-cam' : ''}`;
 
   return (
     <>
@@ -211,12 +216,8 @@ const VerticalLayout = ({
         )}
 
         <div className={innerClasses}>
-          {pinParticipant && (
-            <div
-              className={`pinCam-item video-camera-item order-2! ${
-                isEnabledExtendedVerticalCamView ? 'camera-row-wrap' : ''
-              }`}
-            >
+          {showPinInStrip && isEnabledExtendedVerticalCamView && (
+            <div className="pinCam-item video-camera-item camera-row-wrap order-2!">
               {pinParticipant}
             </div>
           )}

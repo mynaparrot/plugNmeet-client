@@ -77,6 +77,18 @@ const VideoLayout = ({
   const [webcamPerPage, setWebcamPerPage] = useState<number>(DESKTOP_PER_PAGE);
   const [currentPage, setCurrentPage] = useState<number>(0);
 
+  // The pin cam renders inside the vertical strip on the FIRST page only
+  // (screen share / whiteboard / external media / external link active).
+  // It consumes strip slots there — 1 slot in normal view, 2 slots (a full
+  // row of two) in extended view — but ONLY on page 1. Pages 2+ never render
+  // the pin, so they must use the FULL per-page capacity.
+  const pinInStrip = !!pinParticipant && !!isVertical;
+  const pinStripSlots = pinInStrip
+    ? isEnabledExtendedVerticalCamView
+      ? 2
+      : 1
+    : 0;
+
   // Derive view mode directly from props to prevent unnecessary re-renders via local state
   const enabledVerticalViewMode = useMemo(() => {
     return !!isVertical || typeof pinParticipant !== 'undefined';
@@ -140,16 +152,8 @@ const VideoLayout = ({
     } else {
       // PC
       if (enabledVerticalViewMode) {
-        perPage = isEnabledExtendedVerticalCamView
-          ? PC_EXTENDED_VERTICAL_PER_PAGE
-          : PC_VERTICAL_PER_PAGE;
-
-        if (pinParticipant) {
-          // if vertical view has pin, we will lose space.
-          perPage -= isEnabledExtendedVerticalCamView ? 2 : 1;
-        }
-      } else if (pinParticipant) {
-        // if we have a pinned participant, the rest will be in a vertical view
+        // Pin slot accounting moved to the pagination capacity math below —
+        // it applies to page 1 only, so pages 2+ keep the full capacity.
         perPage = isEnabledExtendedVerticalCamView
           ? PC_EXTENDED_VERTICAL_PER_PAGE
           : PC_VERTICAL_PER_PAGE;
@@ -164,7 +168,6 @@ const VideoLayout = ({
   }, [
     isEnabledExtendedVerticalCamView,
     enabledVerticalViewMode,
-    pinParticipant,
     isMobile,
     isTablet,
     isPortrait,
@@ -173,9 +176,9 @@ const VideoLayout = ({
   ]);
 
   useEffect(() => {
-    const hasPages = allParticipants.length > webcamPerPage;
+    const hasPages = allParticipants.length > webcamPerPage - pinStripSlots;
     dispatch(updateHasWebcamPages(hasPages));
-  }, [allParticipants.length, webcamPerPage, dispatch]);
+  }, [allParticipants.length, webcamPerPage, pinStripSlots, dispatch]);
 
   const prePage = useCallback(() => {
     setCurrentPage((prev) => Math.max(prev - 1, 1));
@@ -187,7 +190,7 @@ const VideoLayout = ({
 
   const paginatedParticipants = useMemo<IPaginatedParticipantsResult>(() => {
     // If we don't have enough participants to require pagination, just return them all.
-    if (allParticipants.length <= webcamPerPage) {
+    if (allParticipants.length <= webcamPerPage - pinStripSlots) {
       return {
         pipParticipants: allParticipants,
         participantsToRender: [...allParticipants],
@@ -197,7 +200,10 @@ const VideoLayout = ({
     // We don't show pagination for recorders.
     // Keep the recorder view limited to the first page worth of participants.
     if (isRecorder) {
-      const pipParticipants = allParticipants.slice(0, webcamPerPage);
+      const pipParticipants = allParticipants.slice(
+        0,
+        webcamPerPage - pinStripSlots,
+      );
 
       return {
         pipParticipants,
@@ -214,13 +220,14 @@ const VideoLayout = ({
      * Calculate the starting index for the slice.
      *
      * This logic accounts for the shifting number of participant items on each page:
-     * - Page 1 can reserve one slot for the "Next" button.
+     * - Page 1 reserves one slot for the "Next" button PLUS the pin cam slots
+     *   (the pin renders in the strip on page 1 only).
      * - Middle pages can reserve two slots for "Previous" and "Next" buttons.
      * - Last page can reserve one slot for the "Previous" button.
      *
      * This prevents participants from being skipped when pagination buttons consume slots.
      */
-    const firstPageParticipantCapacity = webcamPerPage - 1;
+    const firstPageParticipantCapacity = webcamPerPage - 1 - pinStripSlots;
     const middlePageParticipantCapacity = webcamPerPage - 2;
 
     const startIndex = hasPrevPage
@@ -230,6 +237,11 @@ const VideoLayout = ({
 
     // Start with the max number of items per page. This will be adjusted if we need pagination buttons.
     let itemsToDisplay = webcamPerPage;
+
+    if (!hasPrevPage && pinInStrip) {
+      // Page 1: the pin cam consumes its strip slots here.
+      itemsToDisplay -= pinStripSlots;
+    }
 
     if (hasPrevPage) {
       // Decrement the number of items to show, making space for the "Previous" button.
@@ -309,6 +321,8 @@ const VideoLayout = ({
     allParticipants,
     webcamPerPage,
     currentPage,
+    pinInStrip,
+    pinStripSlots,
   ]);
 
   const structuredLayout = useMemo(() => {
@@ -318,32 +332,39 @@ const VideoLayout = ({
 
     const participantsToRender = paginatedParticipants.participantsToRender;
 
+    // Non-extended: prepend the pin tile into the list so it becomes a regular
+    // first tile inside the strip list (page 1 only). Extended renders it via
+    // the separate pinCam-item wrapper in VerticalLayout instead.
+    const prependPinToList =
+      pinInStrip && currentPage <= 1 && !isEnabledExtendedVerticalCamView;
+    const items = prependPinToList
+      ? [pinParticipant, ...participantsToRender]
+      : participantsToRender;
+
     // Mobile always uses the mobile layout helper.
     if (isMobile) {
       layout = getElmsForMobile(
-        participantsToRender,
+        items,
         isPortrait,
         enabledVerticalViewMode,
         isSidebarOpen,
       );
     } else if (isTablet && isPortrait) {
       layout = getElmsForTabletPortrait(
-        participantsToRender,
+        items,
         isSidebarOpen,
         enabledVerticalViewMode,
       );
     } else if (isTablet) {
-      layout = getElmsForTablet(
-        participantsToRender,
-        enabledVerticalViewMode,
-        isSidebarOpen,
-      );
+      layout = getElmsForTablet(items, enabledVerticalViewMode, isSidebarOpen);
     } else {
       // PC
       if (enabledVerticalViewMode && isEnabledExtendedVerticalCamView) {
+        // Extended: the pin is rendered via the pinCam-item wrapper in
+        // VerticalLayout — use the raw list without the pin.
         layout = getElmsForPCExtendedVerticalView(participantsToRender);
       } else {
-        layout = getElmsForPc(participantsToRender, enabledVerticalViewMode);
+        layout = getElmsForPc(items, enabledVerticalViewMode);
       }
     }
 
@@ -356,14 +377,23 @@ const VideoLayout = ({
     enabledVerticalViewMode,
     isSidebarOpen,
     isEnabledExtendedVerticalCamView,
+    pinParticipant,
+    pinInStrip,
+    currentPage,
   ]);
 
   useEffect(() => {
     const isPaginating =
-      allParticipants.length > webcamPerPage && currentPage > 1;
+      allParticipants.length > webcamPerPage - pinStripSlots && currentPage > 1;
 
     dispatch(setWebcamPaginating(isPaginating));
-  }, [allParticipants.length, webcamPerPage, currentPage, dispatch]);
+  }, [
+    allParticipants.length,
+    webcamPerPage,
+    pinStripSlots,
+    currentPage,
+    dispatch,
+  ]);
 
   const allParticipantsCount = useMemo(
     () => allParticipants.length,
@@ -378,6 +408,7 @@ const VideoLayout = ({
       allParticipantsCount,
       webcamPerPage,
       isRecorder,
+      pinStripSlots,
     );
 
     if (
@@ -387,13 +418,15 @@ const VideoLayout = ({
       setCurrentPage(1);
     }
     // eslint-disable-next-line
-  }, [allParticipantsCount, webcamPerPage, isRecorder]);
+  }, [allParticipantsCount, webcamPerPage, isRecorder, pinStripSlots]);
 
   if (!totalNumWebcams) {
     return null;
   }
 
-  if (pinParticipant) {
+  if (pinParticipant && !isVertical) {
+    // Pin cam takes the middle area ONLY when no screen share / whiteboard /
+    // external media / external link is active (isVertical is false).
     return (
       <PinnedLayout
         pipParticipants={paginatedParticipants.pipParticipants}
@@ -408,12 +441,14 @@ const VideoLayout = ({
     );
   }
 
-  if (enabledVerticalViewMode) {
+  if (isVertical) {
+    // Screen share / whiteboard / external media / external link has priority for
+    // the middle area. A pinned cam (if any) moves into the vertical strip on top.
     return (
       <VerticalLayout
         pipParticipants={paginatedParticipants.pipParticipants}
         participantsToRender={structuredLayout}
-        pinParticipant={undefined}
+        pinParticipant={pinParticipant}
         totalNumWebcams={totalNumWebcams}
         currentPage={currentPage}
         isSidebarOpen={isSidebarOpen}
