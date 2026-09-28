@@ -120,7 +120,9 @@ const VideoParticipant = ({
 
   return (
     <div
-      className={`video-camera-item relative group ${isSpeaking ? 'speaking' : ''} ${
+      className={`video-camera-item relative group rounded-2xl overflow-hidden ${
+        isSpeaking ? 'speaking' : ''
+      } ${
         participantType.isAdmin ? 'admin' : 'participants'
       } ${participantType.isLocal && floatView ? 'its-me' : ''}`}
     >

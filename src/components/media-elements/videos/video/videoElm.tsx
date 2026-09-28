@@ -123,7 +123,7 @@ const VideoElm = forwardRef<HTMLVideoElement, IVideoElmProps>(
           </div>
         )}
         <video
-          className="camera-video"
+          className="camera-video rounded-2xl"
           ref={ref}
           style={{
             objectFit: videoFit,
