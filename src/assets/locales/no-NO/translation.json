@@ -332,7 +332,8 @@
     "new-messages": "Nye meldinger",
     "scroll-to-bottom": "Scroll til bunnen",
     "sync-chat": "Synkroniser chat med jevnaldrende",
-    "load-earlier-messages": "Last inn tidligere meldinger"
+    "load-earlier-messages": "Last inn tidligere meldinger",
+    "system-name": "System"
   },
   "footer": {
     "aria-label": "Møtekontroller",
