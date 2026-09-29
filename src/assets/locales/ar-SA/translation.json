@@ -332,7 +332,8 @@
     "new-messages": "رسائل جديدة",
     "scroll-to-bottom": "التمرير إلى الأسفل",
     "sync-chat": "مزامنة الدردشة مع الأقران",
-    "load-earlier-messages": "تحميل الرسائل السابقة"
+    "load-earlier-messages": "تحميل الرسائل السابقة",
+    "system-name": "النظام"
   },
   "footer": {
     "aria-label": "ضوابط الاجتماعات",
