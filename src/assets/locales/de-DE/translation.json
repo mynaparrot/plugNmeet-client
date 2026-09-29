@@ -332,7 +332,8 @@
     "new-messages": "Neue Botschaften",
     "scroll-to-bottom": "Scrollen Sie nach unten",
     "sync-chat": "Chat mit Peers synchronisieren",
-    "load-earlier-messages": "Frühere Nachrichten laden"
+    "load-earlier-messages": "Frühere Nachrichten laden",
+    "system-name": "System"
   },
   "footer": {
     "aria-label": "Sitzungskontrollen",
