@@ -332,7 +332,8 @@
     "new-messages": "新訊息",
     "scroll-to-bottom": "往最底部捲動",
     "sync-chat": "與同儕同步聊天",
-    "load-earlier-messages": "載入先前訊息"
+    "load-earlier-messages": "載入先前訊息",
+    "system-name": "系統"
   },
   "footer": {
     "aria-label": "會議控制",
