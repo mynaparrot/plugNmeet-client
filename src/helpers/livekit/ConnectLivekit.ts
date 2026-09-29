@@ -4,6 +4,7 @@ import {
   DisconnectReason,
   ExternalE2EEKeyProvider,
   isE2EESupported,
+  RemoteParticipant,
   RemoteTrackPublication,
   Room,
   RoomConnectOptions,
@@ -150,9 +151,8 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
     return this.adaptiveMediaController;
   }
 
-  public initializeConnection = async (serverInfo: MediaServerConnInfo) => {
+  public initializeConnection = async (serverInfo: MediaServerConnInfo): Promise<boolean> => {
     this.serverInfo = serverInfo;
-    this._roomConnectionStatusState('media-server-conn-start');
 
     try {
       if (this.enabledE2EE && this.encryptionKey) {
@@ -180,8 +180,6 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
       }
 
       await this._room.connect(serverInfo.url, serverInfo.token, opts);
-      // we'll prepare our information
-      await this.initiateParticipants();
       this._roomConnectionStatusState('media-server-conn-established');
       // start connection quality monitor
       this.connectionQualityMonitor.start(this._room, this.checkConnectionQualityForFallback);
@@ -205,6 +203,8 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
         );
         startNativeHeartbeat();
       }
+
+      return true;
     } catch (error) {
       console.error(error);
       this._roomConnectionStatusState('error');
@@ -212,6 +212,7 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
         title: i18n.t('error'),
         text: String(error),
       });
+      return false;
     }
   };
 
@@ -334,15 +335,19 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
     this._room = room;
   }
 
-  private async initiateParticipants() {
-    // all other connected Participants — route through HandleMediaTracks
-    // so permission gates (e.g. _shouldAddWebcam) apply consistently
+  public registerExistingTracksForParticipant(participant: RemoteParticipant) {
+    // route through HandleMediaTracks so permission gates
+    // (e.g. _shouldAddWebcam) apply consistently
+    participant.getTrackPublications().forEach((track) => {
+      if (track.isSubscribed) {
+        this.handleMediaTracks.processExistingTrack(track as RemoteTrackPublication, participant);
+      }
+    });
+  }
+
+  public registerAllExistingTracks() {
     this._room.remoteParticipants.forEach((participant) => {
-      participant.getTrackPublications().forEach((track) => {
-        if (track.isSubscribed) {
-          this.handleMediaTracks.processExistingTrack(track as RemoteTrackPublication, participant);
-        }
-      });
+      this.registerExistingTracksForParticipant(participant);
     });
   }
 

@@ -89,10 +89,10 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
 
   useEffect(() => {
     switch (roomConnectionStatus) {
-      case 'media-server-conn-start':
-        setShowLoadingMsg(t('landing.connecting-media-server'));
-        break;
       case 'media-server-conn-established':
+        setShowLoadingMsg(t('landing.finalizing-app'));
+        break;
+      case 'room-ready':
         dispatch(toggleStartup(false));
         setIsAppReady(true);
         setShowLoadingMsg(undefined);
@@ -109,8 +109,8 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
       if (isReadyToConn) {
         const conn = getNatsConn();
         if (conn) {
-          setShowLoadingMsg(t('landing.finalizing-app'));
-          conn.finalizeAppConn();
+          setShowLoadingMsg(t('landing.connecting-media-server'));
+          conn.requestMediaServerData();
         }
       }
     }

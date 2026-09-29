@@ -94,7 +94,7 @@ export default class ConnectNats {
   private missedPongs = 0;
   private pongMissedToastId: any;
   private isRoomReconnecting: boolean = false;
-  private _finalizeAppConnCalled = false;
+  private _mediaServerDataRequested = false;
 
   // state setters
   private readonly _setErrorState: Dispatch<IErrorPageProps>;
@@ -909,19 +909,16 @@ export default class ConnectNats {
   };
 
   /**
-   * Finalizes the application connection.
-   * This method should be called when the application is ready
-   * to establish the full connection, typically after receiving approval to join the room.
-   * Calling this method prematurely may result in the media server token expiring before it is used.
+   * Requests media server data to establish the media connection.
+   * Call only when ready to join — the media token may expire if requested too early.
    */
-  public finalizeAppConn = () => {
-    if (this._finalizeAppConnCalled) return;
-    this._finalizeAppConnCalled = true;
+  public requestMediaServerData = () => {
+    if (this._mediaServerDataRequested) return;
+    this._mediaServerDataRequested = true;
 
-    // Request for users' list to prepare everything
     this.sendMessageToSystemWorker(
       create(NatsMsgClientToServerSchema, {
-        event: NatsMsgClientToServerEvents.REQ_JOINED_USERS_LIST,
+        event: NatsMsgClientToServerEvents.REQ_MEDIA_SERVER_DATA,
       }),
     );
   };

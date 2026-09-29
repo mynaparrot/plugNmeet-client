@@ -1,4 +1,4 @@
-import { RemoteTrackPublication, Track } from 'livekit-client';
+import type { RemoteParticipant } from 'livekit-client';
 import {
   NatsKvUserInfo,
   NatsKvUserInfoSchema,
@@ -51,10 +51,25 @@ export default class HandleParticipants {
   private activeUserTasks: Set<string> = new Set();
   private participantTaskChain: Promise<any> = Promise.resolve();
   private _lastUsersResyncReqAt = 0;
+  // Participant events are dropped until the media connection is established
+  // and the users' list is requested; the list snapshot covers everyone.
+  private _participantsUnlocked = false;
 
   constructor(connectNats: ConnectNats) {
     this.connectNats = connectNats;
   }
+
+  get participantsUnlocked(): boolean {
+    return this._participantsUnlocked;
+  }
+
+  /**
+   * Unlocks participant processing — called once the media connection
+   * is established, right before the users' list is requested.
+   */
+  unlockParticipants = () => {
+    this._participantsUnlocked = true;
+  };
 
   /**
    * Serializes tasks that modify the participant list to prevent race conditions.
@@ -105,12 +120,17 @@ export default class HandleParticipants {
     }
 
     store.dispatch(addCurrentUser(localUser));
+    // add self to participant's store
+    this._addParticipantToStore(info, metadata, true);
     await this.updateParticipantMetadata(info.userId, metadata);
 
     return localUser;
   };
 
   public addRemoteParticipant = (p: string | NatsKvUserInfo) => {
+    if (!this._participantsUnlocked) {
+      return Promise.resolve();
+    }
     let participant: NatsKvUserInfo;
     if (typeof p === 'string') {
       try {
@@ -121,6 +141,12 @@ export default class HandleParticipants {
       }
     } else {
       participant = p;
+    }
+
+    // ignore the echo of our own join event; the local user is prepared
+    // by addLocalParticipantInfo during RES_INITIAL_DATA handling
+    if (participant.userId === this.connectNats.userId) {
+      return Promise.resolve();
     }
 
     return this._runPrimaryUserTask(participant.userId, async () => {
@@ -162,14 +188,23 @@ export default class HandleParticipants {
     }
 
     this.notificationForWaitingUser(metadata, participant.name);
+    this._addParticipantToStore(participant, metadata, false);
+    this.onAfterUserConnectMediaUpdate(participant.userId);
+    return true;
+  }
 
+  private _addParticipantToStore(
+    participant: NatsKvUserInfo,
+    metadata: ICurrentUserMetadata,
+    isLocal: boolean,
+  ) {
     store.dispatch(
       addParticipant({
         sid: participant.userSid,
         userId: participant.userId,
         name: participant.name,
         metadata: metadata,
-        isLocal: false,
+        isLocal: isLocal,
         joinedAt: Number(participant.joinedAt),
         visibility: 'visible',
         audioVolume: store.getState().roomSettings.roomAudioVolume,
@@ -181,9 +216,6 @@ export default class HandleParticipants {
         isOnline: true,
       }),
     );
-
-    this.onAfterUserConnectMediaUpdate(participant.userId);
-    return true;
   }
 
   public handleParticipantMetadataUpdate = (d: string) => {
@@ -266,6 +298,10 @@ export default class HandleParticipants {
    * @param data string
    */
   public handleParticipantDisconnected = (data: string) => {
+    if (!this._participantsUnlocked) {
+      return Promise.resolve();
+    }
+
     let participant: NatsKvUserInfo;
     try {
       participant = fromJsonString(NatsKvUserInfoSchema, data);
@@ -291,6 +327,10 @@ export default class HandleParticipants {
    * @param data string
    */
   public handleParticipantOffline = (data: string) => {
+    if (!this._participantsUnlocked) {
+      return Promise.resolve();
+    }
+
     let p: NatsKvUserInfo;
     try {
       p = fromJsonString(NatsKvUserInfoSchema, data);
@@ -476,19 +516,13 @@ export default class HandleParticipants {
     if (!mediaConn.room) {
       return;
     }
-    const participant = mediaConn.room.getParticipantByIdentity(toLiveKitUserId(userId));
+
+    const participant = mediaConn.room.getParticipantByIdentity(toLiveKitUserId(userId)) as
+      | RemoteParticipant
+      | undefined;
+
     if (participant) {
-      participant.trackPublications.forEach((track) => {
-        if (
-          track.source === Track.Source.ScreenShare ||
-          track.source === Track.Source.ScreenShareAudio
-        ) {
-          mediaConn.addScreenShareTrack(participant.identity, track as RemoteTrackPublication);
-        } else {
-          mediaConn.addVideoSubscriber(participant);
-          mediaConn.addAudioSubscriber(participant);
-        }
-      });
+      mediaConn.registerExistingTracksForParticipant(participant);
     }
   }
 }

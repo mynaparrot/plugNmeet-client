@@ -26,13 +26,15 @@ export interface IConnectLivekit extends EventEmitter {
   get videoSubscribersMap(): Map<string, Participant | LocalParticipant | RemoteParticipant>;
   get audioSubscribersMap(): Map<string, RemoteParticipant>;
   get screenShareTracksMap(): Map<string, Array<LocalTrackPublication | RemoteTrackPublication>>;
-  initializeConnection(serverInfo: MediaServerConnInfo): Promise<void>;
+  initializeConnection(serverInfo: MediaServerConnInfo): Promise<boolean>;
   disconnectRoom(normalDisconnect: boolean): Promise<void>;
   setErrorStatus(title: string, reason: string): void;
   addAudioSubscriber(participant: Participant | LocalParticipant | RemoteParticipant): void;
   removeAudioSubscriber(userId: string): void;
   addVideoSubscriber(participant: Participant | LocalParticipant | RemoteParticipant): void;
   removeVideoSubscriber(userId: string): void;
+  registerExistingTracksForParticipant(participant: RemoteParticipant): void;
+  registerAllExistingTracks(): void;
   addScreenShareTrack(userId: string, track: LocalTrackPublication | RemoteTrackPublication): void;
   removeScreenShareTrack(userId: string): void;
   getVideoSubscriberParticipant(

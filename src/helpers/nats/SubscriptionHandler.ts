@@ -423,6 +423,11 @@ export default class SubscriptionHandler {
   }
 
   private async handleJoinedUsersList(msg: string) {
+    // drop stale redelivered chunks from before the media connection
+    // was established — the fresh list is requested after the unlock
+    if (!this._handleParticipants.participantsUnlocked) {
+      return;
+    }
     try {
       const envelope = JSON.parse(msg) as {
         chunk: number;
@@ -464,12 +469,9 @@ export default class SubscriptionHandler {
     // lifecycle even if the notepad is never opened.
     getNotepadController();
 
-    // Request for media server connection data
-    this.connectNats.sendMessageToSystemWorker(
-      create(NatsMsgClientToServerSchema, {
-        event: NatsMsgClientToServerEvents.REQ_MEDIA_SERVER_DATA,
-      }),
-    );
+    // First-time registration of all existing media tracks: the users list is
+    // now complete and the media room is connected, so registration guards pass.
+    this.connectNats.mediaServerConn?.registerAllExistingTracks();
 
     // Restore user data from IndexedDB to maintain state across sessions.
     try {
@@ -551,6 +553,9 @@ export default class SubscriptionHandler {
     }
 
     this.connectNats.startUsersSync();
+
+    // Everything is prepared — the landing can now enter the room.
+    this.connectNats.setRoomConnectionStatusState('room-ready');
   }
 
   /**
@@ -561,7 +566,17 @@ export default class SubscriptionHandler {
     try {
       const serverInfo = fromJsonString(MediaServerConnInfoSchema, msg);
       if (this.connectNats.mediaServerConn) {
-        await this.connectNats.mediaServerConn.initializeConnection(serverInfo);
+        const connected = await this.connectNats.mediaServerConn.initializeConnection(serverInfo);
+        if (connected) {
+          // unlock before requesting the users' list
+          this._handleParticipants.unlockParticipants();
+
+          this.connectNats.sendMessageToSystemWorker(
+            create(NatsMsgClientToServerSchema, {
+              event: NatsMsgClientToServerEvents.REQ_JOINED_USERS_LIST,
+            }),
+          );
+        }
       }
     } catch (e: any) {
       console.error(e);
