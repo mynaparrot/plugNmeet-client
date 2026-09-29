@@ -332,7 +332,8 @@
     "new-messages": "Pesan baru",
     "scroll-to-bottom": "Gulir ke bawah",
     "sync-chat": "Sinkronkan obrolan dengan rekan sesama",
-    "load-earlier-messages": "Muat pesan sebelumnya"
+    "load-earlier-messages": "Muat pesan sebelumnya",
+    "system-name": "Sistem"
   },
   "footer": {
     "aria-label": "Kontrol rapat",
