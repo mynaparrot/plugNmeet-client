@@ -42,7 +42,24 @@
         "jsx-a11y/control-has-associated-label": "warn",
         "jsx-a11y/media-has-caption": "off",
         "jsx-a11y/no-noninteractive-tabindex": "off",
-        "jsx-a11y/prefer-tag-over-role": "off"
+        "jsx-a11y/prefer-tag-over-role": "off",
+        "react/error-boundaries": "off",
+        "react/globals": "off",
+        "react/immutability": "off",
+        "react/incompatible-library": "off",
+        "react/preserve-manual-memoization": "off",
+        "react/purity": "off",
+        "react/refs": "off",
+        "react/set-state-in-effect": "off",
+        "react/set-state-in-render": "off",
+        "react/static-components": "off",
+        "react/use-memo": "off",
+        "react/void-use-memo": "off",
+        "react/no-deriving-state-in-effects": "off",
+        "react/capitalized-calls": "off",
+        "react/exhaustive-effect-dependencies": "off",
+        "react/hooks": "off",
+        "react/memo-dependencies": "off"
       }
     }
   ]
