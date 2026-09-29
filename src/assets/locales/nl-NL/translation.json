@@ -332,7 +332,8 @@
     "new-messages": "Nieuwe berichten",
     "scroll-to-bottom": "Scroll naar beneden",
     "sync-chat": "Synchroniseer chat met peers",
-    "load-earlier-messages": "Laad eerdere berichten"
+    "load-earlier-messages": "Laad eerdere berichten",
+    "system-name": "Systeem"
   },
   "footer": {
     "aria-label": "Vergadercontroles",
