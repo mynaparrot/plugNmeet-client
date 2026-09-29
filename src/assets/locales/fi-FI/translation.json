@@ -332,7 +332,8 @@
     "new-messages": "Uudet viestit",
     "scroll-to-bottom": "Selaa alas",
     "sync-chat": "Synkronoi chat vertaisten kanssa",
-    "load-earlier-messages": "Lataa aikaisempia viestejä"
+    "load-earlier-messages": "Lataa aikaisempia viestejä",
+    "system-name": "Järjestelmä"
   },
   "footer": {
     "aria-label": "Kokousten ohjaus",
