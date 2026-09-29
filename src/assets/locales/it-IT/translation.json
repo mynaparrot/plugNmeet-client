@@ -332,7 +332,8 @@
     "new-messages": "Nuovi messaggi",
     "scroll-to-bottom": "Scorri fino in fondo",
     "sync-chat": "Chat sincronizzata con i colleghi",
-    "load-earlier-messages": "Carica i messaggi precedenti"
+    "load-earlier-messages": "Carica i messaggi precedenti",
+    "system-name": "Sistema"
   },
   "footer": {
     "aria-label": "Controlli delle riunioni",
