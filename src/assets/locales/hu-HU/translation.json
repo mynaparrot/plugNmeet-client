@@ -332,7 +332,8 @@
     "new-messages": "Új üzenetek",
     "scroll-to-bottom": "Görgess le az alulra",
     "sync-chat": "Szinkronizált chat társakkal",
-    "load-earlier-messages": "Korábbi üzenetek betöltése"
+    "load-earlier-messages": "Korábbi üzenetek betöltése",
+    "system-name": "Rendszer"
   },
   "footer": {
     "aria-label": "Találkozók vezérlése",
