@@ -332,7 +332,8 @@
     "new-messages": "Nowe wiadomości",
     "scroll-to-bottom": "Przewiń na dół",
     "sync-chat": "Synchronizuj czat z rówieśnikami",
-    "load-earlier-messages": "Załaduj wcześniejsze wiadomości"
+    "load-earlier-messages": "Załaduj wcześniejsze wiadomości",
+    "system-name": "System"
   },
   "footer": {
     "aria-label": "Kontrola spotkań",
