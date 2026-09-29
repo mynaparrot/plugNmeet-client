@@ -332,7 +332,8 @@
     "new-messages": "Nouveaux messages",
     "scroll-to-bottom": "Défiler jusqu’en bas",
     "sync-chat": "Synchronisez le chat avec vos pairs",
-    "load-earlier-messages": "Charger les messages précédents"
+    "load-earlier-messages": "Charger les messages précédents",
+    "system-name": "Système"
   },
   "footer": {
     "aria-label": "Contrôles de réunion",
