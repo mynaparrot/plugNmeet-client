@@ -29,12 +29,10 @@ const ChatComponent = () => {
     (state) => state.session.currentUser?.metadata?.lockSettings?.lockChat,
   );
   const isLockChatSendMessage = useAppSelector(
-    (state) =>
-      state.session.currentUser?.metadata?.lockSettings?.lockChatSendMessage,
+    (state) => state.session.currentUser?.metadata?.lockSettings?.lockChatSendMessage,
   );
   const isLockChatFileShare = useAppSelector(
-    (state) =>
-      state.session.currentUser?.metadata?.lockSettings?.lockChatFileShare,
+    (state) => state.session.currentUser?.metadata?.lockSettings?.lockChatFileShare,
   );
   const defaultLockSettings = useAppSelector(
     (state) => state.session.currentRoom.metadata?.defaultLockSettings,
@@ -65,13 +63,7 @@ const ChatComponent = () => {
 
     // A non-admin can chat if neither the chat feature nor message sending is locked.
     return !finalChatLockStatus && !finalMsgSendLockStatus;
-  }, [
-    isRecorder,
-    isAdmin,
-    isChatLocked,
-    isLockChatSendMessage,
-    defaultLockSettings,
-  ]);
+  }, [isRecorder, isAdmin, isChatLocked, isLockChatSendMessage, defaultLockSettings]);
 
   const handleOnDrop = (e: DragEvent) => {
     e.preventDefault();
@@ -89,14 +81,13 @@ const ChatComponent = () => {
           RoomUploadedFileType.CHAT_FILE,
           files,
           (result) => {
-            publishFileAttachmentToChat(result.filePath, result.fileName).then(
-              () =>
-                dispatch(
-                  addUserNotification({
-                    message: t('right-panel.file-upload-success'),
-                    typeOption: 'success',
-                  }),
-                ),
+            publishFileAttachmentToChat(result.filePath, result.fileName).then(() =>
+              dispatch(
+                addUserNotification({
+                  message: t('right-panel.file-upload-success'),
+                  typeOption: 'success',
+                }),
+              ),
             );
           },
         );

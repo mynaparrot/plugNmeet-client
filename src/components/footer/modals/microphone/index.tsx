@@ -52,10 +52,7 @@ const MicrophoneModal = ({
           >
             {t('cancel')}
           </button>
-          <ActionButton
-            onClick={() => selectOrClose(false)}
-            disabled={!selectedMic}
-          >
+          <ActionButton onClick={() => selectOrClose(false)} disabled={!selectedMic}>
             {mode === 'select' ? t('save') : t('share')}
           </ActionButton>
         </div>

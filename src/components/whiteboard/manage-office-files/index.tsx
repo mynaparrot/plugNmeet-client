@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import { debounce } from 'es-toolkit';
@@ -40,39 +34,33 @@ const ManageOfficeFilesModal = ({
   const dispatch = useAppDispatch();
   const [refresh, setRefresh] = useState(0);
 
-  const { allowedFileTypes, maxAllowedFileSize, officeFileTypes } =
-    useMemo(() => {
-      const maxAllowedFileSize =
-        store.getState().session.currentRoom.metadata?.roomFeatures
-          ?.whiteboardFeatures?.maxAllowedFileSize ?? '30';
-      // prettier-ignore
-      const allowedFileTypes: string[] = ['pdf', 'docx', 'doc', 'odt', 'txt', 'rtf', 'xml', 'xlsx', 'xls', 'ods', 'csv', 'pptx', 'ppt', 'odp', 'vsd', 'odg', 'html'];
-      const officeFileTypes = allowedFileTypes
-        .map((ext) => '.' + ext)
-        .join(',');
-      return {
-        maxAllowedFileSize,
-        allowedFileTypes,
-        officeFileTypes,
-      };
-    }, []);
+  const { allowedFileTypes, maxAllowedFileSize, officeFileTypes } = useMemo(() => {
+    const maxAllowedFileSize =
+      store.getState().session.currentRoom.metadata?.roomFeatures?.whiteboardFeatures
+        ?.maxAllowedFileSize ?? '30';
+    // oxfmt-ignore
+    const allowedFileTypes: string[] = ['pdf', 'docx', 'doc', 'odt', 'txt', 'rtf', 'xml', 'xlsx', 'xls', 'ods', 'csv', 'pptx', 'ppt', 'odp', 'vsd', 'odg', 'html'];
+    const officeFileTypes = allowedFileTypes.map((ext) => '.' + ext).join(',');
+    return {
+      maxAllowedFileSize,
+      allowedFileTypes,
+      officeFileTypes,
+    };
+  }, []);
 
   const inputFile = useRef<HTMLInputElement>(null);
   const [fileToUpload, setFileToUpload] = useState<File | undefined>(undefined);
-  const [selectedOfficeFile, setSelectedOfficeFile] = useState<
-    IWhiteboardOfficeFile | undefined
-  >(undefined);
+  const [selectedOfficeFile, setSelectedOfficeFile] = useState<IWhiteboardOfficeFile | undefined>(
+    undefined,
+  );
   const [disableUploading, setDisableUploading] = useState<boolean>(false);
 
-  const handleFileChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const selectedFiles = e.target.files ? Array.from(e.target.files) : [];
-      if (selectedFiles.length) {
-        setFileToUpload(selectedFiles[0]);
-      }
-    },
-    [],
-  );
+  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = e.target.files ? Array.from(e.target.files) : [];
+    if (selectedFiles.length) {
+      setFileToUpload(selectedFiles[0]);
+    }
+  }, []);
 
   const onUploadFinished = useCallback(() => {
     if (inputFile.current) {
@@ -174,9 +162,7 @@ const ManageOfficeFilesModal = ({
                   </p>
                   <div className="divider flex justify-center items-center gap-3 py-3">
                     <span className="line inline-block h-[1px] w-20 bg-Gray-200 dark:bg-Gray-700"></span>
-                    <span className="text-Gray-600 dark:text-dark-text">
-                      {t('whiteboard.or')}
-                    </span>
+                    <span className="text-Gray-600 dark:text-dark-text">{t('whiteboard.or')}</span>
                     <span className="line inline-block h-[1px] w-20 bg-Gray-200 dark:bg-Gray-700"></span>
                   </div>
                   <button className="h-9 w-auto m-auto px-4 flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-Gray-950 dark:text-white bg-Gray-25 dark:bg-dark-secondary2 border border-Gray-300 dark:border-Gray-700 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow dark:shadow-none cursor-pointer">

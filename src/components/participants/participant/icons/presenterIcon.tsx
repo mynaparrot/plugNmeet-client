@@ -10,8 +10,7 @@ interface IPresenterIconProps {
 
 const PresenterIcon = ({ userId }: IPresenterIconProps) => {
   const isPresenter = useAppSelector(
-    (state) =>
-      participantsSelector.selectById(state, userId)?.metadata.isPresenter,
+    (state) => participantsSelector.selectById(state, userId)?.metadata.isPresenter,
   );
 
   return (

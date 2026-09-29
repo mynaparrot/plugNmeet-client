@@ -9,10 +9,7 @@ export const PIP_WINDOW_WIDTH = 280;
 
 export type DocumentPictureInPictureWindow = Window & {
   documentPictureInPicture?: {
-    requestWindow: (options: {
-      width: number;
-      height: number;
-    }) => Promise<Window>;
+    requestWindow: (options: { width: number; height: number }) => Promise<Window>;
   };
 };
 
@@ -23,9 +20,7 @@ export interface IPipItem {
   isCameraMuted: boolean;
 }
 
-export const getPipItems = (
-  allParticipants: ReactElement<VideoParticipantProps>[],
-): IPipItem[] => {
+export const getPipItems = (allParticipants: ReactElement<VideoParticipantProps>[]): IPipItem[] => {
   const items: IPipItem[] = [];
 
   for (const participantElement of allParticipants) {

@@ -32,15 +32,11 @@ const App = () => {
   const [loading, setLoading] = useState<boolean>(true);
   // it could be recorder or RTMP bot
   const [userTypeClass, setUserTypeClass] = useState('participant');
-  const [currentMediaServerConn, setCurrentMediaServerConn] =
-    useState<IConnectLivekit>();
+  const [currentMediaServerConn, setCurrentMediaServerConn] = useState<IConnectLivekit>();
 
   const [error, setError] = useState<IErrorPageProps | undefined>();
-  const [roomConnectionStatus, setRoomConnectionStatus] =
-    useState<roomConnectionStatus>('loading');
-  const [openConnInfo, setOpenConnInfo] = useState<InfoToOpenConn | undefined>(
-    undefined,
-  );
+  const [roomConnectionStatus, setRoomConnectionStatus] = useState<roomConnectionStatus>('loading');
+  const [openConnInfo, setOpenConnInfo] = useState<InfoToOpenConn | undefined>(undefined);
   const [openConn, setOpenConn] = useState<boolean>(false);
   const [isAppReady, setIsAppReady] = useState<boolean>(false);
 
@@ -48,9 +44,7 @@ const App = () => {
   // to handle different customization
   useClientCustomization();
   useWatchVisibilityChange();
-  const { deviceClass, orientationClass } = useWatchWindowSize(
-    currentMediaServerConn?.room,
-  );
+  const { deviceClass, orientationClass } = useWatchWindowSize(currentMediaServerConn?.room);
   useThemeSettings();
 
   useEffect(() => {
@@ -84,13 +78,7 @@ const App = () => {
   }, [i18n, i18n.language]);
 
   useEffect(() => {
-    void verifyToken(
-      setLoading,
-      setError,
-      setOpenConnInfo,
-      setRoomConnectionStatus,
-      setOpenConn,
-    );
+    void verifyToken(setLoading, setError, setOpenConnInfo, setRoomConnectionStatus, setOpenConn);
   }, []);
 
   useEffect(() => {
@@ -152,12 +140,7 @@ const App = () => {
     }
 
     if (!isAppReady) {
-      return (
-        <Landing
-          setIsAppReady={setIsAppReady}
-          roomConnectionStatus={roomConnectionStatus}
-        />
-      );
+      return <Landing setIsAppReady={setIsAppReady} roomConnectionStatus={roomConnectionStatus} />;
     }
 
     return (

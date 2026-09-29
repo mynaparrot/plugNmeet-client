@@ -5,9 +5,7 @@ import SharedNotepadElement from '../../shared-notepad';
 
 export const useSharedNotepad = () => {
   const isActiveSharedNotepad = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures
-        ?.isActive,
+    (state) => state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures?.isActive,
   );
 
   return useMemo(() => {

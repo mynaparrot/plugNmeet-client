@@ -1,10 +1,6 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit';
 
-import {
-  addReaction,
-  removeReaction,
-  REACTION_TTL_MS,
-} from '../slices/reactionsSlice';
+import { addReaction, removeReaction, REACTION_TTL_MS } from '../slices/reactionsSlice';
 
 export const reactionsListener = createListenerMiddleware();
 

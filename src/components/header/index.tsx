@@ -20,9 +20,7 @@ import BackToMainBtn from '../breakout-room/backToMainBtn';
 import { APP_LAYOUT_CLASSES } from '../../helpers/dimensions';
 
 const Header = () => {
-  const roomTitle = useAppSelector(
-    (state) => state.session.currentRoom.metadata?.roomTitle,
-  );
+  const roomTitle = useAppSelector((state) => state.session.currentRoom.metadata?.roomTitle);
   const isRecorder = store.getState().session.currentUser?.isRecorder;
 
   const { t } = useTranslation();

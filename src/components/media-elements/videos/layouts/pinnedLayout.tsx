@@ -26,9 +26,7 @@ const PinnedLayout = ({
 }: IPinnedLayoutProps) => {
   return (
     <>
-      <div className="pinView-camera-fullWidth w-full h-full p-4">
-        {pinParticipant}
-      </div>
+      <div className="pinView-camera-fullWidth w-full h-full p-4">{pinParticipant}</div>
       <VerticalLayout
         pipParticipants={pipParticipants}
         participantsToRender={participantsToRender}

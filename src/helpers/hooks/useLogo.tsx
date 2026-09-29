@@ -11,25 +11,13 @@ interface CustomLogo {
 const useLogo = () => {
   const theme = useAppSelector((state) => state.roomSettings.theme);
 
-  const assetPath = getConfigValue(
-    'staticAssetsPath',
-    './assets',
-    'STATIC_ASSETS_PATH',
-  );
+  const assetPath = getConfigValue('staticAssetsPath', './assets', 'STATIC_ASSETS_PATH');
 
-  const [logo, setLogo] = useState<string>(
-    `${assetPath}/imgs/main-logo-light.png`,
-  );
-  const [darkLogo, setDarkLogo] = useState<string>(
-    `${assetPath}/imgs/main-logo-dark.png`,
-  );
+  const [logo, setLogo] = useState<string>(`${assetPath}/imgs/main-logo-light.png`);
+  const [darkLogo, setDarkLogo] = useState<string>(`${assetPath}/imgs/main-logo-dark.png`);
 
   useEffect(() => {
-    const customLogo = getConfigValue<string | CustomLogo>(
-      'customLogo',
-      '',
-      'CUSTOM_LOGO',
-    );
+    const customLogo = getConfigValue<string | CustomLogo>('customLogo', '', 'CUSTOM_LOGO');
 
     if (!customLogo) {
       return;
@@ -46,18 +34,12 @@ const useLogo = () => {
     }
 
     // Set light logo
-    if (
-      customLogo.main_logo_light &&
-      isValidHttpUrl(customLogo.main_logo_light)
-    ) {
+    if (customLogo.main_logo_light && isValidHttpUrl(customLogo.main_logo_light)) {
       setLogo(customLogo.main_logo_light);
     }
 
     // Set dark logo
-    if (
-      customLogo.main_logo_dark &&
-      isValidHttpUrl(customLogo.main_logo_dark)
-    ) {
+    if (customLogo.main_logo_dark && isValidHttpUrl(customLogo.main_logo_dark)) {
       setDarkLogo(customLogo.main_logo_dark);
     }
   }, []);

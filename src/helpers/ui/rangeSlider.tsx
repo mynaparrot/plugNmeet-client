@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-  useMemo,
-} from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { throttle } from 'es-toolkit';
 
@@ -119,8 +113,7 @@ const RangeSlider = ({
           e.preventDefault();
           newValue = Math.min(
             max,
-            value +
-              (i18n.dir() === 'rtl' && e.key === 'ArrowRight' ? -step : step),
+            value + (i18n.dir() === 'rtl' && e.key === 'ArrowRight' ? -step : step),
           );
           break;
         case 'ArrowLeft':
@@ -128,8 +121,7 @@ const RangeSlider = ({
           e.preventDefault();
           newValue = Math.max(
             min,
-            value -
-              (i18n.dir() === 'rtl' && e.key === 'ArrowLeft' ? -step : step),
+            value - (i18n.dir() === 'rtl' && e.key === 'ArrowLeft' ? -step : step),
           );
           break;
         case 'Home':

@@ -105,8 +105,7 @@ export interface UserNotification {
   disablePersistentStorage?: boolean;
 }
 
-export type NotificationCats =
-  'new-poll-created' | 'breakout-room-invitation' | 'default';
+export type NotificationCats = 'new-poll-created' | 'breakout-room-invitation' | 'default';
 
 export interface IMaxNumDisplayWebcams {
   desktop: number;

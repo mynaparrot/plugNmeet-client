@@ -1,9 +1,5 @@
 import { useCallback, useRef } from 'react';
-import {
-  createLocalVideoTrack,
-  LocalTrackPublication,
-  Track,
-} from 'livekit-client';
+import { createLocalVideoTrack, LocalTrackPublication, Track } from 'livekit-client';
 
 import { useAppDispatch } from '../../../../store';
 import { getMediaServerConnRoom } from '../../../../helpers/livekit/utils';

@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CheckMarkIcon } from '../../../../assets/Icons/CheckMarkIcon';
@@ -74,8 +68,7 @@ const AudioDevicePicker = ({
       let stored: string | null = null;
       try {
         stored =
-          sessionStorage.getItem(DeviceSessionStorageKeys.AUDIO_DEVICE) ??
-          getStoredAudioDeviceId();
+          sessionStorage.getItem(DeviceSessionStorageKeys.AUDIO_DEVICE) ?? getStoredAudioDeviceId();
       } catch {
         stored = getStoredAudioDeviceId();
       }
@@ -165,14 +158,9 @@ const AudioDevicePicker = ({
           <div className="h-4 w-20 animate-pulse rounded bg-Gray-100 dark:bg-Gray-800" />
         </div>
         {[0, 1].map((i) => (
-          <div
-            key={i}
-            className="h-[52px] animate-pulse rounded-xl bg-Gray-100 dark:bg-Gray-800"
-          />
+          <div key={i} className="h-[52px] animate-pulse rounded-xl bg-Gray-100 dark:bg-Gray-800" />
         ))}
-        <p className="text-xs text-Gray-500 dark:text-Gray-400">
-          {t('footer.modal.mic-loading')}
-        </p>
+        <p className="text-xs text-Gray-500 dark:text-Gray-400">{t('footer.modal.mic-loading')}</p>
       </div>
     );
   }

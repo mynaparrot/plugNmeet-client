@@ -97,10 +97,7 @@ class IDBManager {
    * @param key The key of the value to retrieve.
    * @returns The value, or undefined if not found.
    */
-  public get = async <T>(
-    storeName: IDBStoreName,
-    key: string,
-  ): Promise<T | undefined> => {
+  public get = async <T>(storeName: IDBStoreName, key: string): Promise<T | undefined> => {
     if (!this.isDbActive) {
       return;
     }
@@ -132,9 +129,7 @@ class IDBManager {
    * @param storeName The name of the object store.
    * @returns An array of all keys in the store.
    */
-  public getAllKeys = async (
-    storeName: IDBStoreName,
-  ): Promise<IDBValidKey[]> => {
+  public getAllKeys = async (storeName: IDBStoreName): Promise<IDBValidKey[]> => {
     if (!this.isDbActive) {
       return [];
     }
@@ -184,9 +179,7 @@ class IDBManager {
    */
   private getDb(): Promise<IDBPDatabase> {
     if (!this.dbPromise) {
-      throw new Error(
-        'IndexedDB has not been initialized. Call initIDB() first.',
-      );
+      throw new Error('IndexedDB has not been initialized. Call initIDB() first.');
     }
     return this.dbPromise;
   }
@@ -231,10 +224,7 @@ class IDBManager {
         const lastAccessed = await db.get(storeName, 'lastAccessed');
         db.close();
 
-        if (
-          typeof lastAccessed !== 'number' ||
-          now - lastAccessed > DB_MAX_AGE_MS
-        ) {
+        if (typeof lastAccessed !== 'number' || now - lastAccessed > DB_MAX_AGE_MS) {
           console.log(`Deleting stale IndexedDB: ${name}`);
           await deleteDB(name);
         }
@@ -256,12 +246,4 @@ const idbGetAllKeys = idbManager.getAllKeys;
 const idbDel = idbManager.del;
 const deleteRoomDB = idbManager.deleteDB;
 
-export {
-  initIDB,
-  idbStore,
-  idbGet,
-  idbGetAll,
-  idbGetAllKeys,
-  idbDel,
-  deleteRoomDB,
-};
+export { initIDB, idbStore, idbGet, idbGetAll, idbGetAllKeys, idbDel, deleteRoomDB };

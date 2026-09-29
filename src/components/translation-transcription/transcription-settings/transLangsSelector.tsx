@@ -22,8 +22,7 @@ const TransLangsSelector = ({
   maxLangsAllowSelecting,
 }: TransLangsSelectorProps) => {
   const { t } = useTranslation();
-  const [selectedItems, setSelectedItems] =
-    useState<string[]>(selectedTransLangs);
+  const [selectedItems, setSelectedItems] = useState<string[]>(selectedTransLangs);
   const [selectOptions, setSelectOptions] = useState<ISelectOption[]>([]);
 
   useEffect(() => {
@@ -39,13 +38,7 @@ const TransLangsSelector = ({
       return;
     }
     setSelectedTransLangs(selectedItems);
-  }, [
-    setErrorMsg,
-    selectedItems,
-    maxLangsAllowSelecting,
-    setSelectedTransLangs,
-    t,
-  ]);
+  }, [setErrorMsg, selectedItems, maxLangsAllowSelecting, setSelectedTransLangs, t]);
 
   useEffect(() => {
     supportedTranslationLangs().then((langs) => setSelectOptions(langs));

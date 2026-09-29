@@ -1,9 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  CommonResponseSchema,
-  UpdateWaitingRoomMessageReqSchema,
-} from 'plugnmeet-protocol-js';
+import { CommonResponseSchema, UpdateWaitingRoomMessageReqSchema } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -21,8 +18,7 @@ const UpdateRoomMessage = () => {
   const dispatch = useAppDispatch();
   const waitingRoomMessage = useAppSelector(
     (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.waitingRoomFeatures
-        ?.waitingRoomMsg,
+      state.session.currentRoom.metadata?.roomFeatures?.waitingRoomFeatures?.waitingRoomMsg,
   );
   const [message, setMessage] = useState<string>(waitingRoomMessage ?? '');
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
@@ -124,9 +120,7 @@ const UpdateRoomMessage = () => {
           disabled={isUpdating || message === ''}
           className="primary-button focus-ring h-9 cursor-pointer px-5 text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isUpdating && (
-            <LoadingIcon className="w-4 h-4 animate-spin" fillColor="#fff" />
-          )}
+          {isUpdating && <LoadingIcon className="w-4 h-4 animate-spin" fillColor="#fff" />}
           {t('waiting-room.update-msg')}
         </button>
       </div>

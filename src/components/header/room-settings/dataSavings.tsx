@@ -18,27 +18,17 @@ import { getConfigValue } from '../../../helpers/utils';
 const DataSavings = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const videoQuality = useAppSelector(
-    (state) => state.roomSettings.roomVideoQuality,
-  );
-  const activateWebcamsView = useAppSelector(
-    (state) => state.roomSettings.activateWebcamsView,
-  );
+  const videoQuality = useAppSelector((state) => state.roomSettings.roomVideoQuality);
+  const activateWebcamsView = useAppSelector((state) => state.roomSettings.activateWebcamsView);
   const activeScreenSharingView = useAppSelector(
     (state) => state.roomSettings.activeScreenSharingView,
   );
-  const userDeviceType = useAppSelector(
-    (state) => state.session.userDeviceType,
-  );
-  const maxNumDisplayWebcams = useAppSelector(
-    (state) => state.roomSettings.maxNumDisplayWebcams,
-  );
+  const userDeviceType = useAppSelector((state) => state.session.userDeviceType);
+  const maxNumDisplayWebcams = useAppSelector((state) => state.roomSettings.maxNumDisplayWebcams);
   const [numWebcamsOpts, setNumWebcamsOpts] = useState<ISelectOption[]>([]);
 
   useEffect(() => {
-    const configMaxNumWebcams = getConfigValue<IMaxNumDisplayWebcams>(
-      'maxNumDisplayWebcams',
-    );
+    const configMaxNumWebcams = getConfigValue<IMaxNumDisplayWebcams>('maxNumDisplayWebcams');
 
     let allOpts: ISelectOption[];
     let configMax: number;
@@ -73,9 +63,7 @@ const DataSavings = () => {
         break;
     }
 
-    const filteredOpts = allOpts.filter(
-      (opt) => (opt.value as number) <= configMax,
-    );
+    const filteredOpts = allOpts.filter((opt) => (opt.value as number) <= configMax);
 
     if (configMax && !filteredOpts.find((o) => o.value === configMax)) {
       filteredOpts.push({

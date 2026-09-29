@@ -1,9 +1,5 @@
 import React, { ReactElement, useEffect, useMemo, useState } from 'react';
-import {
-  LocalParticipant,
-  RemoteAudioTrack,
-  RemoteParticipant,
-} from 'livekit-client';
+import { LocalParticipant, RemoteAudioTrack, RemoteParticipant } from 'livekit-client';
 
 import AudioElm from './audio';
 import { CurrentConnectionEvents } from '../../../helpers/livekit/types';
@@ -20,15 +16,9 @@ const AudioElements = () => {
     if (currentConnection.audioSubscribersMap.size) {
       setAudioSubscribers(currentConnection.audioSubscribersMap);
     }
-    currentConnection.on(
-      CurrentConnectionEvents.AudioSubscribers,
-      setAudioSubscribers,
-    );
+    currentConnection.on(CurrentConnectionEvents.AudioSubscribers, setAudioSubscribers);
     return () => {
-      currentConnection.off(
-        CurrentConnectionEvents.AudioSubscribers,
-        setAudioSubscribers,
-      );
+      currentConnection.off(CurrentConnectionEvents.AudioSubscribers, setAudioSubscribers);
     };
   }, [currentConnection]);
 

@@ -9,9 +9,7 @@ interface IPipVideoTrackProps {
 
 const PipVideoTrack = ({ videoTrack, name }: IPipVideoTrackProps) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [isCameraMuted, setIsCameraMuted] = useState(
-    () => videoTrack?.isMuted ?? true,
-  );
+  const [isCameraMuted, setIsCameraMuted] = useState(() => videoTrack?.isMuted ?? true);
 
   useEffect(() => {
     if (!videoTrack) {
@@ -54,14 +52,7 @@ const PipVideoTrack = ({ videoTrack, name }: IPipVideoTrackProps) => {
   }
 
   return (
-    <video
-      ref={videoRef}
-      title={name}
-      className="pip-video-item"
-      autoPlay
-      playsInline
-      muted
-    />
+    <video ref={videoRef} title={name} className="pip-video-item" autoPlay playsInline muted />
   );
 };
 

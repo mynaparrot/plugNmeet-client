@@ -10,17 +10,13 @@ interface UsersSelectorProps {
   setSelectedUsers: Dispatch<Array<string>>;
 }
 
-const UsersSelector = ({
-  selectedUsers,
-  setSelectedUsers,
-}: UsersSelectorProps) => {
+const UsersSelector = ({ selectedUsers, setSelectedUsers }: UsersSelectorProps) => {
   const { t } = useTranslation();
   const participants = useAppSelector(selectBasicParticipants);
 
   return useMemo(() => {
     const users = participants.filter(
-      (p) =>
-        p.name !== '' && p.userId !== 'RECORDER_BOT' && p.userId !== 'RTMP_BOT',
+      (p) => p.name !== '' && p.userId !== 'RECORDER_BOT' && p.userId !== 'RTMP_BOT',
     );
 
     const userOptions: ISelectOption[] = users.map((u) => ({

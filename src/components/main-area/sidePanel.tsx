@@ -40,9 +40,7 @@ const SidePanel = ({
       enter="transform transition ease-in-out duration-300"
       enterFrom="translate-y-full md:translate-y-0 md:ltr:translate-x-full md:rtl:-translate-x-full"
       enterTo="translate-y-0 md:translate-x-0"
-      leave={
-        instantLeave ? '' : 'transform transition ease-in-out duration-300'
-      }
+      leave={instantLeave ? '' : 'transform transition ease-in-out duration-300'}
       leaveFrom={instantLeave ? '' : 'translate-y-0 md:translate-x-0'}
       leaveTo={
         instantLeave

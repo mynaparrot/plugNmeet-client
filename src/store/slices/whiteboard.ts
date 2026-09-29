@@ -32,10 +32,7 @@ const whiteboardSlice = createSlice({
   name: 'whiteboard',
   initialState,
   reducers: {
-    updateMouseAppStateChanges: (
-      state,
-      action: PayloadAction<IWhiteboardAppState>,
-    ) => {
+    updateMouseAppStateChanges: (state, action: PayloadAction<IWhiteboardAppState>) => {
       state.whiteboardAppState = action.payload;
     },
     setWhiteboardCurrentPage: (state, action: PayloadAction<number>) => {
@@ -47,9 +44,7 @@ const whiteboardSlice = createSlice({
     ) => {
       const { fileId, page } = action.payload;
 
-      const file = state.whiteboardUploadedOfficeFiles.find(
-        (f) => f.fileId === fileId,
-      );
+      const file = state.whiteboardUploadedOfficeFiles.find((f) => f.fileId === fileId);
       if (file) {
         state.totalPages = file.totalPages;
         state.currentOfficeFilePages = file.pageFiles;
@@ -79,10 +74,7 @@ const whiteboardSlice = createSlice({
         }
       }
     },
-    addWhiteboardUploadedOfficeFile: (
-      state,
-      action: PayloadAction<IWhiteboardOfficeFile>,
-    ) => {
+    addWhiteboardUploadedOfficeFile: (state, action: PayloadAction<IWhiteboardOfficeFile>) => {
       if (action.payload.fileId === '' || action.payload.totalPages == 0) {
         return;
       }
@@ -109,12 +101,8 @@ const whiteboardSlice = createSlice({
     triggerRefreshWhiteboardFilesListSignal: (state) => {
       state.refreshWhiteboardFilesListSignal = Date.now();
     },
-    addWhiteboardDataSentFromDonor: (
-      state,
-      action: PayloadAction<WhiteboardDataAsDonorData>,
-    ) => {
-      state.currentWhiteboardOfficeFileId =
-        action.payload.currentWhiteboardOfficeFileId;
+    addWhiteboardDataSentFromDonor: (state, action: PayloadAction<WhiteboardDataAsDonorData>) => {
+      state.currentWhiteboardOfficeFileId = action.payload.currentWhiteboardOfficeFileId;
       state.currentPage = action.payload.currentPageNumber;
       state.currentOfficeFilePages = action.payload.currentOfficeFilePages;
 

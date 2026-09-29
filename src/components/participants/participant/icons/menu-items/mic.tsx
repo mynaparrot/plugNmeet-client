@@ -24,9 +24,7 @@ const MicMenuItem = ({ userId }: IMicMenuItemProps) => {
   const isMuted = useAppSelector(
     (state) => participantsSelector.selectById(state, userId)?.isMuted,
   );
-  const name = useAppSelector(
-    (state) => participantsSelector.selectById(state, userId)?.name,
-  );
+  const name = useAppSelector((state) => participantsSelector.selectById(state, userId)?.name);
   const session = store.getState().session;
   const { t } = useTranslation();
   const conn = getNatsConn();

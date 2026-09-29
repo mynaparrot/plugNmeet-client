@@ -50,16 +50,12 @@ const useClientCustomization = () => {
     );
     dispatch(updateFocusActiveSpeakerWebcam(focusActiveSpeakerWebcam));
 
-    const maxNumDisplayWebcams = getConfigValue<IMaxNumDisplayWebcams>(
-      'maxNumDisplayWebcams',
-    );
+    const maxNumDisplayWebcams = getConfigValue<IMaxNumDisplayWebcams>('maxNumDisplayWebcams');
 
     if (
       maxNumDisplayWebcams &&
       isObject(maxNumDisplayWebcams) &&
-      (maxNumDisplayWebcams.desktop ||
-        maxNumDisplayWebcams.tablet ||
-        maxNumDisplayWebcams.mobile)
+      (maxNumDisplayWebcams.desktop || maxNumDisplayWebcams.tablet || maxNumDisplayWebcams.mobile)
     ) {
       dispatch(updateMaxNumDisplayWebcams(maxNumDisplayWebcams));
     }
@@ -183,10 +179,7 @@ const useClientCustomization = () => {
       css += `body:not(.dark) footer#main-footer { background: ${designCustomParams.footer_bg_color}; }`;
     }
 
-    if (
-      designCustomParams.footer_icon_bg_color &&
-      designCustomParams.footer_icon_color
-    ) {
+    if (designCustomParams.footer_icon_bg_color && designCustomParams.footer_icon_color) {
       css += `body:not(.dark) .footer-icon-bg { background: ${designCustomParams.footer_icon_bg_color}; color: ${designCustomParams.footer_icon_color}; }`;
     } else {
       if (designCustomParams.footer_icon_bg_color) {
@@ -199,15 +192,11 @@ const useClientCustomization = () => {
 
     // Primary button customization
     const primaryBtnBg =
-      designCustomParams.primary_btn_bg_color ||
-      designCustomParams.primary_color;
+      designCustomParams.primary_btn_bg_color || designCustomParams.primary_color;
     const primaryBtnText = designCustomParams.primary_btn_text_color;
 
     if (primaryBtnBg) {
-      if (
-        designCustomParams.primary_btn_bg_color ||
-        designCustomParams.primary_color
-      ) {
+      if (designCustomParams.primary_btn_bg_color || designCustomParams.primary_color) {
         css += `body:not(.dark) .primary-button { background: ${primaryBtnBg}; }`;
       }
       if (primaryBtnText) {
@@ -217,15 +206,11 @@ const useClientCustomization = () => {
 
     // Secondary button customization
     const secondaryBtnBg =
-      designCustomParams.secondary_btn_bg_color ||
-      designCustomParams.secondary_color;
+      designCustomParams.secondary_btn_bg_color || designCustomParams.secondary_color;
     const secondaryBtnText = designCustomParams.secondary_btn_text_color;
 
     if (secondaryBtnBg) {
-      if (
-        designCustomParams.secondary_btn_bg_color ||
-        designCustomParams.secondary_color
-      ) {
+      if (designCustomParams.secondary_btn_bg_color || designCustomParams.secondary_color) {
         css += `body:not(.dark) .secondary-button { background: ${secondaryBtnBg}; }`;
       }
       if (secondaryBtnText) {
@@ -234,8 +219,7 @@ const useClientCustomization = () => {
     }
 
     const sidePanelBgColor =
-      designCustomParams.side_panel_bg_color ||
-      designCustomParams.right_side_bg_color;
+      designCustomParams.side_panel_bg_color || designCustomParams.right_side_bg_color;
     if (sidePanelBgColor) {
       css += `body:not(.dark) .side-panel-bg-color { background: ${sidePanelBgColor}; }`;
     }

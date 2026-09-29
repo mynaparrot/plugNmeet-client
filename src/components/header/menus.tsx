@@ -23,9 +23,7 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
   );
 
   const [showConnectionStats, setShowConnectionStats] = useState(false);
-  const overallQuality = useAppSelector(
-    (state) => state.session.overallConnectionQuality,
-  );
+  const overallQuality = useAppSelector((state) => state.session.overallConnectionQuality);
   const overallColor = useMemo(() => {
     if (!overallQuality) return '#9ca3af';
     return getConnectionQualityColor(overallQuality);
@@ -66,11 +64,7 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
                 showConnectionStats ? 'rotate-180' : ''
               }`}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19 9l-7 7-7-7"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
 

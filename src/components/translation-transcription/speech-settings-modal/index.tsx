@@ -1,9 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  InsightsTranscriptionFeatures,
-  InsightsUserSessionAction,
-} from 'plugnmeet-protocol-js';
+import { InsightsTranscriptionFeatures, InsightsUserSessionAction } from 'plugnmeet-protocol-js';
 import { toast } from 'react-toastify';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
@@ -13,10 +10,7 @@ import Modal from '../../../helpers/ui/modal';
 import SpeechInputSettings from './speechInputSettings';
 import SubtitleFontSizeSlider from './subtitleFontSizeSlider';
 import SubtitleLangSelector from './subtitleLangSelector';
-import {
-  getUserTaskStatus,
-  startOrStopUserSession,
-} from '../helpers/apiConnections';
+import { getUserTaskStatus, startOrStopUserSession } from '../helpers/apiConnections';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { isHybridMode } from '../../../helpers/nativeBridge';
 import { updateSelectedSubtitleLang } from '../../../store/slices/speechServicesSlice';
@@ -44,20 +38,15 @@ const SpeechSettingsModal = ({
   const isActiveMicrophone = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveMicrophone,
   );
-  const isMicMuted = useAppSelector(
-    (state) => state.bottomIconsActivity.isMicMuted,
-  );
+  const isMicMuted = useAppSelector((state) => state.bottomIconsActivity.isMicMuted);
   const hybrid = isHybridMode();
-  const selectedSubtitleLang = useAppSelector(
-    (state) => state.speechServices.selectedSubtitleLang,
-  );
+  const selectedSubtitleLang = useAppSelector((state) => state.speechServices.selectedSubtitleLang);
   const [isServiceActive, setIsServiceActive] = useState<boolean>(false);
   const [readyToStart, setReadyToStart] = useState<boolean>(false);
 
   const [enableSpeech, setEnableSpeech] = useState<boolean>(false);
   const [selectedSpeechLang, setSelectedSpeechLang] = useState<string>('');
-  const [allowTranscriptionStorage, setAllowTranscriptionStorage] =
-    useState<boolean>(true);
+  const [allowTranscriptionStorage, setAllowTranscriptionStorage] = useState<boolean>(true);
 
   useEffect(() => {
     if (!isActiveDisplayOptionsModal) {
@@ -69,13 +58,7 @@ const SpeechSettingsModal = ({
     } else if (mediaServerConn) {
       setReadyToStart(mediaServerConn.localParticipant.isMicrophoneEnabled);
     }
-  }, [
-    isActiveDisplayOptionsModal,
-    hybrid,
-    isActiveMicrophone,
-    isMicMuted,
-    mediaServerConn,
-  ]);
+  }, [isActiveDisplayOptionsModal, hybrid, isActiveMicrophone, isMicMuted, mediaServerConn]);
 
   useEffect(() => {
     if (!isActiveDisplayOptionsModal) {
@@ -102,9 +85,7 @@ const SpeechSettingsModal = ({
   );
 
   const canShowSpeechSetting = useMemo(() => {
-    return !!transcriptionFeatures.allowedSpeechUsers?.find(
-      (u) => u === currentUser?.userId,
-    );
+    return !!transcriptionFeatures.allowedSpeechUsers?.find((u) => u === currentUser?.userId);
   }, [currentUser?.userId, transcriptionFeatures.allowedSpeechUsers]);
 
   const onCloseModal = useCallback(() => {
@@ -116,11 +97,7 @@ const SpeechSettingsModal = ({
       ? InsightsUserSessionAction.USER_SESSION_ACTION_STOP
       : InsightsUserSessionAction.USER_SESSION_ACTION_START;
 
-    const res = await startOrStopUserSession(
-      action,
-      allowTranscriptionStorage,
-      selectedSpeechLang,
-    );
+    const res = await startOrStopUserSession(action, allowTranscriptionStorage, selectedSpeechLang);
     if (res.status) {
       toast(t('notifications.request-submitted-wait'), {
         type: 'info',
@@ -134,13 +111,7 @@ const SpeechSettingsModal = ({
 
     setIsServiceActive(!isServiceActive);
     onCloseModal();
-  }, [
-    onCloseModal,
-    t,
-    isServiceActive,
-    allowTranscriptionStorage,
-    selectedSpeechLang,
-  ]);
+  }, [onCloseModal, t, isServiceActive, allowTranscriptionStorage, selectedSpeechLang]);
 
   return (
     <Modal
@@ -180,10 +151,7 @@ const SpeechSettingsModal = ({
         )}
       </div>
 
-      {canShowSpeechSetting &&
-      enableSpeech &&
-      !readyToStart &&
-      !isServiceActive ? (
+      {canShowSpeechSetting && enableSpeech && !readyToStart && !isServiceActive ? (
         <div className="text-xs text-red-500 dark:text-red-400 pt-4 -mx-4 px-4">
           {t('speech-services.mic-not-ready-warning')}
         </div>

@@ -12,11 +12,7 @@ import { getNatsConn } from '../nats';
 
 const API = axios.create({
   baseURL:
-    getConfigValue<string>(
-      'serverUrl',
-      'http://localhost:8080',
-      'PLUG_N_MEET_SERVER_URL',
-    ) + '/api',
+    getConfigValue<string>('serverUrl', 'http://localhost:8080', 'PLUG_N_MEET_SERVER_URL') + '/api',
 });
 
 const getToken = () => {
@@ -89,10 +85,7 @@ const sendAPIRequest = async (
         );
       }
     } else {
-      if (
-        err.response?.data instanceof ArrayBuffer &&
-        err.response?.data.byteLength
-      ) {
+      if (err.response?.data instanceof ArrayBuffer && err.response?.data.byteLength) {
         return err.response?.data;
       }
     }

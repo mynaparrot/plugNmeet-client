@@ -11,27 +11,12 @@ import {
 
 import { IConnectLivekit } from './types';
 import { store } from '../../store';
-import {
-  participantsSelector,
-  updateParticipant,
-} from '../../store/slices/participantSlice';
-import {
-  updateIsMicMuted,
-  updateIsWebcamMuted,
-} from '../../store/slices/bottomIconsActivitySlice';
-import {
-  ICurrentUser,
-  IRoomMetadata,
-} from '../../store/slices/interfaces/session';
+import { participantsSelector, updateParticipant } from '../../store/slices/participantSlice';
+import { updateIsMicMuted, updateIsWebcamMuted } from '../../store/slices/bottomIconsActivitySlice';
+import { ICurrentUser, IRoomMetadata } from '../../store/slices/interfaces/session';
 import { updatePinCamUserId } from '../../store/slices/roomSettingsSlice';
-import {
-  addOrUpdateSpeaker,
-  removeOneSpeaker,
-} from '../../store/slices/activeSpeakersSlice';
-import {
-  addAudioStream,
-  removeAudioStream,
-} from '../libs/AudioActivityManager';
+import { addOrUpdateSpeaker, removeOneSpeaker } from '../../store/slices/activeSpeakersSlice';
+import { addAudioStream, removeAudioStream } from '../libs/AudioActivityManager';
 import { toPlugNmeetUserIdPrimary } from '../utils';
 
 export default class HandleMediaTracks {
@@ -46,18 +31,12 @@ export default class HandleMediaTracks {
     this.currentUser = currentUser;
   }
 
-  public localTrackPublished = (
-    track: LocalTrackPublication,
-    participant: LocalParticipant,
-  ) => {
+  public localTrackPublished = (track: LocalTrackPublication, participant: LocalParticipant) => {
     this.addSubscriber(track, participant);
     this.addSpeaker(track, participant);
   };
 
-  public localTrackUnpublished = (
-    track: LocalTrackPublication,
-    participant: LocalParticipant,
-  ) => {
+  public localTrackUnpublished = (track: LocalTrackPublication, participant: LocalParticipant) => {
     this.removeSubscriber(track, participant);
     this.removeSpeaker(track, participant);
   };
@@ -71,10 +50,7 @@ export default class HandleMediaTracks {
     this.addSpeaker(track, participant);
   };
 
-  public trackUnsubscribed = (
-    track: RemoteTrackPublication,
-    participant: RemoteParticipant,
-  ) => {
+  public trackUnsubscribed = (track: RemoteTrackPublication, participant: RemoteParticipant) => {
     this.removeSubscriber(track, participant);
     this.removeSpeaker(track, participant);
   };
@@ -127,10 +103,7 @@ export default class HandleMediaTracks {
     }
   };
 
-  public trackSubscriptionFailed = (
-    track_sid: string,
-    participant: RemoteParticipant,
-  ) => {
+  public trackSubscriptionFailed = (track_sid: string, participant: RemoteParticipant) => {
     // To do
     console.log('==== trackSubscriptionFailed ====');
     console.log(participant.name, track_sid);
@@ -146,10 +119,7 @@ export default class HandleMediaTracks {
     console.log(participant.name, streamState);
   };
 
-  public processExistingTrack = (
-    track: RemoteTrackPublication,
-    participant: RemoteParticipant,
-  ) => {
+  public processExistingTrack = (track: RemoteTrackPublication, participant: RemoteParticipant) => {
     this.addSubscriber(track, participant);
     this.addSpeaker(track, participant);
   };
@@ -170,8 +140,7 @@ export default class HandleMediaTracks {
 
     // Handle recorder-specific logic.
     if (this.currentUser?.isRecorder) {
-      const recordingFeatures =
-        this.roomMetadata?.roomFeatures?.recordingFeatures;
+      const recordingFeatures = this.roomMetadata?.roomFeatures?.recordingFeatures;
 
       // Deny if the user has disabled webcam recording for themselves.
       if (user.metadata.recordWebcam === false) {
@@ -186,14 +155,10 @@ export default class HandleMediaTracks {
     }
 
     // Handle regular user webcam view permissions.
-    const { adminOnlyWebcams, allowViewOtherWebcams } =
-      this.roomMetadata?.roomFeatures || {};
+    const { adminOnlyWebcams, allowViewOtherWebcams } = this.roomMetadata?.roomFeatures || {};
 
     // If webcam viewing is restricted and the current user is not an admin...
-    if (
-      (adminOnlyWebcams || !allowViewOtherWebcams) &&
-      !this.currentUser?.metadata?.isAdmin
-    ) {
+    if ((adminOnlyWebcams || !allowViewOtherWebcams) && !this.currentUser?.metadata?.isAdmin) {
       // ...then they can only see webcams of other admin users.
       return user.metadata.isAdmin;
     }
@@ -292,8 +257,7 @@ export default class HandleMediaTracks {
               audioTracks:
                 participant
                   .getTrackPublications()
-                  .filter((t) => t.source === Track.Source.Microphone).length ??
-                0,
+                  .filter((t) => t.source === Track.Source.Microphone).length ?? 0,
               isMuted: track.audioTrack?.isMuted ?? false,
             },
           }),
@@ -307,9 +271,8 @@ export default class HandleMediaTracks {
             id: userId,
             changes: {
               videoTracks:
-                participant
-                  .getTrackPublications()
-                  .filter((t) => t.source === Track.Source.Camera).length ?? 0,
+                participant.getTrackPublications().filter((t) => t.source === Track.Source.Camera)
+                  .length ?? 0,
             },
           }),
         );

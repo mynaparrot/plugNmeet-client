@@ -1,8 +1,4 @@
-import {
-  createEntityAdapter,
-  createSelector,
-  createSlice,
-} from '@reduxjs/toolkit';
+import { createEntityAdapter, createSelector, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '..';
 import { IActiveSpeaker } from './interfaces/activeSpeakers';
 
@@ -55,6 +51,5 @@ const activeSpeakersSlice = createSlice({
   },
 });
 
-export const { removeOneSpeaker, addOrUpdateSpeaker } =
-  activeSpeakersSlice.actions;
+export const { removeOneSpeaker, addOrUpdateSpeaker } = activeSpeakersSlice.actions;
 export default activeSpeakersSlice.reducer;

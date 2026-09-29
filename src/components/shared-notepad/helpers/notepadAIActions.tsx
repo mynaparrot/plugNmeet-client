@@ -20,10 +20,7 @@ export type NotepadAIAction =
   | 'simplify'
   | 'custom';
 
-const NOTEPAD_AI_PROMPTS: Record<
-  Exclude<NotepadAIAction, 'custom'>,
-  (text: string) => string
-> = {
+const NOTEPAD_AI_PROMPTS: Record<Exclude<NotepadAIAction, 'custom'>, (text: string) => string> = {
   'continue-writing': (text) =>
     `Continue writing the following text in the same tone and style. Return only the continuation, without repeating the original text:\n\n${text}`,
   summarize: (text) => `Summarize the following text concisely:\n\n${text}`,
@@ -102,22 +99,15 @@ export const runNotepadAI = async (
 
     let placeholderBlock: Block<any, any, any> | undefined;
     if (action === 'continue-writing') {
-      placeholderBlock = editor.insertBlocks(
-        [placeholderBlockPartial],
-        cursorBlock,
-        'after',
-      )[0];
+      placeholderBlock = editor.insertBlocks([placeholderBlockPartial], cursorBlock, 'after')[0];
     } else {
       const selectedBlocks = selection?.blocks ?? editor.getSelection()?.blocks;
       if (selectedBlocks && selectedBlocks.length > 0) {
-        placeholderBlock = editor.replaceBlocks(selectedBlocks, [
-          placeholderBlockPartial,
-        ]).insertedBlocks[0];
+        placeholderBlock = editor.replaceBlocks(selectedBlocks, [placeholderBlockPartial])
+          .insertedBlocks[0];
       } else {
-        placeholderBlock = editor.replaceBlocks(
-          [cursorBlock],
-          [placeholderBlockPartial],
-        ).insertedBlocks[0];
+        placeholderBlock = editor.replaceBlocks([cursorBlock], [placeholderBlockPartial])
+          .insertedBlocks[0];
       }
     }
 
@@ -131,9 +121,7 @@ export const runNotepadAI = async (
           return;
         }
         const targetIds =
-          renderedBlocks.length > 0
-            ? renderedBlocks.map((b) => b.id)
-            : [placeholderBlock.id];
+          renderedBlocks.length > 0 ? renderedBlocks.map((b) => b.id) : [placeholderBlock.id];
         renderedBlocks = editor.replaceBlocks(targetIds, blocks).insertedBlocks;
         scrollToBottom?.();
       }
@@ -141,10 +129,7 @@ export const runNotepadAI = async (
 
     if (placeholderBlock) {
       if (renderedBlocks.length > 0) {
-        editor.setTextCursorPosition(
-          renderedBlocks[renderedBlocks.length - 1],
-          'end',
-        );
+        editor.setTextCursorPosition(renderedBlocks[renderedBlocks.length - 1], 'end');
         editor.focus();
         scrollToBottom?.();
       } else {
@@ -153,11 +138,7 @@ export const runNotepadAI = async (
     } else {
       const blocks = editor.tryParseMarkdownToBlocks(fullText);
       if (action === 'continue-writing') {
-        const insertedBlocks = editor.insertBlocks(
-          blocks,
-          cursorBlock,
-          'after',
-        );
+        const insertedBlocks = editor.insertBlocks(blocks, cursorBlock, 'after');
         const insertedBlock = insertedBlocks[insertedBlocks.length - 1];
 
         if (insertedBlock) {
@@ -166,21 +147,14 @@ export const runNotepadAI = async (
           scrollToBottom?.();
         }
       } else {
-        const selectedBlocks =
-          selection?.blocks ?? editor.getSelection()?.blocks;
+        const selectedBlocks = selection?.blocks ?? editor.getSelection()?.blocks;
         let resultBlock: Block<any, any, any> | undefined;
 
         if (selectedBlocks && selectedBlocks.length > 0) {
-          const { insertedBlocks } = editor.replaceBlocks(
-            selectedBlocks,
-            blocks,
-          );
+          const { insertedBlocks } = editor.replaceBlocks(selectedBlocks, blocks);
           resultBlock = insertedBlocks[insertedBlocks.length - 1];
         } else {
-          const { insertedBlocks } = editor.replaceBlocks(
-            [cursorBlock],
-            blocks,
-          );
+          const { insertedBlocks } = editor.replaceBlocks([cursorBlock], blocks);
           resultBlock = insertedBlocks[insertedBlocks.length - 1];
         }
 

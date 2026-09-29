@@ -20,21 +20,15 @@ const RoomsPanel = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const isAdmin = useAppSelector(
-    (state) => !!state.session.currentUser?.metadata?.isAdmin,
-  );
+  const isAdmin = useAppSelector((state) => !!state.session.currentUser?.metadata?.isAdmin);
   const allowSelfSelect = useAppSelector(
     (state) =>
-      !!state.session.currentRoom?.metadata?.roomFeatures?.breakoutRoomFeatures
-        ?.allowSelfSelect,
+      !!state.session.currentRoom?.metadata?.roomFeatures?.breakoutRoomFeatures?.allowSelfSelect,
   );
 
-  const { data, isLoading, isError, error } = useGetBreakoutRoomsQuery(
-    undefined,
-    {
-      pollingInterval: 10000,
-    },
-  );
+  const { data, isLoading, isError, error } = useGetBreakoutRoomsQuery(undefined, {
+    pollingInterval: 10000,
+  });
 
   const [joinRoom, joinResult] = useJoinRoomMutation();
 
@@ -50,11 +44,7 @@ const RoomsPanel = () => {
   }, [data]);
 
   useEffect(() => {
-    if (
-      joinResult.isSuccess &&
-      joinResult.data?.status &&
-      joinResult.data.token
-    ) {
+    if (joinResult.isSuccess && joinResult.data?.status && joinResult.data.token) {
       // ensure we've diconnected from current room
       const conn = getNatsConn();
       const toUrl = buildAccessTokenUrl(joinResult.data.token);
@@ -63,21 +53,11 @@ const RoomsPanel = () => {
         window.location.replace(toUrl);
       });
       return;
-    } else if (
-      (joinResult.isSuccess && !joinResult.data?.status) ||
-      joinResult.isError
-    ) {
-      const msg =
-        joinResult.data?.msg ?? (joinResult.error as any)?.data?.msg ?? 'Error';
+    } else if ((joinResult.isSuccess && !joinResult.data?.status) || joinResult.isError) {
+      const msg = joinResult.data?.msg ?? (joinResult.error as any)?.data?.msg ?? 'Error';
       toast(t(msg), { type: 'error' });
     }
-  }, [
-    joinResult.isSuccess,
-    joinResult.isError,
-    joinResult.data,
-    joinResult.error,
-    t,
-  ]);
+  }, [joinResult.isSuccess, joinResult.isError, joinResult.data, joinResult.error, t]);
 
   const handleJoin = (roomId: string) => {
     const conn = getMediaServerConnRoom();
@@ -90,9 +70,7 @@ const RoomsPanel = () => {
   };
 
   const isCurrentRoom = (roomId: string) => {
-    return (
-      `${currentRoom.metadata?.parentRoomId}-${roomId}` === currentRoom.roomId
-    );
+    return `${currentRoom.metadata?.parentRoomId}-${roomId}` === currentRoom.roomId;
   };
 
   return (
@@ -122,9 +100,7 @@ const RoomsPanel = () => {
           )}
           {isError && (
             <p className="text-sm text-red-500">
-              {t(
-                (error as any)?.data?.msg ?? 'breakout-room.error-loading',
-              ).toString()}
+              {t((error as any)?.data?.msg ?? 'breakout-room.error-loading').toString()}
             </p>
           )}
           {!isLoading && !isError && rooms.length === 0 && (
@@ -138,9 +114,7 @@ const RoomsPanel = () => {
           )}
           {rooms.map((room) => {
             // proto3 JSON omits empty repeated fields — guard rooms with no users key.
-            const joinedCount = (room.users ?? []).filter(
-              (u) => u.joined,
-            ).length;
+            const joinedCount = (room.users ?? []).filter((u) => u.joined).length;
             const current = isCurrentRoom(room.id);
             return (
               <div

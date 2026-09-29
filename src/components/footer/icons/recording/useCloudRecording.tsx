@@ -26,16 +26,12 @@ const useCloudRecording = (): IUseCloudRecordingReturn => {
     return {
       currentRoom: session.currentRoom,
       isCloud: session.isCloud,
-      e2eeFeatures:
-        session.currentRoom.metadata?.roomFeatures?.endToEndEncryptionFeatures,
+      e2eeFeatures: session.currentRoom.metadata?.roomFeatures?.endToEndEncryptionFeatures,
     };
   }, []);
 
   const startRecording = useCallback(
-    async (
-      variant?: CloudRecordingVariants,
-      botOptions?: RecorderBotOptions,
-    ) => {
+    async (variant?: CloudRecordingVariants, botOptions?: RecorderBotOptions) => {
       const body = create(RecordingReqSchema, {
         task: RecordingTasks.START_RECORDING,
         sid: currentRoom.sid,
@@ -43,11 +39,7 @@ const useCloudRecording = (): IUseCloudRecordingReturn => {
         recorderBotOptions: botOptions,
       });
 
-      if (
-        isCloud &&
-        variant &&
-        variant === CloudRecordingVariants.MEDIA_ONLY_CLOUD_RECORDING
-      ) {
+      if (isCloud && variant && variant === CloudRecordingVariants.MEDIA_ONLY_CLOUD_RECORDING) {
         if (e2eeFeatures?.isEnabled) {
           dispatch(
             addUserNotification({
@@ -57,8 +49,7 @@ const useCloudRecording = (): IUseCloudRecordingReturn => {
           );
           return;
         }
-        body.recordingVariant =
-          CloudRecordingVariants.MEDIA_ONLY_CLOUD_RECORDING;
+        body.recordingVariant = CloudRecordingVariants.MEDIA_ONLY_CLOUD_RECORDING;
       }
 
       if (e2eeFeatures?.enabledSelfInsertEncryptionKey) {

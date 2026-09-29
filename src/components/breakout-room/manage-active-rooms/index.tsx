@@ -16,8 +16,7 @@ interface IManageActiveRoomsProps {
 const ManageActiveRooms = ({ setMessage }: IManageActiveRoomsProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const [endAllRooms, { isLoading, data, isSuccess, error }] =
-    useEndAllRoomsMutation();
+  const [endAllRooms, { isLoading, data, isSuccess, error }] = useEndAllRoomsMutation();
 
   useEffect(() => {
     if (isSuccess && data) {

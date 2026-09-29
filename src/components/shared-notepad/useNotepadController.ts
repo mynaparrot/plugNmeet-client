@@ -5,8 +5,7 @@ import { getNotepadController } from './NotepadController';
 
 export const useNotepadController = () => {
   const features = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures,
+    (state) => state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures,
   );
 
   useEffect(() => {

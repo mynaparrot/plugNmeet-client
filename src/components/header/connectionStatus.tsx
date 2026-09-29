@@ -1,10 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  Button,
-  Popover,
-  PopoverButton,
-  PopoverPanel,
-} from '@headlessui/react';
+import { Button, Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import { useAppSelector } from '../../store';
@@ -40,12 +35,7 @@ export const ConnectionStatusPanel = () => {
     return () => clearInterval(interval);
   }, [fetchStats]);
 
-  const renderStat = (
-    label: string,
-    value: React.ReactNode,
-    tooltip?: string,
-    color?: string,
-  ) => (
+  const renderStat = (label: string, value: React.ReactNode, tooltip?: string, color?: string) => (
     <div className="flex justify-between items-center py-2 px-2 rounded-md hover:bg-gray-50 dark:hover:bg-Gray-800 transition">
       <Tooltip text={tooltip}>
         <span className="text-xs font-medium text-gray-500 dark:text-gray-400 cursor-help">
@@ -54,15 +44,8 @@ export const ConnectionStatusPanel = () => {
       </Tooltip>
 
       <div className="flex items-center gap-2">
-        {color && (
-          <span
-            className="w-2.5 h-2.5 rounded-full"
-            style={{ backgroundColor: color }}
-          />
-        )}
-        <span className="text-sm font-semibold text-gray-800 dark:text-white">
-          {value}
-        </span>
+        {color && <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} />}
+        <span className="text-sm font-semibold text-gray-800 dark:text-white">{value}</span>
       </div>
     </div>
   );
@@ -73,27 +56,21 @@ export const ConnectionStatusPanel = () => {
         <div className="flex flex-col gap-1">
           {renderStat(
             t('header.connection-status.overall-quality'),
-            t(
-              `header.connection-status.qualities.${qualityStats.overallQuality}`,
-            ),
+            t(`header.connection-status.qualities.${qualityStats.overallQuality}`),
             t('header.connection-status.tooltips.overall-quality'),
             getConnectionQualityColor(qualityStats.overallQuality),
           )}
 
           {renderStat(
             t('header.connection-status.upload'),
-            t(
-              `header.connection-status.qualities.${qualityStats.uploadQuality}`,
-            ),
+            t(`header.connection-status.qualities.${qualityStats.uploadQuality}`),
             t('header.connection-status.tooltips.upload'),
             getConnectionQualityColor(qualityStats.uploadQuality),
           )}
 
           {renderStat(
             t('header.connection-status.download'),
-            t(
-              `header.connection-status.qualities.${qualityStats.receiveQuality}`,
-            ),
+            t(`header.connection-status.qualities.${qualityStats.receiveQuality}`),
             t('header.connection-status.tooltips.download'),
             getConnectionQualityColor(qualityStats.receiveQuality),
           )}
@@ -146,9 +123,7 @@ export const ConnectionStatusPanel = () => {
 
 const ConnectionStatus = () => {
   const { t } = useTranslation();
-  const overallQuality = useAppSelector(
-    (state) => state.session.overallConnectionQuality,
-  );
+  const overallQuality = useAppSelector((state) => state.session.overallConnectionQuality);
   const overallColor = useMemo(() => {
     if (!overallQuality) return '#9ca3af';
     return getConnectionQualityColor(overallQuality);

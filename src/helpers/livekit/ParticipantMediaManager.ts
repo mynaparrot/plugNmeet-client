@@ -100,16 +100,11 @@ export default class ParticipantMediaManager {
 
     // emit a new tracks map
     const screenShareTracks = new Map(this._screenShareTracksMap) as any;
-    this.eventEmitter.emit(
-      CurrentConnectionEvents.ScreenShareTracks,
-      screenShareTracks,
-    );
+    this.eventEmitter.emit(CurrentConnectionEvents.ScreenShareTracks, screenShareTracks);
     store.dispatch(updateScreenSharing(payload));
   }
 
-  public addAudioSubscriber = (
-    participant: Participant | LocalParticipant | RemoteParticipant,
-  ) => {
+  public addAudioSubscriber = (participant: Participant | LocalParticipant | RemoteParticipant) => {
     if (!participant.audioTrackPublications.size) {
       return;
     }
@@ -144,17 +139,12 @@ export default class ParticipantMediaManager {
 
   private syncAudioSubscribers() {
     const audioSubscribers = new Map(this._audioSubscribersMap);
-    this.eventEmitter.emit(
-      CurrentConnectionEvents.AudioSubscribers,
-      audioSubscribers,
-    );
+    this.eventEmitter.emit(CurrentConnectionEvents.AudioSubscribers, audioSubscribers);
     // update session reducer
     store.dispatch(updateTotalAudioSubscribers(audioSubscribers.size));
   }
 
-  public addVideoSubscriber = (
-    participant: Participant | LocalParticipant | RemoteParticipant,
-  ) => {
+  public addVideoSubscriber = (participant: Participant | LocalParticipant | RemoteParticipant) => {
     if (!participant.videoTrackPublications.size) {
       return;
     }
@@ -189,10 +179,7 @@ export default class ParticipantMediaManager {
 
     if (this._videoSubscribersMap.size <= 1) {
       const subscribers = new Map(this._videoSubscribersMap) as any;
-      this.eventEmitter.emit(
-        CurrentConnectionEvents.VideoSubscribers,
-        subscribers,
-      );
+      this.eventEmitter.emit(CurrentConnectionEvents.VideoSubscribers, subscribers);
       return;
     }
 
@@ -234,9 +221,6 @@ export default class ParticipantMediaManager {
     });
 
     const subscribers = new Map(mediaSubscribersToArray) as any;
-    this.eventEmitter.emit(
-      CurrentConnectionEvents.VideoSubscribers,
-      subscribers,
-    );
+    this.eventEmitter.emit(CurrentConnectionEvents.VideoSubscribers, subscribers);
   }
 }

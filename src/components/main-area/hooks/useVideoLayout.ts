@@ -16,9 +16,7 @@ export const useVideoLayout = ({
   isActiveDisplayExternalLink,
   hasVideoSubscribers,
 }: IUseVideoLayoutParams) => {
-  const pinCamUserId = useAppSelector(
-    (state) => state.roomSettings.pinCamUserId,
-  );
+  const pinCamUserId = useAppSelector((state) => state.roomSettings.pinCamUserId);
 
   const showVerticalVideoView = useMemo(
     () =>
@@ -34,10 +32,7 @@ export const useVideoLayout = ({
     ],
   );
 
-  const showVideoElms = useMemo(
-    () => hasVideoSubscribers,
-    [hasVideoSubscribers],
-  );
+  const showVideoElms = useMemo(() => hasVideoSubscribers, [hasVideoSubscribers]);
 
   return { showVerticalVideoView, showVideoElms, pinCamUserId };
 };

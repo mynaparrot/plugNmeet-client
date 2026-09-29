@@ -1,10 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import {
-  DeviceOrientation,
-  IBottomIconsSlice,
-  SidePanelType,
-} from './interfaces/bottomIcons';
+import { DeviceOrientation, IBottomIconsSlice, SidePanelType } from './interfaces/bottomIcons';
 
 const initialState: IBottomIconsSlice = {
   isActiveMicrophone: false,
@@ -91,10 +87,7 @@ const bottomIconsSlice = createSlice({
     updateIsActiveWhiteboard: (state, action: PayloadAction<boolean>) => {
       state.isActiveWhiteboard = action.payload;
     },
-    updateIsActiveInsightsAiTextChat: (
-      state,
-      action: PayloadAction<boolean>,
-    ) => {
+    updateIsActiveInsightsAiTextChat: (state, action: PayloadAction<boolean>) => {
       state.isActiveInsightsAiTextChat = action.payload;
     },
     updateScreenWidth: (state, action: PayloadAction<number>) => {
@@ -103,10 +96,7 @@ const bottomIconsSlice = createSlice({
     updateScreenHeight: (state, action: PayloadAction<number>) => {
       state.screenHeight = action.payload;
     },
-    updateDeviceOrientation: (
-      state,
-      action: PayloadAction<DeviceOrientation>,
-    ) => {
+    updateDeviceOrientation: (state, action: PayloadAction<DeviceOrientation>) => {
       state.deviceOrientation = action.payload;
     },
 
@@ -123,46 +113,25 @@ const bottomIconsSlice = createSlice({
     updateShowRtmpModal: (state, action: PayloadAction<boolean>) => {
       state.showRtmpModal = action.payload;
     },
-    updateShowExternalMediaPlayerModal: (
-      state,
-      action: PayloadAction<boolean>,
-    ) => {
+    updateShowExternalMediaPlayerModal: (state, action: PayloadAction<boolean>) => {
       state.showExternalMediaPlayerModal = action.payload;
     },
-    updateShowManageWaitingRoomModal: (
-      state,
-      action: PayloadAction<boolean>,
-    ) => {
+    updateShowManageWaitingRoomModal: (state, action: PayloadAction<boolean>) => {
       state.showManageWaitingRoomModal = action.payload;
     },
-    updateShowManageBreakoutRoomModal: (
-      state,
-      action: PayloadAction<boolean>,
-    ) => {
+    updateShowManageBreakoutRoomModal: (state, action: PayloadAction<boolean>) => {
       state.showManageBreakoutRoomModal = action.payload;
     },
-    updateDisplayExternalLinkRoomModal: (
-      state,
-      action: PayloadAction<boolean>,
-    ) => {
+    updateDisplayExternalLinkRoomModal: (state, action: PayloadAction<boolean>) => {
       state.showDisplayExternalLinkModal = action.payload;
     },
-    updateDisplaySpeechSettingsModal: (
-      state,
-      action: PayloadAction<boolean>,
-    ) => {
+    updateDisplaySpeechSettingsModal: (state, action: PayloadAction<boolean>) => {
       state.showSpeechSettingsModal = action.payload;
     },
-    updateDisplaySpeechSettingOptionsModal: (
-      state,
-      action: PayloadAction<boolean>,
-    ) => {
+    updateDisplaySpeechSettingOptionsModal: (state, action: PayloadAction<boolean>) => {
       state.showSpeechSettingOptionsModal = action.payload;
     },
-    updateDisplayInsightsAISettingsModal: (
-      state,
-      action: PayloadAction<boolean>,
-    ) => {
+    updateDisplayInsightsAISettingsModal: (state, action: PayloadAction<boolean>) => {
       state.showInsightsAISettingsModal = action.payload;
     },
     updateTotalUnreadChatMsgs: (state) => {
@@ -170,10 +139,7 @@ const bottomIconsSlice = createSlice({
         state.totalUnreadChatMsgs += 1;
       }
     },
-    updateIsEnabledExtendedVerticalCamView: (
-      state,
-      action: PayloadAction<boolean>,
-    ) => {
+    updateIsEnabledExtendedVerticalCamView: (state, action: PayloadAction<boolean>) => {
       state.isEnabledExtendedVerticalCamView = action.payload;
     },
   },

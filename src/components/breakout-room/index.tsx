@@ -10,10 +10,7 @@ import Modal from '../../helpers/ui/modal';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { updateShowManageBreakoutRoomModal } from '../../store/slices/bottomIconsActivitySlice';
 import { useCreateBreakoutRoomsMutation } from '../../store/services/breakoutRoomApi';
-import {
-  seedBreakoutContent,
-  hasWhiteboardShare,
-} from './utils/breakoutRoomSeeding';
+import { seedBreakoutContent, hasWhiteboardShare } from './utils/breakoutRoomSeeding';
 
 export interface BreakoutRoomMessage {
   text: string;
@@ -26,9 +23,7 @@ const BreakoutRoom = () => {
   const [message, setMessage] = useState<BreakoutRoomMessage | null>(null);
 
   const breakoutRoomIsActive = useAppSelector(
-    (state) =>
-      !!state.session.currentRoom.metadata?.roomFeatures?.breakoutRoomFeatures
-        ?.isActive,
+    (state) => !!state.session.currentRoom.metadata?.roomFeatures?.breakoutRoomFeatures?.isActive,
   );
 
   const [createBreakoutRoom, { isLoading, data, error, isSuccess }] =

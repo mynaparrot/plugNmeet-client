@@ -21,25 +21,15 @@ export const pollsApi = createApi({
   reducerPath: 'pollsApi',
   baseQuery: fetchBaseQuery({
     baseUrl:
-      getConfigValue<string>(
-        'serverUrl',
-        'http://localhost:8080',
-        'PLUG_N_MEET_SERVER_URL',
-      ) + '/api/polls',
+      getConfigValue<string>('serverUrl', 'http://localhost:8080', 'PLUG_N_MEET_SERVER_URL') +
+      '/api/polls',
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).session.token;
       headers.append('Authorization', token);
       return headers;
     },
   }),
-  tagTypes: [
-    'List',
-    'PollsStats',
-    'Count',
-    'Selected',
-    'PollDetails',
-    'PollResult',
-  ],
+  tagTypes: ['List', 'PollsStats', 'Count', 'Selected', 'PollDetails', 'PollResult'],
   endpoints: (builder) => ({
     getPollLists: builder.query<PollResponse, void>({
       query: () => {
@@ -65,10 +55,7 @@ export const pollsApi = createApi({
           : ['Count'];
       },
     }),
-    getUserSelectedOption: builder.query<
-      PollResponse,
-      { pollId: string; userId: string }
-    >({
+    getUserSelectedOption: builder.query<PollResponse, { pollId: string; userId: string }>({
       query: ({ pollId, userId }) => {
         return {
           url: `userSelectedOption/${pollId}/${userId}`,

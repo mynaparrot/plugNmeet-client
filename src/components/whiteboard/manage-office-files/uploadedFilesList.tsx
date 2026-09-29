@@ -26,9 +26,7 @@ const UploadedFilesList = ({
 }: UploadedFilesListProps) => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
-  const [linkSentFileIds, setLinkSentFileIds] = useState<Set<string>>(
-    new Set(),
-  );
+  const [linkSentFileIds, setLinkSentFileIds] = useState<Set<string>>(new Set());
 
   const whiteboardUploadedOfficeFiles = useAppSelector(
     (state) => state.whiteboard.whiteboardUploadedOfficeFiles,
@@ -51,10 +49,7 @@ const UploadedFilesList = ({
     }
   }, [roomId]);
 
-  const handleShareDownloadLink = async (
-    e: React.MouseEvent,
-    file: IWhiteboardOfficeFile,
-  ) => {
+  const handleShareDownloadLink = async (e: React.MouseEvent, file: IWhiteboardOfficeFile) => {
     e.stopPropagation();
     setLinkSentFileIds((prev) => new Set(prev).add(file.fileId));
     try {
@@ -89,9 +84,7 @@ const UploadedFilesList = ({
   return (
     <div
       className={`max-h-40 overflow-y-auto scrollBar grid gap-2 relative ${
-        isLoading
-          ? 'opacity-50 blur-sm transition-all duration-300 pointer-events-none'
-          : ''
+        isLoading ? 'opacity-50 blur-sm transition-all duration-300 pointer-events-none' : ''
       }`}
     >
       {whiteboardUploadedOfficeFiles.map((file) => {
@@ -104,8 +97,7 @@ const UploadedFilesList = ({
         let classNames =
           'flex items-center gap-4 py-2 px-3 w-full rounded-xl cursor-pointer transition-all duration-200';
         if (isSelectedInModal) {
-          classNames +=
-            ' border-2 border-Blue2-500 bg-Blue2-50 dark:bg-dark-primary';
+          classNames += ' border-2 border-Blue2-500 bg-Blue2-50 dark:bg-dark-primary';
         } else {
           classNames +=
             ' border-2 border-Gray-100 dark:border-Gray-800 bg-white dark:bg-dark-primary hover:bg-Gray-50';
@@ -155,11 +147,7 @@ const UploadedFilesList = ({
                   }
                   onClick={(e) => handleShareDownloadLink(e, file)}
                 >
-                  {linkSentFileIds.has(file.fileId) ? (
-                    <CheckMarkIconSVG />
-                  ) : (
-                    <DownloadIconSVG />
-                  )}
+                  {linkSentFileIds.has(file.fileId) ? <CheckMarkIconSVG /> : <DownloadIconSVG />}
                 </button>
                 {isCurrentlyInUse && <SelectedIcon />}
               </div>

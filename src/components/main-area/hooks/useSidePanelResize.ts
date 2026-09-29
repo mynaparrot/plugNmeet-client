@@ -3,10 +3,7 @@ import type { PointerEvent as ReactPointerEvent } from 'react';
 
 import { store, useAppDispatch } from '../../../store';
 import { updateIsEnabledExtendedVerticalCamView } from '../../../store/slices/bottomIconsActivitySlice';
-import {
-  APP_LAYOUT_CLASSES,
-  MAIN_AREA_DIMENSIONS,
-} from '../../../helpers/dimensions';
+import { APP_LAYOUT_CLASSES, MAIN_AREA_DIMENSIONS } from '../../../helpers/dimensions';
 
 export const SIDE_PANEL_MIN_WIDTH = MAIN_AREA_DIMENSIONS.sidePanel.minWidth;
 export const SIDE_PANEL_MAX_WIDTH = MAIN_AREA_DIMENSIONS.sidePanel.maxWidth;
@@ -31,10 +28,7 @@ interface IUseSidePanelResizeOptions {
 }
 
 const clampWidth = (width: number) =>
-  Math.min(
-    SIDE_PANEL_MAX_WIDTH,
-    Math.max(SIDE_PANEL_MIN_WIDTH, Math.round(width)),
-  );
+  Math.min(SIDE_PANEL_MAX_WIDTH, Math.max(SIDE_PANEL_MIN_WIDTH, Math.round(width)));
 
 const getDefaultPanelWidth = () =>
   window.innerWidth >= WIDE_BREAKPOINT_PX ? DEFAULT_WIDTH_WIDE : DEFAULT_WIDTH;
@@ -80,10 +74,7 @@ const persistWidth = (width: number | null) => {
  * `--side-panel-width` CSS var on `#main-area`, which keeps it responsive:
  * mobile/tablet keep their bottom-sheet/full-width styles.
  */
-export const useSidePanelResize = ({
-  isRecorder,
-  onResizeEnd,
-}: IUseSidePanelResizeOptions) => {
+export const useSidePanelResize = ({ isRecorder, onResizeEnd }: IUseSidePanelResizeOptions) => {
   const dispatch = useAppDispatch();
   const [panelWidth, setPanelWidth] = useState<number | null>(() =>
     isRecorder ? null : loadStoredWidth(),
@@ -238,9 +229,7 @@ export const useSidePanelResize = ({
     if (window.innerWidth < PC_BREAKPOINT_PX) {
       return;
     }
-    const next = clampWidth(
-      (widthRef.current ?? getDefaultPanelWidth()) + delta,
-    );
+    const next = clampWidth((widthRef.current ?? getDefaultPanelWidth()) + delta);
     setPanelWidth(next);
     persistWidth(next);
   }, []);

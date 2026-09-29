@@ -1,20 +1,12 @@
-import {
-  createEntityAdapter,
-  createSelector,
-  createSlice,
-} from '@reduxjs/toolkit';
+import { createEntityAdapter, createSelector, createSlice } from '@reduxjs/toolkit';
 import { isEqual } from 'es-toolkit';
 
 import { RootState } from '..';
-import {
-  IParticipant,
-  IVisibleParticipantInfo,
-} from './interfaces/participant';
+import { IParticipant, IVisibleParticipantInfo } from './interfaces/participant';
 
 const participantAdapter = createEntityAdapter({
   selectId: (participant: IParticipant) => participant.userId,
-  sortComparer: (a: IParticipant, b: IParticipant) =>
-    a.name.localeCompare(b.name),
+  sortComparer: (a: IParticipant, b: IParticipant) => a.name.localeCompare(b.name),
 });
 
 const participantsSlice = createSlice({
@@ -31,8 +23,7 @@ export const participantsSelector = participantAdapter.getSelectors(
   (state: RootState) => state.participants,
 );
 
-export const { addParticipant, removeParticipant, updateParticipant } =
-  participantsSlice.actions;
+export const { addParticipant, removeParticipant, updateParticipant } = participantsSlice.actions;
 export default participantsSlice.reducer;
 
 export const selectWaitingParticipants = createSelector(
@@ -140,12 +131,8 @@ export const selectVisibleParticipants = createSelector(
     selectRaisedHandsQueue,
     (state: RootState, isAdmin: boolean) => isAdmin,
     (state: RootState, isAdmin: boolean, search: string) => search,
-    (
-      state: RootState,
-      isAdmin: boolean,
-      search: string,
-      allowViewOtherUsers: boolean,
-    ) => allowViewOtherUsers,
+    (state: RootState, isAdmin: boolean, search: string, allowViewOtherUsers: boolean) =>
+      allowViewOtherUsers,
     (
       state: RootState,
       isAdmin: boolean,
@@ -154,17 +141,9 @@ export const selectVisibleParticipants = createSelector(
       currentUserId: string | undefined,
     ) => currentUserId,
   ],
-  (
-    participants,
-    queue,
-    isAdmin,
-    search,
-    allowViewOtherUsers,
-    currentUserId,
-  ) => {
+  (participants, queue, isAdmin, search, allowViewOtherUsers, currentUserId) => {
     let list = participants.filter(
-      (p) =>
-        p.name !== '' && p.userId !== 'RECORDER_BOT' && p.userId !== 'RTMP_BOT',
+      (p) => p.name !== '' && p.userId !== 'RECORDER_BOT' && p.userId !== 'RTMP_BOT',
     );
 
     if (!isAdmin && !allowViewOtherUsers) {
@@ -172,9 +151,7 @@ export const selectVisibleParticipants = createSelector(
     }
 
     if (search) {
-      list = list.filter((p) =>
-        p.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
-      );
+      list = list.filter((p) => p.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()));
     }
 
     // Raised-hands-first ordering is an admin-only concern (managing the queue).
@@ -184,10 +161,7 @@ export const selectVisibleParticipants = createSelector(
       // Raised hands float to the top in queue order (matches the 1/2/3 badges).
       // Returns 0 for non-raised pairs so the stable sort keeps the baseline name
       // order (entity adapter sortComparer).
-      const raisedRank = (
-        a: IVisibleParticipantInfo,
-        b: IVisibleParticipantInfo,
-      ) => {
+      const raisedRank = (a: IVisibleParticipantInfo, b: IVisibleParticipantInfo) => {
         const pa = queue.positions[a.userId];
         const pb = queue.positions[b.userId];
         if (pa && pb) return pa - pb;

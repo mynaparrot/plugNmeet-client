@@ -7,10 +7,7 @@ interface IRemoveUserMenuItemProps {
   onOpenAlert(userId: string, type: string): void;
 }
 
-const RemoveUserMenuItem = ({
-  userId,
-  onOpenAlert,
-}: IRemoveUserMenuItemProps) => {
+const RemoveUserMenuItem = ({ userId, onOpenAlert }: IRemoveUserMenuItemProps) => {
   const { t } = useTranslation();
 
   return (

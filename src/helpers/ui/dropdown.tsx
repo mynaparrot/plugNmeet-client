@@ -69,15 +69,8 @@ const Dropdown = ({
               {label}
             </Label>
           )}
-          <Listbox
-            value={value}
-            onChange={onChange}
-            disabled={disabled}
-            multiple={multiple}
-          >
-            <div
-              className={`relative w-full ${label ? 'max-w-full sm:max-w-[300px]' : ''}`}
-            >
+          <Listbox value={value} onChange={onChange} disabled={disabled} multiple={multiple}>
+            <div className={`relative w-full ${label ? 'max-w-full sm:max-w-[300px]' : ''}`}>
               <ListboxButton
                 id={id}
                 className={`min-h-10 full cursor-pointer rounded-[8px] border border-Gray-300 dark:border-Gray-800 bg-white shadow-input w-full px-3 py-1 outline-hidden focus-ring focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-start text-sm dark:bg-transparent dark:text-white ${
@@ -85,9 +78,7 @@ const Dropdown = ({
                 }`}
               >
                 <div className="flex truncate pe-5">
-                  {displayValue || (
-                    <span className="text-Gray-500">{/* Placeholder */}</span>
-                  )}
+                  {displayValue || <span className="text-Gray-500">{/* Placeholder */}</span>}
                 </div>
                 <span className="pointer-events-none absolute inset-y-0 end-4 flex items-center">
                   <DropdownIconSVG />
@@ -140,12 +131,7 @@ const Dropdown = ({
           {label}
         </Label>
       )}
-      <Listbox
-        value={value}
-        onChange={onChange}
-        disabled={disabled}
-        multiple={multiple}
-      >
+      <Listbox value={value} onChange={onChange} disabled={disabled} multiple={multiple}>
         <div className="relative w-full">
           <ListboxButton
             id={id}
@@ -154,9 +140,7 @@ const Dropdown = ({
             }`}
           >
             <div className="flex flex-wrap">
-              {displayValue || (
-                <span className="text-Gray-500">{/* Placeholder */}</span>
-              )}
+              {displayValue || <span className="text-Gray-500">{/* Placeholder */}</span>}
             </div>
             <span className="pointer-events-none absolute inset-y-0 end-4 flex items-center">
               <DropdownIconSVG />
@@ -172,9 +156,7 @@ const Dropdown = ({
                 value={option.value}
                 className={({ focus, selected }) =>
                   `relative select-none py-2 px-3 rounded-[8px] cursor-pointer dark:text-white dark:hover:bg-dark-secondary2 ${
-                    focus || selected
-                      ? 'bg-Blue2-50 dark:bg-dark-secondary2'
-                      : 'dark:text-white'
+                    focus || selected ? 'bg-Blue2-50 dark:bg-dark-secondary2' : 'dark:text-white'
                   }`
                 }
               >

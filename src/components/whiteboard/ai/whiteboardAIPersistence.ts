@@ -18,10 +18,7 @@ export const whiteboardPersistenceAdapter: TTDPersistenceAdapter = {
         Object.assign({}, chat, {
           messages: chat.messages.map((msg) =>
             Object.assign({}, msg, {
-              timestamp:
-                msg.timestamp instanceof Date
-                  ? msg.timestamp
-                  : new Date(msg.timestamp),
+              timestamp: msg.timestamp instanceof Date ? msg.timestamp : new Date(msg.timestamp),
             }),
           ),
         }),
@@ -32,11 +29,7 @@ export const whiteboardPersistenceAdapter: TTDPersistenceAdapter = {
   },
   async saveChats(chats) {
     try {
-      await idbStore(
-        DB_STORE_NAMES.WHITEBOARD_AI_CHATS,
-        WHITEBOARD_AI_CHATS_KEY,
-        chats,
-      );
+      await idbStore(DB_STORE_NAMES.WHITEBOARD_AI_CHATS, WHITEBOARD_AI_CHATS_KEY, chats);
     } catch {}
   },
 };

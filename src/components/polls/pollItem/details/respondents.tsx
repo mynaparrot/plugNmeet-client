@@ -1,11 +1,7 @@
 import React, { ReactElement, useMemo } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import {
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-} from '@headlessui/react';
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 
 import { getFormatedRespondents, PollDataWithOption } from '../../utils';
 import { CheckMarkIconSVG } from '../../../../assets/Icons/CheckMarkIconSVG';
@@ -79,9 +75,7 @@ const Respondents = ({ pollDataWithOption }: RespondentsProps) => {
                     exit={{ opacity: 0, height: 0 }}
                   >
                     <div className="wrap relative rounded-xl overflow-auto">
-                      <div className="inner flex">
-                        {getFormatedRespondents(o.respondents)}
-                      </div>
+                      <div className="inner flex">{getFormatedRespondents(o.respondents)}</div>
                     </div>
                   </DisclosurePanel>
                 )}

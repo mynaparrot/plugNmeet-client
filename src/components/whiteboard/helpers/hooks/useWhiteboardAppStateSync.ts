@@ -9,11 +9,7 @@ import { debounce } from 'es-toolkit';
 
 import { useAppSelector } from '../../../../store';
 import { A4_VIEWPORT_PADDING_LEFT } from '../../export-pdf/types';
-import {
-  getA4WidthBasedZoom,
-  getPageBoundaryMetrics,
-  resolvePageInfoFromElements,
-} from '../utils';
+import { getA4WidthBasedZoom, getPageBoundaryMetrics, resolvePageInfoFromElements } from '../utils';
 
 const VIEWPORT_SYNC_DEBOUNCE_TIMEOUT = 150;
 
@@ -28,83 +24,71 @@ const useWhiteboardAppStateSync = ({
   isFollowing,
   isPresenter,
 }: IUseWhiteboardAppStateSync) => {
-  const whiteboardAppState = useAppSelector(
-    (state) => state.whiteboard.whiteboardAppState,
-  );
+  const whiteboardAppState = useAppSelector((state) => state.whiteboard.whiteboardAppState);
   const refreshWhiteboardSignal = useAppSelector(
     (state) => state.whiteboard.refreshWhiteboardSignal,
   );
 
   const debouncedSync = useMemo(
     () =>
-      debounce(
-        (api: ExcalidrawImperativeAPI, state: typeof whiteboardAppState) => {
-          if (!state) return;
+      debounce((api: ExcalidrawImperativeAPI, state: typeof whiteboardAppState) => {
+        if (!state) return;
 
-          const receiverState = api.getAppState();
+        const receiverState = api.getAppState();
 
-          const senderWidth = state.width;
-          const senderHeight = state.height;
-          const receiverWidth = receiverState.width;
-          const receiverHeight = receiverState.height;
-          const senderZoom = state.zoomValue;
+        const senderWidth = state.width;
+        const senderHeight = state.height;
+        const receiverWidth = receiverState.width;
+        const receiverHeight = receiverState.height;
+        const senderZoom = state.zoomValue;
 
-          if (
-            !senderWidth ||
-            !senderHeight ||
-            !receiverWidth ||
-            !receiverHeight ||
-            !senderZoom
-          ) {
-            return;
-          }
+        if (!senderWidth || !senderHeight || !receiverWidth || !receiverHeight || !senderZoom) {
+          return;
+        }
 
-          const scaleThreshold = 0.9;
-          const padding = 16;
+        const scaleThreshold = 0.9;
+        const padding = 16;
 
-          const rawWidthRatio = receiverWidth / senderWidth;
-          const rawHeightRatio = receiverHeight / senderHeight;
+        const rawWidthRatio = receiverWidth / senderWidth;
+        const rawHeightRatio = receiverHeight / senderHeight;
 
-          const safeReceiverWidth = Math.max(receiverWidth - padding * 2, 1);
-          const safeReceiverHeight = Math.max(receiverHeight - padding * 2, 1);
+        const safeReceiverWidth = Math.max(receiverWidth - padding * 2, 1);
+        const safeReceiverHeight = Math.max(receiverHeight - padding * 2, 1);
 
-          const widthScale =
-            rawWidthRatio < scaleThreshold
-              ? safeReceiverWidth / senderWidth
-              : Math.min(1, rawWidthRatio);
+        const widthScale =
+          rawWidthRatio < scaleThreshold
+            ? safeReceiverWidth / senderWidth
+            : Math.min(1, rawWidthRatio);
 
-          const heightScale =
-            rawHeightRatio < scaleThreshold
-              ? safeReceiverHeight / senderHeight
-              : Math.min(1, rawHeightRatio);
+        const heightScale =
+          rawHeightRatio < scaleThreshold
+            ? safeReceiverHeight / senderHeight
+            : Math.min(1, rawHeightRatio);
 
-          const responsiveMultiplier = Math.min(widthScale, heightScale, 1);
+        const responsiveMultiplier = Math.min(widthScale, heightScale, 1);
 
-          const adjustedZoom = Math.max(senderZoom * responsiveMultiplier, 0.1);
+        const adjustedZoom = Math.max(senderZoom * responsiveMultiplier, 0.1);
 
-          // Keep follower centered on the same scene/world point as presenter.
-          const senderCenterX = -state.scrollX + senderWidth / (2 * senderZoom);
-          const senderCenterY =
-            -state.scrollY + senderHeight / (2 * senderZoom);
+        // Keep follower centered on the same scene/world point as presenter.
+        const senderCenterX = -state.scrollX + senderWidth / (2 * senderZoom);
+        const senderCenterY = -state.scrollY + senderHeight / (2 * senderZoom);
 
-          const appState: Partial<AppState> = {
-            theme: state.theme as Theme,
-            viewBackgroundColor: state.viewBackgroundColor,
-            zenModeEnabled: state.zenModeEnabled,
-            gridSize: state.gridSize ?? undefined,
-            zoom: {
-              value: adjustedZoom as NormalizedZoomValue,
-            },
-            scrollX: -(senderCenterX - receiverWidth / (2 * adjustedZoom)),
-            scrollY: -(senderCenterY - receiverHeight / (2 * adjustedZoom)),
-          };
+        const appState: Partial<AppState> = {
+          theme: state.theme as Theme,
+          viewBackgroundColor: state.viewBackgroundColor,
+          zenModeEnabled: state.zenModeEnabled,
+          gridSize: state.gridSize ?? undefined,
+          zoom: {
+            value: adjustedZoom as NormalizedZoomValue,
+          },
+          scrollX: -(senderCenterX - receiverWidth / (2 * adjustedZoom)),
+          scrollY: -(senderCenterY - receiverHeight / (2 * adjustedZoom)),
+        };
 
-          api.updateScene({
-            appState: appState as AppState,
-          });
-        },
-        VIEWPORT_SYNC_DEBOUNCE_TIMEOUT,
-      ),
+        api.updateScene({
+          appState: appState as AppState,
+        });
+      }, VIEWPORT_SYNC_DEBOUNCE_TIMEOUT),
     [],
   );
 
@@ -117,13 +101,7 @@ const useWhiteboardAppStateSync = ({
     return () => {
       debouncedSync.cancel();
     };
-  }, [
-    excalidrawAPI,
-    isPresenter,
-    whiteboardAppState,
-    isFollowing,
-    debouncedSync,
-  ]);
+  }, [excalidrawAPI, isPresenter, whiteboardAppState, isFollowing, debouncedSync]);
 
   // Recalibrate the local viewport when refreshWhiteboardSignal is triggered.
   // refreshWhiteboardSignal happens on width change, sidebar open, webcam/screen sharing on/off etc.
@@ -146,39 +124,31 @@ const useWhiteboardAppStateSync = ({
 
   /** For presenter */
 
-  const refreshPresenterViewport = useCallback(
-    (api: ExcalidrawImperativeAPI) => {
-      const appState = api.getAppState();
-      const pageInfo = resolvePageInfoFromElements(api.getSceneElements());
-      const { width: targetWidth, startX } = getPageBoundaryMetrics(
-        pageInfo.orientation,
-        pageInfo.pageWidth,
-        pageInfo.pageHeight,
-      );
+  const refreshPresenterViewport = useCallback((api: ExcalidrawImperativeAPI) => {
+    const appState = api.getAppState();
+    const pageInfo = resolvePageInfoFromElements(api.getSceneElements());
+    const { width: targetWidth, startX } = getPageBoundaryMetrics(
+      pageInfo.orientation,
+      pageInfo.pageWidth,
+      pageInfo.pageHeight,
+    );
 
-      const nextZoom = getA4WidthBasedZoom(appState.width, targetWidth);
+    const nextZoom = getA4WidthBasedZoom(appState.width, targetWidth);
 
-      if (
-        !appState.width ||
-        !appState.height ||
-        !nextZoom ||
-        !Number.isFinite(nextZoom)
-      ) {
-        return;
-      }
+    if (!appState.width || !appState.height || !nextZoom || !Number.isFinite(nextZoom)) {
+      return;
+    }
 
-      api.updateScene({
-        appState: {
-          zoom: {
-            value: nextZoom,
-          },
-          scrollX: -startX + A4_VIEWPORT_PADDING_LEFT,
-          scrollY: appState.scrollY,
+    api.updateScene({
+      appState: {
+        zoom: {
+          value: nextZoom,
         },
-      });
-    },
-    [],
-  );
+        scrollX: -startX + A4_VIEWPORT_PADDING_LEFT,
+        scrollY: appState.scrollY,
+      },
+    });
+  }, []);
 
   const debouncedRefreshPresenterViewport = useMemo(
     () =>
@@ -196,12 +166,7 @@ const useWhiteboardAppStateSync = ({
     return () => {
       debouncedRefreshPresenterViewport.cancel();
     };
-  }, [
-    excalidrawAPI,
-    isPresenter,
-    refreshWhiteboardSignal,
-    debouncedRefreshPresenterViewport,
-  ]);
+  }, [excalidrawAPI, isPresenter, refreshWhiteboardSignal, debouncedRefreshPresenterViewport]);
 };
 
 export default useWhiteboardAppStateSync;

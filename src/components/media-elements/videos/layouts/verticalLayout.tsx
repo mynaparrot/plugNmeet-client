@@ -1,11 +1,4 @@
-import React, {
-  ReactElement,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -27,10 +20,7 @@ import { APP_LAYOUT_CLASSES } from '../../../../helpers/dimensions';
 
 interface IVerticalLayoutProps {
   pipParticipants: ReactElement<VideoParticipantProps>[];
-  participantsToRender: React.ReactElement<
-    unknown,
-    string | React.JSXElementConstructor<any>
-  >[];
+  participantsToRender: React.ReactElement<unknown, string | React.JSXElementConstructor<any>>[];
   pinParticipant?: ReactElement;
   totalNumWebcams: number;
   currentPage: number;
@@ -63,26 +53,23 @@ const VerticalLayout = ({
 
   const isDocumentPipSupported =
     typeof window !== 'undefined' &&
-    typeof (window as DocumentPictureInPictureWindow).documentPictureInPicture
-      ?.requestWindow === 'function';
+    typeof (window as DocumentPictureInPictureWindow).documentPictureInPicture?.requestWindow ===
+      'function';
 
   const pipItems = useMemo<IPipItem[]>(() => {
     return getPipItems(pipParticipants);
   }, [pipParticipants]);
 
   const toggleExtendedVerticalCamView = useCallback(() => {
-    dispatch(
-      updateIsEnabledExtendedVerticalCamView(!isEnabledExtendedVerticalCamView),
-    );
+    dispatch(updateIsEnabledExtendedVerticalCamView(!isEnabledExtendedVerticalCamView));
   }, [dispatch, isEnabledExtendedVerticalCamView]);
 
   const openPip = useCallback(async () => {
     try {
       if (typeof window === 'undefined') return;
 
-      const documentPictureInPicture = (
-        window as DocumentPictureInPictureWindow
-      ).documentPictureInPicture;
+      const documentPictureInPicture = (window as DocumentPictureInPictureWindow)
+        .documentPictureInPicture;
 
       if (typeof documentPictureInPicture?.requestWindow !== 'function') {
         return;
@@ -180,11 +167,7 @@ const VerticalLayout = ({
             }
           >
             {pipItems.map((item) => (
-              <PipVideoTrack
-                key={item.key}
-                videoTrack={item.videoTrack}
-                name={item.name}
-              />
+              <PipVideoTrack key={item.key} videoTrack={item.videoTrack} name={item.name} />
             ))}
           </div>,
           pipWindow.document.body,
@@ -230,9 +213,7 @@ const VerticalLayout = ({
             className="extend-button cursor-pointer absolute top-1/2 -translate-y-1/2 start-0 w-4 h-6 rounded-s-full bg-Gray-950/50 dark:bg-Gray-50 text-white dark:text-Gray-900 shadow-md hidden xl:flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:-start-4"
           >
             <span
-              className={`rtl:-scale-x-100 ${
-                isEnabledExtendedVerticalCamView ? '' : 'rotate-180'
-              }`}
+              className={`rtl:-scale-x-100 ${isEnabledExtendedVerticalCamView ? '' : 'rotate-180'}`}
             >
               <ArrowRight />
             </span>

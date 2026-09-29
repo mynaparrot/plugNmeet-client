@@ -4,7 +4,7 @@ import { RootState } from '..';
 
 export const REACTION_TTL_MS = 4000;
 
-// prettier-ignore
+// oxfmt-ignore
 export const REACTION_EMOJIS: string[] = [ '👍', '❤️', '😂', '🎉', '👏', '🙌', '😯' ];
 
 export interface IReaction {
@@ -29,9 +29,7 @@ const reactionsSlice = createSlice({
   },
 });
 
-const reactionsSelector = reactionAdapter.getSelectors(
-  (state: RootState) => state.reactions,
-);
+const reactionsSelector = reactionAdapter.getSelectors((state: RootState) => state.reactions);
 
 export const { addReaction, removeReaction } = reactionsSlice.actions;
 export default reactionsSlice.reducer;

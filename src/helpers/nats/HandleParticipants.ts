@@ -12,15 +12,9 @@ import {
 import { create, fromJsonString } from '@bufbuild/protobuf';
 
 import ConnectNats from './ConnectNats';
-import {
-  ICurrentUser,
-  ICurrentUserMetadata,
-} from '../../store/slices/interfaces/session';
+import { ICurrentUser, ICurrentUserMetadata } from '../../store/slices/interfaces/session';
 import { store } from '../../store';
-import {
-  addCurrentUser,
-  updateCurrentUserMetadata,
-} from '../../store/slices/sessionSlice';
+import { addCurrentUser, updateCurrentUserMetadata } from '../../store/slices/sessionSlice';
 import {
   addParticipant,
   participantsSelector,
@@ -68,12 +62,10 @@ export default class HandleParticipants {
    * @param task The async function to execute.
    */
   private serialTask = (task: () => Promise<any>): Promise<any> => {
-    this.participantTaskChain = this.participantTaskChain
-      .then(task)
-      .catch((err) => {
-        console.error('A participant task failed:', err);
-        // The chain continues even if one task fails.
-      });
+    this.participantTaskChain = this.participantTaskChain.then(task).catch((err) => {
+      console.error('A participant task failed:', err);
+      // The chain continues even if one task fails.
+    });
     return this.participantTaskChain;
   };
 
@@ -83,10 +75,7 @@ export default class HandleParticipants {
    * @param userId The user being processed.
    * @param task The async function to execute.
    */
-  private _runPrimaryUserTask = async (
-    userId: string,
-    task: () => Promise<any>,
-  ) => {
+  private _runPrimaryUserTask = async (userId: string, task: () => Promise<any>) => {
     this.activeUserTasks.add(userId);
     try {
       // We still use the serialTask chain to ensure primary tasks don't run over each other.
@@ -97,9 +86,7 @@ export default class HandleParticipants {
     }
   };
 
-  public addLocalParticipantInfo = async (
-    info: NatsKvUserInfo,
-  ): Promise<ICurrentUser> => {
+  public addLocalParticipantInfo = async (info: NatsKvUserInfo): Promise<ICurrentUser> => {
     this._isLocalUserRecorder = isUserRecorder(info.userId);
 
     const metadata = this.decodeMetadata(info.metadata);
@@ -141,9 +128,7 @@ export default class HandleParticipants {
     });
   };
 
-  private async _addRemoteParticipant(
-    participant: NatsKvUserInfo,
-  ): Promise<boolean> {
+  private async _addRemoteParticipant(participant: NatsKvUserInfo): Promise<boolean> {
     if (this._localUserId !== participant.userId) {
       if (isUserRecorder(participant.userId)) {
         return false;
@@ -161,14 +146,8 @@ export default class HandleParticipants {
     const metadata = this.decodeMetadata(participant.metadata);
 
     // check if this user exists or not
-    const existUser = participantsSelector.selectById(
-      store.getState(),
-      participant.userId,
-    );
-    if (
-      typeof existUser !== 'undefined' &&
-      existUser.userId === participant.userId
-    ) {
+    const existUser = participantsSelector.selectById(store.getState(), participant.userId);
+    if (typeof existUser !== 'undefined' && existUser.userId === participant.userId) {
       console.info(
         `found same userId: ${existUser.userId} again, so updating medata only, metadata same?: ${metadata.metadataId === existUser.metadata.metadataId}`,
       );
@@ -176,10 +155,7 @@ export default class HandleParticipants {
       // because maybe this user disconnected & reconnected again
       // we can just try to update metadata
       if (metadata.metadataId !== existUser.metadata.metadataId) {
-        await this.updateParticipantMetadata(
-          participant.userId,
-          participant.metadata,
-        );
+        await this.updateParticipantMetadata(participant.userId, participant.metadata);
       }
       this.onAfterUserConnectMediaUpdate(participant.userId);
       return false;
@@ -223,10 +199,7 @@ export default class HandleParticipants {
     });
   };
 
-  public updateParticipantMetadata = async (
-    userId: string,
-    metadata: string | UserMetadata,
-  ) => {
+  public updateParticipantMetadata = async (userId: string, metadata: string | UserMetadata) => {
     if (typeof metadata === 'string') {
       metadata = this.decodeMetadata(metadata);
     }
@@ -263,10 +236,7 @@ export default class HandleParticipants {
    * @param userId The userId of the participant to clean up.
    * @param isCompleteRemove If true, performs full removal (like offline); otherwise, marks as disconnected.
    */
-  private _handleParticipantCleanup = (
-    userId: string,
-    isCompleteRemove: boolean,
-  ) => {
+  private _handleParticipantCleanup = (userId: string, isCompleteRemove: boolean) => {
     const mediaConn = getMediaServerConn();
     // Always remove media subscribers for this user
     mediaConn.removeAudioSubscriber(userId);
@@ -357,9 +327,7 @@ export default class HandleParticipants {
         };
         const serverIds = new Set(payload.ids);
         const protectedIds = new Set([...payload.ids, ...payload.hiddenIds]);
-        const localIds = new Set(
-          participantsSelector.selectIds(store.getState()),
-        );
+        const localIds = new Set(participantsSelector.selectIds(store.getState()));
 
         // users online on the server but missing locally
         const missing: string[] = [];
@@ -451,10 +419,7 @@ export default class HandleParticipants {
     });
   }
 
-  private notificationForWaitingUser(
-    metadata: ICurrentUserMetadata,
-    name: string,
-  ) {
+  private notificationForWaitingUser(metadata: ICurrentUserMetadata, name: string) {
     if (this._isLocalUserRecorder) {
       // if the current user is recorder then don't need to do anything
       return;
@@ -462,9 +427,7 @@ export default class HandleParticipants {
 
     if (metadata.waitForApproval && this._isLocalUserAdmin) {
       // we can open the participants panel if close
-      if (
-        store.getState().bottomIconsActivity.activeSidePanel !== 'PARTICIPANTS'
-      ) {
+      if (store.getState().bottomIconsActivity.activeSidePanel !== 'PARTICIPANTS') {
         store.dispatch(setActiveSidePanel('PARTICIPANTS'));
       }
       // also play notification
@@ -491,9 +454,7 @@ export default class HandleParticipants {
   private startParticipantCounter() {
     this.participantCounterInterval = setInterval(async () => {
       const allParticipants = participantsSelector.selectIds(store.getState());
-      const validUsers = allParticipants.filter(
-        (userId) => !isUserRecorder(userId),
-      );
+      const validUsers = allParticipants.filter((userId) => !isUserRecorder(userId));
       if (!validUsers.length) {
         console.log('NO_USER_ONLINE');
         await this.connectNats.endSession('NO_USER_ONLINE');
@@ -515,19 +476,14 @@ export default class HandleParticipants {
     if (!mediaConn.room) {
       return;
     }
-    const participant = mediaConn.room.getParticipantByIdentity(
-      toLiveKitUserId(userId),
-    );
+    const participant = mediaConn.room.getParticipantByIdentity(toLiveKitUserId(userId));
     if (participant) {
       participant.trackPublications.forEach((track) => {
         if (
           track.source === Track.Source.ScreenShare ||
           track.source === Track.Source.ScreenShareAudio
         ) {
-          mediaConn.addScreenShareTrack(
-            participant.identity,
-            track as RemoteTrackPublication,
-          );
+          mediaConn.addScreenShareTrack(participant.identity, track as RemoteTrackPublication);
         } else {
           mediaConn.addVideoSubscriber(participant);
           mediaConn.addAudioSubscriber(participant);

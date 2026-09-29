@@ -31,8 +31,7 @@ export const APP_LAYOUT_CLASSES = {
     'w-[300px] 3xl:w-[340px] h-[calc(100%-110px)] 3xl:h-[calc(100%-144px)] top-[54px] 3xl:top-[68px]',
   notificationsScroll: 'h-[calc(100vh-148px)] 3xl:h-[calc(100vh-184px)]',
   sidePanel: {
-    width:
-      'md:w-[var(--side-panel-width,300px)] 3xl:w-[var(--side-panel-width,340px)]',
+    width: 'md:w-[var(--side-panel-width,300px)] 3xl:w-[var(--side-panel-width,340px)]',
     mobileHeight: 'h-[300px]',
     defaultWidth: 300, // fallback inside the var() above
     defaultWidthWide: 340,

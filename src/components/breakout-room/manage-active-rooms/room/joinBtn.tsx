@@ -15,8 +15,7 @@ interface IJoinBtnProps {
 
 const JoinBtn = ({ breakoutRoomId, setMessage }: IJoinBtnProps) => {
   const { t } = useTranslation();
-  const [joinRoom, { isLoading, isSuccess, isError, data, error }] =
-    useJoinRoomMutation();
+  const [joinRoom, { isLoading, isSuccess, isError, data, error }] = useJoinRoomMutation();
 
   useEffect(() => {
     if (isSuccess && data?.status && data.token) {

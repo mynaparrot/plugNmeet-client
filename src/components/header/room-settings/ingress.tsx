@@ -17,14 +17,11 @@ import FormattedInputField from '../../../helpers/ui/formattedInputField';
 const Ingress = () => {
   const { t } = useTranslation();
   const [name, setName] = useState<string>('broadcaster');
-  const [ingressType, setIngressType] = useState<IngressInput>(
-    IngressInput.RTMP_INPUT,
-  );
+  const [ingressType, setIngressType] = useState<IngressInput>(IngressInput.RTMP_INPUT);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const session = store.getState().session;
   const ingressFeatures = useAppSelector(
-    (state) =>
-      state.session.currentRoom?.metadata?.roomFeatures?.ingressFeatures,
+    (state) => state.session.currentRoom?.metadata?.roomFeatures?.ingressFeatures,
   );
 
   const handleSubmit = useCallback(async () => {
@@ -119,9 +116,7 @@ const Ingress = () => {
         <FormattedInputField
           label={t('ingress-features.ingress-type')}
           id="ingress_type"
-          value={getIngressTypeText(
-            ingressFeatures?.inputType ?? IngressInput.RTMP_INPUT,
-          )}
+          value={getIngressTypeText(ingressFeatures?.inputType ?? IngressInput.RTMP_INPUT)}
           readOnly={true}
         />
         <FormattedInputField
@@ -142,9 +137,7 @@ const Ingress = () => {
 
   return (
     <div className="mt-2">
-      {ingressFeatures?.url && ingressFeatures?.streamKey
-        ? renderInfo()
-        : renderForm()}
+      {ingressFeatures?.url && ingressFeatures?.streamKey ? renderInfo() : renderForm()}
     </div>
   );
 };

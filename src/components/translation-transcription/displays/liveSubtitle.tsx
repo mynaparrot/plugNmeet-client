@@ -6,12 +6,9 @@ import { useLiveCaptions } from './useLiveCaptions';
 const LINE_HEIGHT = 1.4;
 
 const LiveSubtitle = () => {
-  const subtitleFontSize = useAppSelector(
-    (state) => state.speechServices.subtitleFontSize,
-  );
+  const subtitleFontSize = useAppSelector((state) => state.speechServices.subtitleFontSize);
 
-  const { finalBuffer, interimText, selectedSubtitleLang, speaker } =
-    useLiveCaptions();
+  const { finalBuffer, interimText, selectedSubtitleLang, speaker } = useLiveCaptions();
 
   const hasText = Boolean(finalBuffer || interimText);
 

@@ -13,9 +13,7 @@ interface IAudioElmProps {
 
 const AudioElm = ({ audioTrack, userId, isLocalUser }: IAudioElmProps) => {
   const ref = useRef<HTMLAudioElement>(null);
-  const isNatsServerConnected = useAppSelector(
-    (state) => state.roomSettings.isNatsServerConnected,
-  );
+  const isNatsServerConnected = useAppSelector((state) => state.roomSettings.isNatsServerConnected);
   const audioVolume = useAppSelector(
     (state) => participantsSelector.selectById(state, userId)?.audioVolume,
   );

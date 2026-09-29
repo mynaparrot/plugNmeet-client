@@ -1,7 +1,7 @@
-// prettier-ignore
+// oxfmt-ignore
 import { en, de, fr, es, ar, fa, he,  hr,  is, it, ja, ko, nl, no, pl, pt, ru, sk, uk, vi, zh, zhTW } from '@blocknote/core/locales';
 
-// prettier-ignore
+// oxfmt-ignore
 const blockNoteLocales: Record<string, typeof en> = {
   en, de, fr, es, ar, fa, he,  hr,  is, it, ja, ko, nl, no, pl, pt, ru, sk, uk, vi, zh, 'zh-tw': zhTW,
 };
@@ -16,7 +16,7 @@ export const getBlockNoteDictionary = (language: string): typeof en => {
   const base = lang.split('-')[0];
   return blockNoteLocales[base] ?? en;
 };
-// prettier-ignore
+// oxfmt-ignore
 const USER_COLORS = ['#2563EB', '#DC2626', '#16A34A', '#9333EA', '#EA580C', '#0891B2', '#DB2777',
   '#65A30D', '#7C3AED', '#0D9488',  '#4F46E5', '#B91C1C', '#1D4ED8', '#15803D', '#A21CAF', '#CA8A04',
 ];

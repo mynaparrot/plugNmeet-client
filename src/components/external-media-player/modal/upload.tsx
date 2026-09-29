@@ -16,24 +16,16 @@ interface UploadProps {
 }
 
 const Upload = ({ setSelectedUrl, isPlayBtnLoading }: UploadProps) => {
-  const [newlyUploadedFile, setNewlyUploadedFile] =
-    useState<RoomUploadedFileMetadata>();
+  const [newlyUploadedFile, setNewlyUploadedFile] = useState<RoomUploadedFileMetadata>();
   const [selectedFile, setSelectedFile] = useState<RoomUploadedFileMetadata>();
 
-  const onAfterFileUploaded = (
-    fileId: string,
-    fileName: string,
-    filePath: string,
-  ) => {
-    const newFile: RoomUploadedFileMetadata = create(
-      RoomUploadedFileMetadataSchema,
-      {
-        fileId,
-        fileName,
-        filePath,
-        fileType: RoomUploadedFileType.EXTERNAL_MEDIA_PLAYER_FILE,
-      },
-    );
+  const onAfterFileUploaded = (fileId: string, fileName: string, filePath: string) => {
+    const newFile: RoomUploadedFileMetadata = create(RoomUploadedFileMetadataSchema, {
+      fileId,
+      fileName,
+      filePath,
+      fileType: RoomUploadedFileType.EXTERNAL_MEDIA_PLAYER_FILE,
+    });
     setNewlyUploadedFile(newFile);
     // select the newly uploaded file.
     setSelectedFile(newFile);
@@ -51,11 +43,7 @@ const Upload = ({ setSelectedUrl, isPlayBtnLoading }: UploadProps) => {
     setSelectedFile(file);
 
     const playbackUrl =
-      getConfigValue<string>(
-        'serverUrl',
-        'http://localhost:8080',
-        'PLUG_N_MEET_SERVER_URL',
-      ) +
+      getConfigValue<string>('serverUrl', 'http://localhost:8080', 'PLUG_N_MEET_SERVER_URL') +
       '/download/uploadedFile/' +
       file.filePath;
     setSelectedUrl(playbackUrl);

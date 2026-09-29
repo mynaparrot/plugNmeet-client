@@ -16,10 +16,7 @@ const externalMediaPlayerSlice = createSlice({
   name: 'externalMediaPlayer',
   initialState,
   reducers: {
-    addExternalMediaPlayerEvent: (
-      state,
-      action: PayloadAction<IExternalMediaPlayerEvent>,
-    ) => {
+    addExternalMediaPlayerEvent: (state, action: PayloadAction<IExternalMediaPlayerEvent>) => {
       state.action = action.payload.action;
       state.seekTo = action.payload.seekTo;
     },

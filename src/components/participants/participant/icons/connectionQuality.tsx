@@ -11,8 +11,7 @@ interface ConnectionQualityIconProps {
 
 const ConnectionQualityIcon = ({ userId }: ConnectionQualityIconProps) => {
   const connectionQuality = useAppSelector(
-    (state) =>
-      participantsSelector.selectById(state, userId)?.connectionQuality,
+    (state) => participantsSelector.selectById(state, userId)?.connectionQuality,
   );
 
   const getColor = () => {
@@ -31,10 +30,7 @@ const ConnectionQualityIcon = ({ userId }: ConnectionQualityIconProps) => {
   ) {
     return (
       <IconWrapper>
-        <i
-          style={{ color: getColor() }}
-          className="pnm-network text-xs 3xl:text-sm"
-        />
+        <i style={{ color: getColor() }} className="pnm-network text-xs 3xl:text-sm" />
       </IconWrapper>
     );
   }

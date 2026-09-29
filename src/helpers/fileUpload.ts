@@ -89,11 +89,8 @@ class ResumableUploader {
 
     this.resumable = new Resumable({
       target:
-        getConfigValue<string>(
-          'serverUrl',
-          'http://localhost:8080',
-          'PLUG_N_MEET_SERVER_URL',
-        ) + '/api/fileUpload',
+        getConfigValue<string>('serverUrl', 'http://localhost:8080', 'PLUG_N_MEET_SERVER_URL') +
+        '/api/fileUpload',
       uploadMethod: 'POST',
       query: {
         roomSid: this.session.currentRoom.sid,
@@ -106,9 +103,7 @@ class ResumableUploader {
       },
       fileType: this.args.allowedFileTypes,
       // @ts-ignore
-      maxFileSize: this.args.maxFileSize
-        ? Number(this.args.maxFileSize) * 1000000
-        : undefined,
+      maxFileSize: this.args.maxFileSize ? Number(this.args.maxFileSize) * 1000000 : undefined,
       fileTypeErrorCallback: this.onFileTypeError,
       maxFileSizeErrorCallback: this.onMaxFileSizeError,
       chunkSize: 10 * 1024 * 1024, // 10MB
@@ -207,29 +202,22 @@ class ResumableUploader {
     try {
       const res = JSON.parse(message);
       const msg = i18n.t(res.msg);
-      store.dispatch(
-        addUserNotification({ message: msg, typeOption: 'error' }),
-      );
+      store.dispatch(addUserNotification({ message: msg, typeOption: 'error' }));
       this.args.onError?.(msg);
     } catch (e) {
       console.error(e);
       const msg = i18n.t('right-panel.file-upload-default-error');
-      store.dispatch(
-        addUserNotification({ message: msg, typeOption: 'error' }),
-      );
+      store.dispatch(addUserNotification({ message: msg, typeOption: 'error' }));
       this.args.onError?.(msg);
     }
   };
 
   private onUploadStart = () => {
-    this.toastId = toast(
-      i18n.t('right-panel.uploading-file', { fileName: this.fileName }),
-      {
-        closeButton: false,
-        progress: 0,
-        autoClose: false,
-      },
-    );
+    this.toastId = toast(i18n.t('right-panel.uploading-file', { fileName: this.fileName }), {
+      closeButton: false,
+      progress: 0,
+      autoClose: false,
+    });
   };
 
   private confirmFirstChunkUploaded = (file: any) => {
@@ -281,9 +269,7 @@ class ResumableUploader {
     if (isUploadingFile) {
       const msg = i18n.t('notifications.wait-other-uploading-to-finish');
       this.args.onError?.(msg);
-      store.dispatch(
-        addUserNotification({ message: msg, typeOption: 'warning' }),
-      );
+      store.dispatch(addUserNotification({ message: msg, typeOption: 'warning' }));
       return;
     }
     isUploadingFile = true;

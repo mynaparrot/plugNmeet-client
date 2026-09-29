@@ -25,8 +25,7 @@ export const usePreassignedRooms = (participants: BasicParticipant[]) => {
   // always static during runtime
   const { breakoutFeatures, preassignedRooms } = useMemo(() => {
     const breakoutFeatures =
-      store.getState().session.currentRoom.metadata?.roomFeatures
-        ?.breakoutRoomFeatures;
+      store.getState().session.currentRoom.metadata?.roomFeatures?.breakoutRoomFeatures;
     const preassignedRooms = breakoutFeatures?.preassignedRooms ?? [];
 
     return { breakoutFeatures, preassignedRooms };
@@ -48,12 +47,9 @@ export const usePreassignedRooms = (participants: BasicParticipant[]) => {
     return map;
   }, [preassignedRooms, participants]);
 
-  const initialTotalRooms =
-    preassignedRooms.length > 0 ? preassignedRooms.length : 1;
+  const initialTotalRooms = preassignedRooms.length > 0 ? preassignedRooms.length : 1;
   const initialAllowReturnToMainRoom =
-    preassignedRooms.length > 0
-      ? !!breakoutFeatures?.allowReturnToMainRoom
-      : true;
+    preassignedRooms.length > 0 ? !!breakoutFeatures?.allowReturnToMainRoom : true;
   const initialAllowSelfSelect =
     preassignedRooms.length > 0 ? !!breakoutFeatures?.allowSelfSelect : false;
 

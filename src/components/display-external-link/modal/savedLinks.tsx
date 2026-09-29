@@ -21,10 +21,7 @@ const SavedLinks = ({ link, setLink }: ISavedLinksProps) => {
   const [newUrlLink, setNewUrlLink] = useState<string>('');
 
   useEffect(() => {
-    idbGet<string[]>(
-      DB_STORE_NAMES.USER_SETTINGS,
-      EXTERNAL_DISPLAY_LINK_URLS,
-    ).then((urls) => {
+    idbGet<string[]>(DB_STORE_NAMES.USER_SETTINGS, EXTERNAL_DISPLAY_LINK_URLS).then((urls) => {
       if (urls && isArray(urls)) {
         setSavedLinks(urls);
       }
@@ -49,11 +46,7 @@ const SavedLinks = ({ link, setLink }: ISavedLinksProps) => {
     setSavedLinks((prevUrls) => {
       const newUrls = new Set([newUrlLink, ...prevUrls]);
       const arr = Array.from(newUrls);
-      idbStore(
-        DB_STORE_NAMES.USER_SETTINGS,
-        EXTERNAL_DISPLAY_LINK_URLS,
-        arr,
-      ).then();
+      idbStore(DB_STORE_NAMES.USER_SETTINGS, EXTERNAL_DISPLAY_LINK_URLS, arr).then();
       return arr;
     });
     setLink(newUrlLink);
@@ -64,11 +57,7 @@ const SavedLinks = ({ link, setLink }: ISavedLinksProps) => {
     async (urlToDelete: string) => {
       const newUrls = savedLinks.filter((url) => url !== urlToDelete);
       setSavedLinks(newUrls);
-      await idbStore(
-        DB_STORE_NAMES.USER_SETTINGS,
-        EXTERNAL_DISPLAY_LINK_URLS,
-        newUrls,
-      );
+      await idbStore(DB_STORE_NAMES.USER_SETTINGS, EXTERNAL_DISPLAY_LINK_URLS, newUrls);
 
       if (link === urlToDelete) {
         setLink('');
@@ -106,9 +95,7 @@ const SavedLinks = ({ link, setLink }: ISavedLinksProps) => {
           <PlusCircleIconSVG />
         </button>
       </div>
-      {errorMsg && (
-        <div className="error-msg text-xs text-red-600 py-1">{errorMsg}</div>
-      )}
+      {errorMsg && <div className="error-msg text-xs text-red-600 py-1">{errorMsg}</div>}
 
       {savedLinks.length > 0 && (
         <div className="max-h-40 overflow-y-auto scrollBar grid gap-2 mt-4">

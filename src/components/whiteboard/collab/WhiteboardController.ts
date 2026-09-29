@@ -1,9 +1,5 @@
 import * as Y from 'yjs';
-import {
-  Awareness,
-  applyAwarenessUpdate,
-  encodeAwarenessUpdate,
-} from 'y-protocols/awareness';
+import { Awareness, applyAwarenessUpdate, encodeAwarenessUpdate } from 'y-protocols/awareness';
 import { create, toJsonString } from '@bufbuild/protobuf';
 import {
   AnalyticsEvents,
@@ -41,11 +37,7 @@ import {
   participantsSelector,
   selectWhiteboardParticipants,
 } from '../../../store/slices/participantSlice';
-import {
-  base64ToUint8,
-  isUserRecorder,
-  uint8ToBase64,
-} from '../../../helpers/utils';
+import { base64ToUint8, isUserRecorder, uint8ToBase64 } from '../../../helpers/utils';
 import type { IParticipant } from '../../../store/slices/interfaces/participant';
 import type {
   WhiteboardControllerConfig,
@@ -77,13 +69,10 @@ export class WhiteboardController {
   private config: WhiteboardControllerConfig | null = null;
   private pendingSyncRequestIds = new Set<string>();
   private syncRequestAttempts = 0;
-  private backupResponseTimers = new Map<
-    string,
-    ReturnType<typeof setTimeout>
-  >();
+  private backupResponseTimers = new Map<string, ReturnType<typeof setTimeout>>();
   private syncRetryTimer: ReturnType<typeof setTimeout> | null = null;
-  private initialRequestResolver:
-    ((data: { fileId: string; page: number } | null) => void) | null = null;
+  private initialRequestResolver: ((data: { fileId: string; page: number } | null) => void) | null =
+    null;
   private initialRequestTimer: ReturnType<typeof setTimeout> | null = null;
   private saveTimer: ReturnType<typeof setTimeout> | null = null;
   // Local-origin doc updates (user annotations) counted since the last
@@ -173,10 +162,7 @@ export class WhiteboardController {
   };
 
   private matchesActiveScope = (scope: WhiteboardScope | null): boolean =>
-    !!scope &&
-    !!this.doc &&
-    scope.fileId === this.fileId &&
-    scope.page === this.page;
+    !!scope && !!this.doc && scope.fileId === this.fileId && scope.page === this.page;
 
   subscribe = (cb: () => void) => {
     this.listeners.add(cb);
@@ -216,15 +202,9 @@ export class WhiteboardController {
    * pending save), fetches the authoritative snapshot from the server for the
    * presenter, then kicks off the peer state-vector sync request.
    */
-  sync = (
-    fileId: string,
-    page: number,
-    options?: { hydrate?: boolean },
-  ): Promise<void> => {
+  sync = (fileId: string, page: number, options?: { hydrate?: boolean }): Promise<void> => {
     const hydrate = options?.hydrate ?? true;
-    this.syncChain = this.syncChain.then(() =>
-      this.doSync(fileId, page, hydrate),
-    );
+    this.syncChain = this.syncChain.then(() => this.doSync(fileId, page, hydrate));
     return this.syncChain;
   };
 
@@ -495,11 +475,7 @@ export class WhiteboardController {
     );
   };
 
-  uploadSessionData = async (
-    update: Uint8Array,
-    key: string,
-    targetRoomId?: string,
-  ) => {
+  uploadSessionData = async (update: Uint8Array, key: string, targetRoomId?: string) => {
     const conn = getNatsConn();
     if (!conn || !this.fileId) return;
     let value = update;
@@ -559,10 +535,7 @@ export class WhiteboardController {
       );
     });
 
-  handleSessionDataResponse = (
-    header: SessionDataHeader,
-    value: Uint8Array,
-  ) => {
+  handleSessionDataResponse = (header: SessionDataHeader, value: Uint8Array) => {
     if (header.dataType !== SessionDataType.WHITEBOARD) return;
     const key = header.key;
     if (!key) return;
@@ -571,8 +544,7 @@ export class WhiteboardController {
     // Treat diff keys as active: compare against the canonical key so a diff
     // response still applies to the live doc, but resolve the waiter by the
     // literal (possibly diff) key.
-    const isActive =
-      !!doc && canonicalKeyOf(key) === this.pageKey(this.fileId, this.page);
+    const isActive = !!doc && canonicalKeyOf(key) === this.pageKey(this.fileId, this.page);
 
     const resolveWaiter = () => {
       const waiter = this.sessionDataWaiters.get(key);
@@ -602,10 +574,7 @@ export class WhiteboardController {
       // listWhiteboardPages / peer-serving. Canonical responses keep their
       // (already decompressed) value cached for export.
       if (!isDiffKey(key)) {
-        void idbStore(DB_STORE_NAMES.WHITEBOARD, key, value).then(
-          resolveWaiter,
-          resolveWaiter,
-        );
+        void idbStore(DB_STORE_NAMES.WHITEBOARD, key, value).then(resolveWaiter, resolveWaiter);
       } else {
         resolveWaiter();
       }
@@ -623,9 +592,7 @@ export class WhiteboardController {
     const expected = Array.from({ length: totalPages }, (_, i) => i + 1);
     const local = await listWhiteboardPages(fileId);
     const missing = expected.filter((p) => !local.includes(p));
-    await Promise.all(
-      missing.map((page) => this.fetchSessionData(this.pageKey(fileId, page))),
-    );
+    await Promise.all(missing.map((page) => this.fetchSessionData(this.pageKey(fileId, page))));
   };
 
   /**
@@ -743,10 +710,7 @@ export class WhiteboardController {
             try {
               payload = decompress(binMessage);
             } catch (e) {
-              console.error(
-                '[WhiteboardController] failed to decompress scene update',
-                e,
-              );
+              console.error('[WhiteboardController] failed to decompress scene update', e);
               break;
             }
           }
@@ -832,20 +796,13 @@ export class WhiteboardController {
       return [];
     }
 
-    const defaultRoomLock =
-      state.session.currentRoom.metadata?.defaultLockSettings?.lockWhiteboard;
+    const defaultRoomLock = state.session.currentRoom.metadata?.defaultLockSettings?.lockWhiteboard;
 
     return participantsSelector
       .selectAll(state)
-      .filter(
-        (p) =>
-          p.userId !== currentUserId &&
-          p.isOnline &&
-          !p.metadata?.waitForApproval,
-      )
+      .filter((p) => p.userId !== currentUserId && p.isOnline && !p.metadata?.waitForApproval)
       .sort((a, b) => {
-        const presenterDiff =
-          (b.metadata?.isPresenter ? 1 : 0) - (a.metadata?.isPresenter ? 1 : 0);
+        const presenterDiff = (b.metadata?.isPresenter ? 1 : 0) - (a.metadata?.isPresenter ? 1 : 0);
         if (presenterDiff !== 0) {
           return presenterDiff;
         }
@@ -855,8 +812,7 @@ export class WhiteboardController {
         if (editDiff !== 0) {
           return editDiff;
         }
-        const adminDiff =
-          (b.metadata?.isAdmin ? 1 : 0) - (a.metadata?.isAdmin ? 1 : 0);
+        const adminDiff = (b.metadata?.isAdmin ? 1 : 0) - (a.metadata?.isAdmin ? 1 : 0);
         if (adminDiff !== 0) {
           return adminDiff;
         }
@@ -887,8 +843,7 @@ export class WhiteboardController {
         void this.hydrateFromServerAsNonPresenter().then(() => {
           const state = store.getState();
           resolve({
-            fileId:
-              this.fileId || state.whiteboard.currentWhiteboardOfficeFileId,
+            fileId: this.fileId || state.whiteboard.currentWhiteboardOfficeFileId,
             page: this.page || state.whiteboard.currentPage,
           });
         });
@@ -934,9 +889,7 @@ export class WhiteboardController {
     await this.sync(fileId, page, { hydrate: true });
   }
 
-  private resolveInitialRequest = (
-    data: { fileId: string; page: number } | null,
-  ) => {
+  private resolveInitialRequest = (data: { fileId: string; page: number } | null) => {
     if (this.initialRequestResolver) {
       const resolve = this.initialRequestResolver;
       this.initialRequestResolver = null;
@@ -1014,11 +967,7 @@ export class WhiteboardController {
 
     const senderScope = this.parseScope(message);
 
-    if (
-      !senderScope ||
-      !senderScope.fileId ||
-      typeof senderScope.page !== 'number'
-    ) {
+    if (!senderScope || !senderScope.fileId || typeof senderScope.page !== 'number') {
       sendFullInitialData = true;
 
       const { currentOfficeFilePages } = store.getState().whiteboard;
@@ -1065,26 +1014,14 @@ export class WhiteboardController {
         // Full-state payloads are gzip-compressed, flagged via scope.gzip.
         responseUpdate = compress(stored);
       }
-    } else if (
-      doc &&
-      elementsMap &&
-      this.matchesActiveScope(senderScope) &&
-      elementsMap.size > 0
-    ) {
+    } else if (doc && elementsMap && this.matchesActiveScope(senderScope) && elementsMap.size > 0) {
       responseUpdate = Y.encodeStateAsUpdate(doc, binMessage);
 
       responseMessage = this.buildScopeMessage({
         stateVector: uint8ToBase64(Y.encodeStateVector(doc)),
       });
-    } else if (
-      senderScope &&
-      senderScope.fileId &&
-      typeof senderScope.page === 'number'
-    ) {
-      const stored = await loadWhiteboardPageSnapshot(
-        senderScope.fileId,
-        senderScope.page,
-      );
+    } else if (senderScope && senderScope.fileId && typeof senderScope.page === 'number') {
+      const stored = await loadWhiteboardPageSnapshot(senderScope.fileId, senderScope.page);
 
       if (!stored?.length) {
         return;
@@ -1152,8 +1089,7 @@ export class WhiteboardController {
       return;
     }
 
-    const hasInitialData =
-      typeof scope.initial_data === 'string' && scope.initial_data.length > 0;
+    const hasInitialData = typeof scope.initial_data === 'string' && scope.initial_data.length > 0;
 
     if (!hasInitialData && !this.doc) {
       return;
@@ -1176,19 +1112,14 @@ export class WhiteboardController {
 
     if (hasInitialData) {
       try {
-        const initialData = JSON.parse(
-          scope.initial_data!,
-        ) as WhiteboardDataAsDonorData;
+        const initialData = JSON.parse(scope.initial_data!) as WhiteboardDataAsDonorData;
 
         donorFileId = initialData.currentWhiteboardOfficeFileId;
         donorPage = initialData.currentPageNumber;
 
         store.dispatch(addWhiteboardDataSentFromDonor(initialData));
       } catch (error) {
-        console.error(
-          '[WhiteboardController] failed to parse initial whiteboard data',
-          error,
-        );
+        console.error('[WhiteboardController] failed to parse initial whiteboard data', error);
         return;
       }
 
@@ -1206,10 +1137,7 @@ export class WhiteboardController {
         try {
           payload = decompress(binMessage);
         } catch (e) {
-          console.error(
-            '[WhiteboardController] failed to decompress sync response',
-            e,
-          );
+          console.error('[WhiteboardController] failed to decompress sync response', e);
           return;
         }
       }
@@ -1236,10 +1164,7 @@ export class WhiteboardController {
           );
         }
       } catch (error) {
-        console.error(
-          '[WhiteboardController] failed to process responder state vector',
-          error,
-        );
+        console.error('[WhiteboardController] failed to process responder state vector', error);
       }
     }
 
@@ -1312,11 +1237,7 @@ export class WhiteboardController {
    * updates must never be re-broadcast).
    */
   private handleAwarenessChange = (
-    {
-      added,
-      updated,
-      removed,
-    }: { added: number[]; updated: number[]; removed: number[] },
+    { added, updated, removed }: { added: number[]; updated: number[]; removed: number[] },
     origin: unknown,
   ) => {
     this.syncCollaborators();
@@ -1385,10 +1306,7 @@ export class WhiteboardController {
     try {
       applyAwarenessUpdate(this.awareness, update, WHITEBOARD_REMOTE_ORIGIN);
     } catch (e) {
-      console.error(
-        '[WhiteboardController] failed to apply remote awareness',
-        e,
-      );
+      console.error('[WhiteboardController] failed to apply remote awareness', e);
     }
   };
 }

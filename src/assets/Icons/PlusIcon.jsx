@@ -8,14 +8,7 @@ export const PlusIcon = () => {
     >
       <g filter="url(#filter0_di_1118_716)">
         <rect x="2" y="2" width="20" height="20" rx="10" fill="#009959" />
-        <rect
-          x="2.5"
-          y="2.5"
-          width="19"
-          height="19"
-          rx="9.5"
-          stroke="#009959"
-        />
+        <rect x="2.5" y="2.5" width="19" height="19" rx="9.5" stroke="#009959" />
         <path
           d="M11.9997 7.33337V16.6667M7.33301 12H16.6663"
           stroke="white"

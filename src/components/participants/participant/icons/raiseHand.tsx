@@ -12,14 +12,10 @@ interface IRaiseHandIconProps {
 }
 const RaiseHandIcon = ({ userId }: IRaiseHandIconProps) => {
   const isRaisedHand = useAppSelector(
-    (state) =>
-      participantsSelector.selectById(state, userId)?.metadata.raisedHand
-        ?.isRaised,
+    (state) => participantsSelector.selectById(state, userId)?.metadata.raisedHand?.isRaised,
   );
 
-  const position = useAppSelector(
-    (state) => selectRaisedHandsQueue(state).positions[userId],
-  );
+  const position = useAppSelector((state) => selectRaisedHandsQueue(state).positions[userId]);
   const showNumber = useAppSelector((state) => {
     const queue = selectRaisedHandsQueue(state);
     return queue.count >= 2 && !!queue.positions[userId];

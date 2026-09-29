@@ -15,20 +15,13 @@ interface IReactPlayerComponentProps {
   isPresenter: boolean;
 }
 
-const ReactPlayerComponent = ({
-  src,
-  isPresenter,
-}: IReactPlayerComponentProps) => {
+const ReactPlayerComponent = ({ src, isPresenter }: IReactPlayerComponentProps) => {
   const player = useRef<HTMLVideoElement | null>(null);
   const isSeeking = useRef(false);
 
   const playerEvent = useAppSelector((state) => state.externalMediaPlayer);
-  const height = useAppSelector(
-    (state) => state.bottomIconsActivity.screenHeight,
-  );
-  const width = useAppSelector(
-    (state) => state.bottomIconsActivity.screenWidth,
-  );
+  const height = useAppSelector((state) => state.bottomIconsActivity.screenHeight);
+  const width = useAppSelector((state) => state.bottomIconsActivity.screenWidth);
 
   useEffect(() => {
     if (!player.current || isPresenter) {
@@ -69,10 +62,7 @@ const ReactPlayerComponent = ({
       }
 
       const conn = getNatsConn();
-      await conn.sendDataMessage(
-        DataMsgBodyType.EXTERNAL_MEDIA_PLAYER_EVENTS,
-        JSON.stringify(msg),
-      );
+      await conn.sendDataMessage(DataMsgBodyType.EXTERNAL_MEDIA_PLAYER_EVENTS, JSON.stringify(msg));
     },
     [isPresenter],
   );

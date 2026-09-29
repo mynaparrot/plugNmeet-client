@@ -1,10 +1,4 @@
-import React, {
-  Dispatch,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { Dispatch, useCallback, useEffect, useRef, useState } from 'react';
 import { PopoverPanel } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
@@ -19,20 +13,13 @@ interface SubtitleHistoryPanelProps {
   setShowPopover: Dispatch<boolean>;
 }
 
-const SubtitleHistoryPanel = ({
-  showPopover,
-  setShowPopover,
-}: SubtitleHistoryPanelProps) => {
+const SubtitleHistoryPanel = ({ showPopover, setShowPopover }: SubtitleHistoryPanelProps) => {
   const { t } = useTranslation();
   const scrollableContainerRef = useRef<HTMLDivElement>(null);
   const [showScrollDownBtn, setShowScrollDownBtn] = useState(false);
 
-  const lastFinalTexts = useAppSelector(
-    (state) => state.speechServices.lastFinalTexts,
-  );
-  const selectedSubtitleLang = useAppSelector(
-    (state) => state.speechServices.selectedSubtitleLang,
-  );
+  const lastFinalTexts = useAppSelector((state) => state.speechServices.lastFinalTexts);
+  const selectedSubtitleLang = useAppSelector((state) => state.speechServices.selectedSubtitleLang);
 
   const downloadTexts = useCallback(() => {
     if (!lastFinalTexts.length) {
@@ -52,9 +39,7 @@ const SubtitleHistoryPanel = ({
       time: formattedTime,
     })}\n\n--------------------------------------------------\n\n`;
 
-    const body = lastFinalTexts
-      .map((t) => `[${t.time}] ${t.from}:\n${t.text}`)
-      .join('\n\n');
+    const body = lastFinalTexts.map((t) => `[${t.time}] ${t.from}:\n${t.text}`).join('\n\n');
 
     const fileContent = header + body;
 
@@ -64,10 +49,7 @@ const SubtitleHistoryPanel = ({
 
     const link = document.createElement('a');
     link.setAttribute('href', window.URL.createObjectURL(formBlob));
-    link.setAttribute(
-      'download',
-      `subtitles-${selectedSubtitleLang}-${fileTimestamp}.txt`,
-    );
+    link.setAttribute('download', `subtitles-${selectedSubtitleLang}-${fileTimestamp}.txt`);
     document.body.appendChild(link);
 
     link.click();
@@ -90,8 +72,7 @@ const SubtitleHistoryPanel = ({
       // Only scroll if the user is near the bottom.
       // This prevents interrupting them if they've scrolled up to read history.
       const isScrolledToBottom =
-        container.scrollHeight - container.clientHeight <=
-        container.scrollTop + 200; // 200px threshold is more forgiving
+        container.scrollHeight - container.clientHeight <= container.scrollTop + 200; // 200px threshold is more forgiving
 
       if (isScrolledToBottom) {
         container.scrollTo({
@@ -119,8 +100,7 @@ const SubtitleHistoryPanel = ({
       // We'll consider the user has scrolled up if they are more than 200px
       // from the bottom. This threshold prevents the button from flickering.
       const isScrolledUp =
-        container.scrollHeight - container.clientHeight >
-        container.scrollTop + 200;
+        container.scrollHeight - container.clientHeight > container.scrollTop + 200;
       // Avoid unnecessary re-renders if the state is already correct.
       if (isScrolledUp !== showScrollDownBtn) {
         setShowScrollDownBtn(isScrolledUp);
@@ -134,9 +114,7 @@ const SubtitleHistoryPanel = ({
       static={showPopover}
     >
       <h2 className="relative text-sm font-medium leading-6 text-white px-4 flex items-center h-10 justify-between border-b border-white/15">
-        <div className="left">
-          {t('speech-services.subtitle-history-modal-title')}
-        </div>
+        <div className="left">{t('speech-services.subtitle-history-modal-title')}</div>
         <div className="right flex items-center justify-center gap-3">
           {showScrollDownBtn && (
             <button

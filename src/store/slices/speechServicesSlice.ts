@@ -33,10 +33,7 @@ const speechServicesSlice = createSlice({
     updateSubtitleFontSize: (state, action: PayloadAction<number>) => {
       state.subtitleFontSize = action.payload;
     },
-    addSpeechSubtitleText: (
-      state,
-      action: PayloadAction<ISpeechSubtitleText>,
-    ) => {
+    addSpeechSubtitleText: (state, action: PayloadAction<ISpeechSubtitleText>) => {
       if (action.payload.type === 'interim') {
         state.interimText = action.payload.result;
       } else {

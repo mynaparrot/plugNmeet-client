@@ -3,10 +3,7 @@ import ReactDOMServer from 'react-dom/server';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
-import {
-  CommonResponseSchema,
-  EnableSipDialInReqSchema,
-} from 'plugnmeet-protocol-js';
+import { CommonResponseSchema, EnableSipDialInReqSchema } from 'plugnmeet-protocol-js';
 
 import { useAppSelector } from '../../../store';
 import { LoadingIcon } from '../../../assets/Icons/Loading';
@@ -19,8 +16,7 @@ import i18n from '../../../helpers/i18n';
 const SipDialIn = () => {
   const { t } = useTranslation();
   const sipDialInFeatures = useAppSelector(
-    (state) =>
-      state.session.currentRoom?.metadata?.roomFeatures?.sipDialInFeatures,
+    (state) => state.session.currentRoom?.metadata?.roomFeatures?.sipDialInFeatures,
   );
   const [hidePhoneNumber, setHidePhoneNumber] = useState<boolean>(
     !!sipDialInFeatures?.hidePhoneNumber,
@@ -61,9 +57,9 @@ const SipDialIn = () => {
       return;
     }
 
-    const formattedPhoneNumbers = sipDialInFeatures?.phoneNumbers.map(
-      (phone) => <li key={phone}>{phone}</li>,
-    );
+    const formattedPhoneNumbers = sipDialInFeatures?.phoneNumbers.map((phone) => (
+      <li key={phone}>{phone}</li>
+    ));
 
     const elm = ReactDOMServer.renderToString(
       <div style={{ padding: '5px' }}>
@@ -73,12 +69,8 @@ const SipDialIn = () => {
         <p style={{ margin: '2px 0' }}>
           {i18n.t('sip-dial-in-features.pin')}: {sipDialInFeatures?.pin}
         </p>
-        <p style={{ margin: '2px 0' }}>
-          {i18n.t('sip-dial-in-features.phone-numbers')}
-        </p>
-        <ul style={{ margin: '4px 0 0 0', paddingLeft: '20px' }}>
-          {formattedPhoneNumbers}
-        </ul>
+        <p style={{ margin: '2px 0' }}>{i18n.t('sip-dial-in-features.phone-numbers')}</p>
+        <ul style={{ margin: '4px 0 0 0', paddingLeft: '20px' }}>{formattedPhoneNumbers}</ul>
       </div>,
     );
     await conn.sendChatMsg('public', elm);
@@ -133,26 +125,20 @@ const SipDialIn = () => {
           <label className="pb-2 sm:pb-0 sm:pe-4 flex-1 text-sm text-Gray-950 text-start dark:text-dark-text">
             {t('sip-dial-in-features.phone-numbers', 'Phone numbers')}
           </label>
-          {sipDialInFeatures?.phoneNumbers &&
-          sipDialInFeatures.phoneNumbers.length > 0 ? (
+          {sipDialInFeatures?.phoneNumbers && sipDialInFeatures.phoneNumbers.length > 0 ? (
             <ul className="grid gap-y-2 w-full max-w-full sm:max-w-[250px]">
               {sipDialInFeatures.phoneNumbers.map((phone) => (
                 <li key={phone} className="flex items-center gap-2 text-sm">
                   <div className="thumb h-6 w-6 rounded-full bg-blue-500 text-xs font-medium text-white flex items-center justify-center overflow-hidden shrink-0">
                     P
                   </div>
-                  <span className="text-Gray-950 dark:text-white break-all">
-                    {phone}
-                  </span>
+                  <span className="text-Gray-950 dark:text-white break-all">{phone}</span>
                 </li>
               ))}
             </ul>
           ) : (
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              {t(
-                'sip-dial-in-features.no-phone-numbers',
-                'No phone numbers available.',
-              )}
+              {t('sip-dial-in-features.no-phone-numbers', 'No phone numbers available.')}
             </p>
           )}
         </div>
@@ -168,11 +154,7 @@ const SipDialIn = () => {
     );
   };
 
-  return (
-    <div className="mt-2">
-      {sipDialInFeatures?.isActive ? renderInfo() : renderForm()}
-    </div>
-  );
+  return <div className="mt-2">{sipDialInFeatures?.isActive ? renderInfo() : renderForm()}</div>;
 };
 
 export default SipDialIn;

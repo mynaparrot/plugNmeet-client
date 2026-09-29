@@ -14,9 +14,8 @@ export function renewTokenOnError(response: FetchBaseQueryError) {
   }
 }
 
-export const handleProtobufResponse =
-  (schema: any) => async (res: Response) => {
-    const buf = await res.arrayBuffer();
-    const binary = fromBinary(schema, new Uint8Array(buf));
-    return toJson(schema, binary);
-  };
+export const handleProtobufResponse = (schema: any) => async (res: Response) => {
+  const buf = await res.arrayBuffer();
+  const binary = fromBinary(schema, new Uint8Array(buf));
+  return toJson(schema, binary);
+};

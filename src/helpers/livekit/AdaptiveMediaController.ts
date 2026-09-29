@@ -2,10 +2,7 @@ import { Room, RoomEvent, Track } from 'livekit-client';
 import { NativeMediaSource } from 'plugnmeet-protocol-js';
 
 import { store } from '../../store';
-import {
-  addUserNotification,
-  updateMediaDegradation,
-} from '../../store/slices/roomSettingsSlice';
+import { addUserNotification, updateMediaDegradation } from '../../store/slices/roomSettingsSlice';
 import i18n from '../i18n';
 import {
   getNativePublisherStatus,
@@ -157,8 +154,7 @@ export default class AdaptiveMediaController {
     const session = store.getState().session;
     const isAdmin = !!session.currentUser?.metadata?.isAdmin;
     const userLock = session.currentUser?.metadata?.lockSettings?.lockWebcam;
-    const defaultLock =
-      !!session.currentRoom?.metadata?.defaultLockSettings?.lockWebcam;
+    const defaultLock = !!session.currentRoom?.metadata?.defaultLockSettings?.lockWebcam;
     return !isAdmin && (userLock ?? defaultLock);
   }
 
@@ -166,10 +162,7 @@ export default class AdaptiveMediaController {
     const session = store.getState().session;
     const roomFeatures = session.currentRoom?.metadata?.roomFeatures;
     const isAdmin = !!session.currentUser?.metadata?.isAdmin;
-    return (
-      !!roomFeatures?.allowWebcams &&
-      !(roomFeatures?.adminOnlyWebcams && !isAdmin)
-    );
+    return !!roomFeatures?.allowWebcams && !(roomFeatures?.adminOnlyWebcams && !isAdmin);
   }
 
   /**
@@ -287,8 +280,7 @@ export default class AdaptiveMediaController {
       (stats.uploadQuality === PnmConnectionQuality.Poor ||
         stats.uploadQuality === PnmConnectionQuality.Lost) &&
       this.isActiveScreenshare &&
-      Date.now() - this.lastScreenshareSuggestionAt >
-        SCREENSHARE_SUGGESTION_COOLDOWN_MS
+      Date.now() - this.lastScreenshareSuggestionAt > SCREENSHARE_SUGGESTION_COOLDOWN_MS
     ) {
       this.lastScreenshareSuggestionAt = Date.now();
       this.notify('notifications.suggest-pause-screenshare', 'warning');
@@ -313,14 +305,8 @@ export default class AdaptiveMediaController {
           return;
 
         case CriticalReason.UploadLost:
-          if (
-            this.isActiveWebcam &&
-            !this.isWebcamMuted &&
-            !this.outgoingCameraAutoMuted
-          ) {
-            await this.pauseOutgoingCamera(
-              'notifications.video-paused-weak-connection',
-            );
+          if (this.isActiveWebcam && !this.isWebcamMuted && !this.outgoingCameraAutoMuted) {
+            await this.pauseOutgoingCamera('notifications.video-paused-weak-connection');
             return;
           }
           break;
@@ -339,10 +325,7 @@ export default class AdaptiveMediaController {
       }
     }
 
-    this.downlinkScore = this.updateScore(
-      this.downlinkScore,
-      stats.receiveQuality,
-    );
+    this.downlinkScore = this.updateScore(this.downlinkScore, stats.receiveQuality);
 
     this.uplinkScore = this.updateScore(this.uplinkScore, stats.uploadQuality);
 
@@ -368,9 +351,7 @@ export default class AdaptiveMediaController {
       !this.isWebcamMuted &&
       !this.outgoingCameraAutoMuted
     ) {
-      await this.pauseOutgoingCamera(
-        'notifications.video-paused-audio-protection',
-      );
+      await this.pauseOutgoingCamera('notifications.video-paused-audio-protection');
       return;
     }
 
@@ -412,9 +393,7 @@ export default class AdaptiveMediaController {
       !this.isWebcamMuted &&
       !this.outgoingCameraAutoMuted
     ) {
-      await this.pauseOutgoingCamera(
-        'notifications.video-paused-weak-connection',
-      );
+      await this.pauseOutgoingCamera('notifications.video-paused-weak-connection');
       return;
     }
 
@@ -462,16 +441,12 @@ export default class AdaptiveMediaController {
     this.consecutiveLostChecks = 0;
   }
 
-  private async enterAudioOnlyMode(
-    reason: 'audio-stuck' | 'connection-lost',
-  ): Promise<void> {
+  private async enterAudioOnlyMode(reason: 'audio-stuck' | 'connection-lost'): Promise<void> {
     const alreadyAudioOnly =
       this.criticalMode &&
       this.incomingWebcamPaused &&
       this.incomingScreensharePaused &&
-      (!this.isActiveWebcam ||
-        this.isWebcamMuted ||
-        this.outgoingCameraAutoMuted);
+      (!this.isActiveWebcam || this.isWebcamMuted || this.outgoingCameraAutoMuted);
 
     if (alreadyAudioOnly) {
       return;
@@ -547,11 +522,7 @@ export default class AdaptiveMediaController {
   }
 
   private async pauseOutgoingCamera(notificationKey: string): Promise<void> {
-    if (
-      this.outgoingCameraAutoMuted ||
-      !this.isActiveWebcam ||
-      this.isWebcamMuted
-    ) {
+    if (this.outgoingCameraAutoMuted || !this.isActiveWebcam || this.isWebcamMuted) {
       return;
     }
 
@@ -587,9 +558,7 @@ export default class AdaptiveMediaController {
    */
   private evaluateNormalRecovery(stats: QualityStats): void {
     const hasDegradation =
-      this.incomingScreensharePaused ||
-      this.incomingWebcamPaused ||
-      this.outgoingCameraAutoMuted;
+      this.incomingScreensharePaused || this.incomingWebcamPaused || this.outgoingCameraAutoMuted;
 
     if (!hasDegradation) {
       this.normalRecoveryStreak = 0;
@@ -647,10 +616,7 @@ export default class AdaptiveMediaController {
 
     this.criticalRecoveryStreak += 1;
 
-    if (
-      this.criticalRecoveryStreak < CRITICAL_RECOVERY_STREAK ||
-      this.restoreAvailable
-    ) {
+    if (this.criticalRecoveryStreak < CRITICAL_RECOVERY_STREAK || this.restoreAvailable) {
       return;
     }
 
@@ -692,11 +658,7 @@ export default class AdaptiveMediaController {
       return;
     }
 
-    if (
-      !this.isActiveWebcam ||
-      !this.isWebcamAllowed() ||
-      this.isWebcamLocked()
-    ) {
+    if (!this.isActiveWebcam || !this.isWebcamAllowed() || this.isWebcamLocked()) {
       /*
        * The controller no longer owns a camera restore when policy prevents
        * enabling it.
@@ -758,11 +720,7 @@ export default class AdaptiveMediaController {
     let cameraRestored = true;
 
     if (this.outgoingCameraAutoMuted) {
-      if (
-        this.isActiveWebcam &&
-        this.isWebcamAllowed() &&
-        !this.isWebcamLocked()
-      ) {
+      if (this.isActiveWebcam && this.isWebcamAllowed() && !this.isWebcamLocked()) {
         // Clear ownership BEFORE initiating the unmute (see note above).
         this.outgoingCameraAutoMuted = false;
 
@@ -807,10 +765,7 @@ export default class AdaptiveMediaController {
   }
 
   private isRecoverableQuality(quality: PnmConnectionQuality): boolean {
-    return (
-      quality === PnmConnectionQuality.Excellent ||
-      quality === PnmConnectionQuality.Good
-    );
+    return quality === PnmConnectionQuality.Excellent || quality === PnmConnectionQuality.Good;
   }
 
   private updateScore(score: number, quality: PnmConnectionQuality): number {
@@ -921,10 +876,7 @@ export default class AdaptiveMediaController {
       await room.localParticipant.setCameraEnabled(!muted);
       return true;
     } catch (error) {
-      console.error(
-        `[AdaptiveMedia] failed to ${muted ? 'pause' : 'restore'} local camera`,
-        error,
-      );
+      console.error(`[AdaptiveMedia] failed to ${muted ? 'pause' : 'restore'} local camera`, error);
 
       return false;
     }
@@ -1066,8 +1018,7 @@ export default class AdaptiveMediaController {
 
     const changed =
       current.incomingWebcamPaused !== snapshot.incomingWebcamPaused ||
-      current.incomingScreensharePaused !==
-        snapshot.incomingScreensharePaused ||
+      current.incomingScreensharePaused !== snapshot.incomingScreensharePaused ||
       current.outgoingCameraPaused !== snapshot.outgoingCameraPaused ||
       current.autoRestoreSuspended !== snapshot.autoRestoreSuspended;
 

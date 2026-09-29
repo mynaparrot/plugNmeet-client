@@ -82,9 +82,7 @@ export const parseAIPollDraft = (text: string): AIPollDraft => {
   }
   const options = raw.options
     .map((option) =>
-      option && typeof option === 'object'
-        ? (option as Record<string, unknown>)
-        : null,
+      option && typeof option === 'object' ? (option as Record<string, unknown>) : null,
     )
     .filter((option) => option !== null)
     .map((option) => ({
@@ -174,9 +172,7 @@ export const generatePollWithAI = async (prompt: string): Promise<string> => {
  * event handler. Poll-tagged chunks are delivered to the matching pending poll
  * AI request; everything else is handled by the chat Redux slice.
  */
-export const handlePollAIStreamResult = (
-  data: InsightsAITextChatStreamResult,
-): boolean => {
+export const handlePollAIStreamResult = (data: InsightsAITextChatStreamResult): boolean => {
   const entry = pendingStreams.get(data.id);
   if (!entry) {
     return false;

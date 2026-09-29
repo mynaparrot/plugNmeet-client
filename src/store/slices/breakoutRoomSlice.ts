@@ -13,10 +13,7 @@ const breakoutRoomSlice = createSlice({
   name: 'breakoutRoom',
   initialState,
   reducers: {
-    updateBreakoutRoomDroppedUser: (
-      state,
-      action: PayloadAction<DroppedUser>,
-    ) => {
+    updateBreakoutRoomDroppedUser: (state, action: PayloadAction<DroppedUser>) => {
       state.droppedUser = action.payload;
     },
     setReturningToMainRoom: (state, action: PayloadAction<boolean>) => {
@@ -25,7 +22,6 @@ const breakoutRoomSlice = createSlice({
   },
 });
 
-export const { updateBreakoutRoomDroppedUser, setReturningToMainRoom } =
-  breakoutRoomSlice.actions;
+export const { updateBreakoutRoomDroppedUser, setReturningToMainRoom } = breakoutRoomSlice.actions;
 
 export default breakoutRoomSlice.reducer;

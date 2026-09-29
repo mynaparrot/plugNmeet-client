@@ -9,17 +9,11 @@ interface ISavedLinkItemProps {
   onDelete: (url: string) => void;
 }
 
-const SavedLinkItem = ({
-  url,
-  selectedUrl,
-  onSelect,
-  onDelete,
-}: ISavedLinkItemProps) => {
+const SavedLinkItem = ({ url, selectedUrl, onSelect, onDelete }: ISavedLinkItemProps) => {
   let classNames =
     'flex items-center gap-4 py-2 px-3 w-full rounded-xl cursor-pointer transition-all duration-200';
   if (selectedUrl === url) {
-    classNames +=
-      ' border-2 border-Blue2-500 bg-Blue2-50 dark:bg-dark-secondary3';
+    classNames += ' border-2 border-Blue2-500 bg-Blue2-50 dark:bg-dark-secondary3';
   } else {
     classNames +=
       ' border-2 border-Gray-100 dark:border-Gray-800 bg-white dark:bg-dark-primary hover:bg-Gray-50';

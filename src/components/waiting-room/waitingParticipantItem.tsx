@@ -18,9 +18,7 @@ interface IWaitingParticipantItemProps {
   participant: IParticipant;
 }
 
-const WaitingParticipantItem = ({
-  participant,
-}: IWaitingParticipantItemProps) => {
+const WaitingParticipantItem = ({ participant }: IWaitingParticipantItemProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -134,10 +132,7 @@ const WaitingParticipantItem = ({
       <div className="flex gap-1 w-auto items-center justify-end">
         {isProcessing ? (
           <div className="w-10 h-6 flex justify-center items-center">
-            <LoadingIcon
-              className="w-5 h-5 animate-spin"
-              fillColor={'#004D90'}
-            />
+            <LoadingIcon className="w-5 h-5 animate-spin" fillColor={'#004D90'} />
           </div>
         ) : (
           <>

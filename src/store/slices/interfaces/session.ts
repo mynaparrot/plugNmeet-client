@@ -1,8 +1,4 @@
-import {
-  ClientType,
-  type RoomMetadata,
-  UserMetadata,
-} from 'plugnmeet-protocol-js';
+import { ClientType, type RoomMetadata, UserMetadata } from 'plugnmeet-protocol-js';
 import { PnmConnectionQuality } from '../../../helpers/livekit/ConnectionQualityMonitor';
 
 export enum UserDeviceType {

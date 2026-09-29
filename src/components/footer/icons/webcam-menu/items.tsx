@@ -33,15 +33,9 @@ const WebcamMenuItems = ({
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const videoDevices = useAppSelector(
-    (state) => state.roomSettings.videoDevices,
-  );
-  const selectedVideoDevice = useAppSelector(
-    (state) => state.roomSettings.selectedVideoDevice,
-  );
-  const isWebcamMuted = useAppSelector(
-    (state) => state.bottomIconsActivity.isWebcamMuted,
-  );
+  const videoDevices = useAppSelector((state) => state.roomSettings.videoDevices);
+  const selectedVideoDevice = useAppSelector((state) => state.roomSettings.selectedVideoDevice);
+  const isWebcamMuted = useAppSelector((state) => state.bottomIconsActivity.isWebcamMuted);
 
   const handleDeviceChange = useCallback(
     (deviceId: string) => {
@@ -57,14 +51,9 @@ const WebcamMenuItems = ({
       return;
     }
     if (currentRoom) {
-      const publication = currentRoom.localParticipant.getTrackPublication(
-        Track.Source.Camera,
-      );
+      const publication = currentRoom.localParticipant.getTrackPublication(Track.Source.Camera);
       if (publication && publication.track) {
-        await currentRoom.localParticipant.unpublishTrack(
-          publication.track,
-          true,
-        );
+        await currentRoom.localParticipant.unpublishTrack(publication.track, true);
         dispatch(updateIsActiveWebcam(false));
         dispatch(updateIsWebcamMuted(false));
         dispatch(updateSelectedVideoDevice(''));
@@ -89,9 +78,7 @@ const WebcamMenuItems = ({
               <button
                 type="button"
                 className={`${
-                  selectedVideoDevice === device.id
-                    ? 'bg-Gray-50 dark:bg-dark-secondary2'
-                    : ''
+                  selectedVideoDevice === device.id ? 'bg-Gray-50 dark:bg-dark-secondary2' : ''
                 } h-8 w-full flex items-center justify-between text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus-ring`}
                 onClick={() => handleDeviceChange(device.id)}
               >
@@ -123,9 +110,7 @@ const WebcamMenuItems = ({
               onClick={toggleWebcam}
             >
               <CameraOff classes={'h-4 w-auto'} />
-              {isWebcamMuted
-                ? t('footer.icons.start-webcam')
-                : t('footer.icons.turn-off-webcam')}
+              {isWebcamMuted ? t('footer.icons.start-webcam') : t('footer.icons.turn-off-webcam')}
             </button>
           )}
         </MenuItem>

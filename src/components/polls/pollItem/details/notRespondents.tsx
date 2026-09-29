@@ -2,11 +2,7 @@ import React, { useMemo } from 'react';
 import { differenceWith } from 'es-toolkit';
 import { useTranslation } from 'react-i18next';
 
-import {
-  getFormatedRespondents,
-  PollDataWithOption,
-  Respondents,
-} from '../../utils';
+import { getFormatedRespondents, PollDataWithOption, Respondents } from '../../utils';
 import { useAppSelector } from '../../../../store';
 import { selectBasicParticipants } from '../../../../store/slices/participantSlice';
 

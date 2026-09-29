@@ -49,11 +49,7 @@ const RoomLists = ({ setMessage }: IRoomListsProps) => {
           <p className="text-xs text-Gray-600 dark:text-Gray-300 mt-1 mb-2">
             {t('breakout-room.unassigned-users-desc')}
           </p>
-          <BreakoutRoomUsers
-            variant="unassigned"
-            users={unassignedUsers}
-            setMessage={setMessage}
-          />
+          <BreakoutRoomUsers variant="unassigned" users={unassignedUsers} setMessage={setMessage} />
         </div>
       )}
       {sortedRooms.map((room) => (

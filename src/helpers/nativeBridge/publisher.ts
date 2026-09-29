@@ -24,13 +24,8 @@ import {
 import { updateScreenSharing } from '../../store/slices/sessionSlice';
 
 // ---- outbound messages ----
-const send = (
-  action: NativeBridgeActions,
-  payload?: NativeBridgeMsg['payload'],
-): void => {
-  nativeBridge.send(
-    create(NativeBridgeMsgSchema, payload ? { action, payload } : { action }),
-  );
+const send = (action: NativeBridgeActions, payload?: NativeBridgeMsg['payload']): void => {
+  nativeBridge.send(create(NativeBridgeMsgSchema, payload ? { action, payload } : { action }));
 };
 
 /** (Handshake) provide the native host with its LiveKit credentials. */

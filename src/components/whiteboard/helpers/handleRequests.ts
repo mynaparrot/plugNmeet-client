@@ -8,10 +8,7 @@ import ConnectNats from '../../../helpers/nats/ConnectNats';
 let preAppState: Record<string, any> | null = null,
   conn: ConnectNats;
 
-export const broadcastCurrentPageNumber = async (
-  page: number,
-  sendTo?: string,
-) => {
+export const broadcastCurrentPageNumber = async (page: number, sendTo?: string) => {
   if (!conn) {
     conn = getNatsConn();
   }
@@ -21,11 +18,7 @@ export const broadcastCurrentPageNumber = async (
   });
 };
 
-export const broadcastCurrentFileId = async (
-  fileId: string,
-  page: number,
-  sendTo?: string,
-) => {
+export const broadcastCurrentFileId = async (fileId: string, page: number, sendTo?: string) => {
   if (!conn) {
     conn = getNatsConn();
   }
@@ -40,20 +33,14 @@ export const broadcastCurrentFileId = async (
  * this will help other participants to download preloaded file
  * there is no other reason as reconcileAndUpdateScene will track images anyway
  */
-export const broadcastCurrentOfficeFilePages = async (
-  pages: string,
-  sendTo?: string,
-) => {
+export const broadcastCurrentOfficeFilePages = async (pages: string, sendTo?: string) => {
   if (!conn) {
     conn = getNatsConn();
   }
-  await conn.sendWhiteboardData(
-    DataMsgBodyType.UPDATE_CURRENT_OFFICE_FILE_PAGES,
-    {
-      message: pages,
-      to: sendTo,
-    },
-  );
+  await conn.sendWhiteboardData(DataMsgBodyType.UPDATE_CURRENT_OFFICE_FILE_PAGES, {
+    message: pages,
+    to: sendTo,
+  });
 };
 
 export const broadcastAppStateChanges = async (

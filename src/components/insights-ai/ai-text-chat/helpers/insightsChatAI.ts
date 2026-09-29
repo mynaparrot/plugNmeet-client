@@ -79,9 +79,7 @@ export const executeInsightsChatAI = async (
  * event handler after the notepad/whiteboard/poll requestFrom routing;
  * untagged chunks that don't match a pending stream are simply ignored.
  */
-export const handleInsightsChatAIStreamResult = (
-  data: InsightsAITextChatStreamResult,
-): boolean => {
+export const handleInsightsChatAIStreamResult = (data: InsightsAITextChatStreamResult): boolean => {
   const entry = pendingStreams.get(data.id);
   if (!entry) {
     return false;

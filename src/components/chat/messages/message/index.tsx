@@ -3,12 +3,7 @@ import { ChatMessage } from 'plugnmeet-protocol-js';
 
 import { ICurrentUser } from '../../../../store/slices/interfaces/session';
 import { WELCOME_MESSAGE_ID } from '../../../../store/slices/chatMessagesSlice';
-import {
-  MyMessage,
-  OtherUserMessage,
-  SystemMessage,
-  WelcomeMessage,
-} from './messageTypes';
+import { MyMessage, OtherUserMessage, SystemMessage, WelcomeMessage } from './messageTypes';
 
 interface IMessageProps {
   body: ChatMessage;
@@ -17,12 +12,7 @@ interface IMessageProps {
   onJumpQuote?: (id: string) => void;
 }
 
-const Message = ({
-  body,
-  chatKey,
-  currentUser,
-  onJumpQuote,
-}: IMessageProps) => {
+const Message = ({ body, chatKey, currentUser, onJumpQuote }: IMessageProps) => {
   let content: ReactElement | null;
 
   if (body.fromUserId === 'system') {

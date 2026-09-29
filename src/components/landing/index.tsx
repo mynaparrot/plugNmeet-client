@@ -1,10 +1,4 @@
-import React, {
-  Dispatch,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { Dispatch, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { store, useAppDispatch, useAppSelector } from '../../store';
@@ -35,10 +29,7 @@ interface StartupJoinModalProps {
   roomConnectionStatus: roomConnectionStatus;
 }
 
-const Landing = ({
-  setIsAppReady,
-  roomConnectionStatus,
-}: StartupJoinModalProps) => {
+const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   // static values
@@ -68,12 +59,10 @@ const Landing = ({
   );
   const waitingRoomMessage = useAppSelector(
     (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.waitingRoomFeatures
-        ?.waitingRoomMsg,
+      state.session.currentRoom.metadata?.roomFeatures?.waitingRoomFeatures?.waitingRoomMsg,
   );
   const lockMicrophone = useAppSelector(
-    (state) =>
-      state.session.currentUser?.metadata?.lockSettings?.lockMicrophone,
+    (state) => state.session.currentUser?.metadata?.lockSettings?.lockMicrophone,
   );
   const lockWebcam = useAppSelector(
     (state) => state.session.currentUser?.metadata?.lockSettings?.lockWebcam,
@@ -92,12 +81,8 @@ const Landing = ({
     disableMic,
   } = useMediaDevices();
 
-  const [showLoadingMsg, setShowLoadingMsg] = useState<string | undefined>(
-    undefined,
-  );
-  const [isReadyToConn, setIsReadyToConn] = useState<boolean | undefined>(
-    undefined,
-  );
+  const [showLoadingMsg, setShowLoadingMsg] = useState<string | undefined>(undefined);
+  const [isReadyToConn, setIsReadyToConn] = useState<boolean | undefined>(undefined);
   // Picker modal state lives here so the "Enable microphone" button
   // can open the same picker (not just enumerate devices silently).
   const [showMicPicker, setShowMicPicker] = useState(false);
@@ -143,14 +128,7 @@ const Landing = ({
       }
     }
     setIsReadyToConn(true);
-  }, [
-    hybrid,
-    selectedAudioDevice,
-    selectedVideoDevice,
-    dispatch,
-    videoDevices,
-    audioDevices,
-  ]);
+  }, [hybrid, selectedAudioDevice, selectedVideoDevice, dispatch, videoDevices, audioDevices]);
 
   const getJoinPrompt = useCallback(() => {
     if (hybrid) {
@@ -240,16 +218,10 @@ const Landing = ({
               >
                 {hybrid ? (
                   <div className="w-full h-full flex items-center justify-center">
-                    <img
-                      src={logo}
-                      alt="logo"
-                      className="max-w-[60%] max-h-[60%] object-contain"
-                    />
+                    <img src={logo} alt="logo" className="max-w-[60%] max-h-[60%] object-contain" />
                   </div>
                 ) : (
-                  selectedVideoDevice !== '' && (
-                    <WebcamPreview deviceId={selectedVideoDevice} />
-                  )
+                  selectedVideoDevice !== '' && <WebcamPreview deviceId={selectedVideoDevice} />
                 )}
               </div>
               <div className="micro-cam-wrap flex justify-center py-5 gap-5 empty:hidden">
@@ -294,25 +266,20 @@ const Landing = ({
                     <div className="texts text-center md:text-start">
                       <h3 className="font-bold text-lg md:text-xl 3xl:text-2xl text-Gray-950 dark:text-white leading-snug pb-2 flex items-center justify-center md:justify-start gap-2">
                         <LoadingIcon
-                          className={
-                            'inline h-5 w-5 text-Gray-200 animate-spin'
-                          }
+                          className={'inline h-5 w-5 text-Gray-200 animate-spin'}
                           fillColor={'#004D90'}
                         />
                         {t('landing.waiting-for-approval-title')}
                       </h3>
                       <p className="text-sm 3xl:text-base text-Gray-800 dark:text-white/90 md:ps-7">
-                        {waitingRoomMessage ||
-                          t('notifications.waiting-for-approval')}
+                        {waitingRoomMessage || t('notifications.waiting-for-approval')}
                       </p>
                     </div>
                   ) : (
                     <div className="texts text-center md:text-start">
                       <h3 className="font-bold text-lg md:text-xl 3xl:text-2xl text-Gray-950 dark:text-white leading-snug pb-2 flex items-center justify-center md:justify-start gap-2">
                         <LoadingIcon
-                          className={
-                            'inline w-7 h-7 text-Gray-200 animate-spin'
-                          }
+                          className={'inline w-7 h-7 text-Gray-200 animate-spin'}
                           fillColor={'#004D90'}
                         />
                         {showLoadingMsg}

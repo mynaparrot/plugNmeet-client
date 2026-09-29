@@ -16,28 +16,23 @@ interface MeetingSummarizationProps {
   closeModal: () => void;
 }
 
-const MeetingSummarization = ({
-  setErrorMsg,
-  closeModal,
-}: MeetingSummarizationProps) => {
+const MeetingSummarization = ({ setErrorMsg, closeModal }: MeetingSummarizationProps) => {
   const { t } = useTranslation();
   // all static values
   const { enabledSelfInsertEncryptionKey } = useMemo(() => {
     const enabledSelfInsertEncryptionKey =
-      !!store.getState().session.currentRoom.metadata?.roomFeatures
-        ?.endToEndEncryptionFeatures?.enabledSelfInsertEncryptionKey;
+      !!store.getState().session.currentRoom.metadata?.roomFeatures?.endToEndEncryptionFeatures
+        ?.enabledSelfInsertEncryptionKey;
     return { enabledSelfInsertEncryptionKey };
   }, []);
 
   const meetingSummarizationFeatures = useAppSelector(
     (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
-        ?.aiFeatures?.meetingSummarizationFeatures,
+      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures?.aiFeatures
+        ?.meetingSummarizationFeatures,
   );
 
-  const [isEnabled, setIsEnabled] = useState(
-    !!meetingSummarizationFeatures?.isEnabled,
-  );
+  const [isEnabled, setIsEnabled] = useState(!!meetingSummarizationFeatures?.isEnabled);
   const [summarizationPrompt, setSummarizationPrompt] = useState<string>(
     meetingSummarizationFeatures?.summarizationPrompt ?? '',
   );
@@ -52,9 +47,7 @@ const MeetingSummarization = ({
 
   const enableOrUpdateService = useCallback(async () => {
     if (!summarizationPrompt) {
-      setErrorMsg(
-        t('insights.meeting-summarization.summarization-prompt-required'),
-      );
+      setErrorMsg(t('insights.meeting-summarization.summarization-prompt-required'));
       return;
     }
     setErrorMsg(undefined);
@@ -105,12 +98,9 @@ const MeetingSummarization = ({
     closeModal();
   }, [t, setErrorMsg, closeModal]);
 
-  const handleChange = useCallback(
-    (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setSummarizationPrompt(evt.target?.value);
-    },
-    [],
-  );
+  const handleChange = useCallback((evt: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setSummarizationPrompt(evt.target?.value);
+  }, []);
 
   if (enabledSelfInsertEncryptionKey) {
     return (
@@ -141,9 +131,7 @@ const MeetingSummarization = ({
                   htmlFor="summarizationPrompt"
                   className="block text-sm font-medium text-gray-700 dark:text-white mb-2"
                 >
-                  {t(
-                    'insights.meeting-summarization.summarization-prompt-label',
-                  )}
+                  {t('insights.meeting-summarization.summarization-prompt-label')}
                 </label>
                 <textarea
                   dir="auto"

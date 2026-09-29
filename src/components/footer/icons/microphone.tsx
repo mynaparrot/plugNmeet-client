@@ -43,8 +43,7 @@ const MicrophoneIcon = () => {
     return {
       showTooltip: session.userDeviceType === 'desktop',
       isAdmin: !!session.currentUser?.metadata?.isAdmin,
-      defaultLock:
-        !!session.currentRoom?.metadata?.defaultLockSettings?.lockMicrophone,
+      defaultLock: !!session.currentRoom?.metadata?.defaultLockSettings?.lockMicrophone,
     };
   }, []);
 
@@ -55,24 +54,19 @@ const MicrophoneIcon = () => {
     (state) => state.bottomIconsActivity.isActiveMicrophone,
   );
   const isMicLock = useAppSelector(
-    (state) =>
-      state.session.currentUser?.metadata?.lockSettings?.lockMicrophone,
+    (state) => state.session.currentUser?.metadata?.lockSettings?.lockMicrophone,
   );
-  const isMicMuted = useAppSelector(
-    (state) => state.bottomIconsActivity.isMicMuted,
-  );
-  const selectedAudioDevice = useAppSelector(
-    (state) => state.roomSettings.selectedAudioDevice,
-  );
-  const knownAudioDevices = useAppSelector(
-    (state) => state.roomSettings.audioDevices,
-  );
+  const isMicMuted = useAppSelector((state) => state.bottomIconsActivity.isMicMuted);
+  const selectedAudioDevice = useAppSelector((state) => state.roomSettings.selectedAudioDevice);
+  const knownAudioDevices = useAppSelector((state) => state.roomSettings.audioDevices);
 
   const hybrid = isHybridMode();
   const { available: nativeAvailable } = useNativePublisherStatus();
 
-  const { showMutedTooltip, onDismissTooltip, muteOnStartRef } =
-    useMicrophoneActivity(currentRoom, isMicMuted);
+  const { showMutedTooltip, onDismissTooltip, muteOnStartRef } = useMicrophoneActivity(
+    currentRoom,
+    isMicMuted,
+  );
 
   // Lock if not an admin & user-specific lock is set, or fall back to room default.
   const isLocked = useMemo(
@@ -92,9 +86,7 @@ const MicrophoneIcon = () => {
     };
 
     if (isLocked) {
-      const mic = currentRoom.localParticipant.getTrackPublication(
-        Track.Source.Microphone,
-      );
+      const mic = currentRoom.localParticipant.getTrackPublication(Track.Source.Microphone);
       if (mic && mic.track) {
         closeMicOnLock(mic.track).then();
       }
@@ -105,9 +97,7 @@ const MicrophoneIcon = () => {
     if (!currentRoom) {
       return;
     }
-    const publication = currentRoom.localParticipant.getTrackPublication(
-      Track.Source.Microphone,
-    );
+    const publication = currentRoom.localParticipant.getTrackPublication(Track.Source.Microphone);
 
     if (publication && publication.track) {
       if (publication.isMuted) {
@@ -139,15 +129,7 @@ const MicrophoneIcon = () => {
     if (isActiveMicrophone) {
       await muteUnmuteMic();
     }
-  }, [
-    isActiveMicrophone,
-    isMicMuted,
-    isLocked,
-    dispatch,
-    muteUnmuteMic,
-    hybrid,
-    nativeAvailable,
-  ]);
+  }, [isActiveMicrophone, isMicMuted, isLocked, dispatch, muteUnmuteMic, hybrid, nativeAvailable]);
 
   const getTooltipText = () => {
     if (hybrid && !nativeAvailable) {
@@ -183,9 +165,7 @@ const MicrophoneIcon = () => {
           video: false,
         });
 
-        const audioTrack = localTracks.find(
-          (track) => track.kind === Track.Kind.Audio,
-        );
+        const audioTrack = localTracks.find((track) => track.kind === Track.Kind.Audio);
 
         if (audioTrack) {
           await currentRoom.localParticipant.publishTrack(audioTrack, {
@@ -279,20 +259,12 @@ const MicrophoneIcon = () => {
               <>
                 <Microphone classes={'h-4 3xl:h-5 w-auto'} />
                 <span className="add absolute -top-1.5 md:-top-2 -end-1.5 md:-end-2 z-10">
-                  {isLocked ? (
-                    <i className="pnm-lock primaryColor" />
-                  ) : (
-                    <PlusIcon />
-                  )}
+                  {isLocked ? <i className="pnm-lock primaryColor" /> : <PlusIcon />}
                 </span>
               </>
             ) : null}
-            {!isMicMuted && isActiveMicrophone && (
-              <Microphone classes={'h-4 3xl:h-5 w-auto'} />
-            )}
-            {isMicMuted && isActiveMicrophone && (
-              <MicrophoneOff classes={'h-4 3xl:h-5 w-auto'} />
-            )}
+            {!isMicMuted && isActiveMicrophone && <Microphone classes={'h-4 3xl:h-5 w-auto'} />}
+            {isMicMuted && isActiveMicrophone && <MicrophoneOff classes={'h-4 3xl:h-5 w-auto'} />}
           </button>
           {isActiveMicrophone && (
             <MicMenu

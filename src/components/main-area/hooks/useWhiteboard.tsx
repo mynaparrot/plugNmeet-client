@@ -31,12 +31,7 @@ export const useWhiteboard = (
     if (isActiveWhiteboard) {
       debouncedRefresh();
     }
-  }, [
-    showVideoElms,
-    isEnabledExtendedVerticalCamView,
-    isActiveWhiteboard,
-    debouncedRefresh,
-  ]);
+  }, [showVideoElms, isEnabledExtendedVerticalCamView, isActiveWhiteboard, debouncedRefresh]);
 
   return useMemo(() => {
     const whiteboardWillBeVisible = !isActiveScreenShare && isActiveWhiteboard;

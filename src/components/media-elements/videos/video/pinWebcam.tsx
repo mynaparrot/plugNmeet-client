@@ -9,9 +9,7 @@ interface IPinWebcamProps {
 
 const PinWebcam = ({ userId }: IPinWebcamProps) => {
   const dispatch = useAppDispatch();
-  const pinCamUserId = useAppSelector(
-    (state) => state.roomSettings.pinCamUserId,
-  );
+  const pinCamUserId = useAppSelector((state) => state.roomSettings.pinCamUserId);
   const [isPinCamActive, setIsPinCamActive] = useState<boolean>(false);
 
   useEffect(() => {

@@ -30,10 +30,7 @@ const ActionButton = ({
       )}
     >
       {isLoading ? (
-        <LoadingIcon
-          className="inline h-5 w-5 animate-spin text-white"
-          fillColor="currentColor"
-        />
+        <LoadingIcon className="inline h-5 w-5 animate-spin text-white" fillColor="currentColor" />
       ) : (
         children
       )}

@@ -21,11 +21,7 @@ const SpeakerTest = () => {
     nodesRef.current = null;
     if (nodes) {
       try {
-        nodes.gain.gain.setTargetAtTime(
-          0,
-          ctxRef.current?.currentTime ?? 0,
-          0.05,
-        );
+        nodes.gain.gain.setTargetAtTime(0, ctxRef.current?.currentTime ?? 0, 0.05);
         window.setTimeout(() => {
           try {
             nodes.osc.stop();
@@ -76,10 +72,7 @@ const SpeakerTest = () => {
       gain.gain.setValueAtTime(0.0001, now);
       gain.gain.exponentialRampToValueAtTime(0.25, now + 0.05);
       gain.gain.setValueAtTime(0.25, now + TEST_DURATION_MS / 1000 - 0.3);
-      gain.gain.exponentialRampToValueAtTime(
-        0.0001,
-        now + TEST_DURATION_MS / 1000,
-      );
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + TEST_DURATION_MS / 1000);
       osc.connect(gain);
       gain.connect(ctx.destination);
       osc.start();
@@ -114,9 +107,7 @@ const SpeakerTest = () => {
           }`}
         >
           <Volume />
-          {playing
-            ? t('footer.modal.speaker-test-stop')
-            : t('footer.modal.speaker-test')}
+          {playing ? t('footer.modal.speaker-test-stop') : t('footer.modal.speaker-test')}
         </button>
       </div>
     </div>

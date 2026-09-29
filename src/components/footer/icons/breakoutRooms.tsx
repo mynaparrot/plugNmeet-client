@@ -16,10 +16,7 @@ const BreakoutRoomsIcon = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const showTooltip = useMemo(
-    () => store.getState().session.userDeviceType === 'desktop',
-    [],
-  );
+  const showTooltip = useMemo(() => store.getState().session.userDeviceType === 'desktop', []);
 
   const isActivePanel = useAppSelector(
     (state) => state.bottomIconsActivity.activeSidePanel === 'BREAKOUT_ROOMS',
@@ -27,15 +24,10 @@ const BreakoutRoomsIcon = () => {
 
   const isVisible = useAppSelector((state) => {
     const meta = state.session.currentRoom?.metadata;
-    return (
-      !!meta?.roomFeatures?.breakoutRoomFeatures?.isActive &&
-      !meta?.isBreakoutRoom
-    );
+    return !!meta?.roomFeatures?.breakoutRoomFeatures?.isActive && !meta?.isBreakoutRoom;
   });
 
-  const isAdmin = useAppSelector(
-    (state) => !!state.session.currentUser?.metadata?.isAdmin,
-  );
+  const isAdmin = useAppSelector((state) => !!state.session.currentUser?.metadata?.isAdmin);
   const isBreakoutRoom = useAppSelector(
     (state) => !!state.session.currentRoom?.metadata?.isBreakoutRoom,
   );
@@ -60,12 +52,8 @@ const BreakoutRoomsIcon = () => {
     // an invitation already delivered during THIS page-load session
     // (create-time NATS invite while on the landing page or in the main
     // interface, or an admin re-invite) must not produce a second toast
-    const alreadyInvited = (
-      store.getState().roomSettings.userNotifications ?? []
-    ).some(
-      (n) =>
-        n.notificationCat === 'breakout-room-invitation' &&
-        (n.created ?? 0) >= SESSION_START,
+    const alreadyInvited = (store.getState().roomSettings.userNotifications ?? []).some(
+      (n) => n.notificationCat === 'breakout-room-invitation' && (n.created ?? 0) >= SESSION_START,
     );
     if (alreadyInvited) return;
     invitedRef.current = true;

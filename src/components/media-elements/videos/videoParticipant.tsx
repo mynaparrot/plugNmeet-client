@@ -31,9 +31,7 @@ const VideoParticipant = ({
   displaySwitchCamIcon,
 }: VideoParticipantProps) => {
   const isSpeaking = useAppSelector(selectIsSpeakingByUserId(userId));
-  const activateWebcamsView = useAppSelector(
-    (state) => state.roomSettings.activateWebcamsView,
-  );
+  const activateWebcamsView = useAppSelector((state) => state.roomSettings.activateWebcamsView);
   const { t } = useTranslation();
   const incomingWebcamPaused = useAppSelector(
     (state) => state.roomSettings.mediaDegradation.incomingWebcamPaused,
@@ -53,10 +51,7 @@ const VideoParticipant = ({
 
   useEffect(() => {
     for (const track of participant.videoTrackPublications.values()) {
-      if (
-        track.source === Track.Source.Camera &&
-        track instanceof RemoteTrackPublication
-      ) {
+      if (track.source === Track.Source.Camera && track instanceof RemoteTrackPublication) {
         track.setEnabled(activateWebcamsView);
       }
     }

@@ -25,9 +25,7 @@ export interface AzureTokenInfo {
   renew: boolean;
 }
 
-export const enableOrUpdateTranscription = async (
-  body: InsightsTranscriptionConfigReq,
-) => {
+export const enableOrUpdateTranscription = async (body: InsightsTranscriptionConfigReq) => {
   const r = await sendAPIRequest(
     'insights/transcription/configure',
     toBinary(InsightsTranscriptionConfigReqSchema, body),
@@ -80,9 +78,7 @@ export const getUserTaskStatus = async () => {
   return fromBinary(InsightsGetUserStatusResSchema, new Uint8Array(r));
 };
 
-export const getSupportedLanguages = async (
-  serviceType: InsightsServiceType,
-) => {
+export const getSupportedLanguages = async (serviceType: InsightsServiceType) => {
   const body = create(InsightsGetSupportedLanguagesReqSchema, {
     serviceType,
   });
@@ -96,9 +92,7 @@ export const getSupportedLanguages = async (
   return fromBinary(InsightsGetSupportedLanguagesResSchema, new Uint8Array(r));
 };
 
-export const enableOrUpdateChatTranslation = async (
-  body: InsightsChatTranslationConfigReq,
-) => {
+export const enableOrUpdateChatTranslation = async (body: InsightsChatTranslationConfigReq) => {
   const r = await sendAPIRequest(
     'insights/translation/chat/configure',
     toBinary(InsightsChatTranslationConfigReqSchema, body),
@@ -109,9 +103,7 @@ export const enableOrUpdateChatTranslation = async (
   return fromBinary(CommonResponseSchema, new Uint8Array(r));
 };
 
-export const executeChatTranslation = async (
-  body: InsightsTranslateTextReq,
-) => {
+export const executeChatTranslation = async (body: InsightsTranslateTextReq) => {
   const r = await sendAPIRequest(
     'insights/translation/chat/execute',
     toBinary(InsightsTranslateTextReqSchema, body),

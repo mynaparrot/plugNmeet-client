@@ -1,8 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import {
-  BinaryFileData,
-  ExcalidrawImperativeAPI,
-} from '@excalidraw/excalidraw/types';
+import { BinaryFileData, ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 
 import { useAppSelector } from '../../../../store';
@@ -17,14 +14,8 @@ interface IUseOfficePageSyncer {
   currentPage: number;
 }
 
-const useOfficePageSyncer = ({
-  excalidrawAPI,
-  isPresenter,
-  currentPage,
-}: IUseOfficePageSyncer) => {
-  const currentOfficeFilePages = useAppSelector(
-    (state) => state.whiteboard.currentOfficeFilePages,
-  );
+const useOfficePageSyncer = ({ excalidrawAPI, isPresenter, currentPage }: IUseOfficePageSyncer) => {
+  const currentOfficeFilePages = useAppSelector((state) => state.whiteboard.currentOfficeFilePages);
 
   const syncOfficeFilePage = useCallback(
     async (pageToSync: number) => {
@@ -38,12 +29,8 @@ const useOfficePageSyncer = ({
 
       let file: IWhiteboardFile | undefined;
       try {
-        const documentPages: Array<IWhiteboardFile> = JSON.parse(
-          currentOfficeFilePages,
-        );
-        file = documentPages.find(
-          (f) => f.currentPage === pageToSync && f.isOfficeFile,
-        );
+        const documentPages: Array<IWhiteboardFile> = JSON.parse(currentOfficeFilePages);
+        file = documentPages.find((f) => f.currentPage === pageToSync && f.isOfficeFile);
       } catch (e) {
         console.error('Failed to parse office file page data.', e);
         return;
@@ -59,11 +46,7 @@ const useOfficePageSyncer = ({
         return;
       }
       const url =
-        getConfigValue<string>(
-          'serverUrl',
-          'http://localhost:8080',
-          'PLUG_N_MEET_SERVER_URL',
-        ) +
+        getConfigValue<string>('serverUrl', 'http://localhost:8080', 'PLUG_N_MEET_SERVER_URL') +
         '/download/uploadedFile/' +
         file.filePath;
       const result = await fetchFileWithElm(
@@ -103,9 +86,7 @@ const useOfficePageSyncer = ({
 
     if (currentOfficeFilePages !== '') {
       try {
-        const documentPages: Array<IWhiteboardFile> = JSON.parse(
-          currentOfficeFilePages,
-        );
+        const documentPages: Array<IWhiteboardFile> = JSON.parse(currentOfficeFilePages);
         if (documentPages.length) {
           preloadOfficeFilePages(documentPages, currentPage);
         }

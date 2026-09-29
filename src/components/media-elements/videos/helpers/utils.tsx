@@ -272,10 +272,7 @@ export const getElmsForMobile = (
  *
  * Vertical Mode: always a single vertical column (left/right strip).
  */
-export const getElmsForPc = (
-  participants: ReactElement[],
-  isVertical: boolean,
-) => {
+export const getElmsForPc = (participants: ReactElement[], isVertical: boolean) => {
   const n = participants.length;
   if (n === 0) {
     return [];
@@ -341,9 +338,7 @@ export const getElmsForPc = (
  * Used when the user toggles the extended vertical cam view
  * (isEnabledExtendedVerticalCamView = true).
  */
-export const getElmsForPCExtendedVerticalView = (
-  participantsToRender: ReactElement[],
-) => {
+export const getElmsForPCExtendedVerticalView = (participantsToRender: ReactElement[]) => {
   const chunkParts = chunk(participantsToRender, 2);
   const elms: Array<ReactElement> = [];
   // each of the chunks will be a row
@@ -368,16 +363,11 @@ const getParticipantKey = (
   const participant = participantElement.props.participant;
 
   return `${
-    participant.identity ??
-    participantElement.key ??
-    participant.name ??
-    'participant'
+    participant.identity ?? participantElement.key ?? participant.name ?? 'participant'
   }-${suffix}`;
 };
 
-export const formatNextPreButton = (
-  remaining: ReactElement<VideoParticipantProps>[],
-) => {
+export const formatNextPreButton = (remaining: ReactElement<VideoParticipantProps>[]) => {
   const MAX_NAMES_TO_SHOW = 2;
   const MAX_NAME_CHARS = 6;
 
@@ -385,9 +375,7 @@ export const formatNextPreButton = (
   const shortName = (name?: string) => {
     const firstWord = (name ?? '').trim().split(/\s+/)[0] ?? '';
     if (!firstWord) return '?';
-    return firstWord.length > MAX_NAME_CHARS
-      ? firstWord.slice(0, 3)
-      : firstWord;
+    return firstWord.length > MAX_NAME_CHARS ? firstWord.slice(0, 3) : firstWord;
   };
 
   const participantsToShow = remaining.slice(0, MAX_NAMES_TO_SHOW);
@@ -403,10 +391,7 @@ export const formatNextPreButton = (
   ));
 
   const fullNameElms = participantsToShow.map((p, index) => (
-    <span
-      key={getParticipantKey(p, 'full')}
-      className="inline-block order-1 pe-1 capitalize"
-    >
+    <span key={getParticipantKey(p, 'full')} className="inline-block order-1 pe-1 capitalize">
       {p.props.participant.name}
       {index < participantsToShow.length - 1 ? ', ' : ''}
     </span>
@@ -467,8 +452,7 @@ export const getTotalWebcamPages = (
   return (
     2 +
     Math.ceil(
-      (remainingAfterFirstPage - lastPageParticipantCapacity) /
-        middlePageParticipantCapacity,
+      (remainingAfterFirstPage - lastPageParticipantCapacity) / middlePageParticipantCapacity,
     )
   );
 };

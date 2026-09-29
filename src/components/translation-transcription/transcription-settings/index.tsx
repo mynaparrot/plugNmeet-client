@@ -6,10 +6,7 @@ import { create } from '@bufbuild/protobuf';
 
 import { updateDisplaySpeechSettingsModal } from '../../../store/slices/bottomIconsActivitySlice';
 import { store, useAppDispatch, useAppSelector } from '../../../store';
-import {
-  enableOrUpdateTranscription,
-  endTranscription,
-} from '../helpers/apiConnections';
+import { enableOrUpdateTranscription, endTranscription } from '../helpers/apiConnections';
 import { validateSettings } from '../helpers/modalUtils';
 import SpeechLangsSelector from './speechLangsSelector';
 import SpeechUsersSelector from './speechUsersSelector';
@@ -29,15 +26,14 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
   // all static values
   const { enabledSelfInsertEncryptionKey } = useMemo(() => {
     const enabledSelfInsertEncryptionKey =
-      !!store.getState().session.currentRoom.metadata?.roomFeatures
-        ?.endToEndEncryptionFeatures?.enabledSelfInsertEncryptionKey;
+      !!store.getState().session.currentRoom.metadata?.roomFeatures?.endToEndEncryptionFeatures
+        ?.enabledSelfInsertEncryptionKey;
     return { enabledSelfInsertEncryptionKey };
   }, []);
 
   const transcriptionFeatures = useAppSelector(
     (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
-        ?.transcriptionFeatures,
+      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures?.transcriptionFeatures,
   );
   const [enabledTranscription, setEnabledTranscription] = useState<boolean>(
     !!transcriptionFeatures?.isEnabled,
@@ -59,8 +55,9 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
   const [selectedTransLangs, setSelectedTransLangs] = useState<string[]>(
     transcriptionFeatures?.allowedTransLangs ?? [],
   );
-  const [selectedDefaultSubtitleLang, setSelectedDefaultSubtitleLang] =
-    useState<string>(transcriptionFeatures?.defaultSubtitleLang ?? '');
+  const [selectedDefaultSubtitleLang, setSelectedDefaultSubtitleLang] = useState<string>(
+    transcriptionFeatures?.defaultSubtitleLang ?? '',
+  );
 
   const enableOrUpdateService = useCallback(async () => {
     const validation = validateSettings({
@@ -138,12 +135,7 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
   useEffect(() => {
     setErrorMsg(undefined);
     //eslint-disable-next-line
-  }, [
-    selectedSpeechLangs,
-    selectedSpeechUsers,
-    enableTranslation,
-    selectedTransLangs,
-  ]);
+  }, [selectedSpeechLangs, selectedSpeechUsers, enableTranslation, selectedTransLangs]);
 
   const renderContent = () => (
     <div className="main-wrap -my-4">
@@ -199,23 +191,20 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
                     selectedTransLangs={selectedTransLangs}
                     setSelectedTransLangs={setSelectedTransLangs}
                     setErrorMsg={setErrorMsg}
-                    maxLangsAllowSelecting={
-                      transcriptionFeatures?.maxSelectedTransLangs ?? 2
-                    }
+                    maxLangsAllowSelecting={transcriptionFeatures?.maxSelectedTransLangs ?? 2}
                   />
                 </div>
-                {transcriptionFeatures?.isAllowSpeechSynthesis &&
-                  selectedTransLangs.length > 0 && (
-                    <div className="bg-Gray-25 dark:bg-dark-primary border-y border-dotted border-Gray-100 dark:border-Gray-800 -mx-4 px-4 py-4">
-                      <SettingsSwitch
-                        label={t('speech-services.enable-trans-synthesis')}
-                        enabled={enabledTransSynthesis}
-                        onChange={setEnabledTransSynthesis}
-                        disabled={transcriptionFeatures?.isEnabled}
-                        customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
-                      />
-                    </div>
-                  )}
+                {transcriptionFeatures?.isAllowSpeechSynthesis && selectedTransLangs.length > 0 && (
+                  <div className="bg-Gray-25 dark:bg-dark-primary border-y border-dotted border-Gray-100 dark:border-Gray-800 -mx-4 px-4 py-4">
+                    <SettingsSwitch
+                      label={t('speech-services.enable-trans-synthesis')}
+                      enabled={enabledTransSynthesis}
+                      onChange={setEnabledTransSynthesis}
+                      disabled={transcriptionFeatures?.isEnabled}
+                      customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
+                    />
+                  </div>
+                )}
               </>
             )}
           </>

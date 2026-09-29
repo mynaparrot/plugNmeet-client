@@ -1,12 +1,6 @@
 export const FooterMenuIconSVG = () => {
   return (
-    <svg
-      width="18"
-      height="4"
-      viewBox="0 0 18 4"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width="18" height="4" viewBox="0 0 18 4" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M9 3C9.55228 3 10 2.55228 10 2C10 1.44772 9.55228 1 9 1C8.44772 1 8 1.44772 8 2C8 2.55228 8.44772 3 9 3Z"
         stroke="CurrentColor"

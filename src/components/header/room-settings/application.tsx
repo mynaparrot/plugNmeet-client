@@ -56,9 +56,7 @@ const ApplicationSettings = () => {
         label={t('header.room-settings.focus-active-speaker-webcam')}
         enabled={!!focusActiveSpeakerWebcam}
         customCss="my-4"
-        onChange={() =>
-          dispatch(updateFocusActiveSpeakerWebcam(!focusActiveSpeakerWebcam))
-        }
+        onChange={() => dispatch(updateFocusActiveSpeakerWebcam(!focusActiveSpeakerWebcam))}
       />
       <SettingsSwitch
         label={t('header.room-settings.allow-audio-notification')}

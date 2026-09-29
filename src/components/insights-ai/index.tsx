@@ -14,8 +14,7 @@ const InsightsAiSettingsModal = () => {
   // static values
   const { aiFeatures } = useMemo(() => {
     const insightsFeatures =
-      store.getState().session.currentRoom.metadata?.roomFeatures
-        ?.insightsFeatures;
+      store.getState().session.currentRoom.metadata?.roomFeatures?.insightsFeatures;
 
     return {
       aiFeatures: insightsFeatures?.aiFeatures,
@@ -34,8 +33,7 @@ const InsightsAiSettingsModal = () => {
 
   useEffect(() => {
     const insightsFeatures =
-      store.getState().session.currentRoom.metadata?.roomFeatures
-        ?.insightsFeatures;
+      store.getState().session.currentRoom.metadata?.roomFeatures?.insightsFeatures;
     if (!insightsFeatures?.isAllow || !insightsFeatures?.aiFeatures?.isAllow) {
       return;
     }
@@ -48,24 +46,14 @@ const InsightsAiSettingsModal = () => {
       tabItems.push({
         id: 1,
         title: t('insights.tab-ai-text-chat-title'),
-        content: (
-          <AiTextChatSettings
-            setErrorMsg={setErrorMsg}
-            closeModal={closeModal}
-          />
-        ),
+        content: <AiTextChatSettings setErrorMsg={setErrorMsg} closeModal={closeModal} />,
       });
     }
     if (aiFeatures?.meetingSummarizationFeatures?.isAllow) {
       tabItems.push({
         id: 2,
         title: t('insights.tab-meeting-summarization-title'),
-        content: (
-          <MeetingSummarization
-            setErrorMsg={setErrorMsg}
-            closeModal={closeModal}
-          />
-        ),
+        content: <MeetingSummarization setErrorMsg={setErrorMsg} closeModal={closeModal} />,
       });
     }
     if (tabItems.length === 0) {
@@ -88,16 +76,10 @@ const InsightsAiSettingsModal = () => {
       >
         <div className="-mx-4">
           {errorMsg && (
-            <div className="error-msg text-xs text-red-600 py-1 px-2 mb-3">
-              {errorMsg}
-            </div>
+            <div className="error-msg text-xs text-red-600 py-1 px-2 mb-3">{errorMsg}</div>
           )}
           {tabItems.length > 0 && (
-            <Tabs
-              key={tabItems.length}
-              uniqueKey="insightsAiSettingsModal"
-              items={tabItems}
-            />
+            <Tabs key={tabItems.length} uniqueKey="insightsAiSettingsModal" items={tabItems} />
           )}
         </div>
       </Modal>

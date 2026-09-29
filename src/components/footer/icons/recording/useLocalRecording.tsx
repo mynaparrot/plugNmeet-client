@@ -3,11 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { LocalTrackPublication, ParticipantEvent, Track } from 'livekit-client';
 import { DataMsgBodyType } from 'plugnmeet-protocol-js';
 
-import {
-  IUseLocalRecordingReturn,
-  RecordingEvent,
-  RecordingType,
-} from './IRecording';
+import { IUseLocalRecordingReturn, RecordingEvent, RecordingType } from './IRecording';
 import { store, useAppDispatch } from '../../../../store';
 import { getMediaServerConnRoom } from '../../../../helpers/livekit/utils';
 import { getNatsConn } from '../../../../helpers/nats';
@@ -19,9 +15,7 @@ const useLocalRecording = (): IUseLocalRecordingReturn => {
   const conn = getNatsConn();
   const dispatch = useAppDispatch();
 
-  const [recordingEvent, setRecordingEvent] = useState<RecordingEvent>(
-    RecordingEvent.NONE,
-  );
+  const [recordingEvent, setRecordingEvent] = useState<RecordingEvent>(RecordingEvent.NONE);
   const [hasError, setHasError] = useState<boolean>(false);
   const [captureStream, setCaptureStream] = useState<MediaStream | null>(null);
 
@@ -107,9 +101,7 @@ const useLocalRecording = (): IUseLocalRecordingReturn => {
           micSource.current = null;
         }
 
-        micSource.current = audioCtx.current.createMediaStreamSource(
-          track.track.mediaStream,
-        );
+        micSource.current = audioCtx.current.createMediaStreamSource(track.track.mediaStream);
         micSource.current.connect(audioDest.current);
       }
     };
@@ -121,24 +113,12 @@ const useLocalRecording = (): IUseLocalRecordingReturn => {
       }
     };
 
-    currentRoom.localParticipant.on(
-      ParticipantEvent.LocalTrackPublished,
-      onTrackPublished,
-    );
-    currentRoom.localParticipant.on(
-      ParticipantEvent.LocalTrackUnpublished,
-      onTrackUnpublished,
-    );
+    currentRoom.localParticipant.on(ParticipantEvent.LocalTrackPublished, onTrackPublished);
+    currentRoom.localParticipant.on(ParticipantEvent.LocalTrackUnpublished, onTrackUnpublished);
 
     return () => {
-      currentRoom.localParticipant.off(
-        ParticipantEvent.LocalTrackPublished,
-        onTrackPublished,
-      );
-      currentRoom.localParticipant.off(
-        ParticipantEvent.LocalTrackUnpublished,
-        onTrackUnpublished,
-      );
+      currentRoom.localParticipant.off(ParticipantEvent.LocalTrackPublished, onTrackPublished);
+      currentRoom.localParticipant.off(ParticipantEvent.LocalTrackUnpublished, onTrackUnpublished);
     };
   }, [currentRoom]);
 
@@ -165,14 +145,11 @@ const useLocalRecording = (): IUseLocalRecordingReturn => {
       audioDest.current = audioCtx.current.createMediaStreamDestination();
 
       if (stream.getAudioTracks().length) {
-        screenAudioSource.current =
-          audioCtx.current.createMediaStreamSource(stream);
+        screenAudioSource.current = audioCtx.current.createMediaStreamSource(stream);
         screenAudioSource.current.connect(audioDest.current);
       }
 
-      const localTrack = currentRoom.localParticipant.getTrackPublication(
-        Track.Source.Microphone,
-      );
+      const localTrack = currentRoom.localParticipant.getTrackPublication(Track.Source.Microphone);
 
       if (localTrack?.audioTrack?.mediaStream) {
         if (micSource.current) {
@@ -207,8 +184,7 @@ const useLocalRecording = (): IUseLocalRecordingReturn => {
        * ParticipantEvent.LocalTrackPublished. Since the recorder already has
        * this destination track, later-connected audio sources will be included.
        */
-      const destinationAudioTrack =
-        audioDest.current.stream.getAudioTracks()[0];
+      const destinationAudioTrack = audioDest.current.stream.getAudioTracks()[0];
 
       if (destinationAudioTrack) {
         tracks.push(destinationAudioTrack);
@@ -291,8 +267,7 @@ const useLocalRecording = (): IUseLocalRecordingReturn => {
     };
 
     try {
-      const stream =
-        await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
+      const stream = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
 
       captureStreamRef.current = stream;
       setCaptureStream(stream);

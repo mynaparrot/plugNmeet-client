@@ -1,12 +1,12 @@
 {
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
   "singleQuote": true,
   "semi": true,
   "tabWidth": 2,
   "bracketSpacing": true,
   "trailingComma": "all",
   "arrowParens": "always",
-  "endOfLine": "auto",
-  "plugins": [
-    "@prettier/plugin-oxc"
+  "ignorePatterns": [
+    "src/assets/locales/**"
   ]
 }

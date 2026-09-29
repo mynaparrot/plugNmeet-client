@@ -18,8 +18,8 @@ const InsightsAiTextChatIcon = () => {
 
   const isEnabled = useAppSelector(
     (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
-        ?.aiFeatures?.aiTextChatFeatures?.isEnabled,
+      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures?.aiFeatures
+        ?.aiTextChatFeatures?.isEnabled,
   );
 
   const isActiveAiTextChat = useAppSelector(
@@ -41,8 +41,7 @@ const InsightsAiTextChatIcon = () => {
   const wrapperClasses = clsx(
     'ai-chat-f-icon hidden md:block relative footer-icon cursor-pointer w-10 md:w-11 3xl:w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4',
     {
-      'border-[rgba(124,206,247,0.25)] dark:border-Gray-800':
-        isActiveAiTextChat,
+      'border-[rgba(124,206,247,0.25)] dark:border-Gray-800': isActiveAiTextChat,
       'border-transparent': !isActiveAiTextChat,
       'focus-ring': true,
     },

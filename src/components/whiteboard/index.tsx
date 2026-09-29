@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { throttle } from 'es-toolkit';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
@@ -36,10 +30,7 @@ import ExportPDFModal from './export-pdf';
 import WhiteboardAI from './ai';
 
 import { store, useAppSelector } from '../../store';
-import {
-  broadcastAppStateChanges,
-  broadcastCurrentFileId,
-} from './helpers/handleRequests';
+import { broadcastAppStateChanges, broadcastCurrentFileId } from './helpers/handleRequests';
 import usePrevious from './helpers/hooks/usePrevious';
 import useWhiteboardSetup from './helpers/hooks/useWhiteboardSetup';
 import useWhiteboardAppStateSync from './helpers/hooks/useWhiteboardAppStateSync';
@@ -100,32 +91,24 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   }, []);
 
   // Selectors
-  const isPresenter = useAppSelector(
-    (state) => state.session.currentUser?.metadata?.isPresenter,
-  );
+  const isPresenter = useAppSelector((state) => state.session.currentUser?.metadata?.isPresenter);
   const defaultRoomLock = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.defaultLockSettings?.lockWhiteboard,
+    (state) => state.session.currentRoom.metadata?.defaultLockSettings?.lockWhiteboard,
   );
   const currentUserLock = useAppSelector(
-    (state) =>
-      state.session.currentUser?.metadata?.lockSettings?.lockWhiteboard,
+    (state) => state.session.currentUser?.metadata?.lockSettings?.lockWhiteboard,
   );
 
   const theme = useAppSelector((state) => state.roomSettings.theme);
-  const screenWidth = useAppSelector(
-    (state) => state.bottomIconsActivity.screenWidth,
-  );
+  const screenWidth = useAppSelector((state) => state.bottomIconsActivity.screenWidth);
   const currentPage = useAppSelector((state) => state.whiteboard.currentPage);
   const currentWhiteboardOfficeFileId = useAppSelector(
     (state) => state.whiteboard.currentWhiteboardOfficeFileId,
   );
   // State and Refs
-  const [excalidrawAPI, setExcalidrawAPI] =
-    useState<ExcalidrawImperativeAPI | null>(null);
+  const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
   const [isFollowing, setIsFollowing] = useState(true);
-  const [isOpenManageFilesUI, setIsOpenManageFilesUI] =
-    useState<boolean>(false);
+  const [isOpenManageFilesUI, setIsOpenManageFilesUI] = useState<boolean>(false);
   const [isOpenExportPdfUI, setIsOpenExportPdfUI] = useState<boolean>(false);
   const [isToolbarHidden, setIsToolbarHidden] = useState<boolean>(false);
 
@@ -220,9 +203,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       // as it's a sync operation, not a user action.
       excalidrawAPI.updateScene({
         elements: reconciledElements,
-        captureUpdate: init
-          ? CaptureUpdateAction.IMMEDIATELY
-          : CaptureUpdateAction.NEVER,
+        captureUpdate: init ? CaptureUpdateAction.IMMEDIATELY : CaptureUpdateAction.NEVER,
       });
 
       // 9. Clear the history to ensure a clean state after the remote update.
@@ -244,14 +225,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       canWrite: () => canEdit,
       isPrimaryResponder: () => !!isPresenter,
     });
-  }, [
-    excalidrawAPI,
-    controller,
-    roomSid,
-    canEdit,
-    isPresenter,
-    applySceneToExcalidraw,
-  ]);
+  }, [excalidrawAPI, controller, roomSid, canEdit, isPresenter, applySceneToExcalidraw]);
 
   // Resync the active CRDT doc after reconnects and when the tab becomes
   // visible again (state-vector handshake with the room).
@@ -282,41 +256,31 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     }
   }, [isPresenter, roomId]);
 
-  const resetWhiteboardState = useCallback(
-    (excalidrawAPI: ExcalidrawImperativeAPI) => {
-      // 1. Clean up the whiteboard canvas
-      excalidrawAPI.updateScene({ elements: [] });
-      excalidrawAPI.addFiles([]);
-      excalidrawAPI.history.clear();
+  const resetWhiteboardState = useCallback((excalidrawAPI: ExcalidrawImperativeAPI) => {
+    // 1. Clean up the whiteboard canvas
+    excalidrawAPI.updateScene({ elements: [] });
+    excalidrawAPI.addFiles([]);
+    excalidrawAPI.history.clear();
 
-      // Reset the last scene version so a page/file switch re-arms the guard.
-      lastBroadcastOrReceivedSceneVersion.current = -1;
+    // Reset the last scene version so a page/file switch re-arms the guard.
+    lastBroadcastOrReceivedSceneVersion.current = -1;
 
-      // 2. Reset the internal state for a clean slate.
-      cleanProcessedImageElementsMap();
-      setIsFollowing(true);
-    },
-    [],
-  );
+    // 2. Reset the internal state for a clean slate.
+    cleanProcessedImageElementsMap();
+    setIsFollowing(true);
+  }, []);
 
   /**
    * Positions the viewport at the page boundary with an initial width-based zoom.
    */
   const scrollToBoundary = useCallback(
-    (
-      api: ExcalidrawImperativeAPI,
-      pageInfo: ResolvedPageInfo = DEFAULT_PAGE_INFO,
-    ) => {
+    (api: ExcalidrawImperativeAPI, pageInfo: ResolvedPageInfo = DEFAULT_PAGE_INFO) => {
       const { width: viewportWidth } = api.getAppState();
       const {
         width: targetWidth,
         startX,
         startY,
-      } = getPageBoundaryMetrics(
-        pageInfo.orientation,
-        pageInfo.pageWidth,
-        pageInfo.pageHeight,
-      );
+      } = getPageBoundaryMetrics(pageInfo.orientation, pageInfo.pageWidth, pageInfo.pageHeight);
 
       const initialZoom = getA4WidthBasedZoom(viewportWidth, targetWidth);
 
@@ -335,10 +299,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   );
 
   const addBoundaryToElements = useCallback(
-    (
-      elements: readonly ExcalidrawElement[],
-      pageInfo: ResolvedPageInfo = DEFAULT_PAGE_INFO,
-    ) => {
+    (elements: readonly ExcalidrawElement[], pageInfo: ResolvedPageInfo = DEFAULT_PAGE_INFO) => {
       if (!isPresenter) {
         return elements;
       }
@@ -347,9 +308,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         pageInfo.pageWidth,
         pageInfo.pageHeight,
       );
-      const finalElements = elements.filter(
-        (e) => e.id !== A4_BOUNDARY_GUIDE_ID,
-      );
+      const finalElements = elements.filter((e) => e.id !== A4_BOUNDARY_GUIDE_ID);
       finalElements.push(...boundary);
       return finalElements;
     },
@@ -446,10 +405,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           // Keep broadcasting the active file id (control message) so followers
           // converge on the same file/page. Scene content now syncs via yjs, so
           // there is no sendClearWhiteboardSignal() anymore.
-          await broadcastCurrentFileId(
-            currentWhiteboardOfficeFileId,
-            currentPage,
-          );
+          await broadcastCurrentFileId(currentWhiteboardOfficeFileId, currentPage);
           await sleep(300);
 
           await controller.sync(currentWhiteboardOfficeFileId, currentPage, {
@@ -490,8 +446,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
   // Effect for page or file changes
   useEffect(() => {
-    const hasFileChanged =
-      previousFileId && currentWhiteboardOfficeFileId !== previousFileId;
+    const hasFileChanged = previousFileId && currentWhiteboardOfficeFileId !== previousFileId;
     const hasPageChanged = previousPage && currentPage !== previousPage;
 
     if (!isSwitching.current && (hasFileChanged || hasPageChanged)) {
@@ -516,11 +471,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
    * the follow-up onChange once their status becomes 'saved'.
    */
   const handleCanvasChange = useCallback(
-    (
-      elements: readonly ExcalidrawElement[],
-      appState: AppState,
-      files: BinaryFiles,
-    ) => {
+    (elements: readonly ExcalidrawElement[], appState: AppState, files: BinaryFiles) => {
       if (
         !excalidrawAPI || // API not ready
         !currentUser || // User not available
@@ -531,8 +482,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
       // Presenters or unlocked users can broadcast scene changes.
       if (canEdit) {
-        const { elms, version: currentSceneVersion } =
-          getSceneAndVersionWithoutBoundary(elements);
+        const { elms, version: currentSceneVersion } = getSceneAndVersionWithoutBoundary(elements);
 
         if (
           elms.length &&
@@ -766,9 +716,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
                   <div className="dropdown-menu-item__icon">
                     <PdfIcon className="w-[13px] h-[13px]" />
                   </div>
-                  <div className="dropdown-menu-item__text">
-                    {t('whiteboard.export-pdf-title')}
-                  </div>
+                  <div className="dropdown-menu-item__text">{t('whiteboard.export-pdf-title')}</div>
                 </button>
                 <button
                   type="button"
@@ -792,9 +740,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
                   <div className="dropdown-menu-item__icon">
                     <RefreshIcon />
                   </div>
-                  <div className="dropdown-menu-item__text">
-                    {t('whiteboard.force-sync')}
-                  </div>
+                  <div className="dropdown-menu-item__text">{t('whiteboard.force-sync')}</div>
                 </button>
               </>
             )}
@@ -808,9 +754,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
                   <ToolbarBar className="w-[13px] h-[13px]" />
                 </div>
                 <div className="dropdown-menu-item__text">
-                  {isToolbarHidden
-                    ? t('whiteboard.show-toolbar')
-                    : t('whiteboard.hide-toolbar')}
+                  {isToolbarHidden ? t('whiteboard.show-toolbar') : t('whiteboard.hide-toolbar')}
                 </div>
               </button>
             )}

@@ -1,8 +1,4 @@
-import {
-  ConnectionState,
-  Room,
-  type LocalTrackPublication,
-} from 'livekit-client';
+import { ConnectionState, Room, type LocalTrackPublication } from 'livekit-client';
 
 import { store } from '../../store';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
@@ -147,10 +143,7 @@ export default class ConnectionQualityMonitor {
   private prevOutboundStats: Record<string, PrevOutboundStats> = {};
   private lastStats: QualityStats | null = null;
 
-  public start = (
-    room: Room,
-    onQualityUpdate?: (stats: QualityStats) => void,
-  ) => {
+  public start = (room: Room, onQualityUpdate?: (stats: QualityStats) => void) => {
     this.stop();
     this.room = room;
     this.isStopped = false;
@@ -195,10 +188,7 @@ export default class ConnectionQualityMonitor {
   public stop = () => {
     this.isStopped = true;
 
-    document.removeEventListener(
-      'visibilitychange',
-      this.handleVisibilityChange,
-    );
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
 
     if (this.qualityCheckTimeout) {
       clearTimeout(this.qualityCheckTimeout);
@@ -238,10 +228,7 @@ export default class ConnectionQualityMonitor {
 
   public getOverallQuality = () => this.currentQuality;
 
-  private _processStatsReport(
-    statsReport: RTCStatsReport | undefined,
-    state: QualityCheckState,
-  ) {
+  private _processStatsReport(statsReport: RTCStatsReport | undefined, state: QualityCheckState) {
     statsReport?.forEach((rawStat) => {
       const stat = rawStat as WebRTCStat;
 
@@ -281,8 +268,7 @@ export default class ConnectionQualityMonitor {
         state.activeOutboundSsrcs.add(ssrc);
 
         const currentBytes = stat.bytesSent ?? 0;
-        const currentFrames =
-          outboundKind === 'video' ? (stat.framesSent ?? 0) : 0;
+        const currentFrames = outboundKind === 'video' ? (stat.framesSent ?? 0) : 0;
         const prev = this.prevOutboundStats[ssrc];
 
         const senderTrack = this.findSenderTrackByMid(stat.mid);
@@ -295,35 +281,23 @@ export default class ConnectionQualityMonitor {
             (typeof HTMLCanvasElement !== 'undefined' &&
               (senderTrack as any).canvas instanceof HTMLCanvasElement));
 
-        const matchingPub = this.findActiveLocalPublication(
-          outboundKind,
-          senderTrack,
-        );
+        const matchingPub = this.findActiveLocalPublication(outboundKind, senderTrack);
 
         const isTrackActive = matchingPub !== undefined;
 
         let isStagnant = false;
 
-        if (
-          prev &&
-          isTrackActive &&
-          !isCanvasTrack &&
-          prev.bytesSent > 0 &&
-          currentBytes > 0
-        ) {
+        if (prev && isTrackActive && !isCanvasTrack && prev.bytesSent > 0 && currentBytes > 0) {
           if (outboundKind === 'audio') {
             isStagnant = currentBytes === prev.bytesSent;
           }
 
           if (outboundKind === 'video') {
-            isStagnant =
-              currentBytes === prev.bytesSent &&
-              currentFrames === prev.framesSent;
+            isStagnant = currentBytes === prev.bytesSent && currentFrames === prev.framesSent;
           }
         }
 
-        const stagnantCount =
-          isStagnant && prev ? (prev.stagnantCount ?? 0) + 1 : 0;
+        const stagnantCount = isStagnant && prev ? (prev.stagnantCount ?? 0) + 1 : 0;
 
         const isStuck = stagnantCount >= OUTBOUND_STUCK_INTERVAL_THRESHOLD;
 
@@ -478,8 +452,7 @@ export default class ConnectionQualityMonitor {
   private findSenderTrackByMid(mid?: string): MediaStreamTrack | null {
     if (!this.room || !mid) return null;
 
-    const transceivers =
-      this.room.engine?.pcManager?.publisher?.getTransceivers?.();
+    const transceivers = this.room.engine?.pcManager?.publisher?.getTransceivers?.();
 
     if (!transceivers) return null;
 
@@ -525,10 +498,7 @@ export default class ConnectionQualityMonitor {
     packetLoss: number;
     rtt: number | null;
   }): PnmConnectionQuality {
-    if (
-      packetLoss >= LOST_PACKET_LOSS_THRESHOLD ||
-      (rtt !== null && rtt >= LOST_RTT_THRESHOLD)
-    ) {
+    if (packetLoss >= LOST_PACKET_LOSS_THRESHOLD || (rtt !== null && rtt >= LOST_RTT_THRESHOLD)) {
       return PnmConnectionQuality.Lost;
     }
 
@@ -589,9 +559,7 @@ export default class ConnectionQualityMonitor {
       uploadQuality !== PnmConnectionQuality.Lost &&
       !input.isUploadAudioStuck;
 
-    const isLikelyDownloadIssue = this.isLikelyMyDownloadIssue(
-      input.remoteReceiveStats,
-    );
+    const isLikelyDownloadIssue = this.isLikelyMyDownloadIssue(input.remoteReceiveStats);
 
     const receiveQuality = isLikelyDownloadIssue
       ? this.classify({
@@ -604,8 +572,7 @@ export default class ConnectionQualityMonitor {
         });
 
     const worstQuality =
-      uploadQuality === PnmConnectionQuality.Lost ||
-      receiveQuality === PnmConnectionQuality.Lost
+      uploadQuality === PnmConnectionQuality.Lost || receiveQuality === PnmConnectionQuality.Lost
         ? PnmConnectionQuality.Lost
         : uploadQuality === PnmConnectionQuality.Poor ||
             receiveQuality === PnmConnectionQuality.Poor
@@ -616,20 +583,15 @@ export default class ConnectionQualityMonitor {
             : PnmConnectionQuality.Excellent;
 
     const rawScore = this.qualityToScore(worstQuality);
-    const factor =
-      rawScore < this.qualityScore ? DECREASE_FACTOR : INCREASE_FACTOR;
+    const factor = rawScore < this.qualityScore ? DECREASE_FACTOR : INCREASE_FACTOR;
 
     this.qualityScore = factor * rawScore + (1 - factor) * this.qualityScore;
-    this.qualityScore = Math.max(
-      MIN_SCORE,
-      Math.min(MAX_SCORE, this.qualityScore),
-    );
+    this.qualityScore = Math.max(MIN_SCORE, Math.min(MAX_SCORE, this.qualityScore));
 
     const overallQuality = this.scoreToQuality(this.qualityScore);
 
     const isMyConnectionPoor =
-      uploadQuality === PnmConnectionQuality.Poor ||
-      uploadQuality === PnmConnectionQuality.Lost;
+      uploadQuality === PnmConnectionQuality.Poor || uploadQuality === PnmConnectionQuality.Lost;
 
     return {
       rawPacketLoss: input.rawPacketLoss,
@@ -659,9 +621,7 @@ export default class ConnectionQualityMonitor {
     };
   }
 
-  private isLikelyMyDownloadIssue(
-    remoteReceiveStats: RemoteReceiveStats[],
-  ): boolean {
+  private isLikelyMyDownloadIssue(remoteReceiveStats: RemoteReceiveStats[]): boolean {
     const activeStreams = remoteReceiveStats.filter(
       (stat) =>
         stat.packetsLostDelta + stat.packetsReceivedDelta >=
@@ -672,18 +632,14 @@ export default class ConnectionQualityMonitor {
 
     const poorStreams = activeStreams.filter(
       (stat) =>
-        stat.quality === PnmConnectionQuality.Poor ||
-        stat.quality === PnmConnectionQuality.Lost,
+        stat.quality === PnmConnectionQuality.Poor || stat.quality === PnmConnectionQuality.Lost,
     );
 
     if (activeStreams.length < MIN_STREAMS_FOR_DOWNLOAD_ISSUE) {
       return poorStreams.length > 0;
     }
 
-    return (
-      poorStreams.length / activeStreams.length >=
-      DOWNLOAD_ISSUE_POOR_STREAM_RATIO
-    );
+    return poorStreams.length / activeStreams.length >= DOWNLOAD_ISSUE_POOR_STREAM_RATIO;
   }
 
   private handleQualityState(stats: QualityStats) {
@@ -697,10 +653,7 @@ export default class ConnectionQualityMonitor {
     const poorCount = this.poorConnectionHistory.filter(Boolean).length;
     const goodCount = this.poorConnectionHistory.length - poorCount;
 
-    if (
-      this.isConnectionCurrentlyPoor &&
-      goodCount >= GOOD_RECOVERY_THRESHOLD
-    ) {
+    if (this.isConnectionCurrentlyPoor && goodCount >= GOOD_RECOVERY_THRESHOLD) {
       this.isConnectionCurrentlyPoor = false;
     }
 
@@ -710,15 +663,12 @@ export default class ConnectionQualityMonitor {
   private maybeNotifyUser(poorCount: number) {
     if (this.isConnectionCurrentlyPoor) return;
 
-    if (
-      this.poorConnectionNotificationCount >= MAX_POOR_CONNECTION_NOTIFICATIONS
-    ) {
+    if (this.poorConnectionNotificationCount >= MAX_POOR_CONNECTION_NOTIFICATIONS) {
       return;
     }
 
     const now = Date.now();
-    const canNotify =
-      now - this.lastPoorConnectionNotificationAt > NOTIFICATION_COOLDOWN;
+    const canNotify = now - this.lastPoorConnectionNotificationAt > NOTIFICATION_COOLDOWN;
 
     if (poorCount < POOR_WINDOW_THRESHOLD || !canNotify) return;
 

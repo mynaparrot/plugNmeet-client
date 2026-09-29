@@ -24,9 +24,7 @@ const UploadedFileList = ({
   onFileSelect,
 }: IUploadedFileListProps) => {
   const session = useAppSelector((state) => state.session);
-  const [uploadedFiles, setUploadedFiles] = useState<
-    RoomUploadedFileMetadata[]
-  >([]);
+  const [uploadedFiles, setUploadedFiles] = useState<RoomUploadedFileMetadata[]>([]);
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
   useEffect(() => {
@@ -63,10 +61,7 @@ const UploadedFileList = ({
   if (isFetching) {
     return (
       <div className="flex justify-center mt-12">
-        <LoadingIcon
-          className="h-10 w-10 animate-spin text-gray-200"
-          fillColor="#004D90"
-        />
+        <LoadingIcon className="h-10 w-10 animate-spin text-gray-200" fillColor="#004D90" />
       </div>
     );
   }

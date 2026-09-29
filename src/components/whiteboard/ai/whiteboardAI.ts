@@ -104,9 +104,7 @@ export const executeWhiteboardAI = async (
  * event handler. Whiteboard-tagged chunks are delivered to the matching pending
  * whiteboard AI request; everything else is handled by the chat Redux slice.
  */
-export const handleWhiteboardAIStreamResult = (
-  data: InsightsAITextChatStreamResult,
-): boolean => {
+export const handleWhiteboardAIStreamResult = (data: InsightsAITextChatStreamResult): boolean => {
   const entry = pendingStreams.get(data.id);
   if (!entry) {
     return false;

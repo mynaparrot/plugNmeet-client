@@ -169,9 +169,7 @@ export default class HandleSystemData {
         }
         break;
       case NatsMsgServerToClientEvents.BREAKOUT_ROOM_ENDED:
-        store.dispatch(
-          breakoutRoomApi.util.invalidateTags(['List', 'My_Rooms']),
-        );
+        store.dispatch(breakoutRoomApi.util.invalidateTags(['List', 'My_Rooms']));
         break;
       case NatsMsgServerToClientEvents.BREAKOUT_ROOM_USER_MOVED: {
         if (payload.msg !== '') {
@@ -251,14 +249,9 @@ export default class HandleSystemData {
         ignoreUnknownFields: true,
       });
       if (payload.filePath !== '') {
-        const rootUrl = getConfigValue<string>(
-          'serverUrl',
-          'http://localhost:8080',
-        );
+        const rootUrl = getConfigValue<string>('serverUrl', 'http://localhost:8080');
         const downloadLink =
-          rootUrl +
-          '/download/uploadedFile/' +
-          window.encodeURIComponent(payload.filePath);
+          rootUrl + '/download/uploadedFile/' + window.encodeURIComponent(payload.filePath);
         const htmlLink = `<a href="${downloadLink}" target="_blank" class="text-[#24aef7] hover:underline">${payload.fileName}</a>`;
 
         return i18n.t('notifications.private-download-link-ready', {
@@ -275,24 +268,15 @@ export default class HandleSystemData {
       InsightsAITextChatStreamResultSchema,
       msg,
     ) as InsightsAITextChatStreamResult;
-    if (
-      data.requestFrom ===
-      InsightsAIRequestSource.INSIGHTS_AI_REQUEST_SOURCE_NOTEPAD
-    ) {
+    if (data.requestFrom === InsightsAIRequestSource.INSIGHTS_AI_REQUEST_SOURCE_NOTEPAD) {
       handleNotepadAIStreamResult(data);
       return;
     }
-    if (
-      data.requestFrom ===
-      InsightsAIRequestSource.INSIGHTS_AI_REQUEST_SOURCE_WHITEBOARD
-    ) {
+    if (data.requestFrom === InsightsAIRequestSource.INSIGHTS_AI_REQUEST_SOURCE_WHITEBOARD) {
       handleWhiteboardAIStreamResult(data);
       return;
     }
-    if (
-      data.requestFrom ===
-      InsightsAIRequestSource.INSIGHTS_AI_REQUEST_SOURCE_POLL
-    ) {
+    if (data.requestFrom === InsightsAIRequestSource.INSIGHTS_AI_REQUEST_SOURCE_POLL) {
       handlePollAIStreamResult(data);
       return;
     }

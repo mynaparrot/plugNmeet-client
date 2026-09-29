@@ -85,9 +85,7 @@ async function uploadSlice(
     const errorText = await response.text();
     console.error(errorText);
 
-    throw new Error(
-      `Failed to upload slice ${sliceNumber} for page ${pageNumber}`,
-    );
+    throw new Error(`Failed to upload slice ${sliceNumber} for page ${pageNumber}`);
   }
 }
 
@@ -117,15 +115,9 @@ self.onmessage = async (event: MessageEvent<WorkerInput>) => {
 
   const EPSILON = 1;
 
-  const horizontalSlices = Math.max(
-    1,
-    Math.ceil((pageImageBitmap.width - EPSILON) / sliceWidth),
-  );
+  const horizontalSlices = Math.max(1, Math.ceil((pageImageBitmap.width - EPSILON) / sliceWidth));
 
-  const verticalSlices = Math.max(
-    1,
-    Math.ceil((pageImageBitmap.height - EPSILON) / sliceHeight),
-  );
+  const verticalSlices = Math.max(1, Math.ceil((pageImageBitmap.height - EPSILON) / sliceHeight));
 
   const totalSlices = horizontalSlices * verticalSlices;
 
@@ -179,15 +171,7 @@ self.onmessage = async (event: MessageEvent<WorkerInput>) => {
 
         ctx.drawImage(pageImageBitmap, dx, dy);
 
-        const isBlank = isSliceVisuallyBlank(
-          ctx,
-          sliceWidth,
-          sliceHeight,
-          bgR,
-          bgG,
-          bgB,
-          3,
-        );
+        const isBlank = isSliceVisuallyBlank(ctx, sliceWidth, sliceHeight, bgR, bgG, bgB, 3);
 
         // we'll skip to upload any blank page slices
         if (isBlank) {

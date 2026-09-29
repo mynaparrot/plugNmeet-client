@@ -10,10 +10,7 @@ import useResumableFilesUpload from '../../../../helpers/hooks/useResumableFiles
 import { store, useAppSelector } from '../../../../store';
 import { getConfigValue } from '../../../../helpers/utils';
 import sendAPIRequest from '../../../../helpers/api/plugNmeetAPI';
-import {
-  backgroundImageUrls,
-  loadBackgroundImageUrls,
-} from './backgroundHelper';
+import { backgroundImageUrls, loadBackgroundImageUrls } from './backgroundHelper';
 import { BackgroundConfig } from '../../../../helpers/libs/TrackProcessor';
 
 interface IBackgroundItemsProps {
@@ -22,9 +19,7 @@ interface IBackgroundItemsProps {
 
 const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
   const allowedFileTypes = ['jpg', 'jpeg', 'png'];
-  const selectedBg = useAppSelector(
-    (state) => state.roomSettings.virtualBackground,
-  );
+  const selectedBg = useAppSelector((state) => state.roomSettings.virtualBackground);
 
   const [bgImgs, setBgImgs] = useState<Array<string>>(backgroundImageUrls);
   const [files, setFiles] = useState<Array<File>>();
@@ -67,10 +62,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
         );
         if (cancelled) return;
 
-        const res = fromBinary(
-          GetRoomUploadedFilesResSchema,
-          new Uint8Array(r),
-        );
+        const res = fromBinary(GetRoomUploadedFilesResSchema, new Uint8Array(r));
         if (!res.status || !res.files) return;
 
         const serverUrl = getConfigValue<string>(
@@ -78,9 +70,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
           'http://localhost:8080',
           'PLUG_N_MEET_SERVER_URL',
         );
-        const storedUrls = res.files.map(
-          (f) => serverUrl + '/download/uploadedFile/' + f.filePath,
-        );
+        const storedUrls = res.files.map((f) => serverUrl + '/download/uploadedFile/' + f.filePath);
         setBgImgs((prev) => Array.from(new Set([...prev, ...storedUrls])));
       } catch (e) {
         console.warn('Failed to fetch stored virtual backgrounds', e);
@@ -95,11 +85,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
   useEffect(() => {
     if (result && result.filePath) {
       const path =
-        getConfigValue<string>(
-          'serverUrl',
-          'http://localhost:8080',
-          'PLUG_N_MEET_SERVER_URL',
-        ) +
+        getConfigValue<string>('serverUrl', 'http://localhost:8080', 'PLUG_N_MEET_SERVER_URL') +
         '/download/uploadedFile/' +
         result.filePath;
 
@@ -171,11 +157,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
             <div
               className={`cursor-pointer w-full h-full flex items-center justify-center bg-Gray-50 overflow-hidden ${selectedBg.url === imageUrl ? 'border border-Blue shadow-virtual-item rounded-xl' : 'rounded-2xl'}`}
             >
-              <img
-                src={imageUrl}
-                alt={`bg-${i + 1}`}
-                className={`object-cover w-full h-full`}
-              />
+              <img src={imageUrl} alt={`bg-${i + 1}`} className={`object-cover w-full h-full`} />
             </div>
           </button>
         );

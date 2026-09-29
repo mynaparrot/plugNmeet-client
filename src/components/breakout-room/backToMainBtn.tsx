@@ -29,16 +29,13 @@ const BackToMainBtn = () => {
       isAdmin: session.currentUser?.metadata?.isAdmin,
       parentRoomId: session.currentRoom.metadata?.parentRoomId,
       allowReturnToMainRoom:
-        session.currentRoom.metadata?.roomFeatures?.breakoutRoomFeatures
-          ?.allowReturnToMainRoom,
+        session.currentRoom.metadata?.roomFeatures?.breakoutRoomFeatures?.allowReturnToMainRoom,
       allowSelfSelect:
-        session.currentRoom.metadata?.roomFeatures?.breakoutRoomFeatures
-          ?.allowSelfSelect,
+        session.currentRoom.metadata?.roomFeatures?.breakoutRoomFeatures?.allowSelfSelect,
     };
   }, []);
 
-  const [backToMain, { isLoading, isSuccess, isError, data, error }] =
-    useBackToMainMutation();
+  const [backToMain, { isLoading, isSuccess, isError, data, error }] = useBackToMainMutation();
 
   useEffect(() => {
     if (isSuccess && data?.status && data.token) {

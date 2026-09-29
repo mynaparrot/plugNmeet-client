@@ -1,10 +1,7 @@
 import React from 'react';
 import { MenuItem } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
-import {
-  NatsMsgClientToServerEvents,
-  NatsMsgClientToServerSchema,
-} from 'plugnmeet-protocol-js';
+import { NatsMsgClientToServerEvents, NatsMsgClientToServerSchema } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
 
 import { useAppSelector } from '../../../../../store';
@@ -17,9 +14,7 @@ interface ILowerHandMenuItemProps {
 
 const LowerHandMenuItem = ({ userId }: ILowerHandMenuItemProps) => {
   const isRaisedHand = useAppSelector(
-    (state) =>
-      participantsSelector.selectById(state, userId)?.metadata.raisedHand
-        ?.isRaised,
+    (state) => participantsSelector.selectById(state, userId)?.metadata.raisedHand?.isRaised,
   );
   const { t } = useTranslation();
   const conn = getNatsConn();

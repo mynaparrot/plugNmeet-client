@@ -27,10 +27,7 @@ const SubtitleLangSelector = ({
       value: l.code,
       text: l.name,
     }));
-  }, [
-    transcriptionFeatures.allowedSpokenLangs,
-    transcriptionFeatures.allowedTransLangs,
-  ]);
+  }, [transcriptionFeatures.allowedSpokenLangs, transcriptionFeatures.allowedTransLangs]);
 
   return (
     <div className="px-5 pt-4 pb-4">

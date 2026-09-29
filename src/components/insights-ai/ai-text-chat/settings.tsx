@@ -2,10 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
-import {
-  CommonResponseSchema,
-  InsightsAITextChatConfigReqSchema,
-} from 'plugnmeet-protocol-js';
+import { CommonResponseSchema, InsightsAITextChatConfigReqSchema } from 'plugnmeet-protocol-js';
 
 import { useAppSelector } from '../../../store';
 import SettingsSwitch from '../../../helpers/ui/settingsSwitch';
@@ -17,15 +14,12 @@ interface AiTextChatSettingsProps {
   closeModal: () => void;
 }
 
-const AiTextChatSettings = ({
-  setErrorMsg,
-  closeModal,
-}: AiTextChatSettingsProps) => {
+const AiTextChatSettings = ({ setErrorMsg, closeModal }: AiTextChatSettingsProps) => {
   const { t } = useTranslation();
   const aiTextChatFeatures = useAppSelector(
     (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
-        ?.aiFeatures?.aiTextChatFeatures,
+      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures?.aiFeatures
+        ?.aiTextChatFeatures,
   );
 
   const [isEnabled, setIsEnabled] = useState(!!aiTextChatFeatures?.isEnabled);
@@ -41,9 +35,7 @@ const AiTextChatSettings = ({
   const [isWhiteboardAiDisabled, setIsWhiteboardAiDisabled] = useState(
     !!aiTextChatFeatures?.isWhiteboardAiDisabled,
   );
-  const [isPollAiDisabled, setIsPollAiDisabled] = useState(
-    !!aiTextChatFeatures?.isPollAiDisabled,
-  );
+  const [isPollAiDisabled, setIsPollAiDisabled] = useState(!!aiTextChatFeatures?.isPollAiDisabled);
 
   const enableOrUpdateService = useCallback(async () => {
     if (!isAllowedEveryone && allowedUsers.length == 0) {

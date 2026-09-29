@@ -1,9 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  ChangeSharedNotepadStatusReqSchema,
-  CommonResponseSchema,
-} from 'plugnmeet-protocol-js';
+import { ChangeSharedNotepadStatusReqSchema, CommonResponseSchema } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { store, useAppDispatch, useAppSelector } from '../../../../../store';
@@ -22,9 +19,7 @@ const useSharedNotepad = () => {
   }, []);
 
   const sharedNotepadStatus = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures
-        ?.isActive,
+    (state) => state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures?.isActive,
   );
 
   const toggleSharedNotepad = useCallback(async () => {
@@ -46,9 +41,7 @@ const useSharedNotepad = () => {
     if (res.status) {
       dispatch(updateIsActiveSharedNotePad(newStatus));
     } else if (res.msg) {
-      dispatch(
-        addUserNotification({ message: t(res.msg), typeOption: 'error' }),
-      );
+      dispatch(addUserNotification({ message: t(res.msg), typeOption: 'error' }));
     }
   }, [sharedNotepadStatus, roomId, dispatch, t]);
 

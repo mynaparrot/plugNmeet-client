@@ -9,14 +9,10 @@ import { PollsIconSVG } from '../../../assets/Icons/PollsIconSVG';
 const PollsIcon = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const showTooltip = useMemo(
-    () => store.getState().session.userDeviceType === 'desktop',
-    [],
-  );
+  const showTooltip = useMemo(() => store.getState().session.userDeviceType === 'desktop', []);
 
   const isActive = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.pollsFeatures?.isActive,
+    (state) => state.session.currentRoom.metadata?.roomFeatures?.pollsFeatures?.isActive,
   );
   const isActivePollsPanel = useAppSelector(
     (state) => state.bottomIconsActivity.activeSidePanel === 'POLLS',
@@ -37,8 +33,7 @@ const PollsIcon = () => {
     'pollsIcon hidden md:block relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4',
     {
       'focus-ring': true,
-      'border-[rgba(124,206,247,0.25)] dark:border-Gray-800':
-        isActivePollsPanel,
+      'border-[rgba(124,206,247,0.25)] dark:border-Gray-800': isActivePollsPanel,
       'border-transparent': !isActivePollsPanel,
     },
   );

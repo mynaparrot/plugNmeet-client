@@ -12,9 +12,7 @@ const AudioElm = ({ audioTrack }: IAudioElmProps) => {
   const roomScreenShareAudioVolume = useAppSelector(
     (state) => state.roomSettings.roomScreenShareAudioVolume,
   );
-  const isNatsServerConnected = useAppSelector(
-    (state) => state.roomSettings.isNatsServerConnected,
-  );
+  const isNatsServerConnected = useAppSelector((state) => state.roomSettings.isNatsServerConnected);
   const ref = useRef<HTMLAudioElement>(null);
 
   const throttledSetVolume = useMemo(

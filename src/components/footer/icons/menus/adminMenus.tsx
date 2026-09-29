@@ -45,10 +45,8 @@ const AdminMenus = () => {
   const { toggleSharedNotepad, sharedNotepadStatus } = useSharedNotepad();
   const { togglePolls, isActivePoll } = usePolls();
   const { muteAllUsers } = useMuteAll();
-  const { toggleExternalMediaPlayer, isActiveExternalMediaPlayer } =
-    useExternalMediaPlayer();
-  const { toggleDisplayExternalLinkModal, isActiveDisplayExternalLink } =
-    useDisplayExternalLink();
+  const { toggleExternalMediaPlayer, isActiveExternalMediaPlayer } = useExternalMediaPlayer();
+  const { toggleDisplayExternalLinkModal, isActiveDisplayExternalLink } = useDisplayExternalLink();
 
   const openLockSettingsModal = useCallback(() => {
     dispatch(updateShowLockSettingsModal(true));
@@ -110,11 +108,7 @@ const AdminMenus = () => {
         <MenuItemHelper
           onClick={togglePolls}
           icon={<PollsIconSVG classes="" />}
-          text={
-            isActivePoll
-              ? t('footer.menus.disable-polls')
-              : t('footer.menus.enable-polls')
-          }
+          text={isActivePoll ? t('footer.menus.disable-polls') : t('footer.menus.enable-polls')}
           isActive={isActivePoll}
         />
       )}

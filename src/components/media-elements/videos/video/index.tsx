@@ -16,21 +16,13 @@ export interface IVideoComponentProps {
   displayPinIcon: boolean;
 }
 
-const VideoComponent = ({
-  userId,
-  name,
-  isLocal,
-  track,
-  displayPinIcon,
-}: IVideoComponentProps) => {
+const VideoComponent = ({ userId, name, isLocal, track, displayPinIcon }: IVideoComponentProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const fullScreen = async () => {
     if (!document.fullscreenElement) {
       videoRef?.current?.requestFullscreen().catch((err) => {
-        alert(
-          `Error attempting to enable full-screen mode: ${err.message} (${err.name})`,
-        );
+        alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
       });
     } else {
       await document.exitFullscreen();

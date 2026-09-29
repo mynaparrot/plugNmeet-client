@@ -1,8 +1,5 @@
 import { once } from 'es-toolkit';
-import {
-  InsightsServiceType,
-  InsightsSupportedLangInfo,
-} from 'plugnmeet-protocol-js';
+import { InsightsServiceType, InsightsSupportedLangInfo } from 'plugnmeet-protocol-js';
 
 import { getSupportedLanguages } from './apiConnections';
 import { store } from '../../../store';
@@ -19,15 +16,12 @@ const speechLangsMap = new Map<string, InsightsSupportedLangInfo>();
 const translationLangsMap = new Map<string, InsightsSupportedLangInfo>();
 // supportedTranslationLangs.map((lang) => [lang.code, lang]),
 
-const getSubtitleLangs = (
-  speechLangs?: string[],
-  transLangs?: string[],
-): Array<SupportedLangs> => {
+const getSubtitleLangs = (speechLangs?: string[], transLangs?: string[]): Array<SupportedLangs> => {
   // If the language lists are not provided, fall back to the Redux store.
   if (!speechLangs || !transLangs) {
     const transcriptionFeatures =
-      store.getState().session.currentRoom.metadata?.roomFeatures
-        ?.insightsFeatures?.transcriptionFeatures;
+      store.getState().session.currentRoom.metadata?.roomFeatures?.insightsFeatures
+        ?.transcriptionFeatures;
     if (!speechLangs) {
       speechLangs = transcriptionFeatures?.allowedSpokenLangs;
     }

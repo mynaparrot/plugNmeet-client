@@ -10,8 +10,7 @@ import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 export const useReopenPoll = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const [reopenPoll, { data: reopenPollRes, isLoading }] =
-    useReopenPollMutation();
+  const [reopenPoll, { data: reopenPollRes, isLoading }] = useReopenPollMutation();
 
   useEffect(() => {
     if (reopenPollRes) {

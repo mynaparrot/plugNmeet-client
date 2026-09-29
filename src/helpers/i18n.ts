@@ -5,11 +5,7 @@ import HttpApi from 'i18next-http-backend';
 import { getConfigValue } from './utils';
 
 declare const IS_PRODUCTION: boolean;
-const assetPath = getConfigValue(
-  'staticAssetsPath',
-  '/assets',
-  'STATIC_ASSETS_PATH',
-);
+const assetPath = getConfigValue('staticAssetsPath', '/assets', 'STATIC_ASSETS_PATH');
 
 i18n
   .use(LanguageDetector)

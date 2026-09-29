@@ -6,9 +6,7 @@ import { getMediaServerConn } from '../../helpers/livekit/utils';
 
 const MediaDegradationBanner = () => {
   const { t } = useTranslation();
-  const mediaDegradation = useAppSelector(
-    (state) => state.roomSettings.mediaDegradation,
-  );
+  const mediaDegradation = useAppSelector((state) => state.roomSettings.mediaDegradation);
 
   const degraded =
     mediaDegradation.incomingWebcamPaused ||

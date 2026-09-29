@@ -8,9 +8,7 @@ interface IInterimTextDisplayProps {
 }
 
 const InterimTextDisplay = ({ scrollToBottom }: IInterimTextDisplayProps) => {
-  const interimText = useAppSelector(
-    (state) => state.speechServices.interimText,
-  );
+  const interimText = useAppSelector((state) => state.speechServices.interimText);
 
   const throttledScroll = useMemo(
     () =>

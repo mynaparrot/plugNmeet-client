@@ -44,10 +44,7 @@ const SubtitleTextsHistory = ({ isOpenPopover }: SubtitleTextsHistoryProps) => {
         </div>
       </button>
       {showPopover && (
-        <SubtitleHistoryPanel
-          setShowPopover={setShowPopover}
-          showPopover={showPopover}
-        />
+        <SubtitleHistoryPanel setShowPopover={setShowPopover} showPopover={showPopover} />
       )}
     </Popover>
   );

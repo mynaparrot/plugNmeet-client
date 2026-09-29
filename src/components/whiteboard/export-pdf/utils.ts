@@ -45,9 +45,7 @@ export const pageSizeFromMetaPixels = (
 };
 
 /** Logical A4 page size (pre-scale) for the given orientation. */
-export const getPageSize = (
-  orientation: PageOrientation = DEFAULT_PAGE_ORIENTATION,
-): PageSize => {
+export const getPageSize = (orientation: PageOrientation = DEFAULT_PAGE_ORIENTATION): PageSize => {
   if (orientation === 'landscape') {
     // will be flipped
     return {
@@ -72,8 +70,6 @@ export const getExportPageSize = (
   };
 };
 
-export const resolvePageOrientation = (
-  value?: string | null,
-): PageOrientation => {
+export const resolvePageOrientation = (value?: string | null): PageOrientation => {
   return value === 'landscape' ? 'landscape' : 'portrait';
 };

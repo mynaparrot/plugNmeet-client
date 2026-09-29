@@ -43,9 +43,7 @@ const getChatKey = (message: ChatMessage, currentUserId: string): string => {
     return 'public';
   }
 
-  return message.fromUserId === currentUserId
-    ? message.toUserId!
-    : message.fromUserId!;
+  return message.fromUserId === currentUserId ? message.toUserId! : message.fromUserId!;
 };
 
 const isWelcomeMessage = (message: ChatMessage): boolean => {
@@ -65,8 +63,7 @@ const getSentAtValue = (message: ChatMessage, upperBound: number): number => {
 const sortBySentAt =
   (upperBound: number) =>
   (a: ChatMessage, b: ChatMessage): number => {
-    const sentAtDiff =
-      getSentAtValue(a, upperBound) - getSentAtValue(b, upperBound);
+    const sentAtDiff = getSentAtValue(a, upperBound) - getSentAtValue(b, upperBound);
 
     if (sentAtDiff !== 0) {
       return sentAtDiff;
@@ -108,9 +105,7 @@ const getLowestDisplayOrder = (
   }
 
   const firstMessage =
-    isWelcomeMessage(messages[0]) && messages.length > 1
-      ? messages[1]
-      : messages[0];
+    isWelcomeMessage(messages[0]) && messages.length > 1 ? messages[1] : messages[0];
 
   return displayOrder[firstMessage.id] ?? 0;
 };
@@ -152,10 +147,7 @@ const chatMessagesSlice = createSlice({
     },
 
     addAllChatMessages: {
-      prepare: (payload: {
-        messages: ChatMessage[];
-        currentUserId: string;
-      }) => ({
+      prepare: (payload: { messages: ChatMessage[]; currentUserId: string }) => ({
         payload,
         meta: {
           timestamp: Date.now(),
@@ -179,9 +171,7 @@ const chatMessagesSlice = createSlice({
         const affectedKeys = new Set<string>();
         const lowestOrderByKey: { [key: string]: number } = {};
 
-        const sortedMessages = [...messages].sort(
-          sortBySentAt(action.meta.timestamp),
-        );
+        const sortedMessages = [...messages].sort(sortBySentAt(action.meta.timestamp));
         const messagesToAdd = [...sortedMessages].reverse();
 
         messagesToAdd.forEach((message) => {
@@ -214,10 +204,7 @@ const chatMessagesSlice = createSlice({
           }
 
           if (lowestOrderByKey[key] === undefined) {
-            lowestOrderByKey[key] = getLowestDisplayOrder(
-              state.messages[key],
-              state.displayOrder,
-            );
+            lowestOrderByKey[key] = getLowestDisplayOrder(state.messages[key], state.displayOrder);
           }
 
           state.messageIds[message.id] = key;
@@ -320,9 +307,8 @@ const chatMessagesStateSelector = (state: RootState) => state.chatMessages;
  * Selects all the keys (e.g., 'public' or user IDs) from the chat messages state.
  * This can be used to dynamically create chat tabs.
  */
-export const selectChatKeys = createSelector(
-  [chatMessagesStateSelector],
-  (chatMessages) => Object.keys(chatMessages.messages),
+export const selectChatKeys = createSelector([chatMessagesStateSelector], (chatMessages) =>
+  Object.keys(chatMessages.messages),
 );
 
 /**
@@ -356,9 +342,7 @@ export const selectReplyDraftWithTarget = createSelector(
     if (!draft) {
       return { draft: null, target: undefined };
     }
-    const target = chatMessages.messages[draft.key]?.find(
-      (m) => m.id === draft.id,
-    );
+    const target = chatMessages.messages[draft.key]?.find((m) => m.id === draft.id);
     return { draft, target };
   },
 );
@@ -370,9 +354,7 @@ export const selectEditDraftWithTarget = createSelector(
     if (!draft) {
       return { draft: null, target: undefined };
     }
-    const target = chatMessages.messages[draft.key]?.find(
-      (m) => m.id === draft.id,
-    );
+    const target = chatMessages.messages[draft.key]?.find((m) => m.id === draft.id);
     return { draft, target };
   },
 );
@@ -383,8 +365,7 @@ export const selectMessageById = createSelector(
     (_state: RootState, key: string) => key,
     (_state: RootState, _key: string, id: string) => id,
   ],
-  (chatMessages, key, id) =>
-    chatMessages.messages[key]?.find((m) => m.id === id),
+  (chatMessages, key, id) => chatMessages.messages[key]?.find((m) => m.id === id),
 );
 
 export default chatMessagesSlice.reducer;

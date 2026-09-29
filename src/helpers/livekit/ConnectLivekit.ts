@@ -58,10 +58,7 @@ import {
 
 const FALLBACK_TIMER_DURATION = 60 * 1000; // 60 seconds
 
-export default class ConnectLivekit
-  extends EventEmitter
-  implements IConnectLivekit
-{
+export default class ConnectLivekit extends EventEmitter implements IConnectLivekit {
   private readonly _errorState: Dispatch<IErrorPageProps>;
   private readonly _roomConnectionStatusState: Dispatch<roomConnectionStatus>;
   private readonly localUserId: string;
@@ -104,17 +101,13 @@ export default class ConnectLivekit
       this.encryptionKey = encryptionKey;
     }
     this.handleMediaTracks = new HandleMediaTracks(this);
-    this.participantMediaManager = new ParticipantMediaManager(
-      this,
-      this.localUserId,
-    );
+    this.participantMediaManager = new ParticipantMediaManager(this, this.localUserId);
     void this.configureRoom();
 
     this.connectionQualityMonitor = new ConnectionQualityMonitor();
-    this.adaptiveMediaController = new AdaptiveMediaController(
-      () => this._room,
-      { enabled: !isUserRecorder(this.localUserId) },
-    );
+    this.adaptiveMediaController = new AdaptiveMediaController(() => this._room, {
+      enabled: !isUserRecorder(this.localUserId),
+    });
     window.addEventListener('beforeunload', this.onBeforeUnload);
   }
 
@@ -170,9 +163,7 @@ export default class ConnectLivekit
       let opts: RoomConnectOptions | undefined;
       if (serverInfo.turnCredentials) {
         const policy: RTCIceTransportPolicy =
-          isFirefoxMobile() || !serverInfo.turnCredentials.forceTurn
-            ? 'all'
-            : 'relay';
+          isFirefoxMobile() || !serverInfo.turnCredentials.forceTurn ? 'all' : 'relay';
 
         opts = {
           rtcConfig: {
@@ -193,10 +184,7 @@ export default class ConnectLivekit
       await this.initiateParticipants();
       this._roomConnectionStatusState('media-server-conn-established');
       // start connection quality monitor
-      this.connectionQualityMonitor.start(
-        this._room,
-        this.checkConnectionQualityForFallback,
-      );
+      this.connectionQualityMonitor.start(this._room, this.checkConnectionQualityForFallback);
 
       this.adaptiveMediaController.attach();
 
@@ -241,9 +229,7 @@ export default class ConnectLivekit
     this.hasAttemptedSilentFallback = true;
 
     if (!this.serverInfo?.turnCredentials) {
-      console.error(
-        '[Fallback] Cannot attempt fallback: TURN credentials are not configured.',
-      );
+      console.error('[Fallback] Cannot attempt fallback: TURN credentials are not configured.');
       return;
     }
 
@@ -262,9 +248,7 @@ export default class ConnectLivekit
       const config = this._room.engine.rtcConfig;
       config.iceTransportPolicy = 'relay';
 
-      console.log(
-        'Updating configuration and restarting ICE with relay-only policy...',
-      );
+      console.log('Updating configuration and restarting ICE with relay-only policy...');
       pcManager.updateConfiguration(config, true);
     } catch (e) {
       console.error('Failed to execute silent relay fallback:', e);
@@ -273,15 +257,8 @@ export default class ConnectLivekit
   };
 
   private async configureRoom() {
-    let videoCodec = getConfigValue<VideoCodec>(
-      'videoCodec',
-      'vp8',
-      'VIDEO_CODEC',
-    );
-    if (
-      (videoCodec === 'vp9' && !supportsVP9()) ||
-      (videoCodec === 'av1' && !supportsAV1())
-    ) {
+    let videoCodec = getConfigValue<VideoCodec>('videoCodec', 'vp8', 'VIDEO_CODEC');
+    if ((videoCodec === 'vp9' && !supportsVP9()) || (videoCodec === 'av1' && !supportsAV1())) {
       videoCodec = 'vp8';
     }
 
@@ -289,34 +266,18 @@ export default class ConnectLivekit
     const isRecorder = isUserRecorder(this.localUserId);
     const adaptiveStream = isRecorder
       ? false
-      : getConfigValue<boolean>(
-          'enableAdaptiveStream',
-          true,
-          'ENABLE_ADAPTIVE_STREAM',
-        );
+      : getConfigValue<boolean>('enableAdaptiveStream', true, 'ENABLE_ADAPTIVE_STREAM');
 
     const roomOptions: RoomOptions = {
       adaptiveStream,
-      dynacast: getConfigValue<boolean>(
-        'enableDynacast',
-        false,
-        'ENABLE_DYNACAST',
-      ),
+      dynacast: getConfigValue<boolean>('enableDynacast', false, 'ENABLE_DYNACAST'),
       stopLocalTrackOnUnpublish: true,
       videoCaptureDefaults: {
         resolution: VideoPresets.h720.resolution,
       },
       publishDefaults: {
-        simulcast: getConfigValue<boolean>(
-          'enableSimulcast',
-          false,
-          'ENABLE_SIMULCAST',
-        ),
-        videoSimulcastLayers: [
-          VideoPresets.h90,
-          VideoPresets.h180,
-          VideoPresets.h360,
-        ],
+        simulcast: getConfigValue<boolean>('enableSimulcast', false, 'ENABLE_SIMULCAST'),
+        videoSimulcastLayers: [VideoPresets.h90, VideoPresets.h180, VideoPresets.h360],
         stopMicTrackOnMute: getConfigValue<boolean>(
           'stopMicTrackOnMute',
           false,
@@ -361,29 +322,14 @@ export default class ConnectLivekit
     room.on(RoomEvent.Disconnected, this.onDisconnected);
     room.on(RoomEvent.MediaDevicesError, this.mediaDevicesError);
 
-    room.on(
-      RoomEvent.LocalTrackPublished,
-      this.handleMediaTracks.localTrackPublished,
-    );
-    room.on(
-      RoomEvent.LocalTrackUnpublished,
-      this.handleMediaTracks.localTrackUnpublished,
-    );
+    room.on(RoomEvent.LocalTrackPublished, this.handleMediaTracks.localTrackPublished);
+    room.on(RoomEvent.LocalTrackUnpublished, this.handleMediaTracks.localTrackUnpublished);
     room.on(RoomEvent.TrackSubscribed, this.handleMediaTracks.trackSubscribed);
-    room.on(
-      RoomEvent.TrackUnpublished,
-      this.handleMediaTracks.trackUnsubscribed,
-    );
-    room.on(
-      RoomEvent.TrackSubscriptionFailed,
-      this.handleMediaTracks.trackSubscriptionFailed,
-    );
+    room.on(RoomEvent.TrackUnpublished, this.handleMediaTracks.trackUnsubscribed);
+    room.on(RoomEvent.TrackSubscriptionFailed, this.handleMediaTracks.trackSubscriptionFailed);
     room.on(RoomEvent.TrackMuted, this.handleMediaTracks.trackMuted);
     room.on(RoomEvent.TrackUnmuted, this.handleMediaTracks.trackUnmuted);
-    room.on(
-      RoomEvent.TrackStreamStateChanged,
-      this.handleMediaTracks.trackStreamStateChanged,
-    );
+    room.on(RoomEvent.TrackStreamStateChanged, this.handleMediaTracks.trackStreamStateChanged);
 
     this._room = room;
   }
@@ -394,10 +340,7 @@ export default class ConnectLivekit
     this._room.remoteParticipants.forEach((participant) => {
       participant.getTrackPublications().forEach((track) => {
         if (track.isSubscribed) {
-          this.handleMediaTracks.processExistingTrack(
-            track as RemoteTrackPublication,
-            participant,
-          );
+          this.handleMediaTracks.processExistingTrack(track as RemoteTrackPublication, participant);
         }
       });
     });
@@ -509,8 +452,7 @@ export default class ConnectLivekit
     }
 
     // For broadcasting - only send our own connection's quality
-    const qualityChanged =
-      this.lastReportedConnectionQuality !== stats.uploadQuality;
+    const qualityChanged = this.lastReportedConnectionQuality !== stats.uploadQuality;
     if (qualityChanged) {
       this.lastReportedConnectionQuality = stats.uploadQuality;
 
@@ -556,8 +498,7 @@ export default class ConnectLivekit
   };
 
   private handleFallbackOnFlapping = () => {
-    const fallbackOnFlapping =
-      this.serverInfo?.turnCredentials?.fallbackOnFlapping;
+    const fallbackOnFlapping = this.serverInfo?.turnCredentials?.fallbackOnFlapping;
 
     if (!fallbackOnFlapping?.enabled) {
       return;
@@ -586,16 +527,13 @@ export default class ConnectLivekit
     }
   };
 
-  private handleTimerBasedFallback = (
-    connectionQuality: PnmConnectionQuality,
-  ) => {
+  private handleTimerBasedFallback = (connectionQuality: PnmConnectionQuality) => {
     if (this.fallbackTimer) {
       return;
     }
 
     const fallbackDuration =
-      Number(this.serverInfo?.turnCredentials?.fallbackTimerDuration) ||
-      FALLBACK_TIMER_DURATION;
+      Number(this.serverInfo?.turnCredentials?.fallbackTimerDuration) || FALLBACK_TIMER_DURATION;
 
     console.log(
       `Connection is unstable (${connectionQuality}). Starting ${
@@ -620,24 +558,28 @@ export default class ConnectLivekit
     }, fallbackDuration);
   };
 
-  public addScreenShareTrack: typeof ParticipantMediaManager.prototype.addScreenShareTrack =
-    (userId, track) =>
-      this.participantMediaManager.addScreenShareTrack(userId, track);
+  public addScreenShareTrack: typeof ParticipantMediaManager.prototype.addScreenShareTrack = (
+    userId,
+    track,
+  ) => this.participantMediaManager.addScreenShareTrack(userId, track);
 
-  public removeScreenShareTrack: typeof ParticipantMediaManager.prototype.removeScreenShareTrack =
-    (userId) => this.participantMediaManager.removeScreenShareTrack(userId);
+  public removeScreenShareTrack: typeof ParticipantMediaManager.prototype.removeScreenShareTrack = (
+    userId,
+  ) => this.participantMediaManager.removeScreenShareTrack(userId);
 
-  public addAudioSubscriber: typeof ParticipantMediaManager.prototype.addAudioSubscriber =
-    (participant) =>
-      this.participantMediaManager.addAudioSubscriber(participant);
+  public addAudioSubscriber: typeof ParticipantMediaManager.prototype.addAudioSubscriber = (
+    participant,
+  ) => this.participantMediaManager.addAudioSubscriber(participant);
 
-  public removeAudioSubscriber: typeof ParticipantMediaManager.prototype.removeAudioSubscriber =
-    (userId) => this.participantMediaManager.removeAudioSubscriber(userId);
+  public removeAudioSubscriber: typeof ParticipantMediaManager.prototype.removeAudioSubscriber = (
+    userId,
+  ) => this.participantMediaManager.removeAudioSubscriber(userId);
 
-  public addVideoSubscriber: typeof ParticipantMediaManager.prototype.addVideoSubscriber =
-    (participant) =>
-      this.participantMediaManager.addVideoSubscriber(participant);
+  public addVideoSubscriber: typeof ParticipantMediaManager.prototype.addVideoSubscriber = (
+    participant,
+  ) => this.participantMediaManager.addVideoSubscriber(participant);
 
-  public removeVideoSubscriber: typeof ParticipantMediaManager.prototype.removeVideoSubscriber =
-    (userId) => this.participantMediaManager.removeVideoSubscriber(userId);
+  public removeVideoSubscriber: typeof ParticipantMediaManager.prototype.removeVideoSubscriber = (
+    userId,
+  ) => this.participantMediaManager.removeVideoSubscriber(userId);
 }

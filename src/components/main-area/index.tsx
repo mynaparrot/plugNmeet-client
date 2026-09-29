@@ -10,10 +10,7 @@ import {
 
 import { useMainAreaState } from './hooks/useMainAreaState';
 import { useMainAreaCustomCSS } from './hooks/useMainAreaCustomCSS';
-import {
-  APP_LAYOUT_CLASSES,
-  MAIN_AREA_DIMENSIONS,
-} from '../../helpers/dimensions';
+import { APP_LAYOUT_CLASSES, MAIN_AREA_DIMENSIONS } from '../../helpers/dimensions';
 import { useSidePanelResize } from './hooks/useSidePanelResize';
 import { triggerRefreshWhiteboard } from '../../store/slices/whiteboard';
 import { updateIsSidePanelOpened } from '../../store/slices/roomSettingsSlice';
@@ -43,15 +40,10 @@ const MainArea = () => {
 
   const showBreakoutRoomsPanel = useAppSelector((state) => {
     const meta = state.session.currentRoom?.metadata;
-    return (
-      !!meta?.roomFeatures?.breakoutRoomFeatures?.isActive &&
-      !meta?.isBreakoutRoom
-    );
+    return !!meta?.roomFeatures?.breakoutRoomFeatures?.isActive && !meta?.isBreakoutRoom;
   });
 
-  const isNatsServerConnected = useAppSelector(
-    (state) => state.roomSettings.isNatsServerConnected,
-  );
+  const isNatsServerConnected = useAppSelector((state) => state.roomSettings.isNatsServerConnected);
   const natsPrevioulyState = useRef<boolean>(isNatsServerConnected);
 
   const extendedViewPreference = useRef<boolean>(false);
@@ -82,11 +74,7 @@ const MainArea = () => {
 
     // ask for notification permission
     // we'll not bother if permission was rejected before
-    if (
-      !isRecorder &&
-      'Notification' in window &&
-      Notification.permission !== 'denied'
-    ) {
+    if (!isRecorder && 'Notification' in window && Notification.permission !== 'denied') {
       Notification.requestPermission().then();
     }
   }, [dispatch, isRecorder, roomFeatures]);
@@ -133,8 +121,7 @@ const MainArea = () => {
   const handleSidePanelToggled = useCallback(() => {
     // This logic can be simplified now.
     // We just need to know if *any* panel is open.
-    const anyPanelIsOpen =
-      store.getState().bottomIconsActivity.activeSidePanel !== null;
+    const anyPanelIsOpen = store.getState().bottomIconsActivity.activeSidePanel !== null;
     dispatch(updateIsSidePanelOpened(anyPanelIsOpen));
 
     if (isActiveWhiteboard) {
@@ -147,29 +134,21 @@ const MainArea = () => {
       extendedViewPreference.current =
         store.getState().bottomIconsActivity.isEnabledExtendedVerticalCamView;
       dispatch(updateIsEnabledExtendedVerticalCamView(false));
-    } else if (
-      !anyPanelIsOpen &&
-      !isRecorder &&
-      extendedViewPreference.current
-    ) {
+    } else if (!anyPanelIsOpen && !isRecorder && extendedViewPreference.current) {
       // Restore extended view only if the screen is wide enough to accommodate
       // the side panel + extended strip + reasonable content area.
       const screenWidth = store.getState().bottomIconsActivity.screenWidth;
-      if (
-        screenWidth >=
-        MAIN_AREA_DIMENSIONS.verticalWebcams.extendedRestoreMinWidth
-      ) {
+      if (screenWidth >= MAIN_AREA_DIMENSIONS.verticalWebcams.extendedRestoreMinWidth) {
         dispatch(updateIsEnabledExtendedVerticalCamView(true));
       }
       extendedViewPreference.current = false;
     }
   }, [dispatch, debouncedRefresh, isActiveWhiteboard, isRecorder]);
 
-  const { panelWidth, isResizing, dragHandleProps, nudgeWidth, resetWidth } =
-    useSidePanelResize({
-      isRecorder,
-      onResizeEnd: isActiveWhiteboard ? () => debouncedRefresh() : undefined,
-    });
+  const { panelWidth, isResizing, dragHandleProps, nudgeWidth, resetWidth } = useSidePanelResize({
+    isRecorder,
+    onResizeEnd: isActiveWhiteboard ? () => debouncedRefresh() : undefined,
+  });
 
   const anyPanelActive = activeSidePanel !== null;
   const mainAreaClasses = `plugNmeet-app-main-area overflow-hidden relative flex flex-1 w-full ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition} ${isResizing ? 'side-panel-resizing' : ''}`;
@@ -200,9 +179,7 @@ const MainArea = () => {
         <SidePanel
           isActive={activeSidePanel === 'PARTICIPANTS'}
           panelClass="participants-panel"
-          ariaLabel={t('left-panel.participants', { total: '' })
-            .toString()
-            .replace(' ()', '')}
+          ariaLabel={t('left-panel.participants', { total: '' }).toString().replace(' ()', '')}
           onToggle={handleSidePanelToggled}
           dragHandleProps={dragHandleProps}
           panelWidthForA11y={panelWidth}

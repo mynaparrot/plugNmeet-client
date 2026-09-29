@@ -1,17 +1,7 @@
-import React, {
-  ReactElement,
-  SubmitEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { ReactElement, SubmitEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { create } from '@bufbuild/protobuf';
-import {
-  DataMsgBodyType,
-  SubmitPollResponseReqSchema,
-} from 'plugnmeet-protocol-js';
+import { DataMsgBodyType, SubmitPollResponseReqSchema } from 'plugnmeet-protocol-js';
 
 import { store, useAppDispatch } from '../../../store';
 import {
@@ -39,9 +29,7 @@ interface PollFormProps {
 const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const [selectedOptions, setSelectedOptions] = useState<Set<number>>(
-    new Set(),
-  );
+  const [selectedOptions, setSelectedOptions] = useState<Set<number>>(new Set());
   const conn = getNatsConn();
   const currentUser = useMemo(() => store.getState().session.currentUser, []);
 
@@ -55,8 +43,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
     if (!isRunning || expiresAt <= 0) {
       return;
     }
-    const tick = () =>
-      setRemaining(Math.max(0, expiresAt - Math.floor(Date.now() / 1000)));
+    const tick = () => setRemaining(Math.max(0, expiresAt - Math.floor(Date.now() / 1000)));
     tick();
     const interval = setInterval(tick, 1000);
     return () => clearInterval(interval);
@@ -78,17 +65,12 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
       setVoted(true);
     }
     // previous selections can only be shown for non-anonymous polls
-    if (
-      !pollDataWithOption.isAnonymous &&
-      userVoteData.voted &&
-      userVoteData.voted.length > 0
-    ) {
+    if (!pollDataWithOption.isAnonymous && userVoteData.voted && userVoteData.voted.length > 0) {
       setSelectedOptions(new Set(userVoteData.voted.map(Number)));
     }
   }, [userVoteData, pollDataWithOption.isAnonymous]);
 
-  const [addResponse, { isLoading, data: addReqResponse }] =
-    useAddResponseMutation();
+  const [addResponse, { isLoading, data: addReqResponse }] = useAddResponseMutation();
 
   const onSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -108,10 +90,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
 
     // notify to everyone; payload is the poll id (caches are invalidated on receipt)
     if (conn) {
-      conn.sendDataMessage(
-        DataMsgBodyType.NEW_POLL_RESPONSE,
-        pollDataWithOption.pollId,
-      );
+      conn.sendDataMessage(DataMsgBodyType.NEW_POLL_RESPONSE, pollDataWithOption.pollId);
     }
   };
 
@@ -170,8 +149,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
     for (const key in pollDataWithOption.options) {
       const o = pollDataWithOption.options[key];
       // correct answers are revealed only once a closed quiz poll shows results
-      const showCorrect =
-        pollDataWithOption.isQuiz && !isRunning && o.isCorrect;
+      const showCorrect = pollDataWithOption.isQuiz && !isRunning && o.isCorrect;
       // Determine bar color based on percentage
       let barColor = 'rgba(0, 161, 242, 0.1)'; // default light blue
       if (o.responsesPercentage >= 50) {
@@ -226,11 +204,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
   }, [onClickSelectOption, pollDataWithOption, selectedOptions, isRunning]);
 
   return (
-    <form
-      className="group"
-      onSubmit={onSubmit}
-      name={`voteForm-${pollDataWithOption.pollId}`}
-    >
+    <form className="group" onSubmit={onSubmit} name={`voteForm-${pollDataWithOption.pollId}`}>
       {pollDataWithOption.isAnonymous && (
         // voter trust: make anonymity visible where the vote happens
         <div className="flex justify-end">
@@ -243,9 +217,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
       {isLoading && (
         <div className="absolute text-center top-1/2 -translate-y-1/2 z-999 start-0 end-0 m-auto">
           <LoadingIcon
-            className={
-              'inline w-10 h-10 me-3 text-Gray-200 dark:text-Gray-800 animate-spin'
-            }
+            className={'inline w-10 h-10 me-3 text-Gray-200 dark:text-Gray-800 animate-spin'}
             fillColor={'#004D90'}
           />
         </div>

@@ -20,13 +20,9 @@ const trimBuffer = (value: string): string => {
 export const useLiveCaptions = () => {
   const finalText = useAppSelector((state) => state.speechServices.finalText);
 
-  const interimText = useAppSelector(
-    (state) => state.speechServices.interimText,
-  );
+  const interimText = useAppSelector((state) => state.speechServices.interimText);
 
-  const selectedSubtitleLang = useAppSelector(
-    (state) => state.speechServices.selectedSubtitleLang,
-  );
+  const selectedSubtitleLang = useAppSelector((state) => state.speechServices.selectedSubtitleLang);
 
   const [finalBuffer, setFinalBuffer] = useState('');
   const [speaker, setSpeaker] = useState('');
@@ -57,8 +53,7 @@ export const useLiveCaptions = () => {
     const isSameReference = lastProcessedFinalRef.current === finalText;
 
     const isSameId =
-      finalText.id !== undefined &&
-      lastProcessedFinalRef.current?.id === finalText.id;
+      finalText.id !== undefined && lastProcessedFinalRef.current?.id === finalText.id;
 
     if (isSameReference || isSameId) {
       return;
@@ -66,8 +61,7 @@ export const useLiveCaptions = () => {
 
     lastProcessedFinalRef.current = finalText;
 
-    const speakerChanged =
-      Boolean(speakerRef.current) && speakerRef.current !== finalText.from;
+    const speakerChanged = Boolean(speakerRef.current) && speakerRef.current !== finalText.from;
 
     speakerRef.current = finalText.from;
     setSpeaker(finalText.from);
@@ -89,8 +83,7 @@ export const useLiveCaptions = () => {
       return;
     }
 
-    const speakerChanged =
-      Boolean(speakerRef.current) && speakerRef.current !== interimSpeaker;
+    const speakerChanged = Boolean(speakerRef.current) && speakerRef.current !== interimSpeaker;
 
     if (speakerChanged) {
       setFinalBuffer('');

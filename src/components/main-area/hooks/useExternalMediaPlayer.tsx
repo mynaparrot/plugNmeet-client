@@ -9,10 +9,7 @@ export const useExternalMediaPlayer = (
   isRecorder: boolean,
 ) => {
   const shouldShow = useMemo(
-    () =>
-      isActiveExternalMediaPlayer &&
-      !isActiveScreenShare &&
-      !isActiveWhiteboard,
+    () => isActiveExternalMediaPlayer && !isActiveScreenShare && !isActiveWhiteboard,
     [isActiveExternalMediaPlayer, isActiveScreenShare, isActiveWhiteboard],
   );
 

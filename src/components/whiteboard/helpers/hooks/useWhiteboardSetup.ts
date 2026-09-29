@@ -11,10 +11,7 @@ interface IUseWhiteboardSetup {
   canEdit: boolean;
 }
 
-const useWhiteboardSetup = ({
-  excalidrawAPI,
-  canEdit,
-}: IUseWhiteboardSetup) => {
+const useWhiteboardSetup = ({ excalidrawAPI, canEdit }: IUseWhiteboardSetup) => {
   const [viewModeEnabled, setViewModeEnabled] = useState(true);
 
   const participants = useAppSelector(selectWhiteboardParticipants);
@@ -46,9 +43,7 @@ const useWhiteboardSetup = ({
     // A user's cursor should be removed if:
     // 1. They have disconnected (and are no longer in the participants list).
     // 2. They are no longer a presenter OR their whiteboard is locked.
-    const activeUsers = participants.filter(
-      (p) => p.isPresent || !p.isWhiteboardLocked,
-    );
+    const activeUsers = participants.filter((p) => p.isPresent || !p.isWhiteboardLocked);
     return new Set(activeUsers.map((p) => p.userId));
   }, [participants]);
 

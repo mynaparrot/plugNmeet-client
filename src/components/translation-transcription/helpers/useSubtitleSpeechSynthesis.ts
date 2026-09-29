@@ -5,9 +5,7 @@ import speechQueue from './SpeechSynthesisQueue'; // Import the singleton
 
 export const useSubtitleSpeechSynthesis = () => {
   const finalText = useAppSelector((state) => state.speechServices.finalText);
-  const selectedSubtitleLang = useAppSelector(
-    (state) => state.speechServices.selectedSubtitleLang,
-  );
+  const selectedSubtitleLang = useAppSelector((state) => state.speechServices.selectedSubtitleLang);
 
   // Effect to add new final texts to the queue
   useEffect(() => {

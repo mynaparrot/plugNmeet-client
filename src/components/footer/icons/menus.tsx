@@ -21,9 +21,7 @@ interface MenusIconProps {
 
 const MenusIcon = ({ isAdmin }: MenusIconProps) => {
   const { t } = useTranslation();
-  const showRtmpModal = useAppSelector(
-    (state) => state.bottomIconsActivity.showRtmpModal,
-  );
+  const showRtmpModal = useAppSelector((state) => state.bottomIconsActivity.showRtmpModal);
 
   const showExternalMediaPlayerModal = useAppSelector(
     (state) => state.bottomIconsActivity.showExternalMediaPlayerModal,
@@ -53,10 +51,7 @@ const MenusIcon = ({ isAdmin }: MenusIconProps) => {
         <Menu>
           {({ open }) => (
             <div>
-              <MenuButton
-                aria-label={t('footer.icons.menu').toString()}
-                className="focus-ring"
-              >
+              <MenuButton aria-label={t('footer.icons.menu').toString()} className="focus-ring">
                 <div
                   className={`footer-menu relative footer-icon cursor-pointer w-10 md:w-11 3xl:w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 ${open ? 'border-[rgba(124,206,247,0.25)] dark:border-Gray-800' : 'border-transparent'}`}
                 >

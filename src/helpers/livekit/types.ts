@@ -23,59 +23,33 @@ export interface IConnectLivekit extends EventEmitter {
   get room(): Room;
   get qualityMonitor(): ConnectionQualityMonitor;
   get adaptiveMedia(): AdaptiveMediaController;
-  get videoSubscribersMap(): Map<
-    string,
-    Participant | LocalParticipant | RemoteParticipant
-  >;
+  get videoSubscribersMap(): Map<string, Participant | LocalParticipant | RemoteParticipant>;
   get audioSubscribersMap(): Map<string, RemoteParticipant>;
-  get screenShareTracksMap(): Map<
-    string,
-    Array<LocalTrackPublication | RemoteTrackPublication>
-  >;
+  get screenShareTracksMap(): Map<string, Array<LocalTrackPublication | RemoteTrackPublication>>;
   initializeConnection(serverInfo: MediaServerConnInfo): Promise<void>;
   disconnectRoom(normalDisconnect: boolean): Promise<void>;
   setErrorStatus(title: string, reason: string): void;
-  addAudioSubscriber(
-    participant: Participant | LocalParticipant | RemoteParticipant,
-  ): void;
+  addAudioSubscriber(participant: Participant | LocalParticipant | RemoteParticipant): void;
   removeAudioSubscriber(userId: string): void;
-  addVideoSubscriber(
-    participant: Participant | LocalParticipant | RemoteParticipant,
-  ): void;
+  addVideoSubscriber(participant: Participant | LocalParticipant | RemoteParticipant): void;
   removeVideoSubscriber(userId: string): void;
-  addScreenShareTrack(
-    userId: string,
-    track: LocalTrackPublication | RemoteTrackPublication,
-  ): void;
+  addScreenShareTrack(userId: string, track: LocalTrackPublication | RemoteTrackPublication): void;
   removeScreenShareTrack(userId: string): void;
   getVideoSubscriberParticipant(
     userId: string,
   ): Participant | LocalParticipant | RemoteParticipant | undefined;
-  on(
-    event: CurrentConnectionEvents.ScreenShareStatus,
-    listener: (active: boolean) => void,
-  );
-  on(
-    event: CurrentConnectionEvents.VideoStatus,
-    listener: (active: boolean) => void,
-  );
+  on(event: CurrentConnectionEvents.ScreenShareStatus, listener: (active: boolean) => void);
+  on(event: CurrentConnectionEvents.VideoStatus, listener: (active: boolean) => void);
   on(
     event: CurrentConnectionEvents.AudioSubscribers,
     listener: (subscribers: Map<string, RemoteParticipant>) => void,
   );
   on(
     event: CurrentConnectionEvents.VideoSubscribers,
-    listener: (
-      subscribers: Map<string, LocalParticipant | RemoteParticipant>,
-    ) => void,
+    listener: (subscribers: Map<string, LocalParticipant | RemoteParticipant>) => void,
   );
   on(
     event: CurrentConnectionEvents.ScreenShareTracks,
-    listener: (
-      tracks: Map<
-        string,
-        Array<LocalTrackPublication | RemoteTrackPublication>
-      >,
-    ) => void,
+    listener: (tracks: Map<string, Array<LocalTrackPublication | RemoteTrackPublication>>) => void,
   );
 }

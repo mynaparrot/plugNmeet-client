@@ -33,11 +33,7 @@ const MicMenu = ({
               <ArrowUp />
             </MenuButton>
 
-            <MicMenuItems
-              currentRoom={currentRoom}
-              hybrid={hybrid}
-              isLocked={isLocked}
-            />
+            <MicMenuItems currentRoom={currentRoom} hybrid={hybrid} isLocked={isLocked} />
           </>
         )}
       </Menu>

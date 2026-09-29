@@ -1,9 +1,4 @@
-import {
-  create,
-  fromBinary,
-  fromJson,
-  fromJsonString,
-} from '@bufbuild/protobuf';
+import { create, fromBinary, fromJson, fromJsonString } from '@bufbuild/protobuf';
 import {
   ChatMessage,
   ChatMessageSchema,
@@ -62,10 +57,7 @@ export default class SubscriptionHandler {
   constructor(connectNats: ConnectNats) {
     this.connectNats = connectNats;
 
-    this._handleRoomData = new HandleRoomData(
-      this.connectNats.roomId,
-      this.connectNats.userId,
-    );
+    this._handleRoomData = new HandleRoomData(this.connectNats.roomId, this.connectNats.userId);
     this._handleChat = new HandleChat(this.connectNats);
     this._handleSystemData = new HandleSystemData(this._handleChat);
     this._handleParticipants = new HandleParticipants(this.connectNats);
@@ -84,10 +76,7 @@ export default class SubscriptionHandler {
     // now we'll subscribe to the room events stream
     this.subscribeToRoomEvents().catch((e) => {
       console.error('subscribeToRoomEvents failed:', e);
-      this.connectNats.setErrorStatus(
-        i18n.t('notifications.nats-error-title'),
-        formatNatsError(e),
-      );
+      this.connectNats.setErrorStatus(i18n.t('notifications.nats-error-title'), formatNatsError(e));
     });
     // we'll still need this for any pub/sub based messages
     void this.subscribeToSystemPublicPubSub();
@@ -221,13 +210,8 @@ export default class SubscriptionHandler {
         if (payload.fromUserId === this.connectNats.userId) {
           continue;
         }
-        const isYjsMessage =
-          !!payload.binMessage && payload.binMessage.length > 0;
-        if (
-          isYjsMessage &&
-          payload.toUserId &&
-          payload.toUserId !== this.connectNats.userId
-        ) {
+        const isYjsMessage = !!payload.binMessage && payload.binMessage.length > 0;
+        if (isYjsMessage && payload.toUserId && payload.toUserId !== this.connectNats.userId) {
           continue;
         }
         await this._handleWhiteboard.handleWhiteboardMsg(payload);
@@ -296,9 +280,7 @@ export default class SubscriptionHandler {
    * systemEventHandlers maps will contain all the events both public and private
    */
   private readonly systemEventHandlers: {
-    [key in NatsMsgServerToClientEvents]?: (
-      payload: NatsMsgServerToClient,
-    ) => void | Promise<void>;
+    [key in NatsMsgServerToClientEvents]?: (payload: NatsMsgServerToClient) => void | Promise<void>;
   } = {
     [NatsMsgServerToClientEvents.RES_INITIAL_DATA]: async (p) => {
       await this.handleInitialData(p.msg);
@@ -306,8 +288,7 @@ export default class SubscriptionHandler {
     [NatsMsgServerToClientEvents.RES_MEDIA_SERVER_DATA]: async (p) => {
       await this.handleMediaServerData(p.msg);
     },
-    [NatsMsgServerToClientEvents.RES_JOINED_USERS_LIST]: (p) =>
-      this.handleJoinedUsersList(p.msg),
+    [NatsMsgServerToClientEvents.RES_JOINED_USERS_LIST]: (p) => this.handleJoinedUsersList(p.msg),
     [NatsMsgServerToClientEvents.RESP_ONLINE_USERS_LIST]: (p) =>
       this._handleParticipants.reconcileParticipants(p.msg),
     [NatsMsgServerToClientEvents.ROOM_METADATA_UPDATE]: (p) =>
@@ -317,8 +298,7 @@ export default class SubscriptionHandler {
       store.dispatch(addToken(this.connectNats.token));
     },
     [NatsMsgServerToClientEvents.SYSTEM_NOTIFICATION]: (p) => {
-      !this.connectNats.isRecorder &&
-        this._handleSystemData.handleNotification(p.msg);
+      !this.connectNats.isRecorder && this._handleSystemData.handleNotification(p.msg);
     },
     [NatsMsgServerToClientEvents.USER_JOINED]: (p) =>
       this._handleParticipants.addRemoteParticipant(p.msg),
@@ -328,16 +308,12 @@ export default class SubscriptionHandler {
       this._handleParticipants.handleParticipantOffline(p.msg),
     [NatsMsgServerToClientEvents.USER_METADATA_UPDATE]: (p) =>
       this._handleParticipants.handleParticipantMetadataUpdate(p.msg),
-    [NatsMsgServerToClientEvents.SESSION_ENDED]: (p) =>
-      this.connectNats.endSession(p.msg),
+    [NatsMsgServerToClientEvents.SESSION_ENDED]: (p) => this.connectNats.endSession(p.msg),
 
     // all poll related events
-    [NatsMsgServerToClientEvents.POLL_CREATED]: (p) =>
-      this._handleSystemData.handlePoll(p),
-    [NatsMsgServerToClientEvents.POLL_CLOSED]: (p) =>
-      this._handleSystemData.handlePoll(p),
-    [NatsMsgServerToClientEvents.POLL_REOPENED]: (p) =>
-      this._handleSystemData.handlePoll(p),
+    [NatsMsgServerToClientEvents.POLL_CREATED]: (p) => this._handleSystemData.handlePoll(p),
+    [NatsMsgServerToClientEvents.POLL_CLOSED]: (p) => this._handleSystemData.handlePoll(p),
+    [NatsMsgServerToClientEvents.POLL_REOPENED]: (p) => this._handleSystemData.handlePoll(p),
 
     // add breakout rooms related events
     [NatsMsgServerToClientEvents.JOIN_BREAKOUT_ROOM]: (p) =>
@@ -353,8 +329,7 @@ export default class SubscriptionHandler {
       this._handleDataMsg.handleSpeechSubtitleText(p.msg),
     [NatsMsgServerToClientEvents.RESP_INSIGHTS_AI_TEXT_CHAT]: (p) =>
       this._handleSystemData.handleInsightsAITextData(p.msg),
-    [NatsMsgServerToClientEvents.DELIVERY_PRIVATE_DATA]: (p) =>
-      this.handlePrivateDataDelivery(p),
+    [NatsMsgServerToClientEvents.DELIVERY_PRIVATE_DATA]: (p) => this.handlePrivateDataDelivery(p),
     [NatsMsgServerToClientEvents.PONG]: () => this.connectNats.handlePong(),
     [NatsMsgServerToClientEvents.SESSION_DATA_FETCH_RESPONSE]: async (p) => {
       await this.handleSessionDataFetchResponse(p);
@@ -426,24 +401,19 @@ export default class SubscriptionHandler {
     }
 
     // 3. We'll add the room info.
-    this.connectNats.currentRoomInfo = await this._handleRoomData.setRoomInfo(
-      data.room,
-    );
+    this.connectNats.currentRoomInfo = await this._handleRoomData.setRoomInfo(data.room);
 
     // 4. We'll initialize the indexedDB for this session.
     initIDB(this.connectNats.currentRoomInfo.sid, this.connectNats.userId);
 
     // 5. We'll add the local user.
     this.connectNats.isAdmin = data.localUser.isAdmin;
-    const localUser = await this._handleParticipants.addLocalParticipantInfo(
-      data.localUser,
-    );
+    const localUser = await this._handleParticipants.addLocalParticipantInfo(data.localUser);
     this.connectNats.userName = localUser.name;
 
     // 6. We'll initialize the media server class.
     const mediaInitialized = await this.connectNats.initializeMediaServer(
-      this.connectNats.currentRoomInfo.metadata?.roomFeatures
-        ?.endToEndEncryptionFeatures,
+      this.connectNats.currentRoomInfo.metadata?.roomFeatures?.endToEndEncryptionFeatures,
       data.room.roomSid,
     );
     if (!mediaInitialized) {
@@ -506,33 +476,20 @@ export default class SubscriptionHandler {
       const results = await Promise.allSettled([
         idbGetAll<ChatMessage>(DB_STORE_NAMES.CHAT_MESSAGES),
         idbGetAll<UserNotification>(DB_STORE_NAMES.USER_NOTIFICATIONS),
-        idbGet<string>(
-          DB_STORE_NAMES.USER_SETTINGS,
-          SELECTED_SUBTITLE_LANG_KEY,
-        ),
+        idbGet<string>(DB_STORE_NAMES.USER_SETTINGS, SELECTED_SUBTITLE_LANG_KEY),
         idbGetAll<TextWithInfo>(DB_STORE_NAMES.SPEECH_TO_TEXT_FINAL_TEXTS),
       ]);
 
-      const chatMsgs =
-        results[0].status === 'fulfilled' ? results[0].value : [];
-      const notifications =
-        results[1].status === 'fulfilled' ? results[1].value : [];
-      const lastSubtitleLang =
-        results[2].status === 'fulfilled' ? results[2].value : undefined;
-      const speechToTextFinalTexts =
-        results[3].status === 'fulfilled' ? results[3].value : [];
+      const chatMsgs = results[0].status === 'fulfilled' ? results[0].value : [];
+      const notifications = results[1].status === 'fulfilled' ? results[1].value : [];
+      const lastSubtitleLang = results[2].status === 'fulfilled' ? results[2].value : undefined;
+      const speechToTextFinalTexts = results[3].status === 'fulfilled' ? results[3].value : [];
 
       if (results[0].status === 'rejected') {
-        console.error(
-          'Failed to load chat messages from IndexedDB:',
-          results[0].reason,
-        );
+        console.error('Failed to load chat messages from IndexedDB:', results[0].reason);
       }
       if (results[1].status === 'rejected') {
-        console.error(
-          'Failed to load notifications from IndexedDB:',
-          results[1].reason,
-        );
+        console.error('Failed to load notifications from IndexedDB:', results[1].reason);
       }
 
       if (chatMsgs && chatMsgs.length) {
@@ -554,13 +511,10 @@ export default class SubscriptionHandler {
       }
       // Restore speech-to-text data if the feature is enabled.
       const transcriptionFeatures =
-        this.connectNats.currentRoomInfo?.metadata?.roomFeatures
-          ?.insightsFeatures?.transcriptionFeatures;
+        this.connectNats.currentRoomInfo?.metadata?.roomFeatures?.insightsFeatures
+          ?.transcriptionFeatures;
       if (results[3].status === 'rejected') {
-        console.error(
-          'Failed to load speech-to-text data from IndexedDB:',
-          results[3].reason,
-        );
+        console.error('Failed to load speech-to-text data from IndexedDB:', results[3].reason);
       } else if (
         transcriptionFeatures?.isEnabled &&
         speechToTextFinalTexts &&

@@ -11,10 +11,7 @@ interface NewBreakoutRoomProps {
   onClosePopover?: () => void;
 }
 
-const NewBreakoutRoom = ({
-  createdAt,
-  onClosePopover,
-}: NewBreakoutRoomProps) => {
+const NewBreakoutRoom = ({ createdAt, onClosePopover }: NewBreakoutRoomProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 

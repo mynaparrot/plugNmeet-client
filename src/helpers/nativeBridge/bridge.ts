@@ -3,12 +3,7 @@ import {
   NativeBridgeMsgSchema,
   type NativeBridgeMsg,
 } from 'plugnmeet-protocol-js';
-import {
-  fromJson,
-  toJsonString,
-  type JsonValue,
-  fromJsonString,
-} from '@bufbuild/protobuf';
+import { fromJson, toJsonString, type JsonValue, fromJsonString } from '@bufbuild/protobuf';
 
 /**
  * Inbound messages are re-dispatched as a single CustomEvent so listeners

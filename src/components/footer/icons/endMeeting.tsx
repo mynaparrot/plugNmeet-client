@@ -2,10 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
-import {
-  CommonResponseSchema,
-  RoomEndAPIReqSchema,
-} from 'plugnmeet-protocol-js';
+import { CommonResponseSchema, RoomEndAPIReqSchema } from 'plugnmeet-protocol-js';
 import clsx from 'clsx';
 import RadioOptions from '../../../helpers/ui/radioOptions';
 
@@ -111,9 +108,7 @@ const EndMeetingButton = () => {
     },
   );
 
-  const tooltipText = isAdmin
-    ? t('header.menus.end')
-    : t('header.menus.logout');
+  const tooltipText = isAdmin ? t('header.menus.end') : t('header.menus.logout');
 
   const renderAdminButtons = () => (
     <div className="flex items-center justify-end gap-2">
@@ -129,13 +124,9 @@ const EndMeetingButton = () => {
               selectedAction === 'leave',
           },
         )}
-        onClick={() =>
-          selectedAction === 'end' ? handleEndMeeting() : handleLeave()
-        }
+        onClick={() => (selectedAction === 'end' ? handleEndMeeting() : handleLeave())}
       >
-        {selectedAction === 'end'
-          ? t('header.menus.end')
-          : t('header.menus.logout')}
+        {selectedAction === 'end' ? t('header.menus.end') : t('header.menus.logout')}
       </button>
       <button
         type="button"

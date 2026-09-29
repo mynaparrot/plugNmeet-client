@@ -12,9 +12,7 @@ const DurationView = () => {
   const roomDuration = useAppSelector(
     (state) => state.session.currentRoom.metadata?.roomFeatures?.roomDuration,
   );
-  const startedAt = useAppSelector(
-    (state) => state.session.currentRoom.metadata?.startedAt,
-  );
+  const startedAt = useAppSelector((state) => state.session.currentRoom.metadata?.startedAt);
 
   const endTime = useMemo(() => {
     const duration = Number(roomDuration);

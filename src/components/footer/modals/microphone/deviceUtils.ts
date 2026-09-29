@@ -6,8 +6,7 @@ import {
 const VIRTUAL_HINT =
   /monitor|loopback|virtual|vb-audio|voicemeeter|cable|obs|manycam|snap|krisp|nvidia broadcast|rtx voice|stereo mix|what u hear/i;
 
-export const isLikelyVirtualOrLoopback = (label: string) =>
-  VIRTUAL_HINT.test(label || '');
+export const isLikelyVirtualOrLoopback = (label: string) => VIRTUAL_HINT.test(label || '');
 
 export const isSystemDefaultDevice = (device: IMediaDevice) =>
   device.id === 'default' || /^default/i.test(device.label || '');
@@ -90,16 +89,12 @@ export const getStoredVideoDeviceId = (): string | null => {
  * device looks virtual (e.g. single OBS camera).
  */
 export const getFirstRealAudioDeviceId = (sorted: IMediaDevice[]): string => {
-  const real = sorted.find(
-    (d) => !isLikelyVirtualOrLoopback(d.label) && !isSystemDefaultDevice(d),
-  );
+  const real = sorted.find((d) => !isLikelyVirtualOrLoopback(d.label) && !isSystemDefaultDevice(d));
   return real?.id ?? sorted[0]?.id ?? '';
 };
 
 export const getFirstRealVideoDeviceId = (sorted: IMediaDevice[]): string => {
-  const real = sorted.find(
-    (d) => !isLikelyVirtualCamera(d.label) && !isSystemDefaultDevice(d),
-  );
+  const real = sorted.find((d) => !isLikelyVirtualCamera(d.label) && !isSystemDefaultDevice(d));
   return real?.id ?? sorted[0]?.id ?? '';
 };
 

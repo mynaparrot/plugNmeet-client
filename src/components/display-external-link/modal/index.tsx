@@ -24,13 +24,10 @@ const DisplayExternalLinkModal = () => {
   const { t } = useTranslation();
   const isActive = useAppSelector(
     (state) =>
-      state.session.currentRoom.metadata?.roomFeatures
-        ?.displayExternalLinkFeatures?.isActive,
+      state.session.currentRoom.metadata?.roomFeatures?.displayExternalLinkFeatures?.isActive,
   );
   const lastLink = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures
-        ?.displayExternalLinkFeatures?.link,
+    (state) => state.session.currentRoom.metadata?.roomFeatures?.displayExternalLinkFeatures?.link,
   );
   const [link, setLink] = useState<string>(lastLink ?? '');
   const [extraValues, setExtraValues] = useState({
@@ -159,9 +156,7 @@ const DisplayExternalLinkModal = () => {
                 <Checkbox
                   id="meeting-id"
                   label={t('external-display-link-display.meeting-id')}
-                  description={t(
-                    'external-display-link-display.meeting-id-des',
-                  )}
+                  description={t('external-display-link-display.meeting-id-des')}
                   checked={extraValues.meetingId}
                   onChange={() => handleCheckboxChange('meetingId')}
                 />

@@ -160,9 +160,7 @@ const FooterUI = ({
     return (
       <div
         className={`renderForParticipant flex gap-2 text-sm items-center justify-start md:justify-center relative ${
-          isAdmin && !isRecorder
-            ? 'ltr:pl-3 rtl:pr-3 md:pl-12  md:rtl:pr-4'
-            : 'ltr:pl-3 rtl:pr-3'
+          isAdmin && !isRecorder ? 'ltr:pl-3 rtl:pr-3 md:pl-12  md:rtl:pr-4' : 'ltr:pl-3 rtl:pr-3'
         } `}
       >
         {isAdmin && !isRecorder && (

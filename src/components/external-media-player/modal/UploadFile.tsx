@@ -3,9 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { FileIconSVG } from '../../../assets/Icons/FileIconSVG';
 import { TrashSVG } from '../../../assets/Icons/TrashSVG';
-import externalMediaProcessor, {
-  IExternalMediaUploadCallbacks,
-} from './externalMediaProcessor';
+import externalMediaProcessor, { IExternalMediaUploadCallbacks } from './externalMediaProcessor';
 
 interface IUploadFileProps {
   isPlayBtnLoading: boolean;
@@ -94,11 +92,7 @@ const UploadFile = ({
           },
         };
 
-        externalMediaProcessor.start(
-          selectedFile,
-          ALLOWED_FILE_TYPES,
-          callbacks,
-        );
+        externalMediaProcessor.start(selectedFile, ALLOWED_FILE_TYPES, callbacks);
       }
     },
     [onFileSelectedForUpload, onAfterFileUploaded],
@@ -151,9 +145,7 @@ const UploadFile = ({
               <div className="left">
                 <p className="break-all">{fileName}</p>
                 <div className="bottom flex justify-between text-Gray-800 text-xs items-center pt-1">
-                  {fileSize > 0
-                    ? `${(fileSize / (1024 * 1024)).toFixed(2)}MB`
-                    : ''}
+                  {fileSize > 0 ? `${(fileSize / (1024 * 1024)).toFixed(2)}MB` : ''}
                 </div>
               </div>
               <button

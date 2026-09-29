@@ -7,10 +7,7 @@ import Modal from '../../helpers/ui/modal';
 import { updateDisplaySpeechSettingsModal } from '../../store/slices/bottomIconsActivitySlice';
 import TranscriptionSettings from './transcription-settings';
 import ChatTranslationSettings from './chat-translation-settings';
-import {
-  supportedTranscriptionLangs,
-  supportedTranslationLangs,
-} from './helpers/supportedLangs';
+import { supportedTranscriptionLangs, supportedTranslationLangs } from './helpers/supportedLangs';
 import { LoadingIcon } from '../../assets/Icons/Loading';
 
 const TranslationTranscriptionSettingModal = () => {
@@ -27,17 +24,13 @@ const TranslationTranscriptionSettingModal = () => {
 
   useEffect(() => {
     const state = store.getState();
-    const insightsFeatures =
-      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures;
+    const insightsFeatures = state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures;
     if (!insightsFeatures || !insightsFeatures.isAllow) {
       return;
     }
     setIsLoading(true);
     // prepare languages
-    Promise.allSettled([
-      supportedTranscriptionLangs(),
-      supportedTranslationLangs(),
-    ]).then(() => {
+    Promise.allSettled([supportedTranscriptionLangs(), supportedTranslationLangs()]).then(() => {
       // now display tabs
       const tabItems: ITabItem[] = [];
       if (insightsFeatures.transcriptionFeatures?.isAllow) {
@@ -73,17 +66,10 @@ const TranslationTranscriptionSettingModal = () => {
       maxWidth="max-w-2xl"
     >
       <div className="-mx-4">
-        {errorMsg && (
-          <div className="error-msg text-xs text-red-600 py-1 px-2">
-            {errorMsg}
-          </div>
-        )}
+        {errorMsg && <div className="error-msg text-xs text-red-600 py-1 px-2">{errorMsg}</div>}
         {isLoading ? (
           <div className="flex justify-center mt-12">
-            <LoadingIcon
-              className="h-10 w-10 animate-spin text-gray-200"
-              fillColor="#004D90"
-            />
+            <LoadingIcon className="h-10 w-10 animate-spin text-gray-200" fillColor="#004D90" />
           </div>
         ) : (
           <>

@@ -2,10 +2,7 @@ import { ChatMessage } from 'plugnmeet-protocol-js';
 
 import ConnectNats from './ConnectNats';
 import { store } from '../../store';
-import {
-  addChatMessage,
-  updateChatMessage,
-} from '../../store/slices/chatMessagesSlice';
+import { addChatMessage, updateChatMessage } from '../../store/slices/chatMessagesSlice';
 import {
   setActiveSidePanel,
   updateTotalUnreadChatMsgs,
@@ -35,8 +32,7 @@ export default class HandleChat {
 
     if (typeof this.allowViewOtherUsersList === 'undefined') {
       this.allowViewOtherUsersList =
-        store.getState().session.currentRoom.metadata?.roomFeatures
-          ?.allowViewOtherUsersList;
+        store.getState().session.currentRoom.metadata?.roomFeatures?.allowViewOtherUsersList;
     }
 
     if (
@@ -54,17 +50,11 @@ export default class HandleChat {
 
     if (!isDeleted) {
       // check translation
-      const selectedChatTransLang =
-        store.getState().roomSettings.selectedChatTransLang;
+      const selectedChatTransLang = store.getState().roomSettings.selectedChatTransLang;
       if (selectedChatTransLang !== '') {
-        if (
-          payload.sourceLang &&
-          payload.sourceLang !== selectedChatTransLang
-        ) {
+        if (payload.sourceLang && payload.sourceLang !== selectedChatTransLang) {
           // so, we'll need to pickup from translation
-          if (
-            typeof payload.translations[selectedChatTransLang] !== 'undefined'
-          ) {
+          if (typeof payload.translations[selectedChatTransLang] !== 'undefined') {
             payload.message = payload.translations[selectedChatTransLang];
           }
         }
@@ -88,14 +78,11 @@ export default class HandleChat {
       return;
     }
 
-    const isActiveChatPanel =
-      store.getState().bottomIconsActivity.activeSidePanel === 'CHAT';
+    const isActiveChatPanel = store.getState().bottomIconsActivity.activeSidePanel === 'CHAT';
     const selectedChatOption = store.getState().roomSettings.selectedChatOption;
     const currentUser = store.getState().session.currentUser;
     const isRecorder =
-      (currentUser?.userId === 'RECORDER_BOT' ||
-        currentUser?.userId === 'RTMP_BOT') ??
-      false;
+      (currentUser?.userId === 'RECORDER_BOT' || currentUser?.userId === 'RTMP_BOT') ?? false;
 
     if (!isActiveChatPanel) {
       if (!isRecorder) {

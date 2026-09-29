@@ -12,12 +12,7 @@ interface IWebcamMenuProps {
   isLocked?: boolean;
 }
 
-const WebcamMenu = ({
-  currentRoom,
-  isHybrid,
-  toggleWebcam,
-  isLocked,
-}: IWebcamMenuProps) => {
+const WebcamMenu = ({ currentRoom, isHybrid, toggleWebcam, isLocked }: IWebcamMenuProps) => {
   return (
     <div className="menu relative">
       <Menu as="div">

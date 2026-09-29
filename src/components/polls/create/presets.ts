@@ -9,10 +9,7 @@ export interface PollQuickTypePreset {
 export const POLL_QUICK_TYPES: PollQuickTypePreset[] = [
   {
     id: 'yes-no',
-    optionKeys: [
-      { i18nKey: 'polls.option-yes' },
-      { i18nKey: 'polls.option-no' },
-    ],
+    optionKeys: [{ i18nKey: 'polls.option-yes' }, { i18nKey: 'polls.option-no' }],
   },
   {
     id: 'yes-no-maybe',
@@ -24,26 +21,15 @@ export const POLL_QUICK_TYPES: PollQuickTypePreset[] = [
   },
   {
     id: 'true-false',
-    optionKeys: [
-      { i18nKey: 'polls.option-true' },
-      { i18nKey: 'polls.option-false' },
-    ],
+    optionKeys: [{ i18nKey: 'polls.option-true' }, { i18nKey: 'polls.option-false' }],
   },
   {
     id: 'agree-disagree',
-    optionKeys: [
-      { i18nKey: 'polls.option-agree' },
-      { i18nKey: 'polls.option-disagree' },
-    ],
+    optionKeys: [{ i18nKey: 'polls.option-agree' }, { i18nKey: 'polls.option-disagree' }],
   },
   {
     id: 'a-b-c-d',
-    optionKeys: [
-      { literal: 'A' },
-      { literal: 'B' },
-      { literal: 'C' },
-      { literal: 'D' },
-    ],
+    optionKeys: [{ literal: 'A' }, { literal: 'B' }, { literal: 'C' }, { literal: 'D' }],
   },
   {
     id: '1-5',
@@ -61,7 +47,4 @@ export const POLL_QUICK_TYPES: PollQuickTypePreset[] = [
 export const presetOptionTexts = (
   preset: PollQuickTypePreset,
   t: (key: string) => string,
-): string[] =>
-  preset.optionKeys.map((key) =>
-    'literal' in key ? key.literal : t(key.i18nKey),
-  );
+): string[] => preset.optionKeys.map((key) => ('literal' in key ? key.literal : t(key.i18nKey)));

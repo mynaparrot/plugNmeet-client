@@ -6,8 +6,8 @@ import TranslationTranscription from '../../translation-transcription';
 export const useTranslationTranscription = () => {
   const isEnabled = useAppSelector(
     (state) =>
-      !!state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
-        ?.transcriptionFeatures?.isEnabled,
+      !!state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures?.transcriptionFeatures
+        ?.isEnabled,
   );
 
   return useMemo(() => {

@@ -63,9 +63,7 @@ const WhiteboardShareSection = ({
             <button
               type="button"
               className="text-sm font-medium text-Blue hover:underline cursor-pointer"
-              onClick={() =>
-                setSelectedWhiteboardPages([...allWhiteboardPages])
-              }
+              onClick={() => setSelectedWhiteboardPages([...allWhiteboardPages])}
             >
               {t('breakout-room.share-whiteboard-select-all')}
             </button>

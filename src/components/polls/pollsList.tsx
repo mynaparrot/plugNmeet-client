@@ -24,11 +24,7 @@ const PollsList = () => {
     >
       <div className="polls-list-wrap-inner grid gap-4">
         {polls.map((poll, index) => (
-          <PollItem
-            key={poll.id}
-            item={poll}
-            serialNum={polls.length - index}
-          />
+          <PollItem key={poll.id} item={poll} serialNum={polls.length - index} />
         ))}
         {isFetching && (
           <div className="absolute text-center top-1/2 -translate-y-1/2 z-999 start-0 end-0 m-auto">

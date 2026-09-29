@@ -22,9 +22,7 @@ export const useMainAreaCustomCSS = ({
       ? css.push('showScreenShare fullWidthMainArea')
       : css.push('hideScreenShare');
 
-    isActiveWhiteboard
-      ? css.push('showWhiteboard fullWidthMainArea')
-      : css.push('hideWhiteboard');
+    isActiveWhiteboard ? css.push('showWhiteboard fullWidthMainArea') : css.push('hideWhiteboard');
 
     isActiveExternalMediaPlayer
       ? css.push('showExternalMediaPlayer fullWidthMainArea')

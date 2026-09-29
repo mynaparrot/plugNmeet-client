@@ -1,10 +1,4 @@
-import React, {
-  ReactElement,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { ReactElement, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
@@ -23,21 +17,15 @@ import { NotifyIconSVG } from '../../../assets/Icons/NotifyIconSVG';
 const UserNotifications = () => {
   const { t } = useTranslation();
   const toastId = useRef<number | string>('toastId');
-  const userNotifications = useAppSelector(
-    (state) => state.roomSettings.userNotifications,
-  );
-  const [hasUnreadNotifications, setHasUnreadNotifications] =
-    useState<number>(0);
+  const userNotifications = useAppSelector((state) => state.roomSettings.userNotifications);
+  const [hasUnreadNotifications, setHasUnreadNotifications] = useState<number>(0);
 
   const reversedNotifications = useMemo(
     () => [...userNotifications].reverse(),
     [userNotifications],
   );
 
-  const displayToast = (
-    message: string | ReactElement,
-    notification: UserNotification,
-  ) => {
+  const displayToast = (message: string | ReactElement, notification: UserNotification) => {
     if (notification.disableToastNotification) {
       return;
     }
@@ -49,8 +37,7 @@ const UserNotifications = () => {
       className: 'notification-toast',
     });
 
-    const isPNMWindowTabVisible =
-      store.getState().roomSettings.isPNMWindowTabVisible;
+    const isPNMWindowTabVisible = store.getState().roomSettings.isPNMWindowTabVisible;
     if (!isPNMWindowTabVisible) {
       setHasUnreadNotifications((prevState) => prevState + 1);
 
@@ -78,25 +65,13 @@ const UserNotifications = () => {
 
     switch (lastNotif.notificationCat) {
       case 'new-poll-created':
-        toastElm = (
-          <NewPoll key={lastNotif.created} createdAt={lastNotif.created} />
-        );
+        toastElm = <NewPoll key={lastNotif.created} createdAt={lastNotif.created} />;
         break;
       case 'breakout-room-invitation':
-        toastElm = (
-          <NewBreakoutRoom
-            key={lastNotif.created}
-            createdAt={lastNotif.created}
-          />
-        );
+        toastElm = <NewBreakoutRoom key={lastNotif.created} createdAt={lastNotif.created} />;
         break;
       default:
-        toastElm = (
-          <GenericNotification
-            key={lastNotif.created}
-            notification={lastNotif}
-          />
-        );
+        toastElm = <GenericNotification key={lastNotif.created} notification={lastNotif} />;
     }
     displayToast(toastElm, lastNotif);
   }, [userNotifications]);
@@ -115,9 +90,7 @@ const UserNotifications = () => {
         </div>
       );
     } else {
-      return (
-        <NotifyIconSVG classes="w-3.5 md:w-4 h-auto text-Gray-950 dark:text-white" />
-      );
+      return <NotifyIconSVG classes="w-3.5 md:w-4 h-auto text-Gray-950 dark:text-white" />;
     }
   };
 
@@ -166,19 +139,13 @@ const UserNotifications = () => {
                     case 'new-poll-created':
                       return (
                         <li key={notif.created}>
-                          <NewPoll
-                            createdAt={notif.created}
-                            onClosePopover={close}
-                          />
+                          <NewPoll createdAt={notif.created} onClosePopover={close} />
                         </li>
                       );
                     case 'breakout-room-invitation':
                       return (
                         <li key={notif.created}>
-                          <NewBreakoutRoom
-                            createdAt={notif.created}
-                            onClosePopover={close}
-                          />
+                          <NewBreakoutRoom createdAt={notif.created} onClosePopover={close} />
                         </li>
                       );
                     default:

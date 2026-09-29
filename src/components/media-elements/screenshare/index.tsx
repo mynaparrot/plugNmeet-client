@@ -22,24 +22,16 @@ const ScreenShareElements = () => {
     (state) => state.roomSettings.mediaDegradation.incomingScreensharePaused,
   );
   const [screenShareTracks, setScreenShareTracks] =
-    useState<
-      Map<string, Array<LocalTrackPublication | RemoteTrackPublication>>
-    >();
+    useState<Map<string, Array<LocalTrackPublication | RemoteTrackPublication>>>();
   const currentConnection = getMediaServerConn();
 
   useEffect(() => {
     if (currentConnection.screenShareTracksMap.size) {
       setScreenShareTracks(currentConnection.screenShareTracksMap);
     }
-    currentConnection.on(
-      CurrentConnectionEvents.ScreenShareTracks,
-      setScreenShareTracks,
-    );
+    currentConnection.on(CurrentConnectionEvents.ScreenShareTracks, setScreenShareTracks);
     return () => {
-      currentConnection.off(
-        CurrentConnectionEvents.ScreenShareTracks,
-        setScreenShareTracks,
-      );
+      currentConnection.off(CurrentConnectionEvents.ScreenShareTracks, setScreenShareTracks);
     };
   }, [currentConnection]);
 
@@ -60,10 +52,7 @@ const ScreenShareElements = () => {
       screenShareTracks.forEach((tracks, userId) => {
         tracks.forEach((track) => {
           if (track.source === Track.Source.ScreenShare) {
-            if (
-              track instanceof RemoteTrackPublication &&
-              !isActiveScreenSharingView
-            ) {
+            if (track instanceof RemoteTrackPublication && !isActiveScreenSharingView) {
               const participants = store.getState().participants.entities;
               const name = participants[userId]?.name ?? userId;
               elm.push(
@@ -78,10 +67,7 @@ const ScreenShareElements = () => {
                   </div>
                 </div>,
               );
-            } else if (
-              track instanceof RemoteTrackPublication &&
-              incomingScreensharePaused
-            ) {
+            } else if (track instanceof RemoteTrackPublication && incomingScreensharePaused) {
               elm.push(
                 <div
                   key={track.trackSid}
@@ -93,9 +79,7 @@ const ScreenShareElements = () => {
                     </p>
                     <button
                       type="button"
-                      onClick={() =>
-                        currentConnection.adaptiveMedia?.resumeIncomingScreenshare()
-                      }
+                      onClick={() => currentConnection.adaptiveMedia?.resumeIncomingScreenshare()}
                       className="px-3 py-1.5 rounded-lg text-xs font-medium bg-white text-gray-900 hover:bg-gray-100 cursor-pointer"
                     >
                       {t('header.connection-status.resume-presentation')}
@@ -112,9 +96,7 @@ const ScreenShareElements = () => {
             track.audioTrack instanceof RemoteAudioTrack
           ) {
             // we won't add local screen share audio track to avoid eco
-            elm.push(
-              <AudioElm key={track.trackSid} audioTrack={track.audioTrack} />,
-            );
+            elm.push(<AudioElm key={track.trackSid} audioTrack={track.audioTrack} />);
           }
         });
       });

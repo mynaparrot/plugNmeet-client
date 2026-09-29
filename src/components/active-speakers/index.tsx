@@ -36,9 +36,7 @@ const ActiveSpeakers = ({ activeSidePanel }) => {
   const focusActiveSpeakerWebcam = useAppSelector(
     (state) => state.roomSettings.focusActiveSpeakerWebcam,
   );
-  const hasWebcamPages = useAppSelector(
-    (state) => state.roomSettings.hasWebcamPages,
-  );
+  const hasWebcamPages = useAppSelector((state) => state.roomSettings.hasWebcamPages);
   const room = getMediaServerConn();
 
   const speakingParticipantIds = useMemo(
@@ -67,9 +65,7 @@ const ActiveSpeakers = ({ activeSidePanel }) => {
     const participantIdSet = new Set(participantIds);
 
     // Filter the speakers first, which is more performant.
-    const validSpeakers = activeSpeakers.filter((speaker) =>
-      participantIdSet.has(speaker.userId),
-    );
+    const validSpeakers = activeSpeakers.filter((speaker) => participantIdSet.has(speaker.userId));
 
     if (!validSpeakers.length) {
       return null;

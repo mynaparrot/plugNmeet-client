@@ -34,8 +34,7 @@ const MenuIcon = ({
     (state) => state.session.currentRoom.metadata?.defaultLockSettings,
   );
   const currentUserLockPrivateChat = useAppSelector(
-    (state) =>
-      state.session.currentUser?.metadata?.lockSettings?.lockPrivateChat,
+    (state) => state.session.currentUser?.metadata?.lockSettings?.lockPrivateChat,
   );
 
   const menuItems = useMemo(() => {
@@ -66,14 +65,10 @@ const MenuIcon = ({
 
     // Or if they can send a message to an admin.
     const canSendPrivateMessageToAdmin =
-      !defaultLockSettings?.lockChat &&
-      defaultLockSettings?.lockPrivateChat &&
-      isAdmin;
+      !defaultLockSettings?.lockChat && defaultLockSettings?.lockPrivateChat && isAdmin;
 
     if (canSendPrivateMessage || canSendPrivateMessageToAdmin) {
-      items.push(
-        <PrivateChatMenuItem key="chat" userId={userId} name={name} />,
-      );
+      items.push(<PrivateChatMenuItem key="chat" userId={userId} name={name} />);
     }
 
     return items;

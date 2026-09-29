@@ -11,18 +11,10 @@ const DESKTOP_BREAKPOINT = 1024;
 export const useDeviceInfo = () => {
   const dispatch = useAppDispatch();
 
-  const screenWidth = useAppSelector(
-    (state) => state.bottomIconsActivity.screenWidth,
-  );
-  const isSidebarOpen = useAppSelector(
-    (state) => state.roomSettings.isSidePanelOpened,
-  );
-  const deviceOrientation = useAppSelector(
-    (state) => state.bottomIconsActivity.deviceOrientation,
-  );
-  const userDeviceType = useAppSelector(
-    (state) => state.session.userDeviceType,
-  );
+  const screenWidth = useAppSelector((state) => state.bottomIconsActivity.screenWidth);
+  const isSidebarOpen = useAppSelector((state) => state.roomSettings.isSidePanelOpened);
+  const deviceOrientation = useAppSelector((state) => state.bottomIconsActivity.deviceOrientation);
+  const userDeviceType = useAppSelector((state) => state.session.userDeviceType);
 
   const isUserAgentMobile = useMemo(
     () => userDeviceType === UserDeviceType.MOBILE,
@@ -34,13 +26,10 @@ export const useDeviceInfo = () => {
   );
 
   const isDesktopAgent = !isUserAgentMobile && !isUserAgentTablet;
-  const isMobile =
-    isUserAgentMobile || (isDesktopAgent && screenWidth < TABLET_BREAKPOINT);
+  const isMobile = isUserAgentMobile || (isDesktopAgent && screenWidth < TABLET_BREAKPOINT);
   const isTablet =
     isUserAgentTablet ||
-    (isDesktopAgent &&
-      screenWidth >= TABLET_BREAKPOINT &&
-      screenWidth < DESKTOP_BREAKPOINT);
+    (isDesktopAgent && screenWidth >= TABLET_BREAKPOINT && screenWidth < DESKTOP_BREAKPOINT);
 
   useEffect(() => {
     // Disable extended vertical view on mobile/tablet devices

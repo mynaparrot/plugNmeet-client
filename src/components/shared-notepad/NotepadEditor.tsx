@@ -34,15 +34,8 @@ import type { NotepadSnapshot } from './NotepadController';
 import NotepadAIToolbarButton from './helpers/NotepadAIToolbarButton';
 import NotepadAIMenu from './helpers/NotepadAIMenu';
 import NotepadAIDisabledNotice from './helpers/NotepadAIDisabledNotice';
-import {
-  getNotepadAISlashMenuItems,
-  INotepadAISelection,
-} from './helpers/notepadAIActions';
-import {
-  getBlockNoteDictionary,
-  getContrastTextColor,
-  getUserColor,
-} from './helpers/utils';
+import { getNotepadAISlashMenuItems, INotepadAISelection } from './helpers/notepadAIActions';
+import { getBlockNoteDictionary, getContrastTextColor, getUserColor } from './helpers/utils';
 
 export interface NotepadEditorHandle {
   exportMarkdown: () => void;
@@ -60,8 +53,8 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
   ({ snapshot, userId, userName, editable, theme }, ref) => {
     const aiTextChatFeatures = useAppSelector(
       (state) =>
-        state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
-          ?.aiFeatures?.aiTextChatFeatures,
+        state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures?.aiFeatures
+          ?.aiTextChatFeatures,
     );
     const aiEnabled =
       !!aiTextChatFeatures?.isEnabled &&
@@ -75,10 +68,7 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
 
     const { i18n } = useTranslation();
 
-    const dictionary = useMemo(
-      () => getBlockNoteDictionary(i18n.language),
-      [i18n.language],
-    );
+    const dictionary = useMemo(() => getBlockNoteDictionary(i18n.language), [i18n.language]);
 
     const user = useMemo(
       () => ({
@@ -137,14 +127,7 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
           },
         }),
       },
-      [
-        snapshot.fragment,
-        snapshot.awareness,
-        snapshot.generation,
-        dictionary,
-        user,
-        onlineUsers,
-      ],
+      [snapshot.fragment, snapshot.awareness, snapshot.generation, dictionary, user, onlineUsers],
     );
 
     const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -174,9 +157,7 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
       (props) => (
         <FormattingToolbar {...props}>
           {getFormattingToolbarItems(props.blockTypeSelectItems)}
-          {editable && (
-            <NotepadAIToolbarButton onClick={openAIMenuFromSelection} />
-          )}
+          {editable && <NotepadAIToolbarButton onClick={openAIMenuFromSelection} />}
         </FormattingToolbar>
       ),
       [editable, openAIMenuFromSelection],
@@ -224,9 +205,7 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
               filterSuggestionItems(
                 [
                   ...getDefaultReactSlashMenuItems(editor),
-                  ...getNotepadAISlashMenuItems(editor, (id) =>
-                    setAiMenuBlockId(id),
-                  ),
+                  ...getNotepadAISlashMenuItems(editor, (id) => setAiMenuBlockId(id)),
                 ],
                 query,
               )

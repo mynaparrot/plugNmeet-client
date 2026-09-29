@@ -1,11 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Listbox,
-  ListboxButton,
-  ListboxOption,
-  ListboxOptions,
-} from '@headlessui/react';
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
 import { createSelector } from '@reduxjs/toolkit';
 
 import { RootState, useAppDispatch, useAppSelector } from '../../store';
@@ -39,19 +34,10 @@ const selectChatTabsData = createSelector(
     (state: RootState) => state.roomSettings.unreadMsgFrom,
     (state: RootState) => state.roomSettings.selectedChatOption,
   ],
-  (
-    chatKeys,
-    participantEntities,
-    initiatePrivateChat,
-    unreadMsgFrom,
-    selectedChatOption,
-  ) => {
+  (chatKeys, participantEntities, initiatePrivateChat, unreadMsgFrom, selectedChatOption) => {
     const allKeys = [...chatKeys];
     // let's add user from initiatePrivateChat
-    if (
-      initiatePrivateChat.userId &&
-      !allKeys.includes(initiatePrivateChat.userId)
-    ) {
+    if (initiatePrivateChat.userId && !allKeys.includes(initiatePrivateChat.userId)) {
       allKeys.push(initiatePrivateChat.userId);
     }
 
@@ -192,10 +178,7 @@ const ChatTabs = ({ isRecorder }: ChatTabsProps) => {
         <div className="relative z-10 chat-tabs">
           <ListboxButton className="flex items-center justify-between border-y border-Gray-200 dark:border-Gray-800 h-8 3xl:h-10 w-full outline-hidden focus-ring px-3 3xl:px-5 text-xs 3xl:text-sm text-Gray-700 dark:text-dark-text cursor-pointer">
             <p className="block truncate">
-              To:{' '}
-              <span className="font-medium text-Gray-950 dark:text-white">
-                {selectedTitle}
-              </span>
+              To: <span className="font-medium text-Gray-950 dark:text-white">{selectedTitle}</span>
             </p>
             <span className="pointer-events-none absolute inset-y-0 end-3 3xl:end-5 flex items-center">
               {hasUnreadMessages && (

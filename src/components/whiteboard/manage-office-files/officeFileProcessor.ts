@@ -1,10 +1,6 @@
 import { toast } from 'react-toastify';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
-import {
-  AnalyticsEvents,
-  AnalyticsEventType,
-  RoomUploadedFileType,
-} from 'plugnmeet-protocol-js';
+import { AnalyticsEvents, AnalyticsEventType, RoomUploadedFileType } from 'plugnmeet-protocol-js';
 
 import { uploadResumableFile } from '../../../helpers/fileUpload';
 import { store } from '../../../store';
@@ -18,8 +14,7 @@ import { createAndRegisterOfficeFile } from '../helpers/handleFiles';
 import { getNatsConn } from '../../../helpers/nats';
 import { sleep } from '../../../helpers/utils';
 
-export type OfficeFileStatus =
-  'idle' | 'uploading' | 'converting' | 'success' | 'error';
+export type OfficeFileStatus = 'idle' | 'uploading' | 'converting' | 'success' | 'error';
 
 export interface IOfficeFileProcessing {
   onProgress(progress: number): void;
@@ -115,10 +110,7 @@ class OfficeFileProcessor {
     );
   }
 
-  private async convertFile(
-    filePath: string,
-    excalidrawAPI: ExcalidrawImperativeAPI,
-  ) {
+  private async convertFile(filePath: string, excalidrawAPI: ExcalidrawImperativeAPI) {
     const id = toast.loading(i18n.t('whiteboard.converting'), {
       type: 'info',
     });
@@ -136,10 +128,7 @@ class OfficeFileProcessor {
       filePath: filePath,
     };
 
-    const res: WhiteboardFileConversionRes = await sendAPIRequest(
-      'whiteboard/convert',
-      body,
-    );
+    const res: WhiteboardFileConversionRes = await sendAPIRequest('whiteboard/convert', body);
     if (!res.status || res.fileId === '' || res.totalPages == 0) {
       let msg = i18n.t(res.msg);
       if (res.fileId === '' || res.totalPages == 0) {

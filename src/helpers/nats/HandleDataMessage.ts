@@ -10,21 +10,14 @@ import { store } from '../../store';
 import { pollsApi } from '../../store/services/pollsApi';
 import { updateParticipant } from '../../store/slices/participantSlice';
 import { addExternalMediaPlayerEvent } from '../../store/slices/externalMediaPlayer';
-import {
-  addReaction,
-  IReaction,
-  REACTION_EMOJIS,
-} from '../../store/slices/reactionsSlice';
+import { addReaction, IReaction, REACTION_EMOJIS } from '../../store/slices/reactionsSlice';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import i18n from '../i18n';
 import { getNotepadController } from '../../components/shared-notepad/NotepadController';
 import { fromJsonString } from '@bufbuild/protobuf';
 import { TextWithInfo } from '../../store/slices/interfaces/speechServices';
 import { addSpeechSubtitleText } from '../../store/slices/speechServicesSlice';
-import {
-  addAllChatMessages,
-  selectPublicChatMessages,
-} from '../../store/slices/chatMessagesSlice';
+import { addAllChatMessages, selectPublicChatMessages } from '../../store/slices/chatMessagesSlice';
 import { PnmConnectionQuality } from '../livekit/ConnectionQualityMonitor';
 
 const CHAT_SYNC_CHUNK_SIZE = 50;
@@ -81,10 +74,7 @@ export default class HandleDataMessage {
         this.handleUserVisibility(payload);
         break;
       case DataMsgBodyType.INFO:
-        if (
-          payload.fromUserId === this.connectNats.userId ||
-          this.connectNats.isRecorder
-        ) {
+        if (payload.fromUserId === this.connectNats.userId || this.connectNats.isRecorder) {
           return;
         }
         store.dispatch(
@@ -95,10 +85,7 @@ export default class HandleDataMessage {
         );
         break;
       case DataMsgBodyType.ALERT:
-        if (
-          payload.fromUserId === this.connectNats.userId ||
-          this.connectNats.isRecorder
-        ) {
+        if (payload.fromUserId === this.connectNats.userId || this.connectNats.isRecorder) {
           return;
         }
         store.dispatch(
@@ -223,9 +210,7 @@ export default class HandleDataMessage {
       return;
     }
 
-    const ordered = publicChats
-      .slice()
-      .sort((a, b) => getSentAtMs(a) - getSentAtMs(b));
+    const ordered = publicChats.slice().sort((a, b) => getSentAtMs(a) - getSentAtMs(b));
 
     for (let i = 0; i < ordered.length; i += CHAT_SYNC_CHUNK_SIZE) {
       const chunk = ordered.slice(i, i + CHAT_SYNC_CHUNK_SIZE);
@@ -247,9 +232,7 @@ export default class HandleDataMessage {
       if (!Array.isArray(parsed)) {
         return;
       }
-      const data = parsed
-        .filter(isSyncableChatMessage)
-        .slice(0, CHAT_SYNC_CHUNK_SIZE);
+      const data = parsed.filter(isSyncableChatMessage).slice(0, CHAT_SYNC_CHUNK_SIZE);
       if (!data.length) {
         return;
       }

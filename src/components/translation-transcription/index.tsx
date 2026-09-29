@@ -8,17 +8,13 @@ import { updateSelectedSubtitleLang } from '../../store/slices/speechServicesSli
 import SubtitleTextsHistory from './displays/history';
 import LiveSubtitle from './displays/liveSubtitle';
 import { useSubtitleSpeechSynthesis } from './helpers/useSubtitleSpeechSynthesis';
-import {
-  supportedTranscriptionLangs,
-  supportedTranslationLangs,
-} from './helpers/supportedLangs';
+import { supportedTranscriptionLangs, supportedTranslationLangs } from './helpers/supportedLangs';
 
 const TranslationTranscription = () => {
   const dispatch = useAppDispatch();
   const transcriptionFeatures = useAppSelector(
     (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
-        ?.transcriptionFeatures,
+      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures?.transcriptionFeatures,
   );
   const { start, stop } = useSubtitleSpeechSynthesis();
 
@@ -29,22 +25,17 @@ const TranslationTranscription = () => {
   // we'll set it to the default language configured for the room.
   useEffect(() => {
     const state = store.getState();
-    const insightsFeatures =
-      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures;
+    const insightsFeatures = state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures;
 
     const selectedLang = state.speechServices.selectedSubtitleLang;
-    const defaultSubtitleLang =
-      insightsFeatures?.transcriptionFeatures?.defaultSubtitleLang;
+    const defaultSubtitleLang = insightsFeatures?.transcriptionFeatures?.defaultSubtitleLang;
     if (isEmpty(selectedLang) && defaultSubtitleLang) {
       dispatch(updateSelectedSubtitleLang(defaultSubtitleLang));
     }
 
     if (insightsFeatures && insightsFeatures.transcriptionFeatures?.isAllow) {
       // prepare languages
-      Promise.allSettled([
-        supportedTranscriptionLangs(),
-        supportedTranslationLangs(),
-      ]).then();
+      Promise.allSettled([supportedTranscriptionLangs(), supportedTranslationLangs()]).then();
     }
 
     //oxlint-disable-next-line

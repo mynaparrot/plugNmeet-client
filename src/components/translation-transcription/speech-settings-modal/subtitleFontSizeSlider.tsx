@@ -9,9 +9,7 @@ import RangeSlider from '../../../helpers/ui/rangeSlider';
 const SubtitleFontSizeSlider = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const subtitleFontSize = useAppSelector(
-    (state) => state.speechServices.subtitleFontSize,
-  );
+  const subtitleFontSize = useAppSelector((state) => state.speechServices.subtitleFontSize);
 
   // Local state for the slider to avoid dispatching on every change
   const [localFontSize, setLocalFontSize] = useState<number>(subtitleFontSize);

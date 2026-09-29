@@ -78,10 +78,7 @@ const roomSettingsSlice = createSlice({
     updateShowRoomSettingsModal: (state, action: PayloadAction<boolean>) => {
       state.isShowRoomSettingsModal = action.payload;
     },
-    updateShowKeyboardShortcutsModal: (
-      state,
-      action: PayloadAction<boolean>,
-    ) => {
+    updateShowKeyboardShortcutsModal: (state, action: PayloadAction<boolean>) => {
       state.isShowKeyboardShortcuts = action.payload;
     },
     updateIsNatsServerConnected: (state, action: PayloadAction<boolean>) => {
@@ -96,10 +93,7 @@ const roomSettingsSlice = createSlice({
     updateSelectedAudioDevice: (state, action: PayloadAction<string>) => {
       state.selectedAudioDevice = action.payload;
       if (action.payload) {
-        sessionStorage.setItem(
-          DeviceSessionStorageKeys.AUDIO_DEVICE,
-          action.payload,
-        );
+        sessionStorage.setItem(DeviceSessionStorageKeys.AUDIO_DEVICE, action.payload);
       } else {
         sessionStorage.removeItem(DeviceSessionStorageKeys.AUDIO_DEVICE);
       }
@@ -107,18 +101,12 @@ const roomSettingsSlice = createSlice({
     updateSelectedVideoDevice: (state, action: PayloadAction<string>) => {
       state.selectedVideoDevice = action.payload;
       if (action.payload) {
-        sessionStorage.setItem(
-          DeviceSessionStorageKeys.VIDEO_DEVICE,
-          action.payload,
-        );
+        sessionStorage.setItem(DeviceSessionStorageKeys.VIDEO_DEVICE, action.payload);
       } else {
         sessionStorage.removeItem(DeviceSessionStorageKeys.VIDEO_DEVICE);
       }
     },
-    updateVirtualBackground: (
-      state,
-      action: PayloadAction<BackgroundConfig>,
-    ) => {
+    updateVirtualBackground: (state, action: PayloadAction<BackgroundConfig>) => {
       state.virtualBackground = action.payload;
       if (action.payload.type === 'none') {
         sessionStorage.removeItem(DeviceSessionStorageKeys.VIRTUAL_BACKGROUND);
@@ -138,28 +126,19 @@ const roomSettingsSlice = createSlice({
     updateActiveScreenSharingView: (state, action: PayloadAction<boolean>) => {
       state.activeScreenSharingView = action.payload;
     },
-    updateMediaDegradation: (
-      state,
-      action: PayloadAction<Partial<IMediaDegradation>>,
-    ) => {
+    updateMediaDegradation: (state, action: PayloadAction<Partial<IMediaDegradation>>) => {
       state.mediaDegradation = {
         ...state.mediaDegradation,
         ...action.payload,
       };
     },
-    updateAllowPlayAudioNotification: (
-      state,
-      action: PayloadAction<boolean>,
-    ) => {
+    updateAllowPlayAudioNotification: (state, action: PayloadAction<boolean>) => {
       state.allowPlayAudioNotification = action.payload;
     },
     updateRoomAudioVolume: (state, action: PayloadAction<number>) => {
       state.roomAudioVolume = action.payload;
     },
-    updateRoomScreenShareAudioVolume: (
-      state,
-      action: PayloadAction<number>,
-    ) => {
+    updateRoomScreenShareAudioVolume: (state, action: PayloadAction<number>) => {
       state.roomScreenShareAudioVolume = action.payload;
     },
     updateRoomVideoQuality: (state, action: PayloadAction<VideoQuality>) => {
@@ -177,16 +156,10 @@ const roomSettingsSlice = createSlice({
     updateSelectedChatOption: (state, action: PayloadAction<string>) => {
       state.selectedChatOption = action.payload;
     },
-    updateInitiatePrivateChat: (
-      state,
-      action: PayloadAction<InitiatePrivateChat>,
-    ) => {
+    updateInitiatePrivateChat: (state, action: PayloadAction<InitiatePrivateChat>) => {
       state.initiatePrivateChat = action.payload;
     },
-    updateUnreadMsgFrom: (
-      state,
-      action: PayloadAction<UnreadMsgFromPayload>,
-    ) => {
+    updateUnreadMsgFrom: (state, action: PayloadAction<UnreadMsgFromPayload>) => {
       const tmp = [...state.unreadMsgFrom];
       if (action.payload.task === 'ADD') {
         const exist = tmp.filter((id) => id === action.payload.id);
@@ -198,16 +171,10 @@ const roomSettingsSlice = createSlice({
         state.unreadMsgFrom = tmp.filter((id) => id !== action.payload.id);
       }
     },
-    updateColumnCameraWidth: (
-      state,
-      action: PayloadAction<ColumnCameraWidth>,
-    ) => {
+    updateColumnCameraWidth: (state, action: PayloadAction<ColumnCameraWidth>) => {
       state.columnCameraWidth = action.payload;
     },
-    updateColumnCameraPosition: (
-      state,
-      action: PayloadAction<ColumnCameraPosition>,
-    ) => {
+    updateColumnCameraPosition: (state, action: PayloadAction<ColumnCameraPosition>) => {
       state.columnCameraPosition = action.payload;
     },
     toggleHeaderVisibility: (state) => {
@@ -250,10 +217,7 @@ const roomSettingsSlice = createSlice({
         action.payload,
       );
     },
-    setAllUserNotifications: (
-      state,
-      action: PayloadAction<UserNotification[]>,
-    ) => {
+    setAllUserNotifications: (state, action: PayloadAction<UserNotification[]>) => {
       state.userNotifications = action.payload;
     },
     updateIsSidePanelOpened: (state, action: PayloadAction<boolean>) => {
@@ -265,10 +229,7 @@ const roomSettingsSlice = createSlice({
     updateHasWebcamPages: (state, action: PayloadAction<boolean>) => {
       state.hasWebcamPages = action.payload;
     },
-    updateMaxNumDisplayWebcams: (
-      state,
-      action: PayloadAction<Partial<IMaxNumDisplayWebcams>>,
-    ) => {
+    updateMaxNumDisplayWebcams: (state, action: PayloadAction<Partial<IMaxNumDisplayWebcams>>) => {
       state.maxNumDisplayWebcams = {
         ...state.maxNumDisplayWebcams,
         ...action.payload,

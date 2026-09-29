@@ -9,9 +9,6 @@ export {
   teardownNativePublisher,
 } from './publisher';
 export { startNativeHeartbeat, stopNativeHeartbeat } from './heartbeat';
-export {
-  getNativePublisherStatus,
-  subscribeNativePublisherStatus,
-} from './subscriber';
+export { getNativePublisherStatus, subscribeNativePublisherStatus } from './subscriber';
 export type { NativePublisherStatus } from './subscriber';
 export { useNativePublisherStatus, useHybridLockForwarder } from './hooks';

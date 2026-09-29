@@ -34,8 +34,7 @@ const ParticipantComponent = ({
       openRemoveParticipantAlert(participant.name, user_id, type);
     }
   };
-  const currentUserIsAdmin =
-    !!store.getState().session.currentUser?.metadata?.isAdmin;
+  const currentUserIsAdmin = !!store.getState().session.currentUser?.metadata?.isAdmin;
 
   return (
     <div className="flex items-center justify-between relative w-full gap-2">
@@ -54,10 +53,7 @@ const ParticipantComponent = ({
           <PresenterIcon userId={participant.userId} />
           <WebcamIcon userId={participant.userId} />
           <ScreenShareIcon userId={participant.userId} />
-          <MicIcon
-            userId={participant.userId}
-            isRemoteParticipant={isRemoteParticipant}
-          />
+          <MicIcon userId={participant.userId} isRemoteParticipant={isRemoteParticipant} />
           {currentUser?.userId !== participant.userId && (
             <MenuIcon
               userId={participant.userId}

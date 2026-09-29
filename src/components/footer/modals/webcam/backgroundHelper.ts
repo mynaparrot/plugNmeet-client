@@ -1,10 +1,6 @@
 import { getConfigValue } from '../../../../helpers/utils';
 
-const assetPath = getConfigValue(
-  'staticAssetsPath',
-  './assets',
-  'STATIC_ASSETS_PATH',
-);
+const assetPath = getConfigValue('staticAssetsPath', './assets', 'STATIC_ASSETS_PATH');
 
 const DEFAULT_BACKGROUND_IMAGE_URLS = [
   'kenny-eliason-Wp7t4cWN-68-unsplash',
@@ -28,11 +24,7 @@ const loadBackgroundImageUrls = async (): Promise<string[]> => {
     'PNM_VIRTUAL_BG_IMGS',
   );
 
-  if (
-    !bgImgUrlsFromCnf ||
-    !Array.isArray(bgImgUrlsFromCnf) ||
-    bgImgUrlsFromCnf.length === 0
-  ) {
+  if (!bgImgUrlsFromCnf || !Array.isArray(bgImgUrlsFromCnf) || bgImgUrlsFromCnf.length === 0) {
     return DEFAULT_BACKGROUND_IMAGE_URLS;
   }
 

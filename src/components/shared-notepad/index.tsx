@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useSyncExternalStore,
-} from 'react';
+import { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
 import Draggable from 'react-draggable';
 import { useTranslation } from 'react-i18next';
 
@@ -35,20 +29,14 @@ const SharedNotepad = () => {
   const notepadEditorRef = useRef<NotepadEditorHandle>(null);
 
   const controller = useMemo(() => getNotepadController(), []);
-  const snapshot = useSyncExternalStore(
-    controller.subscribe,
-    controller.getSnapshot,
-  );
+  const snapshot = useSyncExternalStore(controller.subscribe, controller.getSnapshot);
 
   const theme = useAppSelector((state) => state.roomSettings.theme);
   const lockSharedNotepad = useAppSelector(
-    (state) =>
-      state.session.currentUser?.metadata?.lockSettings?.lockSharedNotepad,
+    (state) => state.session.currentUser?.metadata?.lockSettings?.lockSharedNotepad,
   );
   const defaultRoomLock = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.defaultLockSettings
-        ?.lockSharedNotepad,
+    (state) => state.session.currentRoom.metadata?.defaultLockSettings?.lockSharedNotepad,
   );
   const editable = useMemo(() => {
     if (isRecorder) return false;

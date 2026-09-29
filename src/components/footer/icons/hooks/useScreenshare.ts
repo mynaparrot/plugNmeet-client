@@ -1,10 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  createLocalScreenTracks,
-  ScreenShareCaptureOptions,
-  Track,
-} from 'livekit-client';
+import { createLocalScreenTracks, ScreenShareCaptureOptions, Track } from 'livekit-client';
 import { NativeMediaSource } from 'plugnmeet-protocol-js';
 
 import { store, useAppDispatch, useAppSelector } from '../../../../store';
@@ -39,37 +35,29 @@ const useScreenshare = (): UseScreenshareReturn => {
   const currentRoom = getMediaServerConnRoom();
   const { t } = useTranslation();
 
-  const { isAdmin, isScreenShareAllowed, isMobileOrTablet, showTooltip } =
-    useMemo(() => {
-      const session = store.getState().session;
-      const deviceType = session.userDeviceType;
-      return {
-        isAdmin: !!session.currentUser?.metadata?.isAdmin,
-        isScreenShareAllowed:
-          !!session.currentRoom.metadata?.roomFeatures?.allowScreenShare,
-        isMobileOrTablet: deviceType === 'mobile' || deviceType === 'tablet',
-        showTooltip: deviceType === 'desktop',
-      };
-    }, []);
+  const { isAdmin, isScreenShareAllowed, isMobileOrTablet, showTooltip } = useMemo(() => {
+    const session = store.getState().session;
+    const deviceType = session.userDeviceType;
+    return {
+      isAdmin: !!session.currentUser?.metadata?.isAdmin,
+      isScreenShareAllowed: !!session.currentRoom.metadata?.roomFeatures?.allowScreenShare,
+      isMobileOrTablet: deviceType === 'mobile' || deviceType === 'tablet',
+      showTooltip: deviceType === 'desktop',
+    };
+  }, []);
 
   const isActiveScreenshare = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveScreenshare,
   );
-  const sessionScreenSharing = useAppSelector(
-    (state) => state.session.screenSharing,
-  );
+  const sessionScreenSharing = useAppSelector((state) => state.session.screenSharing);
   const isScreenshareLock = useAppSelector(
-    (state) =>
-      state.session.currentUser?.metadata?.lockSettings?.lockScreenSharing,
+    (state) => state.session.currentUser?.metadata?.lockSettings?.lockScreenSharing,
   );
 
   const hybrid = isHybridMode();
   const { available: nativeAvailable } = useNativePublisherStatus();
 
-  const isLocked = useMemo(
-    () => !!(isScreenshareLock && !isAdmin),
-    [isAdmin, isScreenshareLock],
-  );
+  const isLocked = useMemo(() => !!(isScreenshareLock && !isAdmin), [isAdmin, isScreenshareLock]);
 
   const endScreenShare = useCallback(async () => {
     if (hybrid) {
@@ -85,10 +73,7 @@ const useScreenshare = (): UseScreenshareReturn => {
             publication.source === Track.Source.ScreenShareAudio) &&
           publication.track
         ) {
-          await currentRoom.localParticipant.unpublishTrack(
-            publication.track,
-            true,
-          );
+          await currentRoom.localParticipant.unpublishTrack(publication.track, true);
         }
       }
       dispatch(updateIsActiveScreenshare(false));
@@ -155,9 +140,7 @@ const useScreenshare = (): UseScreenshareReturn => {
         const option: ScreenShareCaptureOptions = {
           audio: true,
         };
-        const isSafari = /^((?!chrome|android).)*safari/i.test(
-          navigator.userAgent,
-        );
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
         if (!isSafari) {
           option.resolution = getScreenShareResolution();
         }

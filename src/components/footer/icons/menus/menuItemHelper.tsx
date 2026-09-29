@@ -10,13 +10,7 @@ interface IMenuItemHelperProps {
   customClass?: string;
 }
 
-const MenuItemHelper = ({
-  onClick,
-  icon,
-  text,
-  isActive,
-  customClass,
-}: IMenuItemHelperProps) => {
+const MenuItemHelper = ({ onClick, icon, text, isActive, customClass }: IMenuItemHelperProps) => {
   return (
     <MenuItem>
       <button

@@ -27,23 +27,13 @@ interface IMicMenuItemsProps {
   isLocked?: boolean;
 }
 
-const MicMenuItems = ({
-  currentRoom,
-  hybrid,
-  isLocked,
-}: IMicMenuItemsProps) => {
+const MicMenuItems = ({ currentRoom, hybrid, isLocked }: IMicMenuItemsProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const audioDevices = useAppSelector(
-    (state) => state.roomSettings.audioDevices,
-  );
-  const isMicMuted = useAppSelector(
-    (state) => state.bottomIconsActivity.isMicMuted,
-  );
-  const selectedAudioDevice = useAppSelector(
-    (state) => state.roomSettings.selectedAudioDevice,
-  );
+  const audioDevices = useAppSelector((state) => state.roomSettings.audioDevices);
+  const isMicMuted = useAppSelector((state) => state.bottomIconsActivity.isMicMuted);
+  const selectedAudioDevice = useAppSelector((state) => state.roomSettings.selectedAudioDevice);
   const isHybrid = hybrid ?? isHybridMode();
 
   const handleDeviceChange = useCallback(
@@ -66,9 +56,7 @@ const MicMenuItems = ({
     }
     // existing non-hybrid logic...
     if (!currentRoom) return;
-    const publication = currentRoom.localParticipant.getTrackPublication(
-      Track.Source.Microphone,
-    );
+    const publication = currentRoom.localParticipant.getTrackPublication(Track.Source.Microphone);
     if (publication && publication.track) {
       if (publication.isMuted) {
         await currentRoom.localParticipant.setMicrophoneEnabled(true);
@@ -86,14 +74,9 @@ const MicMenuItems = ({
     }
     // existing non-hybrid logic...
     if (!currentRoom) return;
-    const publication = currentRoom.localParticipant.getTrackPublication(
-      Track.Source.Microphone,
-    );
+    const publication = currentRoom.localParticipant.getTrackPublication(Track.Source.Microphone);
     if (publication && publication.track) {
-      await currentRoom.localParticipant.unpublishTrack(
-        publication.track,
-        true,
-      );
+      await currentRoom.localParticipant.unpublishTrack(publication.track, true);
     }
     dispatch(updateIsActiveMicrophone(false));
     dispatch(updateIsMicMuted(false));
@@ -120,9 +103,7 @@ const MicMenuItems = ({
                     type="button"
                     title={device.label}
                     className={`${
-                      selectedAudioDevice === device.id
-                        ? 'bg-Gray-50 dark:bg-dark-secondary2'
-                        : ''
+                      selectedAudioDevice === device.id ? 'bg-Gray-50 dark:bg-dark-secondary2' : ''
                     } h-8 w-full flex items-center justify-between text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus-ring`}
                     onClick={() => handleDeviceChange(device.id)}
                   >

@@ -16,24 +16,17 @@ declare const PNM_VERSION: string;
 const RoomSettings = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const {
-    serverVersion,
-    currentUser,
-    copyright_conf,
-    ingressFeatures,
-    sipDialInFeatures,
-  } = useMemo(() => {
-    const session = store.getState().session;
-    return {
-      serverVersion: session.serverVersion,
-      currentUser: session.currentUser,
-      copyright_conf: session.currentRoom.metadata?.copyrightConf,
-      ingressFeatures:
-        session.currentRoom.metadata?.roomFeatures?.ingressFeatures,
-      sipDialInFeatures:
-        session.currentRoom.metadata?.roomFeatures?.sipDialInFeatures,
-    };
-  }, []);
+  const { serverVersion, currentUser, copyright_conf, ingressFeatures, sipDialInFeatures } =
+    useMemo(() => {
+      const session = store.getState().session;
+      return {
+        serverVersion: session.serverVersion,
+        currentUser: session.currentUser,
+        copyright_conf: session.currentRoom.metadata?.copyrightConf,
+        ingressFeatures: session.currentRoom.metadata?.roomFeatures?.ingressFeatures,
+        sipDialInFeatures: session.currentRoom.metadata?.roomFeatures?.sipDialInFeatures,
+      };
+    }, []);
 
   const isShowRoomSettingsModal = useAppSelector(
     (state) => state.roomSettings.isShowRoomSettingsModal,
@@ -67,11 +60,7 @@ const RoomSettings = () => {
 
   const renderModalFooter = () => {
     let text = '';
-    if (
-      copyright_conf &&
-      copyright_conf.display &&
-      copyright_conf.text !== ''
-    ) {
+    if (copyright_conf && copyright_conf.display && copyright_conf.text !== '') {
       text = sanitizeHtml(copyright_conf.text, {
         allowedTags: ['b', 'i', 'em', 'strong', 'a'],
         allowedAttributes: {
@@ -100,11 +89,7 @@ const RoomSettings = () => {
       maxWidth="max-w-2xl header-room-settings"
     >
       <div className="wrap relative">
-        <Tabs
-          uniqueKey="roomSettings"
-          items={tabItems}
-          tabPanelsCss="min-h-[316px]"
-        />
+        <Tabs uniqueKey="roomSettings" items={tabItems} tabPanelsCss="min-h-[316px]" />
         {renderModalFooter()}
       </div>
     </Modal>

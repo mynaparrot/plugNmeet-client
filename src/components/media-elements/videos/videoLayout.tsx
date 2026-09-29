@@ -1,10 +1,4 @@
-import React, {
-  ReactElement,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { setWebcamPaginating } from '../../../store/slices/sessionSlice';
@@ -66,13 +60,10 @@ const VideoLayout = ({
   const isEnabledExtendedVerticalCamView = useAppSelector(
     (state) => state.bottomIconsActivity.isEnabledExtendedVerticalCamView,
   );
-  const maxNumDisplayWebcams = useAppSelector(
-    (state) => state.roomSettings.maxNumDisplayWebcams,
-  );
+  const maxNumDisplayWebcams = useAppSelector((state) => state.roomSettings.maxNumDisplayWebcams);
 
   const isRecorder = store.getState().session.currentUser?.isRecorder;
-  const { isMobile, isTablet, isDesktop, isSidebarOpen, isPortrait } =
-    useDeviceInfo();
+  const { isMobile, isTablet, isDesktop, isSidebarOpen, isPortrait } = useDeviceInfo();
 
   const [webcamPerPage, setWebcamPerPage] = useState<number>(DESKTOP_PER_PAGE);
   const [currentPage, setCurrentPage] = useState<number>(0);
@@ -80,11 +71,7 @@ const VideoLayout = ({
   // The pin renders in the strip on page 1 only — it consumes strip
   // slots there (1 normal, 2 extended), never on pages 2+.
   const pinInStrip = !!pinParticipant && !!isVertical;
-  const pinStripSlots = pinInStrip
-    ? isEnabledExtendedVerticalCamView
-      ? 2
-      : 1
-    : 0;
+  const pinStripSlots = pinInStrip ? (isEnabledExtendedVerticalCamView ? 2 : 1) : 0;
 
   // Derive view mode directly from props to prevent unnecessary re-renders via local state
   const enabledVerticalViewMode = useMemo(() => {
@@ -104,8 +91,7 @@ const VideoLayout = ({
     }
 
     // 2. Determine the user's effective limit.
-    const effectiveUserLimit =
-      deviceMax && deviceMax > 0 ? deviceMax : DESKTOP_PER_PAGE;
+    const effectiveUserLimit = deviceMax && deviceMax > 0 ? deviceMax : DESKTOP_PER_PAGE;
 
     let perPage: number;
 
@@ -122,9 +108,7 @@ const VideoLayout = ({
         }
       } else {
         // default mode
-        perPage = isSidebarOpen
-          ? MOBILE_WITH_SIDEBAR_PER_PAGE
-          : MOBILE_PER_PAGE;
+        perPage = isSidebarOpen ? MOBILE_WITH_SIDEBAR_PER_PAGE : MOBILE_PER_PAGE;
       }
     } else if (isTablet) {
       if (enabledVerticalViewMode) {
@@ -141,9 +125,7 @@ const VideoLayout = ({
             ? TABLET_PORTRAIT_WITH_SIDEBAR_PER_PAGE
             : TABLET_PORTRAIT_PER_PAGE;
         } else {
-          perPage = isSidebarOpen
-            ? TABLET_WITH_SIDEBAR_PER_PAGE
-            : TABLET_PER_PAGE;
+          perPage = isSidebarOpen ? TABLET_WITH_SIDEBAR_PER_PAGE : TABLET_PER_PAGE;
         }
       }
     } else {
@@ -195,10 +177,7 @@ const VideoLayout = ({
     // We don't show pagination for recorders.
     // Keep the recorder view limited to the first page worth of participants.
     if (isRecorder) {
-      const pipParticipants = allParticipants.slice(
-        0,
-        webcamPerPage - pinStripSlots,
-      );
+      const pipParticipants = allParticipants.slice(0, webcamPerPage - pinStripSlots);
 
       return {
         pipParticipants,
@@ -218,8 +197,7 @@ const VideoLayout = ({
     const middlePageParticipantCapacity = webcamPerPage - 2;
 
     const startIndex = hasPrevPage
-      ? firstPageParticipantCapacity +
-        (safeCurrentPage - 2) * middlePageParticipantCapacity
+      ? firstPageParticipantCapacity + (safeCurrentPage - 2) * middlePageParticipantCapacity
       : 0;
 
     // Start with the max number of items per page. This will be adjusted if we need pagination buttons.
@@ -261,9 +239,7 @@ const VideoLayout = ({
         <button
           key="next-page"
           className="video-camera-item webcam-next-page order-3 relative bg-Gray-900 text-white cursor-pointer flex items-center justify-between"
-          title={potentialNextItems
-            .map((p) => p.props.participant.name)
-            .join(', ')}
+          title={potentialNextItems.map((p) => p.props.participant.name).join(', ')}
           onClick={nextPage}
         >
           <div className="left flex-1 flex justify-center items-center absolute top-0 start-0 w-full h-full">
@@ -324,26 +300,16 @@ const VideoLayout = ({
     const participantsToRender = paginatedParticipants.participantsToRender;
 
     // Non-extended: the pin becomes a regular first tile of the list (page 1 only).
-    const prependPinToList =
-      pinInStrip && currentPage <= 1 && !isEnabledExtendedVerticalCamView;
+    const prependPinToList = pinInStrip && currentPage <= 1 && !isEnabledExtendedVerticalCamView;
     const items = prependPinToList
       ? [pinParticipant, ...participantsToRender]
       : participantsToRender;
 
     // Mobile always uses the mobile layout helper.
     if (isMobile) {
-      layout = getElmsForMobile(
-        items,
-        isPortrait,
-        enabledVerticalViewMode,
-        isSidebarOpen,
-      );
+      layout = getElmsForMobile(items, isPortrait, enabledVerticalViewMode, isSidebarOpen);
     } else if (isTablet && isPortrait) {
-      layout = getElmsForTabletPortrait(
-        items,
-        isSidebarOpen,
-        enabledVerticalViewMode,
-      );
+      layout = getElmsForTabletPortrait(items, isSidebarOpen, enabledVerticalViewMode);
     } else if (isTablet) {
       layout = getElmsForTablet(items, enabledVerticalViewMode, isSidebarOpen);
     } else {
@@ -371,22 +337,12 @@ const VideoLayout = ({
   ]);
 
   useEffect(() => {
-    const isPaginating =
-      allParticipants.length > webcamPerPage - pinStripSlots && currentPage > 1;
+    const isPaginating = allParticipants.length > webcamPerPage - pinStripSlots && currentPage > 1;
 
     dispatch(setWebcamPaginating(isPaginating));
-  }, [
-    allParticipants.length,
-    webcamPerPage,
-    pinStripSlots,
-    currentPage,
-    dispatch,
-  ]);
+  }, [allParticipants.length, webcamPerPage, pinStripSlots, currentPage, dispatch]);
 
-  const allParticipantsCount = useMemo(
-    () => allParticipants.length,
-    [allParticipants],
-  );
+  const allParticipantsCount = useMemo(() => allParticipants.length, [allParticipants]);
 
   useEffect(() => {
     // This effect manages page number resets.
@@ -399,10 +355,7 @@ const VideoLayout = ({
       pinStripSlots,
     );
 
-    if (
-      currentPage > totalPages ||
-      (allParticipantsCount > 0 && currentPage === 0)
-    ) {
+    if (currentPage > totalPages || (allParticipantsCount > 0 && currentPage === 0)) {
       setCurrentPage(1);
     }
     // eslint-disable-next-line

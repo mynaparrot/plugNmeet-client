@@ -16,14 +16,8 @@ import { BreakoutRoomMessage } from '..';
 import { selectBasicParticipants } from '../../../store/slices/participantSlice';
 import useStorePreviousInt from '../../../helpers/hooks/useStorePreviousInt';
 import { updateBreakoutRoomDroppedUser } from '../../../store/slices/breakoutRoomSlice';
-import {
-  buildWhiteboardShare,
-  useWhiteboardShareState,
-} from './useWhiteboardShareState';
-import {
-  mergeUsersWithPreassigned,
-  usePreassignedRooms,
-} from './usePreassignedRooms';
+import { buildWhiteboardShare, useWhiteboardShareState } from './useWhiteboardShareState';
+import { mergeUsersWithPreassigned, usePreassignedRooms } from './usePreassignedRooms';
 import WhiteboardShareSection from './whiteboardShareSection';
 import NotepadShareSection from './notepadShareSection';
 import PollsShareSection from './pollsShareSection';
@@ -34,30 +28,20 @@ interface IFromElemsProps {
   setMessage: (message: BreakoutRoomMessage | null) => void;
 }
 
-const FromElems = ({
-  createBreakoutRooms,
-  isLoading,
-  setMessage,
-}: IFromElemsProps) => {
+const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const participants = useAppSelector(selectBasicParticipants);
   const droppedUser = useAppSelector((state) => state.breakoutRoom.droppedUser);
 
   const isWhiteboardEnabled = useAppSelector(
-    (state) =>
-      !!state.session.currentRoom.metadata?.roomFeatures?.whiteboardFeatures
-        ?.isAllow,
+    (state) => !!state.session.currentRoom.metadata?.roomFeatures?.whiteboardFeatures?.isAllow,
   );
   const isNotepadEnabled = useAppSelector(
-    (state) =>
-      !!state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures
-        ?.isAllow,
+    (state) => !!state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures?.isAllow,
   );
   const isPollsEnabled = useAppSelector(
-    (state) =>
-      !!state.session.currentRoom.metadata?.roomFeatures?.pollsFeatures
-        ?.isAllow,
+    (state) => !!state.session.currentRoom.metadata?.roomFeatures?.pollsFeatures?.isAllow,
   );
 
   // Whiteboard share state (selectors + default-checked + resync + builder).
@@ -100,11 +84,8 @@ const FromElems = ({
   const [allowReturnToMainRoom, setAllowReturnToMainRoom] = useState<boolean>(
     initialAllowReturnToMainRoom,
   );
-  const [allowSelfSelect, setAllowSelfSelect] = useState<boolean>(
-    initialAllowSelfSelect,
-  );
-  const [customTitles, setCustomTitles] =
-    useState<Record<number, string>>(initialCustomTitles);
+  const [allowSelfSelect, setAllowSelfSelect] = useState<boolean>(initialAllowSelfSelect);
+  const [customTitles, setCustomTitles] = useState<Record<number, string>>(initialCustomTitles);
   const [users, setUsers] = useState<Array<UserType>>(initialUsers);
 
   // we'll clean during unmount
@@ -132,9 +113,7 @@ const FromElems = ({
     }
     // Move users from deleted rooms back to the main room
     setUsers((prevUsers) =>
-      prevUsers.map((user) =>
-        user.roomId > totalRooms ? { ...user, roomId: 0 } : user,
-      ),
+      prevUsers.map((user) => (user.roomId > totalRooms ? { ...user, roomId: 0 } : user)),
     );
   }, [totalRooms, preTotalRooms]);
 
@@ -224,9 +203,7 @@ const FromElems = ({
       allowReturnToMainRoom: allowReturnToMainRoom,
       allowSelfSelect: allowSelfSelect,
       ...(whiteboardShare ? { whiteboardShare } : {}),
-      ...(sharePolls && sharePollIds.length > 0
-        ? { pollShare: { pollIds: sharePollIds } }
-        : {}),
+      ...(sharePolls && sharePollIds.length > 0 ? { pollShare: { pollIds: sharePollIds } } : {}),
     });
     createBreakoutRooms(req);
   }, [
@@ -253,10 +230,7 @@ const FromElems = ({
   return (
     <div className="break-out-room-main-area">
       <div className="row flex flex-wrap justify-start items-end">
-        <RoomNumberSelector
-          totalRooms={totalRooms}
-          setTotalRooms={setTotalRooms}
-        />
+        <RoomNumberSelector totalRooms={totalRooms} setTotalRooms={setTotalRooms} />
         <div className="room-durations w-full sm:w-56 mb-4">
           <label
             className="block text-sm font-medium text-Gray-800 dark:text-white mb-2"
@@ -349,10 +323,7 @@ const FromElems = ({
       <div className="draggable-room-area overflow-hidden clear-both flex flex-wrap">
         {roomList.map((room) => {
           return (
-            <div
-              className="room-box-wrap w-[calc(50%-6px)] m-[3px] sm:m-0 sm:w-auto"
-              key={room.id}
-            >
+            <div className="room-box-wrap w-[calc(50%-6px)] m-[3px] sm:m-0 sm:w-auto" key={room.id}>
               <RoomBox
                 roomId={room.id}
                 name={room.name}
@@ -400,10 +371,7 @@ const FromElems = ({
         <button
           className="primary-button h-9 w-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
           onClick={handleStartBreakoutRooms}
-          disabled={
-            isLoading ||
-            (whiteboardPagesSelected && selectedWhiteboardPages.length === 0)
-          }
+          disabled={isLoading || (whiteboardPagesSelected && selectedWhiteboardPages.length === 0)}
         >
           {t('breakout-room.start')}
         </button>

@@ -1,9 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  ChangeVisibilityRes,
-  ChangeVisibilityResSchema,
-} from 'plugnmeet-protocol-js';
+import { ChangeVisibilityRes, ChangeVisibilityResSchema } from 'plugnmeet-protocol-js';
 import { create, toBinary } from '@bufbuild/protobuf';
 import { debounce } from 'es-toolkit';
 
@@ -19,33 +16,26 @@ const WhiteboardIcon = () => {
   const isInitialMount = useRef(true);
   const isLocalAction = useRef(false);
 
-  const { showTooltip, allowedWhiteboard, currentUserId, isAdmin, isRecorder } =
-    useMemo(() => {
-      const session = store.getState().session;
-      const currentUser = session.currentUser;
-      return {
-        showTooltip: session.userDeviceType === 'desktop',
-        allowedWhiteboard:
-          session.currentRoom.metadata?.roomFeatures?.whiteboardFeatures
-            ?.isAllow,
-        currentUserId: currentUser?.userId,
-        isAdmin: currentUser?.metadata?.isAdmin,
-        isRecorder: currentUser?.isRecorder,
-      };
-    }, []);
+  const { showTooltip, allowedWhiteboard, currentUserId, isAdmin, isRecorder } = useMemo(() => {
+    const session = store.getState().session;
+    const currentUser = session.currentUser;
+    return {
+      showTooltip: session.userDeviceType === 'desktop',
+      allowedWhiteboard: session.currentRoom.metadata?.roomFeatures?.whiteboardFeatures?.isAllow,
+      currentUserId: currentUser?.userId,
+      isAdmin: currentUser?.metadata?.isAdmin,
+      isRecorder: currentUser?.isRecorder,
+    };
+  }, []);
 
   const isActiveWhiteboard = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveWhiteboard,
   );
   const isVisible = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.whiteboardFeatures
-        ?.visible,
+    (state) => state.session.currentRoom.metadata?.roomFeatures?.whiteboardFeatures?.visible,
   );
   const isPresenter = useAppSelector(
-    (state) =>
-      participantsSelector.selectById(state, currentUserId ?? '')?.metadata
-        .isPresenter,
+    (state) => participantsSelector.selectById(state, currentUserId ?? '')?.metadata.isPresenter,
   );
 
   const canControlWhiteboard = useMemo(() => {
@@ -76,8 +66,7 @@ const WhiteboardIcon = () => {
   const debouncedSendRequest = useCallback(
     debounce(async (isActive: boolean) => {
       const currentRoom = store.getState().session.currentRoom;
-      const isVisible =
-        currentRoom.metadata?.roomFeatures?.whiteboardFeatures?.visible;
+      const isVisible = currentRoom.metadata?.roomFeatures?.whiteboardFeatures?.visible;
 
       if (isActive === isVisible) {
         return;

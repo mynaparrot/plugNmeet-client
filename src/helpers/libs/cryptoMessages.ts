@@ -26,10 +26,7 @@ const base64ToUint8Array = (base64: string) => {
  * @param secret The user-provided secret string.
  * @param roomSid as salt
  */
-const deriveKeyFromSecret = async (
-  secret: string,
-  roomSid: string,
-): Promise<CryptoKey> => {
+const deriveKeyFromSecret = async (secret: string, roomSid: string): Promise<CryptoKey> => {
   const enc = new TextEncoder();
   // 1. Import the user's password as a base key material for PBKDF2.
   // This key is not used for encryption directly.
@@ -60,10 +57,7 @@ const deriveKeyFromSecret = async (
   );
 };
 
-export const importSecretKeyFromPlainText = async (
-  secret: string,
-  roomSid: string,
-) => {
+export const importSecretKeyFromPlainText = async (secret: string, roomSid: string) => {
   if (importedKey) {
     return;
   }
@@ -78,10 +72,7 @@ export const importSecretKeyFromPlainText = async (
  * @param secret The user-provided secret string (same as `importSecretKeyFromPlainText`).
  * @param roomSid as salt.
  */
-export const deriveRoomKey = async (
-  secret: string,
-  roomSid: string,
-): Promise<CryptoKey> => {
+export const deriveRoomKey = async (secret: string, roomSid: string): Promise<CryptoKey> => {
   return deriveKeyFromSecret(secret, roomSid);
 };
 
@@ -114,9 +105,7 @@ export const importSecretKeyFromMaterial = async (secretKeyBase64: string) => {
  * @param data The ArrayBuffer to encrypt.
  * @returns A promise that resolves to the encrypted Uint8Array (IV + ciphertext).
  */
-export const encryptDataToUint8Array = async (
-  data: Uint8Array,
-): Promise<Uint8Array> => {
+export const encryptDataToUint8Array = async (data: Uint8Array): Promise<Uint8Array> => {
   if (!importedKey) {
     throw new Error('E2EE key is not imported. Cannot encrypt.');
   }
@@ -150,9 +139,7 @@ export const encryptMessage = async (message: string): Promise<string> => {
  * @param encryptedData The Uint8Array containing the IV and ciphertext.
  * @returns A promise that resolves to the decrypted ArrayBuffer.
  */
-export const decryptDataFromUint8Array = async (
-  encryptedData: Uint8Array,
-): Promise<Uint8Array> => {
+export const decryptDataFromUint8Array = async (encryptedData: Uint8Array): Promise<Uint8Array> => {
   if (!importedKey) {
     throw new Error('E2EE key is not imported. Cannot decrypt.');
   }
@@ -219,10 +206,6 @@ export const decryptDataFromUint8ArrayWithKey = async (
   const iv = encryptedData.slice(0, IV_LENGTH);
   const cipherText = encryptedData.slice(IV_LENGTH);
 
-  const decrypted = await window.crypto.subtle.decrypt(
-    { name: algorithm, iv },
-    key,
-    cipherText,
-  );
+  const decrypted = await window.crypto.subtle.decrypt({ name: algorithm, iv }, key, cipherText);
   return new Uint8Array(decrypted);
 };

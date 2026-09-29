@@ -16,9 +16,7 @@ const calculateRemainingTime = (endTime: number) => {
 };
 
 export const useRoomDurationCountdown = (endTime: number) => {
-  const [remainingTime, setRemainingTime] = useState(() =>
-    calculateRemainingTime(endTime),
-  );
+  const [remainingTime, setRemainingTime] = useState(() => calculateRemainingTime(endTime));
 
   useEffect(() => {
     // Don't start the timer if the end time has already passed

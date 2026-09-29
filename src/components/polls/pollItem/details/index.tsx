@@ -1,11 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Dialog,
-  DialogTitle,
-  Transition,
-  TransitionChild,
-} from '@headlessui/react';
+import { Dialog, DialogTitle, Transition, TransitionChild } from '@headlessui/react';
 
 import EndPollBtn from './endPollBtn';
 import PublishResultBtn from './publishResultBtn';
@@ -43,11 +38,7 @@ const DetailsModal = ({
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog
-        as="div"
-        className="fixed inset-0 z-9999 overflow-y-auto"
-        onClose={closeModal}
-      >
+      <Dialog as="div" className="fixed inset-0 z-9999 overflow-y-auto" onClose={closeModal}>
         <div className="min-h-screen px-4 text-center bg-Gray-950/70 flex items-center justify-center">
           <TransitionChild
             as={Fragment}
@@ -64,9 +55,7 @@ const DetailsModal = ({
                   as="h3"
                   className="text-sm 3xl:text-base font-semibold text-Gray-950 dark:text-white flex items-center gap-3"
                 >
-                  <span className="uppercase">
-                    {t('polls.poll-num', { index: serialNum })}
-                  </span>{' '}
+                  <span className="uppercase">{t('polls.poll-num', { index: serialNum })}</span>{' '}
                   {!isRunning && (
                     <div className="border border-Red-200 bg-Red-100 dark:bg-Red-200 shadow-button-shadow rounded-full h-[22px] px-1.5 text-xs text-Red-700 font-medium flex items-center">
                       {t('polls.poll-closed')}

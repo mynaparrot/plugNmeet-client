@@ -3,11 +3,7 @@ import { toast } from 'react-toastify';
 import { isE2EESupported } from 'livekit-client';
 import { jetstream, JetStreamClient } from '@nats-io/jetstream';
 import { create, toBinary, toJsonString } from '@bufbuild/protobuf';
-import {
-  NatsConnection,
-  tokenAuthenticator,
-  wsconnect,
-} from '@nats-io/nats-core';
+import { NatsConnection, tokenAuthenticator, wsconnect } from '@nats-io/nats-core';
 import {
   AnalyticsDataMsgSchema,
   AnalyticsEvents,
@@ -41,12 +37,7 @@ import {
   importSecretKeyFromPlainText,
 } from '../libs/cryptoMessages';
 import { ICurrentRoom } from '../../store/slices/interfaces/session';
-import {
-  formatNatsError,
-  getChatDonors,
-  isUserRecorder,
-  isValidHttpUrl,
-} from '../utils';
+import { formatNatsError, getChatDonors, isUserRecorder, isValidHttpUrl } from '../utils';
 import {
   addSelfInsertedE2EESecretKey,
   addUserNotification,
@@ -278,10 +269,7 @@ export default class ConnectNats {
       console.info(`connected ${this._nc.getServer()}`);
     } catch (e) {
       console.error(e);
-      this.setErrorStatus(
-        i18n.t('notifications.nats-error-title'),
-        formatNatsError(e),
-      );
+      this.setErrorStatus(i18n.t('notifications.nats-error-title'), formatNatsError(e));
       return;
     }
 
@@ -315,10 +303,7 @@ export default class ConnectNats {
     teardownNativePublisher();
 
     // Immediately update UI and stop new messages
-    this.setErrorStatus(
-      i18n.t('notifications.room-disconnected-title'),
-      i18n.t(msg),
-    );
+    this.setErrorStatus(i18n.t('notifications.room-disconnected-title'), i18n.t(msg));
     this.messageQueue.setIsConnected(false);
     this._setRoomConnectionStatusState('disconnected');
 
@@ -376,11 +361,7 @@ export default class ConnectNats {
 
     // Handle post-session navigation after a delay
     setTimeout(() => {
-      if (
-        !meta?.isBreakoutRoom &&
-        meta?.logoutUrl &&
-        isValidHttpUrl(meta.logoutUrl)
-      ) {
+      if (!meta?.isBreakoutRoom && meta?.logoutUrl && isValidHttpUrl(meta.logoutUrl)) {
         window.location.replace(meta.logoutUrl);
       }
     }, 3000);
@@ -478,8 +459,7 @@ export default class ConnectNats {
    * @param data The message to send.
    */
   public sendMessageToSystemWorker = (data: NatsMsgClientToServer) => {
-    const subject =
-      this._subjects.systemJsWorker + '.' + this._roomId + '.' + this._userId;
+    const subject = this._subjects.systemJsWorker + '.' + this._roomId + '.' + this._userId;
     this.messageQueue.addToQueue({
       subject,
       payload: toBinary(NatsMsgClientToServerSchema, data),
@@ -493,8 +473,7 @@ export default class ConnectNats {
    * @param data The message to send.
    */
   public sendMessageToCoreWorker = (data: NatsMsgClientToServer) => {
-    const subject =
-      this._subjects.systemCoreWorker + '.' + this._roomId + '.' + this._userId;
+    const subject = this._subjects.systemCoreWorker + '.' + this._roomId + '.' + this._userId;
     this.messageQueue.addToQueue({
       subject,
       payload: toBinary(NatsMsgClientToServerSchema, data),
@@ -634,8 +613,7 @@ export default class ConnectNats {
     // check translation settings
     const state = store.getState();
     const chatTranslationFeatures =
-      state.session.currentRoom?.metadata?.roomFeatures?.insightsFeatures
-        ?.chatTranslationFeatures;
+      state.session.currentRoom?.metadata?.roomFeatures?.insightsFeatures?.chatTranslationFeatures;
     if (chatTranslationFeatures && chatTranslationFeatures.isEnabled) {
       // we'll get our selected lang
       const selectedChatTransLang = state.roomSettings.selectedChatTransLang;
@@ -663,10 +641,7 @@ export default class ConnectNats {
     await this.deliverChatMessage(chatMessage);
   };
 
-  public editChatMessage = async (
-    original: ChatMessage,
-    newHtmlMessage: string,
-  ) => {
+  public editChatMessage = async (original: ChatMessage, newHtmlMessage: string) => {
     if (!this._nc || this._nc.isClosed()) {
       return;
     }
@@ -766,11 +741,7 @@ export default class ConnectNats {
    * Public messages are sent as fire-and-forget core NATS messages to the public data channel subject.
    * Both are managed by the MessageQueue.
    */
-  public sendDataMessage = async (
-    type: DataMsgBodyType,
-    msg: string,
-    to?: string,
-  ) => {
+  public sendDataMessage = async (type: DataMsgBodyType, msg: string, to?: string) => {
     await this.publishData(type, {
       message: msg,
       to,
@@ -790,11 +761,7 @@ export default class ConnectNats {
     }
     const donors = getChatDonors();
     for (let i = 0; i < donors.length; i++) {
-      await this.sendDataMessage(
-        DataMsgBodyType.REQ_PUBLIC_CHAT_DATA,
-        '',
-        donors[i].userId,
-      );
+      await this.sendDataMessage(DataMsgBodyType.REQ_PUBLIC_CHAT_DATA, '', donors[i].userId);
     }
   };
 
@@ -906,18 +873,13 @@ export default class ConnectNats {
     }
     const ping = async () => {
       if (this.missedPongs === 6) {
-        this.pongMissedToastId = toast.loading(
-          i18n.t('notifications.server-not-responding'),
-          {
-            type: 'warning',
-            closeButton: false,
-            autoClose: false,
-          },
-        );
+        this.pongMissedToastId = toast.loading(i18n.t('notifications.server-not-responding'), {
+          type: 'warning',
+          closeButton: false,
+          autoClose: false,
+        });
       } else if (this.missedPongs >= MAX_MISSED_PONGS) {
-        await this.endSession(
-          'notifications.room-disconnected-server-unresponsive',
-        );
+        await this.endSession('notifications.room-disconnected-server-unresponsive');
         return;
       }
 

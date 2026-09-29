@@ -16,11 +16,7 @@ interface ExportPDFModalProps {
   isOpen: boolean;
 }
 
-const ExportPDFModal = ({
-  excalidrawAPI,
-  onClose,
-  isOpen,
-}: ExportPDFModalProps) => {
+const ExportPDFModal = ({ excalidrawAPI, onClose, isOpen }: ExportPDFModalProps) => {
   const { t } = useTranslation();
   const [mode, setMode] = useState<ExportMode>('all');
   const [selectedPages, setSelectedPages] = useState<Set<number>>(new Set());
@@ -28,12 +24,8 @@ const ExportPDFModal = ({
   const [isExporting, setIsExporting] = useState(false);
 
   const currentPage = useAppSelector((state) => state.whiteboard.currentPage);
-  const fileId = useAppSelector(
-    (state) => state.whiteboard.currentWhiteboardOfficeFileId,
-  );
-  const officeFiles = useAppSelector(
-    (state) => state.whiteboard.whiteboardUploadedOfficeFiles,
-  );
+  const fileId = useAppSelector((state) => state.whiteboard.currentWhiteboardOfficeFileId);
+  const officeFiles = useAppSelector((state) => state.whiteboard.whiteboardUploadedOfficeFiles);
 
   const fileName = useMemo(() => {
     const officeFile = officeFiles.find((f) => f.fileId === fileId);

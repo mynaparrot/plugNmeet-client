@@ -2,11 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PollInfo } from 'plugnmeet-protocol-js';
 import { AnimatePresence, motion } from 'framer-motion';
-import {
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-} from '@headlessui/react';
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 
 import { store } from '../../../store';
 import PollActionsMenu from './pollActionsMenu';
@@ -25,28 +21,20 @@ interface PollItemProps {
 
 const PollItem = ({ item, serialNum }: PollItemProps) => {
   const { t } = useTranslation();
-  const isAdmin = useMemo(
-    () => !!store.getState().session.currentUser?.metadata?.isAdmin,
-    [],
-  );
+  const isAdmin = useMemo(() => !!store.getState().session.currentUser?.metadata?.isAdmin, []);
   const [viewDetails, setViewDetails] = useState<boolean>(false);
 
   // to load data with details, valid for admin
-  const [skipGetPollResponsesDetails, setSkipGetPollResponsesDetails] =
-    useState<boolean>(true);
-  const { data: pollDetailsResponses, refetch } =
-    useGetPollResponsesDetailsQuery(item.id, {
-      skip: skipGetPollResponsesDetails,
-    });
+  const [skipGetPollResponsesDetails, setSkipGetPollResponsesDetails] = useState<boolean>(true);
+  const { data: pollDetailsResponses, refetch } = useGetPollResponsesDetailsQuery(item.id, {
+    skip: skipGetPollResponsesDetails,
+  });
 
   // load only the results for all other users
   const [skipGetPollResult, setSkipGetPollResult] = useState<boolean>(true);
-  const { data: pollResponsesResult } = useGetPollResponsesResultQuery(
-    item.id,
-    {
-      skip: skipGetPollResult,
-    },
-  );
+  const { data: pollResponsesResult } = useGetPollResponsesResultQuery(item.id, {
+    skip: skipGetPollResult,
+  });
 
   useEffect(() => {
     if (isAdmin) {
@@ -105,9 +93,7 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
 
       if (details.all_respondents) {
         try {
-          const respondents: Array<string> = JSON.parse(
-            details.all_respondents,
-          );
+          const respondents: Array<string> = JSON.parse(details.all_respondents);
           for (const r of respondents) {
             // format => userId:optionId(s):name, ids comma-joined for multi-select
             const data = r.split(':');

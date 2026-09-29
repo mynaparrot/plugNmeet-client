@@ -1,9 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  AnalyticsEvents,
-  AnalyticsEventType,
-  DataMsgBodyType,
-} from 'plugnmeet-protocol-js';
+import { AnalyticsEvents, AnalyticsEventType, DataMsgBodyType } from 'plugnmeet-protocol-js';
 
 import { getNatsConn } from '../nats';
 import { updateIsPNMWindowTabVisible } from '../../store/slices/roomSettingsSlice';
@@ -54,21 +50,11 @@ const useWatchVisibilityChange = () => {
       }
     };
 
-    if (
-      typeof document.addEventListener !== 'undefined' ||
-      hidden !== undefined
-    ) {
-      document.addEventListener(
-        visibilityChange,
-        handleVisibilityChange,
-        false,
-      );
+    if (typeof document.addEventListener !== 'undefined' || hidden !== undefined) {
+      document.addEventListener(visibilityChange, handleVisibilityChange, false);
     }
     return () => {
-      if (
-        typeof document.addEventListener !== 'undefined' ||
-        hidden !== undefined
-      ) {
+      if (typeof document.addEventListener !== 'undefined' || hidden !== undefined) {
         document.removeEventListener(visibilityChange, handleVisibilityChange);
       }
     };

@@ -31,24 +31,18 @@ const MainView = ({
   hasScreenShareSubscribers,
   hasVideoSubscribers,
 }: IMainViewProps) => {
-  const { showVerticalVideoView, showVideoElms, pinCamUserId } = useVideoLayout(
-    {
-      hasScreenShareSubscribers,
-      isActiveWhiteboard,
-      isActiveExternalMediaPlayer,
-      isActiveDisplayExternalLink,
-      hasVideoSubscribers,
-    },
-  );
+  const { showVerticalVideoView, showVideoElms, pinCamUserId } = useVideoLayout({
+    hasScreenShareSubscribers,
+    isActiveWhiteboard,
+    isActiveExternalMediaPlayer,
+    isActiveDisplayExternalLink,
+    hasVideoSubscribers,
+  });
 
   const sharedNotepadElm = useSharedNotepad();
   useNotepadController();
   const insightsAiTextChatElm = useInsightsAiTextChat();
-  const whiteboardElm = useWhiteboard(
-    isActiveWhiteboard,
-    hasScreenShareSubscribers,
-    showVideoElms,
-  );
+  const whiteboardElm = useWhiteboard(isActiveWhiteboard, hasScreenShareSubscribers, showVideoElms);
   const externalMediaPlayerElm = useExternalMediaPlayer(
     isActiveExternalMediaPlayer,
     hasScreenShareSubscribers,
@@ -63,13 +57,8 @@ const MainView = ({
     isRecorder,
   );
 
-  const videosComponentElm = useVideosComponent(
-    hasVideoSubscribers,
-    showVerticalVideoView,
-  );
-  const screenShareElementsElm = useScreenShareElements(
-    hasScreenShareSubscribers,
-  );
+  const videosComponentElm = useVideosComponent(hasVideoSubscribers, showVerticalVideoView);
+  const screenShareElementsElm = useScreenShareElements(hasScreenShareSubscribers);
   const translationTranscriptionElm = useTranslationTranscription();
 
   return (

@@ -1,23 +1,13 @@
 import React, { ReactNode, useId } from 'react';
 
-const Tooltip = ({
-  text,
-  children,
-}: {
-  text?: string;
-  children: ReactNode;
-}) => {
+const Tooltip = ({ text, children }: { text?: string; children: ReactNode }) => {
   const id = useId();
 
   if (!text) return <>{children}</>;
 
   return (
     <div className="relative group inline-flex">
-      <span
-        tabIndex={0}
-        aria-describedby={id}
-        className="inline-flex focus-visible:outline-hidden"
-      >
+      <span tabIndex={0} aria-describedby={id} className="inline-flex focus-visible:outline-hidden">
         {children}
       </span>
       <div

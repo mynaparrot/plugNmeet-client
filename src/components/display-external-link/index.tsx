@@ -7,14 +7,11 @@ import { LoadingIcon } from '../../assets/Icons/Loading';
 const DisplayExternalLink = () => {
   const { t } = useTranslation();
   const link = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures
-        ?.displayExternalLinkFeatures?.link,
+    (state) => state.session.currentRoom.metadata?.roomFeatures?.displayExternalLinkFeatures?.link,
   );
   const isActive = useAppSelector(
     (state) =>
-      state.session.currentRoom.metadata?.roomFeatures
-        ?.displayExternalLinkFeatures?.isActive,
+      state.session.currentRoom.metadata?.roomFeatures?.displayExternalLinkFeatures?.isActive,
   );
   const [loaded, setLoaded] = useState(false);
 

@@ -1,9 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  ApproveWaitingUsersReqSchema,
-  CommonResponseSchema,
-} from 'plugnmeet-protocol-js';
+import { ApproveWaitingUsersReqSchema, CommonResponseSchema } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { useAppDispatch, useAppSelector } from '../../../store';
@@ -18,14 +15,9 @@ interface IWaitingApprovalProps {
   name: string;
   openRemoveParticipantAlert(userId: string, type: string): void;
 }
-const WaitingApproval = ({
-  userId,
-  name,
-  openRemoveParticipantAlert,
-}: IWaitingApprovalProps) => {
+const WaitingApproval = ({ userId, name, openRemoveParticipantAlert }: IWaitingApprovalProps) => {
   const waitForApproval = useAppSelector(
-    (state) =>
-      participantsSelector.selectById(state, userId)?.metadata.waitForApproval,
+    (state) => participantsSelector.selectById(state, userId)?.metadata.waitForApproval,
   );
   const { t } = useTranslation();
   const dispatch = useAppDispatch();

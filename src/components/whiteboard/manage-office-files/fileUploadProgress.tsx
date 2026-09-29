@@ -1,10 +1,4 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import { useTranslation } from 'react-i18next';
 
@@ -45,9 +39,7 @@ const FileUploadProgress = ({
 
   const [uploadingProgress, setUploadingProgress] = useState<number>(0);
   const [message, setMessage] = useState<message | undefined>(undefined);
-  const [currentFile, setCurrentFile] = useState<ICurrentFile | undefined>(
-    undefined,
-  );
+  const [currentFile, setCurrentFile] = useState<ICurrentFile | undefined>(undefined);
   const [status, setStatus] = useState<OfficeFileStatus>('idle');
 
   const cleanupProcess = useCallback(() => {
@@ -112,22 +104,14 @@ const FileUploadProgress = ({
   const renderProgressBar = () => {
     if (message) {
       return (
-        <p
-          className={`text-xs pt-0.5 ${
-            message.isError ? 'text-red-500' : 'text-green-500'
-          }`}
-        >
+        <p className={`text-xs pt-0.5 ${message.isError ? 'text-red-500' : 'text-green-500'}`}>
           {message.msg}
         </p>
       );
     }
 
     if (status === 'converting') {
-      return (
-        <p className="text-xs pt-0.5 text-green-500">
-          {t('whiteboard.converting')}
-        </p>
-      );
+      return <p className="text-xs pt-0.5 text-green-500">{t('whiteboard.converting')}</p>;
     }
 
     return (
@@ -173,9 +157,7 @@ const FileUploadProgress = ({
               </button>
             )}
           </div>
-          <div className="progress-bar flex gap-2 items-center">
-            {renderProgressBar()}
-          </div>
+          <div className="progress-bar flex gap-2 items-center">{renderProgressBar()}</div>
         </div>
       </div>
     )

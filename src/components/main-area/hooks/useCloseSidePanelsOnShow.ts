@@ -3,10 +3,7 @@ import { useEffect } from 'react';
 import { useAppDispatch } from '../../../store';
 import { setActiveSidePanel } from '../../../store/slices/bottomIconsActivitySlice';
 
-export const useCloseSidePanelsOnShow = (
-  shouldShow: boolean,
-  isRecorder: boolean | undefined,
-) => {
+export const useCloseSidePanelsOnShow = (shouldShow: boolean, isRecorder: boolean | undefined) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {

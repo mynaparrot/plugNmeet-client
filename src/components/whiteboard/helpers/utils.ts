@@ -1,11 +1,5 @@
-import {
-  convertToExcalidrawElements,
-  hashElementsVersion,
-} from '@excalidraw/excalidraw';
-import {
-  ExcalidrawImperativeAPI,
-  NormalizedZoomValue,
-} from '@excalidraw/excalidraw/types';
+import { convertToExcalidrawElements, hashElementsVersion } from '@excalidraw/excalidraw';
+import { ExcalidrawImperativeAPI, NormalizedZoomValue } from '@excalidraw/excalidraw/types';
 import {
   ExcalidrawElement,
   ExcalidrawImageElement,
@@ -35,9 +29,7 @@ const defaultPreloadedLibraryItems = [
   'https://libraries.excalidraw.com/libraries/ocapraro/bubbles.excalidrawlib',
 ];
 
-export const addPreloadedLibraryItems = async (
-  excalidrawAPI: ExcalidrawImperativeAPI,
-) => {
+export const addPreloadedLibraryItems = async (excalidrawAPI: ExcalidrawImperativeAPI) => {
   let libraryItems = defaultPreloadedLibraryItems;
   const getFromCnf = getConfigValue<string[] | undefined>(
     'whiteboardPreloadedLibraryItems',
@@ -73,10 +65,7 @@ export const addPreloadedLibraryItems = async (
         console.error('Failed to register library item onto Excalidraw:', err);
       }
     } else {
-      console.error(
-        'Failed to pre-fetch whiteboard library item:',
-        result.reason,
-      );
+      console.error('Failed to pre-fetch whiteboard library item:', result.reason);
     }
   }
 };
@@ -93,26 +82,14 @@ export const ensureAllImagesDataIsLoaded = (
   elements: readonly ExcalidrawElement[],
 ) => {
   const imagePromises = elements
-    .filter(
-      (elm): elm is ExcalidrawImageElement =>
-        elm.type === 'image' && !!elm.customData,
-    )
-    .map((elm) =>
-      ensureImageDataIsLoaded(
-        excalidrawAPI,
-        elm,
-        elm.customData as ImageCustomData,
-      ),
-    );
+    .filter((elm): elm is ExcalidrawImageElement => elm.type === 'image' && !!elm.customData)
+    .map((elm) => ensureImageDataIsLoaded(excalidrawAPI, elm, elm.customData as ImageCustomData));
   // We fire off all the promises but don't wait for them to complete.
   // This allows the UI to update while images load in the background.
   Promise.allSettled(imagePromises).then((results) => {
     results.forEach((result, idx) => {
       if (result.status === 'rejected') {
-        console.error(
-          `Error loading image data at index ${idx}:`,
-          result.reason,
-        );
+        console.error(`Error loading image data at index ${idx}:`, result.reason);
       }
     });
   });
@@ -146,9 +123,7 @@ export const getPageBoundaryMetrics = (
   pageHeight?: number,
 ): PageBoundaryMetrics => {
   const size =
-    pageWidth && pageHeight
-      ? { width: pageWidth, height: pageHeight }
-      : getPageSize(orientation);
+    pageWidth && pageHeight ? { width: pageWidth, height: pageHeight } : getPageSize(orientation);
   const frameWidth = size.width;
   const frameHeight = size.height;
   const edgeInset = DEFAULT_A4_MARGIN / 2;
@@ -232,10 +207,7 @@ export const getA4WidthBasedZoom = (
   const MIN_ZOOM = 0.1;
   const MAX_INITIAL_ZOOM = 1;
 
-  const safeViewportWidth = Math.max(
-    viewportWidth - VIEWPORT_HORIZONTAL_PADDING,
-    1,
-  );
+  const safeViewportWidth = Math.max(viewportWidth - VIEWPORT_HORIZONTAL_PADDING, 1);
 
   return Math.max(
     Math.min(safeViewportWidth / targetWidth, MAX_INITIAL_ZOOM),
@@ -276,10 +248,7 @@ export const resolvePageInfoFromElements = (
         pageHeight: cd.pageHeight,
       };
     }
-    if (
-      cd.pageOrientation === 'landscape' ||
-      cd.pageOrientation === 'portrait'
-    ) {
+    if (cd.pageOrientation === 'landscape' || cd.pageOrientation === 'portrait') {
       return { orientation: cd.pageOrientation };
     }
   }
@@ -317,15 +286,12 @@ export const orderElementsByIndex = (elements: ExcalidrawElement[]) => {
 export const isPendingImageElement = (
   element: ExcalidrawElement,
 ): element is ExcalidrawImageElement =>
-  element.type === 'image' &&
-  (element.status === 'pending' || element.customData === undefined);
+  element.type === 'image' && (element.status === 'pending' || element.customData === undefined);
 
 export const getSceneAndVersionWithoutBoundary = (
   elements: readonly ExcalidrawElement[],
 ): { elms: readonly ExcalidrawElement[]; version: number } => {
   const hasBoundary = elements.some((e) => e.id === A4_BOUNDARY_GUIDE_ID);
-  const elms = hasBoundary
-    ? elements.filter((e) => e.id !== A4_BOUNDARY_GUIDE_ID)
-    : elements;
+  const elms = hasBoundary ? elements.filter((e) => e.id !== A4_BOUNDARY_GUIDE_ID) : elements;
   return { elms, version: hashElementsVersion(elms) };
 };

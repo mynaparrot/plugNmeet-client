@@ -15,11 +15,7 @@ import { store, useAppDispatch, useAppSelector } from '../../../store';
 import FileSend from './fileSend';
 import { getNatsConn } from '../../../helpers/nats';
 import { useAutosizeTextArea } from './useAutosizeTextArea';
-import {
-  getPlainTextSnippet,
-  htmlToEditableText,
-  publishFileAttachmentToChat,
-} from '../utils';
+import { getPlainTextSnippet, htmlToEditableText, publishFileAttachmentToChat } from '../utils';
 import { renderMarkdown } from '../../insights-ai/ai-text-chat/helpers/renderMarkdown';
 import { uploadResumableFile } from '../../../helpers/fileUpload';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
@@ -49,25 +45,17 @@ const TextBoxArea = () => {
   }, []);
 
   const isLockChatSendMsg = useAppSelector(
-    (state) =>
-      state.session.currentUser?.metadata?.lockSettings?.lockChatSendMessage,
+    (state) => state.session.currentUser?.metadata?.lockSettings?.lockChatSendMessage,
   );
   const isLockSendFile = useAppSelector(
-    (state) =>
-      state.session.currentUser?.metadata?.lockSettings?.lockChatFileShare,
+    (state) => state.session.currentUser?.metadata?.lockSettings?.lockChatFileShare,
   );
-  const selectedChatOption = useAppSelector(
-    (state) => state.roomSettings.selectedChatOption,
-  );
+  const selectedChatOption = useAppSelector((state) => state.roomSettings.selectedChatOption);
   const defaultLockSettings = useAppSelector(
     (state) => state.session.currentRoom.metadata?.defaultLockSettings,
   );
-  const { draft: replyDraft, target: replyTarget } = useAppSelector(
-    selectReplyDraftWithTarget,
-  );
-  const { draft: editDraft, target: editTarget } = useAppSelector(
-    selectEditDraftWithTarget,
-  );
+  const { draft: replyDraft, target: replyTarget } = useAppSelector(selectReplyDraftWithTarget);
+  const { draft: editDraft, target: editTarget } = useAppSelector(selectEditDraftWithTarget);
 
   const [message, setMessage] = useState<string>('');
   useAutosizeTextArea(textAreaRef.current, message);
@@ -105,10 +93,7 @@ const TextBoxArea = () => {
     setMessage(val);
   };
 
-  const showSendFile = useMemo(
-    () => !!chatFeatures?.isAllowFileUpload,
-    [chatFeatures],
-  );
+  const showSendFile = useMemo(() => !!chatFeatures?.isAllowFileUpload, [chatFeatures]);
 
   const isMsgSendingLocked = useMemo(() => {
     if (isAdmin) return false;
@@ -239,9 +224,7 @@ const TextBoxArea = () => {
             e.preventDefault();
             const f = items[i].getAsFile();
             if (f) {
-              const extension = f.name.slice(
-                ((f.name.lastIndexOf('.') - 1) >>> 0) + 2,
-              );
+              const extension = f.name.slice(((f.name.lastIndexOf('.') - 1) >>> 0) + 2);
               files.push(
                 new File([f], Date.now().toString() + '.' + extension, {
                   type: f.type,
@@ -259,10 +242,7 @@ const TextBoxArea = () => {
             RoomUploadedFileType.CHAT_FILE,
             files,
             (result) => {
-              publishFileAttachmentToChat(
-                result.filePath,
-                result.fileName,
-              ).then(() =>
+              publishFileAttachmentToChat(result.filePath, result.fileName).then(() =>
                 dispatch(
                   addUserNotification({
                     message: t('right-panel.file-upload-success'),
@@ -326,10 +306,7 @@ const TextBoxArea = () => {
       )}
       <div className="flex items-center justify-between border border-Gray-200 dark:border-Gray-700 rounded-2xl 3xl:rounded-3xl p-1.5 w-full">
         {showSendFile && (
-          <FileSend
-            lockSendFile={isFileSendingLocked}
-            chatFeatures={chatFeatures}
-          />
+          <FileSend lockSendFile={isFileSendingLocked} chatFeatures={chatFeatures} />
         )}
         <textarea
           dir="auto"
@@ -348,9 +325,7 @@ const TextBoxArea = () => {
         <button
           disabled={isMsgSendingLocked || isSendingMsg}
           onClick={sendMsg}
-          aria-label={
-            showEditBar ? t('right-panel.save').toString() : undefined
-          }
+          aria-label={showEditBar ? t('right-panel.save').toString() : undefined}
           title={showEditBar ? t('right-panel.save').toString() : undefined}
           className={`w-7 3xl:w-9 h-7 3xl:h-9 flex items-center justify-center rounded-full transition-all duration-300 hover:bg-[#00A1F2] hover:border-[#08C] ${isEmpty(message) ? 'bg-[#00A1F2]/30 border border-[#08C]/30' : 'bg-[#00A1F2] border border-[#08C]'} ${!isMsgSendingLocked && !isEmpty(message) ? 'cursor-pointer' : 'cursor-not-allowed'}`}
         >

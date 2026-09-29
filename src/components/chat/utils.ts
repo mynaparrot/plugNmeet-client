@@ -1,8 +1,4 @@
-import {
-  AnalyticsEvents,
-  AnalyticsEventType,
-  ChatMessage,
-} from 'plugnmeet-protocol-js';
+import { AnalyticsEvents, AnalyticsEventType, ChatMessage } from 'plugnmeet-protocol-js';
 
 import { store } from '../../store';
 import { getNatsConn } from '../../helpers/nats';
@@ -50,9 +46,7 @@ const htmlToMarkdown = (node: Node): string => {
       case 'pre': {
         const code = el.querySelector('code');
         const codeText = (code ?? el).textContent?.replace(/\n$/, '') ?? '';
-        const langMatch = /language-([\w+-]+)/.exec(
-          code?.getAttribute('class') ?? '',
-        );
+        const langMatch = /language-([\w+-]+)/.exec(code?.getAttribute('class') ?? '');
         out += `\n\`\`\`${langMatch?.[1] ?? ''}\n${codeText}\n\`\`\`\n`;
         break;
       }
@@ -143,11 +137,9 @@ export const getPlainTextSnippet = (html: string, maxLen = 120): string => {
   return text.slice(0, maxLen - 1).trimEnd() + '…';
 };
 
-const isAttachmentMessage = (msg: ChatMessage): boolean =>
-  msg.message.includes(ATTACHMENT_MARKER);
+const isAttachmentMessage = (msg: ChatMessage): boolean => msg.message.includes(ATTACHMENT_MARKER);
 
-const isSystemMessage = (msg: ChatMessage): boolean =>
-  msg.fromUserId === SYSTEM_SENDER;
+const isSystemMessage = (msg: ChatMessage): boolean => msg.fromUserId === SYSTEM_SENDER;
 
 const isDeletedMessage = (msg: ChatMessage): boolean => !!msg.meta?.isDeleted;
 
@@ -155,10 +147,7 @@ export const canReplyMessage = (msg: ChatMessage): boolean => {
   return !(isSystemMessage(msg) || isDeletedMessage(msg));
 };
 
-export const isEditWindowExpired = (
-  msg: ChatMessage,
-  now: number = Date.now(),
-): boolean => {
+export const isEditWindowExpired = (msg: ChatMessage, now: number = Date.now()): boolean => {
   const sentAt = Number(msg.sentAt);
   if (!Number.isFinite(sentAt)) {
     return true;
@@ -202,10 +191,7 @@ const serverUrl = getConfigValue<string>(
   'PLUG_N_MEET_SERVER_URL',
 );
 
-export const publishFileAttachmentToChat = async (
-  filePath: string,
-  fileName: string,
-) => {
+export const publishFileAttachmentToChat = async (filePath: string, fileName: string) => {
   const message = `<a class="attachment-message flex items-center gap-3 break-all" href="${
     serverUrl + '/download/uploadedFile/' + window.encodeURIComponent(filePath)
   }" target="_blank">

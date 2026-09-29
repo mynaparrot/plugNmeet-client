@@ -1,27 +1,17 @@
 import { toast } from 'react-toastify';
-import {
-  ChatMessageSchema,
-  NatsKvRoomInfo,
-  RoomMetadataSchema,
-} from 'plugnmeet-protocol-js';
+import { ChatMessageSchema, NatsKvRoomInfo, RoomMetadataSchema } from 'plugnmeet-protocol-js';
 import { create, fromJsonString } from '@bufbuild/protobuf';
 
 import { ICurrentRoom } from '../../store/slices/interfaces/session';
 import { store } from '../../store';
-import {
-  addCurrentRoom,
-  updateCurrentRoomMetadata,
-} from '../../store/slices/sessionSlice';
+import { addCurrentRoom, updateCurrentRoomMetadata } from '../../store/slices/sessionSlice';
 import {
   addWhiteboardUploadedOfficeFile,
   updateCurrentWhiteboardOfficeFileId,
 } from '../../store/slices/whiteboard';
 import { DEFAULT_WHITEBOARD_OFFICE_FILE_ID } from '../../store/slices/interfaces/whiteboard';
 import i18n from '../i18n';
-import {
-  addChatMessage,
-  WELCOME_MESSAGE_ID,
-} from '../../store/slices/chatMessagesSlice';
+import { addChatMessage, WELCOME_MESSAGE_ID } from '../../store/slices/chatMessagesSlice';
 import { sleep } from '../utils';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 
@@ -112,11 +102,7 @@ export default class HandleRoomData {
     }
 
     const fileId = features.whiteboardFileId;
-    if (
-      !fileId ||
-      fileId === DEFAULT_WHITEBOARD_OFFICE_FILE_ID ||
-      features.totalPages < 1
-    ) {
+    if (!fileId || fileId === DEFAULT_WHITEBOARD_OFFICE_FILE_ID || features.totalPages < 1) {
       // No valid shared whiteboard file in the breakout metadata.
       return;
     }
@@ -178,8 +164,7 @@ export default class HandleRoomData {
       return;
     }
 
-    const isActiveRtmpBroadcasting =
-      store.getState().session.isActiveRtmpBroadcasting;
+    const isActiveRtmpBroadcasting = store.getState().session.isActiveRtmpBroadcasting;
     if (!isActiveRtmpBroadcasting && this._room.metadata?.isActiveRtmp) {
       store.dispatch(
         addUserNotification({
@@ -202,10 +187,7 @@ export default class HandleRoomData {
       return;
     }
 
-    if (
-      !this._room.metadata?.welcomeMessage ||
-      this._room.metadata?.welcomeMessage === ''
-    ) {
+    if (!this._room.metadata?.welcomeMessage || this._room.metadata?.welcomeMessage === '') {
       this.welcomeMessage = '';
       return;
     }
@@ -221,9 +203,7 @@ export default class HandleRoomData {
       fromAdmin: true, // system message always from admin
     });
 
-    store.dispatch(
-      addChatMessage({ message: body, currentUserId: this.userId }),
-    );
+    store.dispatch(addChatMessage({ message: body, currentUserId: this.userId }));
   }
 
   private async addPreloadWhiteboardFile() {
@@ -251,13 +231,10 @@ export default class HandleRoomData {
       return;
     } else {
       if (!this.toastId) {
-        this.toastId = toast.loading(
-          i18n.t('notifications.preloaded-whiteboard-file-processing'),
-          {
-            type: 'info',
-            closeButton: true,
-          },
-        );
+        this.toastId = toast.loading(i18n.t('notifications.preloaded-whiteboard-file-processing'), {
+          type: 'info',
+          closeButton: true,
+        });
       }
     }
   }

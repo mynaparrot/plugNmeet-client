@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Draggable from 'react-draggable';
 
@@ -25,16 +19,13 @@ const InsightsAiTextChat = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showScrollDownBtn, setShowScrollDownBtn] = useState(false);
 
-  const isActive = useAppSelector(
-    (state) => state.bottomIconsActivity.isActiveInsightsAiTextChat,
-  );
+  const isActive = useAppSelector((state) => state.bottomIconsActivity.isActiveInsightsAiTextChat);
   const isEnabled = useAppSelector(
     (state) =>
-      state.session.currentRoom?.metadata?.roomFeatures?.insightsFeatures
-        ?.aiFeatures?.aiTextChatFeatures?.isEnabled,
+      state.session.currentRoom?.metadata?.roomFeatures?.insightsFeatures?.aiFeatures
+        ?.aiTextChatFeatures?.isEnabled,
   );
-  const { finalMessages, interimMessage, isAwaitingResponse, send } =
-    useAiTextChat();
+  const { finalMessages, interimMessage, isAwaitingResponse, send } = useAiTextChat();
 
   const parsedFinalMessages = useMemo(() => {
     return finalMessages.map((msg) => {
@@ -90,8 +81,7 @@ const InsightsAiTextChat = () => {
       // We'll consider the user has scrolled up if they are more than 200px
       // from the bottom. This threshold prevents the button from flickering.
       const isScrolledUp =
-        container.scrollHeight - container.clientHeight >
-        container.scrollTop + 200;
+        container.scrollHeight - container.clientHeight > container.scrollTop + 200;
       // Avoid unnecessary re-renders if the state is already correct.
       if (isScrolledUp !== showScrollDownBtn) {
         setShowScrollDownBtn(isScrolledUp);
@@ -116,9 +106,7 @@ const InsightsAiTextChat = () => {
   return (
     <div
       className={
-        isActive
-          ? 'w-full absolute h-full z-10 top-0 left-0 pointer-events-none'
-          : 'hidden'
+        isActive ? 'w-full absolute h-full z-10 top-0 left-0 pointer-events-none' : 'hidden'
       }
     >
       <div className="ai-chat-widget h-[calc(100%-50px)] mt-9 flex items-end justify-center">
@@ -169,14 +157,10 @@ const InsightsAiTextChat = () => {
                     {allMessages.map((msg) => {
                       if (!msg) return null;
 
-                      const isStreaming =
-                        interimMessage !== null && interimMessage.id === msg.id;
+                      const isStreaming = interimMessage !== null && interimMessage.id === msg.id;
 
                       return (
-                        <div
-                          key={msg.id}
-                          className="wrapper flex gap-2 3xl:gap-3 my-2.5"
-                        >
+                        <div key={msg.id} className="wrapper flex gap-2 3xl:gap-3 my-2.5">
                           {msg.role === 'model' ? (
                             <AIMessage
                               name={t('insights.ai-text-chat.name')}
@@ -186,10 +170,7 @@ const InsightsAiTextChat = () => {
                               markdown
                             />
                           ) : (
-                            <AiUserMessage
-                              message={msg.parsedMessage}
-                              sentAt={msg.createdAt}
-                            />
+                            <AiUserMessage message={msg.parsedMessage} sentAt={msg.createdAt} />
                           )}
                         </div>
                       );
@@ -198,10 +179,7 @@ const InsightsAiTextChat = () => {
                 </div>
 
                 <div className="message-form z-30 border-t border-Gray-200 dark:border-Gray-800 bg-white dark:bg-dark-primary w-full px-3 3xl:px-5 py-2 3xl:py-4 flex items-center shrink-0">
-                  <TextBoxArea
-                    onSend={send}
-                    isAwaitingResponse={isAwaitingResponse}
-                  />
+                  <TextBoxArea onSend={send} isAwaitingResponse={isAwaitingResponse} />
                 </div>
               </div>
             </div>

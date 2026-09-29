@@ -3,10 +3,7 @@ import { MenuItem } from '@headlessui/react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
-import {
-  CommonResponseSchema,
-  UpdateUserLockSettingsReqSchema,
-} from 'plugnmeet-protocol-js';
+import { CommonResponseSchema, UpdateUserLockSettingsReqSchema } from 'plugnmeet-protocol-js';
 
 import { store, useAppSelector } from '../../../../../store';
 import { participantsSelector } from '../../../../../store/slices/participantSlice';
@@ -47,8 +44,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
   }, []);
 
   const lockSettings = useAppSelector(
-    (state) =>
-      participantsSelector.selectById(state, userId)?.metadata?.lockSettings,
+    (state) => participantsSelector.selectById(state, userId)?.metadata?.lockSettings,
   );
 
   const toggleLockSetting = useCallback(
@@ -104,8 +100,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
     },
     {
       key: 'webcam',
-      isDisplayed:
-        roomFeatures?.allowWebcams && !roomFeatures?.adminOnlyWebcams,
+      isDisplayed: roomFeatures?.allowWebcams && !roomFeatures?.adminOnlyWebcams,
       isLocked: lockSettings?.lockWebcam,
       lockText: t('left-panel.menus.items.lock-webcam'),
       unlockText: t('left-panel.menus.items.unlock-webcam'),
@@ -148,8 +143,7 @@ const LockSettingMenuItem = ({ userId }: ILockSettingMenuItemProps) => {
     {
       key: 'chatFile',
       isDisplayed:
-        roomFeatures?.chatFeatures?.isAllow &&
-        roomFeatures?.chatFeatures?.isAllowFileUpload,
+        roomFeatures?.chatFeatures?.isAllow && roomFeatures?.chatFeatures?.isAllowFileUpload,
       isLocked: lockSettings?.lockChatFileShare,
       lockText: t('left-panel.menus.items.lock-send-file'),
       unlockText: t('left-panel.menus.items.unlock-send-file'),

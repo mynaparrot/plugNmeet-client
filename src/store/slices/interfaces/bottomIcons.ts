@@ -1,7 +1,6 @@
 export type DeviceOrientation = 'landscape' | 'portrait';
 
-export type SidePanelType =
-  'CHAT' | 'PARTICIPANTS' | 'POLLS' | 'BREAKOUT_ROOMS' | null;
+export type SidePanelType = 'CHAT' | 'PARTICIPANTS' | 'POLLS' | 'BREAKOUT_ROOMS' | null;
 
 export interface IBottomIconsSlice {
   isActiveMicrophone: boolean;

@@ -28,8 +28,7 @@ const FormattedInputField = ({
   const inputClasses = clsx(
     'default-input rounded-[8px] h-10 w-full',
     {
-      'dark:border-dark-text bg-transparent dark:text-dark-text cursor-default':
-        readOnly,
+      'dark:border-dark-text bg-transparent dark:text-dark-text cursor-default': readOnly,
     },
     label ? `max-w-full ${maxWidthClass}` : '',
   );
@@ -57,9 +56,7 @@ const FormattedInputField = ({
         />
       </Field>
       {helpText ? (
-        <p className="mt-2 text-xs text-gray-600 dark:text-gray-300">
-          {helpText}
-        </p>
+        <p className="mt-2 text-xs text-gray-600 dark:text-gray-300">{helpText}</p>
       ) : null}
     </div>
   );

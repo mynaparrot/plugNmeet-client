@@ -1,10 +1,4 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  SubmitEvent,
-  useEffect,
-  useState,
-} from 'react';
+import React, { Dispatch, SetStateAction, SubmitEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { create } from '@bufbuild/protobuf';
 import { CreatePollReqSchema } from 'plugnmeet-protocol-js';
@@ -12,18 +6,10 @@ import { CreatePollReqSchema } from 'plugnmeet-protocol-js';
 import { useCreatePollMutation } from '../../../store/services/pollsApi';
 import { CreatePollOptions } from './index';
 import OptionsView from './optionsView';
-import {
-  POLL_QUICK_TYPES,
-  PollQuickTypePreset,
-  presetOptionTexts,
-} from './presets';
+import { POLL_QUICK_TYPES, PollQuickTypePreset, presetOptionTexts } from './presets';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 import { useAppDispatch, useAppSelector } from '../../../store';
-import {
-  AIPollParseError,
-  generatePollWithAI,
-  parseAIPollDraft,
-} from './pollAI';
+import { AIPollParseError, generatePollWithAI, parseAIPollDraft } from './pollAI';
 import { LoadingIcon } from '../../../assets/Icons/Loading';
 import SettingsSwitch from '../../../helpers/ui/settingsSwitch';
 import Dropdown, { ISelectOption } from '../../../helpers/ui/dropdown';
@@ -63,17 +49,15 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
   // Same client-readable gating as the notepad/whiteboard AI features.
   const aiTextChatFeatures = useAppSelector(
     (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
-        ?.aiFeatures?.aiTextChatFeatures,
+      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures?.aiFeatures
+        ?.aiTextChatFeatures,
   );
   const currentUser = useAppSelector((state) => state.session.currentUser);
   const pollAIEnabled =
     !!aiTextChatFeatures?.isEnabled &&
     !aiTextChatFeatures?.isPollAiDisabled &&
     (aiTextChatFeatures?.isAllowedEveryone ||
-      (aiTextChatFeatures?.allowedUserIds ?? []).includes(
-        currentUser?.userId ?? '',
-      ));
+      (aiTextChatFeatures?.allowedUserIds ?? []).includes(currentUser?.userId ?? ''));
 
   const durationOptions: ISelectOption[] = [
     { value: 0, text: t('polls.duration-no-limit') },
@@ -249,19 +233,14 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
               className="h-10 px-4 cursor-pointer bg-Blue hover:bg-Dark-blue border border-Dark-blue rounded-[15px] text-sm text-white font-semibold flex items-center justify-center gap-2 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {aiLoading && (
-                <LoadingIcon
-                  className="inline w-4 h-4 animate-spin"
-                  fillColor="#ffffff"
-                />
+                <LoadingIcon className="inline w-4 h-4 animate-spin" fillColor="#ffffff" />
               )}
               {t('polls.ai-generate')}
             </button>
           </div>
         </div>
       ) : (
-        <p className="text-sm text-Gray-600 dark:text-Gray-300">
-          {t('polls.ai-disabled-notice')}
-        </p>
+        <p className="text-sm text-Gray-600 dark:text-Gray-300">{t('polls.ai-disabled-notice')}</p>
       ),
     },
   ];
@@ -349,11 +328,7 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
           </p>
         </div>
         <div>
-          <SettingsSwitch
-            label={t('polls.quiz-mode')}
-            enabled={isQuiz}
-            onChange={setIsQuiz}
-          />
+          <SettingsSwitch label={t('polls.quiz-mode')} enabled={isQuiz} onChange={setIsQuiz} />
           <p className="text-xs md:text-sm opacity-70 dark:opacity-80 mt-1">
             {t('polls.quiz-mode-desc')}
           </p>

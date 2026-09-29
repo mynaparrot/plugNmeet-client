@@ -108,10 +108,7 @@ class AudioActivityManager {
   /**
    * Registers or updates a MediaStream for activity monitoring.
    */
-  public addStream = async (
-    stream: MediaStream,
-    callback: SubscriberCallback,
-  ) => {
+  public addStream = async (stream: MediaStream, callback: SubscriberCallback) => {
     await this.initialize();
 
     if (!stream || !this.audioContext) {
@@ -123,9 +120,7 @@ class AudioActivityManager {
     }
 
     if (stream.getAudioTracks().length === 0) {
-      console.warn(
-        `AudioActivityManager: Stream with id '${stream.id}' has no audio tracks.`,
-      );
+      console.warn(`AudioActivityManager: Stream with id '${stream.id}' has no audio tracks.`);
       return;
     }
 

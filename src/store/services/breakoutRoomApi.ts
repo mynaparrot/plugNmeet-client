@@ -31,11 +31,8 @@ export const breakoutRoomApi = createApi({
   reducerPath: 'breakoutRoomApi',
   baseQuery: fetchBaseQuery({
     baseUrl:
-      getConfigValue<string>(
-        'serverUrl',
-        'http://localhost:8080',
-        'PLUG_N_MEET_SERVER_URL',
-      ) + '/api/breakoutRoom',
+      getConfigValue<string>('serverUrl', 'http://localhost:8080', 'PLUG_N_MEET_SERVER_URL') +
+      '/api/breakoutRoom',
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).session.token;
       headers.append('Authorization', token);
@@ -55,10 +52,7 @@ export const breakoutRoomApi = createApi({
       transformErrorResponse: renewTokenOnError,
       providesTags: ['List'],
     }),
-    createBreakoutRooms: builder.mutation<
-      BreakoutRoomRes,
-      CreateBreakoutRoomsReq
-    >({
+    createBreakoutRooms: builder.mutation<BreakoutRoomRes, CreateBreakoutRoomsReq>({
       query(body) {
         return {
           url: 'create',
@@ -70,10 +64,7 @@ export const breakoutRoomApi = createApi({
       transformErrorResponse: renewTokenOnError,
       invalidatesTags: ['List'],
     }),
-    increaseDuration: builder.mutation<
-      BreakoutRoomRes,
-      IncreaseBreakoutRoomDurationReq
-    >({
+    increaseDuration: builder.mutation<BreakoutRoomRes, IncreaseBreakoutRoomDurationReq>({
       query(body) {
         return {
           url: 'increaseDuration',
@@ -85,10 +76,7 @@ export const breakoutRoomApi = createApi({
       transformErrorResponse: renewTokenOnError,
       invalidatesTags: ['List'],
     }),
-    broadcastBreakoutRoomMsg: builder.mutation<
-      BreakoutRoomRes,
-      BroadcastBreakoutRoomMsgReq
-    >({
+    broadcastBreakoutRoomMsg: builder.mutation<BreakoutRoomRes, BroadcastBreakoutRoomMsgReq>({
       query(body) {
         return {
           url: 'sendMsg',

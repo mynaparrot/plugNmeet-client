@@ -146,18 +146,12 @@ const sessionSlice = createSlice({
     setWebcamPaginating: (state, action: PayloadAction<boolean>) => {
       state.isWebcamPaginating = action.payload;
     },
-    updateCurrentUserMetadata: (
-      state,
-      action: PayloadAction<ICurrentUserMetadata>,
-    ) => {
+    updateCurrentUserMetadata: (state, action: PayloadAction<ICurrentUserMetadata>) => {
       if (state.currentUser) {
         state.currentUser.metadata = action.payload;
       }
     },
-    updateCurrentRoomMetadata: (
-      state,
-      action: PayloadAction<IRoomMetadata>,
-    ) => {
+    updateCurrentRoomMetadata: (state, action: PayloadAction<IRoomMetadata>) => {
       if (state.currentRoom) {
         state.currentRoom.metadata = action.payload;
         state.isActiveRtmpBroadcasting = action.payload.isActiveRtmp ?? false;
@@ -179,10 +173,7 @@ const sessionSlice = createSlice({
     updateClientType: (state, action: PayloadAction<ClientType>) => {
       state.clientType = action.payload;
     },
-    updateOverallConnectionQuality: (
-      state,
-      action: PayloadAction<PnmConnectionQuality>,
-    ) => {
+    updateOverallConnectionQuality: (state, action: PayloadAction<PnmConnectionQuality>) => {
       state.overallConnectionQuality = action.payload;
     },
   },

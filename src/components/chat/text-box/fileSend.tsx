@@ -22,9 +22,7 @@ const FileSend = ({ lockSendFile, chatFeatures }: IFileSendProps) => {
   const { accept, maxFileSize, canUpload } = useMemo(() => {
     const allowedTypes = chatFeatures?.allowedFileTypes;
     const canUpload = Array.isArray(allowedTypes) && allowedTypes.length > 0;
-    const accept = canUpload
-      ? allowedTypes.map((type) => '.' + type).join(',')
-      : '';
+    const accept = canUpload ? allowedTypes.map((type) => '.' + type).join(',') : '';
     return { accept, maxFileSize: chatFeatures?.maxFileSize, canUpload };
   }, [chatFeatures?.allowedFileTypes, chatFeatures?.maxFileSize]);
 

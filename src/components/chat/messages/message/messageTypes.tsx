@@ -12,43 +12,39 @@ import { NotifyIconSVG } from '../../../../assets/Icons/NotifyIconSVG';
 import { cleanHtmlForChat } from '../../../../helpers/utils';
 import { IBubbleProps, IReplyQuoteProps } from './types';
 
-export const SystemMessage = memo(
-  ({ message, sentAt }: { message: string; sentAt?: string }) => {
-    const { t } = useTranslation();
-    return (
-      <>
-        <div
-          aria-hidden="true"
-          className="thumb h-7 3xl:h-9 w-7 3xl:w-9 rounded-lg 3xl:rounded-xl bg-Gray-200 dark:bg-Gray-700 text-[#00A1F2] flex items-center justify-center overflow-hidden shrink-0"
-        >
-          <span className="h-4 w-4 3xl:h-5 3xl:w-5">
-            <NotifyIconSVG classes="w-full h-full" />
-          </span>
+export const SystemMessage = memo(({ message, sentAt }: { message: string; sentAt?: string }) => {
+  const { t } = useTranslation();
+  return (
+    <>
+      <div
+        aria-hidden="true"
+        className="thumb h-7 3xl:h-9 w-7 3xl:w-9 rounded-lg 3xl:rounded-xl bg-Gray-200 dark:bg-Gray-700 text-[#00A1F2] flex items-center justify-center overflow-hidden shrink-0"
+      >
+        <span className="h-4 w-4 3xl:h-5 3xl:w-5">
+          <NotifyIconSVG classes="w-full h-full" />
+        </span>
+      </div>
+      <div className="content w-[calc(100%-36px)] 3xl:w-[calc(100%-48px)] flex-1">
+        <div className="name min-h-5 flex items-center text-sm text-Gray-800 dark:text-white font-medium pb-1.5 capitalize justify-between">
+          <p className="system-name">{t('right-panel.system-name')}</p>
+          {sentAt && (
+            <p className="time text-xs text-Gray-600 dark:text-dark-text">{formatDate(sentAt)}</p>
+          )}
         </div>
-        <div className="content w-[calc(100%-36px)] 3xl:w-[calc(100%-48px)] flex-1">
-          <div className="name min-h-5 flex items-center text-sm text-Gray-800 dark:text-white font-medium pb-1.5 capitalize justify-between">
-            <p className="system-name">{t('right-panel.system-name')}</p>
-            {sentAt && (
-              <p className="time text-xs text-Gray-600 dark:text-dark-text">
-                {formatDate(sentAt)}
-              </p>
-            )}
-          </div>
+        <div
+          dir="auto"
+          className="message-content system py-2 px-2.5 border border-Gray-200 dark:border-Gray-700 rounded-lg overflow-hidden text-sm text-Gray-950 dark:text-white break-words rounded-ss-none bg-Gray-50 dark:bg-Gray-800"
+        >
           <div
             dir="auto"
-            className="message-content system py-2 px-2.5 border border-Gray-200 dark:border-Gray-700 rounded-lg overflow-hidden text-sm text-Gray-950 dark:text-white break-words rounded-ss-none bg-Gray-50 dark:bg-Gray-800"
-          >
-            <div
-              dir="auto"
-              className="break-words"
-              dangerouslySetInnerHTML={{ __html: cleanHtmlForChat(message) }}
-            />
-          </div>
+            className="break-words"
+            dangerouslySetInnerHTML={{ __html: cleanHtmlForChat(message) }}
+          />
         </div>
-      </>
-    );
-  },
-);
+      </div>
+    </>
+  );
+});
 SystemMessage.displayName = 'SystemMessage';
 
 export const WelcomeMessage = memo(({ message }: { message: string }) => {
@@ -70,13 +66,7 @@ export const WelcomeMessage = memo(({ message }: { message: string }) => {
 WelcomeMessage.displayName = 'WelcomeMessage';
 
 export const ReplyQuote = memo(
-  ({
-    replyToId,
-    replyToName,
-    replyToText,
-    chatKey,
-    onJump,
-  }: IReplyQuoteProps) => {
+  ({ replyToId, replyToName, replyToText, chatKey, onJump }: IReplyQuoteProps) => {
     const liveOriginal = useAppSelector((state) =>
       replyToId ? selectMessageById(state, chatKey, replyToId) : undefined,
     );
@@ -90,12 +80,8 @@ export const ReplyQuote = memo(
     }
     const inner = (
       <>
-        <p className="text-[11px] font-semibold text-[#00A1F2] truncate">
-          {name}
-        </p>
-        <p className="text-xs text-Gray-600 dark:text-dark-text truncate">
-          {text}
-        </p>
+        <p className="text-[11px] font-semibold text-[#00A1F2] truncate">{name}</p>
+        <p className="text-xs text-Gray-600 dark:text-dark-text truncate">{text}</p>
       </>
     );
     return (
@@ -128,18 +114,10 @@ const DeletedPlaceholder = ({
     : isMine
       ? t('right-panel.message-deleted-by-you')
       : t('right-panel.message-deleted');
-  return (
-    <p className="text-xs italic text-Gray-500 dark:text-dark-text">{label}</p>
-  );
+  return <p className="text-xs italic text-Gray-500 dark:text-dark-text">{label}</p>;
 };
 
-const EditedMark = ({
-  editedAt,
-  title,
-}: {
-  editedAt?: string;
-  title?: string;
-}) => {
+const EditedMark = ({ editedAt, title }: { editedAt?: string; title?: string }) => {
   const { t } = useTranslation();
   if (!editedAt) {
     return null;
@@ -215,9 +193,7 @@ export const MyMessage = memo(
             <div
               dir="auto"
               dangerouslySetInnerHTML={{
-                __html: markdown
-                  ? body.message
-                  : cleanHtmlForChat(body.message),
+                __html: markdown ? body.message : cleanHtmlForChat(body.message),
               }}
             />
           )}
@@ -229,14 +205,7 @@ export const MyMessage = memo(
 MyMessage.displayName = 'MyMessage';
 
 export const OtherUserMessage = memo(
-  ({
-    body,
-    chatKey,
-    currentUserId,
-    isAdmin,
-    onEditStart,
-    onJumpQuote,
-  }: IBubbleProps) => {
+  ({ body, chatKey, currentUserId, isAdmin, onEditStart, onJumpQuote }: IBubbleProps) => {
     const participantName = useAppSelector(
       (state) => participantsSelector.selectById(state, body.fromUserId)?.name,
     );
@@ -250,9 +219,7 @@ export const OtherUserMessage = memo(
           <div className="name min-h-5 flex items-center text-sm text-Gray-800 dark:text-white font-medium pb-1.5 capitalize justify-between">
             <p>
               {displayName}
-              {!participantName && (
-                <span className="text-[10px] pl-1">(offline)</span>
-              )}
+              {!participantName && <span className="text-[10px] pl-1">(offline)</span>}
             </p>
             <div className="flex items-center gap-1">
               <p className="time text-xs text-Gray-600">
@@ -327,9 +294,7 @@ export const AIMessage = memo(
         <div className="content w-[calc(100%-36px)] 3xl:w-[calc(100%-48px)] flex-1">
           <div className="name min-h-5 flex items-center text-sm text-Gray-800 dark:text-white font-medium pb-1.5 capitalize justify-between">
             <p>{name}</p>
-            <p className="time text-xs text-Gray-600 dark:text-dark-text">
-              {formatDate(sentAt)}
-            </p>
+            <p className="time text-xs text-Gray-600 dark:text-dark-text">{formatDate(sentAt)}</p>
           </div>
           <div className="message-content py-2 px-2.5 border border-Gray-200 dark:border-Gray-700 rounded-lg overflow-hidden text-sm text-Gray-950 dark:text-white break-words rounded-ss-none bg-Gray-50 dark:bg-Gray-800">
             <div

@@ -23,14 +23,13 @@ const DirectLink = ({ selectedUrl, setSelectedUrl }: DirectLinkProps) => {
   const [errorMsg, setErrorMsg] = useState<string | undefined>();
 
   useEffect(() => {
-    idbGet<string[]>(
-      DB_STORE_NAMES.USER_SETTINGS,
-      EXTERNAL_MEDIA_PLAYER_PLAYBACK_URLS,
-    ).then((urls) => {
-      if (urls && isArray(urls)) {
-        setPlaybackUrls(urls);
-      }
-    });
+    idbGet<string[]>(DB_STORE_NAMES.USER_SETTINGS, EXTERNAL_MEDIA_PLAYER_PLAYBACK_URLS).then(
+      (urls) => {
+        if (urls && isArray(urls)) {
+          setPlaybackUrls(urls);
+        }
+      },
+    );
   }, []);
 
   const addPlaybackUrl = useCallback(async () => {
@@ -47,11 +46,7 @@ const DirectLink = ({ selectedUrl, setSelectedUrl }: DirectLinkProps) => {
     setPlaybackUrls((prevUrls) => {
       const newUrls = new Set([playBackUrl, ...prevUrls]);
       const arr = Array.from(newUrls);
-      idbStore(
-        DB_STORE_NAMES.USER_SETTINGS,
-        EXTERNAL_MEDIA_PLAYER_PLAYBACK_URLS,
-        arr,
-      ).then();
+      idbStore(DB_STORE_NAMES.USER_SETTINGS, EXTERNAL_MEDIA_PLAYER_PLAYBACK_URLS, arr).then();
       return arr;
     });
     setPlayBackUrl('');
@@ -62,11 +57,7 @@ const DirectLink = ({ selectedUrl, setSelectedUrl }: DirectLinkProps) => {
     async (urlToDelete: string) => {
       const newUrls = playbackUrls.filter((url) => url !== urlToDelete);
       setPlaybackUrls(newUrls);
-      await idbStore(
-        DB_STORE_NAMES.USER_SETTINGS,
-        EXTERNAL_MEDIA_PLAYER_PLAYBACK_URLS,
-        newUrls,
-      );
+      await idbStore(DB_STORE_NAMES.USER_SETTINGS, EXTERNAL_MEDIA_PLAYER_PLAYBACK_URLS, newUrls);
 
       if (selectedUrl === urlToDelete) {
         setSelectedUrl('');
@@ -94,9 +85,7 @@ const DirectLink = ({ selectedUrl, setSelectedUrl }: DirectLinkProps) => {
           <PlusCircleIconSVG />
         </button>
       </div>
-      {errorMsg && (
-        <div className="error-msg text-xs text-red-600 py-1">{errorMsg}</div>
-      )}
+      {errorMsg && <div className="error-msg text-xs text-red-600 py-1">{errorMsg}</div>}
       {playbackUrls.length > 0 && (
         <div className="max-h-50 overflow-y-auto scrollBar grid gap-2 mt-8">
           {playbackUrls.map((url, i) => {

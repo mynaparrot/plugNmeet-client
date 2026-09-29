@@ -1,17 +1,7 @@
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
-import {
-  UploadedFileMergeReqSchema,
-  UploadedFileResSchema,
-} from 'plugnmeet-protocol-js';
-import {
-  ExcalidrawElement,
-  ExcalidrawImageElement,
-} from '@excalidraw/excalidraw/element/types';
-import {
-  AppState,
-  BinaryFileData,
-  ExcalidrawImperativeAPI,
-} from '@excalidraw/excalidraw/types';
+import { UploadedFileMergeReqSchema, UploadedFileResSchema } from 'plugnmeet-protocol-js';
+import { ExcalidrawElement, ExcalidrawImageElement } from '@excalidraw/excalidraw/element/types';
+import { AppState, BinaryFileData, ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import { toast, Id } from 'react-toastify';
 import { exportToBlob, MIME_TYPES } from '@excalidraw/excalidraw';
 
@@ -26,15 +16,8 @@ import {
   ResolvedPageInfo,
   resolvePageInfoFromElements,
 } from '../helpers/utils';
-import {
-  decodeWhiteboardPageSnapshot,
-  loadWhiteboardPageSnapshot,
-} from '../collab';
-import {
-  getImageData,
-  getOfficePageInfo,
-  ImageCustomData,
-} from '../helpers/handleFiles';
+import { decodeWhiteboardPageSnapshot, loadWhiteboardPageSnapshot } from '../collab';
+import { getImageData, getOfficePageInfo, ImageCustomData } from '../helpers/handleFiles';
 import { SCALE, WorkerInput, WorkerMessage } from './types';
 import { CorsWorker } from '../../../helpers/libs/corsWorker';
 import i18n from '../../../helpers/i18n';
@@ -106,10 +89,7 @@ class ExportPdfService {
           progress: i / totalPagesToExport,
         });
 
-        const { elements, files } = await this.gatherPageData(
-          params.fileId,
-          pageNumber,
-        );
+        const { elements, files } = await this.gatherPageData(params.fileId, pageNumber);
 
         if (elements.length === 0) {
           continue; // Skip empty pages
@@ -122,11 +102,7 @@ class ExportPdfService {
           }),
         });
 
-        const pageInfo = await this.resolvePageInfo(
-          params.fileId,
-          pageNumber,
-          elements,
-        );
+        const pageInfo = await this.resolvePageInfo(params.fileId, pageNumber, elements);
 
         // Full page frame (including edge margin), not just the drawable guide.
         // This restores left/top padding in the exported PDF slices.
@@ -164,12 +140,9 @@ class ExportPdfService {
       }
       setTimeout(() => toast.dismiss(toastId), 300);
 
-      const finalizingToastId = toast.loading(
-        i18n.t('whiteboard.export-pdf-finalizing'),
-        {
-          type: 'info',
-        },
-      );
+      const finalizingToastId = toast.loading(i18n.t('whiteboard.export-pdf-finalizing'), {
+        type: 'info',
+      });
 
       const mergeReq = create(UploadedFileMergeReqSchema, {
         resumableIdentifier: exportId,
@@ -186,10 +159,7 @@ class ExportPdfService {
         'application/protobuf',
         'arraybuffer',
       );
-      const res = fromBinary(
-        UploadedFileResSchema,
-        new Uint8Array(mergeResponse),
-      );
+      const res = fromBinary(UploadedFileResSchema, new Uint8Array(mergeResponse));
 
       if (res.status && res.filePath && res.fileName) {
         toast.update(finalizingToastId, {
@@ -199,9 +169,7 @@ class ExportPdfService {
           autoClose: 5000,
         });
       } else {
-        const errorMessage = i18n.t(
-          res.msg || 'notifications.file-merge-failed',
-        );
+        const errorMessage = i18n.t(res.msg || 'notifications.file-merge-failed');
         toast.update(finalizingToastId, {
           render: errorMessage,
           type: 'error',
@@ -211,9 +179,7 @@ class ExportPdfService {
       }
     } catch (error) {
       const message =
-        error instanceof Error
-          ? error.message
-          : i18n.t('whiteboard.export-pdf-unknown-error');
+        error instanceof Error ? error.message : i18n.t('whiteboard.export-pdf-unknown-error');
       console.error('PDF Export failed', error);
       toast.update(toastId, {
         render: message,
@@ -248,10 +214,7 @@ class ExportPdfService {
     for (const el of pageElements) {
       if (el.type === 'image') {
         const imageEl = el as ExcalidrawImageElement;
-        const imageData = await getImageData(
-          imageEl,
-          imageEl.customData as ImageCustomData,
-        );
+        const imageData = await getImageData(imageEl, imageEl.customData as ImageCustomData);
         if (imageData) {
           files.set(imageData.id, imageData);
         }
@@ -274,9 +237,7 @@ class ExportPdfService {
 
     // Otherwise always load page_N_meta.json for this office page.
     const whiteboard = store.getState().whiteboard;
-    const officeFile = whiteboard.whiteboardUploadedOfficeFiles.find(
-      (f) => f.fileId === fileId,
-    );
+    const officeFile = whiteboard.whiteboardUploadedOfficeFiles.find((f) => f.fileId === fileId);
     if (officeFile?.pageFiles) {
       return getOfficePageInfo(pageNumber, officeFile.pageFiles);
     }
@@ -292,15 +253,12 @@ class ExportPdfService {
    * Transparent full-page rect used only during export so the bitmap matches
    * slice size and keeps equal edge margin around the drawable area.
    */
-  private prepareExportPageFrame(
-    pageInfo: ResolvedPageInfo,
-  ): ExcalidrawElement {
-    const { pageWidth, pageHeight, pageStartX, pageStartY } =
-      getPageBoundaryMetrics(
-        pageInfo.orientation,
-        pageInfo.pageWidth,
-        pageInfo.pageHeight,
-      );
+  private prepareExportPageFrame(pageInfo: ResolvedPageInfo): ExcalidrawElement {
+    const { pageWidth, pageHeight, pageStartX, pageStartY } = getPageBoundaryMetrics(
+      pageInfo.orientation,
+      pageInfo.pageWidth,
+      pageInfo.pageHeight,
+    );
     const reference = prepareA4BoundaryGuide(
       pageInfo.orientation,
       pageInfo.pageWidth,
@@ -329,11 +287,7 @@ class ExportPdfService {
       pageHeight: targetHeight,
       pageStartX: boundaryStartX,
       pageStartY: boundaryStartY,
-    } = getPageBoundaryMetrics(
-      pageInfo.orientation,
-      pageInfo.pageWidth,
-      pageInfo.pageHeight,
-    );
+    } = getPageBoundaryMetrics(pageInfo.orientation, pageInfo.pageWidth, pageInfo.pageHeight);
 
     // 1. Scan and gather limits in a single loop pass to keep search O(N)
     let startX = boundaryStartX;
@@ -403,8 +357,7 @@ class ExportPdfService {
         if (type === 'progress') {
           const baseProgress = (pageNumber - 1) / totalPagesToExport;
           const pageProgress =
-            (payload.currentPage / payload.totalPages) *
-            (1 / totalPagesToExport);
+            (payload.currentPage / payload.totalPages) * (1 / totalPagesToExport);
           const progress = baseProgress + pageProgress;
 
           toast.update(toastId, {
@@ -426,14 +379,9 @@ class ExportPdfService {
 
       worker.onerror = (error) => {
         console.error('Full worker error object:', error);
-        const message =
-          error.message || i18n.t('whiteboard.export-pdf-worker-error');
+        const message = error.message || i18n.t('whiteboard.export-pdf-worker-error');
         worker.terminate();
-        reject(
-          new Error(
-            i18n.t('whiteboard.export-pdf-worker-error-render', { message }),
-          ),
-        );
+        reject(new Error(i18n.t('whiteboard.export-pdf-worker-error-render', { message })));
       };
 
       const workerInput: WorkerInput = {

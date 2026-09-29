@@ -80,9 +80,7 @@ export const executeNotepadAI = async (
  * event handler. Notepad-tagged chunks are delivered to the matching pending
  * Notepad AI request; everything else is handled by the chat Redux slice.
  */
-export const handleNotepadAIStreamResult = (
-  data: InsightsAITextChatStreamResult,
-): boolean => {
+export const handleNotepadAIStreamResult = (data: InsightsAITextChatStreamResult): boolean => {
   const entry = pendingStreams.get(data.id);
   if (!entry) {
     return false;

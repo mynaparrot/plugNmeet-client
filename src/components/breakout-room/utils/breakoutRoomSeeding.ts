@@ -10,10 +10,7 @@ import {
 } from 'plugnmeet-protocol-js';
 
 import { getNatsConn } from '../../../helpers/nats';
-import {
-  compress,
-  SESSION_DATA_MAX_WIRE_BYTES,
-} from '../../../helpers/libs/sessionDataSync';
+import { compress, SESSION_DATA_MAX_WIRE_BYTES } from '../../../helpers/libs/sessionDataSync';
 import {
   deriveRoomKey,
   encryptDataToUint8ArrayWithKey,
@@ -46,15 +43,11 @@ import { store } from '../../../store';
 export const BREAKOUT_SEED_NOTEPAD_KEY = 'snapshot';
 
 /** Whiteboard canonical checkpoint key: `${fileId}_${page}`. */
-const whiteboardPageKey = (fileId: string, page: number): string =>
-  `${fileId}_${page}`;
+const whiteboardPageKey = (fileId: string, page: number): string => `${fileId}_${page}`;
 
 /** Valid whiteboard share = fileId + at least one page. */
 export const hasWhiteboardShare = (share?: WhiteboardShare | null): boolean =>
-  !!share &&
-  !!share.fileId &&
-  Array.isArray(share.pages) &&
-  share.pages.length > 0;
+  !!share && !!share.fileId && Array.isArray(share.pages) && share.pages.length > 0;
 
 export interface BreakoutSeedingInput {
   /** Created child rooms (from the create-with-share response). */
@@ -82,8 +75,7 @@ export interface BreakoutSeedingResult {
  */
 function getE2EESecret(): string | undefined {
   const e2ee =
-    store.getState().session.currentRoom.metadata?.roomFeatures
-      ?.endToEndEncryptionFeatures;
+    store.getState().session.currentRoom.metadata?.roomFeatures?.endToEndEncryptionFeatures;
   if (!e2ee?.isEnabled) {
     return undefined;
   }
@@ -113,10 +105,7 @@ function getE2EESecret(): string | undefined {
  *   read the raw bytes back. A blank page (no canonical checkpoint on the
  *   parent) yields `null`, meaning the child will simply start blank — correct.
  */
-async function getWhiteboardPageUpdate(
-  fileId: string,
-  page: number,
-): Promise<Uint8Array | null> {
+async function getWhiteboardPageUpdate(fileId: string, page: number): Promise<Uint8Array | null> {
   const controller = getWhiteboardController();
   const snapshot = controller.getSnapshot();
   if (snapshot?.doc && snapshot.fileId === fileId && snapshot.page === page) {
@@ -129,9 +118,7 @@ async function getWhiteboardPageUpdate(
     // A false result means the fetch timed out (or there is no NATS connection)
     // — a real failure, not a blank page. Surface it so seeding reports the
     // room as partial/failed rather than over-reporting success.
-    throw new Error(
-      `[breakoutRoomSeeding] failed to fetch whiteboard session data for ${key}`,
-    );
+    throw new Error(`[breakoutRoomSeeding] failed to fetch whiteboard session data for ${key}`);
   }
   const stored = await loadWhiteboardPageSnapshot(fileId, page);
   return stored && stored.length > 0 ? stored : null;
@@ -183,12 +170,7 @@ async function seedOneRoom(
   let roomOk = true;
 
   const share = input.whiteboardShare;
-  if (
-    share &&
-    share.fileId &&
-    Array.isArray(share.pages) &&
-    share.pages.length > 0
-  ) {
+  if (share && share.fileId && Array.isArray(share.pages) && share.pages.length > 0) {
     for (const page of share.pages) {
       let bytes: Uint8Array | null = null;
       try {
@@ -216,9 +198,7 @@ async function seedOneRoom(
         continue;
       }
       try {
-        const value = childKey
-          ? await encryptDataToUint8ArrayWithKey(wire, childKey)
-          : wire;
+        const value = childKey ? await encryptDataToUint8ArrayWithKey(wire, childKey) : wire;
         publishSessionData(
           conn,
           SessionDataType.WHITEBOARD,
@@ -250,14 +230,10 @@ async function seedOneRoom(
     try {
       const wire = compress(Y.encodeStateAsUpdate(doc));
       if (wire.length > SESSION_DATA_MAX_WIRE_BYTES) {
-        console.warn(
-          '[breakoutRoomSeeding] notepad snapshot too large to seed',
-        );
+        console.warn('[breakoutRoomSeeding] notepad snapshot too large to seed');
         roomOk = false;
       } else {
-        const value = childKey
-          ? await encryptDataToUint8ArrayWithKey(wire, childKey)
-          : wire;
+        const value = childKey ? await encryptDataToUint8ArrayWithKey(wire, childKey) : wire;
         publishSessionData(
           conn,
           SessionDataType.NOTEPAD,
@@ -302,8 +278,7 @@ export async function seedBreakoutContent(
 
   // Derive the per-child key ONCE per child (expensive PBKDF2). When E2EE is
   // disabled we upload raw bytes with targetRoomId (no key work).
-  let childKeyFor:
-    ((roomSid: string) => Promise<CryptoKey | undefined>) | null = null;
+  let childKeyFor: ((roomSid: string) => Promise<CryptoKey | undefined>) | null = null;
   if (conn.enableE2EE) {
     const secret = getE2EESecret();
     if (!secret) {
@@ -315,8 +290,7 @@ export async function seedBreakoutContent(
     childKeyFor = async (roomSid: string) => deriveRoomKey(secret, roomSid);
   }
 
-  const notepadDocMissing =
-    hasNotepad && !getNotepadController().getSnapshot().doc;
+  const notepadDocMissing = hasNotepad && !getNotepadController().getSnapshot().doc;
 
   for (const room of input.rooms) {
     let childKey: CryptoKey | undefined;
@@ -324,11 +298,7 @@ export async function seedBreakoutContent(
       try {
         childKey = await childKeyFor(room.roomSid);
       } catch (e) {
-        console.error(
-          '[breakoutRoomSeeding] failed to derive child key',
-          room.roomSid,
-          e,
-        );
+        console.error('[breakoutRoomSeeding] failed to derive child key', room.roomSid, e);
       }
     }
     const ok = await seedOneRoom(conn, room, input, childKey);

@@ -77,33 +77,26 @@ export const getFormatedRespondents = (respondents: Respondents[]) => {
   return elms;
 };
 
-export const publishPollResultByChat = async (
-  pollDataWithOption: PollDataWithOption,
-) => {
+export const publishPollResultByChat = async (pollDataWithOption: PollDataWithOption) => {
   const conn = getNatsConn();
   // Aggregate counts only (votes), so no voter names can ever leak for anonymous polls.
   const hasTotals = pollDataWithOption.totalRespondents > 0;
-  const formattedOptions = Object.values(pollDataWithOption.options).map(
-    (option) => (
-      <span className="mt-1.5 block" key={option.id}>
-        <span className="flex items-center justify-between gap-3">
-          <span className="min-w-0 flex-1 break-words text-start">
-            {pollDataWithOption.isQuiz && option.isCorrect && (
-              <span className="me-1 font-medium text-Green-700">✓</span>
-            )}
-            {option.text}
-          </span>
-          <span
-            className="shrink-0 text-xs text-Gray-700 dark:text-dark-text"
-            dir="ltr"
-          >
-            {option.votes}
-            {hasTotals ? ` (${option.responsesPercentage}%)` : ''}
-          </span>
+  const formattedOptions = Object.values(pollDataWithOption.options).map((option) => (
+    <span className="mt-1.5 block" key={option.id}>
+      <span className="flex items-center justify-between gap-3">
+        <span className="min-w-0 flex-1 break-words text-start">
+          {pollDataWithOption.isQuiz && option.isCorrect && (
+            <span className="me-1 font-medium text-Green-700">✓</span>
+          )}
+          {option.text}
+        </span>
+        <span className="shrink-0 text-xs text-Gray-700 dark:text-dark-text" dir="ltr">
+          {option.votes}
+          {hasTotals ? ` (${option.responsesPercentage}%)` : ''}
         </span>
       </span>
-    ),
-  );
+    </span>
+  ));
 
   const elm = ReactDOMServer.renderToString(
     // Phrasing tags only (span/strong): block tags would break out of the chat

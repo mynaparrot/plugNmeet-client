@@ -47,20 +47,15 @@ const WebcamIcon = () => {
     return {
       showTooltip: session.userDeviceType === 'desktop',
       isAdmin,
-      defaultLock:
-        !!session.currentRoom?.metadata?.defaultLockSettings?.lockWebcam,
+      defaultLock: !!session.currentRoom?.metadata?.defaultLockSettings?.lockWebcam,
       isWebcamAllowed: show,
     };
   }, []);
   const showVideoShareModal = useAppSelector(
     (state) => state.bottomIconsActivity.showVideoShareModal,
   );
-  const isActiveWebcam = useAppSelector(
-    (state) => state.bottomIconsActivity.isActiveWebcam,
-  );
-  const isWebcamMuted = useAppSelector(
-    (state) => state.bottomIconsActivity.isWebcamMuted,
-  );
+  const isActiveWebcam = useAppSelector((state) => state.bottomIconsActivity.isActiveWebcam);
+  const isWebcamMuted = useAppSelector((state) => state.bottomIconsActivity.isWebcamMuted);
 
   const outgoingCameraPaused = useAppSelector(
     (state) => state.roomSettings.mediaDegradation.outgoingCameraPaused,
@@ -73,15 +68,9 @@ const WebcamIcon = () => {
   const isWebcamLock = useAppSelector(
     (state) => state.session.currentUser?.metadata?.lockSettings?.lockWebcam,
   );
-  const virtualBackground = useAppSelector(
-    (state) => state.roomSettings.virtualBackground,
-  );
-  const selectedVideoDevice = useAppSelector(
-    (state) => state.roomSettings.selectedVideoDevice,
-  );
-  const knownVideoDevices = useAppSelector(
-    (state) => state.roomSettings.videoDevices,
-  );
+  const virtualBackground = useAppSelector((state) => state.roomSettings.virtualBackground);
+  const selectedVideoDevice = useAppSelector((state) => state.roomSettings.selectedVideoDevice);
+  const knownVideoDevices = useAppSelector((state) => state.roomSettings.videoDevices);
 
   // Lock if not an admin & user-specific lock is set, or fall back to room default.
   const isWebcamLocked = useMemo(
@@ -103,9 +92,7 @@ const WebcamIcon = () => {
     };
 
     if (isWebcamLocked) {
-      const hasCameraTrack = currentRoom.localParticipant.getTrackPublication(
-        Track.Source.Camera,
-      );
+      const hasCameraTrack = currentRoom.localParticipant.getTrackPublication(Track.Source.Camera);
       if (hasCameraTrack && hasCameraTrack.track) {
         closeWebcamOnLock(hasCameraTrack.track).then();
       }
@@ -127,12 +114,7 @@ const WebcamIcon = () => {
     } else {
       // virtual background stream will be handled by its own hook
     }
-  }, [
-    selectedVideoDevice,
-    isActiveWebcam,
-    currentRoom,
-    virtualBackground.type,
-  ]);
+  }, [selectedVideoDevice, isActiveWebcam, currentRoom, virtualBackground.type]);
 
   const onSelectedDevice = useCallback(
     async (deviceId: string) => {
@@ -220,20 +202,14 @@ const WebcamIcon = () => {
     if (!isActiveWebcam) {
       // Webcam is not active at all
       const showPlusIcon =
-        isWebcamLocked ||
-        (hybrid && !isActiveWebcam) ||
-        (!hybrid && selectedVideoDevice === '');
+        isWebcamLocked || (hybrid && !isActiveWebcam) || (!hybrid && selectedVideoDevice === '');
 
       if (showPlusIcon) {
         return (
           <>
             <Camera classes={'h-4 3xl:h-5 w-auto'} />
             <span className="add absolute -top-2 -end-2 z-10">
-              {isWebcamLocked ? (
-                <i className="pnm-lock primaryColor" />
-              ) : (
-                <PlusIcon />
-              )}
+              {isWebcamLocked ? <i className="pnm-lock primaryColor" /> : <PlusIcon />}
             </span>
           </>
         );
@@ -263,12 +239,9 @@ const WebcamIcon = () => {
         !isWebcamLocked &&
         ((isActiveWebcam && isMuted && !outgoingCameraPaused) ||
           (!isActiveWebcam && selectedVideoDevice !== '')),
-      'border-amber-400':
-        !isWebcamLocked && isActiveWebcam && isMuted && outgoingCameraPaused,
-      'border-[rgba(124,206,247,0.25)]':
-        !isWebcamLocked && isActiveWebcam && !isMuted,
-      'border-transparent':
-        !isWebcamLocked && !isActiveWebcam && selectedVideoDevice === '',
+      'border-amber-400': !isWebcamLocked && isActiveWebcam && isMuted && outgoingCameraPaused,
+      'border-[rgba(124,206,247,0.25)]': !isWebcamLocked && isActiveWebcam && !isMuted,
+      'border-transparent': !isWebcamLocked && !isActiveWebcam && selectedVideoDevice === '',
     },
   );
 
@@ -290,8 +263,7 @@ const WebcamIcon = () => {
     {
       'focus-ring': true,
       'has-tooltip': showTooltip,
-      'cursor-not-allowed opacity-50':
-        hybrid && !nativeAvailable && !isWebcamLocked,
+      'cursor-not-allowed opacity-50': hybrid && !nativeAvailable && !isWebcamLocked,
     },
   );
 

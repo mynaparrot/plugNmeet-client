@@ -1,10 +1,6 @@
 import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import {
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-} from '@headlessui/react';
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 import { BreakoutRoom } from 'plugnmeet-protocol-js';
 
@@ -32,9 +28,7 @@ const RoomItem = ({ room, setMessage }: RoomItemProps) => {
               open ? 'border-b border-gray-300 dark:border-gray-800' : ''
             }`}
           >
-            <span className="text-sm text-Gray-800 dark:text-white">
-              {room.title}
-            </span>
+            <span className="text-sm text-Gray-800 dark:text-white">{room.title}</span>
             <div className="right flex items-center gap-2">
               <div className="wrap text-sm font-semibold text-Gray-950 dark:text-white">
                 {room.started ? (
@@ -84,19 +78,10 @@ const RoomItem = ({ room, setMessage }: RoomItemProps) => {
                 <div className="wrap relative rounded-xl overflow-auto">
                   <div className="inner p-5">
                     <div className="row flex flex-wrap items-center justify-between mb-4">
-                      <ExtendDuration
-                        breakoutRoomId={room.id}
-                        setMessage={setMessage}
-                      />
+                      <ExtendDuration breakoutRoomId={room.id} setMessage={setMessage} />
                       <div className="row flex mb-2">
-                        <JoinBtn
-                          breakoutRoomId={room.id}
-                          setMessage={setMessage}
-                        />
-                        <EndBtn
-                          breakoutRoomId={room.id}
-                          setMessage={setMessage}
-                        />
+                        <JoinBtn breakoutRoomId={room.id} setMessage={setMessage} />
+                        <EndBtn breakoutRoomId={room.id} setMessage={setMessage} />
                       </div>
                     </div>
                     <BreakoutRoomUsers

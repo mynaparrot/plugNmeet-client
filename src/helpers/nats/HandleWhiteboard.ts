@@ -47,9 +47,7 @@ export default class HandleWhiteboard {
         break;
       case DataMsgBodyType.WHITEBOARD_APP_STATE_CHANGE:
         if (!this.isCurrentUserPresenter()) {
-          store.dispatch(
-            updateMouseAppStateChanges(JSON.parse(payload.message)),
-          );
+          store.dispatch(updateMouseAppStateChanges(JSON.parse(payload.message)));
         }
         break;
     }

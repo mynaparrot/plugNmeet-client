@@ -43,8 +43,7 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
   // muteUnmute start (ctrl+option+m)
   const muteUnmute = (currentRoom: Room) => {
     if (isHybridMode()) {
-      const { isActiveMicrophone, isMicMuted } =
-        store.getState().bottomIconsActivity;
+      const { isActiveMicrophone, isMicMuted } = store.getState().bottomIconsActivity;
       if (!isActiveMicrophone || !getNativePublisherStatus().available) {
         return;
       }
@@ -56,22 +55,17 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
       return;
     }
     if (currentRoom) {
-      currentRoom.localParticipant.audioTrackPublications.forEach(
-        async (publication) => {
-          if (
-            publication.track &&
-            publication.track.source === Track.Source.Microphone
-          ) {
-            if (publication.isMuted) {
-              await publication.track.unmute();
-              dispatch(updateIsMicMuted(false));
-            } else {
-              await publication.track.mute();
-              dispatch(updateIsMicMuted(true));
-            }
+      currentRoom.localParticipant.audioTrackPublications.forEach(async (publication) => {
+        if (publication.track && publication.track.source === Track.Source.Microphone) {
+          if (publication.isMuted) {
+            await publication.track.unmute();
+            dispatch(updateIsMicMuted(false));
+          } else {
+            await publication.track.mute();
+            dispatch(updateIsMicMuted(true));
           }
-        },
-      );
+        }
+      });
     }
   };
 
@@ -90,8 +84,7 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
   useHotkeys('ctrl+alt+a', () => {
     const session = store.getState().session;
     const isAdmin = !!session.currentUser?.metadata?.isAdmin;
-    const lockMicrophone =
-      session.currentUser?.metadata?.lockSettings?.lockMicrophone;
+    const lockMicrophone = session.currentUser?.metadata?.lockSettings?.lockMicrophone;
     const defaultLockMicrophone =
       session.currentRoom?.metadata?.defaultLockSettings?.lockMicrophone;
     if (!isAdmin && (lockMicrophone ?? defaultLockMicrophone)) {
@@ -120,16 +113,11 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
       unpublishNativeMedia(NativeMediaSource.MIC);
       return;
     }
-    currentRoom.localParticipant.audioTrackPublications.forEach(
-      async (publication) => {
-        if (publication.track && publication.kind === Track.Kind.Audio) {
-          await currentRoom.localParticipant.unpublishTrack(
-            publication.track,
-            true,
-          );
-        }
-      },
-    );
+    currentRoom.localParticipant.audioTrackPublications.forEach(async (publication) => {
+      if (publication.track && publication.kind === Track.Kind.Audio) {
+        await currentRoom.localParticipant.unpublishTrack(publication.track, true);
+      }
+    });
     dispatch(updateIsActiveMicrophone(false));
     dispatch(updateIsMicMuted(false));
     dispatch(updateSelectedAudioDevice(''));
@@ -151,8 +139,7 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
     const session = store.getState().session;
     const isAdmin = !!session.currentUser?.metadata?.isAdmin;
     const lockWebcam = session.currentUser?.metadata?.lockSettings?.lockWebcam;
-    const defaultLockWebcam =
-      session.currentRoom?.metadata?.defaultLockSettings?.lockWebcam;
+    const defaultLockWebcam = session.currentRoom?.metadata?.defaultLockSettings?.lockWebcam;
     if (!isAdmin && (lockWebcam ?? defaultLockWebcam)) {
       return;
     }
@@ -179,19 +166,11 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
       unpublishNativeMedia(NativeMediaSource.WEBCAM);
       return;
     }
-    currentRoom.localParticipant.videoTrackPublications.forEach(
-      async (publication) => {
-        if (
-          publication.track &&
-          publication.track.source === Track.Source.Camera
-        ) {
-          await currentRoom.localParticipant.unpublishTrack(
-            publication.track,
-            true,
-          );
-        }
-      },
-    );
+    currentRoom.localParticipant.videoTrackPublications.forEach(async (publication) => {
+      if (publication.track && publication.track.source === Track.Source.Camera) {
+        await currentRoom.localParticipant.unpublishTrack(publication.track, true);
+      }
+    });
     dispatch(updateIsActiveWebcam(false));
     dispatch(updateIsWebcamMuted(false));
     dispatch(updateSelectedVideoDevice(''));
@@ -206,8 +185,7 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
     'ctrl+alt+x',
     () => {
       if (currentRoom) {
-        const isActiveWebcam =
-          store.getState().bottomIconsActivity.isActiveWebcam;
+        const isActiveWebcam = store.getState().bottomIconsActivity.isActiveWebcam;
         if (isActiveWebcam) {
           leaveWebcam(currentRoom);
         }
@@ -233,15 +211,13 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
     if (!isAdmin) {
       return;
     }
-    const showLockSettingsModal =
-      store.getState().bottomIconsActivity.showLockSettingsModal;
+    const showLockSettingsModal = store.getState().bottomIconsActivity.showLockSettingsModal;
     dispatch(updateShowLockSettingsModal(!showLockSettingsModal));
   });
 
   // toggle settings (ctrl+alt+s)
   useHotkeys('ctrl+alt+s', () => {
-    const isShowRoomSettingsModal =
-      store.getState().roomSettings.isShowRoomSettingsModal;
+    const isShowRoomSettingsModal = store.getState().roomSettings.isShowRoomSettingsModal;
     dispatch(updateShowRoomSettingsModal(!isShowRoomSettingsModal));
   });
 
@@ -249,8 +225,7 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
   useHotkeys('ctrl+alt+w', () => {
     const session = store.getState().session;
     const isAdmin = !!session.currentUser?.metadata?.isAdmin;
-    const lockWhiteboard =
-      session.currentUser?.metadata?.lockSettings?.lockWhiteboard;
+    const lockWhiteboard = session.currentUser?.metadata?.lockSettings?.lockWhiteboard;
     const defaultLockWhiteboard =
       session.currentRoom?.metadata?.defaultLockSettings?.lockWhiteboard;
     if (!isAdmin && (lockWhiteboard ?? defaultLockWhiteboard)) {
@@ -266,10 +241,7 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
   });
 
   // toggle raise hand (ctrl+alt+r) start
-  const toggleRaiseHand = async (
-    isActiveRaisehand: boolean,
-    currentRoom: Room,
-  ) => {
+  const toggleRaiseHand = async (isActiveRaisehand: boolean, currentRoom: Room) => {
     const conn = getNatsConn();
     const data = create(NatsMsgClientToServerSchema, {});
 
@@ -289,8 +261,7 @@ const useKeyboardShortcuts = (currentRoom?: Room) => {
     'ctrl+alt+r',
     async () => {
       if (currentRoom) {
-        const isActiveRaisehand =
-          store.getState().bottomIconsActivity.isActiveRaisehand;
+        const isActiveRaisehand = store.getState().bottomIconsActivity.isActiveRaisehand;
         await toggleRaiseHand(isActiveRaisehand, currentRoom);
       }
     },

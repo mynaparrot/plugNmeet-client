@@ -5,10 +5,7 @@ import copy from 'copy-text-to-clipboard';
 
 import Modal from '../../../../helpers/ui/modal';
 import { useAppDispatch } from '../../../../store';
-import {
-  setEditDraft,
-  setReplyDraft,
-} from '../../../../store/slices/chatMessagesSlice';
+import { setEditDraft, setReplyDraft } from '../../../../store/slices/chatMessagesSlice';
 import { getNatsConn } from '../../../../helpers/nats';
 import {
   canDeleteMessage,

@@ -14,10 +14,7 @@ import { throttle } from 'es-toolkit';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { getNatsConn } from '../../../helpers/nats';
-import {
-  addReaction,
-  REACTION_EMOJIS,
-} from '../../../store/slices/reactionsSlice';
+import { addReaction, REACTION_EMOJIS } from '../../../store/slices/reactionsSlice';
 import { ReactionsIconSVG } from '../../../assets/Icons/ReactionsIconSVG';
 import { HandsIconSVG } from '../../../assets/Icons/HandsIconSVG';
 
@@ -28,27 +25,20 @@ const ReactionsIcon = () => {
   const conn = getNatsConn();
   const dispatch = useAppDispatch();
 
-  const { allowReactions, allowRaiseHand, showTooltip, currentUser } =
-    useMemo(() => {
-      const session = store.getState().session;
-      return {
-        allowReactions:
-          session.currentRoom.metadata?.roomFeatures?.allowReactions !== false,
-        allowRaiseHand:
-          session.currentRoom.metadata?.roomFeatures?.allowRaiseHand !== false,
-        showTooltip: session.userDeviceType === 'desktop',
-        currentUser: session.currentUser,
-      };
-    }, []);
+  const { allowReactions, allowRaiseHand, showTooltip, currentUser } = useMemo(() => {
+    const session = store.getState().session;
+    return {
+      allowReactions: session.currentRoom.metadata?.roomFeatures?.allowReactions !== false,
+      allowRaiseHand: session.currentRoom.metadata?.roomFeatures?.allowRaiseHand !== false,
+      showTooltip: session.userDeviceType === 'desktop',
+      currentUser: session.currentUser,
+    };
+  }, []);
 
   const canReact = useAppSelector(
-    (state) =>
-      allowReactions &&
-      !state.session.currentUser?.metadata?.lockSettings?.lockReactions,
+    (state) => allowReactions && !state.session.currentUser?.metadata?.lockSettings?.lockReactions,
   );
-  const isActiveRaisehand = useAppSelector(
-    (state) => state.bottomIconsActivity.isActiveRaisehand,
-  );
+  const isActiveRaisehand = useAppSelector((state) => state.bottomIconsActivity.isActiveRaisehand);
 
   // oxlint-disable-next-line react-hooks/exhaustive-deps
   const sendReaction = useCallback(
@@ -136,10 +126,8 @@ const ReactionsIcon = () => {
     'footer-icon-bg h-full w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border shadow transition-all duration-300 hover:bg-gray-100 dark:hover:bg-Gray-700 text-Gray-950 dark:text-white',
     {
       'has-tooltip': showTooltip,
-      'bg-gray-100 dark:bg-Gray-700 border-Gray-300 dark:border-Gray-700':
-        isActiveRaisehand,
-      'bg-white dark:bg-Gray-800 border-Gray-300 dark:border-Gray-700':
-        !isActiveRaisehand,
+      'bg-gray-100 dark:bg-Gray-700 border-Gray-300 dark:border-Gray-700': isActiveRaisehand,
+      'bg-white dark:bg-Gray-800 border-Gray-300 dark:border-Gray-700': !isActiveRaisehand,
     },
   );
 
@@ -197,9 +185,7 @@ const ReactionsIcon = () => {
               )}
             >
               <span aria-hidden>✋</span>
-              {isActiveRaisehand
-                ? t('footer.icons.lower-hand')
-                : t('footer.icons.raise-hand')}
+              {isActiveRaisehand ? t('footer.icons.lower-hand') : t('footer.icons.raise-hand')}
             </button>
           )}
         </div>

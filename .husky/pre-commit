@@ -1,9 +1,9 @@
 # Exit immediately if a command fails.
 set -e
 
-echo "--- Formatting staged files with Prettier ---"
+echo "--- Formatting staged files with oxfmt ---"
 # The -r flag tells xargs not to run if there's no input.
-git diff --cached --name-only --diff-filter=ACMR | xargs -r npx prettier --write --ignore-unknown
+git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(js|jsx|ts|tsx)$' | grep -v '^src/assets/locales/' | xargs -r npx oxfmt --config=.oxfmtrc.json --write
 
 echo "--- Linting staged files with oxlint ---"
 # We also use -r here to prevent oxlint from running on the whole project.

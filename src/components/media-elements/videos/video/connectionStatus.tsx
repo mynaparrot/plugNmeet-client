@@ -13,8 +13,7 @@ const ConnectionStatus = ({ userId, name }: IConnectionStatusProps) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const connectionQuality = useAppSelector(
-    (state) =>
-      participantsSelector.selectById(state, userId)?.connectionQuality,
+    (state) => participantsSelector.selectById(state, userId)?.connectionQuality,
   );
 
   const { color, label } = useMemo(() => {

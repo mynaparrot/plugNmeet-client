@@ -9,9 +9,7 @@ export const WHITEBOARD_ELEMENTS_MAP = 'elements';
  * the `WHITEBOARD_ELEMENTS_MAP` map. Malformed snapshots yield an empty array
  * rather than throwing.
  */
-export const decodeWhiteboardPageSnapshot = (
-  update: Uint8Array,
-): ExcalidrawElement[] => {
+export const decodeWhiteboardPageSnapshot = (update: Uint8Array): ExcalidrawElement[] => {
   const doc = new Y.Doc();
   try {
     Y.applyUpdate(doc, update);

@@ -3,7 +3,7 @@ interface Language {
   text: string;
 }
 
-// prettier-ignore
+// oxfmt-ignore
 const languages: Language[] = [
   { code: 'en', text: 'English' },
   { code: 'es-ES', text: 'Español' },

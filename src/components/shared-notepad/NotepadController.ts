@@ -1,9 +1,5 @@
 import * as Y from 'yjs';
-import {
-  Awareness,
-  applyAwarenessUpdate,
-  encodeAwarenessUpdate,
-} from 'y-protocols/awareness';
+import { Awareness, applyAwarenessUpdate, encodeAwarenessUpdate } from 'y-protocols/awareness';
 import { create, toJsonString } from '@bufbuild/protobuf';
 import {
   DataChannelMessage,
@@ -48,10 +44,7 @@ export class NotepadController {
   private fragment: Y.XmlFragment | null = null;
   private generation = 0;
   private pendingSyncRequestId: string | null = null;
-  private backupResponseTimers = new Map<
-    string,
-    ReturnType<typeof setTimeout>
-  >();
+  private backupResponseTimers = new Map<string, ReturnType<typeof setTimeout>>();
   private syncRetryTimer: ReturnType<typeof setTimeout> | null = null;
   private settingUp = false;
   private boundConn = false;
@@ -89,16 +82,13 @@ export class NotepadController {
       return !lock;
     }
     const defaultRoomLock =
-      state.session.currentRoom.metadata?.defaultLockSettings
-        ?.lockSharedNotepad;
+      state.session.currentRoom.metadata?.defaultLockSettings?.lockSharedNotepad;
     return !(defaultRoomLock ?? true);
   };
 
   private canAccessSessionData = (): boolean => {
     const u = store.getState().session.currentUser;
-    return (
-      !!u && (u.metadata?.isPresenter === true || u.metadata?.isAdmin === true)
-    );
+    return !!u && (u.metadata?.isPresenter === true || u.metadata?.isAdmin === true);
   };
 
   /** Whether any online peer other than the current user is the presenter. */
@@ -168,8 +158,7 @@ export class NotepadController {
 
   async sync() {
     const features =
-      store.getState().session.currentRoom.metadata?.roomFeatures
-        ?.sharedNotePadFeatures;
+      store.getState().session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures;
     if (!features || !features.isAllow || !features.isActive) {
       return;
     }
@@ -212,10 +201,7 @@ export class NotepadController {
         if (changed.length === 0) {
           return;
         }
-        this.send(
-          DataMsgBodyType.NOTEPAD_AWARENESS,
-          encodeAwarenessUpdate(awareness, changed),
-        );
+        this.send(DataMsgBodyType.NOTEPAD_AWARENESS, encodeAwarenessUpdate(awareness, changed));
       });
 
       if (!this.hasPresenterOnline()) {
@@ -374,11 +360,7 @@ export class NotepadController {
     }, SAVE_MAX_WAIT_MS);
   };
 
-  uploadSessionData = async (
-    update: Uint8Array,
-    key: string,
-    targetRoomId?: string,
-  ) => {
+  uploadSessionData = async (update: Uint8Array, key: string, targetRoomId?: string) => {
     const conn = getNatsConn();
     if (!conn) return;
     let value = update;
@@ -420,10 +402,7 @@ export class NotepadController {
     );
   };
 
-  handleSessionDataResponse = (
-    header: SessionDataHeader,
-    value: Uint8Array,
-  ) => {
+  handleSessionDataResponse = (header: SessionDataHeader, value: Uint8Array) => {
     if (header.dataType !== SessionDataType.NOTEPAD) return;
     const key = header.key;
     if (!key) return;
@@ -521,13 +500,7 @@ export class NotepadController {
     this.pendingSyncRequestId = requestId;
     const stateVector = Y.encodeStateVector(this.doc);
     for (const toUserId of targets) {
-      this.send(
-        DataMsgBodyType.NOTEPAD_SYNC_REQUEST,
-        stateVector,
-        requestId,
-        undefined,
-        toUserId,
-      );
+      this.send(DataMsgBodyType.NOTEPAD_SYNC_REQUEST, stateVector, requestId, undefined, toUserId);
     }
 
     this.syncRetryTimer = setTimeout(() => {
@@ -546,15 +519,9 @@ export class NotepadController {
 
     return participantsSelector
       .selectAll(state)
-      .filter(
-        (p) =>
-          p.userId !== currentUserId &&
-          p.isOnline &&
-          !p.metadata?.waitForApproval,
-      )
+      .filter((p) => p.userId !== currentUserId && p.isOnline && !p.metadata?.waitForApproval)
       .sort((a, b) => {
-        const adminDiff =
-          (b.metadata?.isAdmin ? 1 : 0) - (a.metadata?.isAdmin ? 1 : 0);
+        const adminDiff = (b.metadata?.isAdmin ? 1 : 0) - (a.metadata?.isAdmin ? 1 : 0);
         if (adminDiff !== 0) {
           return adminDiff;
         }
@@ -593,8 +560,7 @@ export class NotepadController {
       );
     };
 
-    const isPresenter =
-      store.getState().session.currentUser?.metadata?.isPresenter === true;
+    const isPresenter = store.getState().session.currentUser?.metadata?.isPresenter === true;
 
     if (isPresenter) {
       respond();
@@ -629,10 +595,7 @@ export class NotepadController {
       try {
         update = decompress(payload.binMessage);
       } catch (e) {
-        console.error(
-          '[NotepadController] failed to decompress sync response',
-          e,
-        );
+        console.error('[NotepadController] failed to decompress sync response', e);
         return;
       }
       Y.applyUpdate(this.doc, update, REMOTE_ORIGIN);

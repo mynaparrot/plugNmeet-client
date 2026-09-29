@@ -1,10 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
-import {
-  CommonResponseSchema,
-  RemoveParticipantReqSchema,
-} from 'plugnmeet-protocol-js';
+import { CommonResponseSchema, RemoveParticipantReqSchema } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { store } from '../../store';
@@ -104,9 +101,7 @@ const RemoveParticipantAlertModal = ({
       renderButtons={renderButtons}
     >
       <div className="mb-2 ps-3">
-        <p className="text-sm dark:text-dark-text">
-          {t('left-panel.menus.notice.want-to-block')}
-        </p>
+        <p className="text-sm dark:text-dark-text">{t('left-panel.menus.notice.want-to-block')}</p>
         <RadioOptions
           name="block"
           checked={blockUser}

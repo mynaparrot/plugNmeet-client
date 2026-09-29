@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useVirtual from 'react-cool-virtual';
 
@@ -26,20 +20,14 @@ const ParticipantsComponent = () => {
   const [removeParticipantData, setRemoveParticipantData] =
     useState<IRemoveParticipantAlertModalData>();
 
-  const {
-    currentUser,
-    currentIsAdmin,
-    currentUserUserId,
-    allowViewOtherUsers,
-  } = useMemo(() => {
+  const { currentUser, currentIsAdmin, currentUserUserId, allowViewOtherUsers } = useMemo(() => {
     const session = store.getState().session;
     const currentUser = session.currentUser;
     return {
       currentUser,
       currentIsAdmin: !!currentUser?.metadata?.isAdmin,
       currentUserUserId: currentUser?.userId,
-      allowViewOtherUsers:
-        !!session.currentRoom.metadata?.roomFeatures?.allowViewOtherUsersList,
+      allowViewOtherUsers: !!session.currentRoom.metadata?.roomFeatures?.allowViewOtherUsersList,
     };
   }, []);
 
@@ -141,10 +129,7 @@ const ParticipantsComponent = () => {
           </div>
         </div>
 
-        <div
-          ref={outerRef as any}
-          className="scrollBar overflow-auto h-[calc(100vh-240px)]"
-        >
+        <div ref={outerRef as any} className="scrollBar overflow-auto h-[calc(100vh-240px)]">
           <ul
             className="all-participants-wrap px-2 xl:px-3 3xl:px-5 list-none"
             ref={innerRef as any}

@@ -15,11 +15,8 @@ export interface IInsightsAITextChatMessage {
 export const useAiTextChat = () => {
   const { t } = useTranslation();
 
-  const [finalMessages, setFinalMessages] = useState<
-    IInsightsAITextChatMessage[]
-  >([]);
-  const [interimMessage, setInterimMessage] =
-    useState<IInsightsAITextChatMessage | null>(null);
+  const [finalMessages, setFinalMessages] = useState<IInsightsAITextChatMessage[]>([]);
+  const [interimMessage, setInterimMessage] = useState<IInsightsAITextChatMessage | null>(null);
   const [isAwaitingResponse, setIsAwaitingResponse] = useState(false);
 
   // Hydrate the chat history from IndexedDB once per mount
@@ -28,14 +25,10 @@ export const useAiTextChat = () => {
     idbGetAll<IInsightsAITextChatMessage>(DB_STORE_NAMES.INSIGHTS_AI_TEXT_CHATS)
       .then((msgs) => {
         if (cancelled || msgs.length === 0) return;
-        const sorted = [...msgs].sort(
-          (a, b) => Number(a.createdAt) - Number(b.createdAt),
-        );
+        const sorted = [...msgs].sort((a, b) => Number(a.createdAt) - Number(b.createdAt));
         setFinalMessages((prev) => (prev.length === 0 ? sorted : prev));
       })
-      .catch((e) =>
-        console.error('Failed to load insights AI chat history:', e),
-      );
+      .catch((e) => console.error('Failed to load insights AI chat history:', e));
     return () => {
       cancelled = true;
     };
@@ -81,11 +74,7 @@ export const useAiTextChat = () => {
             parts,
           };
           setFinalMessages((prev) => [...prev, modelMsg]);
-          void idbStore(
-            DB_STORE_NAMES.INSIGHTS_AI_TEXT_CHATS,
-            modelMsg.id,
-            modelMsg,
-          );
+          void idbStore(DB_STORE_NAMES.INSIGHTS_AI_TEXT_CHATS, modelMsg.id, modelMsg);
         }
       } catch (err) {
         toast(t(err instanceof Error ? err.message : String(err)), {

@@ -19,8 +19,8 @@ const WhiteboardAI = ({ canEdit }: WhiteboardAIProps) => {
   const { t } = useTranslation();
   const aiTextChatFeatures = useAppSelector(
     (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
-        ?.aiFeatures?.aiTextChatFeatures,
+      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures?.aiFeatures
+        ?.aiTextChatFeatures,
   );
   const currentUser = useAppSelector((state) => state.session.currentUser);
 
@@ -28,18 +28,13 @@ const WhiteboardAI = ({ canEdit }: WhiteboardAIProps) => {
     !!aiTextChatFeatures?.isEnabled &&
     !aiTextChatFeatures?.isWhiteboardAiDisabled &&
     (aiTextChatFeatures?.isAllowedEveryone ||
-      (aiTextChatFeatures?.allowedUserIds ?? []).includes(
-        currentUser?.userId ?? '',
-      ));
+      (aiTextChatFeatures?.allowedUserIds ?? []).includes(currentUser?.userId ?? ''));
 
   const onTextSubmit = useCallback<TTTDDialog.onTextSubmit>(
     async ({ messages, onChunk }) => {
       if (!whiteboardAIEnabled) {
         return {
-          error: toRequestError(
-            t('insights.whiteboard-ai.disabled-message'),
-            403,
-          ),
+          error: toRequestError(t('insights.whiteboard-ai.disabled-message'), 403),
           generatedResponse: null,
         };
       }
@@ -58,24 +53,16 @@ const WhiteboardAI = ({ canEdit }: WhiteboardAIProps) => {
       const previousMessages = messages.slice(0, -1);
       const promptWithContext = previousMessages.length
         ? `${previousMessages
-            .map(
-              (m) =>
-                `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`,
-            )
+            .map((m) => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`)
             .join('\n\n')}\n\nUser request:\n${prompt}`
         : prompt;
 
       try {
-        const generatedResponse = await executeWhiteboardAI(
-          promptWithContext,
-          onChunk,
-        );
+        const generatedResponse = await executeWhiteboardAI(promptWithContext, onChunk);
         return { generatedResponse, error: null };
       } catch (e) {
         const message =
-          e instanceof Error
-            ? e.message
-            : t('insights.ai-text-chat.response-timed-out');
+          e instanceof Error ? e.message : t('insights.ai-text-chat.response-timed-out');
         return {
           error: toRequestError(message, 500),
           generatedResponse: null,
@@ -88,9 +75,7 @@ const WhiteboardAI = ({ canEdit }: WhiteboardAIProps) => {
   const renderWelcomeScreen = useCallback<TTTDDialog.renderWelcomeScreen>(
     () =>
       !whiteboardAIEnabled ? (
-        <div className="text-red-600">
-          {t('insights.whiteboard-ai.disabled-message')}
-        </div>
+        <div className="text-red-600">{t('insights.whiteboard-ai.disabled-message')}</div>
       ) : undefined,
     [t, whiteboardAIEnabled],
   );

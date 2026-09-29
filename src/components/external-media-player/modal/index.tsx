@@ -26,13 +26,10 @@ const ExternalMediaPlayerModal = () => {
 
   const isActive = useAppSelector(
     (state) =>
-      !!state.session.currentRoom.metadata?.roomFeatures
-        ?.externalMediaPlayerFeatures?.isActive,
+      !!state.session.currentRoom.metadata?.roomFeatures?.externalMediaPlayerFeatures?.isActive,
   );
   const lastLink = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures
-        ?.externalMediaPlayerFeatures?.url,
+    (state) => state.session.currentRoom.metadata?.roomFeatures?.externalMediaPlayerFeatures?.url,
   );
 
   const [selectedUrl, setSelectedUrl] = useState<string>(lastLink ?? '');
@@ -70,16 +67,12 @@ const ExternalMediaPlayerModal = () => {
     {
       id: 1,
       title: t('footer.modal.external-media-player-direct-link'),
-      content: (
-        <DirectLink setSelectedUrl={setSelectedUrl} selectedUrl={selectedUrl} />
-      ),
+      content: <DirectLink setSelectedUrl={setSelectedUrl} selectedUrl={selectedUrl} />,
     },
     {
       id: 2,
       title: t('footer.modal.external-media-player-upload-file'),
-      content: (
-        <Upload setSelectedUrl={setSelectedUrl} isPlayBtnLoading={isLoading} />
-      ),
+      content: <Upload setSelectedUrl={setSelectedUrl} isPlayBtnLoading={isLoading} />,
     },
   ];
 
@@ -95,9 +88,7 @@ const ExternalMediaPlayerModal = () => {
         title={t('footer.modal.external-media-player-title')}
         customClass="min-h-[30rem]"
       >
-        {errorMsg && (
-          <div className="error-msg text-xs text-red-600 py-1">{errorMsg}</div>
-        )}
+        {errorMsg && <div className="error-msg text-xs text-red-600 py-1">{errorMsg}</div>}
         <Tabs uniqueKey="externalMediaPlayerModal" items={items} />
         <div className="mt-8 flex justify-end">
           <ActionButton

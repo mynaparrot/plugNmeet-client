@@ -26,12 +26,9 @@ const TextBoxArea = ({ onSend, isAwaitingResponse }: TextBoxAreaProps) => {
     setMessage('');
   }, [isAwaitingResponse, message, onSend]);
 
-  const handleChange = useCallback(
-    (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setMessage(evt.target?.value);
-    },
-    [],
-  );
+  const handleChange = useCallback((evt: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setMessage(evt.target?.value);
+  }, []);
 
   const onEnterPress = useCallback(
     (e: KeyboardEvent<HTMLTextAreaElement>) => {

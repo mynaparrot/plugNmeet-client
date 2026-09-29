@@ -13,10 +13,7 @@ import { IErrorPageProps } from '../extra-pages/Error';
 import i18n from '../../helpers/i18n';
 import { getAccessToken } from '../../helpers/utils';
 import { store } from '../../store';
-import {
-  updateClientType,
-  updateIsCloud,
-} from '../../store/slices/sessionSlice';
+import { updateClientType, updateIsCloud } from '../../store/slices/sessionSlice';
 
 declare const IS_PRODUCTION: boolean;
 
@@ -60,10 +57,7 @@ export const verifyToken = once(
         text: i18n.t('app.token-missing-des'),
       });
       return;
-    } else if (
-      window.location.protocol === 'http:' &&
-      window.location.hostname !== 'localhost'
-    ) {
+    } else if (window.location.protocol === 'http:' && window.location.hostname !== 'localhost') {
       setLoading(false);
       setError({
         title: i18n.t('app.require-ssl-title'),

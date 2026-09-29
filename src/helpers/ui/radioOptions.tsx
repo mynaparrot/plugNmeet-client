@@ -16,19 +16,11 @@ interface IRadioOptionsProps {
   onChange: (value: any) => void;
 }
 
-const RadioOptions = ({
-  options,
-  name,
-  checked,
-  onChange,
-}: IRadioOptionsProps) => {
+const RadioOptions = ({ options, name, checked, onChange }: IRadioOptionsProps) => {
   return (
     <div className="mt-4 ps-2 space-y-4">
       {options.map((option) => (
-        <div
-          key={option.id}
-          className={`relative my-2 ${option.disabled ? 'opacity-50' : ''}`}
-        >
+        <div key={option.id} className={`relative my-2 ${option.disabled ? 'opacity-50' : ''}`}>
           <div className="wrap flex items-center overflow-hidden">
             <input
               type="radio"
@@ -53,9 +45,7 @@ const RadioOptions = ({
             </p>
           )}
           {option.description && (
-            <p className="text-xs text-Red-400 ps-[26px]">
-              {option.description}
-            </p>
+            <p className="text-xs text-Red-400 ps-[26px]">{option.description}</p>
           )}
         </div>
       ))}

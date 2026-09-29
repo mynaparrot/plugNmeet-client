@@ -4,10 +4,7 @@ import { Menu, MenuButton, MenuItems, Transition } from '@headlessui/react';
 import { debounce } from 'es-toolkit';
 
 import { useAppDispatch, useAppSelector } from '../../../../store';
-import {
-  participantsSelector,
-  updateParticipant,
-} from '../../../../store/slices/participantSlice';
+import { participantsSelector, updateParticipant } from '../../../../store/slices/participantSlice';
 import { Microphone } from '../../../../assets/Icons/Microphone';
 import { MicrophoneOff } from '../../../../assets/Icons/MicrophoneOff';
 import IconWrapper from './iconWrapper';
@@ -100,10 +97,7 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
                     <p className="w-10 text-center text-sm dark:text-white">
                       {Math.round(volume * 100)}
                     </p>
-                    <span
-                      aria-hidden="true"
-                      className="w-5 h-5 flex items-center justify-center"
-                    >
+                    <span aria-hidden="true" className="w-5 h-5 flex items-center justify-center">
                       {volume ? (
                         <Microphone classes="h-3 3xl:h-4 w-auto dark:text-white" />
                       ) : (

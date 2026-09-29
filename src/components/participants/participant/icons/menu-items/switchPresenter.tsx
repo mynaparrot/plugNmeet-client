@@ -19,17 +19,14 @@ interface ISwitchPresenterMenuItemProps {
 
 const SwitchPresenterMenuItem = ({ userId }: ISwitchPresenterMenuItemProps) => {
   const isPresenter = useAppSelector(
-    (state) =>
-      participantsSelector.selectById(state, userId)?.metadata.isPresenter,
+    (state) => participantsSelector.selectById(state, userId)?.metadata.isPresenter,
   );
   const { t } = useTranslation();
 
   const togglePresenterStatus = async () => {
     const body = create(SwitchPresenterReqSchema, {
       userId: userId,
-      task: isPresenter
-        ? SwitchPresenterTask.DEMOTE
-        : SwitchPresenterTask.PROMOTE,
+      task: isPresenter ? SwitchPresenterTask.DEMOTE : SwitchPresenterTask.PROMOTE,
     });
 
     const r = await sendAPIRequest(
@@ -61,9 +58,7 @@ const SwitchPresenterMenuItem = ({ userId }: ISwitchPresenterMenuItemProps) => {
           className="min-h-8 cursor-pointer py-0.5 w-full text-sm text-start leading-none font-medium text-Gray-950 dark:text-white px-3 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus:outline-hidden"
           onClick={togglePresenterStatus}
         >
-          {isPresenter
-            ? t('footer.icons.demote-presenter')
-            : t('footer.icons.promote-presenter')}
+          {isPresenter ? t('footer.icons.demote-presenter') : t('footer.icons.promote-presenter')}
         </button>
       )}
     </MenuItem>

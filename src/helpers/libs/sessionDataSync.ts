@@ -56,9 +56,7 @@ export function isDiffKey(key: string): boolean {
 }
 
 export function canonicalKeyOf(key: string): string {
-  return isDiffKey(key)
-    ? key.slice(0, key.length - SESSION_DATA_DIFF_SUFFIX.length)
-    : key;
+  return isDiffKey(key) ? key.slice(0, key.length - SESSION_DATA_DIFF_SUFFIX.length) : key;
 }
 
 // ---------------------------------------------------------------------------
@@ -135,11 +133,7 @@ export class SessionDataSyncState {
    * @param canonicalKey  The canonical (non-diff) data key for this doc.
    * @param options       See {@link PlanSaveOptions}.
    */
-  planSave(
-    doc: Y.Doc,
-    canonicalKey: string,
-    options: PlanSaveOptions = {},
-  ): PlanSaveResult {
+  planSave(doc: Y.Doc, canonicalKey: string, options: PlanSaveOptions = {}): PlanSaveResult {
     const forceCheckpoint = options.forceCheckpoint ?? false;
 
     // No baseline yet → full checkpoint. Also covers first-save-after-

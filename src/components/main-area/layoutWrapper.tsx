@@ -59,11 +59,7 @@ const LayoutWrapper = ({
           classes.add('pinWebcamActivated').add('verticalsWebcamsActivated');
         }
       } else {
-        classes
-          .add('middle-fullscreen-wrapper')
-          .add('h-full')
-          .add('flex')
-          .add('w-full');
+        classes.add('middle-fullscreen-wrapper').add('h-full').add('flex').add('w-full');
       }
     }
     return Array.from(classes).join(' ').trim();

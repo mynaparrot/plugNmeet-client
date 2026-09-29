@@ -77,9 +77,7 @@ export const useMicrophonePreview = (
       if (data.length !== analyser.fftSize) {
         data = new Uint8Array(analyser.fftSize);
       }
-      analyser.getByteTimeDomainData(
-        data as unknown as Uint8Array<ArrayBuffer>,
-      );
+      analyser.getByteTimeDomainData(data as unknown as Uint8Array<ArrayBuffer>);
       let peak = 0;
       let sum = 0;
       for (let i = 0; i < data.length; i++) {
@@ -113,11 +111,7 @@ export const useMicrophonePreview = (
           // round + deadband to reduce renders on silence/jitter
           const rounded = Math.round(smoothed * 100) / 100;
           setLevel((prev) =>
-            prev === 0 && rounded === 0
-              ? prev
-              : Math.abs(prev - rounded) > 0.008
-                ? rounded
-                : prev,
+            prev === 0 && rounded === 0 ? prev : Math.abs(prev - rounded) > 0.008 ? rounded : prev,
           );
         }
       }
@@ -142,14 +136,10 @@ export const useMicrophonePreview = (
           video: false,
         });
         try {
-          stream = await navigator.mediaDevices.getUserMedia(
-            constraints({ exact: deviceId }),
-          );
+          stream = await navigator.mediaDevices.getUserMedia(constraints({ exact: deviceId }));
         } catch {
           // stored id may be stale or browser wants ideal instead of exact
-          stream = await navigator.mediaDevices.getUserMedia(
-            constraints({ ideal: deviceId }),
-          );
+          stream = await navigator.mediaDevices.getUserMedia(constraints({ ideal: deviceId }));
         }
         if (disposed) {
           cleanup();

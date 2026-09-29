@@ -2,8 +2,7 @@ import { RoomUploadedFileType } from 'plugnmeet-protocol-js';
 import { uploadResumableFile } from '../../../helpers/fileUpload';
 import i18n from '../../../helpers/i18n';
 
-export type ExternalMediaUploadStatus =
-  'idle' | 'uploading' | 'success' | 'error';
+export type ExternalMediaUploadStatus = 'idle' | 'uploading' | 'success' | 'error';
 
 export interface IExternalMediaUploadCallbacks {
   onStart(): void;
@@ -74,11 +73,7 @@ class ExternalMediaProcessor {
         this.uploadStatus = 'success';
         this.progress = 100;
         if (this.activeCallbacks) {
-          this.activeCallbacks.onSuccess(
-            result.fileId,
-            result.fileName,
-            result.filePath,
-          );
+          this.activeCallbacks.onSuccess(result.fileId, result.fileName, result.filePath);
         }
         this.cleanup();
       },

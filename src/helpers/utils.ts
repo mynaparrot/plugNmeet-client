@@ -21,11 +21,7 @@ export type inputMediaDeviceKind = 'audio' | 'video' | 'both';
  * @param legacyKey An optional legacy global variable name (e.g., 'DEFAULT_WEBCAM_RESOLUTION').
  * @returns The configuration value.
  */
-export function getConfigValue<T>(
-  key: string,
-  defaultValue?: T,
-  legacyKey?: string,
-): T {
+export function getConfigValue<T>(key: string, defaultValue?: T, legacyKey?: string): T {
   const config = (window as any).plugNmeetConfig;
 
   // 1. Prioritize the new config object
@@ -39,11 +35,7 @@ export function getConfigValue<T>(
   // 2. Fallback to legacy global variable if provided
   if (legacyKey) {
     const legacyConfig = window as any;
-    if (
-      legacyConfig &&
-      typeof legacyConfig === 'object' &&
-      legacyKey in legacyConfig
-    ) {
+    if (legacyConfig && typeof legacyConfig === 'object' && legacyKey in legacyConfig) {
       const value = legacyConfig[legacyKey];
       if (value !== undefined && value !== null) {
         return value as T;
@@ -181,11 +173,7 @@ export const getScreenShareResolution = () => {
 };
 
 export const getAudioPreset = () => {
-  const selected = getConfigValue<string>(
-    'defaultAudioPreset',
-    'music',
-    'DEFAULT_AUDIO_PRESET',
-  );
+  const selected = getConfigValue<string>('defaultAudioPreset', 'music', 'DEFAULT_AUDIO_PRESET');
   let preset = AudioPresets.music;
 
   switch (selected) {
@@ -295,16 +283,13 @@ export const generateAvatarInitial = (name: string) => {
   // Check if the name contains any digits, which may indicate a phone number.
   if (/\d/.test(cleanedName)) {
     const firstChar = cleanedName[0] || '';
-    const lastChar =
-      cleanedName.length > 1 ? cleanedName[cleanedName.length - 1] : '';
+    const lastChar = cleanedName.length > 1 ? cleanedName[cleanedName.length - 1] : '';
     return `${firstChar}${lastChar}`.toLocaleUpperCase();
   }
 
   // Keep only tokens that contain at least one letter or number, so stray
   // punctuation (e.g. a leftover parenthesis) can't be used as an initial.
-  const nameParts = cleanedName
-    .split(/\s+/)
-    .filter((part) => /[\p{L}\p{N}]/u.test(part));
+  const nameParts = cleanedName.split(/\s+/).filter((part) => /[\p{L}\p{N}]/u.test(part));
 
   if (nameParts.length === 0) {
     return cleanedName[0]?.toLocaleUpperCase() ?? '';
@@ -353,23 +338,20 @@ export const NATIVE_TWIN_SUFFIX = '-native';
 
 export const toPlugNmeetUserIdPrimary = (userId: string) => {
   const id = toPlugNmeetUserId(userId);
-  return id.endsWith(NATIVE_TWIN_SUFFIX)
-    ? id.slice(0, id.length - NATIVE_TWIN_SUFFIX.length)
-    : id;
+  return id.endsWith(NATIVE_TWIN_SUFFIX) ? id.slice(0, id.length - NATIVE_TWIN_SUFFIX.length) : id;
 };
 
 // builds the LiveKit identity of the hybrid native twin for a primary user id
 // (mirrors the server's config.GetNativeTwinIdentity)
-export const toNativeTwinIdentity = (userId: string) =>
-  `${userId}${NATIVE_TWIN_SUFFIX}`;
+export const toNativeTwinIdentity = (userId: string) => `${userId}${NATIVE_TWIN_SUFFIX}`;
 
 export const toLiveKitUserId = (userId: string) => {
   if (userId.startsWith('sip_')) {
     // if phone number hidden then SIP will send random userId
     // which basically don't need to add + sign
     if (
-      !store.getState().session.currentRoom.metadata?.roomFeatures
-        ?.sipDialInFeatures?.hidePhoneNumber
+      !store.getState().session.currentRoom.metadata?.roomFeatures?.sipDialInFeatures
+        ?.hidePhoneNumber
     ) {
       return userId.replace('sip_', 'sip_+');
     }
@@ -380,8 +362,7 @@ export const toLiveKitUserId = (userId: string) => {
 export const isFirefoxMobile = () => {
   const ua = window.navigator.userAgent;
   const isFirefox = ua.includes('Firefox');
-  const isMobile =
-    ua.includes('Android') || ua.includes('Mobile') || ua.includes('Mobi');
+  const isMobile = ua.includes('Android') || ua.includes('Mobile') || ua.includes('Mobi');
   return isFirefox && isMobile;
 };
 
@@ -389,7 +370,7 @@ export const cleanHtmlForChat = (rawText: string) => {
   return sanitizeHtml(rawText, {
     // Static markup only: no scripts, styles, event handlers or url-bearing
     // attributes beyond this list; svg/path is the static attachment icon.
-    // prettier-ignore
+    // oxfmt-ignore
     allowedTags: ['b', 'i', 'strong', 'em', 'del', 'br', 'hr', 'a', 'span', 'div', 'p', 'ul', 'ol', 'li', 'code', 'pre', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'table', 'thead', 'tbody', 'tr', 'td', 'th', 'svg', 'path'],
     allowedAttributes: {
       a: ['href', 'target', 'class', 'title'],
@@ -416,14 +397,14 @@ export const cleanHtmlForChat = (rawText: string) => {
       td: ['dir', 'align'],
       th: ['dir', 'align'],
       svg: ['xmlns', 'width', 'height', 'viewbox', 'fill'],
-      // prettier-ignore
+      // oxfmt-ignore
       path: [ 'd', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin' ],
     },
     // Class values are whitelisted: Tailwind utilities ship in the app bundle,
     // so arbitrary classes in chat markup could spoof the UI. The whitelist
     // covers the trusted senders: attachment card, linkified urls, poll card,
     // plus language-* emitted by our own fenced code formatter.
-    // prettier-ignore
+    // oxfmt-ignore
     allowedClasses: {
       a: ['attachment-message', 'flex', 'items-center', 'gap-3', 'break-all', 'text-[#24aef7]', 'hover:underline'],
       span: ['block', 'flex', 'items-center', 'justify-between', 'gap-3', 'min-w-0', 'flex-1', 'break-words', 'text-start', 'me-1', 'font-medium', 'text-Green-700', 'shrink-0', 'text-xs', 'text-Gray-600', 'text-Gray-700', 'dark:text-dark-text', 'mt-1.5', 'mt-2', 'border-t', 'border-Gray-200', 'pt-2', 'dark:border-Gray-700', 'h-10', 'w-10', 'rounded-xl', 'bg-Gray-50', 'justify-center'],

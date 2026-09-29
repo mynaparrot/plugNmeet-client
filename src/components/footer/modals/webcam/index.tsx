@@ -212,10 +212,7 @@ const ShareWebcamModal = ({
               </div>
             )}
             {!selectedWebcam ? (
-              <p
-                className="text-xs text-Gray-500 dark:text-Gray-400 mb-2"
-                role="note"
-              >
+              <p className="text-xs text-Gray-500 dark:text-Gray-400 mb-2" role="note">
                 {t('footer.modal.cam-choose-prompt')}
               </p>
             ) : null}

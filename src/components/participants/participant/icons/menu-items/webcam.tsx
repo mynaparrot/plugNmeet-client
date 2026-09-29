@@ -13,9 +13,7 @@ interface IWebcamMenuItemProps {
 }
 const WebcamMenuItem = ({ userId }: IWebcamMenuItemProps) => {
   const { t } = useTranslation();
-  const name = useAppSelector(
-    (state) => participantsSelector.selectById(state, userId)?.name,
-  );
+  const name = useAppSelector((state) => participantsSelector.selectById(state, userId)?.name);
   const videoTracks = useAppSelector(
     (state) => participantsSelector.selectById(state, userId)?.videoTracks,
   );

@@ -7,7 +7,7 @@ import sanitizeHtml from 'sanitize-html';
 const AI_MARKDOWN_SANITIZE_CONFIG: sanitizeHtml.IOptions = {
   // Markdown output only: no scripts, styles, event handlers or url-bearing
   // attributes beyond this list; img covers model-embedded images.
-  // prettier-ignore
+  // oxfmt-ignore
   allowedTags: ['b', 'i', 'strong', 'em', 'del', 'br', 'hr', 'a', 'span', 'div', 'p', 'ul', 'ol', 'li', 'code', 'pre', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'table', 'thead', 'tbody', 'tr', 'td', 'th', 'img'],
   allowedAttributes: {
     // target/rel are needed for the transformTags below to survive filtering

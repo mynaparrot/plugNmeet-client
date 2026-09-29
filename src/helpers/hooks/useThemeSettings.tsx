@@ -9,11 +9,7 @@ const useThemeSettings = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const disableDarkMode = getConfigValue<boolean>(
-      'disableDarkMode',
-      false,
-      '',
-    );
+    const disableDarkMode = getConfigValue<boolean>('disableDarkMode', false, '');
     if (disableDarkMode) {
       dispatch(updateTheme('light'));
       return;
@@ -23,21 +19,14 @@ const useThemeSettings = () => {
       dispatch(updateTheme(event.matches ? 'dark' : 'light'));
     };
     // change according to system
-    if (
-      window.matchMedia &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches
-    ) {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       dispatch(updateTheme('dark'));
     }
 
     // keep watching
-    window
-      .matchMedia('(prefers-color-scheme: dark)')
-      .addEventListener('change', changeTheme);
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', changeTheme);
     return () => {
-      window
-        .matchMedia('(prefers-color-scheme: dark)')
-        .removeEventListener('change', changeTheme);
+      window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', changeTheme);
     };
   }, [dispatch]);
 

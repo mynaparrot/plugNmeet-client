@@ -27,12 +27,8 @@ export const useWhiteboardShareState = () => {
   const currentWhiteboardOfficeFileId = useAppSelector(
     (state) => state.whiteboard.currentWhiteboardOfficeFileId,
   );
-  const whiteboardTotalPages = useAppSelector(
-    (state) => state.whiteboard.totalPages,
-  );
-  const whiteboardCurrentPage = useAppSelector(
-    (state) => state.whiteboard.currentPage,
-  );
+  const whiteboardTotalPages = useAppSelector((state) => state.whiteboard.totalPages);
+  const whiteboardCurrentPage = useAppSelector((state) => state.whiteboard.currentPage);
 
   // 2a: the built-in "default" board (which may carry annotations stored as
   // default_N session-data keys) is now a valid share candidate like any office
@@ -46,10 +42,9 @@ export const useWhiteboardShareState = () => {
   // re-insert their own. The UI disables the share toggles in this mode.
   const contentShareDisabled = useAppSelector(
     (state) =>
-      !!state.session.currentRoom.metadata?.roomFeatures
-        ?.endToEndEncryptionFeatures?.isEnabled &&
-      !!state.session.currentRoom.metadata?.roomFeatures
-        ?.endToEndEncryptionFeatures?.enabledSelfInsertEncryptionKey,
+      !!state.session.currentRoom.metadata?.roomFeatures?.endToEndEncryptionFeatures?.isEnabled &&
+      !!state.session.currentRoom.metadata?.roomFeatures?.endToEndEncryptionFeatures
+        ?.enabledSelfInsertEncryptionKey,
   );
 
   const allWhiteboardPages = useMemo(
@@ -75,23 +70,18 @@ export const useWhiteboardShareState = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contentShareDisabled]);
 
-  const [shareWhiteboard, setShareWhiteboard] = useState<boolean>(
-    initialShareWhiteboard,
+  const [shareWhiteboard, setShareWhiteboard] = useState<boolean>(initialShareWhiteboard);
+  const [selectedWhiteboardPages, setSelectedWhiteboardPages] = useState<number[]>(() =>
+    Array.from({ length: whiteboardTotalPages }, (_, i) => i + 1),
   );
-  const [selectedWhiteboardPages, setSelectedWhiteboardPages] = useState<
-    number[]
-  >(() => Array.from({ length: whiteboardTotalPages }, (_, i) => i + 1));
 
   const toggleWhiteboardPage = useCallback((page: number) => {
     setSelectedWhiteboardPages((prev) =>
-      prev.includes(page)
-        ? prev.filter((p) => p !== page)
-        : [...prev, page].sort((a, b) => a - b),
+      prev.includes(page) ? prev.filter((p) => p !== page) : [...prev, page].sort((a, b) => a - b),
     );
   }, []);
 
-  const whiteboardPagesSelected =
-    shareWhiteboard && hasWhiteboardFile && !contentShareDisabled;
+  const whiteboardPagesSelected = shareWhiteboard && hasWhiteboardFile && !contentShareDisabled;
 
   // Track previous file id / page count so selections re-sync only when either
   // actually changes (without clobbering user-made selections while unchanged).
@@ -99,15 +89,11 @@ export const useWhiteboardShareState = () => {
   const prevWhiteboardTotalPages = useRef(whiteboardTotalPages);
 
   useEffect(() => {
-    const fileIdChanged =
-      prevWhiteboardFileId.current !== currentWhiteboardOfficeFileId;
-    const pagesChanged =
-      prevWhiteboardTotalPages.current !== whiteboardTotalPages;
+    const fileIdChanged = prevWhiteboardFileId.current !== currentWhiteboardOfficeFileId;
+    const pagesChanged = prevWhiteboardTotalPages.current !== whiteboardTotalPages;
 
     if (fileIdChanged || pagesChanged) {
-      setSelectedWhiteboardPages(
-        Array.from({ length: whiteboardTotalPages }, (_, i) => i + 1),
-      );
+      setSelectedWhiteboardPages(Array.from({ length: whiteboardTotalPages }, (_, i) => i + 1));
     }
     if (fileIdChanged) {
       setShareWhiteboard(hasWhiteboardFile && !contentShareDisabled);

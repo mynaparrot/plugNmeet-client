@@ -7,26 +7,20 @@ import { create } from '@bufbuild/protobuf';
 import TransLangsSelector from '../transcription-settings/transLangsSelector';
 import { useAppDispatch, useAppSelector } from '../../../store';
 import DefaultSubtitleLangSelector from '../transcription-settings/defaultSubtitleLangSelector';
-import {
-  enableOrUpdateChatTranslation,
-  endChatTranslation,
-} from '../helpers/apiConnections';
+import { enableOrUpdateChatTranslation, endChatTranslation } from '../helpers/apiConnections';
 import { updateDisplaySpeechSettingsModal } from '../../../store/slices/bottomIconsActivitySlice';
 
 interface ChatTranslationSettingsProps {
   setErrorMsg: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
-const ChatTranslationSettings = ({
-  setErrorMsg,
-}: ChatTranslationSettingsProps) => {
+const ChatTranslationSettings = ({ setErrorMsg }: ChatTranslationSettingsProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
   const chatTranslationFeatures = useAppSelector(
     (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
-        ?.chatTranslationFeatures,
+      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures?.chatTranslationFeatures,
   );
 
   const [selectedTransLangs, setSelectedTransLangs] = useState<string[]>(
@@ -94,9 +88,7 @@ const ChatTranslationSettings = ({
                 selectedTransLangs={selectedTransLangs}
                 setSelectedTransLangs={setSelectedTransLangs}
                 setErrorMsg={setErrorMsg}
-                maxLangsAllowSelecting={
-                  chatTranslationFeatures?.maxSelectedTransLangs ?? 2
-                }
+                maxLangsAllowSelecting={chatTranslationFeatures?.maxSelectedTransLangs ?? 2}
                 isServiceRunning={!!chatTranslationFeatures?.isEnabled}
               />
               <DefaultSubtitleLangSelector

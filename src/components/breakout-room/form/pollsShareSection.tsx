@@ -65,9 +65,7 @@ const PollsShareSection = ({
                     onChange={(e) => {
                       const checked = e.currentTarget.checked;
                       setSharePollIds(
-                        checked
-                          ? [...sharePollIds, p.id]
-                          : sharePollIds.filter((x) => x !== p.id),
+                        checked ? [...sharePollIds, p.id] : sharePollIds.filter((x) => x !== p.id),
                       );
                     }}
                   />

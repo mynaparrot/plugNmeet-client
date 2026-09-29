@@ -21,9 +21,7 @@ export interface VideoParticipantType {
 
 const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
   const dispatch = useAppDispatch();
-  const pinCamUserId = useAppSelector(
-    (state) => state.roomSettings.pinCamUserId,
-  );
+  const pinCamUserId = useAppSelector((state) => state.roomSettings.pinCamUserId);
   const [videoSubscribers, setVideoSubscribers] =
     useState<Map<string, LocalParticipant | RemoteParticipant>>();
   const currentConnection = getMediaServerConn();
@@ -32,29 +30,20 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
     if (currentConnection.videoSubscribersMap.size) {
       setVideoSubscribers(currentConnection.videoSubscribersMap as any);
     }
-    currentConnection.on(
-      CurrentConnectionEvents.VideoSubscribers,
-      setVideoSubscribers,
-    );
+    currentConnection.on(CurrentConnectionEvents.VideoSubscribers, setVideoSubscribers);
     return () => {
-      currentConnection.off(
-        CurrentConnectionEvents.VideoSubscribers,
-        setVideoSubscribers,
-      );
+      currentConnection.off(CurrentConnectionEvents.VideoSubscribers, setVideoSubscribers);
     };
   }, [currentConnection]);
 
   const { allParticipants, pinParticipant, totalNumWebcams } = useMemo(() => {
     let totalNumWebcams = 0;
     const localSubscribers: Array<ReactElement<VideoParticipantProps>> = [];
-    let pinSubscribers: ReactElement<VideoParticipantProps> | undefined =
-      undefined;
+    let pinSubscribers: ReactElement<VideoParticipantProps> | undefined = undefined;
     const adminSubscribers: Array<ReactElement<VideoParticipantProps>> = [];
     const otherSubscribers: Array<ReactElement<VideoParticipantProps>> = [];
 
-    const subscribers = videoSubscribers
-      ? Array.from(videoSubscribers.entries())
-      : [];
+    const subscribers = videoSubscribers ? Array.from(videoSubscribers.entries()) : [];
 
     for (const [userId, participant] of subscribers) {
       // we will only take if source from Camera
@@ -105,14 +94,9 @@ const VideosComponent = ({ isVertical }: IVideosComponentProps) => {
       }
     }
 
-    const allParticipants = concat(
-      adminSubscribers,
-      localSubscribers,
-      otherSubscribers,
-    );
+    const allParticipants = concat(adminSubscribers, localSubscribers, otherSubscribers);
 
-    let finalPinParticipant: ReactElement<VideoParticipantProps> | undefined =
-      undefined;
+    let finalPinParticipant: ReactElement<VideoParticipantProps> | undefined = undefined;
     if (totalNumWebcams > 1 && pinSubscribers) {
       // only then we can activate pin cam
       finalPinParticipant = pinSubscribers;

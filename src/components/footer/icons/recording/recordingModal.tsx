@@ -11,63 +11,44 @@ import { RecordingType, SelectedRecordingType } from './IRecording';
 import { store, useAppSelector } from '../../../../store';
 import Modal from '../../../../helpers/ui/modal';
 import ActionButton from '../../../../helpers/ui/actionButton';
-import RadioOptions, {
-  IRadioOption,
-} from '../../../../helpers/ui/radioOptions';
+import RadioOptions, { IRadioOption } from '../../../../helpers/ui/radioOptions';
 import SettingsSwitch from '../../../../helpers/ui/settingsSwitch';
 import FormattedInputField from '../../../../helpers/ui/formattedInputField';
 
 interface IRecordingModalProps {
   showModal: boolean;
-  onCloseModal(
-    selected: SelectedRecordingType,
-    botOptions?: RecorderBotOptions,
-  ): void;
+  onCloseModal(selected: SelectedRecordingType, botOptions?: RecorderBotOptions): void;
 }
 
 const RecordingModal = ({ showModal, onCloseModal }: IRecordingModalProps) => {
   const recordingFeatures = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.recordingFeatures,
+    (state) => state.session.currentRoom.metadata?.roomFeatures?.recordingFeatures,
   );
 
-  const [recordingType, setRecordingType] = useState<
-    SelectedRecordingType | undefined
-  >(undefined);
-  const [enableAutoCloseChatPanel, setEnableAutoCloseChatPanel] =
-    useState<boolean>(
-      !!recordingFeatures?.recorderBotOptions?.enableAutoCloseChatPanel,
-    );
-  const [durationAfterLastMessage, setDurationAfterLastMessage] =
-    useState<number>(
-      recordingFeatures?.recorderBotOptions?.durationAfterLastMessage ?? 300,
-    );
+  const [recordingType, setRecordingType] = useState<SelectedRecordingType | undefined>(undefined);
+  const [enableAutoCloseChatPanel, setEnableAutoCloseChatPanel] = useState<boolean>(
+    !!recordingFeatures?.recorderBotOptions?.enableAutoCloseChatPanel,
+  );
+  const [durationAfterLastMessage, setDurationAfterLastMessage] = useState<number>(
+    recordingFeatures?.recorderBotOptions?.durationAfterLastMessage ?? 300,
+  );
   const { t } = useTranslation();
   const isCloud = store.getState().session.isCloud;
   const e2eeFeatures =
-    store.getState().session.currentRoom?.metadata?.roomFeatures
-      ?.endToEndEncryptionFeatures;
+    store.getState().session.currentRoom?.metadata?.roomFeatures?.endToEndEncryptionFeatures;
 
   const startRecording = useCallback(
     (e: React.SubmitEvent<HTMLFormElement>) => {
       e.preventDefault();
       if (recordingType) {
-        const botOptions: RecorderBotOptions = create(
-          RecorderBotOptionsSchema,
-          {
-            enableAutoCloseChatPanel,
-            durationAfterLastMessage,
-          },
-        );
+        const botOptions: RecorderBotOptions = create(RecorderBotOptionsSchema, {
+          enableAutoCloseChatPanel,
+          durationAfterLastMessage,
+        });
         onCloseModal(recordingType, botOptions);
       }
     },
-    [
-      recordingType,
-      onCloseModal,
-      enableAutoCloseChatPanel,
-      durationAfterLastMessage,
-    ],
+    [recordingType, onCloseModal, enableAutoCloseChatPanel, durationAfterLastMessage],
   );
 
   const closeModal = () => {
@@ -141,28 +122,19 @@ const RecordingModal = ({ showModal, onCloseModal }: IRecordingModalProps) => {
       onClose={closeModal}
       title={t('footer.icons.how-to-record')}
       renderButtons={() => (
-        <ActionButton
-          buttonType="submit"
-          onClick={(e) => startRecording(e as any)}
-        >
+        <ActionButton buttonType="submit" onClick={(e) => startRecording(e as any)}>
           {t('footer.icons.start-recording')}
         </ActionButton>
       )}
     >
-      <form
-        className="RecorderPop"
-        action="#"
-        method="POST"
-        onSubmit={(e) => startRecording(e)}
-      >
+      <form className="RecorderPop" action="#" method="POST" onSubmit={(e) => startRecording(e)}>
         <RadioOptions
           name="recording-type"
           options={radioOptions}
           checked={getCheckedValue()}
           onChange={handleRadioChange}
         />
-        {recordingType?.variant ===
-          CloudRecordingVariants.FULL_SCREEN_CLOUD_RECORDING && (
+        {recordingType?.variant === CloudRecordingVariants.FULL_SCREEN_CLOUD_RECORDING && (
           <div className="mt-2 border-t border-Gray-100 dark:border-Gray-800 pt-4">
             <SettingsSwitch
               label={t('recorder-bot-options.enable-auto-close-chat-panel')}
@@ -175,12 +147,8 @@ const RecordingModal = ({ showModal, onCloseModal }: IRecordingModalProps) => {
                 label={t('recorder-bot-options.duration-after-last-message')}
                 id="duration"
                 value={String(durationAfterLastMessage / 60)}
-                onChange={(e) =>
-                  setDurationAfterLastMessage(Number(e.target.value) * 60)
-                }
-                helpText={t(
-                  'recorder-bot-options.duration-after-last-message-help',
-                )}
+                onChange={(e) => setDurationAfterLastMessage(Number(e.target.value) * 60)}
+                helpText={t('recorder-bot-options.duration-after-last-message-help')}
                 type="number"
               />
             )}

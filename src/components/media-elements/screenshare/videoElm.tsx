@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
@@ -24,9 +18,7 @@ interface IVideoElmProps {
 const VideoElm = ({ track }: IVideoElmProps) => {
   const { t } = useTranslation();
   const ref = useRef<HTMLVideoElement>(null);
-  const isNatsServerConnected = useAppSelector(
-    (state) => state.roomSettings.isNatsServerConnected,
-  );
+  const isNatsServerConnected = useAppSelector((state) => state.roomSettings.isNatsServerConnected);
   const [isLoaded, setIsLoaded] = useState(false);
   const self = useMemo(() => track instanceof LocalTrackPublication, [track]);
 
@@ -43,10 +35,7 @@ const VideoElm = ({ track }: IVideoElmProps) => {
     videoTrack.attach(el);
 
     const tryMarkLoaded = () => {
-      if (
-        el.videoWidth > 0 ||
-        el.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA
-      ) {
+      if (el.videoWidth > 0 || el.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
         markLoaded();
         return true;
       }
@@ -92,14 +81,10 @@ const VideoElm = ({ track }: IVideoElmProps) => {
   const fullScreen = useCallback(() => {
     if (!document.fullscreenElement) {
       ref.current?.requestFullscreen().catch((err) => {
-        alert(
-          `Error attempting to enable full-screen mode: ${err.message} (${err.name})`,
-        );
+        alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
       });
     } else {
-      document
-        .exitFullscreen()
-        .catch((e) => console.error('exit fullscreen failed', e));
+      document.exitFullscreen().catch((e) => console.error('exit fullscreen failed', e));
     }
   }, []);
 

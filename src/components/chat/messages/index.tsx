@@ -46,10 +46,7 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
 
   const recorderBotOptions = useMemo(() => {
     const session = store.getState().session;
-    if (
-      session.currentUser?.userId &&
-      session.currentRoom?.metadata?.roomFeatures
-    ) {
+    if (session.currentUser?.userId && session.currentRoom?.metadata?.roomFeatures) {
       return getRecorderBotOptions(
         session.currentUser.userId,
         session.currentRoom.metadata.roomFeatures,
@@ -57,12 +54,8 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
     }
   }, []);
 
-  const chatMessages = useAppSelector((state) =>
-    selectMessagesByKeyValue(state, messageKey),
-  );
-  const unreadCount = useAppSelector(
-    (state) => state.bottomIconsActivity.totalUnreadChatMsgs,
-  );
+  const chatMessages = useAppSelector((state) => selectMessagesByKeyValue(state, messageKey));
+  const unreadCount = useAppSelector((state) => state.bottomIconsActivity.totalUnreadChatMsgs);
 
   const messagesContainerRef = useRef<HTMLUListElement>(null);
   const currentUser = store.getState().session.currentUser;
@@ -297,10 +290,7 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
                 <span className="flex-1 border-t border-[#00A1F2]/50" />
               </li>
             )}
-            <li
-              id={`chat-msg-${message.id}`}
-              className="message-item py-2 transition-shadow"
-            >
+            <li id={`chat-msg-${message.id}`} className="message-item py-2 transition-shadow">
               <Message
                 body={message}
                 chatKey={messageKey}

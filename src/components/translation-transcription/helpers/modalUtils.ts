@@ -30,11 +30,7 @@ export const validateSettings = ({
       message: 'speech-services.enable-translation-warning',
     };
   }
-  if (
-    enableTranslation &&
-    selectedSpeechLangs.length === 1 &&
-    selectedTransLangs.length === 0
-  ) {
+  if (enableTranslation && selectedSpeechLangs.length === 1 && selectedTransLangs.length === 0) {
     return {
       isValid: false,
       message: 'speech-services.translation-lang-required',

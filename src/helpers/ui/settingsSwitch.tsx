@@ -18,10 +18,7 @@ const SettingsSwitch = ({
   customCss,
 }: ISettingsSwitchProps) => {
   return (
-    <Field
-      as="div"
-      className={clsx('flex items-center justify-between', customCss)}
-    >
+    <Field as="div" className={clsx('flex items-center justify-between', customCss)}>
       <Label
         className={`pe-4 w-full text-sm text-Gray-950 text-start dark:text-white ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
       >

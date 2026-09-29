@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Listbox,
-  ListboxButton,
-  ListboxOption,
-  ListboxOptions,
-} from '@headlessui/react';
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
 
 import { CheckMarkIcon } from '../../assets/Icons/CheckMarkIcon';
 import { useAppDispatch, useAppSelector } from '../../store';
@@ -24,13 +19,10 @@ const ChatTranslation = () => {
   const dispatch = useAppDispatch();
   const chatTranslationFeatures = useAppSelector(
     (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
-        ?.chatTranslationFeatures,
+      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures?.chatTranslationFeatures,
   );
 
-  const [selectedLanguage, setSelectedLanguage] = useState<
-    LanguageInfo | undefined
-  >();
+  const [selectedLanguage, setSelectedLanguage] = useState<LanguageInfo | undefined>();
   const [transLangs, setTransLangs] = useState<LanguageInfo[]>([]);
 
   useEffect(() => {
@@ -39,15 +31,11 @@ const ChatTranslation = () => {
       return;
     }
 
-    Promise.allSettled([
-      supportedTranscriptionLangs(),
-      supportedTranslationLangs(),
-    ]).then(() => {
-      const allLangs: LanguageInfo[] =
-        chatTranslationFeatures.allowedTransLangs.map((lang) => ({
-          title: translationLangsMap.get(lang)?.name ?? lang,
-          code: lang,
-        }));
+    Promise.allSettled([supportedTranscriptionLangs(), supportedTranslationLangs()]).then(() => {
+      const allLangs: LanguageInfo[] = chatTranslationFeatures.allowedTransLangs.map((lang) => ({
+        title: translationLangsMap.get(lang)?.name ?? lang,
+        code: lang,
+      }));
       setTransLangs(allLangs);
 
       if (chatTranslationFeatures.defaultLang) {

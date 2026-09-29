@@ -12,22 +12,14 @@ interface IRoomBoxProps {
   name: string;
   users: Array<UserType>;
   customTitles?: Record<number, string>;
-  setCustomTitles?: React.Dispatch<
-    React.SetStateAction<Record<number, string>>
-  >;
+  setCustomTitles?: React.Dispatch<React.SetStateAction<Record<number, string>>>;
 }
 
 interface DragItem {
   id: string;
 }
 
-const RoomBox = ({
-  roomId,
-  name,
-  users,
-  customTitles,
-  setCustomTitles,
-}: IRoomBoxProps) => {
+const RoomBox = ({ roomId, name, users, customTitles, setCustomTitles }: IRoomBoxProps) => {
   const dispatch = useAppDispatch();
   const ref = useRef<HTMLDivElement>(null);
 
@@ -59,14 +51,10 @@ const RoomBox = ({
     },
   );
 
-  const headerClasses = clsx(
-    'text-sm sm:text-base px-2 py-1 border-b-2 border-solid',
-    {
-      'text-white border-white dark:border-white': canDrop,
-      'text-Gray-950 dark:text-white border-black dark:border-Gray-800':
-        !canDrop,
-    },
-  );
+  const headerClasses = clsx('text-sm sm:text-base px-2 py-1 border-b-2 border-solid', {
+    'text-white border-white dark:border-white': canDrop,
+    'text-Gray-950 dark:text-white border-black dark:border-Gray-800': !canDrop,
+  });
 
   return (
     <div ref={ref} className={roomBoxClasses}>

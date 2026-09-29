@@ -33,8 +33,7 @@ const IconsInMenu = () => {
 
   const { roomFeatures } = useMemo(() => {
     return {
-      roomFeatures:
-        store.getState().session.currentRoom?.metadata?.roomFeatures,
+      roomFeatures: store.getState().session.currentRoom?.metadata?.roomFeatures,
     };
   }, []);
 
@@ -56,8 +55,7 @@ const IconsInMenu = () => {
   }, [dispatch, isActiveSharedNotePad]);
 
   const isActivePoll = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.pollsFeatures?.isActive,
+    (state) => state.session.currentRoom.metadata?.roomFeatures?.pollsFeatures?.isActive,
   );
   const isActivePollsPanel = useAppSelector(
     (state) => state.bottomIconsActivity.activeSidePanel === 'POLLS',
@@ -71,10 +69,7 @@ const IconsInMenu = () => {
   );
   const isBreakoutRoomsPanelVisible = useAppSelector((state) => {
     const meta = state.session.currentRoom?.metadata;
-    return (
-      !!meta?.roomFeatures?.breakoutRoomFeatures?.isActive &&
-      !meta?.isBreakoutRoom
-    );
+    return !!meta?.roomFeatures?.breakoutRoomFeatures?.isActive && !meta?.isBreakoutRoom;
   });
   const toggleBreakoutRoomsPanel = useCallback(() => {
     dispatch(setActiveSidePanel('BREAKOUT_ROOMS'));
@@ -85,21 +80,17 @@ const IconsInMenu = () => {
   );
   const isEnabledTranscription = useAppSelector(
     (state) =>
-      !!state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
-        ?.transcriptionFeatures?.isEnabled,
+      !!state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures?.transcriptionFeatures
+        ?.isEnabled,
   );
   const toggleSpeechSettingOptionsModal = useCallback(() => {
-    dispatch(
-      updateDisplaySpeechSettingOptionsModal(
-        !isActiveDisplaySpeechSettingOptionsModal,
-      ),
-    );
+    dispatch(updateDisplaySpeechSettingOptionsModal(!isActiveDisplaySpeechSettingOptionsModal));
   }, [dispatch, isActiveDisplaySpeechSettingOptionsModal]);
 
   const isEnabledAiTextChat = useAppSelector(
     (state) =>
-      !!state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
-        ?.aiFeatures?.aiTextChatFeatures?.isEnabled,
+      !!state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures?.aiFeatures
+        ?.aiTextChatFeatures?.isEnabled,
   );
   const isActiveAiTextChat = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveInsightsAiTextChat,

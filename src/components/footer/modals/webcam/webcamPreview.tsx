@@ -20,9 +20,7 @@ const WebcamPreview = ({ deviceId, onRetry }: WebcamPreviewProps) => {
   const localVideoTrack = useRef<LocalVideoTrack | null>(null);
   const [failed, setFailed] = useState(false);
 
-  const virtualBackground = useAppSelector(
-    (state) => state.roomSettings.virtualBackground,
-  );
+  const virtualBackground = useAppSelector((state) => state.roomSettings.virtualBackground);
 
   useEffect(() => {
     setFailed(false);
@@ -112,15 +110,7 @@ const WebcamPreview = ({ deviceId, onRetry }: WebcamPreviewProps) => {
 
   // Mirrored so the preview matches what others will see disposition-wise
   // and feels natural (same as in-room local tile via videoElm mirrored).
-  return (
-    <video
-      ref={videoRef}
-      className="w-full h-full -scale-x-100"
-      autoPlay
-      muted
-      playsInline
-    />
-  );
+  return <video ref={videoRef} className="w-full h-full -scale-x-100" autoPlay muted playsInline />;
 };
 
 export default WebcamPreview;

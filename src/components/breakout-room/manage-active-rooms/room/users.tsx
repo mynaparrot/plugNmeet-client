@@ -59,17 +59,11 @@ const BreakoutRoomUsers = ({
     return targets;
   }, [roomsData, breakoutRoomId, t, variant]);
 
-  const moveUserTo = (
-    name: string,
-    userId: string,
-    targetRoomId: string,
-    targetTitle: string,
-  ) => {
+  const moveUserTo = (name: string, userId: string, targetRoomId: string, targetTitle: string) => {
     // The server resolves the parent room from the request's token, so passing
     // the breakout room's roomId here is harmless; we still pass the parent id.
     const currentRoom = store.getState().session.currentRoom;
-    const roomId =
-      currentRoom?.metadata?.parentRoomId || currentRoom?.roomId || '';
+    const roomId = currentRoom?.metadata?.parentRoomId || currentRoom?.roomId || '';
 
     moveUser(
       create(MoveBreakoutRoomUserReqSchema, {
@@ -104,9 +98,7 @@ const BreakoutRoomUsers = ({
   const userChunks = useMemo(() => {
     // proto3 JSON (toJson in handleProtobufResponse) omits empty repeated
     // fields, so rooms created without assigned users have no `users` key.
-    const sortedUsers = [...(users ?? [])].sort(
-      (a, b) => (b.joined ? 1 : 0) - (a.joined ? 1 : 0),
-    );
+    const sortedUsers = [...(users ?? [])].sort((a, b) => (b.joined ? 1 : 0) - (a.joined ? 1 : 0));
     return chunk(sortedUsers, 5);
   }, [users]);
 
@@ -115,12 +107,9 @@ const BreakoutRoomUsers = ({
     // the breakout room's roomId here is harmless; we still pass the parent id
     // for clarity.
     const currentRoom = store.getState().session.currentRoom;
-    const roomId =
-      currentRoom?.metadata?.parentRoomId || currentRoom?.roomId || '';
+    const roomId = currentRoom?.metadata?.parentRoomId || currentRoom?.roomId || '';
 
-    reInvite(
-      create(ReInviteBreakoutRoomReqSchema, { breakoutRoomId, userId, roomId }),
-    )
+    reInvite(create(ReInviteBreakoutRoomReqSchema, { breakoutRoomId, userId, roomId }))
       .unwrap()
       .then((res) => {
         if (res.status) {
@@ -140,9 +129,7 @@ const BreakoutRoomUsers = ({
       })
       .catch((e) => {
         setMessage({
-          text: t(
-            (e as any)?.data?.msg ?? 'breakout-room.invitation-sent-error',
-          ),
+          text: t((e as any)?.data?.msg ?? 'breakout-room.invitation-sent-error'),
           type: 'error',
         });
       });
@@ -161,17 +148,11 @@ const BreakoutRoomUsers = ({
                 className={`thumb h-6 w-6 rounded-full text-xs font-medium text-white flex items-center justify-center overflow-hidden shrink-0 ${
                   user.joined ? 'bg-green-500' : 'bg-red-500'
                 }`}
-                title={
-                  user.joined
-                    ? t('breakout-room.user-joined')
-                    : t('breakout-room.not-joined')
-                }
+                title={user.joined ? t('breakout-room.user-joined') : t('breakout-room.not-joined')}
               >
                 {generateAvatarInitial(user.name)}
               </div>
-              <span className="text-Gray-950 dark:text-white break-all">
-                {user.name}
-              </span>
+              <span className="text-Gray-950 dark:text-white break-all">{user.name}</span>
               <div className="ms-auto flex items-center gap-2">
                 <Menu as="div">
                   {() => (
@@ -191,12 +172,7 @@ const BreakoutRoomUsers = ({
                           <MenuItem key={target.id}>
                             <button
                               onClick={() =>
-                                moveUserTo(
-                                  user.name,
-                                  user.id,
-                                  target.id,
-                                  target.title,
-                                )
+                                moveUserTo(user.name, user.id, target.id, target.title)
                               }
                               className="h-7 cursor-pointer w-full flex items-center hover:bg-Gray-50 dark:hover:bg-dark-secondary2 text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 3xl:px-3 rounded-lg transition-all duration-300 relative"
                             >

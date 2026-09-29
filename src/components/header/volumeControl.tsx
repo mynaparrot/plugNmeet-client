@@ -17,17 +17,14 @@ const VolumeControl = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const roomVolume = useAppSelector(
-    (state) => state.roomSettings.roomAudioVolume,
-  );
+  const roomVolume = useAppSelector((state) => state.roomSettings.roomAudioVolume);
   const screenShareVolume = useAppSelector(
     (state) => state.roomSettings.roomScreenShareAudioVolume,
   );
   const participantIds = useAppSelector((state) => state.participants.ids);
 
   const [localRoomVolume, setLocalRoomVolume] = useState(roomVolume);
-  const [localScreenShareVolume, setLocalScreenShareVolume] =
-    useState(screenShareVolume);
+  const [localScreenShareVolume, setLocalScreenShareVolume] = useState(screenShareVolume);
 
   // Sync from Redux to local state if the values differ.
   useEffect(() => {
@@ -51,9 +48,7 @@ const VolumeControl = () => {
       dispatch(updateRoomAudioVolume(newVolume));
       // Also update all individual participants
       participantIds.forEach((id) => {
-        dispatch(
-          updateParticipant({ id, changes: { audioVolume: newVolume } }),
-        );
+        dispatch(updateParticipant({ id, changes: { audioVolume: newVolume } }));
       });
     }, 200),
     [dispatch, participantIds],
@@ -87,9 +82,7 @@ const VolumeControl = () => {
         transition
         className="volume-popup-wrapper z-10 w-64 py-5 px-2 rounded-md shadow-lg bg-white dark:bg-dark-primary border-Gray-100 dark:border-Gray-700 border focus:outline-hidden [--anchor-gap:8px] transition ease-out data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150"
       >
-        <p className="text-sm text-Gray-950 dark:text-white">
-          {t('header.room-audio-volume')}
-        </p>
+        <p className="text-sm text-Gray-950 dark:text-white">{t('header.room-audio-volume')}</p>
         <section className="flex items-center ps-3">
           <RangeSlider
             min={0}

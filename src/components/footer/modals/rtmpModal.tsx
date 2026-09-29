@@ -1,10 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  CommonResponseSchema,
-  RecordingReqSchema,
-  RecordingTasks,
-} from 'plugnmeet-protocol-js';
+import { CommonResponseSchema, RecordingReqSchema, RecordingTasks } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
@@ -28,21 +24,15 @@ const RtmpModal = () => {
     (state) => state.session.isActiveRtmpBroadcasting,
   );
   const externalBroadcastingFeatures = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures
-        ?.externalBroadcastingFeatures,
+    (state) => state.session.currentRoom.metadata?.roomFeatures?.externalBroadcastingFeatures,
   );
 
-  const [enableAutoCloseChatPanel, setEnableAutoCloseChatPanel] =
-    useState<boolean>(
-      !!externalBroadcastingFeatures?.recorderBotOptions
-        ?.enableAutoCloseChatPanel,
-    );
-  const [durationAfterLastMessage, setDurationAfterLastMessage] =
-    useState<number>(
-      externalBroadcastingFeatures?.recorderBotOptions
-        ?.durationAfterLastMessage ?? 300,
-    );
+  const [enableAutoCloseChatPanel, setEnableAutoCloseChatPanel] = useState<boolean>(
+    !!externalBroadcastingFeatures?.recorderBotOptions?.enableAutoCloseChatPanel,
+  );
+  const [durationAfterLastMessage, setDurationAfterLastMessage] = useState<number>(
+    externalBroadcastingFeatures?.recorderBotOptions?.durationAfterLastMessage ?? 300,
+  );
   const [provider, setProvider] = useState<Provider>('youtube');
   const [showServerUrl, setShowServerUrl] = useState<boolean>(false);
   const [serverUrl, setServerUrl] = useState<string>('');
@@ -71,10 +61,7 @@ const RtmpModal = () => {
       e.preventDefault();
       setDisplayError('');
 
-      if (
-        (provider === 'other' || provider === 'whip') &&
-        serverUrl.trim() === ''
-      ) {
+      if ((provider === 'other' || provider === 'whip') && serverUrl.trim() === '') {
         setDisplayError(t('footer.notice.external-media-player-url-required'));
         return;
       }
@@ -107,10 +94,7 @@ const RtmpModal = () => {
       const body = create(RecordingReqSchema, {
         task: RecordingTasks.START_RTMP,
         sid: store.getState().session.currentRoom.sid,
-        rtmpUrl:
-          provider === 'whip'
-            ? url
-            : [url.replace(/\/$/, ''), serverKey].join('/'),
+        rtmpUrl: provider === 'whip' ? url : [url.replace(/\/$/, ''), serverKey].join('/'),
         recorderBotOptions: {
           enableAutoCloseChatPanel,
           durationAfterLastMessage,
@@ -241,12 +225,8 @@ const RtmpModal = () => {
                 id="duration"
                 maxWidthClass="sm:max-w-[300px]"
                 value={String(durationAfterLastMessage / 60)}
-                onChange={(e) =>
-                  setDurationAfterLastMessage(Number(e.target.value) * 60)
-                }
-                helpText={t(
-                  'recorder-bot-options.duration-after-last-message-help',
-                )}
+                onChange={(e) => setDurationAfterLastMessage(Number(e.target.value) * 60)}
+                helpText={t('recorder-bot-options.duration-after-last-message-help')}
                 type="number"
               />
             )}

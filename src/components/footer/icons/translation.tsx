@@ -22,16 +22,12 @@ const Translation = () => {
   );
   const isEnabled = useAppSelector(
     (state) =>
-      !!state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures
-        ?.transcriptionFeatures?.isEnabled,
+      !!state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures?.transcriptionFeatures
+        ?.isEnabled,
   );
 
   const toggleModal = useCallback(() => {
-    dispatch(
-      updateDisplaySpeechSettingOptionsModal(
-        !isActiveDisplaySpeechSettingOptionsModal,
-      ),
-    );
+    dispatch(updateDisplaySpeechSettingOptionsModal(!isActiveDisplaySpeechSettingOptionsModal));
   }, [dispatch, isActiveDisplaySpeechSettingOptionsModal]);
 
   const tooltipText = isActiveDisplaySpeechSettingOptionsModal

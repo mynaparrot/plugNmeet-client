@@ -1,9 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  CommonResponseSchema,
-  MuteUnMuteTrackReqSchema,
-} from 'plugnmeet-protocol-js';
+import { CommonResponseSchema, MuteUnMuteTrackReqSchema } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { store, useAppDispatch } from '../../../../../store';

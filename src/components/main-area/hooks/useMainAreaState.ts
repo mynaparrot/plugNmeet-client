@@ -7,66 +7,43 @@ import { CurrentConnectionEvents } from '../../../helpers/livekit/types';
 export const useMainAreaState = () => {
   const currentConnection = getMediaServerConn();
 
-  const columnCameraWidth = useAppSelector(
-    (state) => state.roomSettings.columnCameraWidth,
-  );
-  const columnCameraPosition = useAppSelector(
-    (state) => state.roomSettings.columnCameraPosition,
-  );
-  const activeSidePanel = useAppSelector(
-    (state) => state.bottomIconsActivity.activeSidePanel,
-  );
+  const columnCameraWidth = useAppSelector((state) => state.roomSettings.columnCameraWidth);
+  const columnCameraPosition = useAppSelector((state) => state.roomSettings.columnCameraPosition);
+  const activeSidePanel = useAppSelector((state) => state.bottomIconsActivity.activeSidePanel);
   const isActiveScreenSharingView = useAppSelector(
     (state) => state.roomSettings.activeScreenSharingView,
   );
-  const isActiveWebcamsView = useAppSelector(
-    (state) => state.roomSettings.activateWebcamsView,
-  );
+  const isActiveWebcamsView = useAppSelector((state) => state.roomSettings.activateWebcamsView);
   const isActiveWhiteboard = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveWhiteboard,
   );
   const isActiveExternalMediaPlayer = useAppSelector(
     (state) =>
-      state.session.currentRoom.metadata?.roomFeatures
-        ?.externalMediaPlayerFeatures?.isActive,
+      state.session.currentRoom.metadata?.roomFeatures?.externalMediaPlayerFeatures?.isActive,
   );
   const isActiveDisplayExternalLink = useAppSelector(
     (state) =>
-      state.session.currentRoom.metadata?.roomFeatures
-        ?.displayExternalLinkFeatures?.isActive,
+      state.session.currentRoom.metadata?.roomFeatures?.displayExternalLinkFeatures?.isActive,
   );
 
-  const [hasScreenShareSubscribers, setHasScreenShareSubscribers] =
-    useState<boolean>(false);
-  const [hasVideoSubscribers, setHasVideoSubscribers] =
-    useState<boolean>(false);
+  const [hasScreenShareSubscribers, setHasScreenShareSubscribers] = useState<boolean>(false);
+  const [hasVideoSubscribers, setHasVideoSubscribers] = useState<boolean>(false);
 
   useEffect(() => {
     // Set initial values on boot up
-    setHasScreenShareSubscribers(
-      currentConnection.screenShareTracksMap.size > 0,
-    );
+    setHasScreenShareSubscribers(currentConnection.screenShareTracksMap.size > 0);
     setHasVideoSubscribers(currentConnection.videoSubscribersMap.size > 0);
 
     // Set up listeners for future changes
-    currentConnection.on(
-      CurrentConnectionEvents.ScreenShareStatus,
-      setHasScreenShareSubscribers,
-    );
-    currentConnection.on(
-      CurrentConnectionEvents.VideoStatus,
-      setHasVideoSubscribers,
-    );
+    currentConnection.on(CurrentConnectionEvents.ScreenShareStatus, setHasScreenShareSubscribers);
+    currentConnection.on(CurrentConnectionEvents.VideoStatus, setHasVideoSubscribers);
 
     return () => {
       currentConnection.off(
         CurrentConnectionEvents.ScreenShareStatus,
         setHasScreenShareSubscribers,
       );
-      currentConnection.off(
-        CurrentConnectionEvents.VideoStatus,
-        setHasVideoSubscribers,
-      );
+      currentConnection.off(CurrentConnectionEvents.VideoStatus, setHasVideoSubscribers);
     };
   }, [currentConnection]);
 

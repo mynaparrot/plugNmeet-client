@@ -7,17 +7,11 @@ import { getConfigValue } from '../../helpers/utils';
 const AudioNotification = () => {
   const dispatch = useAppDispatch();
   const ref = useRef<HTMLAudioElement>(null);
-  const playAudioNotification = useAppSelector(
-    (state) => state.roomSettings.playAudioNotification,
-  );
+  const playAudioNotification = useAppSelector((state) => state.roomSettings.playAudioNotification);
   const allowPlayAudioNotification = useAppSelector(
     (state) => state.roomSettings.allowPlayAudioNotification,
   );
-  const assetPath = getConfigValue(
-    'staticAssetsPath',
-    './assets',
-    'STATIC_ASSETS_PATH',
-  );
+  const assetPath = getConfigValue('staticAssetsPath', './assets', 'STATIC_ASSETS_PATH');
 
   useEffect(() => {
     const el = ref.current;

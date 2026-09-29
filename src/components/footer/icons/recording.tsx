@@ -6,11 +6,7 @@ import { RecorderBotOptions } from 'plugnmeet-protocol-js';
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import RecordingModal from './recording/recordingModal';
-import {
-  RecordingEvent,
-  RecordingType,
-  SelectedRecordingType,
-} from './recording/IRecording';
+import { RecordingEvent, RecordingType, SelectedRecordingType } from './recording/IRecording';
 import useLocalRecording from './recording/useLocalRecording';
 import useCloudRecording from './recording/useCloudRecording';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
@@ -33,22 +29,19 @@ const RecordingIcon = () => {
   } = useCloudRecording();
 
   const { t } = useTranslation();
-  const { roomMetadata, isAllowRecording, isAdmin, isPresenter, showTooltip } =
-    useMemo(() => {
-      const session = store.getState().session;
-      const roomMetadata = session.currentRoom.metadata as IRoomMetadata;
-      return {
-        roomMetadata,
-        isAllowRecording: roomMetadata.roomFeatures?.recordingFeatures?.isAllow,
-        isAdmin: !!session.currentUser?.metadata?.isAdmin,
-        isPresenter: !!session.currentUser?.metadata?.isPresenter,
-        showTooltip: session.userDeviceType === 'desktop',
-      };
-    }, []);
+  const { roomMetadata, isAllowRecording, isAdmin, isPresenter, showTooltip } = useMemo(() => {
+    const session = store.getState().session;
+    const roomMetadata = session.currentRoom.metadata as IRoomMetadata;
+    return {
+      roomMetadata,
+      isAllowRecording: roomMetadata.roomFeatures?.recordingFeatures?.isAllow,
+      isAdmin: !!session.currentUser?.metadata?.isAdmin,
+      isPresenter: !!session.currentUser?.metadata?.isPresenter,
+      showTooltip: session.userDeviceType === 'desktop',
+    };
+  }, []);
 
-  const isRunningCloudRecording = useAppSelector(
-    (state) => state.session.isActiveRecording,
-  );
+  const isRunningCloudRecording = useAppSelector((state) => state.session.isActiveRecording);
 
   const [disable, setDisable] = useState<boolean>(false);
   const [openModal, setOpenModal] = useState<boolean>(false);
@@ -60,10 +53,7 @@ const RecordingIcon = () => {
   const checkedAutoRecording = useRef(false);
 
   useEffect(() => {
-    if (
-      isRunningCloudRecording &&
-      recordingType !== RecordingType.RECORDING_TYPE_CLOUD
-    ) {
+    if (isRunningCloudRecording && recordingType !== RecordingType.RECORDING_TYPE_CLOUD) {
       if (recordingType === RecordingType.RECORDING_TYPE_LOCAL && isRecording) {
         stopLocalRecording();
       }
@@ -181,9 +171,7 @@ const RecordingIcon = () => {
       setDisable(true);
       setRecordingType(selectedRecordingType.type);
       startLocalRecording();
-    } else if (
-      selectedRecordingType.type === RecordingType.RECORDING_TYPE_CLOUD
-    ) {
+    } else if (selectedRecordingType.type === RecordingType.RECORDING_TYPE_CLOUD) {
       setDisable(true);
       setRecordingType(selectedRecordingType.type);
 
@@ -267,9 +255,7 @@ const RecordingIcon = () => {
 
   return (
     <>
-      {openModal && (
-        <RecordingModal showModal={openModal} onCloseModal={onCloseModal} />
-      )}
+      {openModal && <RecordingModal showModal={openModal} onCloseModal={onCloseModal} />}
       <button
         className={buttonClasses}
         onClick={() => onClickRecordingBtn()}

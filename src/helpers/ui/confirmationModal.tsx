@@ -10,13 +10,7 @@ interface IConfirmationModalProps {
   text: string;
 }
 
-const ConfirmationModal = ({
-  show,
-  onClose,
-  onConfirm,
-  title,
-  text,
-}: IConfirmationModalProps) => {
+const ConfirmationModal = ({ show, onClose, onConfirm, title, text }: IConfirmationModalProps) => {
   const { t } = useTranslation();
 
   const renderButtons = () => (
@@ -38,12 +32,7 @@ const ConfirmationModal = ({
   );
 
   return (
-    <Modal
-      show={show}
-      onClose={onClose}
-      title={title}
-      renderButtons={renderButtons}
-    >
+    <Modal show={show} onClose={onClose} title={title} renderButtons={renderButtons}>
       <p className="text-sm text-Gray-900 dark:text-white">{text}</p>
     </Modal>
   );

@@ -24,10 +24,7 @@ import {
 } from '../../../../store/slices/bottomIconsActivitySlice';
 import { updateSelectedAudioDevice } from '../../../../store/slices/roomSettingsSlice';
 
-export const useMicrophoneActivity = (
-  currentRoom: Room | undefined,
-  isMicMuted: boolean,
-) => {
+export const useMicrophoneActivity = (currentRoom: Room | undefined, isMicMuted: boolean) => {
   const conn = getNatsConn();
   const dispatch = useAppDispatch();
   const [showMutedTooltip, setShowMutedTooltip] = useState<boolean>(false);
@@ -194,47 +191,20 @@ export const useMicrophoneActivity = (
     }
 
     // Attach all event listeners.
-    currentRoom.localParticipant.on(
-      ParticipantEvent.IsSpeakingChanged,
-      speakingHandler,
-    );
-    currentRoom.localParticipant.on(
-      ParticipantEvent.LocalTrackPublished,
-      setupAnalyser,
-    );
-    currentRoom.localParticipant.on(
-      ParticipantEvent.LocalTrackUnpublished,
-      onTrackUnpublished,
-    );
+    currentRoom.localParticipant.on(ParticipantEvent.IsSpeakingChanged, speakingHandler);
+    currentRoom.localParticipant.on(ParticipantEvent.LocalTrackPublished, setupAnalyser);
+    currentRoom.localParticipant.on(ParticipantEvent.LocalTrackUnpublished, onTrackUnpublished);
     currentRoom.localParticipant.on(ParticipantEvent.TrackMuted, onTrackMuted);
-    currentRoom.localParticipant.on(
-      ParticipantEvent.TrackUnmuted,
-      onTrackUnmuted,
-    );
+    currentRoom.localParticipant.on(ParticipantEvent.TrackUnmuted, onTrackUnmuted);
 
     // Main cleanup for when the component unmounts.
     return () => {
       // Detach all listeners.
-      currentRoom.localParticipant.off(
-        ParticipantEvent.IsSpeakingChanged,
-        speakingHandler,
-      );
-      currentRoom.localParticipant.off(
-        ParticipantEvent.LocalTrackPublished,
-        setupAnalyser,
-      );
-      currentRoom.localParticipant.off(
-        ParticipantEvent.LocalTrackUnpublished,
-        onTrackUnpublished,
-      );
-      currentRoom.localParticipant.off(
-        ParticipantEvent.TrackMuted,
-        onTrackMuted,
-      );
-      currentRoom.localParticipant.off(
-        ParticipantEvent.TrackUnmuted,
-        onTrackUnmuted,
-      );
+      currentRoom.localParticipant.off(ParticipantEvent.IsSpeakingChanged, speakingHandler);
+      currentRoom.localParticipant.off(ParticipantEvent.LocalTrackPublished, setupAnalyser);
+      currentRoom.localParticipant.off(ParticipantEvent.LocalTrackUnpublished, onTrackUnpublished);
+      currentRoom.localParticipant.off(ParticipantEvent.TrackMuted, onTrackMuted);
+      currentRoom.localParticipant.off(ParticipantEvent.TrackUnmuted, onTrackUnmuted);
       // Final, robust cleanup.
       teardownAnalyser().then();
     };

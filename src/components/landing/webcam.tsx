@@ -15,10 +15,7 @@ import { inputMediaDeviceKind } from '../../helpers/utils';
 
 interface WebcamIconProps {
   videoDevices: IMediaDevice[];
-  enableMediaDevices(
-    type: inputMediaDeviceKind,
-    opts?: { quickEnable?: boolean },
-  ): Promise<void>;
+  enableMediaDevices(type: inputMediaDeviceKind, opts?: { quickEnable?: boolean }): Promise<void>;
   disableWebcam(): void;
   setSelectedVideoDevice: (value: SetStateAction<string>) => void;
   selectedVideoDevice: string;
@@ -52,11 +49,7 @@ const WebcamIcon = ({
         type="button"
         aria-label="Webcam"
         className="w-11 h-11 relative flex items-center justify-center cursor-pointer focus-ring"
-        onClick={() =>
-          videoDevices.length === 0
-            ? enableMediaDevices('video')
-            : disableWebcam()
-        }
+        onClick={() => (videoDevices.length === 0 ? enableMediaDevices('video') : disableWebcam())}
       >
         {videoDevices.length === 0 ? (
           <>
@@ -98,11 +91,7 @@ const WebcamIcon = ({
                             onClick={() => setSelectedVideoDevice(device.id)}
                           >
                             <span dir="ltr">{device.label}</span>
-                            {selectedVideoDevice === device.id ? (
-                              <CheckMarkIcon />
-                            ) : (
-                              ''
-                            )}
+                            {selectedVideoDevice === device.id ? <CheckMarkIcon /> : ''}
                           </button>
                         )}
                       </MenuItem>
@@ -121,9 +110,7 @@ const WebcamIcon = ({
                             type="button"
                             className="min-h-9 w-full flex items-center text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 cursor-pointer focus-ring"
                             onClick={() =>
-                              dispatch(
-                                updateShowVideoShareModal(!showVideoShareModal),
-                              )
+                              dispatch(updateShowVideoShareModal(!showVideoShareModal))
                             }
                           >
                             {t('landing.config-background-btn')}

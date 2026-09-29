@@ -13,18 +13,13 @@ export type BackgroundConfig = {
   url?: string;
 };
 
-const assetPath = getConfigValue(
-  'staticAssetsPath',
-  '/assets',
-  'STATIC_ASSETS_PATH',
-);
+const assetPath = getConfigValue('staticAssetsPath', '/assets', 'STATIC_ASSETS_PATH');
 const vbPaths = `${assetPath}/backgrounds/assets`;
 
 class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
   name = 'pnm-virtual-background';
 
-  private processor:
-    GaussianBlurBackgroundProcessor | VirtualBackgroundProcessor | null = null;
+  private processor: GaussianBlurBackgroundProcessor | VirtualBackgroundProcessor | null = null;
   private sourceElement: HTMLVideoElement | undefined = undefined;
   private canvas = document.createElement('canvas');
   private isProcessing = false;
@@ -78,10 +73,7 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
         assetsPath: vbPaths,
         useWebWorker: true,
       });
-    } else if (
-      this.backgroundConfig.type === 'image' &&
-      this.backgroundConfig.url
-    ) {
+    } else if (this.backgroundConfig.type === 'image' && this.backgroundConfig.url) {
       const backgroundImage = await this.loadImage(this.backgroundConfig.url);
       if (!backgroundImage) {
         return;
@@ -102,11 +94,7 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
 
   private renderLoop = async () => {
     while (this.isProcessing) {
-      if (
-        !this.processor ||
-        !this.sourceElement ||
-        this.sourceElement.videoWidth === 0
-      ) {
+      if (!this.processor || !this.sourceElement || this.sourceElement.videoWidth === 0) {
         // Source is not ready, wait briefly to avoid a busy loop.
         await new Promise((resolve) => setTimeout(resolve, 50));
         continue;
@@ -163,8 +151,7 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
     const currentTrack = this.sourceElement.srcObject
       ? (this.sourceElement.srcObject as MediaStream).getVideoTracks()[0]
       : null;
-    const isNewTrack =
-      opts.track !== currentTrack && opts.track.readyState === 'live';
+    const isNewTrack = opts.track !== currentTrack && opts.track.readyState === 'live';
 
     if (isNewTrack) {
       try {
@@ -173,10 +160,7 @@ class TwilioTrackProcessor implements TrackProcessor<Track.Kind.Video> {
         await this.sourceElement.play();
         await this.initTwilioProcessor();
       } catch (e) {
-        console.error(
-          'Failed to restart Twilio virtual background processor',
-          e,
-        );
+        console.error('Failed to restart Twilio virtual background processor', e);
       }
     }
 

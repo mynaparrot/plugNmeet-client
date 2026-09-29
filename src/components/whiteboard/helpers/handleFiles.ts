@@ -1,7 +1,4 @@
-import {
-  BinaryFileData,
-  ExcalidrawImperativeAPI,
-} from '@excalidraw/excalidraw/types';
+import { BinaryFileData, ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import {
   ExcalidrawImageElement,
   OrderedExcalidrawElement,
@@ -24,10 +21,7 @@ import {
 } from '../../../store/slices/interfaces/whiteboard';
 import { DB_STORE_NAMES, idbGet, idbStore } from '../../../helpers/libs/idb';
 import { addWhiteboardUploadedOfficeFile } from '../../../store/slices/whiteboard';
-import {
-  convertToExcalidrawElements,
-  newElementWith,
-} from '@excalidraw/excalidraw';
+import { convertToExcalidrawElements, newElementWith } from '@excalidraw/excalidraw';
 import {
   DEFAULT_A4_MARGIN,
   DEFAULT_PAGE_ORIENTATION,
@@ -35,11 +29,7 @@ import {
   VIRTUAL_WORKSPACE_WIDTH,
   VIRTUAL_WORKSPACE_HEIGHT,
 } from '../export-pdf/types';
-import {
-  getPageSize,
-  pageSizeFromMetaPixels,
-  resolvePageOrientation,
-} from '../export-pdf/utils';
+import { getPageSize, pageSizeFromMetaPixels, resolvePageOrientation } from '../export-pdf/utils';
 
 export interface FileReaderResult {
   image: BinaryFileData;
@@ -145,11 +135,8 @@ export const registerRoomWhiteboardFiles = async (roomId: string) => {
 };
 
 const getDownloadBaseUrl = () =>
-  getConfigValue<string>(
-    'serverUrl',
-    'http://localhost:8080',
-    'PLUG_N_MEET_SERVER_URL',
-  ) + '/download/uploadedFile/';
+  getConfigValue<string>('serverUrl', 'http://localhost:8080', 'PLUG_N_MEET_SERVER_URL') +
+  '/download/uploadedFile/';
 
 /** page_1.png path/url -> page_1_meta.json */
 export const toOfficePageMetaPath = (imagePathOrUrl: string): string => {
@@ -169,10 +156,7 @@ export const fetchOfficePageMeta = async (
     : getDownloadBaseUrl() + metaFilePathOrUrl;
 
   // 1. Check IDB cache first (same pattern as fetchAndCacheImage).
-  const cached = await idbGet<WhiteboardOfficePageMeta>(
-    DB_STORE_NAMES.OFFICE_PAGE_META_CACHE,
-    url,
-  );
+  const cached = await idbGet<WhiteboardOfficePageMeta>(DB_STORE_NAMES.OFFICE_PAGE_META_CACHE, url);
   if (cached?.orientation) {
     return {
       ...cached,
@@ -213,9 +197,7 @@ const getBoundaryMetrics = (
   pageHeight?: number,
 ) => {
   const size =
-    pageWidth && pageHeight
-      ? { width: pageWidth, height: pageHeight }
-      : getPageSize(orientation);
+    pageWidth && pageHeight ? { width: pageWidth, height: pageHeight } : getPageSize(orientation);
   const width = size.width - DEFAULT_A4_MARGIN;
   const height = size.height - DEFAULT_A4_MARGIN;
   return {
@@ -258,8 +240,7 @@ export const resolveOfficePageInfo = async (
   imageFilePathOrUrl?: string,
 ): Promise<OfficePageInfo> => {
   const metaPath =
-    metaFilePath ||
-    (imageFilePathOrUrl ? toOfficePageMetaPath(imageFilePathOrUrl) : undefined);
+    metaFilePath || (imageFilePathOrUrl ? toOfficePageMetaPath(imageFilePathOrUrl) : undefined);
 
   if (!metaPath) {
     return defaultOfficePageInfo();
@@ -271,8 +252,7 @@ export const resolveOfficePageInfo = async (
   }
 
   const orientation = resolvePageOrientation(meta.orientation);
-  const size =
-    pageSizeFromMetaPixels(meta.width, meta.height) ?? getPageSize(orientation);
+  const size = pageSizeFromMetaPixels(meta.width, meta.height) ?? getPageSize(orientation);
 
   return {
     orientation,
@@ -338,20 +318,14 @@ export const fetchFileWithElm = async (
       : Promise.resolve(defaultOfficePageInfo());
 
     // Use the shared helper to get the image data from cache or network.
-    const [imgData, pageInfo] = await Promise.all([
-      fetchAndCacheImage(url),
-      pageInfoPromise,
-    ]);
+    const [imgData, pageInfo] = await Promise.all([fetchAndCacheImage(url), pageInfoPromise]);
 
     if (!imgData) {
       // If fetching/caching failed, stop here.
       return null;
     }
 
-    const fileMimeType = imgData.substring(
-      'data:'.length,
-      imgData.indexOf(';base64'),
-    );
+    const fileMimeType = imgData.substring('data:'.length, imgData.indexOf(';base64'));
 
     if (
       fileMimeType === 'image/png' ||
@@ -446,11 +420,7 @@ const prepareForExcalidraw = (
     height: targetBoundaryHeight,
     startX: boundaryStartX,
     startY: boundaryStartY,
-  } = getBoundaryMetrics(
-    pageInfo.orientation,
-    pageInfo.pageWidth,
-    pageInfo.pageHeight,
-  );
+  } = getBoundaryMetrics(pageInfo.orientation, pageInfo.pageWidth, pageInfo.pageHeight);
 
   // Center horizontally; pin office pages to the top of the guide so landscape
   // (and letterboxed) pages don't leave a large empty band above the content.
@@ -492,9 +462,7 @@ export const getOfficePageInfo = async (
   pageNumber: number,
   pageFilesJson?: string,
 ): Promise<OfficePageInfo> => {
-  const pages = parsePageFiles(
-    pageFilesJson ?? store.getState().whiteboard.currentOfficeFilePages,
-  );
+  const pages = parsePageFiles(pageFilesJson ?? store.getState().whiteboard.currentOfficeFilePages);
   const page = pages.find((p) => p.currentPage === pageNumber);
   if (!page?.isOfficeFile) {
     return defaultOfficePageInfo();
@@ -575,11 +543,7 @@ export const uploadCanvasBinaryFile = (
           }
 
           const fileUrl =
-            getConfigValue<string>(
-              'serverUrl',
-              'http://localhost:8080',
-              'PLUG_N_MEET_SERVER_URL',
-            ) +
+            getConfigValue<string>('serverUrl', 'http://localhost:8080', 'PLUG_N_MEET_SERVER_URL') +
             '/download/uploadedFile/' +
             res.filePath;
 
@@ -590,8 +554,7 @@ export const uploadCanvasBinaryFile = (
             uploaderWhiteboardWidth: excalidrawAPI?.getAppState().width,
           };
 
-          const localElements =
-            excalidrawAPI?.getSceneElementsIncludingDeleted() ?? [];
+          const localElements = excalidrawAPI?.getSceneElementsIncludingDeleted() ?? [];
           let updatedImageElement: ExcalidrawImageElement | undefined;
 
           // Use map for a cleaner, immutable update.
@@ -660,9 +623,7 @@ export const getImageData = async (
     customData.isOfficeFile,
     customData.uploaderWhiteboardHeight,
     customData.uploaderWhiteboardWidth,
-    customData.isOfficeFile
-      ? toOfficePageMetaPath(customData.fileUrl)
-      : undefined,
+    customData.isOfficeFile ? toOfficePageMetaPath(customData.fileUrl) : undefined,
   );
 
   if (result) {
@@ -685,9 +646,7 @@ export const ensureImageDataIsLoaded = async (
   processedImageElements.set(elm.id, elm.fileId);
 
   const canvasFiles = excalidrawAPI.getFiles();
-  const fileExist = Object.values(canvasFiles).some(
-    (file) => file.id === elm.fileId,
-  );
+  const fileExist = Object.values(canvasFiles).some((file) => file.id === elm.fileId);
   if (fileExist) {
     // do nothing
     return;
@@ -717,10 +676,7 @@ export function cleanProcessedImageElementsMap() {
  * @param allPages An array of all IWhiteboardFile objects for the document.
  * @param currentPage The current page number (1-based).
  */
-export const preloadOfficeFilePages = (
-  allPages: IWhiteboardFile[],
-  currentPage: number,
-) => {
+export const preloadOfficeFilePages = (allPages: IWhiteboardFile[], currentPage: number) => {
   const pagesToPreload: number[] = [];
   const totalPages = allPages.length;
 
@@ -764,10 +720,7 @@ export const preloadOfficeFilePages = (
     await Promise.all([
       fetchAndCacheImage(url),
       fileToPreload.isOfficeFile
-        ? resolveOfficePageInfo(
-            fileToPreload.metaFilePath,
-            fileToPreload.filePath,
-          )
+        ? resolveOfficePageInfo(fileToPreload.metaFilePath, fileToPreload.filePath)
         : Promise.resolve(defaultOfficePageInfo()),
     ]);
   });

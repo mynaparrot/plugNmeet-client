@@ -25,8 +25,7 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
   const prevWidthRef = useRef(window.innerWidth);
 
   const [deviceClass, setDeviceClass] = useState<string>('');
-  const [orientationClass, setOrientationClass] =
-    useState<string>('landscape-device');
+  const [orientationClass, setOrientationClass] = useState<string>('landscape-device');
   const [screenHeight, setScreenHeight] = useState<string>('');
 
   const adjustScreenSize = useCallback(() => {
@@ -43,8 +42,7 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
       debounce((width: number) => {
         dispatch(updateScreenWidth(width));
 
-        const isActiveWhiteboard =
-          store.getState().bottomIconsActivity.isActiveWhiteboard;
+        const isActiveWhiteboard = store.getState().bottomIconsActivity.isActiveWhiteboard;
 
         if (isActiveWhiteboard) {
           dispatch(triggerRefreshWhiteboard());
@@ -67,8 +65,7 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
       adjustScreenSize();
       debouncedDispatchWidth(width);
 
-      const activeSidePanel =
-        store.getState().bottomIconsActivity.activeSidePanel;
+      const activeSidePanel = store.getState().bottomIconsActivity.activeSidePanel;
 
       if (
         prevWidthRef.current >= SIDE_PANEL_BREAKPOINT_PX &&
@@ -112,9 +109,7 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
   useEffect(() => {
     const md = new MobileDetect(window.navigator.userAgent);
 
-    const isIpad =
-      /Macintosh/i.test(window.navigator.userAgent) &&
-      navigator.maxTouchPoints > 1;
+    const isIpad = /Macintosh/i.test(window.navigator.userAgent) && navigator.maxTouchPoints > 1;
 
     const classes: string[] = [];
     let isSmallDevice = false;

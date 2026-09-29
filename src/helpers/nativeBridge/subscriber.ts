@@ -40,19 +40,13 @@ export const emit = (next: Partial<NativePublisherStatus>) => {
 
 export const getNativePublisherStatus = (): NativePublisherStatus => status;
 
-export const subscribeNativePublisherStatus = (
-  fn: () => void,
-): (() => void) => {
+export const subscribeNativePublisherStatus = (fn: () => void): (() => void) => {
   listeners.add(fn);
   return () => listeners.delete(fn);
 };
 
 /** Sync native media source lifecycle into Redux (single source of truth for UI). */
-const syncSourceToRedux = (
-  source: NativeMediaSource,
-  active: boolean,
-  muted: boolean,
-) => {
+const syncSourceToRedux = (source: NativeMediaSource, active: boolean, muted: boolean) => {
   switch (source) {
     case NativeMediaSource.MIC:
       store.dispatch(updateIsActiveMicrophone(active));
@@ -80,9 +74,7 @@ const syncSourceToRedux = (
 };
 
 // ---- native -> web status tracking (registered once at module load) ----
-window.addEventListener(NATIVE_BRIDGE_EVENT, ((
-  e: CustomEvent<NativeBridgeMsg>,
-) => {
+window.addEventListener(NATIVE_BRIDGE_EVENT, ((e: CustomEvent<NativeBridgeMsg>) => {
   const msg = e.detail;
   switch (msg.action) {
     case NativeBridgeActions.NATIVE_HEARTBEAT_PONG:
@@ -131,9 +123,7 @@ window.addEventListener(NATIVE_BRIDGE_EVENT, ((
         console.error(
           'NativeBridge error:',
           msg.payload.value.msg,
-          msg.payload.value.context
-            ? `(Context: ${msg.payload.value.context})`
-            : '',
+          msg.payload.value.context ? `(Context: ${msg.payload.value.context})` : '',
         );
         store.dispatch(
           addUserNotification({

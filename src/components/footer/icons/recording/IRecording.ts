@@ -1,7 +1,4 @@
-import {
-  CloudRecordingVariants,
-  RecorderBotOptions,
-} from 'plugnmeet-protocol-js';
+import { CloudRecordingVariants, RecorderBotOptions } from 'plugnmeet-protocol-js';
 
 export enum RecordingEvent {
   NONE = 'none',
