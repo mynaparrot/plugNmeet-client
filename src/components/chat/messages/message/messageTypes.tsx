@@ -8,23 +8,66 @@ import { selectMessageById } from '../../../../store/slices/chatMessagesSlice';
 import Avatar from './avatar';
 import DeferredMessageActions from './deferredMessageActions';
 import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
+import { NotifyIconSVG } from '../../../../assets/Icons/NotifyIconSVG';
 import { cleanHtmlForChat } from '../../../../helpers/utils';
 import { IBubbleProps, IReplyQuoteProps } from './types';
 
-export const SystemMessage = memo(({ message }: { message: string }) => {
+export const SystemMessage = memo(
+  ({ message, sentAt }: { message: string; sentAt?: string }) => {
+    const { t } = useTranslation();
+    return (
+      <>
+        <div
+          aria-hidden="true"
+          className="thumb h-7 3xl:h-9 w-7 3xl:w-9 rounded-lg 3xl:rounded-xl bg-Gray-200 dark:bg-Gray-700 text-[#00A1F2] flex items-center justify-center overflow-hidden shrink-0"
+        >
+          <span className="h-4 w-4 3xl:h-5 3xl:w-5">
+            <NotifyIconSVG classes="w-full h-full" />
+          </span>
+        </div>
+        <div className="content w-[calc(100%-36px)] 3xl:w-[calc(100%-48px)] flex-1">
+          <div className="name min-h-5 flex items-center text-sm text-Gray-800 dark:text-white font-medium pb-1.5 capitalize justify-between">
+            <p className="system-name">{t('right-panel.system-name')}</p>
+            {sentAt && (
+              <p className="time text-xs text-Gray-600 dark:text-dark-text">
+                {formatDate(sentAt)}
+              </p>
+            )}
+          </div>
+          <div
+            dir="auto"
+            className="message-content system py-2 px-2.5 border border-Gray-200 dark:border-Gray-700 rounded-lg overflow-hidden text-sm text-Gray-950 dark:text-white break-words rounded-ss-none bg-Gray-50 dark:bg-Gray-800"
+          >
+            <div
+              dir="auto"
+              className="break-words"
+              dangerouslySetInnerHTML={{ __html: cleanHtmlForChat(message) }}
+            />
+          </div>
+        </div>
+      </>
+    );
+  },
+);
+SystemMessage.displayName = 'SystemMessage';
+
+export const WelcomeMessage = memo(({ message }: { message: string }) => {
   return (
-    <div className="content w-full system flex items-center gap-2 text-center my-2">
-      <div className="flex-1 border-t border-dashed border-Gray-300 dark:border-Gray-800" />
+    <div className="content w-full welcome">
       <div
         dir="auto"
-        className="message-content text-xs text-Gray-600 dark:text-dark-text px-2"
-        dangerouslySetInnerHTML={{ __html: cleanHtmlForChat(message) }}
-      />
-      <div className="flex-1 border-t border-dashed border-Gray-300 dark:border-Gray-800" />
+        className="message-content markdown-content my-2 rounded-xl border border-[#00A1F2]/40 bg-[#00A1F2]/10 dark:bg-[#00A1F2]/15 px-3.5 py-3 text-sm text-Gray-950 dark:text-white break-words"
+      >
+        <div
+          dir="auto"
+          className="break-words"
+          dangerouslySetInnerHTML={{ __html: cleanHtmlForChat(message) }}
+        />
+      </div>
     </div>
   );
 });
-SystemMessage.displayName = 'SystemMessage';
+WelcomeMessage.displayName = 'WelcomeMessage';
 
 export const ReplyQuote = memo(
   ({

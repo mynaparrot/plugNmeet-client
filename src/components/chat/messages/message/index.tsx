@@ -2,7 +2,13 @@ import React, { memo, ReactElement } from 'react';
 import { ChatMessage } from 'plugnmeet-protocol-js';
 
 import { ICurrentUser } from '../../../../store/slices/interfaces/session';
-import { MyMessage, OtherUserMessage, SystemMessage } from './messageTypes';
+import { WELCOME_MESSAGE_ID } from '../../../../store/slices/chatMessagesSlice';
+import {
+  MyMessage,
+  OtherUserMessage,
+  SystemMessage,
+  WelcomeMessage,
+} from './messageTypes';
 
 interface IMessageProps {
   body: ChatMessage;
@@ -20,7 +26,12 @@ const Message = ({
   let content: ReactElement | null;
 
   if (body.fromUserId === 'system') {
-    content = <SystemMessage message={body.message} />;
+    content =
+      body.id === WELCOME_MESSAGE_ID ? (
+        <WelcomeMessage message={body.message} />
+      ) : (
+        <SystemMessage message={body.message} sentAt={body.sentAt} />
+      );
   } else if (currentUser?.userId === body.fromUserId) {
     content = (
       <MyMessage

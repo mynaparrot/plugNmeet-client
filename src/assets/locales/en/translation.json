@@ -332,7 +332,8 @@
     "new-messages": "New messages",
     "scroll-to-bottom": "Scroll to bottom",
     "sync-chat": "Sync chat with peers",
-    "load-earlier-messages": "Load earlier messages"
+    "load-earlier-messages": "Load earlier messages",
+    "system-name": "System"
   },
   "footer": {
     "aria-label": "Meeting controls",
