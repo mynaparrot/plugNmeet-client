@@ -332,7 +332,8 @@
     "new-messages": "Nuevos mensajes",
     "scroll-to-bottom": "Ir al final",
     "sync-chat": "Sincronizar chat con contactos",
-    "load-earlier-messages": "Cargar mensajes anteriores"
+    "load-earlier-messages": "Cargar mensajes anteriores",
+    "system-name": "Sistema"
   },
   "footer": {
     "aria-label": "Controles de reuniones",
