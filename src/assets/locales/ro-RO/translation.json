@@ -332,7 +332,8 @@
     "new-messages": "Mesaje noi",
     "scroll-to-bottom": "Derulează până jos",
     "sync-chat": "Chat sincronizat cu colegii",
-    "load-earlier-messages": "Încarcă mesajele anterioare"
+    "load-earlier-messages": "Încarcă mesajele anterioare",
+    "system-name": "Sistem"
   },
   "footer": {
     "aria-label": "Controlul ședințelor",
