@@ -332,7 +332,8 @@
     "new-messages": "Nye beskeder",
     "scroll-to-bottom": "Scroll ned til bunden",
     "sync-chat": "Synkroniser chat med ligesindede",
-    "load-earlier-messages": "Indlæs tidligere beskeder"
+    "load-earlier-messages": "Indlæs tidligere beskeder",
+    "system-name": "System"
   },
   "footer": {
     "aria-label": "Mødekontroller",
