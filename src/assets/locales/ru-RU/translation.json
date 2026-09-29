@@ -332,7 +332,8 @@
     "new-messages": "Новые сообщения",
     "scroll-to-bottom": "Прокрутите вниз",
     "sync-chat": "Синхронизируйте чат с коллегами",
-    "load-earlier-messages": "Загрузка предыдущих сообщений"
+    "load-earlier-messages": "Загрузка предыдущих сообщений",
+    "system-name": "Система"
   },
   "footer": {
     "aria-label": "Контроль собраний",
