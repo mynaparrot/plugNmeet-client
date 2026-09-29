@@ -332,7 +332,8 @@
     "new-messages": "Nové zprávy",
     "scroll-to-bottom": "Posuňte se na konec",
     "sync-chat": "Synchronizujte chat s kolegy",
-    "load-earlier-messages": "Načíst dřívější zprávy"
+    "load-earlier-messages": "Načíst dřívější zprávy",
+    "system-name": "Systém"
   },
   "footer": {
     "aria-label": "Řízení setkání",
