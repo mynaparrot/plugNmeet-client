@@ -332,7 +332,8 @@
     "new-messages": "پیام های جدید",
     "scroll-to-bottom": "به پایین صفحه بروید",
     "sync-chat": "همگام سازی چت با همتایان",
-    "load-earlier-messages": "بارگذاری پیام های قبلی"
+    "load-earlier-messages": "بارگذاری پیام های قبلی",
+    "system-name": "سیستم"
   },
   "footer": {
     "aria-label": "کنترل‌های جلسه",
