@@ -332,7 +332,8 @@
     "new-messages": "新しいメッセージ",
     "scroll-to-bottom": "一番下までスクロール",
     "sync-chat": "ピアとチャットを同期する",
-    "load-earlier-messages": "以前のメッセージを読み込む"
+    "load-earlier-messages": "以前のメッセージを読み込む",
+    "system-name": "システム"
   },
   "footer": {
     "aria-label": "会議制御",
