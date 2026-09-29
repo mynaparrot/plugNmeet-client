@@ -121,6 +121,7 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
     return () => {
       clearTimeout(timer);
     };
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [chatMessages, isRecorder, recorderBotOptions, dispatch]);
 
   // Cap the rendered window while at the bottom; freeze it while scrolled up.
@@ -165,6 +166,7 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
   // in a rapid burst. It will only scroll once after the messages stop arriving.
   // oxlint-disable-next-line exhaustive-deps
   const debouncedScrollToBottom = useCallback(
+    // oxlint-disable-next-line react/use-memo
     debounce(() => scrollToBottom(), 50),
     [scrollToBottom],
   );
@@ -172,6 +174,7 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
   useEffect(() => {
     // When new messages arrive, trigger the debounced scroll.
     debouncedScrollToBottom();
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [chatMessages, debouncedScrollToBottom]);
 
   // Re-check bottom state after new messages render at the bottom.
@@ -181,6 +184,7 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
       setAtBottom(true);
       setDividerId(null);
     }
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [chatMessages, setAtBottom]);
 
   const forceScrollToBottom = useCallback(() => {
@@ -252,6 +256,7 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
         scrollAndHighlight(target);
       }
     }
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [windowStart]);
 
   const renderedMessages = chatMessages.slice(windowStart);

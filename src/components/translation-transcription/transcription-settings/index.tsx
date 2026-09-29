@@ -102,7 +102,7 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
     }
 
     dispatch(updateDisplaySpeechSettingsModal(false));
-    // oxlint-disable-next-line exhaustive-deps
+    // oxlint-disable-next-line exhaustive-deps, react/memo-dependencies
   }, [
     selectedSpeechUsers,
     selectedSpeechLangs,
@@ -132,9 +132,12 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
 
   // This effect will clear the validation error as soon as the user
   // starts changing the settings, providing a better user experience.
+  // oxlint-disable-next-line react/exhaustive-effect-dependencies
   useEffect(() => {
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
     setErrorMsg(undefined);
     //eslint-disable-next-line
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies, react-hooks/exhaustive-deps
   }, [selectedSpeechLangs, selectedSpeechUsers, enableTranslation, selectedTransLangs]);
 
   const renderContent = () => (

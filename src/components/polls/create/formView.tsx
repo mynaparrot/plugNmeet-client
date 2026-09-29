@@ -147,6 +147,7 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
   // Clear stale inline validation errors as the form is edited
   useEffect(() => {
     setError('');
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [question, options, isQuiz]);
 
   const onSubmit = (e: SubmitEvent<HTMLFormElement>) => {

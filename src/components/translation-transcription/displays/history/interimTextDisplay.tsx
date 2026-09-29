@@ -20,6 +20,7 @@ const InterimTextDisplay = ({ scrollToBottom }: IInterimTextDisplayProps) => {
 
   useEffect(() => {
     throttledScroll();
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [interimText, throttledScroll]);
 
   return (

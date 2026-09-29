@@ -18,6 +18,7 @@ const SubtitleFontSizeSlider = () => {
   // It will dispatch at most once every 300ms.
   // oxlint-disable-next-line exhaustive-deps
   const throttledDispatch = useCallback(
+    // oxlint-disable-next-line react/use-memo
     throttle((size: number) => {
       dispatch(updateSubtitleFontSize(size));
     }, 300),

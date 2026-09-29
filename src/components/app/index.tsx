@@ -52,6 +52,7 @@ const App = () => {
     document.body.dir = i18n.dir();
     document.documentElement.dir = i18n.dir();
     document.documentElement.lang = i18n.language;
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [i18n, i18n.language]);
 
   useEffect(() => {
@@ -75,6 +76,7 @@ const App = () => {
     });
 
     return () => observer.disconnect();
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [i18n, i18n.language]);
 
   useEffect(() => {

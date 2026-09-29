@@ -47,7 +47,7 @@ const TranslationTranscription = () => {
     } else {
       stop();
     }
-    // oxlint-disable-next-line exhaustive-deps
+    // oxlint-disable-next-line exhaustive-deps, react/exhaustive-effect-dependencies
   }, [enabledSpeechSynthesis]);
 
   return (

@@ -55,7 +55,7 @@ const ChatTranslationSettings = ({ setErrorMsg }: ChatTranslationSettingsProps) 
       return;
     }
     dispatch(updateDisplaySpeechSettingsModal(false));
-    // oxlint-disable-next-line exhaustive-deps
+    // oxlint-disable-next-line exhaustive-deps, react/memo-dependencies
   }, [setErrorMsg, selectedTransLangs, selectedDefaultLang]);
 
   const stopService = useCallback(async () => {
@@ -72,7 +72,7 @@ const ChatTranslationSettings = ({ setErrorMsg }: ChatTranslationSettingsProps) 
       return;
     }
     dispatch(updateDisplaySpeechSettingsModal(false));
-    // oxlint-disable-next-line exhaustive-deps
+    // oxlint-disable-next-line exhaustive-deps, react/memo-dependencies
   }, []);
 
   return (

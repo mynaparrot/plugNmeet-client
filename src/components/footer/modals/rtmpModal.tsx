@@ -142,7 +142,7 @@ const RtmpModal = () => {
       dispatch(updateShowRtmpModal(false));
       setIsLoading(false);
     },
-    // oxlint-disable-next-line exhaustive-deps
+    // oxlint-disable-next-line react/memo-dependencies react-hooks/exhaustive-deps
     [provider, serverUrl, serverKey, dispatch, t],
   );
 

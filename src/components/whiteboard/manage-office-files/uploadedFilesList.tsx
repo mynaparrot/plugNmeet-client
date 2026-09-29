@@ -47,6 +47,7 @@ const UploadedFilesList = ({
       await sleep(500);
       setIsLoading(false);
     }
+    // oxlint-disable-next-line react/memo-dependencies
   }, [roomId]);
 
   const handleShareDownloadLink = async (e: React.MouseEvent, file: IWhiteboardOfficeFile) => {

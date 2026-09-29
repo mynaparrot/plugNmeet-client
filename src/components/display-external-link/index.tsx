@@ -18,6 +18,7 @@ const DisplayExternalLink = () => {
   useEffect(() => {
     // Reset loaded state when the link changes
     setLoaded(false);
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [link]);
 
   const onLoad = () => {

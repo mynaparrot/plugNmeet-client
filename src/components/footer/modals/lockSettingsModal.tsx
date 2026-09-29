@@ -69,7 +69,7 @@ const LockSettingsModal = () => {
 
       setIsBusy(false);
     },
-    // oxlint-disable-next-line exhaustive-deps
+    // oxlint-disable-next-line exhaustive-deps, react/memo-dependencies
     [isBusy, t, dispatch],
   );
 

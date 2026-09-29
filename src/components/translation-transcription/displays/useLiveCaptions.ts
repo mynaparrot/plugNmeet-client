@@ -105,6 +105,7 @@ export const useLiveCaptions = () => {
     const timer = window.setTimeout(resetCaptions, CLEAR_DELAY);
 
     return () => window.clearTimeout(timer);
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [finalBuffer, interimText?.text, interimText?.from, resetCaptions]);
 
   /*

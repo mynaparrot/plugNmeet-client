@@ -57,7 +57,7 @@ const ActiveSpeakers = ({ activeSidePanel }) => {
     return () => {
       reOrderWebcams.cancel();
     };
-    // oxlint-disable-next-line exhaustive-deps
+    // oxlint-disable-next-line exhaustive-deps, react/exhaustive-effect-dependencies
   }, [speakingParticipantIds, room, focusActiveSpeakerWebcam, hasWebcamPages]);
 
   const activeSpeakersElms = useMemo(() => {

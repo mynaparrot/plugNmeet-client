@@ -63,6 +63,7 @@ const useClientCustomization = () => {
 
   // oxlint-disable-next-line exhaustive-deps
   const freezeConfig = useCallback(
+    // oxlint-disable-next-line react/use-memo
     once(() => {
       setTimeout(() => {
         const config = (window as any).plugNmeetConfig;
@@ -253,6 +254,7 @@ const useClientCustomization = () => {
         head.removeChild(link);
       }
     };
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [dispatch, freezeConfig]);
 };
 

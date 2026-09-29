@@ -58,6 +58,7 @@ const InsightsAiTextChat = () => {
       }, 100);
       return () => clearTimeout(timer);
     }
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [allMessages, scrollRef]);
 
   const close = useCallback(() => {

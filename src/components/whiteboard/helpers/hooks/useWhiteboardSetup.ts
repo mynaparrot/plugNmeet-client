@@ -54,6 +54,7 @@ const useWhiteboardSetup = ({ excalidrawAPI, canEdit }: IUseWhiteboardSetup) => 
     if (excalidrawAPI) {
       getWhiteboardController().refreshCollaborators();
     }
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [excalidrawAPI, activeParticipantIds]);
 
   return { viewModeEnabled };

@@ -104,6 +104,7 @@ const useWebcamPublisher = () => {
         publishing.current = false;
       }
     },
+    // oxlint-disable-next-line react/memo-dependencies
     [dispatch, room],
   );
 

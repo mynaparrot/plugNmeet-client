@@ -31,6 +31,7 @@ export const useWhiteboard = (
     if (isActiveWhiteboard) {
       debouncedRefresh();
     }
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [showVideoElms, isEnabledExtendedVerticalCamView, isActiveWhiteboard, debouncedRefresh]);
 
   return useMemo(() => {

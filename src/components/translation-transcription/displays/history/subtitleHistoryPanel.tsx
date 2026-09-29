@@ -85,6 +85,7 @@ const SubtitleHistoryPanel = ({ showPopover, setShowPopover }: SubtitleHistoryPa
 
   useEffect(() => {
     scrollToBottom();
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [lastFinalTexts.length, scrollToBottom]);
 
   // Always scroll to the bottom when the panel is first opened.

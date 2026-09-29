@@ -74,6 +74,7 @@ const UserNotifications = () => {
         toastElm = <GenericNotification key={lastNotif.created} notification={lastNotif} />;
     }
     displayToast(toastElm, lastNotif);
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [userNotifications]);
 
   const displayIcon = (open: boolean) => {

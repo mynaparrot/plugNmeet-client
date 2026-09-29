@@ -181,6 +181,7 @@ export const useMicrophonePreview = (
       cleanup();
       setActive(false);
     };
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [deviceId, enabled, resetKey]);
 
   return { level, active, error };

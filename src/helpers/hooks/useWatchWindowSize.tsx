@@ -57,6 +57,7 @@ const useWatchWindowSize = (currentRoom: Room | undefined) => {
     return () => {
       debouncedAdjustScreenSize.cancel();
     };
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [debouncedAdjustScreenSize, currentRoom?.state]);
 
   useEffect(() => {

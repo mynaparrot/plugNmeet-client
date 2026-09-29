@@ -83,6 +83,7 @@ const ReactPlayerComponent = ({ src, isPresenter }: IReactPlayerComponentProps) 
 
   // oxlint-disable-next-line exhaustive-deps
   const onSeeked = useCallback(
+    // oxlint-disable-next-line react/use-memo
     debounce(async () => {
       if (!player.current) return;
 

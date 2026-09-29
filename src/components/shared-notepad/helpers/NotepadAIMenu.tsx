@@ -42,6 +42,7 @@ const NotepadAIMenu = ({ editor, onClose, scrollToBottom, selection }: INotepadA
   // Keep the highlighted item in sync whenever the filtered list changes.
   useEffect(() => {
     setSelectedIndex(0);
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [prompt, setSelectedIndex]);
 
   const runCustomPrompt = useCallback(() => {

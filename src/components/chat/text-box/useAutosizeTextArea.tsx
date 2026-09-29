@@ -24,5 +24,6 @@ export const useAutosizeTextArea = (textAreaRef: HTMLTextAreaElement | null, val
       // Trying to set this with state or a ref will produce an incorrect value.
       textAreaRef.style.height = newHeight + 'px';
     }
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [textAreaRef, value]);
 };

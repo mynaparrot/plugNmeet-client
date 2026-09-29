@@ -10,5 +10,6 @@ export const useNotepadController = () => {
 
   useEffect(() => {
     void getNotepadController().sync();
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [features?.isActive, features?.isAllow]);
 };

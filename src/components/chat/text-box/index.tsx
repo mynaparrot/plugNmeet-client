@@ -68,10 +68,11 @@ const TextBoxArea = () => {
       textAreaRef.current?.focus();
     } else if (editDraft) {
       // target vanished (e.g. deleted) — leave edit mode
+      // oxlint-disable-next-line react/exhaustive-effect-dependencies
       dispatch(clearEditDraft());
       setMessage('');
     }
-    // oxlint-disable-next-line exhaustive-deps
+    // oxlint-disable-next-line exhaustive-deps, react/exhaustive-effect-dependencies
   }, [editTarget?.id, editDraft?.id]);
 
   // Focus the editor when a reply is activated, mirroring edit mode.
