@@ -46,7 +46,7 @@ const VideoComponent = ({ userId, name, isLocal, track, displayPinIcon }: IVideo
         <div className="camera-video-player">
           <MicStatus userId={userId} />
           <VideoElm track={track} ref={videoRef} mirrored={isLocal} />
-          <div className="cam-icons w-max h-auto flex items-center gap-2 absolute top-1/2 start-1/2 ltr:-translate-x-1/2 rtl:translate-x-1/2 -translate-y-1/2 z-999 transition-all duration-300 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 has-focus-visible:opacity-100 max-md:opacity-100 max-md:pointer-events-auto">
+          <div className="cam-icons w-max h-auto flex items-center gap-2 absolute top-1/2 start-1/2 ltr:-translate-x-1/2 rtl:translate-x-1/2 -translate-y-1/2 z-999 transition-all duration-300 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 has-focus-visible:opacity-100">
             {displayPinIcon ? <PinWebcam userId={userId} /> : null}
             <button
               className="cam-fullscreen cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center"
