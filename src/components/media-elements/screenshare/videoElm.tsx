@@ -5,7 +5,8 @@ import clsx from 'clsx';
 
 // @ts-ignore not error
 import './style.css';
-import { useAppSelector } from '../../../store';
+import { store, useAppSelector } from '../../../store';
+import { participantsSelector } from '../../../store/slices/participantSlice';
 import { LoadingIcon } from '../../../assets/Icons/Loading';
 
 /** Hide spinner even if media events never fire (headless Chrome / MediaStream quirks). */
@@ -13,12 +14,16 @@ const LOADED_FALLBACK_MS = 3000;
 
 interface IVideoElmProps {
   track: RemoteTrackPublication | LocalTrackPublication;
+  userId?: string;
 }
 
-const VideoElm = ({ track }: IVideoElmProps) => {
+const VideoElm = ({ track, userId }: IVideoElmProps) => {
   const { t } = useTranslation();
   const ref = useRef<HTMLVideoElement>(null);
   const isNatsServerConnected = useAppSelector((state) => state.roomSettings.isNatsServerConnected);
+  const name = userId
+    ? (participantsSelector.selectById(store.getState(), userId)?.name ?? userId)
+    : '';
   const [isLoaded, setIsLoaded] = useState(false);
   const self = useMemo(() => track instanceof LocalTrackPublication, [track]);
 
@@ -89,36 +94,45 @@ const VideoElm = ({ track }: IVideoElmProps) => {
   }, []);
 
   return (
-    <div className="screen-share-video group relative w-full h-full overflow-hidden">
-      {!isLoaded && (
-        <div className="loading-status absolute flex h-full w-full items-center justify-center bg-black/50">
-          <LoadingIcon
-            className="inline h-10 w-10 animate-spin text-gray-200"
-            fillColor="#004D90"
-          />
-        </div>
-      )}
-      {isLoaded && (
-        <button
-          className="absolute z-10 bottom-2 end-2 p-1 bg-black/50 rounded-md opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-          onClick={fullScreen}
-          aria-label="Fullscreen"
-        >
-          <i className="icon pnm-fullscreen text-[18px] text-white" />
-        </button>
-      )}
-      <video
-        ref={ref}
-        className={clsx('video-player absolute w-full h-full', {
-          'self-screen-share !w-auto !h-52 !start-1/2 !top-1/2 ltr:!-translate-x-1/2 rtl:!translate-x-1/2 !-translate-y-1/2':
-            self,
-          'remote-screen-share start-0 top-0': !self,
-        })}
-      />
-      {self && (
-        <div className="absolute start-1/2 top-1/2 ltr:-translate-x-1/2 rtl:translate-x-1/2 -translate-y-1/2 text-center w-full pt-64 pointer-events-none">
-          <span className="inline-block text-sm 3xl:text-base text-white bg-black/70 dark:bg-gray-900/80 rounded-md px-3 py-1.5">
-            {t('notifications.you-are-sharing-screen')}
+    <div className="screen-share-video group relative w-full h-full flex flex-col overflow-hidden">
+      <div className="relative w-full flex-1 min-h-0">
+        {!isLoaded && (
+          <div className="loading-status absolute flex h-full w-full items-center justify-center bg-black/50">
+            <LoadingIcon
+              className="inline h-10 w-10 animate-spin text-gray-200"
+              fillColor="#004D90"
+            />
+          </div>
+        )}
+        {isLoaded && (
+          <button
+            className="absolute z-10 bottom-2 end-2 p-1 bg-black/50 rounded-md opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+            onClick={fullScreen}
+            aria-label="Fullscreen"
+          >
+            <i className="icon pnm-fullscreen text-[18px] text-white" />
+          </button>
+        )}
+        <video
+          ref={ref}
+          className={clsx('video-player absolute w-full h-full', {
+            'self-screen-share !w-auto !h-52 !start-1/2 !top-1/2 ltr:!-translate-x-1/2 rtl:!translate-x-1/2 !-translate-y-1/2':
+              self,
+            'remote-screen-share start-0 top-0': !self,
+          })}
+        />
+        {self && (
+          <div className="absolute start-1/2 top-1/2 ltr:-translate-x-1/2 rtl:translate-x-1/2 -translate-y-1/2 text-center w-full pt-64 pointer-events-none">
+            <span className="inline-block text-sm 3xl:text-base text-white bg-black/70 dark:bg-gray-900/80 rounded-md px-3 py-1.5">
+              {t('notifications.you-are-sharing-screen')}
+            </span>
+          </div>
+        )}
+      </div>
+      {!self && userId && name && (
+        <div className="shrink-0 self-start w-max max-w-full bg-black/70 dark:bg-gray-900/80 rounded-md px-3 py-1.5">
+          <span className="block truncate text-xs md:text-sm font-medium text-white">
+            {t('notifications.screenshare-presenter', { name })}
           </span>
         </div>
       )}

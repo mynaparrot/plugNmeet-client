@@ -88,7 +88,7 @@ const ScreenShareElements = () => {
                 </div>,
               );
             } else {
-              elm.push(<VideoElm key={track.trackSid} track={track} />);
+              elm.push(<VideoElm key={track.trackSid} track={track} userId={userId} />);
             }
           } else if (
             track.source === Track.Source.ScreenShareAudio &&
