@@ -130,7 +130,7 @@ const VideoElm = ({ track, userId }: IVideoElmProps) => {
         )}
       </div>
       {!self && userId && name && (
-        <div className="shrink-0 self-start w-max max-w-full bg-black/70 dark:bg-gray-900/80 rounded-md px-3 py-1.5">
+        <div className="shrink-0 self-start w-max max-w-full bg-black/70 dark:bg-gray-900/80 rounded-e-md px-3 py-1.5">
           <span className="block truncate text-xs md:text-sm font-medium text-white">
             {t('notifications.screenshare-presenter', { name })}
           </span>
