@@ -10,15 +10,12 @@ import {
 } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
 import clsx from 'clsx';
-import { throttle } from 'es-toolkit';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { getNatsConn } from '../../../helpers/nats';
 import { addReaction, REACTION_EMOJIS } from '../../../store/slices/reactionsSlice';
 import { ReactionsIconSVG } from '../../../assets/Icons/ReactionsIconSVG';
 import { HandsIconSVG } from '../../../assets/Icons/HandsIconSVG';
-
-const THROTTLE_MS = 500;
 
 const ReactionsIcon = () => {
   const { t } = useTranslation();
@@ -40,9 +37,9 @@ const ReactionsIcon = () => {
   );
   const isActiveRaisehand = useAppSelector((state) => state.bottomIconsActivity.isActiveRaisehand);
 
-  // oxlint-disable-next-line react-hooks/exhaustive-deps
   const sendReaction = useCallback(
-    throttle((emoji: string) => {
+    (emoji: string) => {
+      const conn = getNatsConn();
       if (!conn) {
         return;
       }
@@ -54,8 +51,7 @@ const ReactionsIcon = () => {
         createdAt: Date.now(),
       };
 
-      conn.sendDataMessage(DataMsgBodyType.REACTION, JSON.stringify(msg));
-
+      void conn.sendDataMessage(DataMsgBodyType.REACTION, JSON.stringify(msg));
       dispatch(addReaction(msg));
 
       conn.sendAnalyticsData(
@@ -65,7 +61,7 @@ const ReactionsIcon = () => {
         undefined,
         '1',
       );
-    }, THROTTLE_MS),
+    },
     [dispatch, currentUser],
   );
 
