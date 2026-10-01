@@ -331,6 +331,10 @@ export class WhiteboardController {
       // checkpoint so the server keeps a consistent latest full state.
       await this.saveNow(true);
     }
+    // Track the last-seen live state in the local export cache (presenter-only;
+    // flushLocalSnapshot is a no-op for other roles).
+    await this.flushLocalSnapshot();
+
     if (this.syncRetryTimer) {
       clearTimeout(this.syncRetryTimer);
       this.syncRetryTimer = null;
@@ -395,15 +399,7 @@ export class WhiteboardController {
         console.warn(
           `[WhiteboardController] SESSION_DATA payload for ${plan.key} is too large (${wire.length} bytes); skipping upload`,
         );
-        if (plan.kind === 'checkpoint') {
-          // Still refresh the local export cache for checkpoints.
-          await saveWhiteboardPageSnapshot(fileId, this.page, plan.update);
-        }
         return;
-      }
-      if (plan.kind === 'checkpoint') {
-        // IndexedDB is now only an export cache.
-        await saveWhiteboardPageSnapshot(fileId, this.page, plan.update);
       }
       // Server is the source of truth for sync.
       await this.uploadSessionData(wire, plan.key);
@@ -413,6 +409,15 @@ export class WhiteboardController {
     } catch (e) {
       console.error('[WhiteboardController] failed to save page', e);
     }
+  };
+
+  /**
+   * Unconditionally persist the active (fileId, page) scope from the live doc
+   * to the local IDB export cache.
+   */
+  flushLocalSnapshot = async () => {
+    if (!this.isCurrentUserPresenter() || !this.doc || !this.fileId) return;
+    await saveWhiteboardPageSnapshot(this.fileId, this.page, Y.encodeStateAsUpdate(this.doc));
   };
 
   /**
@@ -442,9 +447,16 @@ export class WhiteboardController {
    */
   private scheduleSave = () => {
     if (this.saveTimer) return; // a flush is already scheduled
-    this.saveTimer = setTimeout(() => {
+    this.saveTimer = setTimeout(async () => {
       this.saveTimer = null;
-      void this.saveNow();
+      // Server protocol save first, then mirror the live doc into the local IDB
+      // export cache so it always holds current data during active editing.
+      try {
+        await this.saveNow();
+        await this.flushLocalSnapshot();
+      } catch (e) {
+        console.error('[WhiteboardController] scheduled save failed', e);
+      }
     }, SAVE_MAX_WAIT_MS);
   };
 

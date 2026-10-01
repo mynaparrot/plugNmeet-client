@@ -35,6 +35,7 @@ const ExportPDFModal = ({ excalidrawAPI, onClose, isOpen }: ExportPDFModalProps)
   useEffect(() => {
     const fetchAvailablePages = async () => {
       if (!isOpen) return;
+      await getWhiteboardController().flushLocalSnapshot();
       // Ensure the export cache has all pages (server is the source of truth).
       await getWhiteboardController().backfillMissingPages();
       const pageNumbers = await listWhiteboardPages(fileId);

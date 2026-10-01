@@ -3,7 +3,7 @@ import { UploadedFileMergeReqSchema, UploadedFileResSchema } from 'plugnmeet-pro
 import { ExcalidrawElement, ExcalidrawImageElement } from '@excalidraw/excalidraw/element/types';
 import { AppState, BinaryFileData, ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import { toast, Id } from 'react-toastify';
-import { exportToBlob, MIME_TYPES } from '@excalidraw/excalidraw';
+import { exportToCanvas } from '@excalidraw/excalidraw';
 
 // @ts-expect-error not an error
 import ExportWorkerUrl from './exportPdf.worker?worker&url';
@@ -16,7 +16,11 @@ import {
   ResolvedPageInfo,
   resolvePageInfoFromElements,
 } from '../helpers/utils';
-import { decodeWhiteboardPageSnapshot, loadWhiteboardPageSnapshot } from '../collab';
+import {
+  decodeWhiteboardPageSnapshot,
+  getWhiteboardController,
+  loadWhiteboardPageSnapshot,
+} from '../collab';
 import { getImageData, getOfficePageInfo, ImageCustomData } from '../helpers/handleFiles';
 import { SCALE, WorkerInput, WorkerMessage } from './types';
 import { CorsWorker } from '../../../helpers/libs/corsWorker';
@@ -69,6 +73,9 @@ class ExportPdfService {
       autoClose: false,
       closeButton: false,
     });
+
+    // ensure we've save current page's state to IDB before starting export
+    await getWhiteboardController().flushLocalSnapshot();
 
     const exportId = `export-pdf-${params.fileId}`;
     const authToken = store.getState().session.token;
@@ -319,14 +326,13 @@ class ExportPdfService {
     const exportWidth = Math.max(targetWidth, maxX - startX);
     const exportHeight = Math.max(targetHeight, maxY - startY);
 
-    const blob = await exportToBlob({
+    const canvas = await exportToCanvas({
       elements,
       appState: {
         ...appState,
         exportBackground: true,
       },
       files,
-      mimeType: MIME_TYPES.png,
       exportPadding: 0,
       getDimensions: () => ({
         width: exportWidth * SCALE,
@@ -334,7 +340,9 @@ class ExportPdfService {
         scale: SCALE,
       }),
     });
-    return await createImageBitmap(blob);
+
+    // colorSpaceConversion: "none" keeps pixels byte-identical to the canvas.
+    return await createImageBitmap(canvas, { colorSpaceConversion: 'none' });
   }
 
   private async runExportWorker(
@@ -349,7 +357,13 @@ class ExportPdfService {
     exportId: string,
     authToken: string,
   ) {
-    const worker = await CorsWorker.create(ExportWorkerUrl);
+    let worker: Worker;
+    try {
+      worker = await CorsWorker.create(ExportWorkerUrl);
+    } catch (error) {
+      bitmap.close();
+      throw error;
+    }
 
     return new Promise<void>((resolve, reject) => {
       worker.onmessage = (event: MessageEvent<WorkerMessage>) => {
@@ -400,7 +414,12 @@ class ExportPdfService {
         uploadUrl: this.uploadUrl,
       };
 
-      worker.postMessage(workerInput, [workerInput.pageImageBitmap]);
+      try {
+        worker.postMessage(workerInput, [workerInput.pageImageBitmap]);
+      } catch (error) {
+        bitmap.close();
+        reject(error instanceof Error ? error : new Error(String(error)));
+      }
     });
   }
 }
