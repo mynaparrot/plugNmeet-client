@@ -94,7 +94,7 @@ importers:
         version: 0.7.0(react@19.3.0)
       react-dnd:
         specifier: 16.0.1
-        version: 16.0.1(@types/node@26.6.2)(@types/react@19.3.0)(react@19.3.0)
+        version: 16.0.1(@types/node@26.6.4)(@types/react@19.3.0)(react@19.3.0)
       react-dnd-html5-backend:
         specifier: 16.0.1
         version: 16.0.1
@@ -137,13 +137,13 @@ importers:
     devDependencies:
       '@tailwindcss/vite':
         specifier: 4.3.3
-        version: 4.3.3(vite@8.3.1(@types/node@26.6.2)(jiti@2.7.0))
+        version: 4.3.3(vite@8.3.1(@types/node@26.6.4)(jiti@2.7.0))
       '@types/emscripten':
         specifier: 1.41.6
         version: 1.41.6
       '@types/node':
-        specifier: 26.6.2
-        version: 26.6.2
+        specifier: 26.6.4
+        version: 26.6.4
       '@types/react':
         specifier: 19.3.0
         version: 19.3.0
@@ -155,7 +155,7 @@ importers:
         version: 2.16.1
       '@vitejs/plugin-react':
         specifier: 6.1.1
-        version: 6.1.1(vite@8.3.1(@types/node@26.6.2)(jiti@2.7.0))
+        version: 6.1.1(vite@8.3.1(@types/node@26.6.4)(jiti@2.7.0))
       husky:
         specifier: 9.1.7
         version: 9.1.7
@@ -173,16 +173,16 @@ importers:
         version: 7.0.2
       vite:
         specifier: 8.3.1
-        version: 8.3.1(@types/node@26.6.2)(jiti@2.7.0)
+        version: 8.3.1(@types/node@26.6.4)(jiti@2.7.0)
       vite-plugin-clean:
         specifier: 2.0.1
-        version: 2.0.1(@types/node@26.6.2)(jiti@2.7.0)(lightningcss@1.33.0)(rollup@4.63.5)
+        version: 2.0.1(@types/node@26.6.4)(jiti@2.7.0)(lightningcss@1.33.0)(rollup@4.63.5)
       vite-plugin-oxlint:
         specifier: 2.2.0
-        version: 2.2.0(oxlint@1.86.0)(vite@8.3.1(@types/node@26.6.2)(jiti@2.7.0))
+        version: 2.2.0(oxlint@1.86.0)(vite@8.3.1(@types/node@26.6.4)(jiti@2.7.0))
       vite-plugin-static-copy:
         specifier: 4.1.1
-        version: 4.1.1(vite@8.3.1(@types/node@26.6.2)(jiti@2.7.0))
+        version: 4.1.1(vite@8.3.1(@types/node@26.6.4)(jiti@2.7.0))
 
 packages:
 
@@ -2200,8 +2200,8 @@ packages:
   '@types/hast@3.0.5':
     resolution: {integrity: sha512-rp/ezSWaD1m44dPKICGhiskI13nVr7qTloFwDa/IYkhhf5nzwP+zIQcIJh3WIFSBOy/H1PzB40jPjMDksN4F+g==}
 
-  '@types/node@26.6.2':
-    resolution: {integrity: sha512-X1P21scMv4zGKLYqjdGjaKa7COa0RKVYYZZN/NfvLQ1JegxFhdhpZG/Lyn8AXx6CDUavKAd11v6BvfpkDByK8g==}
+  '@types/node@26.6.4':
+    resolution: {integrity: sha512-ldVPDCzj7fsaGZrLB0NuHuTvJcsNasysBAqMolr/cgxrLd1xbqxIr3XJiPnHHJUCxj5sNF1vnRj9aWnrVh5Jcg==}
 
   '@types/react-dom@19.3.0':
     resolution: {integrity: sha512-ZI7bU42mZXXKHn/qNLEw2IrbiINU7X5+vfgdixBHkCNpYWXjKgfQ/P+uyGb5CjOLB9UcnTeg3rylQtV2hym44Q==}
@@ -5689,12 +5689,12 @@ snapshots:
       '@tailwindcss/oxide-win32-arm64-msvc': 4.3.3
       '@tailwindcss/oxide-win32-x64-msvc': 4.3.3
 
-  '@tailwindcss/vite@4.3.3(vite@8.3.1(@types/node@26.6.2)(jiti@2.7.0))':
+  '@tailwindcss/vite@4.3.3(vite@8.3.1(@types/node@26.6.4)(jiti@2.7.0))':
     dependencies:
       '@tailwindcss/node': 4.3.3
       '@tailwindcss/oxide': 4.3.3
       tailwindcss: 4.3.3
-      vite: 8.3.1(@types/node@26.6.2)(jiti@2.7.0)
+      vite: 8.3.1(@types/node@26.6.4)(jiti@2.7.0)
 
   '@tanstack/react-virtual@3.14.13(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
@@ -5919,7 +5919,7 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
 
-  '@types/node@26.6.2':
+  '@types/node@26.6.4':
     dependencies:
       undici-types: 8.9.0
 
@@ -6015,10 +6015,10 @@ snapshots:
       native-promise-only: 0.8.1
       weakmap-polyfill: 2.0.4
 
-  '@vitejs/plugin-react@6.1.1(vite@8.3.1(@types/node@26.6.2)(jiti@2.7.0))':
+  '@vitejs/plugin-react@6.1.1(vite@8.3.1(@types/node@26.6.4)(jiti@2.7.0))':
     dependencies:
       '@rolldown/pluginutils': 1.0.1
-      vite: 8.3.1(@types/node@26.6.2)(jiti@2.7.0)
+      vite: 8.3.1(@types/node@26.6.4)(jiti@2.7.0)
 
   agent-base@6.0.2:
     dependencies:
@@ -7238,7 +7238,7 @@ snapshots:
     dependencies:
       dnd-core: 16.0.1
 
-  react-dnd@16.0.1(@types/node@26.6.2)(@types/react@19.3.0)(react@19.3.0):
+  react-dnd@16.0.1(@types/node@26.6.4)(@types/react@19.3.0)(react@19.3.0):
     dependencies:
       '@react-dnd/invariant': 4.0.2
       '@react-dnd/shallowequal': 4.0.2
@@ -7247,7 +7247,7 @@ snapshots:
       hoist-non-react-statics: 3.3.2
       react: 19.3.0
     optionalDependencies:
-      '@types/node': 26.6.2
+      '@types/node': 26.6.4
       '@types/react': 19.3.0
 
   react-dom@19.3.0(react@19.3.0):
@@ -7606,10 +7606,10 @@ snapshots:
       '@vimeo/player': 2.29.0
       media-played-ranges-mixin: 0.1.0
 
-  vite-plugin-clean@2.0.1(@types/node@26.6.2)(jiti@2.7.0)(lightningcss@1.33.0)(rollup@4.63.5):
+  vite-plugin-clean@2.0.1(@types/node@26.6.4)(jiti@2.7.0)(lightningcss@1.33.0)(rollup@4.63.5):
     dependencies:
       '@rollup/pluginutils': 5.4.0(rollup@4.63.5)
-      vite: 6.4.3(@types/node@26.6.2)(jiti@2.7.0)(lightningcss@1.33.0)
+      vite: 6.4.3(@types/node@26.6.4)(jiti@2.7.0)(lightningcss@1.33.0)
     transitivePeerDependencies:
       - '@types/node'
       - jiti
@@ -7624,22 +7624,22 @@ snapshots:
       - tsx
       - yaml
 
-  vite-plugin-oxlint@2.2.0(oxlint@1.86.0)(vite@8.3.1(@types/node@26.6.2)(jiti@2.7.0)):
+  vite-plugin-oxlint@2.2.0(oxlint@1.86.0)(vite@8.3.1(@types/node@26.6.4)(jiti@2.7.0)):
     dependencies:
       cross-spawn: 7.0.6
       oxlint: 1.86.0
       package-manager-detector: 1.8.0
-      vite: 8.3.1(@types/node@26.6.2)(jiti@2.7.0)
+      vite: 8.3.1(@types/node@26.6.4)(jiti@2.7.0)
 
-  vite-plugin-static-copy@4.1.1(vite@8.3.1(@types/node@26.6.2)(jiti@2.7.0)):
+  vite-plugin-static-copy@4.1.1(vite@8.3.1(@types/node@26.6.4)(jiti@2.7.0)):
     dependencies:
       chokidar: 3.6.0
       p-map: 7.0.8
       picocolors: 1.1.1
       tinyglobby: 0.2.17
-      vite: 8.3.1(@types/node@26.6.2)(jiti@2.7.0)
+      vite: 8.3.1(@types/node@26.6.4)(jiti@2.7.0)
 
-  vite@6.4.3(@types/node@26.6.2)(jiti@2.7.0)(lightningcss@1.33.0):
+  vite@6.4.3(@types/node@26.6.4)(jiti@2.7.0)(lightningcss@1.33.0):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.7)
@@ -7648,12 +7648,12 @@ snapshots:
       rollup: 4.63.5
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 26.6.2
+      '@types/node': 26.6.4
       fsevents: 2.3.3
       jiti: 2.7.0
       lightningcss: 1.33.0
 
-  vite@8.3.1(@types/node@26.6.2)(jiti@2.7.0):
+  vite@8.3.1(@types/node@26.6.4)(jiti@2.7.0):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
@@ -7661,7 +7661,7 @@ snapshots:
       rolldown: 1.2.11
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 26.6.2
+      '@types/node': 26.6.4
       fsevents: 2.3.3
       jiti: 2.7.0
 
