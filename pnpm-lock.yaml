@@ -18,8 +18,8 @@ importers:
         specifier: 0.55.0
         version: 0.55.0(@floating-ui/dom@1.8.0)(@lezer/common@1.5.3)(@lezer/highlight@1.2.5)(@types/hast@3.0.5)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(y-prosemirror@1.3.7(prosemirror-model@1.25.12)(prosemirror-state@1.4.4)(prosemirror-view@1.42.6)(y-protocols@1.0.7(yjs@13.6.33))(yjs@13.6.33))(y-protocols@1.0.7(yjs@13.6.33))(yjs@13.6.33)
       '@bufbuild/protobuf':
-        specifier: 2.14.1
-        version: 2.14.1
+        specifier: 2.16.0
+        version: 2.16.0
       '@excalidraw/excalidraw':
         specifier: 0.18.0-a52cd20
         version: 0.18.0-a52cd20(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(immer@11.1.18)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -85,7 +85,7 @@ importers:
         version: 0.12.0
       plugnmeet-protocol-js:
         specifier: 1.6.2
-        version: 1.6.2(@bufbuild/protobuf@2.14.1)
+        version: 1.6.2(@bufbuild/protobuf@2.16.0)
       react:
         specifier: 19.3.0
         version: 19.3.0
@@ -239,8 +239,8 @@ packages:
   '@bufbuild/protobuf@1.10.1':
     resolution: {integrity: sha512-wJ8ReQbHxsAfXhrf9ixl0aYbZorRuOWpBNzm8pL8ftmSxQx/wnJD5Eg861NwJU/czy2VXFIebCeZnZrI9rktIQ==}
 
-  '@bufbuild/protobuf@2.14.1':
-    resolution: {integrity: sha512-agRJn3+EJDUe8AvxTx/LnHA/GErvLE62pSaSk7+MwFOtOv8eWBu/qCq2qoZjBjVZ3C2aiFJCveuSs17KMkYGOw==}
+  '@bufbuild/protobuf@2.16.0':
+    resolution: {integrity: sha512-FWa0sPlqYGJgpTs6OxBRcL/AW4JT0OIO+W1ajerluoTVh8CV0B7XM1qsNCRgnkSCkRCgOICKHRQlY17jrsm0+Q==}
 
   '@chevrotain/cst-dts-gen@11.0.3':
     resolution: {integrity: sha512-BvIKpRLeS/8UbfxXxgC33xOumsacaeCKAjAeLyOn7Pcp95HiRbrpl14S+9vaZLolnbssPIUuiUd8IvgkRyt6NQ==}
@@ -4150,7 +4150,7 @@ snapshots:
 
   '@bufbuild/protobuf@1.10.1': {}
 
-  '@bufbuild/protobuf@2.14.1': {}
+  '@bufbuild/protobuf@2.16.0': {}
 
   '@chevrotain/cst-dts-gen@11.0.3':
     dependencies:
@@ -7027,9 +7027,9 @@ snapshots:
     transitivePeerDependencies:
       - react
 
-  plugnmeet-protocol-js@1.6.2(@bufbuild/protobuf@2.14.1):
+  plugnmeet-protocol-js@1.6.2(@bufbuild/protobuf@2.16.0):
     dependencies:
-      '@bufbuild/protobuf': 2.14.1
+      '@bufbuild/protobuf': 2.16.0
 
   png-chunk-text@1.0.0: {}
 
