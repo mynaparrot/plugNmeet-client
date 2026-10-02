@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Nagrywanie w chmurze nie jest dostępne w przypadku korzystania z niestandardowego klucza bezpieczeństwa.",
     "media-only-recording-not-support-e2ee": "Nagrywanie tylko dźwięku i obrazu nie jest dostępne, gdy włączone jest szyfrowanie end-to-end.",
     "you-are-sharing-screen": "Udostępniasz teraz swój ekran. Inni zobaczą większy widok.",
+    "screenshare-presenter": "{{name}} jest ekranem udostępniania",
     "screen-share-view-disabled": "{{name}} udostępnia ekran, ale wyłączyłeś możliwość udostępniania ekranu w ustawieniach oszczędzania danych.",
     "new-system-message-in-chat": "Na czacie publicznym została opublikowana nowa wiadomość systemowa.",
     "queue-holding-messages": "Problem z połączeniem: wiadomości są wstrzymywane.",
@@ -143,7 +144,11 @@
       "alert": {
         "confirm": "Czy na pewno?",
         "logout": "Za chwilę opuścisz spotkanie.",
-        "end": "Za chwilę zakończysz spotkanie dla wszystkich."
+        "end": "Za chwilę zakończysz spotkanie dla wszystkich.",
+        "leave-or-end-title": "Odejść czy zakończyć spotkanie?",
+        "end-for-everyone": "Spotkanie końcowe dla wszystkich",
+        "logout-desc": "Opuścisz spotkanie. Pozostali uczestnicy mogą kontynuować sesję.",
+        "end-desc": "To zakończy spotkanie i odłączy wszystkich uczestników od sesji."
       }
     },
     "room-settings": {
@@ -328,7 +333,8 @@
     "new-messages": "Nowe wiadomości",
     "scroll-to-bottom": "Przewiń na dół",
     "sync-chat": "Synchronizuj czat z rówieśnikami",
-    "load-earlier-messages": "Załaduj wcześniejsze wiadomości"
+    "load-earlier-messages": "Załaduj wcześniejsze wiadomości",
+    "system-name": "System"
   },
   "footer": {
     "aria-label": "Kontrola spotkań",

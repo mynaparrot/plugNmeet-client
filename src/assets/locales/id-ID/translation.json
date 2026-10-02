@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Perekaman cloud tidak tersedia saat menggunakan kunci keamanan khusus.",
     "media-only-recording-not-support-e2ee": "Perekaman hanya audio dan video tidak tersedia saat enkripsi ujung-ke-ujung diaktifkan.",
     "you-are-sharing-screen": "Anda sedang berbagi layar. Peserta lain akan melihat tampilan yang lebih besar.",
+    "screenshare-presenter": "{{name}} sedang berbagi layar",
     "screen-share-view-disabled": "{{name}} berbagi layar, tetapi Anda telah menonaktifkan tampilan berbagi layar dari pengaturan penyimpanan data.",
     "new-system-message-in-chat": "Sebuah pesan sistem baru telah diposting di obrolan publik.",
     "queue-holding-messages": "Masalah koneksi: pesan ditahan.",
@@ -143,7 +144,11 @@
       "alert": {
         "confirm": "Anda yakin?",
         "logout": "Anda akan meninggalkan rapat.",
-        "end": "Anda akan mengakhiri rapat untuk semua orang."
+        "end": "Anda akan mengakhiri rapat untuk semua orang.",
+        "leave-or-end-title": "Keluar atau akhiri rapat?",
+        "end-for-everyone": "Akhiri Pertemuan untuk Semua",
+        "logout-desc": "Anda akan meninggalkan pertemuan. Peserta lain dapat melanjutkan sesi.",
+        "end-desc": "Ini akan mengakhiri pertemuan dan memutuskan semua peserta dari sesi."
       }
     },
     "room-settings": {
@@ -328,7 +333,8 @@
     "new-messages": "Pesan baru",
     "scroll-to-bottom": "Gulir ke bawah",
     "sync-chat": "Sinkronkan obrolan dengan rekan sesama",
-    "load-earlier-messages": "Muat pesan sebelumnya"
+    "load-earlier-messages": "Muat pesan sebelumnya",
+    "system-name": "Sistem"
   },
   "footer": {
     "aria-label": "Kontrol rapat",

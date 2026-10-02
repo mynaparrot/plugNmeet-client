@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Molninspelning är inte tillgängligt när du använder en anpassad säkerhetsnyckel.",
     "media-only-recording-not-support-e2ee": "Det går inte att spela in endast ljud och video när end-to-end-kryptering är aktiverat.",
     "you-are-sharing-screen": "Du delar din skärm nu. Andra kommer att se en större vy.",
+    "screenshare-presenter": "{{name}} delar skärm",
     "screen-share-view-disabled": "{{name}} delar skärmen, men du har inaktiverat skärmdelning från datasparande inställningar.",
     "new-system-message-in-chat": "Ett nytt systemmeddelande har publicerats i den offentliga chatten.",
     "queue-holding-messages": "Anslutningsproblem: meddelanden hålls kvar.",
@@ -143,7 +144,11 @@
       "alert": {
         "confirm": "Är du säker?",
         "logout": "Du är på väg att lämna mötet.",
-        "end": "Du är på väg att avsluta mötet för alla."
+        "end": "Du är på väg att avsluta mötet för alla.",
+        "leave-or-end-title": "Lämna eller avsluta mötet?",
+        "end-for-everyone": "Slutmöte för alla",
+        "logout-desc": "Du lämnar mötet. Andra deltagare kan fortsätta sessionen.",
+        "end-desc": "Detta avslutar mötet och kopplar bort alla deltagare från sessionen."
       }
     },
     "room-settings": {
@@ -328,7 +333,8 @@
     "new-messages": "Nya budskap",
     "scroll-to-bottom": "Scrolla ner",
     "sync-chat": "Synkronisera chatten med peers",
-    "load-earlier-messages": "Ladda tidigare meddelanden"
+    "load-earlier-messages": "Ladda tidigare meddelanden",
+    "system-name": "System"
   },
   "footer": {
     "aria-label": "Möteskontroller",

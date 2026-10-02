@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Tính năng ghi trên đám mây không khả dụng khi sử dụng khóa bảo mật tùy chỉnh.",
     "media-only-recording-not-support-e2ee": "Chỉ ghi âm thanh và video không khả dụng khi mã hóa đầu cuối được bật.",
     "you-are-sharing-screen": "Bạn đang chia sẻ màn hình của mình ngay bây giờ. Những người khác sẽ thấy một cái nhìn lớn hơn.",
+    "screenshare-presenter": "{{name}} đang chia sẻ màn hình",
     "screen-share-view-disabled": "{{name}} đang chia sẻ màn hình, nhưng bạn đã tắt chế độ xem chia sẻ màn hình từ cài đặt lưu dữ liệu.",
     "new-system-message-in-chat": "Một thông báo hệ thống mới đã được đăng trong cuộc trò chuyện công khai.",
     "queue-holding-messages": "Sự cố kết nối: tin nhắn đang được giữ.",
@@ -143,7 +144,11 @@
       "alert": {
         "confirm": "Bạn có chắc không?",
         "logout": "Bạn sắp rời khỏi cuộc họp.",
-        "end": "Bạn sắp kết thúc cuộc họp cho tất cả mọi người."
+        "end": "Bạn sắp kết thúc cuộc họp cho tất cả mọi người.",
+        "leave-or-end-title": "Rời đi hay kết thúc cuộc họp?",
+        "end-for-everyone": "Kết thúc cuộc họp cho tất cả mọi người",
+        "logout-desc": "Bạn sẽ rời khỏi cuộc họp. Những người tham gia khác có thể tiếp tục phiên họp.",
+        "end-desc": "Điều này sẽ kết thúc cuộc họp và ngắt kết nối tất cả người tham gia khỏi phiên họp."
       }
     },
     "room-settings": {
@@ -328,7 +333,8 @@
     "new-messages": "Tin nhắn mới",
     "scroll-to-bottom": "Cuộn xuống cuối",
     "sync-chat": "Đồng bộ trò chuyện với các trang web ngang hàng",
-    "load-earlier-messages": "Tải các tin nhắn trước đó"
+    "load-earlier-messages": "Tải các tin nhắn trước đó",
+    "system-name": "Hệ thống"
   },
   "footer": {
     "aria-label": "Điều khiển cuộc họp",

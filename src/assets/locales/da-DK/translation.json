@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Cloud-optagelse er ikke tilgængelig, når du bruger en brugerdefineret sikkerhedsnøgle.",
     "media-only-recording-not-support-e2ee": "Optagelse af lyd og video er ikke tilgængelig, når end-to-end-kryptering er aktiveret.",
     "you-are-sharing-screen": "Du deler din skærm nu. Andre vil se en større visning.",
+    "screenshare-presenter": "{{name}} deler skærm",
     "screen-share-view-disabled": "{{name}} deler skærmen, men du har deaktiveret visning af skærmdeling fra datalagringsindstillingerne.",
     "new-system-message-in-chat": "En ny systemmeddelelse er blevet offentliggjort i den offentlige chat.",
     "queue-holding-messages": "Forbindelsesproblem: beskeder bliver tilbageholdt.",
@@ -143,7 +144,11 @@
       "alert": {
         "confirm": "Er du sikker?",
         "logout": "Du er ved at forlade mødet.",
-        "end": "Du er ved at afslutte mødet for alle."
+        "end": "Du er ved at afslutte mødet for alle.",
+        "leave-or-end-title": "Gå eller afslutte mødet?",
+        "end-for-everyone": "Afslutningsmøde for alle",
+        "logout-desc": "Du forlader mødet. Andre deltagere kan fortsætte sessionen.",
+        "end-desc": "Dette afslutter mødet og afbryder alle deltagere fra sessionen."
       }
     },
     "room-settings": {
@@ -328,7 +333,8 @@
     "new-messages": "Nye beskeder",
     "scroll-to-bottom": "Scroll ned til bunden",
     "sync-chat": "Synkroniser chat med ligesindede",
-    "load-earlier-messages": "Indlæs tidligere beskeder"
+    "load-earlier-messages": "Indlæs tidligere beskeder",
+    "system-name": "System"
   },
   "footer": {
     "aria-label": "Mødekontroller",

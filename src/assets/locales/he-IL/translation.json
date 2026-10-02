@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "הקלטה בענן אינה זמינה בעת שימוש במפתח אבטחה מותאם אישית.",
     "media-only-recording-not-support-e2ee": "הקלטת שמע ווידאו בלבד אינה זמינה כאשר הצפנה מקצה לקצה מופעלת.",
     "you-are-sharing-screen": "אתה משתף את המסך שלך כעת. אחרים יראו נוף גדול יותר.",
+    "screenshare-presenter": "{{name}} משתף מסך",
     "screen-share-view-disabled": "{{name}} הוא משתף את המסך, אבל השביתת את הצגת שיתוף המסך דרך הגדרות שמירת הנתונים.",
     "new-system-message-in-chat": "הודעת מערכת חדשה פורסמה בצ'אט הציבורי.",
     "queue-holding-messages": "בעיית חיבור: ההודעות מוחזקות.",
@@ -143,7 +144,11 @@
       "alert": {
         "confirm": "אתה בטוח?",
         "logout": "אתה עומד לעזוב את הפגישה.",
-        "end": "אתה עומד לסיים את הפגישה עבור כולם."
+        "end": "אתה עומד לסיים את הפגישה עבור כולם.",
+        "leave-or-end-title": "לעזוב או לסיים את הפגישה?",
+        "end-for-everyone": "סיום פגישה לכולם",
+        "logout-desc": "תעזוב את הפגישה. משתתפים אחרים יכולים להמשיך את המפגש.",
+        "end-desc": "זה יסיים את הפגישה וינתק את כל המשתתפים מהמפגש."
       }
     },
     "room-settings": {
@@ -328,7 +333,8 @@
     "new-messages": "מסרים חדשים",
     "scroll-to-bottom": "גלול למטה",
     "sync-chat": "סנכרון צ'אט עם עמיתים",
-    "load-earlier-messages": "טעין הודעות מוקדמות"
+    "load-earlier-messages": "טעין הודעות מוקדמות",
+    "system-name": "מערכת"
   },
   "footer": {
     "aria-label": "בקרות פגישות",

@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Cloud-Aufzeichnung ist nicht verfügbar, wenn ein benutzerdefinierter Sicherheitsschlüssel verwendet wird.",
     "media-only-recording-not-support-e2ee": "Die reine Audio- und Videoaufzeichnung ist nicht verfügbar, wenn die Ende-zu-Ende-Verschlüsselung aktiviert ist.",
     "you-are-sharing-screen": "Sie geben gerade Ihren Bildschirm frei. Andere Teilnehmer sehen eine vergrößerte Ansicht.",
+    "screenshare-presenter": "{{name}} Teilt den Bildschirm",
     "screen-share-view-disabled": "{{name}} Teilt den Bildschirm, aber du hast das Anzeigen des Bildschirmfreigabes in den Datenspeichereinstellungen deaktiviert.",
     "new-system-message-in-chat": "Eine neue Systemnachricht wurde im öffentlichen Chat veröffentlicht.",
     "queue-holding-messages": "Verbindungsproblem: Nachrichten werden zurückgehalten.",
@@ -143,7 +144,11 @@
       "alert": {
         "confirm": "Sind Sie sicher?",
         "logout": "Sie sind dabei, das Meeting zu verlassen.",
-        "end": "Sie sind dabei, das Meeting für alle zu beenden."
+        "end": "Sie sind dabei, das Meeting für alle zu beenden.",
+        "leave-or-end-title": "Verlassen oder das Meeting beenden?",
+        "end-for-everyone": "Ende des Treffens für alle",
+        "logout-desc": "Sie werden das Meeting verlassen. Andere Teilnehmer können die Sitzung fortsetzen.",
+        "end-desc": "Dies beendet das Treffen und alle Teilnehmer werden von der Sitzung getrennt."
       }
     },
     "room-settings": {
@@ -328,7 +333,8 @@
     "new-messages": "Neue Botschaften",
     "scroll-to-bottom": "Scrollen Sie nach unten",
     "sync-chat": "Chat mit Peers synchronisieren",
-    "load-earlier-messages": "Frühere Nachrichten laden"
+    "load-earlier-messages": "Frühere Nachrichten laden",
+    "system-name": "System"
   },
   "footer": {
     "aria-label": "Sitzungskontrollen",

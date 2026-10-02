@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "L'enregistrement dans le cloud n'est pas disponible lors de l'utilisation d'une clé de sécurité personnalisée.",
     "media-only-recording-not-support-e2ee": "L'enregistrement audio et vidéo uniquement n'est pas disponible lorsque le chiffrement de bout en bout est activé.",
     "you-are-sharing-screen": "Vous partagez actuellement votre écran. Les autres participants verront un affichage agrandi.",
+    "screenshare-presenter": "{{name}} est l’écran de partage",
     "screen-share-view-disabled": "{{name}} partage l’écran, mais vous avez désactivé la visualisation du partage d’écran depuis les paramètres de sauvegarde des données.",
     "new-system-message-in-chat": "Un nouveau message système a été publié dans le chat public.",
     "queue-holding-messages": "Problème de connexion : les messages sont en attente d'envoi.",
@@ -143,7 +144,11 @@
       "alert": {
         "confirm": "Êtes-vous sûr(e) ?",
         "logout": "Vous êtes sur le point de quitter la réunion.",
-        "end": "Vous êtes sur le point de terminer la réunion pour tous les participants."
+        "end": "Vous êtes sur le point de terminer la réunion pour tous les participants.",
+        "leave-or-end-title": "Partir ou mettre fin à la réunion ?",
+        "end-for-everyone": "Fin de la réunion pour tous",
+        "logout-desc": "Vous quitterez la réunion. Les autres participants peuvent poursuivre la séance.",
+        "end-desc": "Cela mettra fin à la réunion et déconnectera tous les participants de la session."
       }
     },
     "room-settings": {
@@ -328,7 +333,8 @@
     "new-messages": "Nouveaux messages",
     "scroll-to-bottom": "Défiler jusqu’en bas",
     "sync-chat": "Synchronisez le chat avec vos pairs",
-    "load-earlier-messages": "Charger les messages précédents"
+    "load-earlier-messages": "Charger les messages précédents",
+    "system-name": "Système"
   },
   "footer": {
     "aria-label": "Contrôles de réunion",

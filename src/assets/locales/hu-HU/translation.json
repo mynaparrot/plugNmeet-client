@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Felhőalapú rögzítés nem érhető el egyéni biztonsági kulcs használata esetén.",
     "media-only-recording-not-support-e2ee": "Csak hang és videó rögzítése nem érhető el, ha a végpontok közötti titkosítás engedélyezve van.",
     "you-are-sharing-screen": "Most megosztja a képernyőjét. Mások nagyobb képet fognak látni.",
+    "screenshare-presenter": "{{name}} képernyőmegosztás",
     "screen-share-view-disabled": "{{name}} Megosztja a képernyőt, de az adatmentési beállításokból kitiltottad a képernyőmegosztás megtekintését.",
     "new-system-message-in-chat": "Új rendszerüzenetet tettek közzé a nyilvános csevegésben.",
     "queue-holding-messages": "Kapcsolati probléma: üzenetek maradnak.",
@@ -143,7 +144,11 @@
       "alert": {
         "confirm": "Biztos vagy benne?",
         "logout": "Hamarosan elhagyja a találkozót.",
-        "end": "Mindjárt befejezed a találkozót mindenki számára."
+        "end": "Mindjárt befejezed a találkozót mindenki számára.",
+        "leave-or-end-title": "Elmenni vagy befejezni a találkozót?",
+        "end-for-everyone": "Mindenki számára a találkozó vége",
+        "logout-desc": "El fogod hagyni a találkozót. A többi résztvevő folytathatja az ülést.",
+        "end-desc": "Ez véget vet a találkozónak, és minden résztvevőt elszakít az üléstől."
       }
     },
     "room-settings": {
@@ -328,7 +333,8 @@
     "new-messages": "Új üzenetek",
     "scroll-to-bottom": "Görgess le az alulra",
     "sync-chat": "Szinkronizált chat társakkal",
-    "load-earlier-messages": "Korábbi üzenetek betöltése"
+    "load-earlier-messages": "Korábbi üzenetek betöltése",
+    "system-name": "Rendszer"
   },
   "footer": {
     "aria-label": "Találkozók vezérlése",

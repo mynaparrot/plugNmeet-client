@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Özel bir güvenlik anahtarı kullanılırken bulut kaydı kullanılamaz.",
     "media-only-recording-not-support-e2ee": "Uçtan uca şifreleme etkinleştirildiğinde yalnızca ses ve video kaydı yapılamaz.",
     "you-are-sharing-screen": "Şu anda ekranınızı paylaşıyorsunuz. Diğer katılımcılar daha büyük bir görünüm görecek.",
+    "screenshare-presenter": "{{name}} ekran paylaşımı",
     "screen-share-view-disabled": "{{name}} Ekran paylaşımı yapıyor ama veri kaydetme ayarlarından ekran paylaşımı görüntülemesini devre dışı bıraktınız.",
     "new-system-message-in-chat": "Genel sohbette yeni bir sistem mesajı yayınlandı.",
     "queue-holding-messages": "Bağlantı sorunu: mesajlar tutuluyor.",
@@ -143,7 +144,11 @@
       "alert": {
         "confirm": "Emin misiniz?",
         "logout": "Toplantıdan ayrılmak üzeresiniz.",
-        "end": "Toplantıyı herkes için sonlandırmak üzeresiniz."
+        "end": "Toplantıyı herkes için sonlandırmak üzeresiniz.",
+        "leave-or-end-title": "Toplantıyı bitirmek mi yoksa bitirmek mi?",
+        "end-for-everyone": "Herkes için Toplantıyı Bitir",
+        "logout-desc": "Toplantıdan ayrılacaksınız. Diğer katılımcılar oturuma devam edebilir.",
+        "end-desc": "Bu durum toplantıyı sona erdirir ve tüm katılımcıları oturumdan koparır."
       }
     },
     "room-settings": {
@@ -328,7 +333,8 @@
     "new-messages": "Yeni mesajlar",
     "scroll-to-bottom": "Aşağıya kaydırın",
     "sync-chat": "Arkadaşlarınızla senkronize sohbet",
-    "load-earlier-messages": "Daha erken mesajları yükle"
+    "load-earlier-messages": "Daha erken mesajları yükle",
+    "system-name": "Sistem"
   },
   "footer": {
     "aria-label": "Toplantı kontrolleri",

@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Nahrávání do cloudu není k dispozici při použití vlastního bezpečnostního klíče.",
     "media-only-recording-not-support-e2ee": "Nahrávání pouze zvuku a videa není k dispozici, pokud je povoleno šifrování mezi koncovými body.",
     "you-are-sharing-screen": "Nyní sdílíte obrazovku. Ostatní uvidí větší pohled.",
+    "screenshare-presenter": "{{name}} je sdílení obrazovky",
     "screen-share-view-disabled": "{{name}} Sdílí obrazovku, ale vy jste zakázali sdílení obrazovky v nastavení ukládání dat.",
     "new-system-message-in-chat": "Ve veřejném chatu byla zveřejněna nová systémová hláška.",
     "queue-holding-messages": "Problém s připojením: zprávy jsou zadržovány.",
@@ -143,7 +144,11 @@
       "alert": {
         "confirm": "Opravdu?",
         "logout": "Chystáte se opustit schůzku.",
-        "end": "Chystáte se ukončit schůzku pro všechny."
+        "end": "Chystáte se ukončit schůzku pro všechny.",
+        "leave-or-end-title": "Odejít nebo ukončit schůzku?",
+        "end-for-everyone": "Závěrečné setkání pro všechny",
+        "logout-desc": "Opustíte schůzku. Ostatní účastníci mohou pokračovat v sezení.",
+        "end-desc": "Tím skončí schůzka a všichni účastníci se odpojí od sezení."
       }
     },
     "room-settings": {
@@ -328,7 +333,8 @@
     "new-messages": "Nové zprávy",
     "scroll-to-bottom": "Posuňte se na konec",
     "sync-chat": "Synchronizujte chat s kolegy",
-    "load-earlier-messages": "Načíst dřívější zprávy"
+    "load-earlier-messages": "Načíst dřívější zprávy",
+    "system-name": "Systém"
   },
   "footer": {
     "aria-label": "Řízení setkání",
