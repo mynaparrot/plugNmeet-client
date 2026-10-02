@@ -325,12 +325,12 @@ export class WhiteboardController {
   };
 
   private teardownDoc = async () => {
-    if (this.saveTimer) {
-      this.clearSaveTimers();
-      // Flush the pending save before the doc is destroyed. Force a full
-      // checkpoint so the server keeps a consistent latest full state.
-      await this.saveNow(true);
-    }
+    const hadPendingSave = this.saveTimer !== null;
+    this.clearSaveTimers();
+    // Flush before the doc is destroyed. Force a full checkpoint when changes
+    // were pending; when idle this is a cheap retry — it no-ops via empty-diff
+    // if the last flush already succeeded, and recovers a failed upload.
+    await this.saveNow(hadPendingSave);
     // Track the last-seen live state in the local export cache (presenter-only;
     // flushLocalSnapshot is a no-op for other roles).
     await this.flushLocalSnapshot();

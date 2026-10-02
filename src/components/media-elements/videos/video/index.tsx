@@ -1,11 +1,12 @@
 import React, { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
 
 import VideoElm from './videoElm';
 import PinWebcam from './pinWebcam';
 import MicStatus from './micStatus';
 import ConnectionStatus from './connectionStatus';
-import { sleep } from '../../../../helpers/utils';
+import { sleep, generateAvatarInitial } from '../../../../helpers/utils';
 import Participant from './participant';
 
 export interface IVideoComponentProps {
@@ -14,9 +15,20 @@ export interface IVideoComponentProps {
   isLocal: boolean;
   track: RemoteTrackPublication | LocalTrackPublication;
   displayPinIcon: boolean;
+  showVideo: boolean;
+  showPausedNotice: boolean;
 }
 
-const VideoComponent = ({ userId, name, isLocal, track, displayPinIcon }: IVideoComponentProps) => {
+const VideoComponent = ({
+  userId,
+  name,
+  isLocal,
+  track,
+  displayPinIcon,
+  showVideo,
+  showPausedNotice,
+}: IVideoComponentProps) => {
+  const { t } = useTranslation();
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const fullScreen = async () => {
@@ -45,24 +57,41 @@ const VideoComponent = ({ userId, name, isLocal, track, displayPinIcon }: IVideo
       <div className="camera-modules">
         <div className="camera-video-player">
           <MicStatus userId={userId} />
-          <VideoElm track={track} ref={videoRef} mirrored={isLocal} />
+          {showVideo ? (
+            <VideoElm track={track} ref={videoRef} mirrored={isLocal} />
+          ) : (
+            <div className="camera-muted-fallback relative w-full h-full flex items-center justify-center bg-black">
+              <span className="avatar-initial font-bold text-white select-none">
+                {generateAvatarInitial(name)}
+              </span>
+              {showPausedNotice && (
+                <span className="absolute top-2 inset-x-0 text-center text-[10px] font-medium text-amber-400">
+                  {t('notifications.video-paused')}
+                </span>
+              )}
+            </div>
+          )}
           <div className="cam-icons w-max h-auto flex items-center gap-2 absolute top-1/2 start-1/2 ltr:-translate-x-1/2 rtl:translate-x-1/2 -translate-y-1/2 z-999 transition-all duration-300 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 has-focus-visible:opacity-100">
             {displayPinIcon ? <PinWebcam userId={userId} /> : null}
-            <button
-              className="cam-fullscreen cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center"
-              onClick={fullScreen}
-              aria-label="Fullscreen"
-            >
-              <i className="icon pnm-fullscreen text[14px] text-white" />
-            </button>
-            {document.pictureInPictureEnabled && (
-              <button
-                className="cam-pip cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center"
-                onClick={pictureInPicture}
-                aria-label="Picture in picture"
-              >
-                <i className="icon pnm-pip text-[14px] text-white" />
-              </button>
+            {showVideo && (
+              <>
+                <button
+                  className="cam-fullscreen cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center"
+                  onClick={fullScreen}
+                  aria-label="Fullscreen"
+                >
+                  <i className="icon pnm-fullscreen text-[14px] text-white" />
+                </button>
+                {document.pictureInPictureEnabled && (
+                  <button
+                    className="cam-pip cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 shadow-shadowXS flex items-center justify-center"
+                    onClick={pictureInPicture}
+                    aria-label="Picture in picture"
+                  >
+                    <i className="icon pnm-pip text-[14px] text-white" />
+                  </button>
+                )}
+              </>
             )}
             <ConnectionStatus userId={userId} name={name} />
           </div>

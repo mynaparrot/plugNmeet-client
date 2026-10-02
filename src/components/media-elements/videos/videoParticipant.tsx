@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useReducer, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   LocalParticipant,
   ParticipantEvent,
@@ -9,12 +8,10 @@ import {
 } from 'livekit-client';
 
 import VideoComponent from './video';
-import Participant from './video/participant';
 import { useAppSelector } from '../../../store';
 import { selectIsSpeakingByUserId } from '../../../store/slices/activeSpeakersSlice';
 import { VideoParticipantType } from './';
 import { RepeatIconSVG } from '../../../assets/Icons/RepeatIconSVG';
-import { generateAvatarInitial } from '../../../helpers/utils';
 
 export interface VideoParticipantProps {
   participantType: VideoParticipantType;
@@ -32,7 +29,6 @@ const VideoParticipant = ({
 }: VideoParticipantProps) => {
   const isSpeaking = useAppSelector(selectIsSpeakingByUserId(userId));
   const activateWebcamsView = useAppSelector((state) => state.roomSettings.activateWebcamsView);
-  const { t } = useTranslation();
   const incomingWebcamPaused = useAppSelector(
     (state) => state.roomSettings.mediaDegradation.incomingWebcamPaused,
   );
@@ -64,43 +60,23 @@ const VideoParticipant = ({
         continue;
       }
       const isRemote = track instanceof RemoteTrackPublication;
-      const showVideo =
+      const showVideo = !!(
         !track.isMuted &&
         track.videoTrack &&
-        (!isRemote || (activateWebcamsView && !incomingWebcamPaused));
-      if (showVideo) {
-        elements.push(
-          <VideoComponent
-            userId={userId}
-            name={participant.name ?? ''}
-            isLocal={participantType.isLocal}
-            track={track}
-            displayPinIcon={displayPinIcon}
-            key={userId}
-          />,
-        );
-      } else {
-        elements.push(
-          <div
-            key={userId}
-            className="camera-muted-fallback relative w-full h-full flex items-center justify-center bg-black"
-          >
-            <span className="avatar-initial font-bold text-white select-none">
-              {generateAvatarInitial(participant.name ?? '')}
-            </span>
-            {incomingWebcamPaused && isRemote && (
-              <span className="absolute top-2 inset-x-0 text-center text-[10px] font-medium text-amber-400">
-                {t('notifications.video-paused')}
-              </span>
-            )}
-            <Participant
-              userId={userId}
-              name={participant.name ?? ''}
-              isLocal={participantType.isLocal}
-            />
-          </div>,
-        );
-      }
+        (!isRemote || (activateWebcamsView && !incomingWebcamPaused))
+      );
+      elements.push(
+        <VideoComponent
+          userId={userId}
+          name={participant.name ?? ''}
+          isLocal={participantType.isLocal}
+          track={track}
+          displayPinIcon={displayPinIcon}
+          showVideo={showVideo}
+          showPausedNotice={incomingWebcamPaused && isRemote}
+          key={userId}
+        />,
+      );
     }
     return elements;
     // eslint-disable-next-line react-hooks/exhaustive-deps
