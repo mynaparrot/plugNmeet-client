@@ -12,7 +12,7 @@ export const ReactionsIconSVG = ({ classes }) => {
       <path
         d="M8 8.5H8.01M14 8.5H14.01"
         stroke="currentColor"
-        strokeWidth="2.2"
+        strokeWidth="1.67"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

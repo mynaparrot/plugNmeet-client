@@ -112,7 +112,7 @@ const ReactionsIcon = () => {
           )}
         >
           <span className="tooltip">{tooltipText}</span>
-          <HandsIconSVG classes={'h-5 md:h-6 w-auto'} />
+          <HandsIconSVG classes={'h-[18px] 3xl:h-[22px] w-auto'} />
         </div>
       </button>
     );
@@ -141,9 +141,9 @@ const ReactionsIcon = () => {
         <div className={innerDivClasses}>
           <span className="tooltip">{t('footer.icons.reactions')}</span>
           {isActiveRaisehand ? (
-            <HandsIconSVG classes={'h-5 md:h-6 w-auto'} />
+            <HandsIconSVG classes={'h-[18px] 3xl:h-[22px] w-auto'} />
           ) : (
-            <ReactionsIconSVG classes={'h-5 md:h-6 w-auto'} />
+            <ReactionsIconSVG classes={'h-[18px] 3xl:h-[22px] w-auto'} />
           )}
         </div>
       </PopoverButton>
