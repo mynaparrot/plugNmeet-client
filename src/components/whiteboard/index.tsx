@@ -35,6 +35,7 @@ import usePrevious from './helpers/hooks/usePrevious';
 import useWhiteboardSetup from './helpers/hooks/useWhiteboardSetup';
 import useWhiteboardAppStateSync from './helpers/hooks/useWhiteboardAppStateSync';
 import useOfficePageSyncer from './helpers/hooks/useOfficePageSyncer';
+import useWhiteboardFileDrop from './helpers/hooks/useWhiteboardFileDrop';
 import {
   A4_BOUNDARY_GUIDE_ID,
   ensureAllImagesDataIsLoaded,
@@ -153,6 +154,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     excalidrawAPI,
     isPresenter,
     currentPage,
+  });
+  const { dropContainerRef } = useWhiteboardFileDrop({
+    excalidrawAPI,
+    isPresenter: !!isPresenter,
   });
 
   /**
@@ -650,6 +655,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
   return (
     <div
+      ref={dropContainerRef}
       className={`excalidraw-wrapper flex-1 w-full max-w-[1280px] m-auto h-[calc(100%-50px)] sm:px-5 mt-9 z-0 ${
         isToolbarHidden ? 'toolbar-hidden' : ''
       }`}

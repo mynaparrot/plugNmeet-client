@@ -5,6 +5,7 @@ import { AnalyticsEvents, AnalyticsEventType, RoomUploadedFileType } from 'plugn
 import { uploadResumableFile } from '../../../helpers/fileUpload';
 import { store } from '../../../store';
 import {
+  IWhiteboardOfficeFile,
   WhiteboardFileConversionReq,
   WhiteboardFileConversionRes,
 } from '../../../store/slices/interfaces/whiteboard';
@@ -18,7 +19,7 @@ export type OfficeFileStatus = 'idle' | 'uploading' | 'converting' | 'success' |
 
 export interface IOfficeFileProcessing {
   onProgress(progress: number): void;
-  onSuccess(fileName: string): void;
+  onSuccess(msg: string, officeFile?: IWhiteboardOfficeFile): void;
   onError(msg: string): void;
   onStart(): void;
 }
@@ -176,7 +177,7 @@ class OfficeFileProcessor {
     });
     this.fileStatus = 'success';
     if (this.activeCallbacks) {
-      this.activeCallbacks.onSuccess(i18n.t('whiteboard.file-ready'));
+      this.activeCallbacks.onSuccess(i18n.t('whiteboard.file-ready'), newFile);
     }
     await sleep(1000);
     this.cleanup();
