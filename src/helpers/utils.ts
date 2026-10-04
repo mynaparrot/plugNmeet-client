@@ -407,8 +407,8 @@ export const cleanHtmlForChat = (rawText: string) => {
     // oxfmt-ignore
     allowedClasses: {
       a: ['attachment-message', 'flex', 'items-center', 'gap-3', 'break-all', 'text-[#24aef7]', 'hover:underline'],
-      span: ['block', 'flex', 'items-center', 'justify-between', 'gap-3', 'min-w-0', 'flex-1', 'break-words', 'text-start', 'me-1', 'font-medium', 'text-Green-700', 'shrink-0', 'text-xs', 'text-Gray-600', 'text-Gray-700', 'dark:text-dark-text', 'mt-1.5', 'mt-2', 'border-t', 'border-Gray-200', 'pt-2', 'dark:border-Gray-700', 'h-10', 'w-10', 'rounded-xl', 'bg-Gray-50', 'justify-center'],
-      strong: ['block', 'break-words', 'text-sm', 'font-semibold', 'text-Gray-950', 'dark:text-white'],
+      span: ['block', 'flex', 'flex-col', 'items-center', 'items-start', 'justify-between', 'gap-3', 'gap-2', 'gap-1.5', 'min-w-0', 'flex-1', 'break-words', 'break-all', 'overflow-hidden', 'text-start', 'text-sm', 'me-1', 'mb-1', 'font-medium', 'font-semibold', 'uppercase', 'tracking-wide', 'text-Green-700', 'text-Gray-950', 'shrink-0', 'text-xs', 'text-Gray-600', 'text-Gray-700', 'dark:text-dark-text', 'dark:text-white', 'dark:text-Green-300', 'mt-1.5', 'mt-2', 'border-t', 'border-Gray-200', 'pt-2', 'dark:border-Gray-700', 'h-10', 'w-10', 'rounded', 'rounded-lg', 'rounded-full', 'rounded-xl', 'bg-Gray-50', 'bg-Green-100', 'bg-white', 'dark:bg-Gray-700', 'dark:bg-Gray-800', 'dark:bg-Green-900', 'px-2', 'px-1.5', 'px-2.5', 'py-0.5', 'py-1.5', 'justify-center'],
+      strong: ['block', 'break-words', 'break-all', 'overflow-hidden', 'text-sm', 'font-semibold', 'text-Gray-950', 'dark:text-white'],
       code: [/^language-[a-z0-9+-]+$/],
     },
     allowedSchemes: ['http', 'https', 'mailto', 'tel'],

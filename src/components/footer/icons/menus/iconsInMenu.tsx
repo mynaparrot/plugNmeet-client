@@ -132,7 +132,7 @@ const IconsInMenu = () => {
       {roomFeatures?.sharedNotePadFeatures?.isActive && (
         <MenuItemHelper
           onClick={toggleSharedNotePad}
-          icon={<SharedNotepadIconSVG />}
+          icon={<SharedNotepadIconSVG classes="" />}
           text={
             isActiveSharedNotePad
               ? t('footer.icons.hide-shared-notepad')

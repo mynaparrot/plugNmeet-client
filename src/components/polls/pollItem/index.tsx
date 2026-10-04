@@ -185,7 +185,7 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
           {({ open }) => (
             <>
               <DisclosureButton className="flex items-center justify-between gap-3 w-full cursor-pointer">
-                <span className="text-sm text-Gray-800 dark:text-white font-medium block text-start min-w-0 break-words">
+                <span className="text-sm text-Gray-800 dark:text-white font-medium block text-start min-w-0 flex-1 overflow-hidden break-all">
                   {item.question}
                 </span>
                 <motion.div

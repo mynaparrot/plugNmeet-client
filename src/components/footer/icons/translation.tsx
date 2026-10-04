@@ -66,7 +66,7 @@ const Translation = () => {
     >
       <div className={innerDivClasses}>
         <span className="tooltip">{tooltipText}</span>
-        <SpeechIconSVG classes="h-6 w-auto" />
+        <SpeechIconSVG classes="h-5 w-auto" />
       </div>
     </button>
   );

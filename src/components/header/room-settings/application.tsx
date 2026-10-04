@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import languages from '../../../helpers/languages';
+import languages, { resolveAvailableLanguageCode } from '../../../helpers/languages';
 import { useAppDispatch, useAppSelector } from '../../../store';
 import {
   updateAllowPlayAudioNotification,
@@ -36,7 +36,7 @@ const ApplicationSettings = () => {
       <Dropdown
         label={t('header.room-settings.language')}
         id="language"
-        value={i18n.languages[0]}
+        value={resolveAvailableLanguageCode(i18n.languages[0] ?? i18n.language)}
         onChange={(e) => i18n.changeLanguage(e as string)}
         options={languages.map((l) => {
           return {

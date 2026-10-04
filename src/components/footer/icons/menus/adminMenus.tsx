@@ -139,7 +139,7 @@ const AdminMenus = () => {
       {roomFeatures?.sharedNotePadFeatures?.isAllow && (
         <MenuItemHelper
           onClick={toggleSharedNotepad}
-          icon={<SharedNotepadIconSVG />}
+          icon={<SharedNotepadIconSVG classes="" />}
           text={
             sharedNotepadStatus
               ? t('footer.menus.disable-shared-notepad')

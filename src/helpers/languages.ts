@@ -43,5 +43,27 @@ const languagesMap = new Map<string, Language>(
   languages.map((lang) => [lang.code.toLowerCase(), lang]),
 );
 
+// Resolves any detected/browser code (e.g. "en-US", "de") to an available
+// language code (e.g. "en", "de-DE"). Falls back to "en" when unknown.
+export const resolveAvailableLanguageCode = (code?: string | null): string => {
+  if (!code) {
+    return 'en';
+  }
+  const exact = languagesMap.get(code.toLowerCase());
+  if (exact) {
+    return exact.code;
+  }
+  const part = code.split(/[-_]/)[0]?.toLowerCase();
+  if (part) {
+    const byPart = languages.find(
+      (l) => l.code.toLowerCase() === part || l.code.toLowerCase().startsWith(`${part}-`),
+    );
+    if (byPart) {
+      return byPart.code;
+    }
+  }
+  return 'en';
+};
+
 export { languagesMap };
 export default languages;

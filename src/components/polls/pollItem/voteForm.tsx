@@ -161,7 +161,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
         // oxlint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
         <div
           key={`option-${pollDataWithOption.pollId}-${o.id}`}
-          className={`relative flex items-center border ${showCorrect ? 'border-Green-700 dark:border-Green-700' : 'border-Gray-300 dark:border-Gray-600'} min-h-[38px] bg-white dark:bg-dark-secondary shadow-button-shadow dark:shadow-none rounded-xl px-2 overflow-hidden my-2 cursor-pointer`}
+          className={`relative flex items-center gap-2 border ${showCorrect ? 'border-Green-700 dark:border-Green-700' : 'border-Gray-300 dark:border-Gray-600'} min-h-[38px] w-full max-w-full bg-white dark:bg-dark-secondary shadow-button-shadow dark:shadow-none rounded-xl px-2 py-1 overflow-hidden my-2 cursor-pointer min-w-0`}
           onClick={() => onClickSelectOption(o.id)}
         >
           <input
@@ -169,10 +169,10 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
             id={`option-${pollDataWithOption.pollId}-${o.id}`}
             checked={selectedOptions.has(o.id)}
             readOnly
-            className="polls-checkbox relative shrink-0 appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-button-shadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
+            className="polls-checkbox relative z-10 shrink-0 appearance-none w-[18px] h-[18px] border border-Gray-300 shadow-button-shadow rounded-[6px] checked:bg-Blue2-500 checked:border-Blue2-600"
           />
           <label
-            className="text-sm text-Gray-900 dark:text-white min-w-0 flex-1 ps-7 z-10 break-words cursor-pointer"
+            className="text-sm text-Gray-900 dark:text-white min-w-0 flex-1 overflow-hidden break-all cursor-pointer relative z-10"
             htmlFor={`option-${pollDataWithOption.pollId}-${o.id}`}
           >
             {o.text}

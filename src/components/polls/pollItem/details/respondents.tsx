@@ -25,7 +25,7 @@ const Respondents = ({ pollDataWithOption }: RespondentsProps) => {
                 disabled={pollDataWithOption.isAnonymous}
                 className={`flex items-center ${pollDataWithOption.isAnonymous ? '' : 'cursor-pointer'} justify-between gap-3 w-full ps-[14px] pe-2 bg-white dark:bg-dark-secondary3 min-h-9 rounded-xl  shadow-button-shadow dark:shadow-none transition-all duration-300 ${open ? 'border-b border-Gray-300 dark:border-Gray-800' : ''}`}
               >
-                <span className="text-sm text-Gray-800 dark:text-white min-w-0 break-words text-start">
+                <span className="text-sm text-Gray-800 dark:text-white min-w-0 flex-1 overflow-hidden break-all text-start">
                   {o.text} ({o.votes})
                   {pollDataWithOption.isQuiz && o.isCorrect && (
                     <span className="ms-2 inline-flex items-center align-middle">

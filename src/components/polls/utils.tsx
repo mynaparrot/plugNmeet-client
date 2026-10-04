@@ -82,15 +82,20 @@ export const publishPollResultByChat = async (pollDataWithOption: PollDataWithOp
   // Aggregate counts only (votes), so no voter names can ever leak for anonymous polls.
   const hasTotals = pollDataWithOption.totalRespondents > 0;
   const formattedOptions = Object.values(pollDataWithOption.options).map((option) => (
-    <span className="mt-1.5 block" key={option.id}>
-      <span className="flex items-center justify-between gap-3">
-        <span className="min-w-0 flex-1 break-words text-start">
+    <span className="block rounded-lg bg-Gray-50 px-2.5 py-1.5 dark:bg-Gray-800" key={option.id}>
+      <span className="flex items-start justify-between gap-2 min-w-0">
+        <span className="min-w-0 flex-1 overflow-hidden break-all text-start text-sm text-Gray-950 dark:text-white">
           {pollDataWithOption.isQuiz && option.isCorrect && (
-            <span className="me-1 font-medium text-Green-700">✓</span>
+            <span className="me-1 rounded bg-Green-100 px-1.5 text-xs font-semibold text-Green-700 dark:bg-Green-900 dark:text-Green-300">
+              ✓
+            </span>
           )}
           {option.text}
         </span>
-        <span className="shrink-0 text-xs text-Gray-700 dark:text-dark-text" dir="ltr">
+        <span
+          className="shrink-0 rounded-full bg-white px-2 py-0.5 text-xs font-semibold text-Gray-700 dark:bg-Gray-700 dark:text-white"
+          dir="ltr"
+        >
           {option.votes}
           {hasTotals ? ` (${option.responsesPercentage}%)` : ''}
         </span>
@@ -102,13 +107,13 @@ export const publishPollResultByChat = async (pollDataWithOption: PollDataWithOp
     // Phrasing tags only (span/strong): block tags would break out of the chat
     // bubble's <p> wrapper, so the card is built from styled spans instead.
     <>
-      <span className="block text-xs font-medium text-Gray-600 dark:text-dark-text">
+      <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-Gray-600 dark:text-dark-text">
         {i18n.t('polls.view-result-title')}
       </span>
-      <strong className="block break-words text-sm font-semibold text-Gray-950 dark:text-white">
+      <strong className="block overflow-hidden break-all text-sm font-semibold text-Gray-950 dark:text-white">
         {pollDataWithOption.question}
       </strong>
-      {formattedOptions}
+      <span className="mt-2 flex flex-col gap-1.5">{formattedOptions}</span>
       <span className="mt-2 block border-t border-Gray-200 pt-2 text-xs text-Gray-600 dark:border-Gray-700 dark:text-dark-text">
         {pollDataWithOption.isMultiple
           ? i18n.t('polls.total-votes', {

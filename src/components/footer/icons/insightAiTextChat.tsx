@@ -65,7 +65,7 @@ const InsightsAiTextChatIcon = () => {
     >
       <div className={innerDivClasses}>
         <span className="tooltip">{tooltipText}</span>
-        <AiIconSVG classes="h-auto w-4 3xl:w-5" />
+        <AiIconSVG classes="h-4 w-auto" />
       </div>
     </button>
   );

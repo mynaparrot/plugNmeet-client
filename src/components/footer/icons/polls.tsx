@@ -64,7 +64,7 @@ const PollsIcon = () => {
     >
       <div className={innerDivClasses}>
         <span className="tooltip">{tooltipText}</span>
-        <PollsIconSVG classes="" />
+        <PollsIconSVG classes="h-5 w-auto" />
       </div>
     </button>
   );

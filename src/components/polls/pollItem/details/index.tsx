@@ -71,7 +71,7 @@ const DetailsModal = ({
                 </button>
               </div>
               <div className="q-headline px-5 py-3 border border-Gray-100 dark:border-Gray-800 bg-Gray-25 dark:bg-dark-secondary text-sm font-medium text-Gray-800 dark:text-white">
-                <p className="break-words">Q: {pollDataWithOption.question}</p>
+                <p className="break-all">Q: {pollDataWithOption.question}</p>
               </div>
               <Respondents pollDataWithOption={pollDataWithOption} />
               {/* anonymous polls are aggregate-only; who voted stays unknown */}

@@ -94,7 +94,7 @@ const SharedNotePadIcon = () => {
           }`}
         >
           <span className="tooltip">{tooltipText}</span>
-          <SharedNotepadIconSVG />
+          <SharedNotepadIconSVG classes="h-5 w-auto" />
         </div>
       </button>
     )
