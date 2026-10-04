@@ -7,7 +7,7 @@ import { updateCurrentWhiteboardOfficeFileId } from '../../../../store/slices/wh
 import i18n from '../../../../helpers/i18n';
 import { sleep } from '../../../../helpers/utils';
 import officeFileProcessor from '../../manage-office-files/officeFileProcessor';
-import { getWhiteboardController, loadWhiteboardLastPage } from '../../collab';
+import { getWhiteboardController } from '../../collab';
 import { broadcastCurrentFileId } from '../handleRequests';
 
 interface IUseWhiteboardFileDrop {
@@ -31,9 +31,10 @@ const switchToFile = async (fileId: string) => {
   if (store.getState().whiteboard.currentWhiteboardOfficeFileId === fileId) {
     return;
   }
-  await getWhiteboardController().saveNow();
-  const lastPage = await loadWhiteboardLastPage(fileId);
-  const page = lastPage ?? 1;
+
+  await getWhiteboardController().saveCurrentState();
+  // fresh new file ID and first page
+  const page = 1;
   await broadcastCurrentFileId(fileId, page);
   await sleep(300);
   store.dispatch(updateCurrentWhiteboardOfficeFileId({ fileId, page }));

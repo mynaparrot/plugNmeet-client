@@ -52,7 +52,7 @@ const FooterUI = ({
       debounce(async (newPage: number) => {
         // First, flush the current page's yjs snapshot to IndexedDB.
         if (isPresenter && excalidrawAPI) {
-          await getWhiteboardController().saveNow();
+          await getWhiteboardController().saveCurrentState();
         }
         // Remember the last page for the current file.
         const { currentWhiteboardOfficeFileId } = store.getState().whiteboard;

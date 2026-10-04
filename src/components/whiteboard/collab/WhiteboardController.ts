@@ -330,7 +330,7 @@ export class WhiteboardController {
     // Flush before the doc is destroyed. Force a full checkpoint when changes
     // were pending; when idle this is a cheap retry — it no-ops via empty-diff
     // if the last flush already succeeded, and recovers a failed upload.
-    await this.saveNow(hadPendingSave);
+    await this._saveRemoteNow(hadPendingSave);
     // Track the last-seen live state in the local export cache (presenter-only;
     // flushLocalSnapshot is a no-op for other roles).
     await this.flushLocalSnapshot();
@@ -364,7 +364,7 @@ export class WhiteboardController {
     this.pendingAnnotations = 0;
   };
 
-  saveNow = async (forceCheckpoint = false) => {
+  private async _saveRemoteNow(forceCheckpoint = false) {
     this.clearSaveTimers();
     this.flushAnnotations();
 
@@ -409,7 +409,7 @@ export class WhiteboardController {
     } catch (e) {
       console.error('[WhiteboardController] failed to save page', e);
     }
-  };
+  }
 
   /**
    * Unconditionally persist the active (fileId, page) scope from the live doc
@@ -418,6 +418,14 @@ export class WhiteboardController {
   flushLocalSnapshot = async () => {
     if (!this.isCurrentUserPresenter() || !this.doc || !this.fileId) return;
     await saveWhiteboardPageSnapshot(this.fileId, this.page, Y.encodeStateAsUpdate(this.doc));
+  };
+
+  /**
+   * Will update remote + local IDB
+   */
+  public saveCurrentState = async () => {
+    await this._saveRemoteNow();
+    await this.flushLocalSnapshot();
   };
 
   /**
@@ -452,7 +460,7 @@ export class WhiteboardController {
       // Server protocol save first, then mirror the live doc into the local IDB
       // export cache so it always holds current data during active editing.
       try {
-        await this.saveNow();
+        await this._saveRemoteNow();
         await this.flushLocalSnapshot();
       } catch (e) {
         console.error('[WhiteboardController] scheduled save failed', e);
@@ -578,7 +586,7 @@ export class WhiteboardController {
           // Late-arriving canonical for a page we marked unconfirmed: the doc
           // is now complete — persist a fresh checkpoint and push the full
           // state so everyone converges.
-          void this.saveNow(true);
+          void this._saveRemoteNow(true);
           this.broadcastFullState();
         }
       }

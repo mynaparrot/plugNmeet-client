@@ -90,7 +90,7 @@ const ManageOfficeFilesModal = ({
         }
 
         // Flush the current page's yjs snapshot to IndexedDB before switching.
-        await getWhiteboardController().saveNow();
+        await getWhiteboardController().saveCurrentState();
         const lastPage = await loadWhiteboardLastPage(officeFile.fileId);
         const page = lastPage ?? 1;
         // broadcast first so that user can prepare for file
