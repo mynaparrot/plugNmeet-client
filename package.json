@@ -73,7 +73,7 @@
     "oxlint": "1.86.0",
     "tailwindcss": "4.3.3",
     "typescript": "7.0.2",
-    "vite": "8.3.1",
+    "vite": "8.3.2",
     "vite-plugin-clean": "2.0.1",
     "vite-plugin-oxlint": "2.2.0",
     "vite-plugin-static-copy": "4.1.1"
