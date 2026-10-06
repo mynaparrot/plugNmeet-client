@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Pilvitallennus ei ole käytettävissä käytettäessä mukautettua suojausavainta.",
     "media-only-recording-not-support-e2ee": "Vain äänen ja videon tallentaminen ei ole käytettävissä, kun päästä päähän -salaus on käytössä.",
     "you-are-sharing-screen": "Jaat nyt näyttösi. Toiset näkevät suuremman näkymän.",
+    "screenshare-presenter": "{{name}} jakaa näyttöä",
     "screen-share-view-disabled": "{{name}} Jakaa näyttöä, mutta olet poistanut näytön jaon katselun käytöstä tallennusasetuksista.",
     "new-system-message-in-chat": "Uusi järjestelmäviesti on julkaistu julkisessa chatissa.",
     "queue-holding-messages": "Yhteysongelma: viestejä pidätetään.",
@@ -143,7 +144,11 @@
       "alert": {
         "confirm": "Oletko varma?",
         "logout": "Olet poistumassa kokouksesta.",
-        "end": "Olet lopettamassa kokouksen kaikilta."
+        "end": "Olet lopettamassa kokouksen kaikilta.",
+        "leave-or-end-title": "Lähteä vai lopettaa tapaaminen?",
+        "end-for-everyone": "Kokous päättyy kaikille",
+        "logout-desc": "Poistut kokouksesta. Muut osallistujat voivat jatkaa istuntoa.",
+        "end-desc": "Tämä päättää kokouksen ja katkaisee kaikki osallistujat pois sessiosta."
       }
     },
     "room-settings": {
@@ -328,7 +333,8 @@
     "new-messages": "Uudet viestit",
     "scroll-to-bottom": "Selaa alas",
     "sync-chat": "Synkronoi chat vertaisten kanssa",
-    "load-earlier-messages": "Lataa aikaisempia viestejä"
+    "load-earlier-messages": "Lataa aikaisempia viestejä",
+    "system-name": "Järjestelmä"
   },
   "footer": {
     "aria-label": "Kokousten ohjaus",

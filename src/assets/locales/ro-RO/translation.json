@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Înregistrarea în cloud nu este disponibilă atunci când utilizați o cheie de securitate personalizată.",
     "media-only-recording-not-support-e2ee": "Înregistrarea numai audio și video nu este disponibilă atunci când criptarea end-to-end este activată.",
     "you-are-sharing-screen": "Partajați ecranul acum. Alții vor vedea o vedere mai mare.",
+    "screenshare-presenter": "{{name}} este ecranul de partajare",
     "screen-share-view-disabled": "{{name}} Partajează ecranul, dar ai dezactivat vizualizarea partajării ecranului din setările de salvare a datelor.",
     "new-system-message-in-chat": "Un nou mesaj de sistem a fost postat în chat-ul public.",
     "queue-holding-messages": "Problemă de conexiune: mesajele sunt reținute.",
@@ -143,7 +144,11 @@
       "alert": {
         "confirm": "Eşti sigur?",
         "logout": "Sunteți pe cale să părăsiți întâlnirea.",
-        "end": "Sunteți pe cale să încheiați întâlnirea pentru toată lumea."
+        "end": "Sunteți pe cale să încheiați întâlnirea pentru toată lumea.",
+        "leave-or-end-title": "Să pleci sau să închei întâlnirea?",
+        "end-for-everyone": "Încheierea întâlnirii pentru toată lumea",
+        "logout-desc": "Vei părăsi întâlnirea. Alți participanți pot continua sesiunea.",
+        "end-desc": "Acest lucru va încheia întâlnirea și va deconecta toți participanții de la sesiune."
       }
     },
     "room-settings": {
@@ -328,7 +333,8 @@
     "new-messages": "Mesaje noi",
     "scroll-to-bottom": "Derulează până jos",
     "sync-chat": "Chat sincronizat cu colegii",
-    "load-earlier-messages": "Încarcă mesajele anterioare"
+    "load-earlier-messages": "Încarcă mesajele anterioare",
+    "system-name": "Sistem"
   },
   "footer": {
     "aria-label": "Controlul ședințelor",

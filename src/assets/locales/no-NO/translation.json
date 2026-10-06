@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "Skyopptak er ikke tilgjengelig når du bruker en egendefinert sikkerhetsnøkkel.",
     "media-only-recording-not-support-e2ee": "Opptak av bare lyd og video er ikke tilgjengelig når ende-til-ende-kryptering er aktivert.",
     "you-are-sharing-screen": "Du deler skjermen din nå. Andre vil se en større visning.",
+    "screenshare-presenter": "{{name}} deler skjerm",
     "screen-share-view-disabled": "{{name}} deler skjermen, men du har deaktivert skjermdeling fra datalagringsinnstillingene.",
     "new-system-message-in-chat": "En ny systemmelding er lagt ut i den offentlige chatten.",
     "queue-holding-messages": "Tilkoblingsproblem: meldinger holdes tilbake.",
@@ -143,7 +144,11 @@
       "alert": {
         "confirm": "Er du sikker?",
         "logout": "Du er i ferd med å forlate møtet.",
-        "end": "Du er i ferd med å avslutte møtet for alle."
+        "end": "Du er i ferd med å avslutte møtet for alle.",
+        "leave-or-end-title": "Gå eller avslutte møtet?",
+        "end-for-everyone": "Sluttmøte for alle",
+        "logout-desc": "Du forlater møtet. Andre deltakere kan fortsette økten.",
+        "end-desc": "Dette avslutter møtet og kobler alle deltakere fra økten."
       }
     },
     "room-settings": {
@@ -328,7 +333,8 @@
     "new-messages": "Nye meldinger",
     "scroll-to-bottom": "Scroll til bunnen",
     "sync-chat": "Synkroniser chat med jevnaldrende",
-    "load-earlier-messages": "Last inn tidligere meldinger"
+    "load-earlier-messages": "Last inn tidligere meldinger",
+    "system-name": "System"
   },
   "footer": {
     "aria-label": "Møtekontroller",

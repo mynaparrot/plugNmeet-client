@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "La registrazione su cloud non è disponibile quando si utilizza una chiave di sicurezza personalizzata.",
     "media-only-recording-not-support-e2ee": "La registrazione di solo audio e video non è disponibile quando la crittografia end-to-end è abilitata.",
     "you-are-sharing-screen": "Sta condividendo il suo schermo. Gli altri vedranno una visualizzazione più grande.",
+    "screenshare-presenter": "{{name}} sta condividendo la schermata",
     "screen-share-view-disabled": "{{name}} sta condividendo lo schermo, ma hai disabilitato la visualizzazione dello schermo dalle impostazioni di salvataggio dati.",
     "new-system-message-in-chat": "Un nuovo messaggio di sistema è stato pubblicato nella chat pubblica.",
     "queue-holding-messages": "Problema di connessione: i messaggi sono in attesa.",
@@ -143,7 +144,11 @@
       "alert": {
         "confirm": "È sicuro?",
         "logout": "Sta per abbandonare la riunione.",
-        "end": "Sta per terminare la riunione per tutti."
+        "end": "Sta per terminare la riunione per tutti.",
+        "leave-or-end-title": "Lasciare o chiudere la riunione?",
+        "end-for-everyone": "Fine della riunione per tutti",
+        "logout-desc": "Lascerai la riunione. Gli altri partecipanti possono continuare la sessione.",
+        "end-desc": "Questo concluderà la riunione e disconnetterà tutti i partecipanti dalla sessione."
       }
     },
     "room-settings": {
@@ -328,7 +333,8 @@
     "new-messages": "Nuovi messaggi",
     "scroll-to-bottom": "Scorri fino in fondo",
     "sync-chat": "Chat sincronizzata con i colleghi",
-    "load-earlier-messages": "Carica i messaggi precedenti"
+    "load-earlier-messages": "Carica i messaggi precedenti",
+    "system-name": "Sistema"
   },
   "footer": {
     "aria-label": "Controlli delle riunioni",

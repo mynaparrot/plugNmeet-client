@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "カスタムセキュリティキーを使用している場合、クラウド録画は利用できません。",
     "media-only-recording-not-support-e2ee": "종단 간 암호화가 활성화된 경우 오디오 및 비디오만 녹화할 수 없습니다.",
     "you-are-sharing-screen": "현재 화면을 공유하고 있습니다. 다른 참가자들은 더 큰 화면을 보게 됩니다.",
+    "screenshare-presenter": "{{name}} 화면 공유는",
     "screen-share-view-disabled": "{{name}} 화면 공유는 하고 있는데, 데이터 저장 설정에서 화면 공유 보기 기능을 비활성화하셨습니다.",
     "new-system-message-in-chat": "新しいシステムメッセージがパブリックチャットに投稿されました。",
     "queue-holding-messages": "연결 문제: 메시지가 보류되고 있습니다.",
@@ -143,7 +144,11 @@
       "alert": {
         "confirm": "확실합니까?",
         "logout": "会議から退出します。",
-        "end": "모든 참가자에 대해 회의를 종료하려고 합니다."
+        "end": "모든 참가자에 대해 회의를 종료하려고 합니다.",
+        "leave-or-end-title": "떠날까요, 회의를 끝낼까요?",
+        "end-for-everyone": "모두를 위한 회의 종료",
+        "logout-desc": "회의를 떠나야 합니다. 다른 참가자들은 세션을 계속할 수 있습니다.",
+        "end-desc": "이렇게 하면 회의가 종료되고 모든 참가자가 세션에서 분리됩니다."
       }
     },
     "room-settings": {
@@ -328,7 +333,8 @@
     "new-messages": "새로운 메시지",
     "scroll-to-bottom": "맨 아래로 스크롤하세요",
     "sync-chat": "동료와 채팅 동기화",
-    "load-earlier-messages": "이전 메시지 불러오기"
+    "load-earlier-messages": "이전 메시지 불러오기",
+    "system-name": "시스템"
   },
   "footer": {
     "aria-label": "회의 제어",

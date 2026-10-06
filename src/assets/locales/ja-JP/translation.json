@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "カスタムセキュリティキーを使用している場合、クラウド録画は利用できません。",
     "media-only-recording-not-support-e2ee": "エンドツーエンド暗号化が有効な場合、音声と映像のみの録画は利用できません。",
     "you-are-sharing-screen": "画面を共有中です。他の参加者には拡大表示されます。",
+    "screenshare-presenter": "{{name}} 画面を共有しています",
     "screen-share-view-disabled": "{{name}} 画面共有は存在しますが、データ保存設定から画面共有表示が無効になっています。",
     "new-system-message-in-chat": "新しいシステムメッセージがパブリックチャットに投稿されました。",
     "queue-holding-messages": "接続に問題があります：メッセージが保留されています。",
@@ -143,7 +144,11 @@
       "alert": {
         "confirm": "よろしいですか？",
         "logout": "会議から退出します。",
-        "end": "全員に対して会議を終了します。"
+        "end": "全員に対して会議を終了します。",
+        "leave-or-end-title": "会議を終わらせるか、辞めるか?",
+        "end-for-everyone": "全員の会議終了",
+        "logout-desc": "会議を退出してください。他の参加者はセッションを続けられます。",
+        "end-desc": "これにより会議は終了し、すべての参加者がセッションから切り離されます。"
       }
     },
     "room-settings": {
@@ -328,7 +333,8 @@
     "new-messages": "新しいメッセージ",
     "scroll-to-bottom": "一番下までスクロール",
     "sync-chat": "ピアとチャットを同期する",
-    "load-earlier-messages": "以前のメッセージを読み込む"
+    "load-earlier-messages": "以前のメッセージを読み込む",
+    "system-name": "システム"
   },
   "footer": {
     "aria-label": "会議制御",

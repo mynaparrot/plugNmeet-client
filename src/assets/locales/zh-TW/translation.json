@@ -89,6 +89,7 @@
     "cloud-recording-not-supported-self-key": "使用自訂安全金鑰時，雲端錄製不可用。",
     "media-only-recording-not-support-e2ee": "啟用端對端加密後，僅錄製音訊和視訊的功能不可用。",
     "you-are-sharing-screen": "您正在分享螢幕。其他與會者將看到放大的畫面。",
+    "screenshare-presenter": "{{name}} 正在分享螢幕",
     "screen-share-view-disabled": "{{name}} 正在共用螢幕，但你在儲存資料的設定中已經關閉了螢幕共享觀看。",
     "new-system-message-in-chat": "公開聊天中發布了一條新的系統訊息。",
     "queue-holding-messages": "連線問題：訊息被保留了。",
@@ -143,7 +144,11 @@
       "alert": {
         "confirm": "您確定嗎？",
         "logout": "您即將離開會議。",
-        "end": "您即將為所有人結束會議。"
+        "end": "您即將為所有人結束會議。",
+        "leave-or-end-title": "離開還是結束會議？",
+        "end-for-everyone": "會議結束，大家都參加",
+        "logout-desc": "你必須離開會議。其他參與者可以繼續會議。",
+        "end-desc": "此舉會結束會議，並讓所有參與者與會議中斷線。"
       }
     },
     "room-settings": {
@@ -328,7 +333,8 @@
     "new-messages": "新訊息",
     "scroll-to-bottom": "往最底部捲動",
     "sync-chat": "與同儕同步聊天",
-    "load-earlier-messages": "載入先前訊息"
+    "load-earlier-messages": "載入先前訊息",
+    "system-name": "系統"
   },
   "footer": {
     "aria-label": "會議控制",
