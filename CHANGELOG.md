@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.5.3](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.2...v2.5.3) (2026-10-06)
+
+
+### Bug Fixes
+
+* conflict with mobile visibility ([dbb05ea](https://github.com/mynaparrot/plugNmeet-client/commit/dbb05ead0db3381b49978dfcd7f715919bd27c94))
+* **critical:** we should add remote users only after establishing media connection to prevent race condition ([54a0300](https://github.com/mynaparrot/plugNmeet-client/commit/54a030066da672bdd98f742e674a001b3509e0f2))
+* disable camera wasn't displaying other icons ([cda520e](https://github.com/mynaparrot/plugNmeet-client/commit/cda520e6c39c26ac1dc091116e8654199cb91624))
+* in end meeting modal added option with clear message ([11e85ab](https://github.com/mynaparrot/plugNmeet-client/commit/11e85ab562a1209ddd5e72dd09fd57300f3c7d5f))
+* new Crowdin updates ([#1126](https://github.com/mynaparrot/plugNmeet-client/issues/1126)) ([f513863](https://github.com/mynaparrot/plugNmeet-client/commit/f5138634b576ecae3b97b8608b12443a52785d5c))
+* pin camera wasn't rendering properly ([#1127](https://github.com/mynaparrot/plugNmeet-client/issues/1127)) ([24fa222](https://github.com/mynaparrot/plugNmeet-client/commit/24fa2221ad264aa715192eff295acb82d8c59cfb))
+* reaction icon wasn't matching with its neighbor icons ([649938e](https://github.com/mynaparrot/plugNmeet-client/commit/649938e4eb2bba56c503bcd265a2aea29d57f69e))
+* remove `throttle` as unnecessary ([38d0cd1](https://github.com/mynaparrot/plugNmeet-client/commit/38d0cd1009c284fba1512116bad1094eee03f42c))
+* **tool:** migrate Prettier to Oxfmt ([b95fa76](https://github.com/mynaparrot/plugNmeet-client/commit/b95fa7687d0efc151dbaf6ac5911e6c5d0f7f0ce))
+* **tool:** updated `oxlint` rules ([85b9ec8](https://github.com/mynaparrot/plugNmeet-client/commit/85b9ec85b43fd195a32e28e7c289d88d24b3b20f))
+* **tool:** upgrade `typescript` to `7.0.2` + `oxlint` to `1.86.0` ([ed9d5a9](https://github.com/mynaparrot/plugNmeet-client/commit/ed9d5a997a2d593d61fd6c530509899c02623b4b))
+* **UI:** added label of who is sharing screen ([4eff87c](https://github.com/mynaparrot/plugNmeet-client/commit/4eff87c980bfbcbdd4936aefa885ae3a90c9991a))
+* **UI:** better design for system messages ([487c65f](https://github.com/mynaparrot/plugNmeet-client/commit/487c65ff09d324635c86d2e829bc7d1417878d13))
+* **UI:** poll and icon style + language drop down problem ([0c8183f](https://github.com/mynaparrot/plugNmeet-client/commit/0c8183f6550d7e3b4aca76164d97c293148b6eea))
+* **UI:** use `rounded-e-md` for end round only ([fb7d436](https://github.com/mynaparrot/plugNmeet-client/commit/fb7d4364963c96d67bff89e1d17e4e3115379591))
+* use `exportToCanvas` to avoid unnecessary render PNG + bug fix during export latest data wasn't available ([5bbeae5](https://github.com/mynaparrot/plugNmeet-client/commit/5bbeae5897002bc8624b73fa64d9c9958239847e))
+* when too many messages arrive switching tab was delaying ([f5c7f44](https://github.com/mynaparrot/plugNmeet-client/commit/f5c7f44a2bfcb4bf026242704833604a33b2f3f3))
+* **whiteboard:** presenter can drag-and-drop office file directly to canvas ([b6c7c9c](https://github.com/mynaparrot/plugNmeet-client/commit/b6c7c9cf9a991d400fd539ee4ef4d27899d57d9f))
+* **whiteboard:** save both in remote + local before page change ([0670195](https://github.com/mynaparrot/plugNmeet-client/commit/067019504b0b59d325babf7d260c03904192d7b1))
+
 ## [2.5.2](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.1...v2.5.2) (2026-09-23)
 
 
