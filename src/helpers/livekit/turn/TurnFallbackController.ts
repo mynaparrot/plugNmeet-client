@@ -4,13 +4,11 @@ import { toast } from 'react-toastify';
 
 import i18n from '../../i18n';
 import { isFirefoxMobile } from '../../utils';
-import {
+import TurnFallbackCoordinator, {
   DEFAULT_FALLBACK_TIMER_MS,
-  createTurnFallbackCoordinator,
   type CoordinatorQuality,
   type MediaAdaptationSnapshot,
   type TurnFallbackReason,
-  type TurnFallbackCoordinator,
 } from './TurnFallbackCoordinator';
 import {
   allRequiredTransportsFullyRelayed,
@@ -59,7 +57,7 @@ const isFinitePositive = (value: unknown): value is number =>
  */
 export default class TurnFallbackController {
   private credential: TurnCredentials | undefined = undefined;
-  private readonly coordinator: TurnFallbackCoordinator = createTurnFallbackCoordinator();
+  private readonly coordinator: TurnFallbackCoordinator = new TurnFallbackCoordinator();
   private readonly lifecycle = createTurnMigrationAttemptLifecycle();
   private verification: RelayMigrationVerification | undefined = undefined;
   private hasAttempted: boolean = false;

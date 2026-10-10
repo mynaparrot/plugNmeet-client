@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import {
-  createTurnFallbackCoordinator,
+import TurnFallbackCoordinator, {
   DEFAULT_FALLBACK_TIMER_MS,
   FULL_HEALTH_CLEAR_STREAK,
   RECENT_EPISODE_HISTORY_WINDOW_MS,
@@ -10,7 +9,6 @@ import {
   SUSTAINED_MIN_POOR_RATIO,
   type CoordinatorSample,
   type MediaAdaptationSnapshot,
-  type TurnFallbackCoordinator,
 } from '../TurnFallbackCoordinator';
 
 const FULL_MEDIA: MediaAdaptationSnapshot = {
@@ -59,7 +57,7 @@ const POOR = { uploadQuality: 'poor', isMyConnectionPoor: true } as const;
 
 describe('turn fallback coordinator — episode policy', () => {
   it('transient poor sample never fires and full-media recovery closes the episode', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator);
 
     expect(feeder.feed(POOR).shouldFireFallback).toBe(false);
@@ -78,7 +76,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('fires sustained-poor at the default 30s window with predominantly poor samples', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator);
 
     let fired: Awaited<ReturnType<TurnFallbackCoordinator['ingest']>> | null = null;
@@ -100,7 +98,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('a brief healthy blip neither clears evidence nor resets the episode start', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator);
 
     feeder.feed(POOR);
@@ -125,7 +123,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('reduced-media health neither fires nor wipes distress evidence', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator);
 
     feeder.feed(POOR);
@@ -145,7 +143,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('mere paused video never forces relay', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator);
 
     let fired = false;
@@ -161,7 +159,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('runs a realistic repeated shed → healthy-reduced → restore → poor shed cycle and fires recurring during alternating Poor/Good', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator);
 
     // burst 1: two distress samples, then the adaptive controller sheds media
@@ -212,7 +210,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('alternating Poor/Good without any prior burst stays silent until the burst itself has consumed the sustained window', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator);
 
     // within the first 30s of the burst: no accelerated path exists at all
@@ -252,7 +250,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('a static pre-paused state never records an adaptation cycle for its distress', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator);
 
     // media was already degraded before any distress appeared
@@ -279,7 +277,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('two isolated single-sample spikes never trigger any path', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator);
 
     feeder.feed(POOR);
@@ -305,7 +303,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('distant unrelated transients expire from the bounded history and never accelerate later bursts', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator);
 
     // a meaningful episode: two distress samples then full recovery
@@ -335,7 +333,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('a healthy sample between severe samples resets the severe run (Lost/Good/Lost)', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator, 0);
 
     const severeSample = (atMs: number) => ({
@@ -372,7 +370,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('a healthy sample between frozen-audio distresses resets the severe run (stuck/healthy/stuck)', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator, 0);
 
     const stuckSample = (atMs: number) => ({
@@ -404,7 +402,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('a first adaptation degradation (at 10s) never enables the recurring path for its own burst', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator, 0);
 
     // distress starts; the adaptive controller sheds media at the ~10s mark
@@ -434,7 +432,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('a burst that consumed its full sustained window still stays silent on alternating quality', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator);
 
     /*
@@ -484,7 +482,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('severe connected loss fires on the faster ~15s path, only with repeated confirmation', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator, 0);
 
     const severeSample = (atMs: number) => ({
@@ -510,7 +508,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('a single late Lost sample after ordinary Poor does NOT immediately fire severe', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator, 0);
 
     // ordinary poor for 10s...
@@ -534,7 +532,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('a non-severe distress sample breaks the severe confirmation streak', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator, 0);
 
     const lost = (atMs: number) => ({ uploadQuality: 'lost', isMyConnectionPoor: true, atMs });
@@ -557,7 +555,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('frozen outbound audio is treated as severe evidence', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator);
 
     feeder.feed({ uploadQuality: 'poor', isMyConnectionPoor: true, isUploadAudioStuck: true });
@@ -579,7 +577,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('outbound audio stuck with excellent upload quality is independent distress and fires the severe path', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator, 0);
 
     // upload RTT/loss look great; audio is dead
@@ -607,7 +605,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('confirmed local downlink distress requires BOTH receive-poor and download-issue', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator);
 
     // unconfirmed remote receive issue: never a local transport distress
@@ -639,7 +637,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('disconnected samples are not measured and reset pending evidence', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator);
 
     feeder.feed(POOR);
@@ -673,7 +671,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('a hidden gap invalidates prior evidence and restarts the elapsed baseline', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const startAtMs = 1000;
     const feeder = createFeeder(coordinator, startAtMs);
 
@@ -693,7 +691,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('recurring distress fires on the shortened ~15s window after a recent meaningful episode', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator);
 
     // episode 1: two poor samples, then full-media health closes it
@@ -717,7 +715,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('brief (1-2 sample) full-media recovery does not close the episode', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator);
 
     feeder.feed(POOR);
@@ -730,7 +728,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('unknown/missing quality stats are not definitive recovery evidence', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator);
 
     feeder.feed(POOR);
@@ -744,7 +742,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('full-health streak resets on unknown and reduced-media samples (consecutive recovery required)', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator);
 
     feeder.feed(POOR);
@@ -768,7 +766,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('ignores invalid and out-of-order sample timestamps', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator, 0);
 
     feeder.feed({ ...POOR, atMs: 10000 });
@@ -784,7 +782,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('honors a valid positive server-provided timer override', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     coordinator.configure({ fallbackTimerMs: 10_000 });
     const feeder = createFeeder(coordinator);
 
@@ -800,7 +798,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('rejects non-finite or non-positive timer overrides and keeps the default', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     coordinator.configure({ fallbackTimerMs: 0 });
     coordinator.configure({ fallbackTimerMs: -5_000 });
     coordinator.configure({ fallbackTimerMs: Number.NaN });
@@ -816,7 +814,7 @@ describe('turn fallback coordinator — episode policy', () => {
 
   it('sanitizes a non-finite initial configuration', () => {
     // the constructor must apply the same sanitization as configure()
-    const coordinator = createTurnFallbackCoordinator({
+    const coordinator = new TurnFallbackCoordinator({
       fallbackTimerMs: Number.NaN,
       flapping: { maxPoorConnCount: Number.NaN, checkDurationMs: Number.NaN },
     });
@@ -839,7 +837,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('flapping keeps sample-count maxPoor/window semantics', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     coordinator.configure({
       flapping: { enabled: true, maxPoorConnCount: 3, checkDurationMs: 120_000 },
     });
@@ -856,7 +854,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('flapping counts only isMyConnectionPoor and trims by window', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     coordinator.configure({
       flapping: { enabled: true, maxPoorConnCount: 3, checkDurationMs: 120_000 },
     });
@@ -881,7 +879,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('flapping poor timestamps survive disconnected and short hidden gaps', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     coordinator.configure({
       flapping: { enabled: true, maxPoorConnCount: 4, checkDurationMs: 120_000 },
     });
@@ -905,7 +903,7 @@ describe('turn fallback coordinator — episode policy', () => {
   });
 
   it('reset() clears all evidence including the recent episode history', () => {
-    const coordinator = createTurnFallbackCoordinator();
+    const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator);
 
     feeder.feed(POOR);
@@ -934,5 +932,47 @@ describe('turn fallback coordinator — episode policy', () => {
 
   it('keeps the sustained poor ratio at the documented threshold', () => {
     expect(SUSTAINED_MIN_POOR_RATIO).toBe(0.7);
+  });
+
+  it('instances keep evidence, decisions, and configuration independent', () => {
+    // regression for the class refactor: coordinator state must be strictly
+    // per instance, with no shared or leaking module-level state
+    const firstCoordinator = new TurnFallbackCoordinator();
+    const secondCoordinator = new TurnFallbackCoordinator();
+    const first = createFeeder(firstCoordinator);
+    const second = createFeeder(secondCoordinator);
+
+    // only the first instance accumulates and fires a severe episode
+    const severeSample = (atMs: number) => ({
+      uploadQuality: 'lost',
+      isMyConnectionPoor: true,
+      atMs,
+    });
+    let firstFired = false;
+    for (const atMs of [1000, 6000, 11000, 16000]) {
+      if (first.feed(severeSample(atMs)).shouldFireFallback) firstFired = true;
+    }
+    expect(firstFired).toBe(true);
+
+    // the sibling instance holds no evidence from the other's samples
+    expect(secondCoordinator.getState()).toEqual({
+      closedEpisodes: 0,
+      episodeStartedAtMs: null,
+      episodeDistressSamples: 0,
+      episodeSamples: 0,
+      severeStreak: 0,
+      recentMeaningfulEpisodes: 0,
+      poorSamplesInWindow: 0,
+    });
+    expect(second.feed(POOR).shouldFireFallback).toBe(false);
+
+    // configuration is applied per instance as well
+    firstCoordinator.configure({
+      flapping: { enabled: true, maxPoorConnCount: 2, checkDurationMs: 60_000 },
+    });
+    expect(first.feed({ ...POOR, atMs: 21_000 }).shouldFireFallback).toBe(false);
+    expect(first.feed({ ...POOR, atMs: 26_000 }).shouldFireFallback).toBe(true);
+    // the second instance still follows the unchanged default episode policy
+    expect(second.feed(POOR).shouldFireFallback).toBe(false);
   });
 });

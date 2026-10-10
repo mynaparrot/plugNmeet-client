@@ -118,23 +118,6 @@ export type TurnFallbackCoordinatorPartialConfig = Partial<
   flapping?: Partial<TurnFallbackCoordinatorConfig['flapping']>;
 };
 
-export type TurnFallbackCoordinator = {
-  configure: (config: TurnFallbackCoordinatorPartialConfig) => void;
-  ingest: (sample: CoordinatorSample) => CoordinatorDecision;
-  /** clears all evidence (reconnect / hidden boundary / disconnect) */
-  reset: () => void;
-  /** bounded state snapshot for logging and tests */
-  getState: () => {
-    closedEpisodes: number;
-    episodeStartedAtMs: number | null;
-    episodeDistressSamples: number;
-    episodeSamples: number;
-    severeStreak: number;
-    recentMeaningfulEpisodes: number;
-    poorSamplesInWindow: number;
-  };
-};
-
 type EpisodeRecord = {
   startedAtMs: number;
   endedAtMs: number;
@@ -144,267 +127,282 @@ type EpisodeRecord = {
 const isFinitePositiveNumber = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value) && value > 0;
 
-export function createTurnFallbackCoordinator(
-  initialConfig?: TurnFallbackCoordinatorPartialConfig,
-): TurnFallbackCoordinator {
-  const config: TurnFallbackCoordinatorConfig = {
+export default class TurnFallbackCoordinator {
+  private readonly config: TurnFallbackCoordinatorConfig = {
     fallbackTimerMs: DEFAULT_FALLBACK_TIMER_MS,
     flapping: { enabled: false, maxPoorConnCount: 3, checkDurationMs: 120_000 },
   };
 
   /** lifetime counter for logging; the recurring gate uses bounded history */
-  let closedEpisodes = 0;
+  private closedEpisodes = 0;
 
-  let episodeStartedAtMs: number | null = null;
-  let episodeDistressSamples = 0;
-  let episodeTotalSamples = 0;
+  private episodeStartedAtMs: number | null = null;
+  private episodeDistressSamples = 0;
+  private episodeTotalSamples = 0;
   /** bounded sliding window of the current episode's distress flags */
-  let episodeWindow: boolean[] = [];
+  private episodeWindow: boolean[] = [];
   /** consecutive full-media healthy samples used to close an episode */
-  let fullHealthStreak = 0;
+  private fullHealthStreak = 0;
   /** the current episode is already represented in the recent history */
-  let episodeRecorded = false;
+  private episodeRecorded = false;
 
   /** consecutive severe samples and the start of the current severe run */
-  let severeStreak = 0;
-  let severeFirstAtMs: number | null = null;
+  private severeStreak = 0;
+  private severeFirstAtMs: number | null = null;
 
   /** bounded recent history of meaningful distress/adaptation episodes */
-  let recentEpisodes: EpisodeRecord[] = [];
-  let prevDegradedObserved = false;
+  private recentEpisodes: EpisodeRecord[] = [];
+  private prevDegradedObserved = false;
 
-  let lastSampleAtMs: number | null = null;
-  let poorTimestamps: number[] = [];
-  let poorSamplesInWindow = 0;
+  private lastSampleAtMs: number | null = null;
+  private poorTimestamps: number[] = [];
+  private poorSamplesInWindow = 0;
 
-  const sanitizeFlapping = (input: TurnFallbackCoordinatorPartialConfig['flapping']): void => {
+  public constructor(initialConfig?: TurnFallbackCoordinatorPartialConfig) {
+    // sanitize the initial configuration the same way as later configure() calls
+    if (initialConfig) {
+      if (isFinitePositiveNumber(initialConfig.fallbackTimerMs)) {
+        this.config.fallbackTimerMs = initialConfig.fallbackTimerMs;
+      }
+      this.sanitizeFlapping(initialConfig.flapping);
+    }
+  }
+
+  private sanitizeFlapping(input: TurnFallbackCoordinatorPartialConfig['flapping']): void {
     if (!input) return;
 
     if (typeof input.enabled === 'boolean') {
-      config.flapping.enabled = input.enabled;
+      this.config.flapping.enabled = input.enabled;
     }
     if (isFinitePositiveNumber(input.maxPoorConnCount)) {
-      config.flapping.maxPoorConnCount = input.maxPoorConnCount;
+      this.config.flapping.maxPoorConnCount = input.maxPoorConnCount;
     }
     if (isFinitePositiveNumber(input.checkDurationMs)) {
-      config.flapping.checkDurationMs = input.checkDurationMs;
+      this.config.flapping.checkDurationMs = input.checkDurationMs;
     }
-  };
-
-  // sanitize the initial configuration the same way as later configure() calls
-  if (initialConfig) {
-    if (isFinitePositiveNumber(initialConfig.fallbackTimerMs)) {
-      config.fallbackTimerMs = initialConfig.fallbackTimerMs;
-    }
-    sanitizeFlapping(initialConfig.flapping);
   }
 
-  const pruneRecentHistory = (atMs: number): void => {
-    recentEpisodes = recentEpisodes.filter(
+  private pruneRecentHistory(atMs: number): void {
+    this.recentEpisodes = this.recentEpisodes.filter(
       (record) => atMs - record.endedAtMs <= RECENT_EPISODE_HISTORY_WINDOW_MS,
     );
-    while (recentEpisodes.length > RECENT_EPISODE_HISTORY_MAX) {
-      recentEpisodes.shift();
+    while (this.recentEpisodes.length > RECENT_EPISODE_HISTORY_MAX) {
+      this.recentEpisodes.shift();
     }
+  }
+
+  private recentMeaningfulEpisodes(): number {
+    return this.recentEpisodes.filter(
+      (record) => record.distressSamples >= EPISODE_RECORD_MIN_DISTRESS,
+    ).length;
+  }
+
+  private resetEpisode(): void {
+    this.episodeStartedAtMs = null;
+    this.episodeDistressSamples = 0;
+    this.episodeTotalSamples = 0;
+    this.episodeWindow = [];
+    this.fullHealthStreak = 0;
+    this.episodeRecorded = false;
+    this.severeStreak = 0;
+    this.severeFirstAtMs = null;
+  }
+
+  /** clears all evidence (reconnect / hidden boundary / disconnect) */
+  public reset = (): void => {
+    this.resetEpisode();
+    this.closedEpisodes = 0;
+    this.recentEpisodes = [];
+    this.prevDegradedObserved = false;
+    this.lastSampleAtMs = null;
+    this.poorTimestamps = [];
+    this.poorSamplesInWindow = 0;
   };
 
-  const recentMeaningfulEpisodes = (): number =>
-    recentEpisodes.filter((record) => record.distressSamples >= EPISODE_RECORD_MIN_DISTRESS).length;
-
-  const resetEpisode = (): void => {
-    episodeStartedAtMs = null;
-    episodeDistressSamples = 0;
-    episodeTotalSamples = 0;
-    episodeWindow = [];
-    fullHealthStreak = 0;
-    episodeRecorded = false;
-    severeStreak = 0;
-    severeFirstAtMs = null;
-  };
-
-  const reset = (): void => {
-    resetEpisode();
-    closedEpisodes = 0;
-    recentEpisodes = [];
-    prevDegradedObserved = false;
-    lastSampleAtMs = null;
-    poorTimestamps = [];
-    poorSamplesInWindow = 0;
-  };
-
-  const configure = (partial: TurnFallbackCoordinatorPartialConfig): void => {
+  public configure = (partial: TurnFallbackCoordinatorPartialConfig): void => {
     if (isFinitePositiveNumber(partial.fallbackTimerMs)) {
-      config.fallbackTimerMs = partial.fallbackTimerMs;
+      this.config.fallbackTimerMs = partial.fallbackTimerMs;
     }
-    sanitizeFlapping(partial.flapping);
+    this.sanitizeFlapping(partial.flapping);
   };
 
-  const emptyDecision = (): CoordinatorDecision => ({
-    shouldFireFallback: false,
-    reason: null,
-    closedEpisodes,
-    episode: buildEpisodeSummary(),
-    distressCleared: false,
-    poorSamplesInWindow,
-  });
+  private emptyDecision(): CoordinatorDecision {
+    return {
+      shouldFireFallback: false,
+      reason: null,
+      closedEpisodes: this.closedEpisodes,
+      episode: this.buildEpisodeSummary(),
+      distressCleared: false,
+      poorSamplesInWindow: this.poorSamplesInWindow,
+    };
+  }
 
-  const buildEpisodeSummary = (): CoordinatorDecision['episode'] => {
-    if (episodeStartedAtMs === null || lastSampleAtMs === null) return null;
+  private buildEpisodeSummary(): CoordinatorDecision['episode'] {
+    if (this.episodeStartedAtMs === null || this.lastSampleAtMs === null) return null;
 
     return {
-      startedAtMs: episodeStartedAtMs,
-      elapsedMs: lastSampleAtMs - episodeStartedAtMs,
-      distressSamples: episodeDistressSamples,
-      samples: episodeTotalSamples,
-      severeStreak,
+      startedAtMs: this.episodeStartedAtMs,
+      elapsedMs: this.lastSampleAtMs - this.episodeStartedAtMs,
+      distressSamples: this.episodeDistressSamples,
+      samples: this.episodeTotalSamples,
+      severeStreak: this.severeStreak,
       severeElapsedMs:
-        severeFirstAtMs === null ? null : Math.max(0, lastSampleAtMs - severeFirstAtMs),
+        this.severeFirstAtMs === null
+          ? null
+          : Math.max(0, this.lastSampleAtMs - this.severeFirstAtMs),
     };
-  };
+  }
 
-  const fireDecision = (reason: TurnFallbackReason): CoordinatorDecision => ({
-    shouldFireFallback: true,
-    reason,
-    closedEpisodes,
-    episode: buildEpisodeSummary(),
-    distressCleared: false,
-    poorSamplesInWindow,
-  });
+  private fireDecision(reason: TurnFallbackReason): CoordinatorDecision {
+    return {
+      shouldFireFallback: true,
+      reason,
+      closedEpisodes: this.closedEpisodes,
+      episode: this.buildEpisodeSummary(),
+      distressCleared: false,
+      poorSamplesInWindow: this.poorSamplesInWindow,
+    };
+  }
 
-  const isDistressQuality = (quality: CoordinatorQuality): boolean =>
-    quality === QUALITY_POOR || quality === QUALITY_LOST;
+  private isDistressQuality(quality: CoordinatorQuality): boolean {
+    return quality === QUALITY_POOR || quality === QUALITY_LOST;
+  }
 
-  const isHealthyQuality = (quality: CoordinatorQuality): boolean =>
-    quality === QUALITY_GOOD || quality === QUALITY_EXCELLENT;
+  private isHealthyQuality(quality: CoordinatorQuality): boolean {
+    return quality === QUALITY_GOOD || quality === QUALITY_EXCELLENT;
+  }
 
-  const pushWindow = (distress: boolean): void => {
-    episodeWindow.push(distress);
-    if (episodeWindow.length > EVIDENCE_WINDOW_SIZE) {
-      episodeWindow.shift();
+  private pushWindow(distress: boolean): void {
+    this.episodeWindow.push(distress);
+    if (this.episodeWindow.length > EVIDENCE_WINDOW_SIZE) {
+      this.episodeWindow.shift();
     }
-  };
+  }
 
-  const windowPoorCount = (): number => episodeWindow.filter(Boolean).length;
+  private windowPoorCount(): number {
+    return this.episodeWindow.filter(Boolean).length;
+  }
 
-  const recordCurrentEpisode = (endedAtMs: number): void => {
-    if (episodeRecorded) return;
-    if (episodeStartedAtMs === null) return;
-    if (episodeDistressSamples < EPISODE_RECORD_MIN_DISTRESS) return;
+  private recordCurrentEpisode(endedAtMs: number): void {
+    if (this.episodeRecorded) return;
+    if (this.episodeStartedAtMs === null) return;
+    if (this.episodeDistressSamples < EPISODE_RECORD_MIN_DISTRESS) return;
 
-    recentEpisodes.push({
-      startedAtMs: episodeStartedAtMs,
+    this.recentEpisodes.push({
+      startedAtMs: this.episodeStartedAtMs,
       endedAtMs,
-      distressSamples: episodeDistressSamples,
+      distressSamples: this.episodeDistressSamples,
     });
-    while (recentEpisodes.length > RECENT_EPISODE_HISTORY_MAX) {
-      recentEpisodes.shift();
+    while (this.recentEpisodes.length > RECENT_EPISODE_HISTORY_MAX) {
+      this.recentEpisodes.shift();
     }
-    episodeRecorded = true;
-  };
+    this.episodeRecorded = true;
+  }
 
-  const evaluateFire = (atMs: number): CoordinatorDecision => {
-    const elapsedMs = atMs - (episodeStartedAtMs ?? atMs);
-    const windowCount = episodeWindow.length;
-    const poorRatio = windowPoorCount() / windowCount;
+  private evaluateFire(atMs: number): CoordinatorDecision {
+    const elapsedMs = atMs - (this.episodeStartedAtMs ?? atMs);
+    const windowCount = this.episodeWindow.length;
+    const poorRatio = this.windowPoorCount() / windowCount;
 
     // severe needs its own consecutive-severe window so a late Lost sample
     // cannot inherit an ordinary-Poor episode
     const severeOk =
-      severeStreak >= SEVERE_MIN_STREAK &&
-      severeFirstAtMs !== null &&
-      atMs - severeFirstAtMs >= SEVERE_FALLBACK_TIMER_MS &&
+      this.severeStreak >= SEVERE_MIN_STREAK &&
+      this.severeFirstAtMs !== null &&
+      atMs - this.severeFirstAtMs >= SEVERE_FALLBACK_TIMER_MS &&
       windowCount >= 2;
 
     // recurring: prior meaningful episodes in bounded history plus a
     // repeated confirmed burst; the current burst counts at most once (its
     // own record is never a prior independent episode)
-    const priorMeaningfulEpisodes = recentEpisodes.filter(
+    const priorMeaningfulEpisodes = this.recentEpisodes.filter(
       (record) =>
         record.distressSamples >= EPISODE_RECORD_MIN_DISTRESS &&
         !(
-          episodeRecorded &&
-          episodeStartedAtMs !== null &&
-          record.startedAtMs === episodeStartedAtMs
+          this.episodeRecorded &&
+          this.episodeStartedAtMs !== null &&
+          record.startedAtMs === this.episodeStartedAtMs
         ),
     ).length;
 
     const recurringOk =
       priorMeaningfulEpisodes + 1 >= RECURRING_EPISODE_THRESHOLD &&
       elapsedMs >= RECURRING_FALLBACK_TIMER_MS &&
-      episodeDistressSamples >= RECURRING_MIN_DISTRESS_SAMPLES &&
+      this.episodeDistressSamples >= RECURRING_MIN_DISTRESS_SAMPLES &&
       windowCount >= 2;
 
     const sustainedOk =
-      elapsedMs >= config.fallbackTimerMs &&
+      elapsedMs >= this.config.fallbackTimerMs &&
       windowCount >= SUSTAINED_MIN_SAMPLES &&
       poorRatio >= SUSTAINED_MIN_POOR_RATIO;
 
     // severe and sustained take precedence; recurring only fires below the
     // sustained ratio bar
     if (severeOk) {
-      return fireDecision('severe-connected-loss');
+      return this.fireDecision('severe-connected-loss');
     }
     if (sustainedOk) {
-      return fireDecision('sustained-poor');
+      return this.fireDecision('sustained-poor');
     }
     if (recurringOk) {
-      return fireDecision('recurring-distress');
+      return this.fireDecision('recurring-distress');
     }
 
-    return emptyDecision();
-  };
+    return this.emptyDecision();
+  }
 
   /**
    * Flapping scanner. Counts POOR UPLOAD samples (isMyConnectionPoor) inside
    * a sliding window; fires once when the threshold is reached and the
    * window is cleared. Deliberately independent of the newer paths.
    */
-  const evaluateFlapping = (atMs: number, uploadDistress: boolean): boolean => {
+  private evaluateFlapping(atMs: number, uploadDistress: boolean): boolean {
     if (uploadDistress) {
-      poorTimestamps.push(atMs);
+      this.poorTimestamps.push(atMs);
     }
 
-    poorTimestamps = poorTimestamps.filter(
-      (timestamp) => atMs - timestamp <= config.flapping.checkDurationMs,
+    this.poorTimestamps = this.poorTimestamps.filter(
+      (timestamp) => atMs - timestamp <= this.config.flapping.checkDurationMs,
     );
 
-    if (poorTimestamps.length >= config.flapping.maxPoorConnCount) {
-      poorTimestamps = [];
-      poorSamplesInWindow = 0;
+    if (this.poorTimestamps.length >= this.config.flapping.maxPoorConnCount) {
+      this.poorTimestamps = [];
+      this.poorSamplesInWindow = 0;
       return true;
     }
 
-    poorSamplesInWindow = poorTimestamps.length;
+    this.poorSamplesInWindow = this.poorTimestamps.length;
     return false;
-  };
+  }
 
-  const ingest = (sample: CoordinatorSample): CoordinatorDecision => {
+  public ingest = (sample: CoordinatorSample): CoordinatorDecision => {
     const atMs = sample.atMs;
 
     if (typeof atMs !== 'number' || !Number.isFinite(atMs) || atMs < 0) {
       // invalid sample: no evidence is created or invalidated
-      return emptyDecision();
+      return this.emptyDecision();
     }
-    if (lastSampleAtMs !== null && atMs < lastSampleAtMs) {
+    if (this.lastSampleAtMs !== null && atMs < this.lastSampleAtMs) {
       // out-of-order sample: ignore rather than corrupting time-based windows
-      return emptyDecision();
+      return this.emptyDecision();
     }
 
-    pruneRecentHistory(atMs);
+    this.pruneRecentHistory(atMs);
 
     // hidden-tab gap: prior evidence cannot mix with new samples
-    if (lastSampleAtMs !== null && atMs - lastSampleAtMs > MAX_SAMPLE_GAP_MS) {
-      resetEpisode();
+    if (this.lastSampleAtMs !== null && atMs - this.lastSampleAtMs > MAX_SAMPLE_GAP_MS) {
+      this.resetEpisode();
     }
-    lastSampleAtMs = atMs;
+    this.lastSampleAtMs = atMs;
 
     if (!sample.connected) {
       // synthetic loss while reconnecting: never measured distress
-      resetEpisode();
-      return emptyDecision();
+      this.resetEpisode();
+      return this.emptyDecision();
     }
 
-    const uploadDistress = sample.isMyConnectionPoor || isDistressQuality(sample.uploadQuality);
+    const uploadDistress =
+      sample.isMyConnectionPoor || this.isDistressQuality(sample.uploadQuality);
 
     const confirmedDownlinkDistress = sample.isReceivingPoor && sample.isLikelyDownloadIssue;
 
@@ -421,115 +419,116 @@ export function createTurnFallbackCoordinator(
 
     const fullMediaHealthy =
       !distress &&
-      isHealthyQuality(sample.uploadQuality) &&
-      isHealthyQuality(sample.receiveQuality) &&
+      this.isHealthyQuality(sample.uploadQuality) &&
+      this.isHealthyQuality(sample.receiveQuality) &&
       !sample.isUploadAudioStuck &&
       !degradedNow;
 
     // any non-distress sample breaks the severe run (no fake streaks across
     // intervening healthy samples)
     if (!distress) {
-      severeStreak = 0;
-      severeFirstAtMs = null;
+      this.severeStreak = 0;
+      this.severeFirstAtMs = null;
     }
 
     // track the observed degraded state for the next transition detection
-    const wasDegradedObserved = prevDegradedObserved;
-    prevDegradedObserved = degradedNow;
+    const wasDegradedObserved = this.prevDegradedObserved;
+    this.prevDegradedObserved = degradedNow;
 
     // flapping mode replaces the episode paths; counts only poor-upload samples
-    if (config.flapping.enabled) {
-      const triggered = evaluateFlapping(atMs, sample.isMyConnectionPoor);
+    if (this.config.flapping.enabled) {
+      const triggered = this.evaluateFlapping(atMs, sample.isMyConnectionPoor);
 
       if (triggered) {
-        const decision = emptyDecision();
+        const decision = this.emptyDecision();
         decision.shouldFireFallback = true;
         decision.reason = 'flapping';
         return decision;
       }
 
-      return emptyDecision();
+      return this.emptyDecision();
     }
 
     if (distress) {
-      fullHealthStreak = 0;
+      this.fullHealthStreak = 0;
       // any non-severe distress breaks the current severe confirmation run
       if (severe) {
-        severeStreak += 1;
-        if (severeFirstAtMs === null) severeFirstAtMs = atMs;
+        this.severeStreak += 1;
+        if (this.severeFirstAtMs === null) this.severeFirstAtMs = atMs;
       } else {
-        severeStreak = 0;
-        severeFirstAtMs = null;
+        this.severeStreak = 0;
+        this.severeFirstAtMs = null;
       }
 
-      if (episodeStartedAtMs === null) {
-        episodeStartedAtMs = atMs;
+      if (this.episodeStartedAtMs === null) {
+        this.episodeStartedAtMs = atMs;
       }
 
-      episodeDistressSamples += 1;
-      episodeTotalSamples += 1;
-      pushWindow(true);
+      this.episodeDistressSamples += 1;
+      this.episodeTotalSamples += 1;
+      this.pushWindow(true);
 
       // full → degraded transition with real distress: recorded as an
       // adaptation cycle even without closure; a pre-degraded state never
       // counts
       if (degradedNow && !wasDegradedObserved) {
-        recordCurrentEpisode(atMs);
+        this.recordCurrentEpisode(atMs);
       }
 
       // a burst that consumed the full sustained window without firing is
       // meaningful history for LATER bursts (never a trigger itself)
-      if (atMs - (episodeStartedAtMs ?? atMs) >= config.fallbackTimerMs) {
-        recordCurrentEpisode(atMs);
+      if (atMs - (this.episodeStartedAtMs ?? atMs) >= this.config.fallbackTimerMs) {
+        this.recordCurrentEpisode(atMs);
       }
 
-      return evaluateFire(atMs);
+      return this.evaluateFire(atMs);
     }
 
-    if (episodeStartedAtMs === null) {
-      return emptyDecision();
+    if (this.episodeStartedAtMs === null) {
+      return this.emptyDecision();
     }
 
-    episodeTotalSamples += 1;
-    pushWindow(false);
+    this.episodeTotalSamples += 1;
+    this.pushWindow(false);
 
     if (fullMediaHealthy) {
-      fullHealthStreak += 1;
+      this.fullHealthStreak += 1;
 
-      if (fullHealthStreak >= FULL_HEALTH_CLEAR_STREAK && episodeStartedAtMs !== null) {
-        recordCurrentEpisode(atMs);
-        closedEpisodes += 1;
-        resetEpisode();
+      if (this.fullHealthStreak >= FULL_HEALTH_CLEAR_STREAK && this.episodeStartedAtMs !== null) {
+        this.recordCurrentEpisode(atMs);
+        this.closedEpisodes += 1;
+        this.resetEpisode();
 
         return {
           shouldFireFallback: false,
           reason: null,
-          closedEpisodes,
+          closedEpisodes: this.closedEpisodes,
           episode: null,
           distressCleared: true,
-          poorSamplesInWindow,
+          poorSamplesInWindow: this.poorSamplesInWindow,
         };
       }
 
       // brief full-media health does not instantly close the episode
-      return emptyDecision();
+      return this.emptyDecision();
     }
 
     // reduced media or unknown stats never fire (paused video alone never
     // forces relay) and break the recovery streak
-    fullHealthStreak = 0;
-    return emptyDecision();
+    this.fullHealthStreak = 0;
+    return this.emptyDecision();
   };
 
-  const getState = () => ({
-    closedEpisodes,
-    episodeStartedAtMs,
-    episodeDistressSamples,
-    episodeSamples: episodeTotalSamples,
-    severeStreak,
-    recentMeaningfulEpisodes: recentMeaningfulEpisodes(),
-    poorSamplesInWindow,
-  });
-
-  return { configure, ingest, reset, getState };
+  /** bounded state snapshot for logging and tests */
+  public getState = () => {
+    return {
+      closedEpisodes: this.closedEpisodes,
+      episodeStartedAtMs: this.episodeStartedAtMs,
+      episodeDistressSamples: this.episodeDistressSamples,
+      episodeSamples: this.episodeTotalSamples,
+      severeStreak: this.severeStreak,
+      recentMeaningfulEpisodes: this.recentMeaningfulEpisodes(),
+      poorSamplesInWindow: this.poorSamplesInWindow,
+    };
+  };
 }
