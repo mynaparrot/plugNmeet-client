@@ -11,44 +11,23 @@ import {
   unmuteNativeMedia,
 } from '../nativeBridge';
 import { PnmConnectionQuality, QualityStats } from './ConnectionQualityMonitor';
+import type { MediaAdaptationSnapshot } from './turn/TurnFallbackCoordinator';
 
 /**
- * Policy (audio always wins — every action below sheds video only):
- *
- * State overview (AdaptiveMediaMode is DERIVED from the pause flags; the UI
- * is driven by the Redux booleans in roomSettings, not by the enum):
- *
- *   [any state] --audio stuck / both directions Lost--> AudioOnly (critical)
- *
- *   Normal --sustained receive Poor--> incoming webcams paused
- *          --receive stays Poor------> (+ incoming presentation paused)
- *          --sustained upload Poor----> own camera muted
- *
- *   The two ladders are independent: upload actions never pause incoming
- *   media, receive actions never mute the camera.
- *
- * Critical fast paths:
- *   - Outbound audio stuck -> audio-only immediately (overrides manual grace).
- *   - Both directions Lost (2 consecutive checks) -> audio-only.
- *   - Upload Lost only -> mute own camera (uplink reserved for the mic).
- *   - Receive Lost only -> pause incoming webcams + presentation (downlink
- *     reserved for incoming audio).
- *
- * Normal (score-based, respects a recent manual restore grace):
- *   - Outbound video stuck -> mute own camera only (uplink-only problem).
- *   - Sustained poor receive -> pause incoming webcams, then presentation.
- *   - Sustained poor upload -> mute own camera.
- *
- * Recovery:
- *   - Normal degradations auto-restore one notch at a time (reverse order)
- *     after NORMAL_RECOVERY_STREAK healthy checks. A flap guard suspends
- *     auto-restore after repeated quick degrade/restore cycles.
- *   - Critical audio-only mode never auto-restores. After sustained health a
- *     manual restore is offered via the persistent banner.
- *   - Nuance: a user camera re-enable during critical mode restores the
- *     camera but intentionally KEEPS criticalMode true. The mode stays
- *     AudioOnly and incoming media remains paused until a full manual
- *     restore (banner -> resumeAll); only that clears critical mode.
+ * Adaptive media policy (audio always wins — every action sheds video only):
+ *   - critical fast paths: outbound audio stuck -> audio-only immediately;
+ *     both directions Lost (2 checks) -> audio-only; upload Lost -> mute own
+ *     camera; receive Lost -> pause incoming webcams + presentation.
+ *   - normal (score-based, respects manual-restore grace): sustained poor
+ *     receive -> pause incoming webcams then presentation; sustained poor
+ *     upload -> mute own camera. The two ladders are independent.
+ *   - recovery: normal degradations auto-restore one notch at a time after
+ *     NORMAL_RECOVERY_STREAK healthy checks; a flap guard suspends
+ *     auto-restore after repeated quick cycles. Critical audio-only mode
+ *     never auto-restores (manual banner -> resumeAll). A user camera
+ *     re-enable during critical mode intentionally keeps criticalMode true.
+ * AdaptiveMediaMode is derived from the pause flags; the UI is driven by the
+ * Redux booleans in roomSettings, not by the enum.
  */
 const MAX_SCORE = 6;
 const DEGRADE_THRESHOLD = 3;
@@ -177,6 +156,19 @@ export default class AdaptiveMediaController {
     return this.mode;
   }
 
+  /**
+   * Snapshot for the TURN fallback coordinator: only whether system media is
+   * degraded. Reduced-media "health" must never count as full-media
+   * recovery, and a full→degraded transition during real distress records
+   * an adaptation cycle.
+   */
+  public getPolicySnapshot(): MediaAdaptationSnapshot {
+    return {
+      degradedMedia:
+        this.incomingWebcamPaused || this.incomingScreensharePaused || this.outgoingCameraAutoMuted,
+    };
+  }
+
   public attach(): void {
     if (this.attached) {
       return;
@@ -214,13 +206,8 @@ export default class AdaptiveMediaController {
     this.attached = false;
   }
 
-  /*
-   * Evidence gathered before the tab was hidden must not mix with fresh
-   * samples: recovery streaks and Lost-streak counters from before hiding
-   * could mature a fast path or trigger a premature restore on the first
-   * visible checks. Flap history is intentionally preserved: it tracks user
-   * interaction cycles, not measurement windows.
-   */
+  // pre-hide streak/Lost counters must not mature fast paths after the tab
+  // returns; flap history is intentionally preserved (user cycles, not windows)
   private onVisibilityChange = (): void => {
     if (document.visibilityState !== 'visible') {
       return;
@@ -231,11 +218,8 @@ export default class AdaptiveMediaController {
 
   /** Called by the connection-quality monitor every 5 seconds. */
   public evaluate(stats: QualityStats): void {
-    /*
-     * Defensive: the monitor skips measurement while the tab is hidden, but
-     * never act on stats gathered in a hidden tab regardless of source.
-     */
-    if (!this.options.enabled || document.hidden) {
+    // never adapt on hidden-tab or synthetic (unmeasured) samples
+    if (!this.options.enabled || document.hidden || stats.measured === false) {
       return;
     }
 
@@ -546,15 +530,9 @@ export default class AdaptiveMediaController {
   }
 
   /**
-   * Normal degradation is automatically restored after a sustained period
-   * where both directions are Good or Excellent. Restoration happens one
-   * step at a time and in reverse order:
-   *   1. Incoming presentation
-   *   2. Incoming webcams
-   *   3. Outgoing camera
-   *
-   * Critical audio-only mode and a flap-guard suspension are excluded from
-   * automatic restoration.
+   * Auto-restores normal degradations one notch at a time, in reverse order
+   * (presentation → webcams → camera), after a sustained healthy period.
+   * Critical audio-only mode and flap-guard suspension are excluded.
    */
   private evaluateNormalRecovery(stats: QualityStats): void {
     const hasDegradation =
@@ -883,16 +861,9 @@ export default class AdaptiveMediaController {
   }
 
   /**
-   * Any camera unmute that passes the ownership guard inside this handler
-   * can only be a user-initiated unmute of a controller-paused camera. The
-   * discrimination between automatic and user restores is guaranteed by
-   * ownership convention, not by this handler:
-   * restoreOutgoingCameraAutomatically() clears outgoingCameraAutoMuted
-   * BEFORE initiating its own unmute, so controller restores find the flag
-   * already false and exit early. Unmutes of user-paused cameras find the
-   * flag false as well. Only an explicit user re-enable during a
-   * controller-owned pause arrives with the flag still set, and that is
-   * treated as a manual override (grace window + clean flap slate).
+   * Only a USER re-enable of a controller-paused camera passes the ownership
+   * guard (controller restores clear outgoingCameraAutoMuted BEFORE their own
+   * unmute): it is treated as a manual override (grace window + flap slate).
    */
   private onLocalCameraUnmuted = (publication: any, participant: any): void => {
     const room = this.getRoom();

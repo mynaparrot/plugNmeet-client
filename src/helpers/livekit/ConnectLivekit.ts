@@ -49,6 +49,7 @@ import ConnectionQualityMonitor, {
   QualityStats,
 } from './ConnectionQualityMonitor';
 import AdaptiveMediaController from './AdaptiveMediaController';
+import TurnFallbackController from './turn/TurnFallbackController';
 import { updateOverallConnectionQuality } from '../../store/slices/sessionSlice';
 import {
   initializeNativePublisher,
@@ -56,8 +57,6 @@ import {
   startNativeHeartbeat,
   teardownNativePublisher,
 } from '../nativeBridge';
-
-const FALLBACK_TIMER_DURATION = 60 * 1000; // 60 seconds
 
 export default class ConnectLivekit extends EventEmitter implements IConnectLivekit {
   private readonly _errorState: Dispatch<IErrorPageProps>;
@@ -73,11 +72,11 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
   private readonly _e2eeKeyProvider: ExternalE2EEKeyProvider;
   private toastIdConnecting: number | string | undefined = undefined;
   private wasNormalDisconnected: boolean = false;
-  // for silent fallback
-  private fallbackTimer: NodeJS.Timeout | null = null;
-  private hasAttemptedSilentFallback: boolean = false;
   private serverInfo: MediaServerConnInfo | undefined = undefined;
-  private poorConnectionTimestamps: number[] = [];
+  private readonly turnFallback: TurnFallbackController = new TurnFallbackController(
+    () => this._room,
+    () => this.adaptiveMediaController.getPolicySnapshot(),
+  );
 
   private lastReportedConnectionQuality: PnmConnectionQuality | null = null;
   private lastDispatchedOverallQuality: PnmConnectionQuality | null = null;
@@ -109,12 +108,21 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
     this.adaptiveMediaController = new AdaptiveMediaController(() => this._room, {
       enabled: !isUserRecorder(this.localUserId),
     });
+    document.addEventListener('visibilitychange', this.onVisibilityLifecycle);
     window.addEventListener('beforeunload', this.onBeforeUnload);
   }
 
+  private onVisibilityLifecycle = () => {
+    if (!document.hidden) return;
+
+    this.turnFallback.resetEvidence();
+  };
+
   private onBeforeUnload = () => {
+    document.removeEventListener('visibilitychange', this.onVisibilityLifecycle);
     this.adaptiveMediaController.dispose();
     this.connectionQualityMonitor.stop();
+    this.turnFallback.onUnload();
     teardownNativePublisher();
   };
 
@@ -153,6 +161,7 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
 
   public initializeConnection = async (serverInfo: MediaServerConnInfo): Promise<boolean> => {
     this.serverInfo = serverInfo;
+    this.turnFallback.configure(serverInfo.turnCredentials);
 
     try {
       if (this.enabledE2EE && this.encryptionKey) {
@@ -216,45 +225,9 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
     }
   };
 
-  private executeSilentRelayFallback = () => {
-    // Clear any pending timer as we are now executing.
-    if (this.fallbackTimer) {
-      clearTimeout(this.fallbackTimer);
-      this.fallbackTimer = null;
-    }
-
-    if (this.hasAttemptedSilentFallback) {
-      console.log('[Fallback] Already attempted, skipping.');
-      return;
-    }
-    this.hasAttemptedSilentFallback = true;
-
-    if (!this.serverInfo?.turnCredentials) {
-      console.error('[Fallback] Cannot attempt fallback: TURN credentials are not configured.');
-      return;
-    }
-
-    toast.info(i18n.t('notifications.re-routing-connection'), {
-      autoClose: 4000,
-    });
-
-    try {
-      const pcManager = this._room.engine.pcManager;
-      if (!pcManager || !pcManager.updateConfiguration) {
-        console.error('PCManager or updateConfiguration method not available.');
-        this.hasAttemptedSilentFallback = false; // Allow another try
-        return;
-      }
-
-      const config = this._room.engine.rtcConfig;
-      config.iceTransportPolicy = 'relay';
-
-      console.log('Updating configuration and restarting ICE with relay-only policy...');
-      pcManager.updateConfiguration(config, true);
-    } catch (e) {
-      console.error('Failed to execute silent relay fallback:', e);
-      this.hasAttemptedSilentFallback = false; // Allow another try on error
-    }
+  private onRoomConnectedOrReconnected = () => {
+    this.turnFallback.onConnectionEstablished();
+    this.connectionQualityMonitor.resetMeasurementBaseline();
   };
 
   private async configureRoom() {
@@ -299,6 +272,8 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
     const room = new Room(roomOptions);
 
     room.on(RoomEvent.Reconnecting, () => {
+      this.turnFallback.resetEvidence();
+
       this.toastIdConnecting = toast.loading(
         i18n.t('notifications.media-server-disconnected-reconnecting'),
         {
@@ -320,6 +295,8 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
         this.toastIdConnecting = undefined;
       }
     });
+    room.on(RoomEvent.Connected, this.onRoomConnectedOrReconnected);
+    room.on(RoomEvent.Reconnected, this.onRoomConnectedOrReconnected);
     room.on(RoomEvent.Disconnected, this.onDisconnected);
     room.on(RoomEvent.MediaDevicesError, this.mediaDevicesError);
 
@@ -379,17 +356,13 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
 
   private onDisconnected = (reason?: DisconnectReason) => {
     window.removeEventListener('beforeunload', this.onBeforeUnload);
+    document.removeEventListener('visibilitychange', this.onVisibilityLifecycle);
     this.connectionQualityMonitor.stop();
     this.adaptiveMediaController.dispose();
     // Hybrid mode: tear down native publisher on disconnect (beforeunload fallback removed above)
     teardownNativePublisher();
 
-    // Clear any running timer on disconnect
-    if (this.fallbackTimer) {
-      clearTimeout(this.fallbackTimer);
-      this.fallbackTimer = null;
-    }
-    this.hasAttemptedSilentFallback = false;
+    this.turnFallback.dispose();
 
     if (typeof this.toastIdConnecting !== 'undefined') {
       toast.dismiss(this.toastIdConnecting);
@@ -478,89 +451,16 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
 
     this.adaptiveMediaController.evaluate(stats);
 
-    if (!this.serverInfo?.turnCredentials?.fallbackTurn || isFirefoxMobile()) {
-      return;
-    }
-
-    if (this.hasAttemptedSilentFallback) {
-      return;
-    }
-
-    if (stats.isMyConnectionPoor) {
-      if (this.serverInfo?.turnCredentials?.fallbackOnFlapping?.enabled) {
-        this.handleFallbackOnFlapping();
-      } else {
-        this.handleTimerBasedFallback(stats.uploadQuality);
-      }
-      return;
-    }
-
-    if (this.fallbackTimer) {
-      console.log('Connection has recovered. Cancelling fallback timer.');
-      clearTimeout(this.fallbackTimer);
-      this.fallbackTimer = null;
-    }
-  };
-
-  private handleFallbackOnFlapping = () => {
-    const fallbackOnFlapping = this.serverInfo?.turnCredentials?.fallbackOnFlapping;
-
-    if (!fallbackOnFlapping?.enabled) {
-      return;
-    }
-
-    const maxPoorConnCount = fallbackOnFlapping.maxPoorConnCount ?? 3;
-    const checkDuration = (fallbackOnFlapping.checkDurationInSec ?? 120) * 1000;
-
-    const now = Date.now();
-
-    this.poorConnectionTimestamps.push(now);
-
-    this.poorConnectionTimestamps = this.poorConnectionTimestamps.filter(
-      (timestamp) => now - timestamp <= checkDuration,
-    );
-
-    if (this.poorConnectionTimestamps.length >= maxPoorConnCount) {
-      console.warn(
-        `Connection has been unstable ${this.poorConnectionTimestamps.length} times in the last ${
-          checkDuration / 1000
-        }s. Executing fallback.`,
-      );
-
-      this.poorConnectionTimestamps = [];
-      this.executeSilentRelayFallback();
-    }
-  };
-
-  private handleTimerBasedFallback = (connectionQuality: PnmConnectionQuality) => {
-    if (this.fallbackTimer) {
-      return;
-    }
-
-    const fallbackDuration =
-      Number(this.serverInfo?.turnCredentials?.fallbackTimerDuration) || FALLBACK_TIMER_DURATION;
-
-    console.log(
-      `Connection is unstable (${connectionQuality}). Starting ${
-        fallbackDuration / 1000
-      }s fallback timer.`,
-    );
-
-    this.fallbackTimer = setTimeout(() => {
-      this.fallbackTimer = null;
-
-      if (this.hasAttemptedSilentFallback) {
-        return;
-      }
-
-      console.warn(
-        `Connection has remained unstable for ${
-          fallbackDuration / 1000
-        }s. Executing fallback as a final measure.`,
-      );
-
-      this.executeSilentRelayFallback();
-    }, fallbackDuration);
+    this.turnFallback.evaluate({
+      atMs: Date.now(),
+      measured: stats.measured,
+      uploadQuality: stats.uploadQuality,
+      receiveQuality: stats.receiveQuality,
+      isMyConnectionPoor: stats.isMyConnectionPoor,
+      isReceivingPoor: stats.isReceivingPoor,
+      isLikelyDownloadIssue: stats.isLikelyDownloadIssue,
+      isUploadAudioStuck: stats.isUploadAudioStuck,
+    });
   };
 
   public addScreenShareTrack: typeof ParticipantMediaManager.prototype.addScreenShareTrack = (

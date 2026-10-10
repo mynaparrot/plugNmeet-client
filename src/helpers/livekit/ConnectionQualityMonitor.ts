@@ -64,6 +64,13 @@ export type RemoteReceiveStats = {
 };
 
 export type QualityStats = {
+  /**
+   * False for synthetic samples that never measured a real connection;
+   * consumers must neither treat these as distress nor as full-health
+   * recovery evidence.
+   */
+  measured: boolean;
+
   rawPacketLoss: number;
   rtt: number | null;
 
@@ -123,6 +130,9 @@ type QualityCheckState = {
 
   activeInboundSsrcs: Set<string>;
   activeOutboundSsrcs: Set<string>;
+
+  /** real stats entries processed; zero means "no actual report" */
+  relevantStatsSeen: number;
 };
 
 export default class ConnectionQualityMonitor {
@@ -143,6 +153,9 @@ export default class ConnectionQualityMonitor {
   private prevOutboundStats: Record<string, PrevOutboundStats> = {};
   private lastStats: QualityStats | null = null;
 
+  /** bumped on baseline reset; in-flight stats of a previous generation are discarded */
+  private measurementGeneration = 0;
+
   public start = (room: Room, onQualityUpdate?: (stats: QualityStats) => void) => {
     this.stop();
     this.room = room;
@@ -153,12 +166,8 @@ export default class ConnectionQualityMonitor {
     const checkQuality = async () => {
       if (this.isStopped || this.isCheckingQuality) return;
 
-      /*
-       * Skip measurement while the tab is hidden. Browser timer throttling
-       * and adaptiveStream pausing incoming video make hidden-tab stats
-       * unreliable (stale deltas, distorted receive analysis). Keep
-       * rescheduling so measurement resumes once the tab is visible again.
-       */
+      // hidden-tab stats are unreliable (throttled timers, adaptive-paused
+      // video): skip measurement but keep rescheduling
       if (document.hidden) {
         this.qualityCheckTimeout = setTimeout(checkQuality, INTERVAL);
         return;
@@ -167,9 +176,16 @@ export default class ConnectionQualityMonitor {
       this.isCheckingQuality = true;
 
       try {
+        const generation = this.measurementGeneration;
         const stats = await this.collectQualityStats();
+
+        // a baseline reset during collection invalidates the stale sample
+        // (neither distress nor recovery evidence)
+        if (this.isStopped || generation !== this.measurementGeneration || document.hidden) {
+          return;
+        }
+
         this.lastStats = stats;
-        if (this.isStopped) return;
 
         this.handleQualityState(stats);
         onQualityUpdate?.(stats);
@@ -206,24 +222,31 @@ export default class ConnectionQualityMonitor {
     this.prevInboundStats = {};
     this.prevOutboundStats = {};
     this.lastStats = null;
+    // outstanding async measurements must never survive a stop boundary
+    this.measurementGeneration += 1;
   };
 
   public getStats = () => {
     return this.lastStats;
   };
 
-  /*
-   * Stat baselines collected before the tab was hidden are stale: timers
-   * were throttled and streams may have been adaptive-paused. Drop them (and
-   * the poor-connection history) so the first visible check computes fresh
-   * deltas instead of mixing pre-hide evidence with new samples.
+  /**
+   * Drops stale stat deltas/history at any boundary and discards (instead
+   * of consuming) an in-flight stats collection.
    */
-  private handleVisibilityChange = () => {
-    if (document.visibilityState !== 'visible') return;
-
+  public resetMeasurementBaseline = () => {
+    this.measurementGeneration += 1;
     this.prevInboundStats = {};
     this.prevOutboundStats = {};
     this.poorConnectionHistory = [];
+    // getStats() must never show a sample from the old baseline/generation
+    this.lastStats = null;
+  };
+
+  // pre-hide baselines are stale (throttled timers, adaptive-paused video);
+  // both transitions drop them so old evidence is never mixed with new
+  private handleVisibilityChange = () => {
+    this.resetMeasurementBaseline();
   };
 
   public getOverallQuality = () => this.currentQuality;
@@ -231,6 +254,17 @@ export default class ConnectionQualityMonitor {
   private _processStatsReport(statsReport: RTCStatsReport | undefined, state: QualityCheckState) {
     statsReport?.forEach((rawStat) => {
       const stat = rawStat as WebRTCStat;
+
+      if (
+        stat.type === 'candidate-pair' ||
+        stat.type === 'remote-inbound-rtp' ||
+        stat.type === 'outbound-rtp' ||
+        stat.type === 'inbound-rtp'
+      ) {
+        // a report that contains none of the relevant entries proves nothing
+        // about health or distress; it must not count as actual measurement
+        state.relevantStatsSeen += 1;
+      }
 
       if (
         stat.type === 'candidate-pair' &&
@@ -374,38 +408,32 @@ export default class ConnectionQualityMonitor {
   }
 
   private async collectQualityStats(): Promise<QualityStats> {
+    const generation = this.measurementGeneration;
+
     if (!this.room || this.room.state !== ConnectionState.Connected) {
-      return this.createStats({
-        rawPacketLoss: 100,
-        rtt: LOST_RTT_THRESHOLD,
-        myPacketLoss: 100,
-        myRtt: LOST_RTT_THRESHOLD,
-        receivePacketLoss: 100,
-        isUploadAudioStuck: false,
-        isUploadVideoStuck: false,
-        remoteReceiveStats: [],
-      });
+      return this.createStatsForSyntheticState();
     }
 
     const pcManager = this.room.engine?.pcManager;
 
     if (!pcManager) {
-      return this.createStats({
-        rawPacketLoss: 100,
-        rtt: LOST_RTT_THRESHOLD,
-        myPacketLoss: 100,
-        myRtt: LOST_RTT_THRESHOLD,
-        receivePacketLoss: 100,
-        isUploadAudioStuck: false,
-        isUploadVideoStuck: false,
-        remoteReceiveStats: [],
-      });
+      return this.createStatsForSyntheticState();
     }
 
     const [pub, sub] = await Promise.allSettled([
       pcManager.publisher?.getStats(),
       pcManager.subscriber?.getStats(),
     ]);
+
+    /*
+     * A generation bump during the getStats() awaits: process NOTHING. A
+     * stale report would otherwise mutate the freshly reset baseline maps
+     * and contaminate the next connection's first real sample; the caller
+     * discards this result via its own generation check.
+     */
+    if (generation !== this.measurementGeneration) {
+      return this.createStatsForSyntheticState();
+    }
 
     const state: QualityCheckState = {
       maxPacketLoss: 0,
@@ -420,8 +448,12 @@ export default class ConnectionQualityMonitor {
       isVideoOutboundStuck: false,
       activeInboundSsrcs: new Set(),
       activeOutboundSsrcs: new Set(),
+      relevantStatsSeen: 0,
     };
 
+    // note: the generic check above already rejects reports whose awaits
+    // straddled a generation bump; what remains here is guaranteed to be
+    // same-generation data
     if (pub.status === 'fulfilled') this._processStatsReport(pub.value, state);
     if (sub.status === 'fulfilled') this._processStatsReport(sub.value, state);
 
@@ -438,6 +470,7 @@ export default class ConnectionQualityMonitor {
     });
 
     return this.createStats({
+      measured: state.relevantStatsSeen > 0,
       rawPacketLoss: state.maxPacketLoss,
       rtt: state.maxRtt,
       myPacketLoss: state.myPacketLoss,
@@ -525,7 +558,23 @@ export default class ConnectionQualityMonitor {
     return PnmConnectionQuality.Excellent;
   }
 
+  /** Synthetic quality marked `measured: false`: no distress, no recovery evidence. */
+  private createStatsForSyntheticState(): QualityStats {
+    return this.createStats({
+      measured: false,
+      rawPacketLoss: 100,
+      rtt: LOST_RTT_THRESHOLD,
+      myPacketLoss: 100,
+      myRtt: LOST_RTT_THRESHOLD,
+      receivePacketLoss: 100,
+      isUploadAudioStuck: false,
+      isUploadVideoStuck: false,
+      remoteReceiveStats: [],
+    });
+  }
+
   private createStats(input: {
+    measured: boolean;
     rawPacketLoss: number;
     rtt: number | null;
     myPacketLoss: number;
@@ -545,14 +594,10 @@ export default class ConnectionQualityMonitor {
       : PnmConnectionQuality.Excellent;
 
     /*
-     * A frozen outbound video stream on an otherwise healthy transport is
-     * almost always a consumption pause, not a network stall: with dynacast
-     * enabled the layer stops being encoded as soon as no viewer is
-     * consuming it (e.g. every participant's tab is hidden). Only report
-     * video as stuck when transport distress (Poor/Lost loss or RTT) or a
-     * simultaneous audio freeze corroborates a real uplink problem. Audio
-     * stuck is never suppressed: a frozen active audio stream has no benign
-     * explanation.
+     * A frozen outbound VIDEO stream on a healthy transport is usually a
+     * consumption pause (dynacast stops encoding with no viewers): report
+     * stuck only when transport distress or an audio freeze confirms a real
+     * uplink problem. Audio stuck is never suppressed.
      */
     const videoFreezeIsBenign =
       uploadQuality !== PnmConnectionQuality.Poor &&
@@ -594,6 +639,8 @@ export default class ConnectionQualityMonitor {
       uploadQuality === PnmConnectionQuality.Poor || uploadQuality === PnmConnectionQuality.Lost;
 
     return {
+      measured: input.measured,
+
       rawPacketLoss: input.rawPacketLoss,
       rtt: input.rtt,
 
