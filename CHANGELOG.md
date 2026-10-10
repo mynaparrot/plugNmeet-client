@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.5.4](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.3...v2.5.4) (2026-10-10)
+
+
+### Bug Fixes
+
+* **turn:** fallback now requires meaningful, measured evidence that the current connection is struggling, rather than simply waiting for a timer ([5444303](https://github.com/mynaparrot/plugNmeet-client/commit/54443034d69b9f40851088f866ece18a628f6f28))
+* **turn:** migrate to class based implementation ([e14b3ac](https://github.com/mynaparrot/plugNmeet-client/commit/e14b3ac962e3cd60a15704b4de8a53a8c241f692))
+
 ## [2.5.3](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.2...v2.5.3) (2026-10-06)
 
 
