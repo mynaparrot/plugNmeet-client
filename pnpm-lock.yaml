@@ -94,7 +94,7 @@ importers:
         version: 0.7.0(react@19.3.0)
       react-dnd:
         specifier: 16.0.1
-        version: 16.0.1(@types/node@26.6.4)(@types/react@19.3.0)(react@19.3.0)
+        version: 16.0.1(@types/node@26.6.5)(@types/react@19.3.0)(react@19.3.0)
       react-dnd-html5-backend:
         specifier: 16.0.1
         version: 16.0.1
@@ -137,13 +137,13 @@ importers:
     devDependencies:
       '@tailwindcss/vite':
         specifier: 4.3.3
-        version: 4.3.3(vite@8.3.2(@types/node@26.6.4)(jiti@2.7.0))
+        version: 4.3.3(vite@8.3.2(@types/node@26.6.5)(jiti@2.7.0))
       '@types/emscripten':
         specifier: 1.41.6
         version: 1.41.6
       '@types/node':
-        specifier: 26.6.4
-        version: 26.6.4
+        specifier: 26.6.5
+        version: 26.6.5
       '@types/react':
         specifier: 19.3.0
         version: 19.3.0
@@ -155,7 +155,7 @@ importers:
         version: 2.16.2
       '@vitejs/plugin-react':
         specifier: 6.1.1
-        version: 6.1.1(vite@8.3.2(@types/node@26.6.4)(jiti@2.7.0))
+        version: 6.1.1(vite@8.3.2(@types/node@26.6.5)(jiti@2.7.0))
       husky:
         specifier: 9.1.7
         version: 9.1.7
@@ -173,19 +173,19 @@ importers:
         version: 7.0.2
       vite:
         specifier: 8.3.2
-        version: 8.3.2(@types/node@26.6.4)(jiti@2.7.0)
+        version: 8.3.2(@types/node@26.6.5)(jiti@2.7.0)
       vite-plugin-clean:
         specifier: 2.0.1
-        version: 2.0.1(@types/node@26.6.4)(jiti@2.7.0)(lightningcss@1.33.0)(rollup@4.64.0)
+        version: 2.0.1(@types/node@26.6.5)(jiti@2.7.0)(lightningcss@1.33.0)(rollup@4.64.0)
       vite-plugin-oxlint:
         specifier: 2.2.0
-        version: 2.2.0(oxlint@1.86.0)(vite@8.3.2(@types/node@26.6.4)(jiti@2.7.0))
+        version: 2.2.0(oxlint@1.86.0)(vite@8.3.2(@types/node@26.6.5)(jiti@2.7.0))
       vite-plugin-static-copy:
         specifier: 4.1.1
-        version: 4.1.1(vite@8.3.2(@types/node@26.6.4)(jiti@2.7.0))
+        version: 4.1.1(vite@8.3.2(@types/node@26.6.5)(jiti@2.7.0))
       vitest:
         specifier: 5.0.3
-        version: 5.0.3(@types/node@26.6.4)(vite@8.3.2(@types/node@26.6.4)(jiti@2.7.0))
+        version: 5.0.3(@types/node@26.6.5)(vite@8.3.2(@types/node@26.6.5)(jiti@2.7.0))
 
 packages:
 
@@ -2209,8 +2209,8 @@ packages:
   '@types/hast@3.0.5':
     resolution: {integrity: sha512-rp/ezSWaD1m44dPKICGhiskI13nVr7qTloFwDa/IYkhhf5nzwP+zIQcIJh3WIFSBOy/H1PzB40jPjMDksN4F+g==}
 
-  '@types/node@26.6.4':
-    resolution: {integrity: sha512-ldVPDCzj7fsaGZrLB0NuHuTvJcsNasysBAqMolr/cgxrLd1xbqxIr3XJiPnHHJUCxj5sNF1vnRj9aWnrVh5Jcg==}
+  '@types/node@26.6.5':
+    resolution: {integrity: sha512-uMzsv9stDdofIZBx4UGh4Z9ZgXnGC9seRDscilBcTHAeOFk67MZg/k9bWVfO+bk4qZmG+l52hRnLwUiH2LnJTg==}
 
   '@types/react-dom@19.3.0':
     resolution: {integrity: sha512-ZI7bU42mZXXKHn/qNLEw2IrbiINU7X5+vfgdixBHkCNpYWXjKgfQ/P+uyGb5CjOLB9UcnTeg3rylQtV2hym44Q==}
@@ -5766,12 +5766,12 @@ snapshots:
       '@tailwindcss/oxide-win32-arm64-msvc': 4.3.3
       '@tailwindcss/oxide-win32-x64-msvc': 4.3.3
 
-  '@tailwindcss/vite@4.3.3(vite@8.3.2(@types/node@26.6.4)(jiti@2.7.0))':
+  '@tailwindcss/vite@4.3.3(vite@8.3.2(@types/node@26.6.5)(jiti@2.7.0))':
     dependencies:
       '@tailwindcss/node': 4.3.3
       '@tailwindcss/oxide': 4.3.3
       tailwindcss: 4.3.3
-      vite: 8.3.2(@types/node@26.6.4)(jiti@2.7.0)
+      vite: 8.3.2(@types/node@26.6.5)(jiti@2.7.0)
 
   '@tanstack/react-virtual@3.14.13(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
@@ -6003,7 +6003,7 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
 
-  '@types/node@26.6.4':
+  '@types/node@26.6.5':
     dependencies:
       undici-types: 8.9.0
 
@@ -6099,19 +6099,19 @@ snapshots:
       native-promise-only: 0.8.1
       weakmap-polyfill: 2.0.4
 
-  '@vitejs/plugin-react@6.1.1(vite@8.3.2(@types/node@26.6.4)(jiti@2.7.0))':
+  '@vitejs/plugin-react@6.1.1(vite@8.3.2(@types/node@26.6.5)(jiti@2.7.0))':
     dependencies:
       '@rolldown/pluginutils': 1.0.1
-      vite: 8.3.2(@types/node@26.6.4)(jiti@2.7.0)
+      vite: 8.3.2(@types/node@26.6.5)(jiti@2.7.0)
 
-  '@vitest/mocker@5.0.3(vite@8.3.2(@types/node@26.6.4)(jiti@2.7.0))':
+  '@vitest/mocker@5.0.3(vite@8.3.2(@types/node@26.6.5)(jiti@2.7.0))':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       '@vitest/spy': 5.0.3
       estree-walker: 3.0.3
       magic-string: 1.4.3
     optionalDependencies:
-      vite: 8.3.2(@types/node@26.6.4)(jiti@2.7.0)
+      vite: 8.3.2(@types/node@26.6.5)(jiti@2.7.0)
 
   '@vitest/spy@5.0.3': {}
 
@@ -7322,7 +7322,7 @@ snapshots:
     dependencies:
       dnd-core: 16.0.1
 
-  react-dnd@16.0.1(@types/node@26.6.4)(@types/react@19.3.0)(react@19.3.0):
+  react-dnd@16.0.1(@types/node@26.6.5)(@types/react@19.3.0)(react@19.3.0):
     dependencies:
       '@react-dnd/invariant': 4.0.2
       '@react-dnd/shallowequal': 4.0.2
@@ -7331,7 +7331,7 @@ snapshots:
       hoist-non-react-statics: 3.3.2
       react: 19.3.0
     optionalDependencies:
-      '@types/node': 26.6.4
+      '@types/node': 26.6.5
       '@types/react': 19.3.0
 
   react-dom@19.3.0(react@19.3.0):
@@ -7694,10 +7694,10 @@ snapshots:
       '@vimeo/player': 2.29.0
       media-played-ranges-mixin: 0.1.0
 
-  vite-plugin-clean@2.0.1(@types/node@26.6.4)(jiti@2.7.0)(lightningcss@1.33.0)(rollup@4.64.0):
+  vite-plugin-clean@2.0.1(@types/node@26.6.5)(jiti@2.7.0)(lightningcss@1.33.0)(rollup@4.64.0):
     dependencies:
       '@rollup/pluginutils': 5.4.0(rollup@4.64.0)
-      vite: 6.4.3(@types/node@26.6.4)(jiti@2.7.0)(lightningcss@1.33.0)
+      vite: 6.4.3(@types/node@26.6.5)(jiti@2.7.0)(lightningcss@1.33.0)
     transitivePeerDependencies:
       - '@types/node'
       - jiti
@@ -7712,22 +7712,22 @@ snapshots:
       - tsx
       - yaml
 
-  vite-plugin-oxlint@2.2.0(oxlint@1.86.0)(vite@8.3.2(@types/node@26.6.4)(jiti@2.7.0)):
+  vite-plugin-oxlint@2.2.0(oxlint@1.86.0)(vite@8.3.2(@types/node@26.6.5)(jiti@2.7.0)):
     dependencies:
       cross-spawn: 7.0.6
       oxlint: 1.86.0
       package-manager-detector: 1.8.0
-      vite: 8.3.2(@types/node@26.6.4)(jiti@2.7.0)
+      vite: 8.3.2(@types/node@26.6.5)(jiti@2.7.0)
 
-  vite-plugin-static-copy@4.1.1(vite@8.3.2(@types/node@26.6.4)(jiti@2.7.0)):
+  vite-plugin-static-copy@4.1.1(vite@8.3.2(@types/node@26.6.5)(jiti@2.7.0)):
     dependencies:
       chokidar: 3.6.0
       p-map: 7.0.8
       picocolors: 1.1.1
       tinyglobby: 0.2.17
-      vite: 8.3.2(@types/node@26.6.4)(jiti@2.7.0)
+      vite: 8.3.2(@types/node@26.6.5)(jiti@2.7.0)
 
-  vite@6.4.3(@types/node@26.6.4)(jiti@2.7.0)(lightningcss@1.33.0):
+  vite@6.4.3(@types/node@26.6.5)(jiti@2.7.0)(lightningcss@1.33.0):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.7)
@@ -7736,12 +7736,12 @@ snapshots:
       rollup: 4.64.0
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 26.6.4
+      '@types/node': 26.6.5
       fsevents: 2.3.3
       jiti: 2.7.0
       lightningcss: 1.33.0
 
-  vite@8.3.2(@types/node@26.6.4)(jiti@2.7.0):
+  vite@8.3.2(@types/node@26.6.5)(jiti@2.7.0):
     dependencies:
       lightningcss: 1.33.0
       picomatch: 4.0.7
@@ -7749,14 +7749,14 @@ snapshots:
       rolldown: 1.2.12
       tinyglobby: 0.2.17
     optionalDependencies:
-      '@types/node': 26.6.4
+      '@types/node': 26.6.5
       fsevents: 2.3.3
       jiti: 2.7.0
 
-  vitest@5.0.3(@types/node@26.6.4)(vite@8.3.2(@types/node@26.6.4)(jiti@2.7.0)):
+  vitest@5.0.3(@types/node@26.6.5)(vite@8.3.2(@types/node@26.6.5)(jiti@2.7.0)):
     dependencies:
       '@types/chai': 5.2.3
-      '@vitest/mocker': 5.0.3(vite@8.3.2(@types/node@26.6.4)(jiti@2.7.0))
+      '@vitest/mocker': 5.0.3(vite@8.3.2(@types/node@26.6.5)(jiti@2.7.0))
       chai: 6.3.0
       es-module-lexer: 2.3.2
       expect-type: 1.4.0
@@ -7767,10 +7767,10 @@ snapshots:
       tinybench: 6.2.1
       tinyexec: 1.3.1
       tinyglobby: 0.2.17
-      vite: 8.3.2(@types/node@26.6.4)(jiti@2.7.0)
+      vite: 8.3.2(@types/node@26.6.5)(jiti@2.7.0)
       why-is-node-running: 3.2.1
     optionalDependencies:
-      '@types/node': 26.6.4
+      '@types/node': 26.6.5
     transitivePeerDependencies:
       - msw
 
