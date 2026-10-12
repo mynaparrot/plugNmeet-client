@@ -460,6 +460,7 @@
       "rtmp-close-confirm": "האם אתה בטוח שאתה רוצה לסיים את השידור החי?",
       "rtmp-close-msg": "אתה עומד להפסיק את השידור החי.",
       "select-microphone": "בחר מיקרופון",
+      "configure-microphone": "Configure Your Microphone",
       "mic-test-title": "בדיקת מיקרופון",
       "mic-test-speak": "דבר עכשיו — צפה בסורגים זזים",
       "mic-test-starting": "מיקרופון נפתח…",
@@ -479,19 +480,20 @@
       "speaker-test-stop": "עצור את הצליל",
       "change-microphone": "שינוי / מיקרופון בדיקה",
       "select-webcam": "בחר מצלמה",
+      "configure-webcam": "Configure Your Webcam",
       "audio-quality": "איכות שמע",
       "video-quality": "איכות המצלמה",
       "screen-share-quality": "איכות שיתוף המסך",
       "screen-share-quality-next-start": "איכות נבחרת חלה בפעם הבאה שתתחיל לשתף מסך.",
       "quality-next-start": "השינויים חלים בפעם הבאה שתפעיל את המכשיר הזה.",
-      "quality-disabled-background": "Camera quality is unavailable while a background effect is selected.",
+      "quality-disabled-background": "איכות המצלמה אינה זמינה בזמן שנבחר אפקט רקע.",
       "audio-preset": {
-        "telephone": "Telephone",
-        "speech": "Speech",
-        "music": "Music",
-        "musicStereo": "Music stereo",
-        "musicHighQuality": "Music · high quality",
-        "musicHighQualityStereo": "Music · high-quality stereo"
+        "telephone": "טלפון",
+        "speech": "נאום",
+        "music": "מוזיקה",
+        "musicStereo": "סטריאו מוזיקה",
+        "musicHighQuality": "מוזיקה · איכות גבוהה",
+        "musicHighQualityStereo": "מוזיקה · סטריאו באיכות גבוהה"
       },
       "webcam-resolution": {
         "h2160": "4K (2160p)",
@@ -500,9 +502,9 @@
         "h720": "HD (720p)",
         "h540": "540p",
         "h360": "360p",
-        "h216": "216p",
+        "h216": "216 עמודים",
         "h180": "180p",
-        "h90": "90p"
+        "h90": "90 פני"
       },
       "screenshare-resolution": {
         "h1080fps30": "1080p · 30 fps",
@@ -510,7 +512,7 @@
         "h720fps30": "720p · 30 fps",
         "h720fps15": "720p · 15 fps",
         "h720fps5": "720p · 5 fps",
-        "h360fps15": "360p · 15 fps",
+        "h360fps15": "360p · 15 פריימים לשנייה",
         "h360fps3": "360p · 3 fps"
       },
       "cam-preview-title": "תצוגה מקדימה של המצלמה",
