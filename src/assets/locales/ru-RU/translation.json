@@ -163,6 +163,7 @@
       "application": "Приложение",
       "language": "Язык",
       "video-quality": "Качество видео",
+      "screen-share-quality": "Качество совместного использования экрана",
       "high": "Высокое",
       "medium": "Среднее",
       "low": "Низкое",
@@ -179,7 +180,12 @@
       "column-camera-position-top": "Наверху",
       "column-camera-position-bottom": "Снизу",
       "focus-active-speaker-webcam": "Фокус на активном спикере",
-      "max-num-webcam": "Максимальное количество видимых веб-камер"
+      "max-num-webcam": "Максимальное количество видимых веб-камер",
+      "video-quality-help": "Низкое качество использует меньше данных при просмотре видео.",
+      "screen-share-quality-help": "Используется, когда вы делитесь экраном. Ниже сохраняется пропускная способность.",
+      "show-screen-share-help": "Отключите, чтобы скрыть общие экраны и сохранить данные.",
+      "show-webcams-help": "Отключитесь, чтобы скрыть веб-камеры и сохранить данные.",
+      "max-num-webcam-help": "Ограничивает, сколько веб-камер видно одновременно."
     },
     "keyboard-shortcuts": {
       "title": "Сочетания клавиш",
@@ -473,6 +479,40 @@
       "speaker-test-stop": "Стоп звука",
       "change-microphone": "Замена / тестирование микрофона",
       "select-webcam": "Выберите камеру",
+      "audio-quality": "Качество звука",
+      "video-quality": "Качество камеры",
+      "screen-share-quality": "Качество совместного экрана",
+      "screen-share-quality-next-start": "Выбранное качество применяется в следующий раз, когда вы начинаете совместное использование экрана.",
+      "quality-next-start": "Изменения будут действовать при следующем запуске устройства.",
+      "quality-disabled-background": "Camera quality is unavailable while a background effect is selected.",
+      "audio-preset": {
+        "telephone": "Telephone",
+        "speech": "Speech",
+        "music": "Music",
+        "musicStereo": "Music stereo",
+        "musicHighQuality": "Music · high quality",
+        "musicHighQualityStereo": "Music · high-quality stereo"
+      },
+      "webcam-resolution": {
+        "h2160": "4K (2160p)",
+        "h1440": "1440p",
+        "h1080": "Full HD (1080p)",
+        "h720": "HD (720p)",
+        "h540": "540p",
+        "h360": "360p",
+        "h216": "216p",
+        "h180": "180p",
+        "h90": "90p"
+      },
+      "screenshare-resolution": {
+        "h1080fps30": "1080p · 30 fps",
+        "h1080fps15": "1080p · 15 fps",
+        "h720fps30": "720p · 30 fps",
+        "h720fps15": "720p · 15 fps",
+        "h720fps5": "720p · 5 fps",
+        "h360fps15": "360p · 15 fps",
+        "h360fps3": "360p · 3 fps"
+      },
       "cam-preview-title": "Превью камеры",
       "cam-loading": "Поиск камер…",
       "cam-not-found": "Камеры не найдено. Проверьте разрешения браузера.",
