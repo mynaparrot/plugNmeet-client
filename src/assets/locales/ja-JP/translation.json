@@ -163,6 +163,7 @@
       "application": "アプリケーション",
       "language": "言語",
       "video-quality": "ビデオ品質",
+      "screen-share-quality": "画面共有品質",
       "high": "高",
       "medium": "中",
       "low": "低",
@@ -179,7 +180,12 @@
       "column-camera-position-top": "上",
       "column-camera-position-bottom": "下",
       "focus-active-speaker-webcam": "発言中の参加者をフォーカス",
-      "max-num-webcam": "表示するウェブカメラの最大数"
+      "max-num-webcam": "表示するウェブカメラの最大数",
+      "video-quality-help": "低画質は動画視聴時に使用するデータ量が少なくなります。",
+      "screen-share-quality-help": "画面を共有するときに使う。帯域幅を節約できる。",
+      "show-screen-share-help": "共有画面を隠したりデータを保存したりするためにオフにしてください。",
+      "show-webcams-help": "ウェブカメラを隠したりデータを保存したりするためにオフにしてください。",
+      "max-num-webcam-help": "一度に見えるウェブカメラの数を制限します。"
     },
     "keyboard-shortcuts": {
       "title": "キーボードショートカット",
@@ -473,6 +479,40 @@
       "speaker-test-stop": "止まれ",
       "change-microphone": "マイク交換/テスト",
       "select-webcam": "カメラを選択",
+      "audio-quality": "音質",
+      "video-quality": "カメラの画質",
+      "screen-share-quality": "画面共有の品質",
+      "screen-share-quality-next-start": "次に画面共有を始めるときに選択された品質が適用されます。",
+      "quality-next-start": "このデバイスを次に起動した際には変更が適用されます。",
+      "quality-disabled-background": "Camera quality is unavailable while a background effect is selected.",
+      "audio-preset": {
+        "telephone": "Telephone",
+        "speech": "Speech",
+        "music": "Music",
+        "musicStereo": "Music stereo",
+        "musicHighQuality": "Music · high quality",
+        "musicHighQualityStereo": "Music · high-quality stereo"
+      },
+      "webcam-resolution": {
+        "h2160": "4K (2160p)",
+        "h1440": "1440p",
+        "h1080": "Full HD (1080p)",
+        "h720": "HD (720p)",
+        "h540": "540p",
+        "h360": "360p",
+        "h216": "216p",
+        "h180": "180p",
+        "h90": "90p"
+      },
+      "screenshare-resolution": {
+        "h1080fps30": "1080p · 30 fps",
+        "h1080fps15": "1080p · 15 fps",
+        "h720fps30": "720p · 30 fps",
+        "h720fps15": "720p · 15 fps",
+        "h720fps5": "720p · 5 fps",
+        "h360fps15": "360p · 15 fps",
+        "h360fps3": "360p · 3 fps"
+      },
       "cam-preview-title": "カメラプレビュー",
       "cam-loading": "カメラの発見…",
       "cam-not-found": "カメラは見つかりませんでした。ブラウザの権限を確認してください。",
