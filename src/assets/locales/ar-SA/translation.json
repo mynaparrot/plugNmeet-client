@@ -163,6 +163,7 @@
       "application": "التطبيق",
       "language": "اللغة",
       "video-quality": "جودة الفيديو",
+      "screen-share-quality": "جودة مشاركة الشاشة",
       "high": "عالية",
       "medium": "متوسطة",
       "low": "منخفضة",
@@ -179,7 +180,12 @@
       "column-camera-position-top": "أعلى",
       "column-camera-position-bottom": "أسفل",
       "focus-active-speaker-webcam": "التركيز على المتحدث النشط",
-      "max-num-webcam": "الحد الأقصى للكاميرات المرئية"
+      "max-num-webcam": "الحد الأقصى للكاميرات المرئية",
+      "video-quality-help": "الجودة المنخفضة تستهلك بيانات أقل عند مشاهدة الفيديوهات.",
+      "screen-share-quality-help": "يستخدم عند مشاركة الشاشة. يقلل من توفير عرض النطاق الترددي.",
+      "show-screen-share-help": "إيقاف التشغيل لإخفاء الشاشات المشتركة وحفظ البيانات.",
+      "show-webcams-help": "إيقاف التشغيل لإخفاء كاميرات الويب وحفظ البيانات.",
+      "max-num-webcam-help": "يحد من عدد كاميرات الويب التي تظهر في نفس الوقت."
     },
     "keyboard-shortcuts": {
       "title": "اختصارات لوحة المفاتيح",
@@ -473,6 +479,40 @@
       "speaker-test-stop": "أوقف الصوت",
       "change-microphone": "تغيير / اختبار الميكروفون",
       "select-webcam": "اختر كاميرا",
+      "audio-quality": "جودة الصوت",
+      "video-quality": "جودة الكاميرا",
+      "screen-share-quality": "جودة مشاركة الشاشة",
+      "screen-share-quality-next-start": "الجودة المحددة تنطبق في المرة القادمة التي تبدأ فيها بمشاركة الشاشة.",
+      "quality-next-start": "التغييرات تنطبق في المرة القادمة التي تشغل فيها هذا الجهاز.",
+      "quality-disabled-background": "Camera quality is unavailable while a background effect is selected.",
+      "audio-preset": {
+        "telephone": "Telephone",
+        "speech": "Speech",
+        "music": "Music",
+        "musicStereo": "Music stereo",
+        "musicHighQuality": "Music · high quality",
+        "musicHighQualityStereo": "Music · high-quality stereo"
+      },
+      "webcam-resolution": {
+        "h2160": "4K (2160p)",
+        "h1440": "1440p",
+        "h1080": "Full HD (1080p)",
+        "h720": "HD (720p)",
+        "h540": "540p",
+        "h360": "360p",
+        "h216": "216p",
+        "h180": "180p",
+        "h90": "90p"
+      },
+      "screenshare-resolution": {
+        "h1080fps30": "1080p · 30 fps",
+        "h1080fps15": "1080p · 15 fps",
+        "h720fps30": "720p · 30 fps",
+        "h720fps15": "720p · 15 fps",
+        "h720fps5": "720p · 5 fps",
+        "h360fps15": "360p · 15 fps",
+        "h360fps3": "360p · 3 fps"
+      },
       "cam-preview-title": "معاينة الكاميرا",
       "cam-loading": "البحث عن الكاميرات…",
       "cam-not-found": "لم يتم العثور على كاميرا. تحقق من صلاحيات المتصفح.",
