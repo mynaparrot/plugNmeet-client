@@ -163,6 +163,7 @@
       "application": "Aplicație",
       "language": "Limbă",
       "video-quality": "Calitate video",
+      "screen-share-quality": "Calitatea partajării ecranului",
       "high": "Înalt",
       "medium": "Medie",
       "low": "Jos",
@@ -179,7 +180,12 @@
       "column-camera-position-top": "Culme",
       "column-camera-position-bottom": "Fund",
       "focus-active-speaker-webcam": "Concentrați-vă pe difuzorul activ",
-      "max-num-webcam": "Maxim camere web vizibile"
+      "max-num-webcam": "Maxim camere web vizibile",
+      "video-quality-help": "Calitatea mai scăzută consumă mai puține date când vizionează videoclipuri.",
+      "screen-share-quality-help": "Folosite când împărțiți ecranul. Economisește mai puțin lățimea de bandă.",
+      "show-screen-share-help": "Dezactivează pentru a ascunde ecranele partajate și datele salvate.",
+      "show-webcams-help": "Dezactivează pentru a ascunde camerele web și datele salvate.",
+      "max-num-webcam-help": "Limitează câte camere web sunt vizibile simultan."
     },
     "keyboard-shortcuts": {
       "title": "Comenzi rapide de la tastatură",
@@ -473,6 +479,40 @@
       "speaker-test-stop": "Opriți sunetul",
       "change-microphone": "Microfon de schimbare / test",
       "select-webcam": "Selectați o cameră",
+      "audio-quality": "Calitatea sunetului",
+      "video-quality": "Calitatea camerei",
+      "screen-share-quality": "Calitatea partajării ecranului",
+      "screen-share-quality-next-start": "Calitatea selectată se aplică data viitoare când începi partajarea ecranului.",
+      "quality-next-start": "Modificările se aplică data viitoare când pornești acest dispozitiv.",
+      "quality-disabled-background": "Camera quality is unavailable while a background effect is selected.",
+      "audio-preset": {
+        "telephone": "Telephone",
+        "speech": "Speech",
+        "music": "Music",
+        "musicStereo": "Music stereo",
+        "musicHighQuality": "Music · high quality",
+        "musicHighQualityStereo": "Music · high-quality stereo"
+      },
+      "webcam-resolution": {
+        "h2160": "4K (2160p)",
+        "h1440": "1440p",
+        "h1080": "Full HD (1080p)",
+        "h720": "HD (720p)",
+        "h540": "540p",
+        "h360": "360p",
+        "h216": "216p",
+        "h180": "180p",
+        "h90": "90p"
+      },
+      "screenshare-resolution": {
+        "h1080fps30": "1080p · 30 fps",
+        "h1080fps15": "1080p · 15 fps",
+        "h720fps30": "720p · 30 fps",
+        "h720fps15": "720p · 15 fps",
+        "h720fps5": "720p · 5 fps",
+        "h360fps15": "360p · 15 fps",
+        "h360fps3": "360p · 3 fps"
+      },
       "cam-preview-title": "Previzualizare cameră",
       "cam-loading": "Găsirea camerelor foto…",
       "cam-not-found": "Nu s-a găsit nicio cameră. Verifică permisiunile browserului.",
