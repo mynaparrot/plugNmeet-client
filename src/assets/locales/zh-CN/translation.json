@@ -163,6 +163,7 @@
       "application": "应用",
       "language": "语言",
       "video-quality": "视频质量",
+      "screen-share-quality": "屏幕共享质量",
       "high": "高",
       "medium": "中",
       "low": "低",
@@ -179,7 +180,12 @@
       "column-camera-position-top": "上",
       "column-camera-position-bottom": "下",
       "focus-active-speaker-webcam": "聚焦发言者",
-      "max-num-webcam": "最大可见摄像头数"
+      "max-num-webcam": "最大可见摄像头数",
+      "video-quality-help": "低质量观看视频时使用的数据更少。",
+      "screen-share-quality-help": "共享屏幕时使用。节省带宽更低。",
+      "show-screen-share-help": "关闭以隐藏共享屏幕和保存数据。",
+      "show-webcams-help": "关闭以隐藏摄像头和保存数据。",
+      "max-num-webcam-help": "限制同时可见的摄像头数量。"
     },
     "keyboard-shortcuts": {
       "title": "键盘快捷键",
@@ -473,6 +479,40 @@
       "speaker-test-stop": "停止声音",
       "change-microphone": "更换/测试麦克风",
       "select-webcam": "选择一个摄像头",
+      "audio-quality": "音质",
+      "video-quality": "相机质量",
+      "screen-share-quality": "屏幕共享质量",
+      "screen-share-quality-next-start": "下次开始屏幕共享时，选择质量会生效。",
+      "quality-next-start": "下次启动该设备时，更改会生效。",
+      "quality-disabled-background": "在选择背景效果时，摄像机画质不可用。",
+      "audio-preset": {
+        "telephone": "电话",
+        "speech": "演讲",
+        "music": "音乐",
+        "musicStereo": "音乐立体声",
+        "musicHighQuality": "音乐·高质量",
+        "musicHighQualityStereo": "音乐 ·高品质立体声"
+      },
+      "webcam-resolution": {
+        "h2160": "4K（2160p）",
+        "h1440": "1440p",
+        "h1080": "全高清（1080p）",
+        "h720": "高清（720p）",
+        "h540": "540p",
+        "h360": "360p",
+        "h216": "216页",
+        "h180": "180p",
+        "h90": "90便士"
+      },
+      "screenshare-resolution": {
+        "h1080fps30": "1080p ·30帧每秒",
+        "h1080fps15": "1080p ·15帧每秒",
+        "h720fps30": "720p ·30帧每秒",
+        "h720fps15": "720p ·15帧/秒",
+        "h720fps5": "720p ·5帧/秒",
+        "h360fps15": "360p ·15帧每秒",
+        "h360fps3": "360p ·3帧/秒"
+      },
       "cam-preview-title": "摄像机预览",
       "cam-loading": "寻找摄像机…",
       "cam-not-found": "找不到摄像头。检查浏览器权限。",
