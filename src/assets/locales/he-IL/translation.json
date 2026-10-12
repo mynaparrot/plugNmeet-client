@@ -163,6 +163,7 @@
       "application": "יישום",
       "language": "שפה",
       "video-quality": "איכות וידאו",
+      "screen-share-quality": "איכות שיתוף המסך",
       "high": "גבוה",
       "medium": "בינוני",
       "low": "נמוך",
@@ -179,7 +180,12 @@
       "column-camera-position-top": "סביבון",
       "column-camera-position-bottom": "ישבן",
       "focus-active-speaker-webcam": "התמקדו ברמקול פעיל",
-      "max-num-webcam": "מקסימום מצלמות רשת נראות"
+      "max-num-webcam": "מקסימום מצלמות רשת נראות",
+      "video-quality-help": "איכות נמוכה יותר צורכת פחות נתונים כשצופים בסרטונים.",
+      "screen-share-quality-help": "משמש כשאתה משתף את המסך שלך. חוסך רוחב פס נמוך יותר.",
+      "show-screen-share-help": "כבה כדי להסתיר מסכים משותפים ולשמור נתונים.",
+      "show-webcams-help": "כבה כדי להסתיר מצלמות רשת ונתוני שמירה.",
+      "max-num-webcam-help": "מגביל כמה מצלמות רשת נראות בו זמנית."
     },
     "keyboard-shortcuts": {
       "title": "קיצורי מקשים",
@@ -473,6 +479,40 @@
       "speaker-test-stop": "עצור את הצליל",
       "change-microphone": "שינוי / מיקרופון בדיקה",
       "select-webcam": "בחר מצלמה",
+      "audio-quality": "איכות שמע",
+      "video-quality": "איכות המצלמה",
+      "screen-share-quality": "איכות שיתוף המסך",
+      "screen-share-quality-next-start": "איכות נבחרת חלה בפעם הבאה שתתחיל לשתף מסך.",
+      "quality-next-start": "השינויים חלים בפעם הבאה שתפעיל את המכשיר הזה.",
+      "quality-disabled-background": "Camera quality is unavailable while a background effect is selected.",
+      "audio-preset": {
+        "telephone": "Telephone",
+        "speech": "Speech",
+        "music": "Music",
+        "musicStereo": "Music stereo",
+        "musicHighQuality": "Music · high quality",
+        "musicHighQualityStereo": "Music · high-quality stereo"
+      },
+      "webcam-resolution": {
+        "h2160": "4K (2160p)",
+        "h1440": "1440p",
+        "h1080": "Full HD (1080p)",
+        "h720": "HD (720p)",
+        "h540": "540p",
+        "h360": "360p",
+        "h216": "216p",
+        "h180": "180p",
+        "h90": "90p"
+      },
+      "screenshare-resolution": {
+        "h1080fps30": "1080p · 30 fps",
+        "h1080fps15": "1080p · 15 fps",
+        "h720fps30": "720p · 30 fps",
+        "h720fps15": "720p · 15 fps",
+        "h720fps5": "720p · 5 fps",
+        "h360fps15": "360p · 15 fps",
+        "h360fps3": "360p · 3 fps"
+      },
       "cam-preview-title": "תצוגה מקדימה של המצלמה",
       "cam-loading": "מציאת מצלמות…",
       "cam-not-found": "לא נמצאה מצלמה. בדוק הרשאות לדפדפן.",
