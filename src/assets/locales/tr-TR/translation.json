@@ -163,6 +163,7 @@
       "application": "Uygulama",
       "language": "Dil",
       "video-quality": "Video Kalitesi",
+      "screen-share-quality": "Ekran paylaşımı kalitesi",
       "high": "Yüksek",
       "medium": "Orta",
       "low": "Düşük",
@@ -179,7 +180,12 @@
       "column-camera-position-top": "Üst",
       "column-camera-position-bottom": "Alt",
       "focus-active-speaker-webcam": "Aktif Konuşmacıya Odaklan",
-      "max-num-webcam": "Maksimum görünür web kamerası"
+      "max-num-webcam": "Maksimum görünür web kamerası",
+      "video-quality-help": "Daha düşük kalite video izlerken daha az veri harcar.",
+      "screen-share-quality-help": "Ekranınızı paylaşırken kullanılır. Daha düşük bant bant ettiğinizde tasarruf sağlar.",
+      "show-screen-share-help": "Paylaşılan ekranları ve verileri kaydetmek için kapatın.",
+      "show-webcams-help": "Web kameralarını gizlemek ve veri kaydetmek için kapatın.",
+      "max-num-webcam-help": "Aynı anda kaç web kamerasının görünebileceğini sınırlar."
     },
     "keyboard-shortcuts": {
       "title": "Klavye Kısayolları",
@@ -473,6 +479,40 @@
       "speaker-test-stop": "Sesi durdur",
       "change-microphone": "Mikrofonu değiştir / test et",
       "select-webcam": "Bir Kamera Seçin",
+      "audio-quality": "Ses kalitesi",
+      "video-quality": "Kamera kalitesi",
+      "screen-share-quality": "Ekran paylaşımı kalitesi",
+      "screen-share-quality-next-start": "Seçilmiş kalite, bir dahaki ekran paylaşımına başladığınızda geçerlidir.",
+      "quality-next-start": "Bu cihazı bir dahaki kez başlattığınızda değişiklikler geçerlidir.",
+      "quality-disabled-background": "Camera quality is unavailable while a background effect is selected.",
+      "audio-preset": {
+        "telephone": "Telephone",
+        "speech": "Speech",
+        "music": "Music",
+        "musicStereo": "Music stereo",
+        "musicHighQuality": "Music · high quality",
+        "musicHighQualityStereo": "Music · high-quality stereo"
+      },
+      "webcam-resolution": {
+        "h2160": "4K (2160p)",
+        "h1440": "1440p",
+        "h1080": "Full HD (1080p)",
+        "h720": "HD (720p)",
+        "h540": "540p",
+        "h360": "360p",
+        "h216": "216p",
+        "h180": "180p",
+        "h90": "90p"
+      },
+      "screenshare-resolution": {
+        "h1080fps30": "1080p · 30 fps",
+        "h1080fps15": "1080p · 15 fps",
+        "h720fps30": "720p · 30 fps",
+        "h720fps15": "720p · 15 fps",
+        "h720fps5": "720p · 5 fps",
+        "h360fps15": "360p · 15 fps",
+        "h360fps3": "360p · 3 fps"
+      },
       "cam-preview-title": "Kamera önizlemesi",
       "cam-loading": "Kamera bulmak…",
       "cam-not-found": "Kamera bulunamadı. Tarayıcı izinlerini kontrol et.",
