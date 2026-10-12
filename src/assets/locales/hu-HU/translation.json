@@ -163,6 +163,7 @@
       "application": "Alkalmazás",
       "language": "Nyelv",
       "video-quality": "Videó minősége",
+      "screen-share-quality": "Képernyőmegosztás minősége",
       "high": "Magas",
       "medium": "Közepes",
       "low": "Alacsony",
@@ -179,7 +180,12 @@
       "column-camera-position-top": "Felső",
       "column-camera-position-bottom": "Fenék",
       "focus-active-speaker-webcam": "Fókuszban az aktív hangszóró",
-      "max-num-webcam": "Max látható webkamerák"
+      "max-num-webcam": "Max látható webkamerák",
+      "video-quality-help": "Az alacsonyabb minőségű kevesebb adatot fogyaszt videónézéskor.",
+      "screen-share-quality-help": "Akkor használod, amikor megosztod a képernyődet. Alacsonyabb sávszélességet takarít meg.",
+      "show-screen-share-help": "Kapcsold ki, hogy elrejtsd a közös képernyőket és az adatok mentését.",
+      "show-webcams-help": "Kapcsold ki, hogy elrejtsd a webkamerákat és mentsd az adatokat.",
+      "max-num-webcam-help": "Korlátozza, hány webkamera látható egyszerre."
     },
     "keyboard-shortcuts": {
       "title": "Billentyűparancsok",
@@ -473,6 +479,40 @@
       "speaker-test-stop": "Hang megállítása",
       "change-microphone": "Mikrofon cseréje / tesztje",
       "select-webcam": "Válasszon ki egy kamerát",
+      "audio-quality": "Hangminőség",
+      "video-quality": "Kamera minősége",
+      "screen-share-quality": "Képernyőmegosztás minősége",
+      "screen-share-quality-next-start": "A kiválasztott minőség legközelebb érvényes, amikor elkezded a képernyőmegosztást.",
+      "quality-next-start": "A változások legközelebb érvényesek, amikor elindítod ezt az eszközt.",
+      "quality-disabled-background": "Camera quality is unavailable while a background effect is selected.",
+      "audio-preset": {
+        "telephone": "Telephone",
+        "speech": "Speech",
+        "music": "Music",
+        "musicStereo": "Music stereo",
+        "musicHighQuality": "Music · high quality",
+        "musicHighQualityStereo": "Music · high-quality stereo"
+      },
+      "webcam-resolution": {
+        "h2160": "4K (2160p)",
+        "h1440": "1440p",
+        "h1080": "Full HD (1080p)",
+        "h720": "HD (720p)",
+        "h540": "540p",
+        "h360": "360p",
+        "h216": "216p",
+        "h180": "180p",
+        "h90": "90p"
+      },
+      "screenshare-resolution": {
+        "h1080fps30": "1080p · 30 fps",
+        "h1080fps15": "1080p · 15 fps",
+        "h720fps30": "720p · 30 fps",
+        "h720fps15": "720p · 15 fps",
+        "h720fps5": "720p · 5 fps",
+        "h360fps15": "360p · 15 fps",
+        "h360fps3": "360p · 3 fps"
+      },
       "cam-preview-title": "Kamera előzetes",
       "cam-loading": "Kamerák megtalálása…",
       "cam-not-found": "Nem találtak kamerát. Ellenőrizd a böngésző jogosultságait.",
