@@ -163,6 +163,7 @@
       "application": "Aplikace",
       "language": "Jazyk",
       "video-quality": "Kvalita videa",
+      "screen-share-quality": "Kvalita sdílení obrazovky",
       "high": "Vysoko",
       "medium": "Středně",
       "low": "Nízký",
@@ -179,7 +180,12 @@
       "column-camera-position-top": "Vrchol",
       "column-camera-position-bottom": "Dno",
       "focus-active-speaker-webcam": "Zaměřte se na aktivního řečníka",
-      "max-num-webcam": "Maximální viditelné webkamery"
+      "max-num-webcam": "Maximální viditelné webkamery",
+      "video-quality-help": "Nižší kvalita spotřebovává při sledování videí méně dat.",
+      "screen-share-quality-help": "Používá se, když sdílíte obrazovku. Snižuje úsporu šířky pásma.",
+      "show-screen-share-help": "Vypněte pro skrytí sdílených obrazovek a ukládání dat.",
+      "show-webcams-help": "Vypněte webkamery a uložte data.",
+      "max-num-webcam-help": "Omezuje to, kolik webkamer je najednou viditelných."
     },
     "keyboard-shortcuts": {
       "title": "Klávesové zkratky",
@@ -473,6 +479,40 @@
       "speaker-test-stop": "Stop zvuk",
       "change-microphone": "Výměna / testování mikrofonu",
       "select-webcam": "Vyberte kameru",
+      "audio-quality": "Kvalita zvuku",
+      "video-quality": "Kvalita fotoaparátu",
+      "screen-share-quality": "Kvalita sdílení obrazovky",
+      "screen-share-quality-next-start": "Vybraná kvalita platí při dalším spuštění sdílení obrazovky.",
+      "quality-next-start": "Změny se uplatní při dalším spuštění tohoto zařízení.",
+      "quality-disabled-background": "Camera quality is unavailable while a background effect is selected.",
+      "audio-preset": {
+        "telephone": "Telephone",
+        "speech": "Speech",
+        "music": "Music",
+        "musicStereo": "Music stereo",
+        "musicHighQuality": "Music · high quality",
+        "musicHighQualityStereo": "Music · high-quality stereo"
+      },
+      "webcam-resolution": {
+        "h2160": "4K (2160p)",
+        "h1440": "1440p",
+        "h1080": "Full HD (1080p)",
+        "h720": "HD (720p)",
+        "h540": "540p",
+        "h360": "360p",
+        "h216": "216p",
+        "h180": "180p",
+        "h90": "90p"
+      },
+      "screenshare-resolution": {
+        "h1080fps30": "1080p · 30 fps",
+        "h1080fps15": "1080p · 15 fps",
+        "h720fps30": "720p · 30 fps",
+        "h720fps15": "720p · 15 fps",
+        "h720fps5": "720p · 5 fps",
+        "h360fps15": "360p · 15 fps",
+        "h360fps3": "360p · 3 fps"
+      },
       "cam-preview-title": "Náhled kamery",
       "cam-loading": "Hledání kamer…",
       "cam-not-found": "Žádná kamera nalezena. Zkontrolujte oprávnění prohlížeče.",
