@@ -460,6 +460,7 @@
       "rtmp-close-confirm": "Ви впевнені, що хочете завершити пряму трансляцію?",
       "rtmp-close-msg": "Ви збираєтеся зупинити пряму трансляцію.",
       "select-microphone": "Виберіть мікрофон",
+      "configure-microphone": "Configure Your Microphone",
       "mic-test-title": "Мікрофонний тест",
       "mic-test-speak": "Говоріть зараз — дивіться, як рухаються ґрати",
       "mic-test-starting": "Відкривання мікрофона…",
@@ -479,6 +480,7 @@
       "speaker-test-stop": "Зупиніть звук",
       "change-microphone": "Зміна / тестування мікрофона",
       "select-webcam": "Виберіть камеру",
+      "configure-webcam": "Configure Your Webcam",
       "audio-quality": "Якість звуку",
       "video-quality": "Якість камери",
       "screen-share-quality": "Якість спільного екрану",
@@ -502,16 +504,16 @@
         "h360": "360p",
         "h216": "216p",
         "h180": "180p",
-        "h90": "90p"
+        "h90": "90 пенсів"
       },
       "screenshare-resolution": {
-        "h1080fps30": "1080p · 30 fps",
-        "h1080fps15": "1080p · 15 fps",
+        "h1080fps30": "1080p · 30 кадрів на секунду",
+        "h1080fps15": "1080p · 15 кадрів на секунду",
         "h720fps30": "720p · 30 fps",
-        "h720fps15": "720p · 15 fps",
-        "h720fps5": "720p · 5 fps",
-        "h360fps15": "360p · 15 fps",
-        "h360fps3": "360p · 3 fps"
+        "h720fps15": "720p · 15 кадрів на секунду",
+        "h720fps5": "720p · 5 кадрів на секунду",
+        "h360fps15": "360p · 15 кадрів на секунду",
+        "h360fps3": "360p · 3 кадри на секунду"
       },
       "cam-preview-title": "Попередній перегляд камери",
       "cam-loading": "Пошук камер…",
