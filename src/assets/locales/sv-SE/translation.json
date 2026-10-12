@@ -163,6 +163,7 @@
       "application": "Tillämpning",
       "language": "Språk",
       "video-quality": "Videokvalitet",
+      "screen-share-quality": "Skärmdelningskvalitet",
       "high": "Hög",
       "medium": "Medium",
       "low": "Låg",
@@ -179,7 +180,12 @@
       "column-camera-position-top": "Topp",
       "column-camera-position-bottom": "Botten",
       "focus-active-speaker-webcam": "Fokusera på aktiv talare",
-      "max-num-webcam": "Max synliga webbkameror"
+      "max-num-webcam": "Max synliga webbkameror",
+      "video-quality-help": "Lägre kvalitet använder mindre data när man tittar på videor.",
+      "screen-share-quality-help": "Används när du delar skärm. Minskar sparbandbredden.",
+      "show-screen-share-help": "Stäng av för att dölja delade skärmar och spara data.",
+      "show-webcams-help": "Stäng av för att dölja webbkameror och spara data.",
+      "max-num-webcam-help": "Det begränsar hur många webbkameror som är synliga samtidigt."
     },
     "keyboard-shortcuts": {
       "title": "Kortkommandon",
@@ -473,6 +479,40 @@
       "speaker-test-stop": "Stoppljud",
       "change-microphone": "Byt mikrofon / testa mikrofon",
       "select-webcam": "Välj en kamera",
+      "audio-quality": "Ljudkvalitet",
+      "video-quality": "Kamerakvalitet",
+      "screen-share-quality": "Skärmdelningskvalitet",
+      "screen-share-quality-next-start": "Vald kvalitet gäller nästa gång du börjar dela skärmen.",
+      "quality-next-start": "Ändringar gäller nästa gång du startar denna enhet.",
+      "quality-disabled-background": "Camera quality is unavailable while a background effect is selected.",
+      "audio-preset": {
+        "telephone": "Telephone",
+        "speech": "Speech",
+        "music": "Music",
+        "musicStereo": "Music stereo",
+        "musicHighQuality": "Music · high quality",
+        "musicHighQualityStereo": "Music · high-quality stereo"
+      },
+      "webcam-resolution": {
+        "h2160": "4K (2160p)",
+        "h1440": "1440p",
+        "h1080": "Full HD (1080p)",
+        "h720": "HD (720p)",
+        "h540": "540p",
+        "h360": "360p",
+        "h216": "216p",
+        "h180": "180p",
+        "h90": "90p"
+      },
+      "screenshare-resolution": {
+        "h1080fps30": "1080p · 30 fps",
+        "h1080fps15": "1080p · 15 fps",
+        "h720fps30": "720p · 30 fps",
+        "h720fps15": "720p · 15 fps",
+        "h720fps5": "720p · 5 fps",
+        "h360fps15": "360p · 15 fps",
+        "h360fps3": "360p · 3 fps"
+      },
       "cam-preview-title": "Kameraförhandsvisning",
       "cam-loading": "Att hitta kameror…",
       "cam-not-found": "Ingen kamera hittad. Kontrollera webbläsarbehörigheter.",
