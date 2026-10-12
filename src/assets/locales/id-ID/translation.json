@@ -163,6 +163,7 @@
       "application": "Aplikasi",
       "language": "Bahasa",
       "video-quality": "Kualitas Video",
+      "screen-share-quality": "Kualitas berbagi layar",
       "high": "Tinggi",
       "medium": "Sedang",
       "low": "Rendah",
@@ -179,7 +180,12 @@
       "column-camera-position-top": "Atas",
       "column-camera-position-bottom": "Bawah",
       "focus-active-speaker-webcam": "Fokus pada Pembicara Aktif",
-      "max-num-webcam": "Jumlah Webcam Maksimal yang Terlihat"
+      "max-num-webcam": "Jumlah Webcam Maksimal yang Terlihat",
+      "video-quality-help": "Kualitas yang lebih rendah menggunakan data lebih sedikit saat menonton video.",
+      "screen-share-quality-help": "Digunakan saat Anda membagikan layar. Lebih rendah menghemat bandwidth.",
+      "show-screen-share-help": "Matikan untuk menyembunyikan layar bersama dan menyimpan data.",
+      "show-webcams-help": "Matikan untuk menyembunyikan webcam dan menyimpan data.",
+      "max-num-webcam-help": "Membatasi berapa banyak webcam yang terlihat sekaligus."
     },
     "keyboard-shortcuts": {
       "title": "Pintasan Keyboard",
@@ -473,6 +479,40 @@
       "speaker-test-stop": "Hentikan suara",
       "change-microphone": "Ganti / uji mikrofon",
       "select-webcam": "Pilih Kamera",
+      "audio-quality": "Kualitas audio",
+      "video-quality": "Kualitas kamera",
+      "screen-share-quality": "Kualitas berbagi layar",
+      "screen-share-quality-next-start": "Kualitas yang dipilih berlaku saat Anda mulai berbagi layar berikutnya.",
+      "quality-next-start": "Perubahan berlaku saat Anda menyalakan perangkat ini berikutnya.",
+      "quality-disabled-background": "Kualitas kamera tidak tersedia saat efek latar belakang dipilih.",
+      "audio-preset": {
+        "telephone": "Telepon",
+        "speech": "Pidato",
+        "music": "Musik",
+        "musicStereo": "Stereo musik",
+        "musicHighQuality": "Musik · kualitas tinggi",
+        "musicHighQualityStereo": "Musik · Stereo berkualitas tinggi"
+      },
+      "webcam-resolution": {
+        "h2160": "4K (2160p)",
+        "h1440": "1440p",
+        "h1080": "Full HD (1080p)",
+        "h720": "HD (720p)",
+        "h540": "540p",
+        "h360": "360p",
+        "h216": "216p",
+        "h180": "180p",
+        "h90": "90p"
+      },
+      "screenshare-resolution": {
+        "h1080fps30": "1080p · 30 fps",
+        "h1080fps15": "1080p · 15 fps",
+        "h720fps30": "720p · 30 fps",
+        "h720fps15": "720p · 15 fps",
+        "h720fps5": "720p · 5 fps",
+        "h360fps15": "360p · 15 fps",
+        "h360fps3": "360p · 3 fps"
+      },
       "cam-preview-title": "Pratinjau kamera",
       "cam-loading": "Kamera Menemukan…",
       "cam-not-found": "Tidak ada kamera yang ditemukan. Periksa izin browser.",
