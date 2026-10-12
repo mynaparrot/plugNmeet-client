@@ -163,6 +163,7 @@
       "application": "Εφαρμογή",
       "language": "Γλώσσα",
       "video-quality": "Ποιότητα βίντεο",
+      "screen-share-quality": "Ποιότητα κοινής χρήσης οθόνης",
       "high": "Υψηλή",
       "medium": "Μεσαία",
       "low": "Χαμηλή",
@@ -179,7 +180,12 @@
       "column-camera-position-top": "Πάνω",
       "column-camera-position-bottom": "Κάτω",
       "focus-active-speaker-webcam": "Εστίαση στον ενεργό ομιλητή",
-      "max-num-webcam": "Μέγιστος αριθμός ορατών καμερών"
+      "max-num-webcam": "Μέγιστος αριθμός ορατών καμερών",
+      "video-quality-help": "Η χαμηλότερη ποιότητα χρησιμοποιεί λιγότερα δεδομένα κατά την παρακολούθηση βίντεο.",
+      "screen-share-quality-help": "Χρησιμοποιείται όταν μοιράζεστε την οθόνη σας. Χαμηλότερο εύρος ζώνης αποθήκευσης.",
+      "show-screen-share-help": "Απενεργοποιήστε το για να αποκρύψετε τις κοινόχρηστες οθόνες και να αποθηκεύσετε δεδομένα.",
+      "show-webcams-help": "Απενεργοποιήστε το για να αποκρύψετε τις κάμερες web και να αποθηκεύσετε δεδομένα.",
+      "max-num-webcam-help": "Περιορίζει τον αριθμό των webcam που είναι ορατές ταυτόχρονα."
     },
     "keyboard-shortcuts": {
       "title": "Συντομεύσεις πληκτρολογίου",
@@ -473,6 +479,40 @@
       "speaker-test-stop": "Διακοπή ήχου",
       "change-microphone": "Αλλαγή / δοκιμή μικροφώνου",
       "select-webcam": "Επιλογή κάμερας",
+      "audio-quality": "Ποιότητα ήχου",
+      "video-quality": "Ποιότητα κάμερας",
+      "screen-share-quality": "Ποιότητα κοινής χρήσης οθόνης",
+      "screen-share-quality-next-start": "Η επιλεγμένη ποιότητα ισχύει την επόμενη φορά που θα ξεκινήσετε την κοινή χρήση οθόνης.",
+      "quality-next-start": "Οι αλλαγές θα εφαρμοστούν την επόμενη φορά που θα εκκινήσετε αυτήν τη συσκευή.",
+      "quality-disabled-background": "Camera quality is unavailable while a background effect is selected.",
+      "audio-preset": {
+        "telephone": "Telephone",
+        "speech": "Speech",
+        "music": "Music",
+        "musicStereo": "Music stereo",
+        "musicHighQuality": "Music · high quality",
+        "musicHighQualityStereo": "Music · high-quality stereo"
+      },
+      "webcam-resolution": {
+        "h2160": "4K (2160p)",
+        "h1440": "1440p",
+        "h1080": "Full HD (1080p)",
+        "h720": "HD (720p)",
+        "h540": "540p",
+        "h360": "360p",
+        "h216": "216p",
+        "h180": "180p",
+        "h90": "90p"
+      },
+      "screenshare-resolution": {
+        "h1080fps30": "1080p · 30 fps",
+        "h1080fps15": "1080p · 15 fps",
+        "h720fps30": "720p · 30 fps",
+        "h720fps15": "720p · 15 fps",
+        "h720fps5": "720p · 5 fps",
+        "h360fps15": "360p · 15 fps",
+        "h360fps3": "360p · 3 fps"
+      },
       "cam-preview-title": "Προεπισκόπηση κάμερας",
       "cam-loading": "Εύρεση καμερών…",
       "cam-not-found": "Δεν βρέθηκε κάμερα. Ελέγξτε τα δικαιώματα του προγράμματος περιήγησης.",
