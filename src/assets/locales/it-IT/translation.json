@@ -163,6 +163,7 @@
       "application": "Applicazione",
       "language": "Lingua",
       "video-quality": "Qualità video",
+      "screen-share-quality": "Qualità della condivisione dello schermo",
       "high": "Alta",
       "medium": "Media",
       "low": "Bassa",
@@ -179,7 +180,12 @@
       "column-camera-position-top": "Sopra",
       "column-camera-position-bottom": "Sotto",
       "focus-active-speaker-webcam": "Focalizza l'oratore attivo",
-      "max-num-webcam": "Numero massimo di webcam visibili"
+      "max-num-webcam": "Numero massimo di webcam visibili",
+      "video-quality-help": "Una qualità inferiore consuma meno dati quando guardi i video.",
+      "screen-share-quality-help": "Usato quando condividi lo schermo. Risparmia meno larghezza di banda.",
+      "show-screen-share-help": "Disattiva per nascondere schermate condivise e dati di salvataggio.",
+      "show-webcams-help": "Disattiva per nascondere webcam e dati di salvataggio.",
+      "max-num-webcam-help": "Limita il numero di webcam visibili contemporaneamente."
     },
     "keyboard-shortcuts": {
       "title": "Scorciatoie da tastiera",
@@ -473,6 +479,40 @@
       "speaker-test-stop": "Stop audio",
       "change-microphone": "Cambio / prova microfono",
       "select-webcam": "Selezioni una videocamera",
+      "audio-quality": "Qualità audio",
+      "video-quality": "Qualità della telecamera",
+      "screen-share-quality": "Qualità della condivisione dello schermo",
+      "screen-share-quality-next-start": "La qualità selezionata si applica la prossima volta che inizi a condividere lo schermo.",
+      "quality-next-start": "Le modifiche si applicano la prossima volta che accendi questo dispositivo.",
+      "quality-disabled-background": "Camera quality is unavailable while a background effect is selected.",
+      "audio-preset": {
+        "telephone": "Telephone",
+        "speech": "Speech",
+        "music": "Music",
+        "musicStereo": "Music stereo",
+        "musicHighQuality": "Music · high quality",
+        "musicHighQualityStereo": "Music · high-quality stereo"
+      },
+      "webcam-resolution": {
+        "h2160": "4K (2160p)",
+        "h1440": "1440p",
+        "h1080": "Full HD (1080p)",
+        "h720": "HD (720p)",
+        "h540": "540p",
+        "h360": "360p",
+        "h216": "216p",
+        "h180": "180p",
+        "h90": "90p"
+      },
+      "screenshare-resolution": {
+        "h1080fps30": "1080p · 30 fps",
+        "h1080fps15": "1080p · 15 fps",
+        "h720fps30": "720p · 30 fps",
+        "h720fps15": "720p · 15 fps",
+        "h720fps5": "720p · 5 fps",
+        "h360fps15": "360p · 15 fps",
+        "h360fps3": "360p · 3 fps"
+      },
       "cam-preview-title": "Anteprima della telecamera",
       "cam-loading": "Trovare le telecamere…",
       "cam-not-found": "Nessuna telecamera trovata. Controlla i permessi del browser.",
