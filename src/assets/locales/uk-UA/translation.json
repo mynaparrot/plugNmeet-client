@@ -163,6 +163,7 @@
       "application": "Застосування",
       "language": "Мова",
       "video-quality": "Якість відео",
+      "screen-share-quality": "Якість спільного використання екрану",
       "high": "Високий",
       "medium": "Середнє",
       "low": "Низький",
@@ -179,7 +180,12 @@
       "column-camera-position-top": "Верх",
       "column-camera-position-bottom": "Низ",
       "focus-active-speaker-webcam": "Зосередьтеся на активному динаміку",
-      "max-num-webcam": "Максимальна кількість видимих вебкамер"
+      "max-num-webcam": "Максимальна кількість видимих вебкамер",
+      "video-quality-help": "Нижча якість використовує менше даних при перегляді відео.",
+      "screen-share-quality-help": "Використовується, коли ви ділитеся екраном. Нижча пропускна здатність збережень.",
+      "show-screen-share-help": "Вимкніть, щоб приховати спільні екрани та зберегти дані.",
+      "show-webcams-help": "Вимкніть для приховування вебкамер і збереження даних.",
+      "max-num-webcam-help": "Обмежує кількість видимих вебкамер одночасно."
     },
     "keyboard-shortcuts": {
       "title": "Комбінації клавіш",
@@ -473,6 +479,40 @@
       "speaker-test-stop": "Зупиніть звук",
       "change-microphone": "Зміна / тестування мікрофона",
       "select-webcam": "Виберіть камеру",
+      "audio-quality": "Якість звуку",
+      "video-quality": "Якість камери",
+      "screen-share-quality": "Якість спільного екрану",
+      "screen-share-quality-next-start": "Вибрана якість застосовується наступного разу, коли ви починаєте ділитися екраном.",
+      "quality-next-start": "Зміни застосовуються наступного разу, коли ви запускаєте цей пристрій.",
+      "quality-disabled-background": "Якість камери недоступна під час вибору фонового ефекту.",
+      "audio-preset": {
+        "telephone": "Телефон",
+        "speech": "Промова",
+        "music": "Музика",
+        "musicStereo": "Музичне стерео",
+        "musicHighQuality": "Музика · Висока якість",
+        "musicHighQualityStereo": "Музика · Високоякісне стерео"
+      },
+      "webcam-resolution": {
+        "h2160": "4K (2160p)",
+        "h1440": "1440p",
+        "h1080": "Full HD (1080p)",
+        "h720": "HD (720p)",
+        "h540": "540p",
+        "h360": "360p",
+        "h216": "216p",
+        "h180": "180p",
+        "h90": "90p"
+      },
+      "screenshare-resolution": {
+        "h1080fps30": "1080p · 30 fps",
+        "h1080fps15": "1080p · 15 fps",
+        "h720fps30": "720p · 30 fps",
+        "h720fps15": "720p · 15 fps",
+        "h720fps5": "720p · 5 fps",
+        "h360fps15": "360p · 15 fps",
+        "h360fps3": "360p · 3 fps"
+      },
       "cam-preview-title": "Попередній перегляд камери",
       "cam-loading": "Пошук камер…",
       "cam-not-found": "Камеру не знайдено. Перевірте дозволи браузера.",
