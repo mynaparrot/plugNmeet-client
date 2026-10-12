@@ -460,6 +460,7 @@
       "rtmp-close-confirm": "هل أنت متأكد أنك تريد إنهاء البث المباشر؟",
       "rtmp-close-msg": "أنت على وشك إيقاف البث المباشر.",
       "select-microphone": "اختر ميكروفوناً",
+      "configure-microphone": "Configure Your Microphone",
       "mic-test-title": "اختبار الميكروفون",
       "mic-test-speak": "تحدث الآن — شاهد القضبان تتحرك",
       "mic-test-starting": "فتح الميكروفون…",
@@ -479,19 +480,20 @@
       "speaker-test-stop": "أوقف الصوت",
       "change-microphone": "تغيير / اختبار الميكروفون",
       "select-webcam": "اختر كاميرا",
+      "configure-webcam": "Configure Your Webcam",
       "audio-quality": "جودة الصوت",
       "video-quality": "جودة الكاميرا",
       "screen-share-quality": "جودة مشاركة الشاشة",
       "screen-share-quality-next-start": "الجودة المحددة تنطبق في المرة القادمة التي تبدأ فيها بمشاركة الشاشة.",
       "quality-next-start": "التغييرات تنطبق في المرة القادمة التي تشغل فيها هذا الجهاز.",
-      "quality-disabled-background": "Camera quality is unavailable while a background effect is selected.",
+      "quality-disabled-background": "جودة الكاميرا غير متوفرة أثناء اختيار تأثير الخلفية.",
       "audio-preset": {
-        "telephone": "Telephone",
-        "speech": "Speech",
-        "music": "Music",
-        "musicStereo": "Music stereo",
-        "musicHighQuality": "Music · high quality",
-        "musicHighQualityStereo": "Music · high-quality stereo"
+        "telephone": "الهاتف",
+        "speech": "الخطاب",
+        "music": "الموسيقى",
+        "musicStereo": "ستيريو الموسيقى",
+        "musicHighQuality": "الموسيقى · الجودة العالية",
+        "musicHighQualityStereo": "الموسيقى · ستيريو عالي الجودة"
       },
       "webcam-resolution": {
         "h2160": "4K (2160p)",
@@ -500,18 +502,18 @@
         "h720": "HD (720p)",
         "h540": "540p",
         "h360": "360p",
-        "h216": "216p",
+        "h216": "216 صفحة",
         "h180": "180p",
-        "h90": "90p"
+        "h90": "90 بنس"
       },
       "screenshare-resolution": {
-        "h1080fps30": "1080p · 30 fps",
-        "h1080fps15": "1080p · 15 fps",
-        "h720fps30": "720p · 30 fps",
-        "h720fps15": "720p · 15 fps",
-        "h720fps5": "720p · 5 fps",
-        "h360fps15": "360p · 15 fps",
-        "h360fps3": "360p · 3 fps"
+        "h1080fps30": "1080p · 30 إطارا في الثانية",
+        "h1080fps15": "1080p · 15 إطارا في الثانية",
+        "h720fps30": "720p · 30 إطار في الثانية",
+        "h720fps15": "720p · 15 إطارا في الثانية",
+        "h720fps5": "720p · 5 إطارات في الثانية",
+        "h360fps15": "360p · 15 إطارا في الثانية",
+        "h360fps3": "360p · 3 إطارات في الثانية"
       },
       "cam-preview-title": "معاينة الكاميرا",
       "cam-loading": "البحث عن الكاميرات…",
