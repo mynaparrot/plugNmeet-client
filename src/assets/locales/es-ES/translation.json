@@ -163,6 +163,7 @@
       "application": "Aplicación",
       "language": "Idioma",
       "video-quality": "Calidad de vídeo",
+      "screen-share-quality": "Calidad de compartición de pantalla",
       "high": "Alta",
       "medium": "Media",
       "low": "Baja",
@@ -179,7 +180,12 @@
       "column-camera-position-top": "Arriba",
       "column-camera-position-bottom": "Abajo",
       "focus-active-speaker-webcam": "Enfocar al participante activo",
-      "max-num-webcam": "Máximo de cámaras web visibles"
+      "max-num-webcam": "Máximo de cámaras web visibles",
+      "video-quality-help": "La calidad inferior consume menos datos al ver vídeos.",
+      "screen-share-quality-help": "Se usa cuando compartes la pantalla. Menos ahorra ancho de banda.",
+      "show-screen-share-help": "Desactiva para ocultar pantallas compartidas y datos guardados.",
+      "show-webcams-help": "Desactiva para ocultar cámaras web y datos guardados.",
+      "max-num-webcam-help": "Limita cuántas webcams hay visibles a la vez."
     },
     "keyboard-shortcuts": {
       "title": "Atajos de teclado",
@@ -473,6 +479,40 @@
       "speaker-test-stop": "Detener sonido",
       "change-microphone": "Cambiar/probar el micrófono",
       "select-webcam": "Seleccionar una cámara",
+      "audio-quality": "Calidad de audio",
+      "video-quality": "Calidad de la cámara",
+      "screen-share-quality": "Calidad de pantalla compartida",
+      "screen-share-quality-next-start": "La calidad seleccionada se aplica la próxima vez que empieces a compartir pantalla.",
+      "quality-next-start": "Los cambios se aplican la próxima vez que enciendas este dispositivo.",
+      "quality-disabled-background": "Camera quality is unavailable while a background effect is selected.",
+      "audio-preset": {
+        "telephone": "Telephone",
+        "speech": "Speech",
+        "music": "Music",
+        "musicStereo": "Music stereo",
+        "musicHighQuality": "Music · high quality",
+        "musicHighQualityStereo": "Music · high-quality stereo"
+      },
+      "webcam-resolution": {
+        "h2160": "4K (2160p)",
+        "h1440": "1440p",
+        "h1080": "Full HD (1080p)",
+        "h720": "HD (720p)",
+        "h540": "540p",
+        "h360": "360p",
+        "h216": "216p",
+        "h180": "180p",
+        "h90": "90p"
+      },
+      "screenshare-resolution": {
+        "h1080fps30": "1080p · 30 fps",
+        "h1080fps15": "1080p · 15 fps",
+        "h720fps30": "720p · 30 fps",
+        "h720fps15": "720p · 15 fps",
+        "h720fps5": "720p · 5 fps",
+        "h360fps15": "360p · 15 fps",
+        "h360fps3": "360p · 3 fps"
+      },
       "cam-preview-title": "Vista previa de cámara",
       "cam-loading": "Buscando cámaras…",
       "cam-not-found": "No se encontró ninguna cámara. Compruebe los permisos del navegador.",
