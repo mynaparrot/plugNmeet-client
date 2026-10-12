@@ -10,10 +10,11 @@ import BackgroundItems from './backgroundItems';
 
 interface WebcamSettingsProps {
   deviceId: string;
+  resolution: string;
   onRetry?: () => void;
 }
 
-const WebcamSettings = ({ deviceId, onRetry }: WebcamSettingsProps) => {
+const WebcamSettings = ({ deviceId, resolution, onRetry }: WebcamSettingsProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
@@ -28,7 +29,7 @@ const WebcamSettings = ({ deviceId, onRetry }: WebcamSettingsProps) => {
   return (
     <div className="">
       <div className="w-full overflow-hidden rounded-lg relative bg-black h-64 3xl:h-80">
-        <WebcamPreview deviceId={deviceId} onRetry={onRetry} />
+        <WebcamPreview deviceId={deviceId} resolution={resolution} onRetry={onRetry} />
       </div>
       {isSupported && (
         <>

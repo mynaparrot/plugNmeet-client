@@ -8,17 +8,26 @@ import {
   updateActiveScreenSharingView,
   updateMaxNumDisplayWebcams,
   updateRoomVideoQuality,
+  updateSelectedScreenShareResolution,
 } from '../../../store/slices/roomSettingsSlice';
 import SettingsSwitch from '../../../helpers/ui/settingsSwitch';
 import Dropdown, { ISelectOption } from '../../../helpers/ui/dropdown';
 import { UserDeviceType } from '../../../store/slices/interfaces/session';
 import { IMaxNumDisplayWebcams } from '../../../store/slices/interfaces/roomSettings';
-import { getConfigValue } from '../../../helpers/utils';
+import {
+  getConfigValue,
+  SCREENSHARE_RESOLUTION_KEYS,
+  getScreenShareResolutionName,
+  getCappedResolutions,
+} from '../../../helpers/utils';
 
 const DataSavings = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const videoQuality = useAppSelector((state) => state.roomSettings.roomVideoQuality);
+  const selectedScreenShareResolution = useAppSelector(
+    (state) => state.roomSettings.selectedScreenShareResolution,
+  );
   const activateWebcamsView = useAppSelector((state) => state.roomSettings.activateWebcamsView);
   const activeScreenSharingView = useAppSelector(
     (state) => state.roomSettings.activeScreenSharingView,
@@ -116,6 +125,18 @@ const DataSavings = () => {
     dispatch(updateActiveScreenSharingView(!activeScreenSharingView));
   };
 
+  const screenShareResolutionOptions = useMemo(
+    () =>
+      getCappedResolutions(
+        SCREENSHARE_RESOLUTION_KEYS,
+        getConfigValue<string>('defaultScreenShareResolution', 'h1080fps15'),
+      ).map((key) => ({
+        value: key,
+        text: t(`footer.modal.screenshare-resolution.${key}`),
+      })),
+    [t],
+  );
+
   const getVideoQualityText = (quality: VideoQuality) => {
     switch (quality) {
       case VideoQuality.LOW:
@@ -130,7 +151,7 @@ const DataSavings = () => {
   };
 
   return (
-    <div className="mt-2">
+    <div className="mt-2 pb-10">
       <Dropdown
         label={t('header.room-settings.video-quality')}
         id="video-quality"
@@ -145,12 +166,24 @@ const DataSavings = () => {
             };
           })}
         direction="horizontal"
+        helpText={t('header.room-settings.video-quality-help')}
+      />
+
+      <Dropdown
+        label={t('header.room-settings.screen-share-quality')}
+        id="screen-share-quality"
+        value={selectedScreenShareResolution || getScreenShareResolutionName()}
+        onChange={(v) => dispatch(updateSelectedScreenShareResolution(v))}
+        options={screenShareResolutionOptions}
+        direction="horizontal"
+        helpText={t('header.room-settings.screen-share-quality-help')}
       />
 
       <SettingsSwitch
         label={t('header.room-settings.show-screen-share')}
         enabled={activeScreenSharingView}
         onChange={toggleScreenShareView}
+        helpText={t('header.room-settings.show-screen-share-help')}
         customCss="my-4"
       />
 
@@ -158,6 +191,7 @@ const DataSavings = () => {
         label={t('header.room-settings.show-webcams')}
         enabled={activateWebcamsView}
         onChange={toggleWebcamView}
+        helpText={t('header.room-settings.show-webcams-help')}
         customCss="my-4"
       />
       {activateWebcamsView && (
@@ -168,6 +202,7 @@ const DataSavings = () => {
           onChange={handleOnChangeNumWebcams}
           options={numWebcamsOpts}
           direction="horizontal"
+          helpText={t('header.room-settings.max-num-webcam-help')}
         />
       )}
     </div>

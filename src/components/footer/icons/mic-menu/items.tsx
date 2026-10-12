@@ -104,7 +104,7 @@ const MicMenuItems = ({ currentRoom, hybrid, isLocked }: IMicMenuItemsProps) => 
                     title={device.label}
                     className={`${
                       selectedAudioDevice === device.id ? 'bg-Gray-50 dark:bg-dark-secondary2' : ''
-                    } h-8 w-full flex items-center justify-between text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus-ring`}
+                    } h-8 w-full flex items-center justify-between text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 rounded-lg transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 focus-ring cursor-pointer`}
                     onClick={() => handleDeviceChange(device.id)}
                   >
                     <span dir="ltr" className="max-w-56 truncate">
@@ -135,7 +135,7 @@ const MicMenuItems = ({ currentRoom, hybrid, isLocked }: IMicMenuItemsProps) => 
           {() => (
             <button
               type="button"
-              className="h-8 w-full flex items-center text-sm gap-2 leading-none font-medium text-red-700 px-2 rounded-lg transition-all duration-300 hover:bg-Red-600 hover:text-white data-[focus]:bg-Red-600 data-[focus]:text-white focus-ring"
+              className="h-8 w-full flex items-center text-sm gap-2 leading-none font-medium text-red-700 px-2 rounded-lg transition-all duration-300 hover:bg-Red-600 hover:text-white data-[focus]:bg-Red-600 data-[focus]:text-white focus-ring cursor-pointer"
               onClick={muteUnmuteMic}
             >
               {isMicMuted ? (
@@ -158,7 +158,7 @@ const MicMenuItems = ({ currentRoom, hybrid, isLocked }: IMicMenuItemsProps) => 
           {() => (
             <button
               type="button"
-              className="group h-8 w-full flex items-center text-sm gap-2 leading-none font-medium px-2 rounded-lg transition-all duration-300 hover:bg-Red-600 hover:text-white data-[focus]:bg-Red-600 data-[focus]:text-white text-red-700 focus-ring"
+              className="group h-8 w-full flex items-center text-sm gap-2 leading-none font-medium px-2 rounded-lg transition-all duration-300 hover:bg-Red-600 hover:text-white data-[focus]:bg-Red-600 data-[focus]:text-white text-red-700 focus-ring cursor-pointer"
               onClick={leaveMic}
             >
               <i className="pnm-logout text-base transition ease-in" />

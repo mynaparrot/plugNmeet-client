@@ -11,10 +11,11 @@ import { getWebcamResolution } from '../../../../helpers/utils';
 
 interface WebcamPreviewProps {
   deviceId: string;
+  resolution: string;
   onRetry?: () => void;
 }
 
-const WebcamPreview = ({ deviceId, onRetry }: WebcamPreviewProps) => {
+const WebcamPreview = ({ deviceId, resolution: resolutionPreset, onRetry }: WebcamPreviewProps) => {
   const { t } = useTranslation();
   const videoRef = useRef<HTMLVideoElement>(null);
   const localVideoTrack = useRef<LocalVideoTrack | null>(null);
@@ -43,7 +44,7 @@ const WebcamPreview = ({ deviceId, onRetry }: WebcamPreviewProps) => {
       }
 
       let processor: TwilioBackgroundProcessor | undefined;
-      const resolution = getWebcamResolution();
+      const resolution = getWebcamResolution(resolutionPreset);
       if (virtualBackground.type !== 'none') {
         processor = createVirtualBackgroundProcessor(virtualBackground);
         resolution.height = 480;
@@ -87,7 +88,7 @@ const WebcamPreview = ({ deviceId, onRetry }: WebcamPreviewProps) => {
         localVideoTrack.current = null;
       }
     };
-  }, [deviceId, virtualBackground]);
+  }, [deviceId, resolutionPreset, virtualBackground]);
 
   if (failed) {
     return (

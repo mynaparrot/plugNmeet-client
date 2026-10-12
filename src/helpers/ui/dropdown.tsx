@@ -25,6 +25,7 @@ interface ISelectProps {
   direction?: 'horizontal' | 'vertical';
   disabled?: boolean;
   multiple?: boolean;
+  helpText?: string;
 }
 
 const Dropdown = ({
@@ -36,6 +37,7 @@ const Dropdown = ({
   direction = 'vertical',
   disabled = false,
   multiple = false,
+  helpText,
 }: ISelectProps) => {
   const displayValue = useMemo(() => {
     if (multiple) {
@@ -116,6 +118,7 @@ const Dropdown = ({
             </div>
           </Listbox>
         </div>
+        {helpText && <p className="text-xs text-Gray-600 dark:text-Gray-300 mt-1">{helpText}</p>}
       </Field>
     );
   }
@@ -175,6 +178,7 @@ const Dropdown = ({
           </ListboxOptions>
         </div>
       </Listbox>
+      {helpText && <p className="text-xs text-Gray-600 dark:text-Gray-300 mt-1">{helpText}</p>}
     </Field>
   );
 };

@@ -19,6 +19,14 @@ import { AzureTokenInfo } from '../../components/translation-transcription/helpe
 import { DB_STORE_NAMES, idbStore } from '../../helpers/libs/idb';
 import { BackgroundConfig } from '../../helpers/libs/TrackProcessor';
 
+const getStoredPreset = (key: DeviceSessionStorageKeys) => {
+  try {
+    return sessionStorage.getItem(key) ?? '';
+  } catch {
+    return '';
+  }
+};
+
 const initialState: IRoomSettings = {
   isShowRoomSettingsModal: false,
   isShowKeyboardShortcuts: false,
@@ -28,6 +36,9 @@ const initialState: IRoomSettings = {
   videoDevices: [],
   selectedAudioDevice: '',
   selectedVideoDevice: '',
+  selectedAudioPreset: getStoredPreset(DeviceSessionStorageKeys.AUDIO_PRESET),
+  selectedWebcamResolution: getStoredPreset(DeviceSessionStorageKeys.WEBCAM_RESOLUTION),
+  selectedScreenShareResolution: getStoredPreset(DeviceSessionStorageKeys.SCREENSHARE_RESOLUTION),
   virtualBackground: { type: 'none' },
 
   playAudioNotification: false,
@@ -104,6 +115,30 @@ const roomSettingsSlice = createSlice({
         sessionStorage.setItem(DeviceSessionStorageKeys.VIDEO_DEVICE, action.payload);
       } else {
         sessionStorage.removeItem(DeviceSessionStorageKeys.VIDEO_DEVICE);
+      }
+    },
+    updateSelectedAudioPreset: (state, action: PayloadAction<string>) => {
+      state.selectedAudioPreset = action.payload;
+      if (action.payload) {
+        sessionStorage.setItem(DeviceSessionStorageKeys.AUDIO_PRESET, action.payload);
+      } else {
+        sessionStorage.removeItem(DeviceSessionStorageKeys.AUDIO_PRESET);
+      }
+    },
+    updateSelectedWebcamResolution: (state, action: PayloadAction<string>) => {
+      state.selectedWebcamResolution = action.payload;
+      if (action.payload) {
+        sessionStorage.setItem(DeviceSessionStorageKeys.WEBCAM_RESOLUTION, action.payload);
+      } else {
+        sessionStorage.removeItem(DeviceSessionStorageKeys.WEBCAM_RESOLUTION);
+      }
+    },
+    updateSelectedScreenShareResolution: (state, action: PayloadAction<string>) => {
+      state.selectedScreenShareResolution = action.payload;
+      if (action.payload) {
+        sessionStorage.setItem(DeviceSessionStorageKeys.SCREENSHARE_RESOLUTION, action.payload);
+      } else {
+        sessionStorage.removeItem(DeviceSessionStorageKeys.SCREENSHARE_RESOLUTION);
       }
     },
     updateVirtualBackground: (state, action: PayloadAction<BackgroundConfig>) => {
@@ -243,6 +278,9 @@ export const {
   addVideoDevices,
   updateSelectedAudioDevice,
   updateSelectedVideoDevice,
+  updateSelectedAudioPreset,
+  updateSelectedWebcamResolution,
+  updateSelectedScreenShareResolution,
   updateVirtualBackground,
   updatePlayAudioNotification,
   updateShowRoomSettingsModal,

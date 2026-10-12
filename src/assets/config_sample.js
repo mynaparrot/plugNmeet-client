@@ -34,12 +34,12 @@ window.plugNmeetConfig = {
   videoCodec: 'vp8',
 
   // Available options: 'h90' | 'h180' | 'h216' | 'h360' | 'h540' | 'h720' | 'h1080' | 'h1440' | 'h2160'.
-  // Default: 'h720'.
-  defaultWebcamResolution: 'h720',
+  // Default: 'h1080'.
+  defaultWebcamResolution: 'h1080',
 
-  // Available options: 'h360fps3' | 'h720fps5' | 'h720fps15' | 'h1080fps15' | 'h1080fps30'.
-  // Default: 'h1080fps15'.
-  defaultScreenShareResolution: 'h1080fps15',
+  // Available options: 'h360fps3' | 'h360fps15' | 'h720fps5' | 'h720fps15' | 'h720fps30' | 'h1080fps15' | 'h1080fps30'.
+  // Default: 'h1080fps30'.
+  defaultScreenShareResolution: 'h1080fps30',
 
   // Available options: 'telephone' | 'speech' | 'music' | 'musicStereo' | 'musicHighQuality' | 'musicHighQualityStereo'.
   // Default: 'music'.

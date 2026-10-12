@@ -163,6 +163,7 @@
       "application": "Application",
       "language": "Language",
       "video-quality": "Video Quality",
+      "screen-share-quality": "Screen sharing quality",
       "high": "High",
       "medium": "Medium",
       "low": "Low",
@@ -179,7 +180,12 @@
       "column-camera-position-top": "Top",
       "column-camera-position-bottom": "Bottom",
       "focus-active-speaker-webcam": "Focus on Active Speaker",
-      "max-num-webcam": "Max visible webcams"
+      "max-num-webcam": "Max visible webcams",
+      "video-quality-help": "Lower quality uses less data when watching videos.",
+      "screen-share-quality-help": "Used when you share your screen. Lower saves bandwidth.",
+      "show-screen-share-help": "Turn off to hide shared screens and save data.",
+      "show-webcams-help": "Turn off to hide webcams and save data.",
+      "max-num-webcam-help": "Limits how many webcams are visible at once."
     },
     "keyboard-shortcuts": {
       "title": "Keyboard shortcuts",
@@ -473,6 +479,40 @@
       "speaker-test-stop": "Stop sound",
       "change-microphone": "Change / test microphone",
       "select-webcam": "Select a Camera",
+      "audio-quality": "Audio quality",
+      "video-quality": "Camera quality",
+      "screen-share-quality": "Screen share quality",
+      "screen-share-quality-next-start": "Selected quality applies the next time you start screen sharing.",
+      "quality-next-start": "Changes apply the next time you start this device.",
+      "quality-disabled-background": "Camera quality is unavailable while a background effect is selected.",
+      "audio-preset": {
+        "telephone": "Telephone",
+        "speech": "Speech",
+        "music": "Music",
+        "musicStereo": "Music stereo",
+        "musicHighQuality": "Music · high quality",
+        "musicHighQualityStereo": "Music · high-quality stereo"
+      },
+      "webcam-resolution": {
+        "h2160": "4K (2160p)",
+        "h1440": "1440p",
+        "h1080": "Full HD (1080p)",
+        "h720": "HD (720p)",
+        "h540": "540p",
+        "h360": "360p",
+        "h216": "216p",
+        "h180": "180p",
+        "h90": "90p"
+      },
+      "screenshare-resolution": {
+        "h1080fps30": "1080p · 30 fps",
+        "h1080fps15": "1080p · 15 fps",
+        "h720fps30": "720p · 30 fps",
+        "h720fps15": "720p · 15 fps",
+        "h720fps5": "720p · 5 fps",
+        "h360fps15": "360p · 15 fps",
+        "h360fps3": "360p · 3 fps"
+      },
       "cam-preview-title": "Camera preview",
       "cam-loading": "Finding cameras…",
       "cam-not-found": "No camera found. Check browser permissions.",

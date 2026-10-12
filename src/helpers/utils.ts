@@ -102,15 +102,75 @@ export const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
-export const getWebcamResolution = () => {
-  const selected = getConfigValue<string>(
+// oxfmt-ignore
+export const AUDIO_PRESET_KEYS = ['telephone', 'speech', 'music', 'musicStereo',  'musicHighQuality', 'musicHighQualityStereo'] as const;
+// oxfmt-ignore
+export const WEBCAM_RESOLUTION_KEYS = ['h2160', 'h1440', 'h1080', 'h720', 'h540', 'h360', 'h216', 'h180', 'h90'] as const;
+// oxfmt-ignore
+export const SCREENSHARE_RESOLUTION_KEYS = ['h1080fps30', 'h1080fps15', 'h720fps30', 'h720fps15', 'h720fps5', 'h360fps15', 'h360fps3'] as const;
+
+const validPreset = (preset: string, allowed: readonly string[], fallback: string) =>
+  allowed.includes(preset) ? preset : fallback;
+
+// Resolution lists are descending quality, so cap by slicing from the
+// configured default to the end. Unknown default = no cap (full list).
+export const getCappedResolutions = <T extends string>(
+  keys: readonly T[],
+  defaultKey: string,
+): readonly T[] => {
+  const idx = keys.indexOf(defaultKey as T);
+  return idx < 0 ? keys : keys.slice(idx);
+};
+
+export const getAudioPresetName = () => {
+  const configured = validPreset(
+    getConfigValue<string>('defaultAudioPreset', 'music', 'DEFAULT_AUDIO_PRESET'),
+    AUDIO_PRESET_KEYS,
+    'music',
+  );
+  return validPreset(
+    store.getState().roomSettings.selectedAudioPreset,
+    AUDIO_PRESET_KEYS,
+    configured,
+  );
+};
+
+export const getWebcamResolutionName = () => {
+  // Validate against the capped list so a stale stored selection above the
+  // host's default can't bypass the bandwidth limit.
+  const rawDefault = getConfigValue<string>(
     'defaultWebcamResolution',
-    'h720',
+    'h1080',
     'DEFAULT_WEBCAM_RESOLUTION',
   );
-  let resolution = VideoPresets.h720.resolution;
+  const configured = validPreset(rawDefault, WEBCAM_RESOLUTION_KEYS, 'h1080');
+  return validPreset(
+    store.getState().roomSettings.selectedWebcamResolution,
+    getCappedResolutions(WEBCAM_RESOLUTION_KEYS, rawDefault),
+    configured,
+  );
+};
 
-  switch (selected) {
+export const getScreenShareResolutionName = () => {
+  // Validate against the capped list so a stale stored selection above the
+  // host's default can't bypass the bandwidth limit.
+  const rawDefault = getConfigValue<string>(
+    'defaultScreenShareResolution',
+    'h1080fps30',
+    'DEFAULT_SCREEN_SHARE_RESOLUTION',
+  );
+  const configured = validPreset(rawDefault, SCREENSHARE_RESOLUTION_KEYS, 'h1080fps30');
+  return validPreset(
+    store.getState().roomSettings.selectedScreenShareResolution,
+    getCappedResolutions(SCREENSHARE_RESOLUTION_KEYS, rawDefault),
+    configured,
+  );
+};
+
+export const getWebcamResolution = (preset = getWebcamResolutionName()) => {
+  let resolution = VideoPresets.h1080.resolution;
+
+  switch (preset) {
     case 'h90':
       resolution = VideoPresets.h90.resolution;
       break;
@@ -140,26 +200,28 @@ export const getWebcamResolution = () => {
       break;
   }
 
-  return resolution;
+  return { ...resolution };
 };
 
 export const getScreenShareResolution = () => {
-  const selected = getConfigValue<string>(
-    'defaultScreenShareResolution',
-    'h1080fps15',
-    'DEFAULT_SCREEN_SHARE_RESOLUTION',
-  );
-  let resolution = ScreenSharePresets.h1080fps15.resolution;
+  const selected = getScreenShareResolutionName();
+  let resolution = ScreenSharePresets.h1080fps30.resolution;
 
   switch (selected) {
     case 'h360fps3':
       resolution = ScreenSharePresets.h360fps3.resolution;
+      break;
+    case 'h360fps15':
+      resolution = ScreenSharePresets.h360fps15.resolution;
       break;
     case 'h720fps5':
       resolution = ScreenSharePresets.h720fps5.resolution;
       break;
     case 'h720fps15':
       resolution = ScreenSharePresets.h720fps15.resolution;
+      break;
+    case 'h720fps30':
+      resolution = ScreenSharePresets.h720fps30.resolution;
       break;
     case 'h1080fps15':
       resolution = ScreenSharePresets.h1080fps15.resolution;
@@ -173,7 +235,7 @@ export const getScreenShareResolution = () => {
 };
 
 export const getAudioPreset = () => {
-  const selected = getConfigValue<string>('defaultAudioPreset', 'music', 'DEFAULT_AUDIO_PRESET');
+  const selected = getAudioPresetName();
   let preset = AudioPresets.music;
 
   switch (selected) {

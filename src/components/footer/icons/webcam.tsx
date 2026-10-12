@@ -12,8 +12,16 @@ import {
 } from '../../../store/slices/bottomIconsActivitySlice';
 import ShareWebcamModal from '../modals/webcam';
 import WebcamMenu from './webcam-menu';
-import { updateSelectedVideoDevice } from '../../../store/slices/roomSettingsSlice';
-import { sleep } from '../../../helpers/utils';
+import {
+  addVideoDevices,
+  updateSelectedVideoDevice,
+} from '../../../store/slices/roomSettingsSlice';
+import { getInputMediaDevices, sleep } from '../../../helpers/utils';
+import {
+  getFirstRealVideoDeviceId,
+  getStoredVideoDeviceId,
+  sortVideoDevices,
+} from '../modals/microphone/deviceUtils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
 import { Camera } from '../../../assets/Icons/Camera';
 import { CameraOff } from '../../../assets/Icons/CameraOff';
@@ -127,9 +135,38 @@ const WebcamIcon = () => {
 
   // only for initial if device was selected in landing page.
   useEffect(() => {
-    if (selectedVideoDevice) {
-      sleep(500).then(() => onSelectedDevice(selectedVideoDevice));
+    let deviceId = selectedVideoDevice;
+    if (selectedVideoDevice === '' && knownVideoDevices.length === 0) {
+      // the slice doesn't restore this device from storage on init
+      deviceId = getStoredVideoDeviceId() ?? '';
     }
+    if (!deviceId) {
+      return;
+    }
+
+    const restoreDevice = async () => {
+      if (knownVideoDevices.length === 0) {
+        try {
+          const devices = await getInputMediaDevices('video');
+          const sorted = sortVideoDevices(devices.video);
+          dispatch(addVideoDevices(sorted));
+          // remembered device is gone; fall back to the first real one
+          if (!sorted.some((device) => device.id === deviceId)) {
+            deviceId = getFirstRealVideoDeviceId(sorted);
+          }
+          if (deviceId !== selectedVideoDevice) {
+            dispatch(updateSelectedVideoDevice(deviceId));
+          }
+        } catch {
+          // enumeration failed; still publish with the remembered deviceId
+        }
+      }
+      if (deviceId) {
+        sleep(500).then(() => onSelectedDevice(deviceId));
+      }
+    };
+
+    restoreDevice().catch((e) => console.error('Failed to hydrate webcam devices:', e));
     //eslint-disable-next-line
   }, []);
 

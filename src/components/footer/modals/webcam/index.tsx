@@ -3,9 +3,18 @@ import { useTranslation } from 'react-i18next';
 
 import { useAppDispatch, useAppSelector } from '../../../../store';
 import { updateShowVideoShareModal } from '../../../../store/slices/bottomIconsActivitySlice';
-import { getInputMediaDevices } from '../../../../helpers/utils';
+import {
+  getInputMediaDevices,
+  getWebcamResolutionName,
+  getCappedResolutions,
+  getConfigValue,
+  WEBCAM_RESOLUTION_KEYS,
+} from '../../../../helpers/utils';
 import WebcamSettings from './webcamSettings';
-import { addVideoDevices } from '../../../../store/slices/roomSettingsSlice';
+import {
+  addVideoDevices,
+  updateSelectedWebcamResolution,
+} from '../../../../store/slices/roomSettingsSlice';
 import Modal from '../../../../helpers/ui/modal';
 import Dropdown from '../../../../helpers/ui/dropdown';
 import ActionButton from '../../../../helpers/ui/actionButton';
@@ -17,6 +26,9 @@ interface IShareWebcamModal {
   selectedDeviceId: string;
   /** Pre-enumerated list (e.g. landing already asked permission) — avoids a second getUserMedia on first open. */
   initialDevices?: IMediaDevice[];
+  onDevicesLoaded?: (devices: IMediaDevice[]) => void;
+  /** Landing pre-join: save the selected device without publishing immediately. */
+  mode?: 'publish' | 'select';
 }
 
 const ShareWebcamModal = ({
@@ -24,11 +36,16 @@ const ShareWebcamModal = ({
   displayWebcamSelection,
   selectedDeviceId,
   initialDevices,
+  onDevicesLoaded,
+  mode = 'publish',
 }: IShareWebcamModal) => {
   const showVideoShareModal = useAppSelector(
     (state) => state.bottomIconsActivity.showVideoShareModal,
   );
+  const isActiveWebcam = useAppSelector((state) => state.bottomIconsActivity.isActiveWebcam);
+  const virtualBackground = useAppSelector((state) => state.roomSettings.virtualBackground);
   const [selectedWebcam, setSelectWebcam] = useState<string>(selectedDeviceId);
+  const [selectedResolution, setSelectedResolution] = useState(getWebcamResolutionName);
   const [devices, setDevices] = useState<IMediaDevice[]>(() =>
     initialDevices ? [...initialDevices] : [],
   );
@@ -46,6 +63,7 @@ const ShareWebcamModal = ({
     (list: IMediaDevice[]) => {
       setDevices(list);
       dispatch(addVideoDevices(list));
+      onDevicesLoaded?.(list);
       // Prefer the prop (landing/footer selection), fall back to the user's
       // in-modal pick so a Refresh never discards what is on screen.
       const current = selectedIdRef.current || selectedWebcamRef.current;
@@ -61,7 +79,7 @@ const ShareWebcamModal = ({
         setSelectWebcam('');
       }
     },
-    [dispatch],
+    [dispatch, onDevicesLoaded],
   );
 
   // Parent may commit a selection while the modal is open (e.g. device
@@ -119,6 +137,7 @@ const ShareWebcamModal = ({
     if (!selectedWebcam) {
       return;
     }
+    dispatch(updateSelectedWebcamResolution(selectedResolution));
     dispatch(updateShowVideoShareModal(false));
     onSelectedDevice(selectedWebcam);
   };
@@ -132,6 +151,7 @@ const ShareWebcamModal = ({
 
   const refreshing = loading && devices.length > 0;
   const showEmptyError = !loading && (loadError || devices.length === 0);
+  const showDeviceSelection = displayWebcamSelection || devices.length === 1;
 
   return (
     showVideoShareModal && (
@@ -150,7 +170,7 @@ const ShareWebcamModal = ({
               {t('cancel')}
             </button>
             <ActionButton onClick={shareWebcam} disabled={!selectedWebcam}>
-              {t('share')}
+              {mode === 'select' ? t('save') : t('share')}
             </ActionButton>
           </div>
         )}
@@ -177,7 +197,7 @@ const ShareWebcamModal = ({
           </div>
         ) : (
           <>
-            {displayWebcamSelection && (
+            {showDeviceSelection && (
               <div className="flex items-center justify-between mb-4">
                 <span className="text-xs font-semibold uppercase tracking-wide text-Gray-500 dark:text-Gray-400">
                   {t('footer.modal.select-webcam')}
@@ -198,12 +218,13 @@ const ShareWebcamModal = ({
                 </button>
               </div>
             )}
-            {displayWebcamSelection && devices.length > 1 && (
+            {showDeviceSelection && (
               <div className="webcam-dropdown mb-4">
                 <Dropdown
                   id="webcam"
                   value={selectedWebcam}
                   onChange={setSelectWebcam}
+                  disabled={devices.length <= 1}
                   options={devices.map((d) => ({
                     value: d.id,
                     text: d.label || t('footer.modal.cam-unknown-label'),
@@ -211,6 +232,32 @@ const ShareWebcamModal = ({
                 />
               </div>
             )}
+            <div className="mb-4">
+              <Dropdown
+                id="webcam-resolution"
+                label={t('footer.modal.video-quality')}
+                value={selectedResolution}
+                onChange={setSelectedResolution}
+                disabled={isActiveWebcam || virtualBackground.type !== 'none' || !selectedWebcam}
+                options={getCappedResolutions(
+                  WEBCAM_RESOLUTION_KEYS,
+                  getConfigValue<string>('defaultWebcamResolution', 'h720'),
+                ).map((resolution) => ({
+                  value: resolution,
+                  text: t(`footer.modal.webcam-resolution.${resolution}`),
+                }))}
+              />
+              {virtualBackground.type !== 'none' && (
+                <p className="text-xs text-Gray-500 dark:text-Gray-400">
+                  {t('footer.modal.quality-disabled-background')}
+                </p>
+              )}
+              {isActiveWebcam && virtualBackground.type === 'none' && (
+                <p className="text-xs text-Gray-500 dark:text-Gray-400">
+                  {t('footer.modal.quality-next-start')}
+                </p>
+              )}
+            </div>
             {!selectedWebcam ? (
               <p className="text-xs text-Gray-500 dark:text-Gray-400 mb-2" role="note">
                 {t('footer.modal.cam-choose-prompt')}
@@ -219,6 +266,7 @@ const ShareWebcamModal = ({
             <div className="w-full">
               <WebcamSettings
                 deviceId={selectedWebcam}
+                resolution={selectedResolution}
                 onRetry={() => setRefreshKey((k) => k + 1)}
               />
             </div>

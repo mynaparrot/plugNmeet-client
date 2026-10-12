@@ -14,6 +14,9 @@ export enum DeviceSessionStorageKeys {
   AUDIO_DEVICE = 'pnm-selected-audio-device',
   VIDEO_DEVICE = 'pnm-selected-video-device',
   VIRTUAL_BACKGROUND = 'pnm-selected-virtualbg',
+  AUDIO_PRESET = 'pnm-audio-preset',
+  WEBCAM_RESOLUTION = 'pnm-webcam-resolution',
+  SCREENSHARE_RESOLUTION = 'pnm-screenshare-resolution',
 }
 
 export interface IRoomSettings {
@@ -25,6 +28,9 @@ export interface IRoomSettings {
   videoDevices: Array<IMediaDevice>;
   selectedAudioDevice: string;
   selectedVideoDevice: string;
+  selectedAudioPreset: string;
+  selectedWebcamResolution: string;
+  selectedScreenShareResolution: string;
   virtualBackground: BackgroundConfig;
 
   playAudioNotification: boolean;

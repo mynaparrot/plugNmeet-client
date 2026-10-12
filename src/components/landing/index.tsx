@@ -74,6 +74,7 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
     selectedAudioDevice,
     selectedVideoDevice,
     setAudioDevices,
+    setVideoDevices,
     setSelectedAudioDevice,
     setSelectedVideoDevice,
     enableMediaDevices,
@@ -249,7 +250,7 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
                     ) : (
                       <WebcamIcon
                         videoDevices={videoDevices}
-                        enableMediaDevices={enableMediaDevices}
+                        setVideoDevices={setVideoDevices}
                         disableWebcam={disableWebcam}
                         setSelectedVideoDevice={setSelectedVideoDevice}
                         selectedVideoDevice={selectedVideoDevice}

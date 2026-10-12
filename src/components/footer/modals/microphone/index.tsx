@@ -3,6 +3,10 @@ import { useTranslation } from 'react-i18next';
 
 import Modal from '../../../../helpers/ui/modal';
 import ActionButton from '../../../../helpers/ui/actionButton';
+import Dropdown from '../../../../helpers/ui/dropdown';
+import { useAppDispatch, useAppSelector } from '../../../../store';
+import { updateSelectedAudioPreset } from '../../../../store/slices/roomSettingsSlice';
+import { AUDIO_PRESET_KEYS, getAudioPresetName } from '../../../../helpers/utils';
 import { IMediaDevice } from '../../../../store/slices/interfaces/roomSettings';
 import AudioDevicePicker from './audioDevicePicker';
 
@@ -25,7 +29,12 @@ const MicrophoneModal = ({
   mode = 'publish',
 }: MicrophoneModalProps) => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+  const isActiveMicrophone = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveMicrophone,
+  );
   const [selectedMic, setSelectMic] = useState<string>(initialDeviceId);
+  const [selectedPreset, setSelectedPreset] = useState(getAudioPresetName);
 
   // Landing may restore a stored id after mount — sync it in.
   useEffect(() => {
@@ -35,6 +44,9 @@ const MicrophoneModal = ({
   }, [initialDeviceId]);
 
   const selectOrClose = (onlyClose = false) => {
+    if (!onlyClose) {
+      dispatch(updateSelectedAudioPreset(selectedPreset));
+    }
     onCloseMicrophoneModal(onlyClose ? undefined : selectedMic);
   };
 
@@ -59,6 +71,24 @@ const MicrophoneModal = ({
       )}
       customBodyClass="microphone-modal !overflow-[initial]"
     >
+      <div className="mb-4">
+        <Dropdown
+          id="audio-preset"
+          label={t('footer.modal.audio-quality')}
+          value={selectedPreset}
+          onChange={setSelectedPreset}
+          disabled={isActiveMicrophone}
+          options={AUDIO_PRESET_KEYS.map((preset) => ({
+            value: preset,
+            text: t(`footer.modal.audio-preset.${preset}`),
+          }))}
+        />
+        {isActiveMicrophone && (
+          <p className="text-xs text-Gray-500 dark:text-Gray-400">
+            {t('footer.modal.quality-next-start')}
+          </p>
+        )}
+      </div>
       <AudioDevicePicker
         value={selectedMic}
         onChange={setSelectMic}
