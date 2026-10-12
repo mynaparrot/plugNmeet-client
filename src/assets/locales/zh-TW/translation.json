@@ -163,6 +163,7 @@
       "application": "應用程式",
       "language": "語言",
       "video-quality": "視訊品質",
+      "screen-share-quality": "螢幕分享品質",
       "high": "高",
       "medium": "中",
       "low": "低",
@@ -179,7 +180,12 @@
       "column-camera-position-top": "上",
       "column-camera-position-bottom": "下",
       "focus-active-speaker-webcam": "聚焦發言者",
-      "max-num-webcam": "最大可見攝影機數"
+      "max-num-webcam": "最大可見攝影機數",
+      "video-quality-help": "低畫質觀看影片時使用的資料較少。",
+      "screen-share-quality-help": "共用螢幕時使用。降低頻寬。",
+      "show-screen-share-help": "關閉以隱藏共享畫面和儲存資料。",
+      "show-webcams-help": "關閉以隱藏攝影機並儲存資料。",
+      "max-num-webcam-help": "限制同時可見的網路攝影機數量。"
     },
     "keyboard-shortcuts": {
       "title": "鍵盤快捷鍵",
@@ -473,6 +479,40 @@
       "speaker-test-stop": "停止聲音",
       "change-microphone": "更換/測試麥克風",
       "select-webcam": "選擇一個攝影機",
+      "audio-quality": "音質",
+      "video-quality": "相機品質",
+      "screen-share-quality": "螢幕分享品質",
+      "screen-share-quality-next-start": "下次開始螢幕分享時會選擇品質。",
+      "quality-next-start": "下次啟動此裝置時，變更將生效。",
+      "quality-disabled-background": "在選擇背景特效時，攝影機畫質無法使用。",
+      "audio-preset": {
+        "telephone": "電話",
+        "speech": "演講",
+        "music": "音樂",
+        "musicStereo": "音樂立體聲",
+        "musicHighQuality": "音樂 ·高品質",
+        "musicHighQualityStereo": "音樂 ·高品質立體聲"
+      },
+      "webcam-resolution": {
+        "h2160": "4K（2160p）",
+        "h1440": "1440p",
+        "h1080": "全高清（1080p）",
+        "h720": "高清（720p）",
+        "h540": "540p",
+        "h360": "360p",
+        "h216": "216頁",
+        "h180": "180p",
+        "h90": "90便士"
+      },
+      "screenshare-resolution": {
+        "h1080fps30": "1080p ·30 fps",
+        "h1080fps15": "1080p ·15 fps",
+        "h720fps30": "720p ·30 fps",
+        "h720fps15": "720p ·15 fps",
+        "h720fps5": "720p ·5 fps",
+        "h360fps15": "360p ·15 fps",
+        "h360fps3": "360p ·3 fps"
+      },
       "cam-preview-title": "攝影機預覽",
       "cam-loading": "尋找攝影機…",
       "cam-not-found": "找不到相機。檢查瀏覽器權限。",
