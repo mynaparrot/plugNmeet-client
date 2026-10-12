@@ -163,6 +163,7 @@
       "application": "Aplicação",
       "language": "Idioma",
       "video-quality": "Qualidade de vídeo",
+      "screen-share-quality": "Qualidade de partilha de ecrã",
       "high": "Alta",
       "medium": "Média",
       "low": "Baixa",
@@ -179,7 +180,12 @@
       "column-camera-position-top": "Cima",
       "column-camera-position-bottom": "Baixo",
       "focus-active-speaker-webcam": "Focar no orador ativo",
-      "max-num-webcam": "Máximo de webcams visíveis"
+      "max-num-webcam": "Máximo de webcams visíveis",
+      "video-quality-help": "Qualidade inferior consome menos dados ao ver vídeos.",
+      "screen-share-quality-help": "Usado quando partilhas o ecrã. Poupa menos largura de banda.",
+      "show-screen-share-help": "Desligue para ocultar ecrãs partilhados e dados de gravação.",
+      "show-webcams-help": "Desligue para esconder webcams e dados guardados.",
+      "max-num-webcam-help": "Limita o número de webcams visíveis ao mesmo tempo."
     },
     "keyboard-shortcuts": {
       "title": "Atalhos de teclado",
@@ -473,6 +479,40 @@
       "speaker-test-stop": "Parar o som",
       "change-microphone": "Mudança / microfone de teste",
       "select-webcam": "Selecione uma câmara",
+      "audio-quality": "Qualidade do áudio",
+      "video-quality": "Qualidade da câmara",
+      "screen-share-quality": "Qualidade de partilha de ecrã",
+      "screen-share-quality-next-start": "A qualidade selecionada aplica-se da próxima vez que começar a partilhar o ecrã.",
+      "quality-next-start": "As alterações aplicam-se da próxima vez que iniciar este dispositivo.",
+      "quality-disabled-background": "Camera quality is unavailable while a background effect is selected.",
+      "audio-preset": {
+        "telephone": "Telephone",
+        "speech": "Speech",
+        "music": "Music",
+        "musicStereo": "Music stereo",
+        "musicHighQuality": "Music · high quality",
+        "musicHighQualityStereo": "Music · high-quality stereo"
+      },
+      "webcam-resolution": {
+        "h2160": "4K (2160p)",
+        "h1440": "1440p",
+        "h1080": "Full HD (1080p)",
+        "h720": "HD (720p)",
+        "h540": "540p",
+        "h360": "360p",
+        "h216": "216p",
+        "h180": "180p",
+        "h90": "90p"
+      },
+      "screenshare-resolution": {
+        "h1080fps30": "1080p · 30 fps",
+        "h1080fps15": "1080p · 15 fps",
+        "h720fps30": "720p · 30 fps",
+        "h720fps15": "720p · 15 fps",
+        "h720fps5": "720p · 5 fps",
+        "h360fps15": "360p · 15 fps",
+        "h360fps3": "360p · 3 fps"
+      },
       "cam-preview-title": "Pré-visualização da câmara",
       "cam-loading": "Encontrar câmaras…",
       "cam-not-found": "Nenhuma câmara encontrada. Verifica as permissões do navegador.",
