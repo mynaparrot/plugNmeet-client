@@ -163,6 +163,7 @@
       "application": "애플리케이션",
       "language": "言語",
       "video-quality": "ビデオ品質",
+      "screen-share-quality": "화면 공유 품질",
       "high": "높음",
       "medium": "중간",
       "low": "낮음",
@@ -179,7 +180,12 @@
       "column-camera-position-top": "위",
       "column-camera-position-bottom": "아래",
       "focus-active-speaker-webcam": "활성 발언자에게 초점 맞추기",
-      "max-num-webcam": "최대 표시 웹캠 수"
+      "max-num-webcam": "최대 표시 웹캠 수",
+      "video-quality-help": "영상을 볼 때 저화질은 데이터를 덜 사용합니다.",
+      "screen-share-quality-help": "화면을 공유할 때 사용합니다. 대역폭을 줄이면 됩니다.",
+      "show-screen-share-help": "공유 화면을 숨기고 데이터를 저장하려면 끄세요.",
+      "show-webcams-help": "웹캠을 숨기고 데이터를 저장하려면 끄세요.",
+      "max-num-webcam-help": "한 번에 보이는 웹캠 수를 제한합니다."
     },
     "keyboard-shortcuts": {
       "title": "キーボードショートカット",
@@ -473,6 +479,40 @@
       "speaker-test-stop": "멈춰 소리",
       "change-microphone": "마이크 변경 / 테스트",
       "select-webcam": "カメラを選択",
+      "audio-quality": "오디오 품질",
+      "video-quality": "카메라 화질",
+      "screen-share-quality": "화면 공유 품질",
+      "screen-share-quality-next-start": "선택한 품질은 다음에 화면 공유를 시작할 때 적용됩니다.",
+      "quality-next-start": "다음에 이 장치를 시작할 때 변경 사항이 적용됩니다.",
+      "quality-disabled-background": "Camera quality is unavailable while a background effect is selected.",
+      "audio-preset": {
+        "telephone": "Telephone",
+        "speech": "Speech",
+        "music": "Music",
+        "musicStereo": "Music stereo",
+        "musicHighQuality": "Music · high quality",
+        "musicHighQualityStereo": "Music · high-quality stereo"
+      },
+      "webcam-resolution": {
+        "h2160": "4K (2160p)",
+        "h1440": "1440p",
+        "h1080": "Full HD (1080p)",
+        "h720": "HD (720p)",
+        "h540": "540p",
+        "h360": "360p",
+        "h216": "216p",
+        "h180": "180p",
+        "h90": "90p"
+      },
+      "screenshare-resolution": {
+        "h1080fps30": "1080p · 30 fps",
+        "h1080fps15": "1080p · 15 fps",
+        "h720fps30": "720p · 30 fps",
+        "h720fps15": "720p · 15 fps",
+        "h720fps5": "720p · 5 fps",
+        "h360fps15": "360p · 15 fps",
+        "h360fps3": "360p · 3 fps"
+      },
       "cam-preview-title": "카메라 미리보기",
       "cam-loading": "카메라 찾기…",
       "cam-not-found": "카메라를 찾지 못했습니다. 브라우저 권한을 확인해 보세요.",
