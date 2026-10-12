@@ -54,7 +54,7 @@ const MicrophoneModal = ({
     <Modal
       show={show}
       onClose={() => selectOrClose(true)}
-      title={t('footer.modal.select-microphone')}
+      title={t('footer.modal.configure-microphone')}
       renderButtons={() => (
         <div className="flex items-center justify-end gap-3">
           <button

@@ -11,11 +11,7 @@ export const isLikelyVirtualOrLoopback = (label: string) => VIRTUAL_HINT.test(la
 export const isSystemDefaultDevice = (device: IMediaDevice) =>
   device.id === 'default' || /^default/i.test(device.label || '');
 
-/**
- * Never auto-pick devices[0] — it is often a monitor/loopback or a stale
- * "Default" mapping, which is exactly the "others can't hear me" bug.
- * Only restore an explicitly stored id if it still exists.
- */
+/** Restore the stored id only if it still exists; never guess a fallback. */
 export const resolveInitialDeviceId = (
   devices: IMediaDevice[],
   storedId?: string | null,
@@ -96,6 +92,13 @@ export const getFirstRealAudioDeviceId = (sorted: IMediaDevice[]): string => {
 export const getFirstRealVideoDeviceId = (sorted: IMediaDevice[]): string => {
   const real = sorted.find((d) => !isLikelyVirtualCamera(d.label) && !isSystemDefaultDevice(d));
   return real?.id ?? sorted[0]?.id ?? '';
+};
+
+/** First strictly-real hardware mic; '' when none — never falls back to sorted[0]. */
+export const getFirstStrictlyRealAudioDeviceId = (sorted: IMediaDevice[]): string => {
+  return (
+    sorted.find((d) => !isLikelyVirtualOrLoopback(d.label) && !isSystemDefaultDevice(d))?.id ?? ''
+  );
 };
 
 /**

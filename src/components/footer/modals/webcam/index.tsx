@@ -158,7 +158,7 @@ const ShareWebcamModal = ({
       <Modal
         show={showVideoShareModal}
         onClose={onClose}
-        title={t('footer.modal.select-webcam')}
+        title={t('footer.modal.configure-webcam')}
         customClass="ChooseBackgroud"
         renderButtons={() => (
           <div className="flex items-center justify-end gap-3">

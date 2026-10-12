@@ -12,6 +12,7 @@ import MicrophoneLevel from './microphoneLevel';
 import SpeakerTest from './speakerTest';
 import { useMicrophonePreview } from './useMicrophonePreview';
 import {
+  getFirstStrictlyRealAudioDeviceId,
   getStoredAudioDeviceId,
   isLikelyVirtualOrLoopback,
   resolveInitialDeviceId,
@@ -64,7 +65,7 @@ const AudioDevicePicker = ({
     onDevicesRef.current?.(sorted);
 
     const current = valueRef.current;
-    if (!current) {
+    if (!current || !sorted.some((d) => d.id === current)) {
       let stored: string | null = null;
       try {
         stored =
@@ -72,14 +73,10 @@ const AudioDevicePicker = ({
       } catch {
         stored = getStoredAudioDeviceId();
       }
-      const initial = resolveInitialDeviceId(sorted, stored);
-      if (initial) {
-        onChangeRef.current(initial);
-      }
-    } else if (!sorted.some((d) => d.id === current)) {
-      // previously stored mic unplugged: force explicit re-pick,
-      // never silently fall back to [0]
-      onChangeRef.current('');
+      // Stored mic if still valid, else first strictly-real device; '' when nothing real.
+      onChangeRef.current(
+        resolveInitialDeviceId(sorted, stored) || getFirstStrictlyRealAudioDeviceId(sorted),
+      );
     }
   }, []);
 
