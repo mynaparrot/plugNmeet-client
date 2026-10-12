@@ -67,6 +67,7 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
   const lockWebcam = useAppSelector(
     (state) => state.session.currentUser?.metadata?.lockSettings?.lockWebcam,
   );
+  const selectedResolution = useAppSelector((state) => state.roomSettings.selectedWebcamResolution);
 
   const {
     audioDevices,
@@ -222,7 +223,9 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
                     <img src={logo} alt="logo" className="max-w-[60%] max-h-[60%] object-contain" />
                   </div>
                 ) : (
-                  selectedVideoDevice !== '' && <WebcamPreview deviceId={selectedVideoDevice} />
+                  selectedVideoDevice !== '' && (
+                    <WebcamPreview deviceId={selectedVideoDevice} resolution={selectedResolution} />
+                  )
                 )}
               </div>
               <div className="micro-cam-wrap flex justify-center py-5 gap-5 empty:hidden">
