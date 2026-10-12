@@ -460,6 +460,7 @@
       "rtmp-close-confirm": "Вы уверены, что хотите закончить прямую трансляцию?",
       "rtmp-close-msg": "Вы собираетесь остановить прямую трансляцию.",
       "select-microphone": "Выберите микрофон",
+      "configure-microphone": "Configure Your Microphone",
       "mic-test-title": "Тест микрофона",
       "mic-test-speak": "Говорите сейчас — смотрите, как двигаются прутья",
       "mic-test-starting": "Открытие микрофона…",
@@ -479,19 +480,20 @@
       "speaker-test-stop": "Стоп звука",
       "change-microphone": "Замена / тестирование микрофона",
       "select-webcam": "Выберите камеру",
+      "configure-webcam": "Configure Your Webcam",
       "audio-quality": "Качество звука",
       "video-quality": "Качество камеры",
       "screen-share-quality": "Качество совместного экрана",
       "screen-share-quality-next-start": "Выбранное качество применяется в следующий раз, когда вы начинаете совместное использование экрана.",
       "quality-next-start": "Изменения будут действовать при следующем запуске устройства.",
-      "quality-disabled-background": "Camera quality is unavailable while a background effect is selected.",
+      "quality-disabled-background": "Качество камеры недоступно при выборе фонового эффекта.",
       "audio-preset": {
-        "telephone": "Telephone",
-        "speech": "Speech",
-        "music": "Music",
-        "musicStereo": "Music stereo",
-        "musicHighQuality": "Music · high quality",
-        "musicHighQualityStereo": "Music · high-quality stereo"
+        "telephone": "Телефон",
+        "speech": "Речь",
+        "music": "Музыка",
+        "musicStereo": "Музыкальное стерео",
+        "musicHighQuality": "Музыка · Высокое качество",
+        "musicHighQualityStereo": "Музыка · Высококачественное стерео"
       },
       "webcam-resolution": {
         "h2160": "4K (2160p)",
@@ -502,16 +504,16 @@
         "h360": "360p",
         "h216": "216p",
         "h180": "180p",
-        "h90": "90p"
+        "h90": "90 пенсов"
       },
       "screenshare-resolution": {
-        "h1080fps30": "1080p · 30 fps",
-        "h1080fps15": "1080p · 15 fps",
-        "h720fps30": "720p · 30 fps",
-        "h720fps15": "720p · 15 fps",
-        "h720fps5": "720p · 5 fps",
-        "h360fps15": "360p · 15 fps",
-        "h360fps3": "360p · 3 fps"
+        "h1080fps30": "1080p · 30 кадров в секунду",
+        "h1080fps15": "1080p · 15 кадров в секунду",
+        "h720fps30": "720p · 30 кадров в секунду",
+        "h720fps15": "720p · 15 кадров в секунду",
+        "h720fps5": "720p · 5 кадров в секунду",
+        "h360fps15": "360p · 15 кадров в секунду",
+        "h360fps3": "360p · 3 кадра в секунду"
       },
       "cam-preview-title": "Превью камеры",
       "cam-loading": "Поиск камер…",
