@@ -163,6 +163,7 @@
       "application": "Ứng dụng",
       "language": "Ngôn ngữ",
       "video-quality": "Chất lượng video",
+      "screen-share-quality": "Chất lượng chia sẻ màn hình",
       "high": "Cao",
       "medium": "Đau vừa",
       "low": "Thấp",
@@ -179,7 +180,12 @@
       "column-camera-position-top": "Đỉnh",
       "column-camera-position-bottom": "Đáy",
       "focus-active-speaker-webcam": "Tập trung vào Active Speaker",
-      "max-num-webcam": "Webcam hiển thị tối đa"
+      "max-num-webcam": "Webcam hiển thị tối đa",
+      "video-quality-help": "Chất lượng thấp hơn sử dụng ít dữ liệu hơn khi xem video.",
+      "screen-share-quality-help": "Sử dụng khi bạn chia sẻ màn hình. Thấp hơn giúp tiết kiệm băng thông.",
+      "show-screen-share-help": "Tắt để ẩn màn hình chia sẻ và lưu dữ liệu.",
+      "show-webcams-help": "Tắt để ẩn webcam và lưu dữ liệu.",
+      "max-num-webcam-help": "Giới hạn số lượng webcam hiển thị cùng lúc."
     },
     "keyboard-shortcuts": {
       "title": "Phím tắt",
@@ -473,6 +479,40 @@
       "speaker-test-stop": "Chặn âm thanh",
       "change-microphone": "Thay đổi / kiểm tra micro",
       "select-webcam": "Chọn một máy ảnh",
+      "audio-quality": "Chất lượng âm thanh",
+      "video-quality": "Chất lượng máy ảnh",
+      "screen-share-quality": "Chất lượng chia sẻ màn hình",
+      "screen-share-quality-next-start": "Chất lượng đã chọn sẽ áp dụng lần tiếp theo khi bạn bắt đầu chia sẻ màn hình.",
+      "quality-next-start": "Các thay đổi sẽ áp dụng lần tiếp theo khi bạn khởi động thiết bị này.",
+      "quality-disabled-background": "Chất lượng camera không khả dụng khi hiệu ứng nền được chọn.",
+      "audio-preset": {
+        "telephone": "Điện thoại",
+        "speech": "Bài phát biểu",
+        "music": "Âm nhạc",
+        "musicStereo": "Dàn âm thanh âm nhạc",
+        "musicHighQuality": "Âm nhạc · chất lượng cao",
+        "musicHighQualityStereo": "Âm nhạc · Âm thanh âm thanh chất lượng cao"
+      },
+      "webcam-resolution": {
+        "h2160": "4K (2160p)",
+        "h1440": "1440p",
+        "h1080": "Full HD (1080p)",
+        "h720": "HD (720p)",
+        "h540": "540p",
+        "h360": "360p",
+        "h216": "216p",
+        "h180": "180p",
+        "h90": "90p"
+      },
+      "screenshare-resolution": {
+        "h1080fps30": "1080p · 30 fps",
+        "h1080fps15": "1080p · 15 fps",
+        "h720fps30": "720p · 30 fps",
+        "h720fps15": "720p · 15 fps",
+        "h720fps5": "720p · 5 fps",
+        "h360fps15": "360p · 15 fps",
+        "h360fps3": "360p · 3 fps"
+      },
       "cam-preview-title": "Xem trước camera",
       "cam-loading": "Tìm camera…",
       "cam-not-found": "Không tìm thấy camera. Kiểm tra quyền trình duyệt.",
