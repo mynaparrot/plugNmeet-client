@@ -228,6 +228,8 @@
       },
       "video-paused-banner": "Conexión débil — video pausado para que el audio sea claro.",
       "video-stays-paused-banner": "Conexión débil — video pausado hasta que lo vuelva a activar.",
+      "video-quality-reduced-banner": "Conexión débil — calidad de vídeo reducida para mantener el audio claro.",
+      "restore-quality": "Restauración de calidad",
       "re-enable-video": "Reactivar el video",
       "resume-presentation": "Presentación del currículum"
     }
