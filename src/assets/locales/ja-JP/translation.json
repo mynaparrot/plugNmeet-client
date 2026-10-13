@@ -228,6 +228,8 @@
       },
       "video-paused-banner": "接続が弱い — 音声をクリアに保つために映像が一時停止。",
       "video-stays-paused-banner": "接続が弱い — ビデオが一時停止し、再度有効にするまで。",
+      "video-quality-reduced-banner": "接続が弱い — 音声をクリアに保つために映像品質が落ちます。",
+      "restore-quality": "品質を回復する",
       "re-enable-video": "ビデオの再有効化",
       "resume-presentation": "履歴書の提示"
     }
