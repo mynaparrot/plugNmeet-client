@@ -10,22 +10,40 @@ import {
   muteNativeMedia,
   unmuteNativeMedia,
 } from '../nativeBridge';
-import { PnmConnectionQuality, QualityStats } from './ConnectionQualityMonitor';
+import {
+  LOST_PACKET_LOSS_THRESHOLD,
+  PnmConnectionQuality,
+  QualityStats,
+} from './ConnectionQualityMonitor';
 import type { MediaAdaptationSnapshot } from './turn/TurnFallbackCoordinator';
 
 /**
  * Adaptive media policy (audio always wins — every action sheds video only):
  *   - critical fast paths: outbound audio stuck -> audio-only immediately;
- *     both directions Lost (2 checks) -> audio-only; upload Lost -> mute own
+ *     loss-backed combined Lost -> audio-only; upload Lost -> mute own
  *     camera; receive Lost -> pause incoming webcams + presentation.
+ *   - Lost is tracked per direction (independent uplink/downlink streaks,
+ *     each cleared by its own non-Lost or by an unknown/hidden sample).
+ *     Combined Lost that is only RTT-driven (no measured packet loss) never
+ *     earns the persistent manual-only critical mode: it falls through to the
+ *     score ladder, so video still sheds quickly and staged but stays
+ *     auto-recoverable.
  *   - normal (score-based, respects manual-restore grace): sustained poor
  *     receive -> pause incoming webcams then presentation; sustained poor
  *     upload -> mute own camera. The two ladders are independent.
  *   - recovery: normal degradations auto-restore one notch at a time after
- *     NORMAL_RECOVERY_STREAK healthy checks; a flap guard suspends
- *     auto-restore after repeated quick cycles. Critical audio-only mode
+ *     NORMAL_RECOVERY_STREAK CONSECUTIVE MEASURED healthy checks; a flap guard
+ *     suspends auto-restore after repeated quick cycles, counting one cycle per
+ *     restoration attempt (not per pause action). Critical audio-only mode
  *     never auto-restores (manual banner -> resumeAll). A user camera
  *     re-enable during critical mode intentionally keeps criticalMode true.
+ *     An unmeasured/hidden sample proves nothing, so it resets every streak
+ *     (including an unclaimed restore opportunity) instead of letting a
+ *     recovery mature across a reconnect or hidden-tab gap. A PARTIAL sample
+ *     (one direction's report unusable) is likewise not global health, with a
+ *     single exception: an upload-audio stall verified by the upload
+ *     direction's own evidence still protects audio (sheds video), since
+ *     silencing that over an unknown download would drop audio protection.
  * AdaptiveMediaMode is derived from the pause flags; the UI is driven by the
  * Redux booleans in roomSettings, not by the enum.
  */
@@ -89,7 +107,10 @@ export default class AdaptiveMediaController {
 
   private normalRecoveryStreak = 0;
   private criticalRecoveryStreak = 0;
-  private consecutiveLostChecks = 0;
+
+  /** consecutive real Lost samples per direction (independent fast paths) */
+  private uploadLostStreak = 0;
+  private receiveLostStreak = 0;
 
   /**
    * Timestamp until which normal adaptive logic must not undo a user's
@@ -103,6 +124,8 @@ export default class AdaptiveMediaController {
 
   private lastAutoRestoreAt = 0;
   private flapCycleCount = 0;
+  /** true once the current restore->degrade episode has been counted */
+  private flapCycleCounted = false;
 
   private lastWarningNotificationAt = 0;
   private warningWindowStartedAt = 0;
@@ -203,29 +226,91 @@ export default class AdaptiveMediaController {
     document.removeEventListener('visibilitychange', this.onVisibilityChange);
 
     this.operationGeneration += 1;
+    /*
+     * Drop flap-cycle history so a re-attached controller starts clean. The
+     * degradation/ownership flags deliberately survive: the paused media and
+     * its Redux snapshot must persist across a transient reconnect.
+     */
+    this.resetFlapState();
     this.attached = false;
   }
 
   // pre-hide streak/Lost counters must not mature fast paths after the tab
-  // returns; flap history is intentionally preserved (user cycles, not windows)
+  // returns, and a stale restore opportunity must not survive the gap either
+  // (hidden-tab sampling skips evaluate() entirely, so this handler is the only
+  // place that can revoke it); flap history is intentionally preserved (user
+  // cycles, not windows)
   private onVisibilityChange = (): void => {
     if (document.visibilityState !== 'visible') {
       return;
     }
 
     this.resetQualityState();
+    // resetQualityState clears scores/streaks but not the restore opportunity
+    this.restoreAvailable = false;
   };
+
+  /**
+   * An unknown/hidden sample is never evidence. Dropping the counters and
+   * streaks here stops any fast path or staged recovery from maturing ACROSS a
+   * gap of unmeasured samples (reconnect, hidden tab): a degradation may only
+   * be lifted by consecutive MEASURED healthy samples, and a stale restore
+   * opportunity must not survive the gap either. The protective degradation,
+   * ownership and grace state deliberately survive — the paused media and its
+   * Redux snapshot must not be dropped just because one sample was unmeasured.
+   */
+  private invalidateUnmeasuredEvidence(): void {
+    this.uploadLostStreak = 0;
+    this.receiveLostStreak = 0;
+    this.normalRecoveryStreak = 0;
+    this.criticalRecoveryStreak = 0;
+    this.restoreAvailable = false;
+  }
 
   /** Called by the connection-quality monitor every 5 seconds. */
   public evaluate(stats: QualityStats): void {
-    // never adapt on hidden-tab or synthetic (unmeasured) samples
-    if (!this.options.enabled || document.hidden || stats.measured === false) {
+    // never adapt on a hidden tab: it proves nothing
+    if (!this.options.enabled || document.hidden) {
+      this.invalidateUnmeasuredEvidence();
+      return;
+    }
+
+    /*
+     * A partial sample (`measured === false`) is not global health evidence:
+     * scores, staged recovery, the Lost fast paths and the UI stay gated and
+     * every streak is reset. The ONE exception is an INDEPENDENTLY verified
+     * upload audio stall — the upload direction's own report (uploadMeasured)
+     * proved a live mic produced audio that was not sent. Silencing that over an
+     * unknown download would drop the audio-critical protection, so its
+     * protective video-only action is still applied. A synthetic sample is
+     * always uploadMeasured:false, so no unverified flag can bypass the gate.
+     */
+    if (stats.measured === false) {
+      this.invalidateUnmeasuredEvidence();
+
+      if (stats.uploadMeasured === true && stats.isUploadAudioStuck) {
+        void this.evaluateVerifiedAudioStuckProtection().catch((error: unknown) => {
+          console.error('[AdaptiveMedia] evaluate failed', error);
+        });
+      }
       return;
     }
 
     void this.evaluateInternal(stats).catch((error: unknown) => {
       console.error('[AdaptiveMedia] evaluate failed', error);
     });
+  }
+
+  /**
+   * The ONLY adaptation permitted under partial (non-global) evidence: an
+   * upload-audio stall independently verified by the upload direction's own
+   * report protects audio by shedding video. It reuses the generation-safe,
+   * idempotent audio-critical entry path and touches NOTHING else — no
+   * score/EMA movement, no Lost streak, no recovery progress — because the
+   * surrounding sample is not globally measured (the caller already reset them).
+   */
+  private async evaluateVerifiedAudioStuckProtection(): Promise<void> {
+    await this.enterAudioOnlyMode('audio-stuck');
   }
 
   /**
@@ -398,31 +483,63 @@ export default class AdaptiveMediaController {
     const uploadLost = stats.uploadQuality === PnmConnectionQuality.Lost;
     const receiveLost = stats.receiveQuality === PnmConnectionQuality.Lost;
 
-    if (!uploadLost && !receiveLost) {
-      return undefined;
-    }
-
-    if (this.consecutiveLostChecks < LOST_FAST_PATH_STREAK) {
-      return undefined;
-    }
-
     if (uploadLost && receiveLost) {
-      return CriticalReason.BothLost;
+      /*
+       * Combined Lost earns the persistent manual-only critical mode only
+       * when it is loss-backed: both directions must report real (finite)
+       * packet loss at the Lost threshold. A high RTT also classifies as Lost
+       * but proves no loss, so RTT-only combined distress falls through to
+       * the score ladder instead: video still sheds quickly and staged, but
+       * normal automatic recovery stays available.
+       */
+      const lossBacked =
+        this.isLossBackedLost(stats.myPacketLoss) && this.isLossBackedLost(stats.receivePacketLoss);
+
+      if (
+        lossBacked &&
+        this.uploadLostStreak >= LOST_FAST_PATH_STREAK &&
+        this.receiveLostStreak >= LOST_FAST_PATH_STREAK
+      ) {
+        return CriticalReason.BothLost;
+      }
+
+      return undefined;
     }
 
-    return uploadLost ? CriticalReason.UploadLost : CriticalReason.ReceiveLost;
+    if (uploadLost) {
+      return this.uploadLostStreak >= LOST_FAST_PATH_STREAK ? CriticalReason.UploadLost : undefined;
+    }
+
+    if (receiveLost) {
+      return this.receiveLostStreak >= LOST_FAST_PATH_STREAK
+        ? CriticalReason.ReceiveLost
+        : undefined;
+    }
+
+    return undefined;
+  }
+
+  /**
+   * A direction's Lost sample counts as loss-backed only when a real, finite
+   * packet-loss reading reaches the Lost threshold. NaN/absent readings are
+   * never evidence of loss and must not sway the critical decision.
+   */
+  private isLossBackedLost(packetLoss: number): boolean {
+    return Number.isFinite(packetLoss) && packetLoss >= LOST_PACKET_LOSS_THRESHOLD;
   }
 
   private updateLostStreak(stats: QualityStats): void {
-    const uploadLost = stats.uploadQuality === PnmConnectionQuality.Lost;
-    const receiveLost = stats.receiveQuality === PnmConnectionQuality.Lost;
+    /*
+     * Per-direction streaks: a Lost reading only matures its OWN direction's
+     * fast path and any non-Lost sample of that direction resets it, so an
+     * upload Lost can never combine with a later receive Lost to fake a
+     * receive-lost pair.
+     */
+    this.uploadLostStreak =
+      stats.uploadQuality === PnmConnectionQuality.Lost ? this.uploadLostStreak + 1 : 0;
 
-    if (uploadLost || receiveLost) {
-      this.consecutiveLostChecks += 1;
-      return;
-    }
-
-    this.consecutiveLostChecks = 0;
+    this.receiveLostStreak =
+      stats.receiveQuality === PnmConnectionQuality.Lost ? this.receiveLostStreak + 1 : 0;
   }
 
   private async enterAudioOnlyMode(reason: 'audio-stuck' | 'connection-lost'): Promise<void> {
@@ -562,7 +679,9 @@ export default class AdaptiveMediaController {
     this.normalRecoveryStreak = 0;
     this.downlinkScore = 0;
     this.uplinkScore = 0;
+    // a fresh restoration attempt opens a new flap cycle window
     this.lastAutoRestoreAt = Date.now();
+    this.flapCycleCounted = false;
 
     if (this.incomingScreensharePaused) {
       this.incomingScreensharePaused = false;
@@ -608,12 +727,15 @@ export default class AdaptiveMediaController {
   }
 
   /**
-   * Flap guard: a normal degrade that follows a recent automatic restore
-   * within FLAP_GRACE_MS counts as a flap cycle. After MAX_FLAP_CYCLES
-   * quick cycles, automatic restoration is suspended (manual banner only).
+   * Flap guard: the first normal degrade that follows a recent automatic
+   * restore within FLAP_GRACE_MS counts as ONE flap cycle — every further
+   * pause action inside that same degrade episode belongs to the same cycle.
+   * The counter is re-armed by the next restoration attempt. After
+   * MAX_FLAP_CYCLES quick cycles, automatic restoration is suspended (manual
+   * banner only).
    */
   private markNormalDegrade(): void {
-    if (!this.lastAutoRestoreAt) {
+    if (!this.lastAutoRestoreAt || this.flapCycleCounted) {
       return;
     }
 
@@ -621,6 +743,7 @@ export default class AdaptiveMediaController {
       return;
     }
 
+    this.flapCycleCounted = true;
     this.flapCycleCount += 1;
 
     if (this.flapCycleCount >= MAX_FLAP_CYCLES) {
@@ -694,6 +817,8 @@ export default class AdaptiveMediaController {
     this.incomingScreensharePaused = false;
 
     this.resetQualityState();
+    // a manual restore is an explicit takeover: restart flap accounting
+    this.resetFlapState();
 
     let cameraRestored = true;
 
@@ -774,16 +899,20 @@ export default class AdaptiveMediaController {
 
     this.normalRecoveryStreak = 0;
     this.criticalRecoveryStreak = 0;
-    this.consecutiveLostChecks = 0;
+    this.uploadLostStreak = 0;
+    this.receiveLostStreak = 0;
   }
 
   /**
-   * Only an explicit user action (manual camera re-enable) clears flap
-   * history; critical mode and manual banner restores preserve it.
+   * Clears flap history on an explicit user restore (manual camera re-enable
+   * or the persistent banner's resumeAll) and on disposal. After the user
+   * takes control the flap guard must only suspend again on genuinely
+   * repeated automatic restore->degrade cycles.
    */
   private resetFlapState(): void {
     this.lastAutoRestoreAt = 0;
     this.flapCycleCount = 0;
+    this.flapCycleCounted = false;
   }
 
   /**

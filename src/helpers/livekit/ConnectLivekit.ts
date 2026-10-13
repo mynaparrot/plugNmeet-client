@@ -244,17 +244,17 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
 
     const roomOptions: RoomOptions = {
       adaptiveStream,
-      dynacast: getConfigValue<boolean>('enableDynacast', false, 'ENABLE_DYNACAST'),
+      dynacast: getConfigValue<boolean>('enableDynacast', true, 'ENABLE_DYNACAST'),
       stopLocalTrackOnUnpublish: true,
       videoCaptureDefaults: {
         resolution: VideoPresets.h720.resolution,
       },
       publishDefaults: {
-        simulcast: getConfigValue<boolean>('enableSimulcast', false, 'ENABLE_SIMULCAST'),
+        simulcast: getConfigValue<boolean>('enableSimulcast', true, 'ENABLE_SIMULCAST'),
         videoSimulcastLayers: [VideoPresets.h90, VideoPresets.h180, VideoPresets.h360],
         stopMicTrackOnMute: getConfigValue<boolean>(
           'stopMicTrackOnMute',
-          false,
+          true,
           'STOP_MIC_TRACK_ON_MUTE',
         ),
         videoCodec: videoCodec,
@@ -415,37 +415,44 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
   };
 
   private checkConnectionQualityForFallback = async (stats: QualityStats) => {
-    // For local UI - show the overall experience & update participant list
-    if (this.lastDispatchedOverallQuality !== stats.overallQuality) {
-      this.lastDispatchedOverallQuality = stats.overallQuality;
-      store.dispatch(updateOverallConnectionQuality(stats.overallQuality));
-      store.dispatch(
-        updateParticipant({
-          id: toPlugNmeetUserId(this.localUserId),
-          changes: {
-            connectionQuality: stats.overallQuality,
-          },
-        }),
-      );
-    }
-
-    // For broadcasting - only send our own connection's quality
-    const qualityChanged = this.lastReportedConnectionQuality !== stats.uploadQuality;
-    if (qualityChanged) {
-      this.lastReportedConnectionQuality = stats.uploadQuality;
-
-      const conn = getNatsConn();
-      if (conn) {
-        conn.sendAnalyticsData(
-          AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY,
-          AnalyticsEventType.USER,
-          stats.uploadQuality,
+    /*
+     * Synthetic (unmeasured) samples still feed adaptation and TURN evidence
+     * below, but must never drive UI/analytics: a reconnect or hidden-tab
+     * sample carrying a synthetic "lost" would otherwise read as a real drop.
+     */
+    if (stats.measured) {
+      // For local UI - show the overall experience & update participant list
+      if (this.lastDispatchedOverallQuality !== stats.overallQuality) {
+        this.lastDispatchedOverallQuality = stats.overallQuality;
+        store.dispatch(updateOverallConnectionQuality(stats.overallQuality));
+        store.dispatch(
+          updateParticipant({
+            id: toPlugNmeetUserId(this.localUserId),
+            changes: {
+              connectionQuality: stats.overallQuality,
+            },
+          }),
         );
+      }
 
-        void conn.sendDataMessage(
-          DataMsgBodyType.USER_CONNECTION_QUALITY_CHANGE,
-          stats.uploadQuality,
-        );
+      // For broadcasting - only send our own connection's quality
+      const qualityChanged = this.lastReportedConnectionQuality !== stats.uploadQuality;
+      if (qualityChanged) {
+        this.lastReportedConnectionQuality = stats.uploadQuality;
+
+        const conn = getNatsConn();
+        if (conn) {
+          conn.sendAnalyticsData(
+            AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY,
+            AnalyticsEventType.USER,
+            stats.uploadQuality,
+          );
+
+          void conn.sendDataMessage(
+            DataMsgBodyType.USER_CONNECTION_QUALITY_CHANGE,
+            stats.uploadQuality,
+          );
+        }
       }
     }
 
