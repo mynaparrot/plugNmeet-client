@@ -228,6 +228,8 @@
       },
       "video-paused-banner": "Zwakke verbinding — video gepauzeerd om het geluid helder te houden.",
       "video-stays-paused-banner": "Zwakke verbinding — video gepauzeerd totdat je hem weer inschakelt.",
+      "video-quality-reduced-banner": "Zwakke verbinding — de beeldkwaliteit is verlaagd om het geluid helder te houden.",
+      "restore-quality": "Herstelkwaliteit",
       "re-enable-video": "Video opnieuw inschakelen",
       "resume-presentation": "Presentatie van het cv"
     }
