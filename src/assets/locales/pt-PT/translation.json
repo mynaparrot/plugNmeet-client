@@ -228,6 +228,8 @@
       },
       "video-paused-banner": "Ligação fraca — vídeo pausado para manter o áudio claro.",
       "video-stays-paused-banner": "Ligação fraca — vídeo pausado até o reativar.",
+      "video-quality-reduced-banner": "Ligação fraca — qualidade de vídeo reduzida para manter o áudio claro.",
+      "restore-quality": "Restaurar a qualidade",
       "re-enable-video": "Reativar vídeo",
       "resume-presentation": "Apresentação do currículo"
     }
