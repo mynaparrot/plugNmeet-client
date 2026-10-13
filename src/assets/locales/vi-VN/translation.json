@@ -212,6 +212,7 @@
       "packet-loss": "Mất dữ liệu",
       "rtt": "Độ trễ (RTT)",
       "copy": "Sao chép chi tiết",
+      "no-data-yet": "Chưa có số đo kết nối.",
       "tooltips": {
         "overall-quality": "Trải nghiệm cuộc họp tổng thể của bạn, dựa trên chất lượng gửi và nhận.",
         "score": "Điểm từ 0 đến 100 thể hiện sự ổn định của kết nối của bạn.",
