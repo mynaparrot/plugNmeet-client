@@ -228,6 +228,8 @@
       },
       "video-paused-banner": "חיבור חלש — הווידאו נעצר כדי לשמור על צליל נקי.",
       "video-stays-paused-banner": "חיבור חלש — הווידאו נעצר עד שמפעילים אותו מחדש.",
+      "video-quality-reduced-banner": "חיבור חלש — איכות הווידאו מופחתת כדי לשמור על צליל נקי.",
+      "restore-quality": "איכות השחזור",
       "re-enable-video": "הפעלת וידאו מחדש",
       "resume-presentation": "הצגת קורות חיים"
     }
