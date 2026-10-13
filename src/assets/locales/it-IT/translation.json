@@ -228,6 +228,8 @@
       },
       "video-paused-banner": "Connessione debole — video messo in pausa per mantenere l'audio chiaro.",
       "video-stays-paused-banner": "Connessione debole — video in pausa finché non lo riabiliti.",
+      "video-quality-reduced-banner": "Connessione debole — qualità video ridotta per mantenere l'audio chiaro.",
+      "restore-quality": "Ripristino della qualità",
       "re-enable-video": "Riabilita il video",
       "resume-presentation": "Presentazione del curriculum"
     }
