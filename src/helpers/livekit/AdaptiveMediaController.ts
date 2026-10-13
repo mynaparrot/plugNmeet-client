@@ -1,8 +1,12 @@
-import { Room, RoomEvent, Track } from 'livekit-client';
+import { Room, RoomEvent, Track, VideoQuality } from 'livekit-client';
 import { NativeMediaSource } from 'plugnmeet-protocol-js';
 
 import { store } from '../../store';
-import { addUserNotification, updateMediaDegradation } from '../../store/slices/roomSettingsSlice';
+import {
+  addUserNotification,
+  updateMediaDegradation,
+  updateRoomVideoQuality,
+} from '../../store/slices/roomSettingsSlice';
 import i18n from '../i18n';
 import {
   getNativePublisherStatus,
@@ -21,7 +25,8 @@ import type { MediaAdaptationSnapshot } from './turn/TurnFallbackCoordinator';
  * Adaptive media policy (audio always wins — every action sheds video only):
  *   - critical fast paths: outbound audio stuck -> audio-only immediately;
  *     loss-backed combined Lost -> audio-only; upload Lost -> mute own
- *     camera; receive Lost -> pause incoming webcams + presentation.
+ *     camera. Ordinary receive distress (including a receive-only Lost) is NOT
+ *     a fast path: it must attempt the quality reduction below first.
  *   - Lost is tracked per direction (independent uplink/downlink streaks,
  *     each cleared by its own non-Lost or by an unknown/hidden sample).
  *     Combined Lost that is only RTT-driven (no measured packet loss) never
@@ -29,10 +34,14 @@ import type { MediaAdaptationSnapshot } from './turn/TurnFallbackCoordinator';
  *     score ladder, so video still sheds quickly and staged but stays
  *     auto-recoverable.
  *   - normal (score-based, respects manual-restore grace): sustained poor
- *     receive -> pause incoming webcams then presentation; sustained poor
- *     upload -> mute own camera. The two ladders are independent.
+ *     receive -> lower the room video setting (roomVideoQuality) to LOW and
+ *     wait, then pause incoming webcams then presentation; sustained poor
+ *     upload -> mute own camera. The two ladders are independent; only the
+ *     receive ladder owns the quality reduction.
  *   - recovery: normal degradations auto-restore one notch at a time after
- *     NORMAL_RECOVERY_STREAK CONSECUTIVE MEASURED healthy checks; a flap guard
+ *     NORMAL_RECOVERY_STREAK CONSECUTIVE MEASURED healthy checks; the saved
+ *     quality is restored LAST and only while it is still our own auto-lowered
+ *     value (a later user change always wins); a flap guard
  *     suspends auto-restore after repeated quick cycles, counting one cycle per
  *     restoration attempt (not per pause action). Critical audio-only mode
  *     never auto-restores (manual banner -> resumeAll). A user camera
@@ -77,7 +86,6 @@ enum AdaptiveMediaMode {
 enum CriticalReason {
   AudioStuck,
   UploadLost,
-  ReceiveLost,
   BothLost,
 }
 
@@ -86,6 +94,8 @@ type MediaDegradationSnapshot = {
   incomingScreensharePaused: boolean;
   outgoingCameraPaused: boolean;
   autoRestoreSuspended: boolean;
+  /** true while the shared video quality is our own reduced (LOW) value */
+  videoQualityReduced: boolean;
 };
 
 export default class AdaptiveMediaController {
@@ -101,6 +111,17 @@ export default class AdaptiveMediaController {
   private incomingWebcamPaused = false;
   private incomingScreensharePaused = false;
   private outgoingCameraAutoMuted = false;
+
+  /**
+   * The room video quality that was active before we lowered it for ordinary
+   * receive distress. undefined = we do not currently own a reduction.
+   */
+  private savedQuality: VideoQuality | undefined = undefined;
+
+  /** last roomVideoQuality observed, so our own writes are not read as user ones */
+  private observedQuality: VideoQuality | undefined = undefined;
+
+  private unsubscribeStore: (() => void) | undefined = undefined;
 
   private downlinkScore = 0;
   private uplinkScore = 0;
@@ -152,6 +173,10 @@ export default class AdaptiveMediaController {
     return store.getState().bottomIconsActivity.isActiveScreenshare;
   }
 
+  private get currentRoomQuality(): VideoQuality {
+    return store.getState().roomSettings.roomVideoQuality;
+  }
+
   private isWebcamLocked(): boolean {
     const session = store.getState().session;
     const isAdmin = !!session.currentUser?.metadata?.isAdmin;
@@ -188,7 +213,12 @@ export default class AdaptiveMediaController {
   public getPolicySnapshot(): MediaAdaptationSnapshot {
     return {
       degradedMedia:
-        this.incomingWebcamPaused || this.incomingScreensharePaused || this.outgoingCameraAutoMuted,
+        this.incomingWebcamPaused ||
+        this.incomingScreensharePaused ||
+        this.outgoingCameraAutoMuted ||
+        // a cap-only reduction is still shed media: the TURN coordinator must
+        // see the degraded transition
+        this.savedQuality !== undefined,
     };
   }
 
@@ -209,6 +239,10 @@ export default class AdaptiveMediaController {
     room.on(RoomEvent.TrackMuted, this.onLocalCameraMuted);
 
     document.addEventListener('visibilitychange', this.onVisibilityChange);
+
+    // observe user changes to the shared video-quality setting
+    this.observedQuality = this.currentRoomQuality;
+    this.unsubscribeStore = store.subscribe(this.onStoreChange);
   }
 
   public dispose(): void {
@@ -224,6 +258,9 @@ export default class AdaptiveMediaController {
     }
 
     document.removeEventListener('visibilitychange', this.onVisibilityChange);
+
+    this.unsubscribeStore?.();
+    this.unsubscribeStore = undefined;
 
     this.operationGeneration += 1;
     /*
@@ -255,9 +292,12 @@ export default class AdaptiveMediaController {
    * streaks here stops any fast path or staged recovery from maturing ACROSS a
    * gap of unmeasured samples (reconnect, hidden tab): a degradation may only
    * be lifted by consecutive MEASURED healthy samples, and a stale restore
-   * opportunity must not survive the gap either. The protective degradation,
-   * ownership and grace state deliberately survive — the paused media and its
-   * Redux snapshot must not be dropped just because one sample was unmeasured.
+   * opportunity must not survive the gap either. While a reduction is owned the
+   * receive score is dropped too, so post-reduction distress must be rebuilt
+   * from fresh measured samples instead of riding pre-gap score across the gap.
+   * The protective degradation, ownership and grace state deliberately survive
+   * — the paused media and its Redux snapshot must not be dropped just because
+   * one sample was unmeasured.
    */
   private invalidateUnmeasuredEvidence(): void {
     this.uploadLostStreak = 0;
@@ -265,6 +305,16 @@ export default class AdaptiveMediaController {
     this.normalRecoveryStreak = 0;
     this.criticalRecoveryStreak = 0;
     this.restoreAvailable = false;
+
+    /*
+     * A poor score rebuilt before the gap would otherwise let a single post-gap
+     * poor sample reach the threshold and pause, i.e. let pre-gap evidence
+     * cross the gap. Only relevant while we own a reduction; baseline score
+     * behaviour with no reduction is left unchanged.
+     */
+    if (this.savedQuality !== undefined) {
+      this.downlinkScore = 0;
+    }
   }
 
   /** Called by the connection-quality monitor every 5 seconds. */
@@ -315,9 +365,10 @@ export default class AdaptiveMediaController {
 
   /**
    * Explicit user action from the persistent degradation banner. Restores
-   * all controller-managed media and grants a grace period before normal
-   * adaptive degradation can disable it again. Only outbound-audio-stuck
-   * overrides the grace period (protecting audio wins).
+   * all controller-managed media (including an auto-lowered quality, unless the
+   * user has since taken the setting over) and grants a grace period before
+   * normal adaptive degradation can disable it again. Only
+   * outbound-audio-stuck overrides the grace period (protecting audio wins).
    */
   public resumeAll(): void {
     void this.resumeAllInternal().catch((error: unknown) => {
@@ -379,18 +430,6 @@ export default class AdaptiveMediaController {
             return;
           }
           break;
-
-        case CriticalReason.ReceiveLost:
-          if (!this.incomingWebcamPaused || !this.incomingScreensharePaused) {
-            if (!this.incomingWebcamPaused) {
-              this.pauseIncomingWebcams();
-            }
-            if (!this.incomingScreensharePaused) {
-              this.pauseIncomingScreenshare();
-            }
-            return;
-          }
-          break;
       }
     }
 
@@ -425,14 +464,25 @@ export default class AdaptiveMediaController {
     }
 
     /*
-     * Downlink degradation: stop receiving webcams first. Deterministic
-     * bandwidth reduction while audio and presentation stay alive.
+     * Downlink degradation: shed the cheapest thing first. Lowering the shared
+     * quality changes the layer we REQUEST; the webcam pause that follows keeps
+     * the old behaviour and does not itself prove the server stops forwarding.
+     * Audio and presentation stay alive either way.
      */
     if (
       this.downlinkScore >= DEGRADE_THRESHOLD &&
       !this.incomingWebcamPaused &&
       Date.now() >= this.manualOverrideUntil
     ) {
+      /*
+       * Cheapest shed first: lower the room video quality and wait. The
+       * reduction consumes this episode's evidence, so the same sample cannot
+       * also pause — a fresh measured receive episode must precede the pause.
+       */
+      if (this.tryReduceReceiveQuality()) {
+        return;
+      }
+
       this.pauseIncomingWebcams();
       return;
     }
@@ -510,12 +560,10 @@ export default class AdaptiveMediaController {
       return this.uploadLostStreak >= LOST_FAST_PATH_STREAK ? CriticalReason.UploadLost : undefined;
     }
 
-    if (receiveLost) {
-      return this.receiveLostStreak >= LOST_FAST_PATH_STREAK
-        ? CriticalReason.ReceiveLost
-        : undefined;
-    }
-
+    /*
+     * Receive-only Lost is deliberately NOT a fast path: ordinary receive
+     * distress must try the quality reduction before it pauses anything.
+     */
     return undefined;
   }
 
@@ -588,6 +636,102 @@ export default class AdaptiveMediaController {
     this.notify('notifications.audio-only-mode-weak-connection', 'warning');
   }
 
+  /**
+   * Ordinary receive distress sheds the shared video quality to LOW and waits:
+   * a fresh measured receive episode (a rebuilt downlink score) must precede any
+   * pause, so a cheap reduction is never mistaken for "quality did not help".
+   * Skipped when we already own a reduction (fresh distress then pauses instead)
+   * or when the setting is already at/below LOW (a reduction would be a no-op).
+   * A recent user takeover is handled by the caller's manualOverrideUntil grace,
+   * which only bounds how long after an explicit user choice reduction stays
+   * off — it never disables reduction permanently.
+   */
+  private tryReduceReceiveQuality(): boolean {
+    if (this.savedQuality !== undefined) {
+      return false;
+    }
+
+    const current = this.currentRoomQuality;
+
+    if (!(current > VideoQuality.LOW)) {
+      return false;
+    }
+
+    this.savedQuality = current;
+
+    /*
+     * The reduction consumes this episode's evidence: the same sample must not
+     * also pause, and only fresh measured distress may pause afterwards. The
+     * Lost streaks are left alone — they only feed the verified audio-critical
+     * pairing, which must never be weakened.
+     */
+    this.downlinkScore = 0;
+    this.normalRecoveryStreak = 0;
+
+    this.markNormalDegrade();
+    this.dispatchRoomQuality(VideoQuality.LOW);
+    this.syncRedux();
+
+    return true;
+  }
+
+  /**
+   * Healthy recovery's final notch: restore the user/global quality only while
+   * it is still our own auto-lowered value. A later user change always wins.
+   */
+  private restoreReducedQuality(): void {
+    const target = this.savedQuality;
+    this.savedQuality = undefined;
+
+    if (target === undefined) {
+      return;
+    }
+
+    if (this.currentRoomQuality !== VideoQuality.LOW) {
+      // somebody else changed the setting: leave it alone (defensive — the
+      // external-change handler has already relinquished it)
+      this.syncRedux();
+      return;
+    }
+
+    this.dispatchRoomQuality(target);
+    this.syncRedux();
+  }
+
+  private dispatchRoomQuality(quality: VideoQuality): void {
+    // record our own write first so the subscription does not read it as a user change
+    this.observedQuality = quality;
+    store.dispatch(updateRoomVideoQuality(quality));
+  }
+
+  private onStoreChange = (): void => {
+    const quality = this.currentRoomQuality;
+
+    if (quality === this.observedQuality) {
+      return;
+    }
+
+    this.observedQuality = quality;
+
+    /*
+     * A change we did not write is a user (or other writer) taking the setting
+     * over. Relinquish any reduction we still own so a later recovery can never
+     * restore a stale value over their choice, drop the receive evidence so a
+     * new episode starts clean, and grant the same bounded grace a manual
+     * restore gets before normal adaptation may lower the (new) setting again.
+     */
+    const hadReduction = this.savedQuality !== undefined;
+
+    this.savedQuality = undefined;
+    this.downlinkScore = 0;
+    this.normalRecoveryStreak = 0;
+    this.manualOverrideUntil = Date.now() + MANUAL_OVERRIDE_GRACE_MS;
+
+    if (hadReduction) {
+      this.syncRedux();
+    }
+  };
+
   private pauseIncomingWebcams(): void {
     if (this.incomingWebcamPaused) {
       return;
@@ -648,12 +792,17 @@ export default class AdaptiveMediaController {
 
   /**
    * Auto-restores normal degradations one notch at a time, in reverse order
-   * (presentation → webcams → camera), after a sustained healthy period.
-   * Critical audio-only mode and flap-guard suspension are excluded.
+   * (presentation → webcams → camera → video quality LAST), after a sustained
+   * healthy period. Critical audio-only mode and flap-guard suspension are
+   * excluded.
    */
   private evaluateNormalRecovery(stats: QualityStats): void {
     const hasDegradation =
-      this.incomingScreensharePaused || this.incomingWebcamPaused || this.outgoingCameraAutoMuted;
+      this.incomingScreensharePaused ||
+      this.incomingWebcamPaused ||
+      this.outgoingCameraAutoMuted ||
+      // a cap-only reduction is still a degradation to recover from
+      this.savedQuality !== undefined;
 
     if (!hasDegradation) {
       this.normalRecoveryStreak = 0;
@@ -701,6 +850,12 @@ export default class AdaptiveMediaController {
 
     if (this.outgoingCameraAutoMuted) {
       void this.restoreOutgoingCameraAutomatically();
+      return;
+    }
+
+    // the shared quality is the last notch (only once the cap is all that is left)
+    if (this.savedQuality !== undefined) {
+      this.restoreReducedQuality();
     }
   }
 
@@ -845,6 +1000,13 @@ export default class AdaptiveMediaController {
         this.outgoingCameraAutoMuted = false;
       }
     }
+
+    /*
+     * Also hand back the auto-lowered quality. It is skipped when it is no
+     * longer ours (the user's later choice wins), and the grace window above
+     * keeps normal degradation from immediately lowering it again.
+     */
+    this.restoreReducedQuality();
 
     this.recalculateMode();
     this.syncRedux();
@@ -1112,6 +1274,7 @@ export default class AdaptiveMediaController {
       incomingScreensharePaused: this.incomingScreensharePaused,
       outgoingCameraPaused: this.outgoingCameraAutoMuted,
       autoRestoreSuspended: this.autoRestoreSuspended,
+      videoQualityReduced: this.savedQuality !== undefined,
     };
 
     const current = store.getState().roomSettings.mediaDegradation;
@@ -1120,7 +1283,8 @@ export default class AdaptiveMediaController {
       current.incomingWebcamPaused !== snapshot.incomingWebcamPaused ||
       current.incomingScreensharePaused !== snapshot.incomingScreensharePaused ||
       current.outgoingCameraPaused !== snapshot.outgoingCameraPaused ||
-      current.autoRestoreSuspended !== snapshot.autoRestoreSuspended;
+      current.autoRestoreSuspended !== snapshot.autoRestoreSuspended ||
+      current.videoQualityReduced !== snapshot.videoQualityReduced;
 
     if (changed) {
       store.dispatch(updateMediaDegradation(snapshot));

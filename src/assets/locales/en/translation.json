@@ -228,6 +228,8 @@
       },
       "video-paused-banner": "Weak connection — video paused to keep audio clear.",
       "video-stays-paused-banner": "Weak connection — video paused until you re-enable it.",
+      "video-quality-reduced-banner": "Weak connection — video quality reduced to keep audio clear.",
+      "restore-quality": "Restore quality",
       "re-enable-video": "Re-enable video",
       "resume-presentation": "Resume presentation"
     }

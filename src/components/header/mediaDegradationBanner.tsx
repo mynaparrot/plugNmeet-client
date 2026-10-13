@@ -8,16 +8,21 @@ const MediaDegradationBanner = () => {
   const { t } = useTranslation();
   const mediaDegradation = useAppSelector((state) => state.roomSettings.mediaDegradation);
 
-  const degraded =
+  const mediaPaused =
     mediaDegradation.incomingWebcamPaused ||
     mediaDegradation.incomingScreensharePaused ||
     mediaDegradation.outgoingCameraPaused;
 
-  if (!degraded) return null;
+  // nothing is paused: only the video quality was lowered to save data
+  const reducedOnly = mediaDegradation.videoQualityReduced && !mediaPaused;
 
-  const message = mediaDegradation.autoRestoreSuspended
-    ? t('header.connection-status.video-stays-paused-banner')
-    : t('header.connection-status.video-paused-banner');
+  if (!mediaPaused && !mediaDegradation.videoQualityReduced) return null;
+
+  const message = reducedOnly
+    ? t('header.connection-status.video-quality-reduced-banner')
+    : mediaDegradation.autoRestoreSuspended
+      ? t('header.connection-status.video-stays-paused-banner')
+      : t('header.connection-status.video-paused-banner');
 
   return (
     <div
@@ -30,7 +35,9 @@ const MediaDegradationBanner = () => {
         onClick={() => getMediaServerConn().adaptiveMedia?.resumeAll()}
         className="shrink-0 px-3 py-1 rounded-lg text-xs font-medium bg-amber-500 text-white hover:bg-amber-600 cursor-pointer"
       >
-        {t('header.connection-status.re-enable-video')}
+        {reducedOnly
+          ? t('header.connection-status.restore-quality')
+          : t('header.connection-status.re-enable-video')}
       </button>
     </div>
   );

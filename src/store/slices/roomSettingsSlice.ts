@@ -49,6 +49,7 @@ const initialState: IRoomSettings = {
     incomingScreensharePaused: false,
     outgoingCameraPaused: false,
     autoRestoreSuspended: false,
+    videoQualityReduced: false,
   },
   allowPlayAudioNotification: true,
   roomAudioVolume: 1,
