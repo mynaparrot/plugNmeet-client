@@ -212,6 +212,7 @@
       "packet-loss": "Adatvesztés",
       "rtt": "Késleltetés (RTT)",
       "copy": "Részletek másolása",
+      "no-data-yet": "Még nincs kapcsolatmérés.",
       "tooltips": {
         "overall-quality": "Az Ön összesített találkozó élménye, az küldés és a vétel minőségén alapul.",
         "score": "Egy 0-tól 100-ig terjedő pontszám, ami a kapcsolatod stabilitását jelzi.",
