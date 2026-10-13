@@ -228,6 +228,8 @@
       },
       "video-paused-banner": "Schwache Verbindung – Video pausiert, um den Ton klar zu halten.",
       "video-stays-paused-banner": "Schwache Verbindung – Video pausiert, bis du es wieder aktivierst.",
+      "video-quality-reduced-banner": "Schwache Verbindung – Bildqualität reduziert, um den Ton klar zu halten.",
+      "restore-quality": "Qualität wiederherstellen",
       "re-enable-video": "Video wieder aktivieren",
       "resume-presentation": "Lebenslaufpräsentation"
     }
