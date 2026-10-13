@@ -212,6 +212,7 @@
       "packet-loss": "Dataverlies",
       "rtt": "Vertraging (RTT)",
       "copy": "Kopieergegevens",
+      "no-data-yet": "Nog geen aansluitingsmetingen.",
       "tooltips": {
         "overall-quality": "Je algehele ontmoetingservaring, gebaseerd op de kwaliteit van verzending en ontvangst.",
         "score": "Een score van 0 tot 100 die de stabiliteit van je verbinding weergeeft.",
