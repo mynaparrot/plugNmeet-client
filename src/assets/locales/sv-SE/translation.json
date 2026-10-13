@@ -212,6 +212,7 @@
       "packet-loss": "Dataförlust",
       "rtt": "Fördröjning (RTT)",
       "copy": "Kopiera detaljer",
+      "no-data-yet": "Inga anslutningsmätningar än.",
       "tooltips": {
         "overall-quality": "Din totala mötesupplevelse, baserad på att skicka och ta emot kvalitet.",
         "score": "Ett resultat från 0 till 100 som representerar stabiliteten i din anslutning.",
