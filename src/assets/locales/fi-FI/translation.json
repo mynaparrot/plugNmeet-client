@@ -212,6 +212,7 @@
       "packet-loss": "Tietojen menetys",
       "rtt": "Viive (RTT)",
       "copy": "Kopioi tiedot",
+      "no-data-yet": "Yhteysmittauksia ei ole vielä.",
       "tooltips": {
         "overall-quality": "Koko kokouskokemuksesi, joka perustuu lähettämisen ja vastaanottamisen laatuun.",
         "score": "Pistemäärä 0:sta sataan, joka kuvaa yhteytesi vakautta.",
