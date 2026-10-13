@@ -228,6 +228,8 @@
       },
       "video-paused-banner": "Connexion faible — vidéo mise en pause pour garder l’audio clair.",
       "video-stays-paused-banner": "Connexion faible — vidéo mise en pause jusqu’à ce que vous la réactiviez.",
+      "video-quality-reduced-banner": "Connexion faible — qualité vidéo réduite pour garder un son clair.",
+      "restore-quality": "Restauration de la qualité",
       "re-enable-video": "Réactiver la vidéo",
       "resume-presentation": "Présentation du CV"
     }
