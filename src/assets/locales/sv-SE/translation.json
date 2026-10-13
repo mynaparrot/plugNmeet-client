@@ -228,6 +228,8 @@
       },
       "video-paused-banner": "Svag anslutning — videon pausad för att hålla ljudet klart.",
       "video-stays-paused-banner": "Svag anslutning — videon pausas tills du aktiverar den igen.",
+      "video-quality-reduced-banner": "Svag anslutning — bildkvaliteten är sänkt för att hålla ljudet klart.",
+      "restore-quality": "Återställningskvalitet",
       "re-enable-video": "Återaktivera video",
       "resume-presentation": "Presentation av CV"
     }
