@@ -228,6 +228,8 @@
       },
       "video-paused-banner": "Zayıf bağlantı — ses açık tutmak için video durakladı.",
       "video-stays-paused-banner": "Zayıf bağlantı — video tekrar etkinleştirene kadar durakladı.",
+      "video-quality-reduced-banner": "Zayıf bağlantı — ses net kalması için video kalitesi düşürüldü.",
+      "restore-quality": "Kaliteyi geri getir",
       "re-enable-video": "Videoyu yeniden etkinleştirin",
       "resume-presentation": "Özgeçmiş sunumu"
     }
