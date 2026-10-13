@@ -212,6 +212,7 @@
       "packet-loss": "Datatap",
       "rtt": "Forsinkelse (RTT)",
       "copy": "Kopier detaljer",
+      "no-data-yet": "Ingen tilkoblingsmålinger ennå.",
       "tooltips": {
         "overall-quality": "Din samlede møteopplevelse, basert på kvaliteten på sending og mottak.",
         "score": "En poengsum fra 0 til 100 som representerer stabiliteten i forbindelsen din.",
