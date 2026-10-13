@@ -212,6 +212,7 @@
       "packet-loss": "Datenverlust",
       "rtt": "Verzögerung (RTT)",
       "copy": "Kopierdetails",
+      "no-data-yet": "Noch keine Verbindungsmessungen.",
       "tooltips": {
         "overall-quality": "Ihr gesamtes Meeting-Erlebnis basierend auf der Qualität des Sendens und Empfangens.",
         "score": "Ein Wert von 0 bis 100, der die Stabilität Ihrer Verbindung darstellt.",
