@@ -228,6 +228,8 @@
       },
       "video-paused-banner": "Słabe połączenie — wideo zatrzymane, aby utrzymać wyraźny dźwięk.",
       "video-stays-paused-banner": "Słabe połączenie — wideo zostało wstrzymane, dopóki nie włączysz go ponownie.",
+      "video-quality-reduced-banner": "Słabe połączenie — jakość obrazu obniżona, aby zachować czystość dźwięku.",
+      "restore-quality": "Przywracaj jakość",
       "re-enable-video": "Ponowne włączenie wideo",
       "resume-presentation": "Prezentacja CV"
     }
