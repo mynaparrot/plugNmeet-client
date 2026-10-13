@@ -228,6 +228,8 @@
       },
       "video-paused-banner": "Slabé připojení — video pozastaveno, aby zvuk zůstal čistý.",
       "video-stays-paused-banner": "Slabé připojení — video pozastavené, dokud ho znovu nezapnete.",
+      "video-quality-reduced-banner": "Slabé připojení — kvalita videa snížena, aby zvuk zůstal čistý.",
+      "restore-quality": "Obnova kvality",
       "re-enable-video": "Znovu povolit video",
       "resume-presentation": "Prezentace životopisu"
     }
