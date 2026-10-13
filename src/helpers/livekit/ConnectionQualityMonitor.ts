@@ -137,14 +137,15 @@ export type QualityStats = {
   measured: boolean;
 
   /**
-   * Directional (per-report) usability of THIS generation, additive to
-   * `measured`. True only when that direction's own report produced genuinely
-   * usable health evidence (see `ReportEvidence.usable`); false for synthetic
-   * samples and for a direction whose report was missing/empty/proofless.
-   * `measured` is the AND of every EXPECTED direction, so a partial sample
-   * (one direction unknown) can still carry a true directional flag. Consumers
-   * may act on such a flag only for that direction's independently verified
-   * evidence — never as global health.
+   * Directional usability of THIS generation, additive to `measured`. True only
+   * when that DIRECTION (aggregated across both reports, since a direction is
+   * not a report) produced genuinely usable health evidence (see
+   * `ReportEvidence.uploadUsable`/`receiveUsable`); false for synthetic samples
+   * and for a direction whose evidence was missing/empty/proofless. `measured`
+   * is the AND of every EXPECTED direction, so a partial sample (one direction
+   * unknown) can still carry a true directional flag. Consumers may act on such
+   * a flag only for that direction's independently verified evidence — never as
+   * global health.
    */
   uploadMeasured?: boolean;
   receiveMeasured?: boolean;
@@ -153,7 +154,12 @@ export type QualityStats = {
   rtt: number | null;
   /** Upload-path RTT only (publisher candidate pair + remote-inbound RTP). */
   uploadRtt: number | null;
-  /** Receive-path RTT only (subscriber candidate pair); never publisher RTT. */
+  /**
+   * Receive-path RTT (subscriber candidate pair). In a single-PC publisher-only
+   * session the one transport owns both directions, so its selected-pair RTT is
+   * legitimately the receive RTT too; it is never borrowed from a dual-PC
+   * publisher transport otherwise.
+   */
   receiveRtt: number | null;
 
   uploadQuality: PnmConnectionQuality;
@@ -242,18 +248,29 @@ type RemoteInboundFreshness = {
   timestamp?: number;
 };
 
-/** Whether one direction's report proved anything usable about link health. */
+/** Which RTP directions ONE stats report proved anything usable about. */
 type ReportEvidence = {
   /** the getStats() promise resolved and returned a report */
   present: boolean;
   /**
-   * the report yielded a genuine health signal for its direction: an
-   * authoritative (selected) candidate-pair RTT, a fresh remote-inbound
-   * receiver report, a real inbound delta, or a matured verified outbound stall.
-   * Structural entries (unselected candidate pairs, bare outbound byte/frame
-   * counters) and unchanged/stale receiver reports never set this.
+   * The report yielded genuine UPLOAD health evidence: an authoritative
+   * (selected) candidate-pair RTT routed to this report's upload path, a fresh
+   * remote-inbound receiver report (an RR always reports on OUR outbound RTP,
+   * so it is upload evidence no matter which report carries it), or a matured
+   * verified outbound stall. Structural entries (unselected candidate pairs,
+   * bare outbound byte/frame counters) and unchanged/stale receiver reports
+   * never set this.
    */
-  usable: boolean;
+  uploadUsable: boolean;
+  /**
+   * The report yielded genuine RECEIVE health evidence: an authoritative
+   * (selected) candidate-pair RTT routed to this report's receive path, or a
+   * real inbound-rtp delta (inbound RTP always proves the download direction is
+   * delivering, on whichever report carries it). Report identity is NOT a
+   * direction: a single-PC publisher-only session carries BOTH directions'
+   * evidence in its one publisher report and has no subscriber report at all.
+   */
+  receiveUsable: boolean;
 };
 
 export default class ConnectionQualityMonitor {
@@ -391,23 +408,27 @@ export default class ConnectionQualityMonitor {
   public getOverallQuality = () => this.currentQuality;
 
   /**
-   * Processes one direction's report and reports whether it proved anything.
-   * `usable` is true only when the report produced a genuine health signal for
-   * its direction: an authoritative (selected) candidate-pair RTT, a fresh
-   * remote-inbound receiver report, a real inbound delta, or a matured
-   * outbound-stuck. Structural entries (unselected candidate pairs, bare
+   * Processes ONE report and reports which directions it proved anything for.
+   * `uploadUsable`/`receiveUsable` are set only by genuine health evidence: an
+   * authoritative (selected) candidate-pair RTT (upload, receive or both per
+   * `rttTarget`), a fresh remote-inbound receiver report (always upload), a
+   * real inbound-rtp delta (always receive), or a matured verified outbound
+   * stall (always upload). Structural entries (unselected candidate pairs, bare
    * outbound byte/frame counters) and unchanged/stale receiver reports prove
    * nothing and must never count as a measurement. `rttTarget` routes the
-   * selected candidate pair's RTT to the upload or the receive path, so a
-   * subscriber's receive quality can never inherit the publisher's
-   * RTP/candidate RTT.
+   * selected candidate pair's RTT to the upload, the receive, or BOTH paths:
+   * 'both' is used ONLY for the publisher report of a confirmed single-PC
+   * `publisher-only` session, whose one transport carries both RTP directions.
+   * In every other mode the publisher report is upload and the subscriber
+   * report is receive, so a subscriber's receive quality can never inherit the
+   * publisher's RTP/candidate RTT.
    */
   private _processStatsReport(
     statsReport: RTCStatsReport | undefined,
     state: QualityCheckState,
-    rttTarget: 'upload' | 'receive',
+    rttTarget: 'upload' | 'receive' | 'both',
   ): ReportEvidence {
-    if (!statsReport) return { present: false, usable: false };
+    if (!statsReport) return { present: false, uploadUsable: false, receiveUsable: false };
 
     /*
      * The transport's selected candidate pair is authoritative when present:
@@ -456,7 +477,8 @@ export default class ConnectionQualityMonitor {
       captureActivityByTrack.set(trackIdentifier, captureActive === true);
     });
 
-    let usable = false;
+    let uploadUsable = false;
+    let receiveUsable = false;
 
     const outboundRecords: OutboundStreamRecord[] = [];
 
@@ -475,14 +497,21 @@ export default class ConnectionQualityMonitor {
 
         const rttMs = stat.currentRoundTripTime * 1000;
 
-        // an authoritative selected-pair RTT is usable directional evidence
+        // an authoritative selected-pair RTT is usable directional evidence.
+        // A finite numeric zero is accepted by policy as a real reading, which
+        // is distinct from an absent RTT (null) that proves nothing.
+        // It is routed to the direction(s) the caller declares for this report:
+        // 'both' only for the single-PC publisher-only transport that owns RTP
+        // in both directions.
         if (isSelectedPair && this.isSaneRtt(rttMs)) {
-          if (rttTarget === 'upload') {
+          if (rttTarget === 'upload' || rttTarget === 'both') {
             state.uploadRtt = this.updateMaxRtt(state.uploadRtt, rttMs);
-          } else {
-            state.receiveRtt = this.updateMaxRtt(state.receiveRtt, rttMs);
+            uploadUsable = true;
           }
-          usable = true;
+          if (rttTarget === 'receive' || rttTarget === 'both') {
+            state.receiveRtt = this.updateMaxRtt(state.receiveRtt, rttMs);
+            receiveUsable = true;
+          }
         }
       }
 
@@ -514,14 +543,16 @@ export default class ConnectionQualityMonitor {
           const loss = Math.max(0, fractionLost * 100);
           state.myPacketLoss = Math.max(state.myPacketLoss, loss);
           state.maxPacketLoss = Math.max(state.maxPacketLoss, loss);
-          usable = true;
+          // a receiver report is always about OUR outbound RTP, so it is
+          // upload evidence no matter which report carries it
+          uploadUsable = true;
         }
 
         if (hasFreshReport && typeof stat.roundTripTime === 'number') {
           const rttMs = stat.roundTripTime * 1000;
           if (this.isSaneRtt(rttMs)) {
             state.uploadRtt = this.updateMaxRtt(state.uploadRtt, rttMs);
-            usable = true;
+            uploadUsable = true;
           }
         }
 
@@ -699,9 +730,10 @@ export default class ConnectionQualityMonitor {
               state.inboundPacketLoss = Math.max(state.inboundPacketLoss, loss);
               state.maxPacketLoss = Math.max(state.maxPacketLoss, loss);
 
-              // a real delta over a known interval proves this direction is
-              // delivering (even at zero loss), so it is a genuine measurement
-              usable = true;
+              // a real delta over a known interval proves the download direction
+              // is delivering (even at zero loss), so it is genuine receive
+              // evidence on whichever report carries it
+              receiveUsable = true;
 
               state.remoteReceiveStats.push({
                 ssrc,
@@ -745,10 +777,10 @@ export default class ConnectionQualityMonitor {
      * (which would otherwise suppress stuck/distress protection).
      */
     if (audioOutboundStuck || videoOutboundStuck) {
-      usable = true;
+      uploadUsable = true;
     }
 
-    return { present: true, usable };
+    return { present: true, uploadUsable, receiveUsable };
   }
 
   /**
@@ -983,7 +1015,24 @@ export default class ConnectionQualityMonitor {
     const publisherReport = pub.status === 'fulfilled' ? pub.value : undefined;
     const subscriberReport = sub.status === 'fulfilled' ? sub.value : undefined;
 
-    const publisherEvidence = this._processStatsReport(publisherReport, state, 'upload');
+    /*
+     * Report identity is NOT a direction. `pcManager.mode` is the one public,
+     * authoritative topology signal: current LiveKit V1 single-PC sessions use
+     * `publisher-only`, where the publisher PC carries BOTH send and receive and
+     * no subscriber PC exists, so its single report is judged for upload AND
+     * receive. Topology is therefore determined from the mode alone — never from
+     * the `needsPublisher`/`needsSubscriber` role flags or report presence,
+     * which a dual-PC publisher-primary session can equally exhibit despite
+     * having a separate subscriber. Dual-PC modes remain fully supported, and
+     * their RTT must not cross transports: only this publisher-only transport
+     * routes to 'both', every other mode keeps the publisher report on upload.
+     */
+    const publisherIsSinglePc = pcManager.mode === 'publisher-only';
+    const publisherEvidence = this._processStatsReport(
+      publisherReport,
+      state,
+      publisherIsSinglePc ? 'both' : 'upload',
+    );
     const subscriberEvidence = this._processStatsReport(subscriberReport, state, 'receive');
 
     Object.keys(this.prevInboundStats).forEach((ssrc) => {
@@ -1018,14 +1067,19 @@ export default class ConnectionQualityMonitor {
     });
 
     /*
-     * This generation's DIRECTIONAL usability: whether each direction's own
-     * report produced real health evidence. It travels on the sample as
-     * uploadMeasured/receiveMeasured so a partial sample (one direction unknown)
-     * can still expose the direction it DID verify, without ever claiming global
-     * health — `measured` remains the AND of the expected directions.
+     * This generation's DIRECTIONAL usability: whether each DIRECTION produced
+     * real health evidence, aggregated ACROSS BOTH reports. A direction is not a
+     * report — a single-PC publisher-only session proves its receive direction
+     * through the publisher report's inbound deltas and selected-pair RTT, and
+     * an RR/inbound delta carried by the "other" report still counts for its own
+     * direction. It travels on the sample as uploadMeasured/receiveMeasured so a
+     * partial sample (one direction unknown) can still expose the direction it
+     * DID verify, without ever claiming global health — `measured` remains the
+     * AND of the expected directions. A report's two flags are never blindly
+     * ORed into both directions.
      */
-    const publisherKnown = publisherEvidence.present && publisherEvidence.usable;
-    const subscriberKnown = subscriberEvidence.present && subscriberEvidence.usable;
+    const uploadUsable = publisherEvidence.uploadUsable || subscriberEvidence.uploadUsable;
+    const receiveUsable = publisherEvidence.receiveUsable || subscriberEvidence.receiveUsable;
 
     return this.createStats({
       measured: this.resolveMeasured({
@@ -1039,13 +1093,13 @@ export default class ConnectionQualityMonitor {
          * active media/subscriptions; otherwise a failed report on a direction
          * with real RTP would be read as manufactured recovery.
          */
-        publisherExpected: (pcManager.needsPublisher ?? true) || this.hasActivePublisherMedia(),
-        subscriberExpected: (pcManager.needsSubscriber ?? false) || this.hasActiveSubscriberMedia(),
-        publisherKnown,
-        subscriberKnown,
+        uploadExpected: (pcManager.needsPublisher ?? true) || this.hasActivePublisherMedia(),
+        receiveExpected: (pcManager.needsSubscriber ?? false) || this.hasActiveSubscriberMedia(),
+        uploadUsable,
+        receiveUsable,
       }),
-      uploadMeasured: publisherKnown,
-      receiveMeasured: subscriberKnown,
+      uploadMeasured: uploadUsable,
+      receiveMeasured: receiveUsable,
       rawPacketLoss: state.maxPacketLoss,
       uploadRtt: state.uploadRtt,
       receiveRtt: state.receiveRtt,
@@ -1059,29 +1113,30 @@ export default class ConnectionQualityMonitor {
 
   /**
    * Conservative `measured` semantics: a sample counts as measured only when
-   * every expected direction produced genuinely usable evidence (see
-   * `ReportEvidence.usable`). A missing/failed report, or a report that proves
-   * nothing (stale receiver report, unselected candidate pairs, bare outbound
-   * counters), leaves its direction unknown — never healthy recovery. A
-   * direction is expected when its connection is required (`needsPublisher`/
-   * `needsSubscriber`) OR when it has active media/subscriptions, so a
-   * direction that carries real RTP is always required even if its role flag is
-   * false; a direction with neither is never required.
+   * every EXPECTED DIRECTION produced genuinely usable evidence (see
+   * `ReportEvidence.uploadUsable`/`receiveUsable`). A missing/failed report, or
+   * a report that proves nothing (stale receiver report, unselected candidate
+   * pairs, bare outbound counters), leaves its direction unknown — never healthy
+   * recovery. A direction is expected when its connection is required
+   * (`needsPublisher`/`needsSubscriber`) OR when it has active
+   * media/subscriptions, so a direction that carries real RTP is always required
+   * even if its role flag is false; a direction with neither is never required.
    *
-   * `publisherKnown`/`subscriberKnown` are the per-direction usability values;
-   * the caller also publishes them as uploadMeasured/receiveMeasured, so a
-   * partial sample still exposes the direction it DID verify without claiming
-   * global health.
+   * `uploadUsable`/`receiveUsable` are the per-DIRECTION usability values, not
+   * per-report "known" flags: a single-PC publisher-only session proves both
+   * directions through its one publisher report. The caller also publishes them
+   * as uploadMeasured/receiveMeasured, so a partial sample still exposes the
+   * direction it DID verify without claiming global health.
    */
   private resolveMeasured(input: {
-    publisherExpected: boolean;
-    subscriberExpected: boolean;
-    publisherKnown: boolean;
-    subscriberKnown: boolean;
+    uploadExpected: boolean;
+    receiveExpected: boolean;
+    uploadUsable: boolean;
+    receiveUsable: boolean;
   }): boolean {
-    if (!input.publisherExpected && !input.subscriberExpected) return false;
-    if (input.publisherExpected && !input.publisherKnown) return false;
-    if (input.subscriberExpected && !input.subscriberKnown) return false;
+    if (!input.uploadExpected && !input.receiveExpected) return false;
+    if (input.uploadExpected && !input.uploadUsable) return false;
+    if (input.receiveExpected && !input.receiveUsable) return false;
 
     return true;
   }
@@ -1434,8 +1489,14 @@ export default class ConnectionQualityMonitor {
     );
   }
 
+  /**
+   * A usable RTT reading. A finite numeric zero is accepted by policy as a
+   * real reading, distinct from an absent RTT (null) that proves nothing. Only
+   * impossible values are rejected: negative, non-finite, or above
+   * MAX_SANE_RTT (a bogus reading that would poison the score).
+   */
   private isSaneRtt(value: number): boolean {
-    return Number.isFinite(value) && value > 0 && value <= MAX_SANE_RTT;
+    return Number.isFinite(value) && value >= 0 && value <= MAX_SANE_RTT;
   }
 
   private updateMaxRtt(current: number | null, value: number): number | null {

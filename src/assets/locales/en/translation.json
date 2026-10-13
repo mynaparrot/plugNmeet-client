@@ -212,6 +212,7 @@
       "packet-loss": "Data Loss",
       "rtt": "Delay (RTT)",
       "copy": "Copy Details",
+      "no-data-yet": "No connection measurements yet.",
       "tooltips": {
         "overall-quality": "Your overall meeting experience, based on sending and receiving quality.",
         "score": "A score from 0 to 100 that represents the stability of your connection.",

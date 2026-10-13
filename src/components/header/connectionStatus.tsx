@@ -93,30 +93,39 @@ export const ConnectionStatusPanel = () => {
             t('header.connection-status.tooltips.rtt'),
           )}
         </div>
-      ) : null}
+      ) : (
+        <p
+          className="px-2 py-1 text-xs text-gray-500 dark:text-gray-400"
+          data-testid="connection-status-no-data"
+        >
+          {t('header.connection-status.no-data-yet')}
+        </p>
+      )}
 
-      <div className="flex justify-end mt-4">
-        <Button
-          // oxlint-disable-next-line jsx-a11y/no-autofocus
-          autoFocus={true}
-          onClick={handleCopy}
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer focus-ring
+      {qualityStats && (
+        <div className="flex justify-end mt-4">
+          <Button
+            // oxlint-disable-next-line jsx-a11y/no-autofocus
+            autoFocus={true}
+            onClick={handleCopy}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer focus-ring
             ${
               copied
                 ? 'bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-200 scale-105'
                 : 'bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-Gray-700 dark:text-white dark:hover:bg-Gray-600'
             }`}
-        >
-          {copied ? (
-            <>{t('breakout-room.copied')}</>
-          ) : (
-            <>
-              <CopyIcon />
-              {t('header.connection-status.copy')}
-            </>
-          )}
-        </Button>
-      </div>
+          >
+            {copied ? (
+              <>{t('breakout-room.copied')}</>
+            ) : (
+              <>
+                <CopyIcon />
+                {t('header.connection-status.copy')}
+              </>
+            )}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
@@ -128,8 +137,6 @@ const ConnectionStatus = () => {
     if (!overallQuality) return '#9ca3af';
     return getConnectionQualityColor(overallQuality);
   }, [overallQuality]);
-
-  if (!overallQuality) return null;
 
   return (
     <Popover className="relative">

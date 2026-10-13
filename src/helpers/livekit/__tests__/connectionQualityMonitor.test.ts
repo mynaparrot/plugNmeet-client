@@ -70,6 +70,12 @@ afterEach(() => {
 
 function makeRoom(options: {
   state?: string;
+  /**
+   * PCTransportManager topology mode. Left undefined by default so the plain
+   * baseline is neither single-PC publisher-only nor explicitly dual: only the
+   * tests that opt in exercise the publisher-only single-PC routing.
+   */
+  mode?: string;
   needsPublisher?: boolean;
   needsSubscriber?: boolean;
   publisherGetStats?: () => Promise<unknown>;
@@ -81,6 +87,7 @@ function makeRoom(options: {
     state: options.state ?? 'connected',
     engine: {
       pcManager: {
+        mode: options.mode,
         needsPublisher: options.needsPublisher ?? true,
         needsSubscriber: options.needsSubscriber,
         publisher: options.publisherGetStats ? { getStats: options.publisherGetStats } : undefined,
@@ -1057,6 +1064,119 @@ describe('ConnectionQualityMonitor measurement integrity', () => {
     await settle();
     expect(samples2[0].measured).toBe(false);
     expect(samples2[0].uploadRtt).toBeNull();
+  });
+
+  it('treats a zero subscriber selected-pair RTT as a real measurement, not a missing one', async () => {
+    // A finite numeric zero is accepted by policy as a real reading, distinct
+    // from an absent RTT (null) that proves nothing. It is genuine directional
+    // evidence and must keep the direction usable so quality still flows on.
+    vi.mocked(store.dispatch).mockClear();
+    const samples: QualityStats[] = [];
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        needsPublisher: true,
+        needsSubscriber: true,
+        publisherGetStats: () =>
+          Promise.resolve([
+            transport('pub-pair'),
+            candidatePair('pub-pair', 0.02, { selected: true }),
+          ]),
+        subscriberGetStats: () =>
+          Promise.resolve([
+            transport('sub-pair'),
+            candidatePair('sub-pair', 0, { selected: true }),
+          ]),
+      }),
+      (s) => samples.push(s),
+    );
+
+    await settle();
+    expect(samples[0].receiveMeasured).toBe(true);
+    expect(samples[0].receiveRtt).toBe(0);
+    expect(samples[0].receiveQuality).toBe('excellent');
+    expect(samples[0].measured).toBe(true);
+  });
+
+  it('treats a zero publisher RTT as a real upload measurement (selected pair and receiver report)', async () => {
+    vi.mocked(store.dispatch).mockClear();
+
+    // a zero selected candidate pair
+    const samples: QualityStats[] = [];
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        needsPublisher: true,
+        needsSubscriber: false,
+        publisherGetStats: () =>
+          Promise.resolve([
+            transport('pub-pair'),
+            candidatePair('pub-pair', 0, { selected: true }),
+          ]),
+      }),
+      (s) => samples.push(s),
+    );
+
+    await settle();
+    expect(samples[0].uploadMeasured).toBe(true);
+    expect(samples[0].uploadRtt).toBe(0);
+    expect(samples[0].myRtt).toBe(0);
+    expect(samples[0].uploadQuality).toBe('excellent');
+    expect(samples[0].measured).toBe(true);
+    monitor.stop();
+
+    // ...and a fresh receiver report carrying a zero round trip
+    const samples2: QualityStats[] = [];
+    const monitor2 = new ConnectionQualityMonitor();
+    monitor2.start(
+      makeRoom({
+        needsPublisher: true,
+        needsSubscriber: false,
+        publisherGetStats: () =>
+          Promise.resolve([
+            remoteInbound({ ssrc: 'a', fractionLost: 0, roundTripTime: 0, timestamp: 1000 }),
+          ]),
+      }),
+      (s) => samples2.push(s),
+    );
+
+    await settle();
+    expect(samples2[0].uploadMeasured).toBe(true);
+    expect(samples2[0].uploadRtt).toBe(0);
+    expect(samples2[0].measured).toBe(true);
+  });
+
+  it('still rejects impossible selected-pair RTT readings (negative, NaN, infinite, above the ceiling)', async () => {
+    const impossible: number[] = [
+      -1,
+      -0.001,
+      Number.NaN,
+      Number.POSITIVE_INFINITY,
+      11, // 11000ms, above the 10s (10000ms) RTT sanity ceiling
+    ];
+
+    for (const rttSeconds of impossible) {
+      const samples: QualityStats[] = [];
+      const monitor = new ConnectionQualityMonitor();
+      monitor.start(
+        makeRoom({
+          needsPublisher: true,
+          needsSubscriber: false,
+          publisherGetStats: () =>
+            Promise.resolve([
+              transport('pub-pair'),
+              candidatePair('pub-pair', rttSeconds, { selected: true }),
+            ]),
+        }),
+        (s) => samples.push(s),
+      );
+
+      await settle();
+      expect(samples[0].uploadMeasured).toBe(false);
+      expect(samples[0].uploadRtt).toBeNull();
+      expect(samples[0].measured).toBe(false);
+      monitor.stop();
+    }
   });
 
   it('a fresh zero-loss receiver report is measured and can recover the score', async () => {
@@ -2152,5 +2272,290 @@ describe('ConnectionQualityMonitor directional evidence under partial reports', 
     expect(partial.measured).toBe(false);
     expect(partial.uploadMeasured).toBe(true);
     expect(partial.receiveMeasured).toBe(false);
+  });
+});
+
+/*
+ * Publisher-only single-PC topology (LiveKit SDK V1 join path): ONE publisher
+ * transport carries BOTH RTP directions and there is NO subscriber
+ * PeerConnection, so Promise.allSettled(subscriber?.getStats()) yields a
+ * fulfilled `undefined` with no subscriber report. The direction routing is
+ * keyed on the public `pcManager.mode`, never on a missing subscriber report
+ * or needsSubscriber === false (a dual-PC publisher-primary session has the
+ * same role flags but a real, separate subscriber).
+ */
+describe('ConnectionQualityMonitor publisher-only single-PC direction routing', () => {
+  it('routes a single-PC publisher-only selected-pair RTT to BOTH directions', async () => {
+    vi.mocked(store.dispatch).mockClear();
+    const samples: QualityStats[] = [];
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        mode: 'publisher-only',
+        needsPublisher: true,
+        needsSubscriber: false,
+        // subscribed remote media proves the download direction is expected
+        // even though needsSubscriber is false and there is no subscriber PC
+        remoteParticipants: subscribedRemoteParticipants(),
+        publisherGetStats: () =>
+          Promise.resolve([
+            transport('pub-pair'),
+            candidatePair('pub-pair', 0.02, { selected: true }),
+            inbound('pub', 'audio', 0, 100),
+          ]),
+      }),
+      (s) => samples.push(s),
+    );
+
+    await settle();
+    expect(samples[0].uploadMeasured).toBe(true);
+    expect(samples[0].receiveMeasured).toBe(true);
+    // the one transport's selected-pair RTT is the receive RTT too
+    expect(samples[0].uploadRtt).toBe(20);
+    expect(samples[0].receiveRtt).toBe(20);
+    expect(samples[0].measured).toBe(true);
+  });
+
+  it('treats a real inbound delta as receive-only evidence (upload expected, sample unmeasured)', async () => {
+    vi.mocked(store.dispatch).mockClear();
+    const samples: QualityStats[] = [];
+
+    let received = 0;
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        mode: 'publisher-only',
+        needsPublisher: true,
+        needsSubscriber: false,
+        remoteParticipants: subscribedRemoteParticipants(),
+        // ONLY an inbound-rtp stream: no selected pair, no receiver report and
+        // no outbound activity, so nothing here can prove the UPLOAD direction
+        publisherGetStats: () => Promise.resolve([inbound('pub', 'audio', 0, received)]),
+      }),
+      (s) => samples.push(s),
+    );
+
+    await settle(); // baseline: no delta yet
+
+    received = 100;
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+
+    const partial = samples[1];
+    expect(partial.receiveMeasured).toBe(true);
+    expect(partial.uploadMeasured).toBe(false);
+    // the upload direction is expected (needsPublisher) and unknown -> unmeasured
+    expect(partial.measured).toBe(false);
+  });
+
+  it('treats a fresh receiver report as upload-only evidence (receive expected stays unmeasured)', async () => {
+    vi.mocked(store.dispatch).mockClear();
+    const samples: QualityStats[] = [];
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        mode: 'publisher-only',
+        needsPublisher: true,
+        needsSubscriber: false,
+        // subscribed remote media keeps the receive direction expected even
+        // though needsSubscriber is false and there is no subscriber PC
+        remoteParticipants: subscribedRemoteParticipants(),
+        // ONLY a fresh receiver report: it proves our outbound RTP reached the
+        // peer, but nothing about the receive direction
+        publisherGetStats: () =>
+          Promise.resolve([
+            remoteInbound({ ssrc: 'a', fractionLost: 0, roundTripTime: 0.02, timestamp: 1000 }),
+          ]),
+      }),
+      (s) => samples.push(s),
+    );
+
+    await settle();
+    expect(samples[0].uploadMeasured).toBe(true);
+    expect(samples[0].receiveMeasured).toBe(false);
+    expect(samples[0].receiveRtt).toBeNull();
+    expect(samples[0].measured).toBe(false);
+  });
+
+  it('does not borrow the publisher RTT for receive in a dual-PC session (single-PC role flags, unusable receive stays unmeasured)', async () => {
+    vi.mocked(store.dispatch).mockClear();
+    const samples: QualityStats[] = [];
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        // dual-PC publisher-primary: a separate subscriber PC exists but the
+        // role flags are IDENTICAL to a single-PC session (needsSubscriber
+        // false); only the mode tells them apart
+        mode: 'publisher-primary',
+        needsPublisher: true,
+        needsSubscriber: false,
+        remoteParticipants: subscribedRemoteParticipants(),
+        publisherGetStats: () =>
+          Promise.resolve([
+            transport('pub-pair'),
+            candidatePair('pub-pair', 0.02, { selected: true }),
+          ]),
+        // a present-but-empty subscriber report proves nothing about receive
+        subscriberGetStats: () => Promise.resolve([]),
+      }),
+      (s) => samples.push(s),
+    );
+
+    await settle();
+    expect(samples[0].uploadMeasured).toBe(true);
+    expect(samples[0].receiveMeasured).toBe(false);
+    // the publisher's transport RTT must never leak into the receive path
+    expect(samples[0].receiveRtt).toBeNull();
+    expect(samples[0].measured).toBe(false);
+  });
+
+  it('accepts a zero single-PC selected-pair RTT as a valid measurement for both directions', async () => {
+    vi.mocked(store.dispatch).mockClear();
+    const samples: QualityStats[] = [];
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        mode: 'publisher-only',
+        needsPublisher: true,
+        needsSubscriber: false,
+        // subscribed remote media makes the receive direction realistically
+        // expected without a subscriber PC or a needsSubscriber flag
+        remoteParticipants: subscribedRemoteParticipants(),
+        publisherGetStats: () =>
+          Promise.resolve([
+            transport('pub-pair'),
+            candidatePair('pub-pair', 0, { selected: true }),
+          ]),
+      }),
+      (s) => samples.push(s),
+    );
+
+    await settle();
+    expect(samples[0].uploadMeasured).toBe(true);
+    expect(samples[0].receiveMeasured).toBe(true);
+    expect(samples[0].uploadRtt).toBe(0);
+    expect(samples[0].receiveRtt).toBe(0);
+    expect(samples[0].measured).toBe(true);
+  });
+});
+
+/*
+ * Cross-report direction aggregation: a direction is a property of the RTP, not
+ * of the report that happens to carry its evidence. A receiver report always
+ * describes OUR outbound RTP (upload) and an inbound-rtp delta always describes
+ * OUR download (receive), so the same evidence must be credited to its own
+ * direction even when it arrives on the "other" report.
+ */
+describe('ConnectionQualityMonitor cross-report direction aggregation', () => {
+  it('credits a fresh receiver report carried by the subscriber report to the upload direction only', async () => {
+    vi.mocked(store.dispatch).mockClear();
+    const samples: QualityStats[] = [];
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        // dual-PC: a real, separate subscriber report carries the receiver report
+        mode: 'publisher-primary',
+        needsPublisher: true,
+        needsSubscriber: true,
+        // the publisher report proves nothing on its own
+        publisherGetStats: () => Promise.resolve([]),
+        // an RR always reports on OUR outbound RTP, so its upload evidence must
+        // count even though the report carrying it is the subscriber's
+        subscriberGetStats: () =>
+          Promise.resolve([
+            remoteInbound({ ssrc: 'a', fractionLost: 0, roundTripTime: 0.02, timestamp: 1000 }),
+          ]),
+      }),
+      (s) => samples.push(s),
+    );
+
+    await settle();
+    expect(samples[0].uploadMeasured).toBe(true);
+    // ...but it is NOT receive evidence: the download direction stays unmeasured
+    expect(samples[0].receiveMeasured).toBe(false);
+    expect(samples[0].receiveRtt).toBeNull();
+    expect(samples[0].measured).toBe(false);
+  });
+
+  it('credits receive only from a real inbound delta carried by the publisher report in dual mode', async () => {
+    vi.mocked(store.dispatch).mockClear();
+    const samples: QualityStats[] = [];
+
+    let received = 0;
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        mode: 'publisher-primary',
+        needsPublisher: true,
+        needsSubscriber: false,
+        remoteParticipants: subscribedRemoteParticipants(),
+        // ONLY an inbound-rtp stream: no selected pair, no receiver report and
+        // no outbound activity, so nothing here can prove the UPLOAD direction
+        // even though the report carrying the delta is the publisher's
+        publisherGetStats: () => Promise.resolve([inbound('pub', 'audio', 0, received)]),
+        subscriberGetStats: () => Promise.resolve([]),
+      }),
+      (s) => samples.push(s),
+    );
+
+    await settle(); // baseline: no delta yet
+
+    received = 100;
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+
+    const sample = samples[1];
+    expect(sample.receiveMeasured).toBe(true);
+    // the inbound delta is RECEIVE evidence only, never upload
+    expect(sample.uploadMeasured).toBe(false);
+    expect(sample.receiveRtt).toBeNull();
+    // upload is expected (needsPublisher) and still unknown -> unmeasured
+    expect(sample.measured).toBe(false);
+  });
+
+  it('credits receive from the inbound delta while the publisher RTT stays upload-only (no borrowing)', async () => {
+    vi.mocked(store.dispatch).mockClear();
+    const samples: QualityStats[] = [];
+
+    let received = 0;
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        // dual-PC: the publisher transport routes RTT to upload only
+        mode: 'publisher-primary',
+        needsPublisher: true,
+        needsSubscriber: false,
+        remoteParticipants: subscribedRemoteParticipants(),
+        publisherGetStats: () =>
+          Promise.resolve([
+            transport('pub-pair'),
+            candidatePair('pub-pair', 0.02, { selected: true }),
+            inbound('pub', 'audio', 0, received),
+          ]),
+        // the subscriber report proves nothing about the receive direction
+        subscriberGetStats: () => Promise.resolve([]),
+      }),
+      (s) => samples.push(s),
+    );
+
+    await settle(); // baseline: no inbound delta yet
+
+    received = 100;
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+
+    const sample = samples[1];
+    // the selected-pair RTT credits upload and is NEVER borrowed for receive
+    expect(sample.uploadMeasured).toBe(true);
+    expect(sample.uploadRtt).toBe(20);
+    expect(sample.receiveRtt).toBeNull();
+    // ...while the real inbound delta is genuine receive evidence
+    expect(sample.receiveMeasured).toBe(true);
+    expect(sample.measured).toBe(true);
   });
 });
