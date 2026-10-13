@@ -228,6 +228,8 @@
       },
       "video-paused-banner": "Svag forbindelse — video pauset for at holde lyden klar.",
       "video-stays-paused-banner": "Svag forbindelse — video er sat på pause, indtil du aktiverer den igen.",
+      "video-quality-reduced-banner": "Svag forbindelse — billedkvaliteten er reduceret for at holde lyden klar.",
+      "restore-quality": "Genopretningskvalitet",
       "re-enable-video": "Genaktiver video",
       "resume-presentation": "CV-præsentation"
     }
