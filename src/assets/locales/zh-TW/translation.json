@@ -212,6 +212,7 @@
       "packet-loss": "資料遺失",
       "rtt": "延遲（RTT）",
       "copy": "副本詳情",
+      "no-data-yet": "目前還沒有連線測量。",
       "tooltips": {
         "overall-quality": "你整體的會議體驗，基於發送與接收品質。",
         "score": "從 0 到 100 分的分數代表你們連線的穩定性。",
