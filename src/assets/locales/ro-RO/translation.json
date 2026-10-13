@@ -212,6 +212,7 @@
       "packet-loss": "Pierderea datelor",
       "rtt": "Întârziere (RTT)",
       "copy": "Detalii de copiere",
+      "no-data-yet": "Încă nu am măsurători de conexiune.",
       "tooltips": {
         "overall-quality": "Experiența ta generală la întâlnire, bazată pe calitatea trimiterii și primirii.",
         "score": "Un scor de la 0 la 100 care reprezintă stabilitatea conexiunii tale.",
