@@ -228,6 +228,8 @@
       },
       "video-paused-banner": "Heikko yhteys — video pysäytetty äänen pitämiseksi selkeänä.",
       "video-stays-paused-banner": "Heikko yhteys — video pysäytetty, kunnes otat sen uudelleen käyttöön.",
+      "video-quality-reduced-banner": "Heikko yhteys — videon laatu on heikentynyt, jotta ääni pysyy selkeänä.",
+      "restore-quality": "Palauta laatu",
       "re-enable-video": "Ota video uudelleen käyttöön",
       "resume-presentation": "Ansioluettelon esittely"
     }
