@@ -212,6 +212,7 @@
       "packet-loss": "Ztráta dat",
       "rtt": "Zpoždění (RTT)",
       "copy": "Podrobnosti o kopii",
+      "no-data-yet": "Žádná měření spojení zatím nejsou.",
       "tooltips": {
         "overall-quality": "Vaše celková zkušenost ze schůzky, založená na kvalitě odesílání a přijímání.",
         "score": "Skóre od 0 do 100, které představuje stabilitu vašeho připojení.",
