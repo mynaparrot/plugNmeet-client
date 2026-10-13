@@ -228,6 +228,8 @@
       },
       "video-paused-banner": "اتصال ضعیف — ویدئو متوقف شد تا صدا واضح بماند.",
       "video-stays-paused-banner": "اتصال ضعیف — ویدیو متوقف می شود تا دوباره فعال شود.",
+      "video-quality-reduced-banner": "اتصال ضعیف — کیفیت ویدئو کاهش یافته تا صدا واضح بماند.",
+      "restore-quality": "بازیابی کیفیت",
       "re-enable-video": "فعال سازی مجدد ویدیو",
       "resume-presentation": "ارائه رزومه"
     }
