@@ -212,6 +212,7 @@
       "packet-loss": "Kehilangan Data",
       "rtt": "Penundaan (RTT)",
       "copy": "Salin Detail",
+      "no-data-yet": "Belum ada pengukuran koneksi.",
       "tooltips": {
         "overall-quality": "Pengalaman rapat Anda secara keseluruhan, berdasarkan kualitas pengiriman dan penerimaan.",
         "score": "Skor dari 0 hingga 100 yang mewakili stabilitas koneksi Anda.",
