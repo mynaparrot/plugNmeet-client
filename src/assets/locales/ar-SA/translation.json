@@ -228,6 +228,8 @@
       },
       "video-paused-banner": "اتصال ضعيف — الفيديو توقف للحفاظ على وضوح الصوت.",
       "video-stays-paused-banner": "اتصال ضعيف — الفيديو توقف مؤقتا حتى تعيد تفعيله.",
+      "video-quality-reduced-banner": "اتصال ضعيف — جودة الفيديو منخفضة للحفاظ على وضوح الصوت.",
+      "restore-quality": "استعادة الجودة",
       "re-enable-video": "إعادة تفعيل الفيديو",
       "resume-presentation": "عرض السيرة الذاتية"
     }
