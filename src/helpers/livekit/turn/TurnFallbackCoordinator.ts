@@ -6,7 +6,8 @@
  *   - sustained: >=70% distress over a window >=3 samples spanning the
  *     server-configured timer (default 30s)
  *   - recurring: prior meaningful episodes (<=120s old, >=2 distress
- *     samples) shorten the window to 15s
+ *     samples) shorten the window to 15s of a CONSECUTIVE measured
+ *     distress run (2+ samples) inside the current burst
  *   - flapping: legacy `fallback_on_flapping` sample-count mode; replaces
  *     all paths above
  *
@@ -146,6 +147,14 @@ export default class TurnFallbackCoordinator {
   /** the current episode is already represented in the recent history */
   private episodeRecorded = false;
 
+  /**
+   * Start/count of the current CONSECUTIVE measured-distress run. The
+   * recurring gate times its 15s window from here (never from the episode
+   * start), and any non-distress, disconnected, or gapped sample clears it.
+   */
+  private distressRunStartedAtMs: number | null = null;
+  private distressRunSamples = 0;
+
   /** consecutive severe samples and the start of the current severe run */
   private severeStreak = 0;
   private severeFirstAtMs: number | null = null;
@@ -206,6 +215,8 @@ export default class TurnFallbackCoordinator {
     this.episodeRecorded = false;
     this.severeStreak = 0;
     this.severeFirstAtMs = null;
+    this.distressRunStartedAtMs = null;
+    this.distressRunSamples = 0;
   }
 
   /** clears all evidence (reconnect / hidden boundary / disconnect) */
@@ -325,10 +336,14 @@ export default class TurnFallbackCoordinator {
         ),
     ).length;
 
+    // recurring is timed from the CURRENT consecutive-distress run, not the
+    // episode start: an old open reduced-health episode plus fresh history
+    // must not accelerate an isolated renewed spike
     const recurringOk =
       priorMeaningfulEpisodes + 1 >= RECURRING_EPISODE_THRESHOLD &&
-      elapsedMs >= RECURRING_FALLBACK_TIMER_MS &&
-      this.episodeDistressSamples >= RECURRING_MIN_DISTRESS_SAMPLES &&
+      this.distressRunStartedAtMs !== null &&
+      atMs - this.distressRunStartedAtMs >= RECURRING_FALLBACK_TIMER_MS &&
+      this.distressRunSamples >= RECURRING_MIN_DISTRESS_SAMPLES &&
       windowCount >= 2;
 
     const sustainedOk =
@@ -468,6 +483,12 @@ export default class TurnFallbackCoordinator {
       this.episodeTotalSamples += 1;
       this.pushWindow(true);
 
+      // extend the current consecutive-distress run the recurring gate uses
+      if (this.distressRunStartedAtMs === null) {
+        this.distressRunStartedAtMs = atMs;
+      }
+      this.distressRunSamples += 1;
+
       // full → degraded transition with real distress: recorded as an
       // adaptation cycle even without closure; a pre-degraded state never
       // counts
@@ -483,6 +504,12 @@ export default class TurnFallbackCoordinator {
 
       return this.evaluateFire(atMs);
     }
+
+    // any measured sample without distress (full or reduced health, unknown
+    // stats) ends the consecutive-distress run so the recurring gate never
+    // reuses stale evidence across a healthy stretch
+    this.distressRunSamples = 0;
+    this.distressRunStartedAtMs = null;
 
     if (this.episodeStartedAtMs === null) {
       return this.emptyDecision();

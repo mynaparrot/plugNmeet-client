@@ -70,6 +70,8 @@ export interface IMediaDegradation {
   incomingScreensharePaused: boolean;
   outgoingCameraPaused: boolean;
   autoRestoreSuspended: boolean;
+  /** true while the shared video quality is auto-lowered to reduce data usage */
+  videoQualityReduced: boolean;
 }
 
 export interface IMediaDevice {

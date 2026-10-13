@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import TurnFallbackCoordinator, {
   DEFAULT_FALLBACK_TIMER_MS,
   FULL_HEALTH_CLEAR_STREAK,
+  MAX_SAMPLE_GAP_MS,
   RECENT_EPISODE_HISTORY_WINDOW_MS,
   RECURRING_FALLBACK_TIMER_MS,
   SEVERE_FALLBACK_TIMER_MS,
@@ -158,7 +159,7 @@ describe('turn fallback coordinator — episode policy', () => {
     expect(fired).toBe(false);
   });
 
-  it('runs a realistic repeated shed → healthy-reduced → restore → poor shed cycle and fires recurring during alternating Poor/Good', () => {
+  it('runs a realistic repeated shed → healthy-reduced → restore → poor shed cycle and fires recurring on a renewed consecutive run', () => {
     const coordinator = new TurnFallbackCoordinator();
     const feeder = createFeeder(coordinator);
 
@@ -188,12 +189,13 @@ describe('turn fallback coordinator — episode policy', () => {
     // the recorded cycle keeps the recent history bounded to ONE entry
     expect(coordinator.getState().recentMeaningfulEpisodes).toBe(1);
 
-    // burst 2: alternating Poor/Good (overall ratio < 70%) — the recurring
-    // path must still fire from the recent meaningful episode history
+    // burst 2: a renewed CONSECUTIVE distress run reaches the shortened 15s
+    // recurring window before the slower 30s sustained window — the recurring
+    // path must fire from the recent meaningful episode history
     let fired: Awaited<ReturnType<TurnFallbackCoordinator['ingest']>> | null = null;
     let elapsed = 0;
     for (let i = 0; i < 8; i += 1) {
-      const decision = feeder.feed(i % 2 === 0 ? POOR : {});
+      const decision = feeder.feed(POOR);
       if (decision.shouldFireFallback) {
         fired = decision;
         elapsed = decision.episode?.elapsedMs ?? 0;
@@ -204,7 +206,6 @@ describe('turn fallback coordinator — episode policy', () => {
     expect(fired?.reason).toBe('recurring-distress');
     expect(elapsed).toBeGreaterThanOrEqual(RECURRING_FALLBACK_TIMER_MS);
     expect(elapsed).toBeLessThan(DEFAULT_FALLBACK_TIMER_MS);
-    // the window's poor ratio is below the sustained bar (alternating)
     const windowLength = fired?.episode?.samples ?? 0;
     expect(windowLength).toBeGreaterThan(0);
   });
@@ -235,11 +236,11 @@ describe('turn fallback coordinator — episode policy', () => {
     }
     expect(coordinator.getState().closedEpisodes).toBe(1);
 
-    // …then the NEXT independent alternating cycle fires the recurring
+    // …then the NEXT independent CONSECUTIVE distress run fires the recurring
     // acceleration: the prior recorded episode is real independent history
     let fired: Awaited<ReturnType<TurnFallbackCoordinator['ingest']>> | null = null;
     for (let i = 0; i < 8; i += 1) {
-      const decision = feeder.feed(i % 2 === 0 ? POOR : {});
+      const decision = feeder.feed(POOR);
       if (decision.shouldFireFallback) {
         fired = decision;
         break;
@@ -247,6 +248,125 @@ describe('turn fallback coordinator — episode policy', () => {
     }
     expect(fired).not.toBeNull();
     expect(fired?.reason).toBe('recurring-distress');
+  });
+
+  it('an old open reduced-health episode with fresh history cannot accelerate isolated renewed spikes', () => {
+    const coordinator = new TurnFallbackCoordinator();
+    const feeder = createFeeder(coordinator);
+
+    // prior independent meaningful episode: two poor samples, full recovery
+    feeder.feed(POOR);
+    feeder.feed(POOR);
+    for (let i = 0; i < FULL_HEALTH_CLEAR_STREAK; i += 1) {
+      feeder.feed();
+    }
+    expect(coordinator.getState().recentMeaningfulEpisodes).toBe(1);
+
+    // a NEW episode opens on a single distress sample, then a long
+    // reduced-health stretch keeps it OPEN (reduced health never closes an
+    // episode) while the evidence window fills with non-distress samples
+    feeder.feed(POOR);
+    for (let i = 0; i < 6; i += 1) {
+      feeder.feed({ mediaSnapshot: REDUCED_MEDIA });
+    }
+    expect(coordinator.getState().episodeStartedAtMs).not.toBeNull();
+
+    // one/two scattered spikes in the stale episode: the removed rule used
+    // the OLD episode-start elapsed plus accumulated distress samples and
+    // fired recurring here — the fresh consecutive run must keep it silent
+    expect(feeder.feed(POOR).shouldFireFallback).toBe(false);
+    feeder.feed({ mediaSnapshot: REDUCED_MEDIA });
+    expect(feeder.feed(POOR).shouldFireFallback).toBe(false);
+  });
+
+  it('a renewed consecutive distress run of 15s fires recurring while the sustained ratio stays below its bar', () => {
+    const coordinator = new TurnFallbackCoordinator();
+    const feeder = createFeeder(coordinator);
+
+    // prior independent meaningful episode
+    feeder.feed(POOR);
+    feeder.feed(POOR);
+    for (let i = 0; i < FULL_HEALTH_CLEAR_STREAK; i += 1) {
+      feeder.feed();
+    }
+    expect(coordinator.getState().recentMeaningfulEpisodes).toBe(1);
+
+    // a new episode opens on ONE seed distress sample, then reduced-media
+    // healthy samples drag the window ratio well below the 70% sustained bar
+    feeder.feed(POOR);
+    for (let i = 0; i < 4; i += 1) {
+      feeder.feed({ mediaSnapshot: REDUCED_MEDIA });
+    }
+
+    // a persistent non-severe consecutive run reaches the shortened 15s
+    // recurring window: recurring fires even though the window ratio (0.5)
+    // never reaches the 0.7 sustained bar. The run is timed from its FIRST
+    // renewed POOR sample, so every sub-15s sample must stay silent and only
+    // the fourth (15s into the run) may fire.
+    const renewedRunStartMs = feeder.current() + MONITOR_INTERVAL_MS;
+
+    for (let i = 1; i <= 3; i += 1) {
+      const decision = feeder.feed(POOR);
+      expect(decision.shouldFireFallback, `renewed run sample ${i}`).toBe(false);
+      expect(decision.reason, `renewed run sample ${i}`).toBeNull();
+    }
+
+    // three renewed samples = 10s of run: still short of the 15s window
+    expect(feeder.current() - renewedRunStartMs).toBeLessThan(RECURRING_FALLBACK_TIMER_MS);
+
+    const fired = feeder.feed(POOR);
+    expect(fired.shouldFireFallback).toBe(true);
+    expect(fired.reason).toBe('recurring-distress');
+    // the fire lands exactly when the renewed consecutive run reaches 15s
+    expect(feeder.current() - renewedRunStartMs).toBe(RECURRING_FALLBACK_TIMER_MS);
+    // the sustained window had already fully elapsed for this episode (>=30s):
+    // only the sub-threshold ratio keeps it from overshadowing the recurring path
+    expect(fired.episode?.elapsedMs).toBeGreaterThanOrEqual(DEFAULT_FALLBACK_TIMER_MS);
+  });
+
+  it('a measured non-distress or invalidated sample resets the recurring run', () => {
+    const cases: Array<{
+      label: string;
+      reset: (feeder: ReturnType<typeof createFeeder>) => void;
+    }> = [
+      { label: 'reduced health', reset: (f) => f.feed({ mediaSnapshot: REDUCED_MEDIA }) },
+      { label: 'full-media healthy', reset: (f) => f.feed() },
+      { label: 'unknown stats', reset: (f) => f.feed({ uploadQuality: '', receiveQuality: '' }) },
+      {
+        label: 'disconnect',
+        reset: (f) => f.feed({ connected: false, uploadQuality: 'lost', receiveQuality: 'lost' }),
+      },
+      {
+        label: 'long gap',
+        reset: (f) => f.skipTo(f.current() + MAX_SAMPLE_GAP_MS + MONITOR_INTERVAL_MS),
+      },
+    ];
+
+    for (const { label, reset } of cases) {
+      const coordinator = new TurnFallbackCoordinator();
+      const feeder = createFeeder(coordinator);
+
+      // prior independent meaningful episode
+      feeder.feed(POOR);
+      feeder.feed(POOR);
+      for (let i = 0; i < FULL_HEALTH_CLEAR_STREAK; i += 1) {
+        feeder.feed();
+      }
+      expect(coordinator.getState().recentMeaningfulEpisodes).toBe(1);
+
+      // an episode opens and accumulates a two-sample distress run…
+      feeder.feed(POOR);
+      feeder.feed(POOR);
+
+      // …then the reset trigger breaks the run…
+      reset(feeder);
+
+      // …so isolated renewed spikes cannot accelerate: the removed rule fired
+      // here once >=15s of stale episode elapsed had accumulated
+      expect(feeder.feed(POOR).shouldFireFallback, label).toBe(false);
+      feeder.feed();
+      expect(feeder.feed(POOR).shouldFireFallback, label).toBe(false);
+    }
   });
 
   it('a static pre-paused state never records an adaptation cycle for its distress', () => {
@@ -467,11 +587,11 @@ describe('turn fallback coordinator — episode policy', () => {
     }
     expect(coordinator.getState().closedEpisodes).toBe(1);
 
-    // …and the NEXT independent alternating cycle fires recurring from the
-    // prior recorded episode (well after the 15s shortened window)
+    // …and the NEXT independent CONSECUTIVE distress run (>=15s at this
+    // cadence) fires recurring from the prior recorded episode
     let fired: Awaited<ReturnType<TurnFallbackCoordinator['ingest']>> | null = null;
-    for (let i = 0; i < 8; i += 1) {
-      const decision = feedAt(i % 2 === 0 ? POOR : {});
+    for (let i = 0; i < 12; i += 1) {
+      const decision = feedAt(POOR);
       if (decision.shouldFireFallback) {
         fired = decision;
         break;
