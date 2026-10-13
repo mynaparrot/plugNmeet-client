@@ -228,6 +228,8 @@
       },
       "video-paused-banner": "連線弱 — 影片暫停以保持音訊清晰。",
       "video-stays-paused-banner": "連線弱 — 影片暫停，直到你重新啟用。",
+      "video-quality-reduced-banner": "連線不佳——為了保持音訊清晰，影像品質降低。",
+      "restore-quality": "恢復品質",
       "re-enable-video": "重新啟用影片",
       "resume-presentation": "履歷呈現"
     }
