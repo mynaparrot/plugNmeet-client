@@ -212,6 +212,7 @@
       "packet-loss": "Veri kaybı",
       "rtt": "Gecikme (RTT)",
       "copy": "Kopyala Detayları",
+      "no-data-yet": "Henüz bağlantı ölçümü yok.",
       "tooltips": {
         "overall-quality": "Genel toplantı deneyiminiz, gönderme ve alma kalitesine dayanır.",
         "score": "0'dan 100'e kadar olan bir puan, bağlantınızın istikrarını temsil eder.",
