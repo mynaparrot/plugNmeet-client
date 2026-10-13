@@ -212,6 +212,7 @@
       "packet-loss": "Datatab",
       "rtt": "Forsinkelse (RTT)",
       "copy": "Kopier detaljer",
+      "no-data-yet": "Ingen forbindelsesmålinger endnu.",
       "tooltips": {
         "overall-quality": "Din samlede mødeoplevelse, baseret på kvaliteten af afsendelse og modtagelse.",
         "score": "En score fra 0 til 100, der repræsenterer stabiliteten af din forbindelse.",
