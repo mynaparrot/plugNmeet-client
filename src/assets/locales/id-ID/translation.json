@@ -228,6 +228,8 @@
       },
       "video-paused-banner": "Koneksi lemah — video dijeda untuk menjaga audio tetap jelas.",
       "video-stays-paused-banner": "Koneksi lemah — video dijeda sampai Anda mengaktifkannya kembali.",
+      "video-quality-reduced-banner": "Koneksi lemah — kualitas video dikurangi agar audio tetap jelas.",
+      "restore-quality": "Pulihkan kualitas",
       "re-enable-video": "Aktifkan kembali video",
       "resume-presentation": "Presentasi resume"
     }
