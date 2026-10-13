@@ -228,6 +228,8 @@
       },
       "video-paused-banner": "Gyenge kapcsolat — a videó szünetelt, hogy tiszta legyen a hang.",
       "video-stays-paused-banner": "Gyenge kapcsolat — a videó szünetelt, amíg újra be nem kapcsolod.",
+      "video-quality-reduced-banner": "Gyenge kapcsolat — a videóminőség csökkent, hogy tiszta legyen a hang.",
+      "restore-quality": "Minőség helyreállítása",
       "re-enable-video": "Kapcsold újra a videót",
       "resume-presentation": "Önéletrajz bemutatása"
     }
