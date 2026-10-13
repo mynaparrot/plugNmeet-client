@@ -228,6 +228,8 @@
       },
       "video-paused-banner": "Conexiune slabă — video pus pe pauză pentru a menține sunetul clar.",
       "video-stays-paused-banner": "Conexiune slabă — videoclipul este pus pe pauză până îl reactivezi.",
+      "video-quality-reduced-banner": "Conexiune slabă — calitatea video redusă pentru a menține sunetul clar.",
+      "restore-quality": "Calitatea restaurării",
       "re-enable-video": "Reactivează videoclipul",
       "resume-presentation": "Prezentarea CV-ului"
     }
