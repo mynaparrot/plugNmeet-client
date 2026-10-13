@@ -241,10 +241,10 @@ const countUpdates = () =>
 
 const currentQuality = (): VideoQuality => harness.h.state.roomSettings.roomVideoQuality;
 
-/** simulate the user picking a quality in the room-settings dropdown */
-function userSetsQuality(quality: VideoQuality) {
-  harness.h.state.roomSettings.roomVideoQuality = quality;
-  harness.h.subscribers.forEach((cb) => cb());
+/** simulate the room-settings UI applying a quality: dispatch, then notify the controller */
+function userAppliesQuality(controller: AdaptiveMediaController, quality: VideoQuality) {
+  harness.dispatch({ type: 'updateRoomVideoQuality', payload: quality });
+  controller.notifyUserQualitySelection();
 }
 
 const LOSS_BACKED_BOTH_LOST: Partial<QualityStats> = {
@@ -962,9 +962,11 @@ describe('AdaptiveMediaController — quality before pause', () => {
     expect(currentQuality()).toBe(VideoQuality.LOW);
     expect(degradation().videoQualityReduced).toBe(true);
 
-    // the user takes the setting over mid-reduction: the pending reduction must
-    // be relinquished so a later recovery can never restore the stale value
-    userSetsQuality(VideoQuality.MEDIUM);
+    // the user takes the setting over mid-reduction through the real UI order
+    // (dispatch then notify): the pending reduction must be relinquished so a
+    // later recovery can never restore the stale value
+    userAppliesQuality(controller, VideoQuality.MEDIUM);
+    expect(currentQuality()).toBe(VideoQuality.MEDIUM);
     expect(degradation().videoQualityReduced).toBe(false);
 
     // healthy samples must not restore over (or otherwise touch) their choice
@@ -990,6 +992,42 @@ describe('AdaptiveMediaController — quality before pause', () => {
     await feedMany(controller, 4, {});
     expect(currentQuality()).toBe(VideoQuality.MEDIUM);
     expect(degradation().videoQualityReduced).toBe(false);
+  });
+
+  it('cancels a stale auto-lowered restoration when the user re-selects the current LOW value', async () => {
+    const { controller } = setup();
+
+    // ordinary receive distress auto-lowers HIGH -> LOW and saves HIGH
+    await feedMany(controller, 3, { receiveQuality: PnmConnectionQuality.Poor });
+    expect(currentQuality()).toBe(VideoQuality.LOW);
+    expect(degradation().videoQualityReduced).toBe(true);
+
+    /*
+     * The user explicitly re-selects LOW through the real UI order (dispatch
+     * then notify) — the value already in effect, so the Redux value does not
+     * change and the subscription cannot observe it. The controller must still
+     * treat this as intent: the saved HIGH is relinquished so a later recovery
+     * can never restore it over the user's explicit choice.
+     */
+    userAppliesQuality(controller, VideoQuality.LOW);
+    expect(degradation().videoQualityReduced).toBe(false);
+
+    // a full healthy streak must NOT restore the stale HIGH over that choice
+    await feedMany(controller, 4, {});
+    expect(currentQuality()).toBe(VideoQuality.LOW);
+    expect(degradation().videoQualityReduced).toBe(false);
+
+    // the grace is BOUNDED: inside it fresh receive distress must not act...
+    await feedMany(controller, 3, { receiveQuality: PnmConnectionQuality.Poor });
+    expect(currentQuality()).toBe(VideoQuality.LOW);
+    expect(degradation().incomingWebcamPaused).toBe(false);
+
+    // ...but past it adaptation still operates (already LOW, so the ineffective
+    // reduction is skipped and the ordinary pause behaviour applies)
+    now += 130_000;
+    await feedMany(controller, 3, { receiveQuality: PnmConnectionQuality.Poor });
+    expect(currentQuality()).toBe(VideoQuality.LOW);
+    expect(degradation().incomingWebcamPaused).toBe(true);
   });
 
   it('tracks a cap-only reduction for the TURN snapshot and the flap guard', async () => {

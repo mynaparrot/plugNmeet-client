@@ -713,13 +713,34 @@ export default class AdaptiveMediaController {
 
     this.observedQuality = quality;
 
-    /*
-     * A change we did not write is a user (or other writer) taking the setting
-     * over. Relinquish any reduction we still own so a later recovery can never
-     * restore a stale value over their choice, drop the receive evidence so a
-     * new episode starts clean, and grant the same bounded grace a manual
-     * restore gets before normal adaptation may lower the (new) setting again.
-     */
+    // A change we did not write is a user (or other writer) taking the setting
+    // over: relinquish ownership and grant the bounded manual grace.
+    this.relinquishQualityOwnership();
+  };
+
+  /**
+   * Records an explicit user choice of the shared video-quality setting.
+   *
+   * The settings UI dispatches the new value first and then calls this, so the
+   * store already holds it; reading the current value (rather than taking it as
+   * an argument) keeps our own write discriminated. The subscription cannot
+   * observe a same-value choice — re-selecting LOW while already LOW leaves the
+   * Redux value unchanged — so this must still run on every change to cancel a
+   * stale auto-lowered restoration.
+   */
+  public notifyUserQualitySelection(): void {
+    this.observedQuality = this.currentRoomQuality;
+    this.relinquishQualityOwnership();
+  }
+
+  /**
+   * A user (or other writer) taking the setting over: relinquish any reduction
+   * we still own so a later recovery can never restore a stale value over their
+   * choice, drop the receive evidence so a new episode starts clean, and grant
+   * the same bounded grace a manual restore gets before normal adaptation may
+   * lower the (new) setting again.
+   */
+  private relinquishQualityOwnership(): void {
     const hadReduction = this.savedQuality !== undefined;
 
     this.savedQuality = undefined;
@@ -730,7 +751,7 @@ export default class AdaptiveMediaController {
     if (hadReduction) {
       this.syncRedux();
     }
-  };
+  }
 
   private pauseIncomingWebcams(): void {
     if (this.incomingWebcamPaused) {

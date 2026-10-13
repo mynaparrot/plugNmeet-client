@@ -14,6 +14,7 @@ import SettingsSwitch from '../../../helpers/ui/settingsSwitch';
 import Dropdown, { ISelectOption } from '../../../helpers/ui/dropdown';
 import { UserDeviceType } from '../../../store/slices/interfaces/session';
 import { IMaxNumDisplayWebcams } from '../../../store/slices/interfaces/roomSettings';
+import { getMediaServerConn } from '../../../helpers/livekit/utils';
 import {
   getConfigValue,
   SCREENSHARE_RESOLUTION_KEYS,
@@ -125,6 +126,23 @@ const DataSavings = () => {
     dispatch(updateActiveScreenSharingView(!activeScreenSharingView));
   };
 
+  const handleOnChangeVideoQuality = useCallback(
+    (quality: VideoQuality) => {
+      // Dispatch first so the store holds the chosen value and the controller
+      // can read it: a same-value choice (re-selecting LOW) leaves the Redux
+      // value unchanged, so the subscription cannot observe it and a stale
+      // auto-lowered value would otherwise be restored later over the choice.
+      dispatch(updateRoomVideoQuality(quality));
+
+      try {
+        getMediaServerConn().adaptiveMedia?.notifyUserQualitySelection();
+      } catch {
+        // media connection not created yet: nothing owns a reduction to relinquish
+      }
+    },
+    [dispatch],
+  );
+
   const screenShareResolutionOptions = useMemo(
     () =>
       getCappedResolutions(
@@ -156,7 +174,7 @@ const DataSavings = () => {
         label={t('header.room-settings.video-quality')}
         id="video-quality"
         value={videoQuality}
-        onChange={(v) => dispatch(updateRoomVideoQuality(v as VideoQuality))}
+        onChange={handleOnChangeVideoQuality}
         options={Object.values(VideoQuality)
           .filter((q) => typeof q === 'number')
           .map((q) => {
