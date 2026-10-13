@@ -212,6 +212,7 @@
       "packet-loss": "数据丢失",
       "rtt": "延迟（RTT）",
       "copy": "副本详情",
+      "no-data-yet": "还没有测量连接。",
       "tooltips": {
         "overall-quality": "你整体的会议体验，基于发送和接收质量。",
         "score": "0到100分的分数代表你们连接的稳定性。",
