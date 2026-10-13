@@ -228,6 +228,8 @@
       },
       "video-paused-banner": "Kết nối yếu — video tạm dừng để giữ âm thanh rõ ràng.",
       "video-stays-paused-banner": "Kết nối yếu — video tạm dừng cho đến khi bạn bật lại.",
+      "video-quality-reduced-banner": "Kết nối yếu — chất lượng video giảm để giữ âm thanh rõ ràng.",
+      "restore-quality": "Khôi phục chất lượng",
       "re-enable-video": "Bật lại video",
       "resume-presentation": "Trình bày sơ yếu lý lịch"
     }
