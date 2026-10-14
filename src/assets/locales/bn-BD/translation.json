@@ -75,7 +75,7 @@
     "nats-error-auth-title": "প্রমাণীকরণ ত্রুটি",
     "nats-error-auth-body": "আমরা আপনার তথ্য যাচাই করতে পারিনি। আপনার সেশনের মেয়াদ শেষ হয়ে যেতে পারে।",
     "user-logged-out": "আপনি লগ আউট হয়েছেন।",
-    "media-server-disconnected-reconnecting": "মিডিয়া সার্ভারের সাথে সংযোগ বিচ্ছিন্ন হয়েছে। পুনরায় সংযোগ করা হচ্ছে...",
+    "media-server-disconnected-reconnecting": "সংযোগ বিঘ্নিত হয়েছে। পুনরায় সংযোগ করা হচ্ছে...",
     "media-server-disconnected": "মিডিয়া সার্ভার থেকে সংযোগ বিচ্ছিন্ন।",
     "preloaded-whiteboard-file-processing": "হোয়াইটবোর্ড ফাইল লোড হচ্ছে...",
     "preloaded-whiteboard-file-processing-error": "হোয়াইটবোর্ড ফাইল লোড করার সময় একটি ত্রুটি ঘটেছে।",
