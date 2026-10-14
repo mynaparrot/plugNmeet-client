@@ -75,7 +75,7 @@
     "nats-error-auth-title": "Login-fejl",
     "nats-error-auth-body": "Vi var ikke i stand til at bekræfte dine oplysninger. Din session kan være udløbet.",
     "user-logged-out": "Du er blevet logget ud.",
-    "media-server-disconnected-reconnecting": "Mistet forbindelsen til medieserveren. Genopretter forbindelsen...",
+    "media-server-disconnected-reconnecting": "Connection interrupted. Reconnecting...",
     "media-server-disconnected": "Afbrudt fra medieserveren.",
     "preloaded-whiteboard-file-processing": "Indlæser whiteboard-fil...",
     "preloaded-whiteboard-file-processing-error": "Der opstod en fejl under indlæsning af whiteboard-filen.",
