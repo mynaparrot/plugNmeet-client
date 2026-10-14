@@ -53,7 +53,7 @@
     "room-disconnected-server-unresponsive": "Anda terputus karena server berhenti merespons.",
     "room-disconnected-reconnecting": "Koneksi terputus. Menyambungkan kembali...",
     "room-disconnected-network-error": "Anda terputus karena masalah jaringan.",
-    "your-connection-lost-or-unstable": "Koneksi Anda agak tidak stabil saat ini. Orang lain mungkin melihat beberapa masalah audio atau video dari Anda.",
+    "your-connection-lost-or-unstable": "Your network is having trouble sending your audio and video. Others may hear or see you with interruptions.",
     "need-to-disable-display-external-link": "Untuk memutar video, harap hentikan dulu berbagi tautan eksternal.",
     "need-to-disable-external-media-player": "Untuk berbagi tautan eksternal, harap hentikan dulu pemutar video.",
     "websocket-disconnected": "Koneksi terputus, mencoba menyambungkan kembali...",
