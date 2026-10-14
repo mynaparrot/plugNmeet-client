@@ -75,7 +75,7 @@
     "nats-error-auth-title": "خطأ في المصادقة",
     "nats-error-auth-body": "لم نتمكن من التحقق من معلوماتك. قد تكون جلستك قد انتهت.",
     "user-logged-out": "لقد تم تسجيل خروجك.",
-    "media-server-disconnected-reconnecting": "فُقد الاتصال بخادم الوسائط. جارٍ إعادة الاتصال...",
+    "media-server-disconnected-reconnecting": "Connection interrupted. Reconnecting...",
     "media-server-disconnected": "تم قطع الاتصال بخادم الوسائط.",
     "preloaded-whiteboard-file-processing": "جارٍ تحميل ملف السبورة...",
     "preloaded-whiteboard-file-processing-error": "حدث خطأ أثناء تحميل ملف السبورة.",
