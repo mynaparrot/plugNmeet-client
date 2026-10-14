@@ -75,7 +75,7 @@
     "nats-error-auth-title": "Lỗi đăng nhập",
     "nats-error-auth-body": "Chúng tôi không thể xác minh thông tin của bạn. Phiên của bạn có thể đã hết hạn.",
     "user-logged-out": "Bạn đã đăng xuất.",
-    "media-server-disconnected-reconnecting": "Mất kết nối với máy chủ phương tiện. Đang kết nối lại...",
+    "media-server-disconnected-reconnecting": "Kết nối bị gián đoạn. Đang kết nối lại...",
     "media-server-disconnected": "Đã ngắt kết nối khỏi máy chủ phương tiện.",
     "preloaded-whiteboard-file-processing": "Đang tải tệp bảng trắng...",
     "preloaded-whiteboard-file-processing-error": "Đã xảy ra lỗi khi tải tệp bảng trắng.",
