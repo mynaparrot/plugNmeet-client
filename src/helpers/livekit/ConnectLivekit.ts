@@ -257,7 +257,8 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
   private onRoomConnectedOrReconnected = () => {
     this.clearReconnectingToast();
     this.turnFallback.onConnectionEstablished();
-    // fresh transport starts from a clean score instead of the old EMA
+    // a fresh transport starts from a clean displayed status (Excellent)
+    // instead of inheriting the previous transport's status
     this.connectionQualityMonitor.resetMeasurementBaseline({ resetScore: true });
   };
 
