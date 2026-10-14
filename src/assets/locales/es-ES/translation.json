@@ -75,7 +75,7 @@
     "nats-error-auth-title": "Error de inicio de sesión",
     "nats-error-auth-body": "No hemos podido verificar su información. Es posible que su sesión haya caducado.",
     "user-logged-out": "Ha cerrado la sesión.",
-    "media-server-disconnected-reconnecting": "Se ha perdido la conexión con el servidor multimedia. Reconectando...",
+    "media-server-disconnected-reconnecting": "Connection interrupted. Reconnecting...",
     "media-server-disconnected": "Desconectado del servidor multimedia.",
     "preloaded-whiteboard-file-processing": "Cargando archivo de la pizarra...",
     "preloaded-whiteboard-file-processing-error": "Se produjo un error al cargar el archivo de la pizarra.",
