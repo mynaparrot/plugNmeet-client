@@ -53,7 +53,7 @@
     "room-disconnected-server-unresponsive": "Bạn đã bị ngắt kết nối vì máy chủ ngừng phản hồi.",
     "room-disconnected-reconnecting": "Mất kết nối. Đang kết nối lại...",
     "room-disconnected-network-error": "Bạn đã bị ngắt kết nối do sự cố mạng.",
-    "your-connection-lost-or-unstable": "Your network is having trouble sending your audio and video. Others may hear or see you with interruptions.",
+    "your-connection-lost-or-unstable": "Mạng của bạn đang gặp khó khăn trong việc gửi âm thanh và hình ảnh. Người khác có thể nghe hoặc nhìn thấy bạn khi bị gián đoạn.",
     "need-to-disable-display-external-link": "Để phát video, vui lòng ngừng chia sẻ liên kết bên ngoài trước.",
     "need-to-disable-external-media-player": "Để chia sẻ liên kết bên ngoài, vui lòng dừng trình phát video trước.",
     "websocket-disconnected": "Mất kết nối, cố gắng kết nối lại...",
