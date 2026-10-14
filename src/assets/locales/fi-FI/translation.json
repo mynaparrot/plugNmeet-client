@@ -75,7 +75,7 @@
     "nats-error-auth-title": "Kirjautumisvirhe",
     "nats-error-auth-body": "Emme pystyneet vahvistamaan tietojasi. Istunto on saattanut vanhentua.",
     "user-logged-out": "Sinut on kirjattu ulos.",
-    "media-server-disconnected-reconnecting": "Yhteys mediapalvelimeen katkesi. Elvyttämään...",
+    "media-server-disconnected-reconnecting": "Connection interrupted. Reconnecting...",
     "media-server-disconnected": "Yhteys mediapalvelimeen katkaistu.",
     "preloaded-whiteboard-file-processing": "Ladataan valkotaulutiedostoa...",
     "preloaded-whiteboard-file-processing-error": "Taulutiedostoa ladattaessa tapahtui virhe.",
