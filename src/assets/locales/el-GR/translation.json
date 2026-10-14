@@ -75,7 +75,7 @@
     "nats-error-auth-title": "Σφάλμα σύνδεσης",
     "nats-error-auth-body": "Δεν ήταν δυνατή η επαλήθευση των στοιχείων σας. Η σύσκεψή σας ενδέχεται να έχει λήξει.",
     "user-logged-out": "Έχετε αποσυνδεθεί.",
-    "media-server-disconnected-reconnecting": "Connection interrupted. Reconnecting...",
+    "media-server-disconnected-reconnecting": "Η σύνδεση διακόπηκε. Επανασύνδεση...",
     "media-server-disconnected": "Αποσυνδέθηκε από τον διακομιστή πολυμέσων.",
     "preloaded-whiteboard-file-processing": "Φόρτωση αρχείου Πίνακα...",
     "preloaded-whiteboard-file-processing-error": "Παρουσιάστηκε σφάλμα κατά τη φόρτωση του αρχείου του Πίνακα.",
