@@ -53,7 +53,7 @@
     "room-disconnected-server-unresponsive": "Azért szakítottak el a kapcsolatot, mert a szerver nem válaszolt.",
     "room-disconnected-reconnecting": "A kapcsolat megszakadt. Újracsatlakoztatás...",
     "room-disconnected-network-error": "Hálózati probléma miatt megszakadt a kapcsolat.",
-    "your-connection-lost-or-unstable": "Your network is having trouble sending your audio and video. Others may hear or see you with interruptions.",
+    "your-connection-lost-or-unstable": "A hálózatodnak gondja a hang- és videóküldéssel. Mások hallhatnak vagy láthatnak megszakításokkal.",
     "need-to-disable-display-external-link": "Videó lejátszásához először hagyja abba a külső hivatkozás megosztását.",
     "need-to-disable-external-media-player": "Külső hivatkozás megosztásához először állítsa le a videólejátszót.",
     "websocket-disconnected": "Megszakadt a kapcsolat, megpróbálom újracsatlakozni...",
