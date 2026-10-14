@@ -53,7 +53,7 @@
     "room-disconnected-server-unresponsive": "Yhteys on katkaistu, koska palvelin lakkasi vastaamasta.",
     "room-disconnected-reconnecting": "Yhteys katkesi. Elvyttämään...",
     "room-disconnected-network-error": "Yhteys katkesi verkko-ongelman vuoksi.",
-    "your-connection-lost-or-unstable": "Your network is having trouble sending your audio and video. Others may hear or see you with interruptions.",
+    "your-connection-lost-or-unstable": "Verkossasi on vaikeuksia lähettää ääntä ja videota. Muut saattavat kuulla tai nähdä sinut keskeytyksillä.",
     "need-to-disable-display-external-link": "Jos haluat toistaa videon, lopeta ensin ulkoisen linkin jakaminen.",
     "need-to-disable-external-media-player": "Jos haluat jakaa ulkoisen linkin, pysäytä ensin videosoitin.",
     "websocket-disconnected": "Yhteys katkesi, yritetään muodostaa yhteyttä uudelleen...",
