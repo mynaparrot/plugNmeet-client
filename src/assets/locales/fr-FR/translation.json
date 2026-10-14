@@ -75,7 +75,7 @@
     "nats-error-auth-title": "Erreur d'authentification",
     "nats-error-auth-body": "Nous n'avons pas pu vérifier vos informations. Votre session a peut-être expiré.",
     "user-logged-out": "Vous avez été déconnecté(e).",
-    "media-server-disconnected-reconnecting": "Connection interrupted. Reconnecting...",
+    "media-server-disconnected-reconnecting": "Connexion interrompue. Reconnexion...",
     "media-server-disconnected": "Déconnecté(e) du serveur multimédia.",
     "preloaded-whiteboard-file-processing": "Chargement du fichier du tableau blanc...",
     "preloaded-whiteboard-file-processing-error": "Une erreur est survenue lors du chargement du fichier du tableau blanc.",
