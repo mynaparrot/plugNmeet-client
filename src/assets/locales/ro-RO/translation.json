@@ -53,7 +53,7 @@
     "room-disconnected-server-unresponsive": "Ai fost deconectat pentru că serverul a încetat să mai răspundă.",
     "room-disconnected-reconnecting": "Conexiune pierdută. Reconectarea...",
     "room-disconnected-network-error": "Ați fost deconectat din cauza unei probleme de rețea.",
-    "your-connection-lost-or-unstable": "Conexiunea ta este puțin instabilă acum. Alții pot observa unele probleme audio sau video din partea ta.",
+    "your-connection-lost-or-unstable": "Your network is having trouble sending your audio and video. Others may hear or see you with interruptions.",
     "need-to-disable-display-external-link": "Pentru a reda un videoclip, vă rugăm să opriți mai întâi partajarea linkului extern.",
     "need-to-disable-external-media-player": "Pentru a partaja un link extern, vă rugăm să opriți mai întâi playerul video.",
     "websocket-disconnected": "Conexiune pierdută, încercarea de a se reconecta...",
