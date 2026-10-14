@@ -53,7 +53,7 @@
     "room-disconnected-server-unresponsive": "به دلیل عدم پاسخگویی سرور، ارتباط شما قطع شد.",
     "room-disconnected-reconnecting": "اتصال قطع شد. در حال اتصال مجدد...",
     "room-disconnected-network-error": "به دلیل مشکل شبکه، ارتباط شما قطع شد.",
-    "your-connection-lost-or-unstable": "Your network is having trouble sending your audio and video. Others may hear or see you with interruptions.",
+    "your-connection-lost-or-unstable": "شبکه شما در ارسال صدا و تصویر مشکل دارد. دیگران ممکن است صدای قطع و وصل شدن شما را بشنوند یا ببینند.",
     "need-to-disable-display-external-link": "برای پخش ویدیو، لطفاً ابتدا اشتراک‌گذاری پیوند خارجی را متوقف کنید.",
     "need-to-disable-external-media-player": "برای اشتراک‌گذاری پیوند خارجی، لطفاً ابتدا پخش‌کننده ویدیو را متوقف کنید.",
     "websocket-disconnected": "اتصال قطع شد، در حال تلاش برای اتصال مجدد...",
