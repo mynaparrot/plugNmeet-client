@@ -75,7 +75,7 @@
     "nats-error-auth-title": "认证错误",
     "nats-error-auth-body": "我们无法验证您的信息。您的会话可能已过期。",
     "user-logged-out": "您已登出。",
-    "media-server-disconnected-reconnecting": "与媒体服务器的连接已断开。正在重新连接...",
+    "media-server-disconnected-reconnecting": "连接中断。重新连接中......",
     "media-server-disconnected": "与媒体服务器断开连接。",
     "preloaded-whiteboard-file-processing": "正在加载白板文件...",
     "preloaded-whiteboard-file-processing-error": "加载白板文件时出错。",
