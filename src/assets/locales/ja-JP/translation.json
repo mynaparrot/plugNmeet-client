@@ -75,7 +75,7 @@
     "nats-error-auth-title": "ログインエラー",
     "nats-error-auth-body": "情報を確認できませんでした。セッションの有効期限が切れている可能性があります。",
     "user-logged-out": "ログアウトしました。",
-    "media-server-disconnected-reconnecting": "Connection interrupted. Reconnecting...",
+    "media-server-disconnected-reconnecting": "接続が中断されました。再接続中...",
     "media-server-disconnected": "メディアサーバーから切断されました。",
     "preloaded-whiteboard-file-processing": "ホワイトボードファイルを読み込んでいます...",
     "preloaded-whiteboard-file-processing-error": "ホワイトボードファイルの読み込み中にエラーが発生しました。",
