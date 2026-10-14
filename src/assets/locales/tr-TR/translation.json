@@ -53,7 +53,7 @@
     "room-disconnected-server-unresponsive": "Sunucu yanıt vermeyi durdurduğu için bağlantınız kesildi.",
     "room-disconnected-reconnecting": "Bağlantı kesildi. Yeniden bağlanılıyor...",
     "room-disconnected-network-error": "Bir ağ sorunu nedeniyle bağlantınız kesildi.",
-    "your-connection-lost-or-unstable": "Şu anda bağlantınız biraz dengesiz. Diğerleri sizde bazı ses veya görüntü sorunları fark edebilir.",
+    "your-connection-lost-or-unstable": "Your network is having trouble sending your audio and video. Others may hear or see you with interruptions.",
     "need-to-disable-display-external-link": "Bir video oynatmak için lütfen önce harici bağlantı paylaşımını durdurun.",
     "need-to-disable-external-media-player": "Harici bir bağlantı paylaşmak için lütfen önce video oynatıcıyı durdurun.",
     "websocket-disconnected": "Bağlantı kesildi, yeniden bağlanmaya çalışılıyor...",
