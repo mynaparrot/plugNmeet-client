@@ -53,7 +53,7 @@
     "room-disconnected-server-unresponsive": "由於伺服器停止回應，您已斷線。",
     "room-disconnected-reconnecting": "連線已中斷。正在重新連線...",
     "room-disconnected-network-error": "由於網路問題，您已斷線。",
-    "your-connection-lost-or-unstable": "Your network is having trouble sending your audio and video. Others may hear or see you with interruptions.",
+    "your-connection-lost-or-unstable": "你的網路在傳送音訊和影像時遇到問題。其他人可能會聽到或看到你，並中斷你。",
     "need-to-disable-display-external-link": "要播放影片，請先停止分享外部連結。",
     "need-to-disable-external-media-player": "要分享外部連結，請先停止影片播放器。",
     "websocket-disconnected": "連線已中斷，正在嘗試重新連線...",
