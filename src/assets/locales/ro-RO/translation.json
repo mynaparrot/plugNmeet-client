@@ -75,7 +75,7 @@
     "nats-error-auth-title": "Eroare de conectare",
     "nats-error-auth-body": "Nu am putut verifica informațiile dvs. Este posibil ca sesiunea să fi expirat.",
     "user-logged-out": "Ați fost deconectat.",
-    "media-server-disconnected-reconnecting": "Connection interrupted. Reconnecting...",
+    "media-server-disconnected-reconnecting": "Conexiunea întreruptă. Reconectare...",
     "media-server-disconnected": "Deconectat de la serverul media.",
     "preloaded-whiteboard-file-processing": "Se încarcă fișierul tablei albe...",
     "preloaded-whiteboard-file-processing-error": "A apărut o eroare la încărcarea fișierului tablei albe.",
