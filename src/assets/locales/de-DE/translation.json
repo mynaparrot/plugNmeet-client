@@ -53,7 +53,7 @@
     "room-disconnected-server-unresponsive": "Ihre Verbindung wurde getrennt, da der Server nicht mehr reagiert.",
     "room-disconnected-reconnecting": "Verbindung getrennt. Erneuter Verbindungsaufbau...",
     "room-disconnected-network-error": "Ihre Verbindung wurde aufgrund eines Netzwerkproblems getrennt.",
-    "your-connection-lost-or-unstable": "Ihre Verbindung ist aktuell instabil. Andere bemerken vielleicht Audio- oder Videoprobleme bei Ihnen.",
+    "your-connection-lost-or-unstable": "Your network is having trouble sending your audio and video. Others may hear or see you with interruptions.",
     "need-to-disable-display-external-link": "Um ein Video abzuspielen, beenden Sie bitte zuerst die Freigabe des externen Links.",
     "need-to-disable-external-media-player": "Um einen externen Link zu teilen, beenden Sie bitte zuerst den Videoplayer.",
     "websocket-disconnected": "Verbindung getrennt. Erneuter Verbindungsaufbau...",
