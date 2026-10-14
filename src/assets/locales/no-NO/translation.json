@@ -75,7 +75,7 @@
     "nats-error-auth-title": "Påloggingsfeil",
     "nats-error-auth-body": "Vi var ikke i stand til å bekrefte informasjonen din. Økten din kan ha utløpt.",
     "user-logged-out": "Du har blitt logget ut.",
-    "media-server-disconnected-reconnecting": "Connection interrupted. Reconnecting...",
+    "media-server-disconnected-reconnecting": "Tilkobling brutt. Kobler til igjen...",
     "media-server-disconnected": "Koblet fra medieserveren.",
     "preloaded-whiteboard-file-processing": "Laster inn tavlefil...",
     "preloaded-whiteboard-file-processing-error": "Det oppsto en feil under lasting av tavlefilen.",
