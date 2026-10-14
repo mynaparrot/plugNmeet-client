@@ -324,6 +324,9 @@ export default class ConnectionQualityMonitor {
   private prevAudioSourceStats: Record<string, PrevAudioSourceStats> = {};
   private lastStats: QualityStats | null = null;
 
+  /** UI subscribers notified whenever the public stats snapshot changes. */
+  private statsListeners = new Set<() => void>();
+
   /** bumped on baseline reset; in-flight stats of a previous generation are discarded */
   private measurementGeneration = 0;
 
@@ -373,6 +376,7 @@ export default class ConnectionQualityMonitor {
         if (stats.measured) {
           this.lastStats = stats;
           this.handleQualityState(stats);
+          this.notifyStatsListeners();
         }
         onQualityUpdate?.(stats);
       } finally {
@@ -414,6 +418,7 @@ export default class ConnectionQualityMonitor {
     // the stop boundary, so a later start on the same track id re-baselines
     this.clearDeltaBaselines();
     this.lastStats = null;
+    this.notifyStatsListeners();
     // outstanding async measurements must never survive a stop boundary
     this.measurementGeneration += 1;
     // a superseded loop must never reschedule or release a newer loop's lock
@@ -422,6 +427,18 @@ export default class ConnectionQualityMonitor {
 
   public getStats = () => {
     return this.lastStats;
+  };
+
+  /** Subscribe to public stats-snapshot changes (a new measured sample or a clear). */
+  public subscribeStats = (listener: () => void) => {
+    this.statsListeners.add(listener);
+    return () => {
+      this.statsListeners.delete(listener);
+    };
+  };
+
+  private notifyStatsListeners = () => {
+    this.statsListeners.forEach((listener) => listener());
   };
 
   /**
@@ -434,6 +451,7 @@ export default class ConnectionQualityMonitor {
     this.poorConnectionHistory = [];
     // getStats() must never show a sample from the old baseline/generation
     this.lastStats = null;
+    this.notifyStatsListeners();
 
     // a fresh transport (connect/reconnect) must not inherit the old EMA, but a
     // visibility reset on the SAME transport keeps the smoothed score

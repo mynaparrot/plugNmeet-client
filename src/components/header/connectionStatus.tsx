@@ -1,17 +1,17 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useSyncExternalStore } from 'react';
 import { Button, Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import { useAppSelector } from '../../store';
 import { getConnectionQualityColor } from '../../helpers/utils';
 import { getMediaServerConn } from '../../helpers/livekit/utils';
-import { QualityStats } from '../../helpers/livekit/ConnectionQualityMonitor';
 import CopyIcon from '../../assets/Icons/CopyIcon';
 import Tooltip from '../../helpers/ui/tooltip';
 
 export const ConnectionStatusPanel = () => {
   const { t } = useTranslation();
-  const [qualityStats, setQualityStats] = useState<QualityStats | null>(null);
+  const qualityMonitor = getMediaServerConn().qualityMonitor;
+  const qualityStats = useSyncExternalStore(qualityMonitor.subscribeStats, qualityMonitor.getStats);
   const [copied, setCopied] = useState(false);
 
   const handleCopy = useCallback(() => {
@@ -20,20 +20,6 @@ export const ConnectionStatusPanel = () => {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }, [qualityStats]);
-
-  const fetchStats = useCallback(() => {
-    const conn = getMediaServerConn();
-    if (conn.qualityMonitor) {
-      const stats = conn.qualityMonitor.getStats();
-      setQualityStats(stats);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchStats();
-    const interval = setInterval(fetchStats, 5000);
-    return () => clearInterval(interval);
-  }, [fetchStats]);
 
   const renderStat = (label: string, value: React.ReactNode, tooltip?: string, color?: string) => (
     <div className="flex justify-between items-center py-2 px-2 rounded-md hover:bg-gray-50 dark:hover:bg-Gray-800 transition">
