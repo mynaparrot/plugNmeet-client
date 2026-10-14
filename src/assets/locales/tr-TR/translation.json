@@ -75,7 +75,7 @@
     "nats-error-auth-title": "Kimlik Doğrulama Hatası",
     "nats-error-auth-body": "Bilgileriniz doğrulanamadı. Oturumunuzun süresi dolmuş olabilir.",
     "user-logged-out": "Oturumunuz kapatıldı.",
-    "media-server-disconnected-reconnecting": "Medya sunucusuyla bağlantı kesildi. Yeniden bağlanılıyor...",
+    "media-server-disconnected-reconnecting": "Bağlantı kesildi. Yeniden bağlanıyor...",
     "media-server-disconnected": "Medya sunucusuyla bağlantı kesildi.",
     "preloaded-whiteboard-file-processing": "Beyaz tahta dosyası yükleniyor...",
     "preloaded-whiteboard-file-processing-error": "Beyaz tahta dosyası yüklenirken bir hata oluştu.",
