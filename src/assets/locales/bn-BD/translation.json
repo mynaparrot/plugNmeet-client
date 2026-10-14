@@ -53,7 +53,7 @@
     "room-disconnected-server-unresponsive": "সার্ভার প্রতিক্রিয়া জানানো বন্ধ করায় আপনার সংযোগ বিচ্ছিন্ন হয়েছে।",
     "room-disconnected-reconnecting": "সংযোগ বিচ্ছিন্ন হয়েছে। পুনরায় সংযোগ করা হচ্ছে...",
     "room-disconnected-network-error": "একটি নেটওয়ার্ক সমস্যার কারণে আপনার সংযোগ বিচ্ছিন্ন হয়েছে।",
-    "your-connection-lost-or-unstable": "Your network is having trouble sending your audio and video. Others may hear or see you with interruptions.",
+    "your-connection-lost-or-unstable": "আপনার নেটওয়ার্কে আপনার অডিও এবং ভিডিও প্রেরণে সমস্যা হচ্ছে। অন্যরা আপনাকে বাধা দিয়ে শুনতে বা দেখতে পারে।",
     "need-to-disable-display-external-link": "একটি ভিডিও প্লে করতে, অনুগ্রহ করে প্রথমে বাহ্যিক লিঙ্ক শেয়ার করা বন্ধ করুন।",
     "need-to-disable-external-media-player": "একটি বাহ্যিক লিঙ্ক শেয়ার করতে, অনুগ্রহ করে প্রথমে ভিডিও প্লেয়ারটি বন্ধ করুন।",
     "websocket-disconnected": "সংযোগ বিচ্ছিন্ন হয়েছে, পুনরায় সংযোগ করার চেষ্টা করা হচ্ছে...",
