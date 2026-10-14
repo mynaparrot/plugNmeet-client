@@ -53,7 +53,7 @@
     "room-disconnected-server-unresponsive": "تم قطع اتصالك لأن الخادم توقف عن الاستجابة.",
     "room-disconnected-reconnecting": "فُقد الاتصال. جارٍ إعادة الاتصال...",
     "room-disconnected-network-error": "تم قطع اتصالك بسبب مشكلة في الشبكة.",
-    "your-connection-lost-or-unstable": "اتصالك غير مستقر قليلا الآن. قد يلاحظ آخرون بعض مشاكل الصوت أو الفيديو منك.",
+    "your-connection-lost-or-unstable": "Your network is having trouble sending your audio and video. Others may hear or see you with interruptions.",
     "need-to-disable-display-external-link": "لتشغيل مقطع فيديو، يرجى إيقاف مشاركة الرابط الخارجي أولاً.",
     "need-to-disable-external-media-player": "لمشاركة رابط خارجي، يرجى إيقاف مشغل الفيديو أولاً.",
     "websocket-disconnected": "فُقد الاتصال، جارٍ محاولة إعادة الاتصال...",
