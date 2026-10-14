@@ -53,7 +53,7 @@
     "room-disconnected-server-unresponsive": "Du har blitt koblet fra fordi serveren sluttet å svare.",
     "room-disconnected-reconnecting": "Forbindelsen tapt. Kobler...",
     "room-disconnected-network-error": "Du ble koblet fra på grunn av et nettverksproblem.",
-    "your-connection-lost-or-unstable": "Forbindelsen din er litt ustabil akkurat nå. Andre kan legge merke til noen lyd- eller bildeproblemer fra deg.",
+    "your-connection-lost-or-unstable": "Your network is having trouble sending your audio and video. Others may hear or see you with interruptions.",
     "need-to-disable-display-external-link": "For å spille av en video, må du slutte å dele den eksterne lenken først.",
     "need-to-disable-external-media-player": "For å dele en ekstern lenke, vennligst stopp videospilleren først.",
     "websocket-disconnected": "Forbindelsen mistet, prøver å koble til igjen...",
