@@ -30,7 +30,7 @@ import ParticipantMediaManager from './ParticipantMediaManager';
 import HandleMediaTracks from './HandleMediaTracks';
 
 import { store } from '../../store';
-import { updateParticipant } from '../../store/slices/participantSlice';
+import { participantsSelector, updateParticipant } from '../../store/slices/participantSlice';
 import { IErrorPageProps } from '../../components/extra-pages/Error';
 import { IConnectLivekit } from './types';
 import i18n from '../i18n';
@@ -42,11 +42,13 @@ import {
   isUserRecorder,
   toNativeTwinIdentity,
   toPlugNmeetUserId,
+  toPlugNmeetUserIdPrimary,
 } from '../utils';
 import { CorsWorker } from '../libs/corsWorker';
 import ConnectionQualityMonitor, {
   PnmConnectionQuality,
   QualityStats,
+  qualityToScore,
 } from './ConnectionQualityMonitor';
 import AdaptiveMediaController from './AdaptiveMediaController';
 import TurnFallbackController from './turn/TurnFallbackController';
@@ -57,6 +59,9 @@ import {
   startNativeHeartbeat,
   teardownNativePublisher,
 } from '../nativeBridge';
+
+/** Only surface the "reconnecting" toast if the transport is still down that long. */
+const RECONNECTING_TOAST_DELAY_MS = 3000;
 
 export default class ConnectLivekit extends EventEmitter implements IConnectLivekit {
   private readonly _errorState: Dispatch<IErrorPageProps>;
@@ -71,6 +76,7 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
   private _room!: Room;
   private readonly _e2eeKeyProvider: ExternalE2EEKeyProvider;
   private toastIdConnecting: number | string | undefined = undefined;
+  private reconnectingToastTimer: ReturnType<typeof setTimeout> | undefined = undefined;
   private wasNormalDisconnected: boolean = false;
   private serverInfo: MediaServerConnInfo | undefined = undefined;
   private readonly turnFallback: TurnFallbackController = new TurnFallbackController(
@@ -80,6 +86,12 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
 
   private lastReportedConnectionQuality: PnmConnectionQuality | null = null;
   private lastDispatchedOverallQuality: PnmConnectionQuality | null = null;
+  /**
+   * Previous MEASURED upload quality, used to confirm a degradation on two
+   * consecutive samples before broadcasting it (see
+   * checkConnectionQualityForFallback).
+   */
+  private lastMeasuredUploadQuality: PnmConnectionQuality | null = null;
   private readonly connectionQualityMonitor: ConnectionQualityMonitor;
   private readonly adaptiveMediaController: AdaptiveMediaController;
 
@@ -120,6 +132,7 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
 
   private onBeforeUnload = () => {
     document.removeEventListener('visibilitychange', this.onVisibilityLifecycle);
+    this.clearReconnectingToast();
     this.adaptiveMediaController.dispose();
     this.connectionQualityMonitor.stop();
     this.turnFallback.onUnload();
@@ -191,7 +204,11 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
       await this._room.connect(serverInfo.url, serverInfo.token, opts);
       this._roomConnectionStatusState('media-server-conn-established');
       // start connection quality monitor
-      this.connectionQualityMonitor.start(this._room, this.checkConnectionQualityForFallback);
+      this.connectionQualityMonitor.start(
+        this._room,
+        this.checkConnectionQualityForFallback,
+        this.isPublisherUplinkPoor,
+      );
 
       this.adaptiveMediaController.attach();
 
@@ -225,9 +242,23 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
     }
   };
 
+  /** Drops a pending reconnect toast and dismisses one already shown. */
+  private clearReconnectingToast = () => {
+    if (this.reconnectingToastTimer !== undefined) {
+      clearTimeout(this.reconnectingToastTimer);
+      this.reconnectingToastTimer = undefined;
+    }
+    if (this.toastIdConnecting !== undefined) {
+      toast.dismiss(this.toastIdConnecting);
+      this.toastIdConnecting = undefined;
+    }
+  };
+
   private onRoomConnectedOrReconnected = () => {
+    this.clearReconnectingToast();
     this.turnFallback.onConnectionEstablished();
-    this.connectionQualityMonitor.resetMeasurementBaseline();
+    // fresh transport starts from a clean score instead of the old EMA
+    this.connectionQualityMonitor.resetMeasurementBaseline({ resetScore: true });
   };
 
   private async configureRoom() {
@@ -272,28 +303,22 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
     const room = new Room(roomOptions);
 
     room.on(RoomEvent.Reconnecting, () => {
+      // TURN evidence resets immediately, but a brief blip must stay silent: the
+      // toast only appears if the transport is still down after the delay.
       this.turnFallback.resetEvidence();
+      this.clearReconnectingToast();
 
-      this.toastIdConnecting = toast.loading(
-        i18n.t('notifications.media-server-disconnected-reconnecting'),
-        {
-          type: 'warning',
-          closeButton: false,
-          autoClose: false,
-        },
-      );
-    });
-    room.on(RoomEvent.Connected, () => {
-      if (typeof this.toastIdConnecting !== 'undefined') {
-        toast.dismiss(this.toastIdConnecting);
-        this.toastIdConnecting = undefined;
-      }
-    });
-    room.on(RoomEvent.Reconnected, () => {
-      if (typeof this.toastIdConnecting !== 'undefined') {
-        toast.dismiss(this.toastIdConnecting);
-        this.toastIdConnecting = undefined;
-      }
+      this.reconnectingToastTimer = setTimeout(() => {
+        this.reconnectingToastTimer = undefined;
+        this.toastIdConnecting = toast.loading(
+          i18n.t('notifications.media-server-disconnected-reconnecting'),
+          {
+            type: 'warning',
+            closeButton: false,
+            autoClose: false,
+          },
+        );
+      }, RECONNECTING_TOAST_DELAY_MS);
     });
     room.on(RoomEvent.Connected, this.onRoomConnectedOrReconnected);
     room.on(RoomEvent.Reconnected, this.onRoomConnectedOrReconnected);
@@ -364,9 +389,7 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
 
     this.turnFallback.dispose();
 
-    if (typeof this.toastIdConnecting !== 'undefined') {
-      toast.dismiss(this.toastIdConnecting);
-    }
+    this.clearReconnectingToast();
 
     if (this.wasNormalDisconnected) {
       // no need to show any message
@@ -414,6 +437,22 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
     console.error(error);
   };
 
+  /**
+   * True when a remote publisher currently reports its OWN upload as Poor/Lost
+   * (broadcast via USER_CONNECTION_QUALITY_CHANGE and stored on the participant
+   * in the participants slice). Their uplink loss reaches us through the SFU,
+   * so it must never be attributed to our download.
+   */
+  private isPublisherUplinkPoor = (identity: string): boolean => {
+    const participant = participantsSelector.selectById(
+      store.getState(),
+      toPlugNmeetUserIdPrimary(identity),
+    );
+    const quality = participant?.connectionQuality;
+
+    return quality === PnmConnectionQuality.Poor || quality === PnmConnectionQuality.Lost;
+  };
+
   private checkConnectionQualityForFallback = async (stats: QualityStats) => {
     /*
      * Synthetic (unmeasured) samples still feed adaptation and TURN evidence
@@ -435,22 +474,53 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
         );
       }
 
-      // For broadcasting - only send our own connection's quality
-      const qualityChanged = this.lastReportedConnectionQuality !== stats.uploadQuality;
-      if (qualityChanged) {
-        this.lastReportedConnectionQuality = stats.uploadQuality;
+      // For broadcasting - only send our own connection's quality.
+      // An improvement is reported immediately, but a degradation must be
+      // confirmed by the previous measured sample also being below the reference
+      // level (the last reported one, or Excellent while nothing was reported
+      // yet, which also keeps a first noisy Poor/Lost sample from alarming
+      // others); the LESS severe (confirmed) level is then broadcast, so a
+      // single noisy sample never alarms other participants with a severity that
+      // was not seen twice in a row at least at that level.
+      const reportedQuality = this.lastReportedConnectionQuality;
+      const previousMeasuredQuality = this.lastMeasuredUploadQuality;
+      this.lastMeasuredUploadQuality = stats.uploadQuality;
+
+      const reference = reportedQuality ?? PnmConnectionQuality.Excellent;
+      let qualityToBroadcast: PnmConnectionQuality | null = null;
+
+      if (
+        (reportedQuality === null &&
+          qualityToScore(stats.uploadQuality) >= qualityToScore(PnmConnectionQuality.Good)) ||
+        (reportedQuality !== null &&
+          qualityToScore(stats.uploadQuality) > qualityToScore(reportedQuality))
+      ) {
+        qualityToBroadcast = stats.uploadQuality;
+      } else if (
+        previousMeasuredQuality !== null &&
+        qualityToScore(stats.uploadQuality) < qualityToScore(reference) &&
+        qualityToScore(previousMeasuredQuality) < qualityToScore(reference)
+      ) {
+        qualityToBroadcast =
+          qualityToScore(previousMeasuredQuality) > qualityToScore(stats.uploadQuality)
+            ? previousMeasuredQuality
+            : stats.uploadQuality;
+      }
+
+      if (qualityToBroadcast !== null) {
+        this.lastReportedConnectionQuality = qualityToBroadcast;
 
         const conn = getNatsConn();
         if (conn) {
           conn.sendAnalyticsData(
             AnalyticsEvents.ANALYTICS_EVENT_USER_CONNECTION_QUALITY,
             AnalyticsEventType.USER,
-            stats.uploadQuality,
+            qualityToBroadcast,
           );
 
           void conn.sendDataMessage(
             DataMsgBodyType.USER_CONNECTION_QUALITY_CHANGE,
-            stats.uploadQuality,
+            qualityToBroadcast,
           );
         }
       }

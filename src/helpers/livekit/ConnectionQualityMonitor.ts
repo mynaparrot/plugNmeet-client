@@ -11,6 +11,26 @@ export enum PnmConnectionQuality {
   Lost = 'lost',
 }
 
+/**
+ * Coarse severity ordering for `PnmConnectionQuality` (higher = healthier).
+ * Shared by score smoothing and by the broadcast-side degradation confirmation
+ * so both agree on what "better"/"worse" means.
+ */
+export const qualityToScore = (quality: PnmConnectionQuality): number => {
+  switch (quality) {
+    case PnmConnectionQuality.Excellent:
+      return 100;
+    case PnmConnectionQuality.Good:
+      return 75;
+    case PnmConnectionQuality.Poor:
+      return 40;
+    case PnmConnectionQuality.Lost:
+      return 20;
+    default:
+      return 100;
+  }
+};
+
 const EXCELLENT_PACKET_LOSS_THRESHOLD = 3;
 const GOOD_PACKET_LOSS_THRESHOLD = 10;
 export const LOST_PACKET_LOSS_THRESHOLD = 20;
@@ -38,7 +58,7 @@ const DECREASE_FACTOR = 0.8;
 const INCREASE_FACTOR = 0.4;
 
 const MIN_ACTIVE_PACKETS_FOR_RECEIVE_ANALYSIS = 20;
-const MIN_STREAMS_FOR_DOWNLOAD_ISSUE = 2;
+const MIN_PUBLISHERS_FOR_DOWNLOAD_ISSUE = 2;
 const DOWNLOAD_ISSUE_POOR_STREAM_RATIO = 0.6;
 
 /*
@@ -126,6 +146,11 @@ export type RemoteReceiveStats = {
   packetsLostDelta: number;
   packetsReceivedDelta: number;
   quality: PnmConnectionQuality;
+  /**
+   * LiveKit identity of the remote publisher this stream belongs to, when the
+   * inbound track could be mapped to one. Undefined when unmappable.
+   */
+  publisherIdentity?: string;
 };
 
 export type QualityStats = {
@@ -152,7 +177,7 @@ export type QualityStats = {
 
   rawPacketLoss: number;
   rtt: number | null;
-  /** Upload-path RTT only (publisher candidate pair + remote-inbound RTP). */
+  /** Upload-path RTT only (selected publisher candidate pair). */
   uploadRtt: number | null;
   /**
    * Receive-path RTT (subscriber candidate pair). In a single-PC publisher-only
@@ -192,7 +217,6 @@ type WebRTCStat = {
   packetsLost?: number;
   packetsReceived?: number;
   fractionLost?: number;
-  roundTripTime?: number;
   state?: string;
   selected?: boolean;
   nominated?: boolean;
@@ -217,7 +241,7 @@ type WebRTCStat = {
 type QualityCheckState = {
   maxPacketLoss: number;
 
-  /** upload-path RTT (publisher candidate pair + remote-inbound RTP) */
+  /** upload-path RTT (selected publisher candidate pair) */
   uploadRtt: number | null;
   /** receive-path RTT (subscriber candidate pair) */
   receiveRtt: number | null;
@@ -276,6 +300,13 @@ type ReportEvidence = {
 export default class ConnectionQualityMonitor {
   private room: Room | undefined;
 
+  /**
+   * Injected by the caller: does this remote publisher currently report its OWN
+   * upload as Poor/Lost? Their loss reaches me through the SFU, so it must not
+   * be read as my download problem.
+   */
+  private isPublisherUplinkPoor: ((identity: string) => boolean) | undefined;
+
   private poorConnectionHistory: boolean[] = [];
   private lastPoorConnectionNotificationAt = 0;
   private poorConnectionNotificationCount: number = 0;
@@ -299,9 +330,14 @@ export default class ConnectionQualityMonitor {
   /** identifies the active sampling loop; a superseded loop must never touch state */
   private samplingLoopToken = 0;
 
-  public start = (room: Room, onQualityUpdate?: (stats: QualityStats) => void) => {
+  public start = (
+    room: Room,
+    onQualityUpdate?: (stats: QualityStats) => void,
+    isPublisherUplinkPoor?: (identity: string) => boolean,
+  ) => {
     this.stop();
     this.room = room;
+    this.isPublisherUplinkPoor = isPublisherUplinkPoor;
     this.isStopped = false;
 
     document.addEventListener('visibilitychange', this.handleVisibilityChange);
@@ -330,11 +366,12 @@ export default class ConnectionQualityMonitor {
           return;
         }
 
-        this.lastStats = stats;
-
-        // a synthetic/unmeasured sample must not move score, history or
-        // notifications; it is still emitted for TURN diagnostics/adaptation
+        // only a genuinely measured sample may back the diagnostics panel;
+        // a synthetic/unmeasured sample must not move score, history,
+        // notifications or getStats(), but is still emitted for TURN
+        // diagnostics/adaptation
         if (stats.measured) {
+          this.lastStats = stats;
           this.handleQualityState(stats);
         }
         onQualityUpdate?.(stats);
@@ -391,12 +428,19 @@ export default class ConnectionQualityMonitor {
    * Drops stale stat deltas/history at any boundary and discards (instead
    * of consuming) an in-flight stats collection.
    */
-  public resetMeasurementBaseline = () => {
+  public resetMeasurementBaseline = (options?: { resetScore?: boolean }) => {
     this.measurementGeneration += 1;
     this.clearDeltaBaselines();
     this.poorConnectionHistory = [];
     // getStats() must never show a sample from the old baseline/generation
     this.lastStats = null;
+
+    // a fresh transport (connect/reconnect) must not inherit the old EMA, but a
+    // visibility reset on the SAME transport keeps the smoothed score
+    if (options?.resetScore) {
+      this.qualityScore = MAX_SCORE;
+      this.currentQuality = PnmConnectionQuality.Excellent;
+    }
   };
 
   // pre-hide baselines are stale (throttled timers, adaptive-paused video);
@@ -427,6 +471,7 @@ export default class ConnectionQualityMonitor {
     statsReport: RTCStatsReport | undefined,
     state: QualityCheckState,
     rttTarget: 'upload' | 'receive' | 'both',
+    publisherIdentityByTrackId: Map<string, string>,
   ): ReportEvidence {
     if (!statsReport) return { present: false, uploadUsable: false, receiveUsable: false };
 
@@ -527,7 +572,7 @@ export default class ConnectionQualityMonitor {
          * defines RTCStats.timestamp as the time the corresponding RTCP RR was
          * received, so a strictly advancing timestamp is the one standard
          * freshness proof. An unchanged (or absent) timestamp proves nothing,
-         * so a stale fractionLost/RTT is never re-counted as fresh distress and
+         * so a stale fractionLost is never re-counted as fresh distress and
          * never counts as healthy recovery.
          */
         const hasFreshReport = this.resolveFreshness(timestamp, prev?.timestamp) ?? false;
@@ -548,13 +593,12 @@ export default class ConnectionQualityMonitor {
           uploadUsable = true;
         }
 
-        if (hasFreshReport && typeof stat.roundTripTime === 'number') {
-          const rttMs = stat.roundTripTime * 1000;
-          if (this.isSaneRtt(rttMs)) {
-            state.uploadRtt = this.updateMaxRtt(state.uploadRtt, rttMs);
-            uploadUsable = true;
-          }
-        }
+        /*
+         * remote-inbound-rtp.roundTripTime is deliberately ignored: the SFU RR
+         * DLSR mixes monotonic-anchored arrival with wall-clock now, so the
+         * browser RTT carries a constant bogus offset (~2535ms observed vs ~1ms
+         * pair RTT). Upload RTT comes only from the selected candidate pair.
+         */
 
         this.prevRemoteInboundStats[ssrc] = { timestamp };
 
@@ -713,6 +757,13 @@ export default class ConnectionQualityMonitor {
         const ssrc = String(stat.ssrc ?? stat.id);
         state.activeInboundSsrcs.add(ssrc);
 
+        // inbound-rtp is keyed by trackIdentifier; attribute it to the remote
+        // publisher that owns that track so its loss can be told apart from mine
+        const publisherIdentity =
+          typeof stat.trackIdentifier === 'string'
+            ? publisherIdentityByTrackId.get(stat.trackIdentifier)
+            : undefined;
+
         const currentLost = Math.max(0, stat.packetsLost || 0);
         const currentReceived = Math.max(0, stat.packetsReceived || 0);
 
@@ -727,8 +778,25 @@ export default class ConnectionQualityMonitor {
 
             if (total > 0) {
               const loss = (lostDelta / total) * 100;
-              state.inboundPacketLoss = Math.max(state.inboundPacketLoss, loss);
-              state.maxPacketLoss = Math.max(state.maxPacketLoss, loss);
+
+              /*
+               * A remote publisher's own bad uplink propagates to every
+               * subscriber through the SFU, so its loss is theirs: keep it out
+               * of MY receive-loss diagnostics (receivePacketLoss/rawPacketLoss).
+               */
+              const selfReportedPoorUplink =
+                publisherIdentity !== undefined &&
+                this.isPublisherUplinkPoor?.(publisherIdentity) === true;
+
+              if (!selfReportedPoorUplink) {
+                state.inboundPacketLoss = Math.max(state.inboundPacketLoss, loss);
+                // the rawPacketLoss diagnostic trusts only intervals with enough
+                // packets: a 1-of-2 sample must not read as 50% loss. The delta
+                // still drives inboundPacketLoss/classification.
+                if (total >= MIN_ACTIVE_PACKETS_FOR_RECEIVE_ANALYSIS) {
+                  state.maxPacketLoss = Math.max(state.maxPacketLoss, loss);
+                }
+              }
 
               // a real delta over a known interval proves the download direction
               // is delivering (even at zero loss), so it is genuine receive
@@ -745,6 +813,7 @@ export default class ConnectionQualityMonitor {
                   packetLoss: loss,
                   rtt: null,
                 }),
+                publisherIdentity,
               });
             }
           }
@@ -1028,12 +1097,23 @@ export default class ConnectionQualityMonitor {
      * routes to 'both', every other mode keeps the publisher report on upload.
      */
     const publisherIsSinglePc = pcManager.mode === 'publisher-only';
+
+    // built once per collection (not per inbound stat) so publisher attribution
+    // is cheap and consistent across both reports
+    const publisherIdentityByTrackId = this.buildPublisherIdentityByTrackId();
+
     const publisherEvidence = this._processStatsReport(
       publisherReport,
       state,
       publisherIsSinglePc ? 'both' : 'upload',
+      publisherIdentityByTrackId,
     );
-    const subscriberEvidence = this._processStatsReport(subscriberReport, state, 'receive');
+    const subscriberEvidence = this._processStatsReport(
+      subscriberReport,
+      state,
+      'receive',
+      publisherIdentityByTrackId,
+    );
 
     Object.keys(this.prevInboundStats).forEach((ssrc) => {
       if (!state.activeInboundSsrcs.has(ssrc)) {
@@ -1261,6 +1341,29 @@ export default class ConnectionQualityMonitor {
     return false;
   }
 
+  /**
+   * Maps each subscribed remote track's MediaStreamTrack.id to its publisher's
+   * LiveKit identity, so an inbound-rtp entry (keyed by trackIdentifier) can be
+   * attributed to the publisher that owns it. Built once per collection;
+   * unmappable tracks are simply absent from the map.
+   */
+  private buildPublisherIdentityByTrackId(): Map<string, string> {
+    const identityByTrackId = new Map<string, string>();
+    const participants = this.room?.remoteParticipants;
+    if (!participants) return identityByTrackId;
+
+    for (const participant of participants.values()) {
+      for (const publication of participant.trackPublications.values()) {
+        const trackId = publication.track?.mediaStreamTrack?.id;
+        if (trackId) {
+          identityByTrackId.set(trackId, participant.identity);
+        }
+      }
+    }
+
+    return identityByTrackId;
+  }
+
   private classify({
     packetLoss,
     rtt,
@@ -1379,7 +1482,7 @@ export default class ConnectionQualityMonitor {
     // synthetic/invalidated samples must not move the smoothed score; they
     // report the last genuinely measured quality instead
     if (input.measured) {
-      const rawScore = this.qualityToScore(worstQuality);
+      const rawScore = qualityToScore(worstQuality);
       const factor = rawScore < this.qualityScore ? DECREASE_FACTOR : INCREASE_FACTOR;
 
       this.qualityScore = factor * rawScore + (1 - factor) * this.qualityScore;
@@ -1425,25 +1528,46 @@ export default class ConnectionQualityMonitor {
     };
   }
 
+  /*
+   * A remote publisher's uplink loss propagates to every subscriber, so one
+   * lossy publisher must not read as MY download problem — counting streams
+   * would even double-count its audio+video. Group active streams by publisher
+   * and drop any already self-reporting a poor uplink: a lone remaining
+   * publisher counts only once it has passed that filter, while with several at
+   * least MIN_PUBLISHERS must be poor and the poor ratio must be met.
+   */
   private isLikelyMyDownloadIssue(remoteReceiveStats: RemoteReceiveStats[]): boolean {
-    const activeStreams = remoteReceiveStats.filter(
-      (stat) =>
-        stat.packetsLostDelta + stat.packetsReceivedDelta >=
-        MIN_ACTIVE_PACKETS_FOR_RECEIVE_ANALYSIS,
-    );
+    const publisherIsPoor = new Map<string, boolean>();
 
-    if (activeStreams.length === 0) return false;
+    for (const stat of remoteReceiveStats) {
+      const total = stat.packetsLostDelta + stat.packetsReceivedDelta;
+      if (total < MIN_ACTIVE_PACKETS_FOR_RECEIVE_ANALYSIS) continue;
 
-    const poorStreams = activeStreams.filter(
-      (stat) =>
-        stat.quality === PnmConnectionQuality.Poor || stat.quality === PnmConnectionQuality.Lost,
-    );
+      // their uplink, not my download (see the injected predicate)
+      if (stat.publisherIdentity && this.isPublisherUplinkPoor?.(stat.publisherIdentity)) {
+        continue;
+      }
 
-    if (activeStreams.length < MIN_STREAMS_FOR_DOWNLOAD_ISSUE) {
-      return poorStreams.length > 0;
+      // unmappable streams fall back to one group per SSRC (conservative)
+      const key = stat.publisherIdentity ?? `ssrc:${stat.ssrc}`;
+      const poor =
+        stat.quality === PnmConnectionQuality.Poor || stat.quality === PnmConnectionQuality.Lost;
+
+      publisherIsPoor.set(key, (publisherIsPoor.get(key) ?? false) || poor);
     }
 
-    return poorStreams.length / activeStreams.length >= DOWNLOAD_ISSUE_POOR_STREAM_RATIO;
+    if (publisherIsPoor.size === 0) return false;
+
+    const poorPublishers = [...publisherIsPoor.values()].filter(Boolean).length;
+
+    if (publisherIsPoor.size < MIN_PUBLISHERS_FOR_DOWNLOAD_ISSUE) {
+      return poorPublishers > 0;
+    }
+
+    return (
+      poorPublishers >= MIN_PUBLISHERS_FOR_DOWNLOAD_ISSUE &&
+      poorPublishers / publisherIsPoor.size >= DOWNLOAD_ISSUE_POOR_STREAM_RATIO
+    );
   }
 
   private handleQualityState(stats: QualityStats) {
@@ -1512,21 +1636,6 @@ export default class ConnectionQualityMonitor {
     if (uploadRtt === null) return receiveRtt;
     if (receiveRtt === null) return uploadRtt;
     return Math.max(uploadRtt, receiveRtt);
-  }
-
-  private qualityToScore(quality: PnmConnectionQuality): number {
-    switch (quality) {
-      case PnmConnectionQuality.Excellent:
-        return 100;
-      case PnmConnectionQuality.Good:
-        return 75;
-      case PnmConnectionQuality.Poor:
-        return 40;
-      case PnmConnectionQuality.Lost:
-        return 20;
-      default:
-        return 100;
-    }
   }
 
   private scoreToQuality(score: number): PnmConnectionQuality {

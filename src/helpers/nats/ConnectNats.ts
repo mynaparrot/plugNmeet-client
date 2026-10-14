@@ -444,9 +444,9 @@ export default class ConnectNats {
           this.notifyReconnect();
           break;
         case 'slowConsumer':
-          toast(i18n.t('notifications.your-connection-quality-not-good'), {
-            type: 'warning',
-          });
+          // the client is not consuming fast enough (busy CPU or a throttled
+          // tab), which is not proof of a bad network; keep it out of the UI
+          console.warn('NATS slow consumer: client is not keeping up with the subscription');
           break;
       }
     }

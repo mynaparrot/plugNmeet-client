@@ -75,7 +75,7 @@
     "nats-error-auth-title": "Login Error",
     "nats-error-auth-body": "We were not able to verify your information. Your session may have expired.",
     "user-logged-out": "You have been logged out.",
-    "media-server-disconnected-reconnecting": "Lost connection to the media server. Reconnecting...",
+    "media-server-disconnected-reconnecting": "Connection interrupted. Reconnecting...",
     "media-server-disconnected": "Disconnected from the media server.",
     "preloaded-whiteboard-file-processing": "Loading whiteboard file...",
     "preloaded-whiteboard-file-processing-error": "There was an error loading the whiteboard file.",

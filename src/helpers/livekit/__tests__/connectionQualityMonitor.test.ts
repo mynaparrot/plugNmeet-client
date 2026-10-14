@@ -355,8 +355,62 @@ function inbound(
   kind: 'video' | 'audio',
   packetsLost: number,
   packetsReceived: number,
+  trackIdentifier?: string,
 ) {
-  return { type: 'inbound-rtp', ssrc, kind, packetsLost, packetsReceived };
+  return { type: 'inbound-rtp', ssrc, kind, packetsLost, packetsReceived, trackIdentifier };
+}
+
+/**
+ * A remote participant holding one live subscribed track per given
+ * MediaStreamTrack.id, so the monitor can attribute inbound-rtp (keyed by
+ * trackIdentifier) to this publisher's LiveKit identity.
+ */
+function remotePublisher(identity: string, trackIds: string[]): [string, unknown] {
+  const publications = new Map<string, unknown>(
+    trackIds.map((id, index) => [
+      `p${index}`,
+      {
+        kind: 'video',
+        isSubscribed: true,
+        track: { mediaStreamTrack: { id, readyState: 'live' } },
+      },
+    ]),
+  );
+
+  return [identity, { identity, trackPublications: publications }];
+}
+
+/**
+ * Mutable per-SSRC inbound counters plus a subscriber-report builder, so a test
+ * can establish a baseline and then advance individual streams. Each stream
+ * carries its publisher's track id (trackIdentifier).
+ */
+function inboundHarness() {
+  const counters = new Map<string, { lost: number; received: number }>();
+
+  const stream = (ssrc: string, kind: 'audio' | 'video', trackId: string) => {
+    counters.set(ssrc, { lost: 0, received: 0 });
+    return { ssrc, kind, trackId };
+  };
+
+  const advance = (ssrc: string, lost: number, received: number) => {
+    const counter = counters.get(ssrc);
+    if (!counter) throw new Error(`unknown ssrc ${ssrc}`);
+    counter.lost += lost;
+    counter.received += received;
+  };
+
+  const report = (streams: Array<{ ssrc: string; kind: 'audio' | 'video'; trackId: string }>) => [
+    transport('sub-pair'),
+    candidatePair('sub-pair', 0.02, { selected: true }),
+    ...streams.map(({ ssrc, kind, trackId }) => {
+      const counter = counters.get(ssrc);
+      if (!counter) throw new Error(`unknown ssrc ${ssrc}`);
+      return inbound(ssrc, kind, counter.lost, counter.received, trackId);
+    }),
+  ];
+
+  return { stream, advance, report };
 }
 
 const SUBSCRIBER_REPORT = Promise.resolve([inbound('sub', 'video', 0, 0)]);
@@ -520,6 +574,34 @@ describe('ConnectionQualityMonitor', () => {
     expect(sample?.remoteReceiveStats).toEqual([]);
   });
 
+  it('resetMeasurementBaseline resets the score only on the connect/reconnect path', async () => {
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        publisherGetStats: () =>
+          Promise.resolve([
+            remoteInbound({ ssrc: 'a', fractionLost: 0.5, roundTripTime: 0.5, timestamp: 1000 }),
+          ]),
+      }),
+      () => undefined,
+    );
+
+    await settle();
+    const measuredScore = monitor.getStats()?.score ?? 0;
+    expect(measuredScore).toBeLessThan(100);
+    expect(monitor.getOverallQuality()).toBe('poor');
+
+    // a visibility reset happens on the SAME transport, so the smoothed score
+    // (and the shown quality) must survive it
+    monitor.resetMeasurementBaseline();
+    expect(monitor.getOverallQuality()).toBe('poor');
+
+    // the connect/reconnect reset starts the fresh transport from a clean score
+    monitor.resetMeasurementBaseline({ resetScore: true });
+    expect(monitor.getStats()).toBeNull();
+    expect(monitor.getOverallQuality()).toBe('excellent');
+  });
+
   it('the visibility boundary itself invalidates measurements (hidden drops the sample, unhide starts fresh)', async () => {
     const samples: QualityStats[] = [];
     let immediateReport: unknown = PUB_R1;
@@ -638,6 +720,229 @@ describe('ConnectionQualityMonitor', () => {
     expect(samples).toHaveLength(1);
     expect(samples[0].measured).toBe(false);
     expect(samples[0].remoteReceiveStats).toEqual([]);
+  });
+
+  it('getStats() ignores a synthetic sample and keeps the last measured one until a reset', async () => {
+    const samples: QualityStats[] = [];
+    const room = makeRoom({
+      publisherGetStats: () => Promise.resolve(PUB_R5),
+      subscriberGetStats: () => SUBSCRIBER_REPORT,
+    });
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(room, (stats) => samples.push(stats));
+
+    await settle();
+    const measured = monitor.getStats();
+    expect(measured?.measured).toBe(true);
+
+    // the transport drops/reconnects: the next sample is synthetic (unmeasured)
+    (room as unknown as { state: string }).state = 'reconnecting';
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+
+    // it is still emitted for adaptation/TURN evidence ...
+    expect(samples).toHaveLength(2);
+    expect(samples[1].measured).toBe(false);
+    expect(samples[1].rawPacketLoss).toBe(100);
+    // ... but its alarming values must never back the diagnostics panel
+    expect(monitor.getStats()).toBe(measured);
+
+    // a real baseline reset (reconnect/visibility) clears it entirely
+    monitor.resetMeasurementBaseline();
+    expect(monitor.getStats()).toBeNull();
+  });
+
+  it('rawPacketLoss ignores inbound intervals with too few packets to be meaningful', async () => {
+    const samples: QualityStats[] = [];
+    let lost = 0;
+    let received = 0;
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        publisherGetStats: () =>
+          Promise.resolve([...PUB_PAIR, inbound('pub', 'video', lost, received)]),
+      }),
+      (stats) => samples.push(stats),
+    );
+
+    // sample 1 establishes the 0/0 baseline
+    await settle();
+    expect(monitor.getStats()?.measured).toBe(true);
+    expect(monitor.getStats()?.rawPacketLoss).toBe(0);
+
+    // a 1-lost/1-received interval is 50% loss over only 2 packets: too small
+    // to be trusted by the rawPacketLoss diagnostic (classification still sees
+    // the delta)
+    lost = 1;
+    received = 1;
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    expect(samples).toHaveLength(2);
+    expect(samples[1].measured).toBe(true);
+    expect(samples[1].remoteReceiveStats[0].packetLoss).toBeCloseTo(50, 5);
+    expect(samples[1].rawPacketLoss).toBe(0);
+
+    // an interval with enough packets IS trusted
+    lost = 11;
+    received = 11; // delta 10 lost / 10 received = 50% over 20 packets
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    expect(samples).toHaveLength(3);
+    expect(samples[2].rawPacketLoss).toBeCloseTo(50, 5);
+  });
+});
+
+describe('ConnectionQualityMonitor download-issue attribution', () => {
+  it('a self-reported-poor publisher is the cause, not my download', async () => {
+    const samples: QualityStats[] = [];
+    const h = inboundHarness();
+    const streams = [h.stream('sa', 'audio', 'a1'), h.stream('sv', 'video', 'v1')];
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        publisherGetStats: () => Promise.resolve(PUB_PAIR),
+        subscriberGetStats: () => Promise.resolve(h.report(streams)),
+        remoteParticipants: new Map([remotePublisher('user1', ['a1', 'v1'])]),
+      }),
+      (s) => samples.push(s),
+      (identity) => identity === 'user1',
+    );
+
+    await settle(); // baseline 0/0
+    // both of the publisher's streams become 50% lossy
+    h.advance('sa', 10, 10);
+    h.advance('sv', 10, 10);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+
+    expect(samples).toHaveLength(2);
+    expect(samples[1].isLikelyDownloadIssue).toBe(false);
+    // their uplink loss must not show up as my receive loss
+    expect(samples[1].receivePacketLoss).toBe(0);
+    expect(samples[1].rawPacketLoss).toBe(0);
+    expect(samples[1].isReceivingPoor).toBe(false);
+    expect(samples[1].receiveQuality).toBe('excellent');
+    // diagnostic exposure is unchanged, only attributed to its publisher
+    expect(samples[1].remoteReceiveStats[0].publisherIdentity).toBe('user1');
+  });
+
+  it('a lone lossy publisher that does not self-report is plausibly my download issue', async () => {
+    const samples: QualityStats[] = [];
+    const h = inboundHarness();
+    const streams = [h.stream('sa', 'audio', 'a1'), h.stream('sv', 'video', 'v1')];
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        publisherGetStats: () => Promise.resolve(PUB_PAIR),
+        subscriberGetStats: () => Promise.resolve(h.report(streams)),
+        remoteParticipants: new Map([remotePublisher('user1', ['a1', 'v1'])]),
+      }),
+      (s) => samples.push(s),
+      () => false,
+    );
+
+    await settle();
+    h.advance('sa', 10, 10);
+    h.advance('sv', 10, 10);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+
+    expect(samples).toHaveLength(2);
+    expect(samples[1].isLikelyDownloadIssue).toBe(true);
+    expect(samples[1].receivePacketLoss).toBeCloseTo(50, 5);
+    expect(samples[1].receiveQuality).toBe('lost');
+    expect(samples[1].isReceivingPoor).toBe(true);
+  });
+
+  it('one lossy publisher among three is not my download issue', async () => {
+    const samples: QualityStats[] = [];
+    const h = inboundHarness();
+    const streams = [
+      h.stream('sa1', 'audio', 'a1'),
+      h.stream('sv1', 'video', 'v1'),
+      h.stream('sa2', 'audio', 'a2'),
+      h.stream('sv2', 'video', 'v2'),
+      h.stream('sa3', 'audio', 'a3'),
+      h.stream('sv3', 'video', 'v3'),
+    ];
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        publisherGetStats: () => Promise.resolve(PUB_PAIR),
+        subscriberGetStats: () => Promise.resolve(h.report(streams)),
+        remoteParticipants: new Map([
+          remotePublisher('user1', ['a1', 'v1']),
+          remotePublisher('user2', ['a2', 'v2']),
+          remotePublisher('user3', ['a3', 'v3']),
+        ]),
+      }),
+      (s) => samples.push(s),
+      () => false,
+    );
+
+    await settle();
+    // only user1's audio+video are lossy; user2/user3 deliver cleanly
+    h.advance('sa1', 10, 10);
+    h.advance('sv1', 10, 10);
+    h.advance('sa2', 0, 20);
+    h.advance('sv2', 0, 20);
+    h.advance('sa3', 0, 20);
+    h.advance('sv3', 0, 20);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+
+    expect(samples).toHaveLength(2);
+    // one publisher's audio+video count once (not two streams), 1/3 is not a
+    // majority and a lone lossy publisher is never my download issue
+    expect(samples[1].isLikelyDownloadIssue).toBe(false);
+  });
+
+  it('two lossy publishers among three is my download issue', async () => {
+    const samples: QualityStats[] = [];
+    const h = inboundHarness();
+    const streams = [
+      h.stream('sa1', 'audio', 'a1'),
+      h.stream('sv1', 'video', 'v1'),
+      h.stream('sa2', 'audio', 'a2'),
+      h.stream('sv2', 'video', 'v2'),
+      h.stream('sa3', 'audio', 'a3'),
+      h.stream('sv3', 'video', 'v3'),
+    ];
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        publisherGetStats: () => Promise.resolve(PUB_PAIR),
+        subscriberGetStats: () => Promise.resolve(h.report(streams)),
+        remoteParticipants: new Map([
+          remotePublisher('user1', ['a1', 'v1']),
+          remotePublisher('user2', ['a2', 'v2']),
+          remotePublisher('user3', ['a3', 'v3']),
+        ]),
+      }),
+      (s) => samples.push(s),
+      () => false,
+    );
+
+    await settle();
+    // user1 and user2 are lossy; user3 delivers cleanly
+    h.advance('sa1', 10, 10);
+    h.advance('sv1', 10, 10);
+    h.advance('sa2', 10, 10);
+    h.advance('sv2', 10, 10);
+    h.advance('sa3', 0, 20);
+    h.advance('sv3', 0, 20);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+
+    expect(samples).toHaveLength(2);
+    // 2 of 3 publishers poor (>= 0.6 ratio, both sides lossy) is my download
+    expect(samples[1].isLikelyDownloadIssue).toBe(true);
   });
 });
 
@@ -977,7 +1282,8 @@ describe('ConnectionQualityMonitor measurement integrity', () => {
     await settle();
     expect(samples[0].measured).toBe(true);
     expect(samples[0].myPacketLoss).toBeCloseTo(50, 5);
-    expect(samples[0].uploadRtt).toBe(500);
+    // a receiver report contributes loss only, never upload RTT
+    expect(samples[0].uploadRtt).toBeNull();
     const measuredScore = samples[0].score;
 
     // the SAME receiver report (arrival timestamp unchanged) proves nothing:
@@ -1002,7 +1308,7 @@ describe('ConnectionQualityMonitor measurement integrity', () => {
     await settle();
     expect(samples[2].measured).toBe(true);
     expect(samples[2].myPacketLoss).toBeCloseTo(50, 5);
-    expect(samples[2].uploadRtt).toBe(500);
+    expect(samples[2].uploadRtt).toBeNull();
   });
 
   it('bare outbound counters alone never make a sample measured and preserve the score', async () => {
@@ -1098,7 +1404,7 @@ describe('ConnectionQualityMonitor measurement integrity', () => {
     expect(samples[0].measured).toBe(true);
   });
 
-  it('treats a zero publisher RTT as a real upload measurement (selected pair and receiver report)', async () => {
+  it('treats a zero selected-pair publisher RTT as a real upload measurement (a receiver report contributes no RTT)', async () => {
     vi.mocked(store.dispatch).mockClear();
 
     // a zero selected candidate pair
@@ -1125,7 +1431,8 @@ describe('ConnectionQualityMonitor measurement integrity', () => {
     expect(samples[0].measured).toBe(true);
     monitor.stop();
 
-    // ...and a fresh receiver report carrying a zero round trip
+    // ...while a fresh zero-loss receiver report proves upload health (loss)
+    // but contributes no upload RTT at all
     const samples2: QualityStats[] = [];
     const monitor2 = new ConnectionQualityMonitor();
     monitor2.start(
@@ -1142,7 +1449,7 @@ describe('ConnectionQualityMonitor measurement integrity', () => {
 
     await settle();
     expect(samples2[0].uploadMeasured).toBe(true);
-    expect(samples2[0].uploadRtt).toBe(0);
+    expect(samples2[0].uploadRtt).toBeNull();
     expect(samples2[0].measured).toBe(true);
   });
 
@@ -1200,7 +1507,7 @@ describe('ConnectionQualityMonitor measurement integrity', () => {
     await settle();
     expect(samples[0].measured).toBe(true);
     expect(samples[0].myPacketLoss).toBe(0);
-    expect(samples[0].uploadRtt).toBe(20);
+    expect(samples[0].uploadRtt).toBeNull();
     expect(samples[0].uploadQuality).toBe('excellent');
   });
 
