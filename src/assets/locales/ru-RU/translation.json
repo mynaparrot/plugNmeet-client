@@ -75,7 +75,7 @@
     "nats-error-auth-title": "Ошибка входа в систему",
     "nats-error-auth-body": "Нам не удалось проверить вашу информацию. Возможно, срок действия сеанса истек.",
     "user-logged-out": "Вы вышли из системы.",
-    "media-server-disconnected-reconnecting": "Потеряно соединение с медиасервером. Переподключение...",
+    "media-server-disconnected-reconnecting": "Connection interrupted. Reconnecting...",
     "media-server-disconnected": "Отключение от медиасервера.",
     "preloaded-whiteboard-file-processing": "Загрузка файла доски...",
     "preloaded-whiteboard-file-processing-error": "Произошла ошибка при загрузке файла доски.",
