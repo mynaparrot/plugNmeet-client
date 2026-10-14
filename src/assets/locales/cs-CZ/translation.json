@@ -53,7 +53,7 @@
     "room-disconnected-server-unresponsive": "Byl jste odpojeni, protože server přestal reagovat.",
     "room-disconnected-reconnecting": "Připojení ztraceno. Opětovné připojení...",
     "room-disconnected-network-error": "Byli jste odpojeni kvůli problému se sítí.",
-    "your-connection-lost-or-unstable": "Your network is having trouble sending your audio and video. Others may hear or see you with interruptions.",
+    "your-connection-lost-or-unstable": "Vaše síť má potíže s přenosem zvuku a obrazu. Ostatní vás mohou slyšet nebo vidět při přerušení.",
     "need-to-disable-display-external-link": "Chcete-li přehrát video, nejprve přestaňte sdílet externí odkaz.",
     "need-to-disable-external-media-player": "Chcete-li sdílet externí odkaz, nejprve zastavte přehrávač videa.",
     "websocket-disconnected": "Připojení ztraceno, pokus o opětovné připojení...",
