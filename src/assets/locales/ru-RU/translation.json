@@ -53,7 +53,7 @@
     "room-disconnected-server-unresponsive": "Соединение прервано, поскольку сервер перестал отвечать.",
     "room-disconnected-reconnecting": "Связь потеряна. Переподключение...",
     "room-disconnected-network-error": "Вы были отключены из-за ошибки сети.",
-    "your-connection-lost-or-unstable": "Сейчас твоё соединение немного нестабильное. Другие могут заметить у вас проблемы с аудио или видео.",
+    "your-connection-lost-or-unstable": "Your network is having trouble sending your audio and video. Others may hear or see you with interruptions.",
     "need-to-disable-display-external-link": "Чтобы воспроизвести видео, сначала прекратите делиться внешней ссылкой.",
     "need-to-disable-external-media-player": "Чтобы поделиться внешней ссылкой, сначала остановите плеер.",
     "websocket-disconnected": "Соединение прервано, попытка переподключиться...",
