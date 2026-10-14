@@ -75,7 +75,7 @@
     "nats-error-auth-title": "인증 오류",
     "nats-error-auth-body": "정보를 확인할 수 없습니다. 세션이 만료되었을 수 있습니다.",
     "user-logged-out": "ログアウトしました。",
-    "media-server-disconnected-reconnecting": "미디어 서버와의 연결이 끊어졌습니다. 다시 연결 중...",
+    "media-server-disconnected-reconnecting": "Connection interrupted. Reconnecting...",
     "media-server-disconnected": "メディアサーバーから切断されました。",
     "preloaded-whiteboard-file-processing": "화이트보드 파일을 로드하는 중...",
     "preloaded-whiteboard-file-processing-error": "화이트보드 파일을 로드하는 중에 오류가 발생했습니다.",
