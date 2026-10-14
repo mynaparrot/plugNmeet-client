@@ -75,7 +75,7 @@
     "nats-error-auth-title": "Fel vid inloggning",
     "nats-error-auth-body": "Vi kunde inte verifiera din information. Din session kan ha gått ut.",
     "user-logged-out": "Du har loggats ut.",
-    "media-server-disconnected-reconnecting": "Förlorad anslutning till mediaservern. Återansluta...",
+    "media-server-disconnected-reconnecting": "Anslutningen avbruten. Återkoppling...",
     "media-server-disconnected": "Frånkopplad från mediaservern.",
     "preloaded-whiteboard-file-processing": "Laddar whiteboard-fil...",
     "preloaded-whiteboard-file-processing-error": "Det gick inte att läsa in whiteboardfilen.",
