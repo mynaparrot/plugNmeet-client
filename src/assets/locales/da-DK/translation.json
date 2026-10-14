@@ -53,7 +53,7 @@
     "room-disconnected-server-unresponsive": "Du er blevet afbrudt, fordi serveren stoppede med at svare.",
     "room-disconnected-reconnecting": "Forbindelsen mistet. Genopretter forbindelsen...",
     "room-disconnected-network-error": "Du blev afbrudt på grund af et netværksproblem.",
-    "your-connection-lost-or-unstable": "Your network is having trouble sending your audio and video. Others may hear or see you with interruptions.",
+    "your-connection-lost-or-unstable": "Dit netværk har problemer med at sende din lyd og video. Andre kan høre eller se dig med afbrydelser.",
     "need-to-disable-display-external-link": "Hvis du vil afspille en video, skal du først stoppe med at dele det eksterne link.",
     "need-to-disable-external-media-player": "For at dele et eksternt link skal du først stoppe videoafspilleren.",
     "websocket-disconnected": "Forbindelsen mistet, forsøger at genoprette forbindelsen...",
