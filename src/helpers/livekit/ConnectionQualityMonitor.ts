@@ -62,6 +62,18 @@ const MIN_PUBLISHERS_FOR_DOWNLOAD_ISSUE = 2;
 const DOWNLOAD_ISSUE_POOR_STREAM_RATIO = 0.6;
 
 /*
+ * A lone remote publisher's poor stream may be its OWN bad uplink relayed by the
+ * SFU, so a single poor publisher is not sufficient to blame MY download. Below
+ * MIN_PUBLISHERS_FOR_DOWNLOAD_ISSUE the poor condition must be corroborated by
+ * EITHER this many CONSECUTIVE measured samples of poorness (a persisting local
+ * condition, not a one-off burst) OR a receive-side RTT that is itself Poor-grade
+ * (GOOD_RTT_THRESHOLD, the same threshold `classify` uses for Poor). Trade-off:
+ * a genuine 1:1 downlink issue is consequently flagged ~one measured sample
+ * later, unless the receive RTT already confirms it.
+ */
+const MIN_CONSECUTIVE_POOR_SAMPLES_FOR_DOWNLOAD_ISSUE = 2;
+
+/*
  * Conservative track-level stuck detection limits (see
  * resolveAudioOutboundStuck / resolveVideoOutboundStuck):
  *   - Camera stuck is a PUBLICATION property: it matures only when every
@@ -309,7 +321,14 @@ export default class ConnectionQualityMonitor {
 
   private poorConnectionHistory: boolean[] = [];
   private lastPoorConnectionNotificationAt = 0;
-  private poorConnectionNotificationCount: number = 0;
+  private poorConnectionNotificationCount = 0;
+
+  /**
+   * Consecutive measured samples in which a LONE remaining publisher looked poor
+   * (see resolveSinglePublisherDownloadIssue). Advanced only by measured samples,
+   * reset by a non-poor sample and by every baseline/stop boundary.
+   */
+  private singlePublisherPoorStreak = 0;
   private qualityCheckTimeout: ReturnType<typeof setTimeout> | null = null;
   private isConnectionCurrentlyPoor = false;
   private isCheckingQuality = false;
@@ -409,6 +428,7 @@ export default class ConnectionQualityMonitor {
     this.poorConnectionHistory = [];
     this.lastPoorConnectionNotificationAt = 0;
     this.poorConnectionNotificationCount = 0;
+    this.singlePublisherPoorStreak = 0;
     this.isConnectionCurrentlyPoor = false;
     this.isCheckingQuality = false;
     this.currentQuality = PnmConnectionQuality.Excellent;
@@ -449,6 +469,7 @@ export default class ConnectionQualityMonitor {
     this.measurementGeneration += 1;
     this.clearDeltaBaselines();
     this.poorConnectionHistory = [];
+    this.singlePublisherPoorStreak = 0;
     // getStats() must never show a sample from the old baseline/generation
     this.lastStats = null;
     this.notifyStatsListeners();
@@ -603,7 +624,10 @@ export default class ConnectionQualityMonitor {
          * decision) nor count as a usable health signal.
          */
         if (hasFreshReport && typeof fractionLost === 'number' && Number.isFinite(fractionLost)) {
-          const loss = Math.max(0, fractionLost * 100);
+          // browsers report fractionLost already normalised (raw byte / 256, so
+          // 0..~0.996); * 100 yields 0..~100. The 0..100 clamp is defensive only
+          // and must NOT be read as a 0..255 normalisation.
+          const loss = Math.min(100, Math.max(0, fractionLost * 100));
           state.myPacketLoss = Math.max(state.myPacketLoss, loss);
           state.maxPacketLoss = Math.max(state.maxPacketLoss, loss);
           // a receiver report is always about OUR outbound RTP, so it is
@@ -806,19 +830,29 @@ export default class ConnectionQualityMonitor {
                 publisherIdentity !== undefined &&
                 this.isPublisherUplinkPoor?.(publisherIdentity) === true;
 
-              if (!selfReportedPoorUplink) {
+              /*
+               * Both diagnostics are per-stream WORST-OF aggregates (max), so a
+               * low-packet interval must be excluded from BOTH instead of
+               * letting a single 1-of-4 lost packet dominate the sample as 25%
+               * loss. inboundPacketLoss/receivePacketLoss therefore now share
+               * the rawPacketLoss minimum (MIN_ACTIVE_PACKETS_FOR_RECEIVE_ANALYSIS):
+               * when no stream reaches it, the sample carries no loss evidence
+               * and receivePacketLoss stays 0.
+               */
+              if (!selfReportedPoorUplink && total >= MIN_ACTIVE_PACKETS_FOR_RECEIVE_ANALYSIS) {
                 state.inboundPacketLoss = Math.max(state.inboundPacketLoss, loss);
-                // the rawPacketLoss diagnostic trusts only intervals with enough
-                // packets: a 1-of-2 sample must not read as 50% loss. The delta
-                // still drives inboundPacketLoss/classification.
-                if (total >= MIN_ACTIVE_PACKETS_FOR_RECEIVE_ANALYSIS) {
-                  state.maxPacketLoss = Math.max(state.maxPacketLoss, loss);
-                }
+                state.maxPacketLoss = Math.max(state.maxPacketLoss, loss);
               }
 
-              // a real delta over a known interval proves the download direction
-              // is delivering (even at zero loss), so it is genuine receive
-              // evidence on whichever report carries it
+              /*
+               * A real delta over a known interval proves the download direction
+               * is delivering (even at zero loss), so it is genuine receive
+               * evidence on whichever report carries it. This is INDEPENDENT of
+               * the packet-count gate above: a low-packet delta is still proof
+               * that receive works, it simply must not supply a loss value, so
+               * it must never flip receiveMeasured/measured to false when RTT
+               * evidence already justifies them.
+               */
               receiveUsable = true;
 
               state.remoteReceiveStats.push({
@@ -1133,23 +1167,9 @@ export default class ConnectionQualityMonitor {
       publisherIdentityByTrackId,
     );
 
-    Object.keys(this.prevInboundStats).forEach((ssrc) => {
-      if (!state.activeInboundSsrcs.has(ssrc)) {
-        delete this.prevInboundStats[ssrc];
-      }
-    });
-
-    Object.keys(this.prevOutboundStats).forEach((ssrc) => {
-      if (!state.activeOutboundSsrcs.has(ssrc)) {
-        delete this.prevOutboundStats[ssrc];
-      }
-    });
-
-    Object.keys(this.prevRemoteInboundStats).forEach((ssrc) => {
-      if (!state.activeRemoteInboundSsrcs.has(ssrc)) {
-        delete this.prevRemoteInboundStats[ssrc];
-      }
-    });
+    this.pruneStaleKeys(this.prevInboundStats, state.activeInboundSsrcs);
+    this.pruneStaleKeys(this.prevOutboundStats, state.activeOutboundSsrcs);
+    this.pruneStaleKeys(this.prevRemoteInboundStats, state.activeRemoteInboundSsrcs);
 
     /*
      * Capture baselines are pruned ONCE here, against the UNION of both
@@ -1158,11 +1178,7 @@ export default class ConnectionQualityMonitor {
      * against only that report's tracks (or a subscriber-only snapshot), which
      * could wrongly erase a still-live publisher baseline between the reports.
      */
-    Object.keys(this.prevAudioSourceStats).forEach((trackIdentifier) => {
-      if (!state.activeAudioSourceTracks.has(trackIdentifier)) {
-        delete this.prevAudioSourceStats[trackIdentifier];
-      }
-    });
+    this.pruneStaleKeys(this.prevAudioSourceStats, state.activeAudioSourceTracks);
 
     /*
      * This generation's DIRECTIONAL usability: whether each DIRECTION produced
@@ -1266,6 +1282,20 @@ export default class ConnectionQualityMonitor {
     this.prevRemoteInboundStats = {};
     this.prevAudioSourceStats = {};
   };
+
+  /**
+   * Drops every entry of a per-key baseline map whose key did not appear in the
+   * latest sample, so a stale SSRC/track baseline can never be diffed against a
+   * later reappearance. Behaviour is identical to the inline prune loops it
+   * replaced.
+   */
+  private pruneStaleKeys<T>(map: Record<string, T>, activeKeys: Set<string>): void {
+    Object.keys(map).forEach((key) => {
+      if (!activeKeys.has(key)) {
+        delete map[key];
+      }
+    });
+  }
 
   private findSenderTrackByMid(mid?: string): MediaStreamTrack | null {
     if (!this.room || !mid) return null;
@@ -1472,7 +1502,11 @@ export default class ConnectionQualityMonitor {
       uploadQuality !== PnmConnectionQuality.Lost &&
       !input.isUploadAudioStuck;
 
-    const isLikelyDownloadIssue = this.isLikelyMyDownloadIssue(input.remoteReceiveStats);
+    const isLikelyDownloadIssue = this.isLikelyMyDownloadIssue(
+      input.remoteReceiveStats,
+      input.measured,
+      input.receiveRtt,
+    );
 
     // receive quality is judged on the subscriber's own RTT only: it must
     // never inherit the publisher-only upload RTT
@@ -1554,7 +1588,11 @@ export default class ConnectionQualityMonitor {
    * publisher counts only once it has passed that filter, while with several at
    * least MIN_PUBLISHERS must be poor and the poor ratio must be met.
    */
-  private isLikelyMyDownloadIssue(remoteReceiveStats: RemoteReceiveStats[]): boolean {
+  private isLikelyMyDownloadIssue(
+    remoteReceiveStats: RemoteReceiveStats[],
+    measured: boolean,
+    receiveRtt: number | null,
+  ): boolean {
     const publisherIsPoor = new Map<string, boolean>();
 
     for (const stat of remoteReceiveStats) {
@@ -1574,17 +1612,63 @@ export default class ConnectionQualityMonitor {
       publisherIsPoor.set(key, (publisherIsPoor.get(key) ?? false) || poor);
     }
 
-    if (publisherIsPoor.size === 0) return false;
+    // no poor publisher at all is a clean (non-poor) sample: the lone-publisher
+    // corroboration streak must not survive it
+    if (publisherIsPoor.size === 0) {
+      this.singlePublisherPoorStreak = 0;
+      return false;
+    }
 
     const poorPublishers = [...publisherIsPoor.values()].filter(Boolean).length;
 
     if (publisherIsPoor.size < MIN_PUBLISHERS_FOR_DOWNLOAD_ISSUE) {
-      return poorPublishers > 0;
+      return this.resolveSinglePublisherDownloadIssue(poorPublishers > 0, measured, receiveRtt);
     }
+
+    // a multi-publisher sample is judged by the ratio rule; the lone-publisher
+    // streak no longer applies and must not leak into a later single-publisher one
+    this.singlePublisherPoorStreak = 0;
 
     return (
       poorPublishers >= MIN_PUBLISHERS_FOR_DOWNLOAD_ISSUE &&
       poorPublishers / publisherIsPoor.size >= DOWNLOAD_ISSUE_POOR_STREAM_RATIO
+    );
+  }
+
+  /**
+   * Below MIN_PUBLISHERS_FOR_DOWNLOAD_ISSUE the single remaining publisher's
+   * poorness is NOT enough on its own: it may be that publisher's own bad uplink
+   * relayed through the SFU. It is accepted only when corroborated by EITHER
+   *   (a) the poor condition persisted for
+   *       MIN_CONSECUTIVE_POOR_SAMPLES_FOR_DOWNLOAD_ISSUE consecutive MEASURED
+   *       samples (a local, lasting condition rather than a one-off burst), or
+   *   (b) the receive-side RTT is itself Poor-grade (GOOD_RTT_THRESHOLD) — a
+   *       local path problem independent of the publisher.
+   * The streak resets on a non-poor sample and at every baseline/stop boundary;
+   * synthetic (measured === false) samples never advance it. Trade-off: a real
+   * 1:1 downlink issue is flagged ~one measured sample later unless the RTT
+   * already confirms it. The multi-publisher path is unchanged.
+   */
+  private resolveSinglePublisherDownloadIssue(
+    isPoor: boolean,
+    measured: boolean,
+    receiveRtt: number | null,
+  ): boolean {
+    if (!isPoor) {
+      this.singlePublisherPoorStreak = 0;
+      return false;
+    }
+
+    // only a measured sample may confirm a lasting condition
+    if (measured) {
+      this.singlePublisherPoorStreak += 1;
+    }
+
+    const rttCorroborates = receiveRtt !== null && receiveRtt >= GOOD_RTT_THRESHOLD;
+
+    return (
+      this.singlePublisherPoorStreak >= MIN_CONSECUTIVE_POOR_SAMPLES_FOR_DOWNLOAD_ISSUE ||
+      rttCorroborates
     );
   }
 

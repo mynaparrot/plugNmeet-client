@@ -829,7 +829,7 @@ describe('ConnectionQualityMonitor download-issue attribution', () => {
     expect(samples[1].remoteReceiveStats[0].publisherIdentity).toBe('user1');
   });
 
-  it('a lone lossy publisher that does not self-report is plausibly my download issue', async () => {
+  it('a lone lossy publisher becomes my download issue only after consecutive measured poor samples', async () => {
     const samples: QualityStats[] = [];
     const h = inboundHarness();
     const streams = [h.stream('sa', 'audio', 'a1'), h.stream('sv', 'video', 'v1')];
@@ -845,17 +845,213 @@ describe('ConnectionQualityMonitor download-issue attribution', () => {
       () => false,
     );
 
-    await settle();
+    await settle(); // baseline 0/0
+
+    // sample 2: the FIRST measured poor sample. One lone publisher's poorness is
+    // not enough on its own (its uplink may simply be relayed through the SFU)
+    // and the receive RTT (20ms) does not corroborate, so this is not my download
+    // issue yet, even though the loss is still recorded as receive evidence.
     h.advance('sa', 10, 10);
     h.advance('sv', 10, 10);
     await vi.advanceTimersByTimeAsync(5000);
     await settle();
 
     expect(samples).toHaveLength(2);
+    expect(samples[1].isLikelyDownloadIssue).toBe(false);
+    expect(samples[1].receivePacketLoss).toBeCloseTo(50, 5);
+    // not attributed to my download, so receive quality is judged on the (low)
+    // receive RTT only and must never be inflated to 'lost' by their loss
+    expect(samples[1].receiveQuality).toBe('excellent');
+    expect(samples[1].isReceivingPoor).toBe(false);
+
+    // sample 3: a SECOND consecutive measured poor sample — the lone publisher's
+    // persisting poorness now corroborates a local download issue
+    h.advance('sa', 10, 10);
+    h.advance('sv', 10, 10);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+
+    expect(samples).toHaveLength(3);
+    expect(samples[2].isLikelyDownloadIssue).toBe(true);
+    expect(samples[2].receivePacketLoss).toBeCloseTo(50, 5);
+    expect(samples[2].receiveQuality).toBe('lost');
+    expect(samples[2].isReceivingPoor).toBe(true);
+  });
+
+  it('a lone lossy publisher with a Poor-grade receive RTT is my download issue on the first poor sample', async () => {
+    const samples: QualityStats[] = [];
+    const h = inboundHarness();
+    const streams = [h.stream('sa', 'audio', 'a1'), h.stream('sv', 'video', 'v1')];
+
+    // the subscriber's own selected pair reports a 600ms RTT (>= GOOD_RTT_THRESHOLD),
+    // a local path problem independent of the publisher that corroborates the
+    // download issue without waiting for a second consecutive poor sample
+    const highRttSubscriberReport = () =>
+      h
+        .report(streams)
+        .map((entry) =>
+          entry.type === 'candidate-pair'
+            ? candidatePair('sub-pair', 0.6, { selected: true })
+            : entry,
+        );
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        publisherGetStats: () => Promise.resolve(PUB_PAIR),
+        subscriberGetStats: () => Promise.resolve(highRttSubscriberReport()),
+        remoteParticipants: new Map([remotePublisher('user1', ['a1', 'v1'])]),
+      }),
+      (s) => samples.push(s),
+      () => false,
+    );
+
+    await settle(); // baseline 0/0
+    h.advance('sa', 10, 10);
+    h.advance('sv', 10, 10);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+
+    expect(samples).toHaveLength(2);
+    expect(samples[1].receiveRtt).toBe(600);
     expect(samples[1].isLikelyDownloadIssue).toBe(true);
     expect(samples[1].receivePacketLoss).toBeCloseTo(50, 5);
     expect(samples[1].receiveQuality).toBe('lost');
     expect(samples[1].isReceivingPoor).toBe(true);
+  });
+
+  it('a clean sample between two lossy samples resets the lone-publisher streak', async () => {
+    const samples: QualityStats[] = [];
+    const h = inboundHarness();
+    const streams = [h.stream('sa', 'audio', 'a1'), h.stream('sv', 'video', 'v1')];
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        publisherGetStats: () => Promise.resolve(PUB_PAIR),
+        subscriberGetStats: () => Promise.resolve(h.report(streams)),
+        remoteParticipants: new Map([remotePublisher('user1', ['a1', 'v1'])]),
+      }),
+      (s) => samples.push(s),
+      () => false,
+    );
+
+    await settle(); // baseline 0/0
+
+    // lossy -> streak 1 (not yet my download issue)
+    h.advance('sa', 10, 10);
+    h.advance('sv', 10, 10);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    expect(samples[1].isLikelyDownloadIssue).toBe(false);
+
+    // a clean sample must reset the poor streak
+    h.advance('sa', 0, 20);
+    h.advance('sv', 0, 20);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    expect(samples[2].isLikelyDownloadIssue).toBe(false);
+
+    // lossy again: only streak 1, so still not my download issue
+    h.advance('sa', 10, 10);
+    h.advance('sv', 10, 10);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    expect(samples[3].isLikelyDownloadIssue).toBe(false);
+  });
+
+  it('resetMeasurementBaseline() resets the lone-publisher streak', async () => {
+    const samples: QualityStats[] = [];
+    const h = inboundHarness();
+    const streams = [h.stream('sa', 'audio', 'a1'), h.stream('sv', 'video', 'v1')];
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        publisherGetStats: () => Promise.resolve(PUB_PAIR),
+        subscriberGetStats: () => Promise.resolve(h.report(streams)),
+        remoteParticipants: new Map([remotePublisher('user1', ['a1', 'v1'])]),
+      }),
+      (s) => samples.push(s),
+      () => false,
+    );
+
+    await settle(); // baseline 0/0
+
+    // lossy -> streak 1: a lone publisher's poorness is not yet my download issue
+    h.advance('sa', 10, 10);
+    h.advance('sv', 10, 10);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    expect(samples[samples.length - 1]?.isLikelyDownloadIssue).toBe(false);
+
+    // the lifecycle boundary (reconnect/visibility) crosses the room
+    monitor.resetMeasurementBaseline();
+
+    // the next sample re-baselines the inbound counters (the reset dropped the
+    // previous deltas), so it carries no receive delta and re-baselines cleanly
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    expect(samples[samples.length - 1]?.isLikelyDownloadIssue).toBe(false);
+
+    // lossy again: the streak restarted at 1, so this is NOT yet my download
+    // issue even though the loss really happened (measured + ~50% loss proves a
+    // genuine post-reset delta was diffed)
+    h.advance('sa', 10, 10);
+    h.advance('sv', 10, 10);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    const secondLossy = samples[samples.length - 1] as QualityStats;
+    expect(secondLossy.measured).toBe(true);
+    expect(secondLossy.receivePacketLoss).toBeCloseTo(50, 5);
+    expect(secondLossy.isLikelyDownloadIssue).toBe(false);
+
+    // one more lossy sample: a SECOND consecutive measured poor sample confirms
+    // the download issue, proving the harness (and the streak) is live again
+    h.advance('sa', 10, 10);
+    h.advance('sv', 10, 10);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    expect(samples[samples.length - 1]?.isLikelyDownloadIssue).toBe(true);
+  });
+
+  it('the receive loss gate ignores a low-packet interval while a >=20-packet interval is trusted', async () => {
+    const samples: QualityStats[] = [];
+    const h = inboundHarness();
+    const streams = [h.stream('sv', 'video', 'v1')];
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        publisherGetStats: () => Promise.resolve(PUB_PAIR),
+        subscriberGetStats: () => Promise.resolve(h.report(streams)),
+        remoteParticipants: new Map([remotePublisher('user1', ['v1'])]),
+      }),
+      (s) => samples.push(s),
+      () => false,
+    );
+
+    await settle(); // baseline 0/0
+
+    // a 1-lost / 3-received interval is only 4 packets: below the 20-packet gate,
+    // so it contributes no receive loss, yet the real delta still proves receive
+    // works (RTT evidence keeps the sample measured)
+    h.advance('sv', 1, 3);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+
+    expect(samples).toHaveLength(2);
+    expect(samples[1].measured).toBe(true);
+    expect(samples[1].receivePacketLoss).toBe(0);
+    expect(samples[1].remoteReceiveStats[0].packetLoss).toBeCloseTo(25, 5);
+
+    // a >=20-packet interval IS trusted: cumulative delta 10/10 = 50% loss
+    h.advance('sv', 10, 10);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+
+    expect(samples).toHaveLength(3);
+    expect(samples[2].receivePacketLoss).toBeCloseTo(50, 5);
   });
 
   it('one lossy publisher among three is not my download issue', async () => {
