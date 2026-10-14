@@ -75,7 +75,7 @@
     "nats-error-auth-title": "Erro de autenticação",
     "nats-error-auth-body": "Não foi possível verificar as suas informações. A sua sessão pode ter expirado.",
     "user-logged-out": "A sua sessão foi terminada.",
-    "media-server-disconnected-reconnecting": "Connection interrupted. Reconnecting...",
+    "media-server-disconnected-reconnecting": "Ligação interrompida. A reconectar...",
     "media-server-disconnected": "Desligado do servidor de multimédia.",
     "preloaded-whiteboard-file-processing": "A carregar ficheiro do quadro branco...",
     "preloaded-whiteboard-file-processing-error": "Ocorreu um erro ao carregar o ficheiro do quadro branco.",
