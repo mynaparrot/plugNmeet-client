@@ -75,7 +75,7 @@
     "nats-error-auth-title": "Login Fout",
     "nats-error-auth-body": "We konden uw gegevens niet verifiëren. Mogelijk is uw sessie verlopen.",
     "user-logged-out": "U bent uitgelogd.",
-    "media-server-disconnected-reconnecting": "Connection interrupted. Reconnecting...",
+    "media-server-disconnected-reconnecting": "Verbinding verbroken. Verbinding heropenen...",
     "media-server-disconnected": "Verbinding met de mediaserver verbroken.",
     "preloaded-whiteboard-file-processing": "Whiteboard bestand laden...",
     "preloaded-whiteboard-file-processing-error": "Er is een fout opgetreden bij het laden van het whiteboardbestand.",
