@@ -13,8 +13,9 @@ export enum PnmConnectionQuality {
 
 /**
  * Coarse severity ordering for `PnmConnectionQuality` (higher = healthier).
- * Shared by score smoothing and by the broadcast-side degradation confirmation
- * so both agree on what "better"/"worse" means.
+ * Used by the overall-status hysteresis (comparing window/displayed quality) and
+ * by the broadcast-side degradation confirmation (ConnectLivekit) so both agree
+ * on what "better"/"worse" means.
  */
 export const qualityToScore = (quality: PnmConnectionQuality): number => {
   switch (quality) {
@@ -52,25 +53,67 @@ const INTERVAL = 5000;
 const NOTIFICATION_COOLDOWN = 5 * 60_000; // 5 minutes
 const MAX_POOR_CONNECTION_NOTIFICATIONS = 3;
 
-const MAX_SCORE = 100;
-const MIN_SCORE = 20;
-const DECREASE_FACTOR = 0.8;
-const INCREASE_FACTOR = 0.4;
+/**
+ * Consecutive measured samples the overall status must survive before it may
+ * change. Only a full window that is uniformly worse (or uniformly better)
+ * than the displayed status moves it, so a single-sample spike cannot.
+ */
+const MIN_CONSECUTIVE_SAMPLES_FOR_STATUS_CHANGE = 2;
 
-const MIN_ACTIVE_PACKETS_FOR_RECEIVE_ANALYSIS = 20;
+/**
+ * A direction's Lost that came only from RTT (its packet loss stayed below
+ * LOST_PACKET_LOSS_THRESHOLD) must persist for this many consecutive measured
+ * samples before it is reported Lost: one slow round-trip may be Poor but never
+ * Lost. Loss-backed Lost is never delayed (see createStats). Trade-off: a
+ * genuine RTT-only Lost is surfaced ~one sample (5s) later.
+ */
+const MIN_CONSECUTIVE_RTT_LOST_SAMPLES = 2;
+
+/**
+ * Minimum packets an interval must carry before its loss ratio is trusted, in
+ * both directions: a receive-loss ratio from an inbound-rtp delta (below) and an
+ * upload-loss ratio from a remote-inbound-rtp fractionLost (gated by the packet
+ * count the matching outbound-rtp actually sent in the same interval). A tiny
+ * interval (1 lost of 4) would otherwise dominate a worst-of aggregate as 25%.
+ */
+const MIN_ACTIVE_PACKETS_FOR_LOSS_ANALYSIS = 20;
 const MIN_PUBLISHERS_FOR_DOWNLOAD_ISSUE = 2;
 const DOWNLOAD_ISSUE_POOR_STREAM_RATIO = 0.6;
 
-/*
- * Conservative track-level stuck detection limits (see
- * resolveAudioOutboundStuck / resolveVideoOutboundStuck):
- *   - Camera stuck is a PUBLICATION property: it matures only when every
+/**
+ * Shared grouping key for every remote stream whose publisher could not be
+ * mapped to a LiveKit identity (no trackIdentifier, or the track belongs to no
+ * subscribed remote publication). The leading NUL makes a collision with a real
+ * LiveKit identity impossible. All unmapped streams share one bucket on purpose:
+ * per-SSRC grouping made a single publisher's audio + video look like two
+ * independent publishers, which satisfied the >= MIN_PUBLISHERS corroboration
+ * and bypassed the self-report exclusion. A shared bucket can only make
+ * attribution stricter (never more permissive).
+ */
+const UNKNOWN_PUBLISHER_KEY = '\u0000unknown-publisher';
+
+/**
+ * A lone remote publisher's poor stream may be its own bad uplink relayed by the
+ * SFU, so a single poor publisher is not sufficient to blame my download. Below
+ * MIN_PUBLISHERS_FOR_DOWNLOAD_ISSUE the poor condition must be corroborated by
+ * either this many consecutive measured samples of poorness (a persisting local
+ * condition, not a one-off burst) or a receive-side RTT that is itself Poor-grade
+ * (GOOD_RTT_THRESHOLD, the same threshold `classify` uses for Poor). Trade-off:
+ * a genuine 1:1 downlink issue is consequently flagged ~one measured sample
+ * later, unless the receive RTT already confirms it.
+ */
+const MIN_CONSECUTIVE_POOR_SAMPLES_FOR_DOWNLOAD_ISSUE = 2;
+
+/**
+ * Track-level stuck detection limits (see resolveAudioOutboundStuck /
+ * resolveVideoOutboundStuck):
+ *   - Camera stuck is a publication property: it matures only when every
  *     non-idle layer of the same camera publication is stagnant, so one idle
  *     simulcast/dynacast layer can never flag a camera that its sibling layer
  *     still encodes.
  *   - Microphone stuck additionally needs spec-backed capture evidence for the
- *     SAME interval: an RTCAudioSourceStats media-source delta proving a
- *     MEANINGFUL captured signal (see resolveAudioSourceActivity), not merely
+ *     same interval: an RTCAudioSourceStats media-source delta proving a
+ *     meaningful captured signal (see resolveAudioSourceActivity), not merely
  *     that the energy counter advanced. Silence with Opus DTX legitimately
  *     sends nothing, so a stalled counter alone is never a verified send
  *     failure; without usable audio-source stats the audio fast path stays
@@ -84,25 +127,25 @@ const DOWNLOAD_ISSUE_POOR_STREAM_RATIO = 0.6;
  */
 const OUTBOUND_STUCK_INTERVAL_THRESHOLD = 2;
 
-/*
+/**
  * Microphone capture-verification policy (resolveAudioSourceActivity).
  *
  * RTCAudioSourceStats.totalAudioEnergy is the accumulated energy of the
  * captured samples and totalSamplesDuration is the cumulative produced duration
- * in seconds. Per spec the energy is already DURATION-WEIGHTED (each sample's
+ * in seconds. Per spec the energy is already duration-weighted (each sample's
  * squared amplitude times that sample's duration), so the produced duration
  * cancels out of the interval's RMS-like amplitude: an interval's captured
  * amplitude is sqrt(deltaEnergy / deltaDuration), with no explicit sample rate.
- * A raw "energy advanced" test is NOT sufficient proof of speech: a live
+ * A raw "energy advanced" test is not sufficient proof of speech: a live
  * microphone's background noise floor has positive energy and a DTX-suppressed
  * mic keeps the counter creeping, so the energy delta is normalised by the
  * produced sample duration and required to clear a conservative floor.
  *
- * MIN_MEANINGFUL_CAPTURE_RMS is a deliberate POLICY HEURISTIC that separates an
- * obviously meaningful signal from the noise floor. It is NOT a speech/VAD
+ * MIN_MEANINGFUL_CAPTURE_RMS is a deliberate policy heuristic (~ -40 dBFS: below
+ * it the captured RMS amplitude is treated as noise/silence) that separates an
+ * obviously meaningful signal from the noise floor. It is not a speech/VAD
  * guarantee and makes no claim about identifiable browser behaviour.
  */
-/** ~ -40 dBFS: below this the captured RMS amplitude is treated as noise/silence. */
 const MIN_MEANINGFUL_CAPTURE_RMS = 0.01;
 
 type PrevInboundStats = {
@@ -113,6 +156,8 @@ type PrevInboundStats = {
 type PrevOutboundStats = {
   bytesSent: number;
   framesSent: number;
+  /** outbound-rtp: cumulative RTP packets sent; a packetsSent delta gates RR loss */
+  packetsSent?: number;
   stagnantCount: number;
   /** publication/transceiver/sender identity that owned this SSRC */
   groupKey: string;
@@ -162,15 +207,15 @@ export type QualityStats = {
   measured: boolean;
 
   /**
-   * Directional usability of THIS generation, additive to `measured`. True only
-   * when that DIRECTION (aggregated across both reports, since a direction is
+   * Directional usability of this generation, additive to `measured`. True only
+   * when that direction (aggregated across both reports, since a direction is
    * not a report) produced genuinely usable health evidence (see
    * `ReportEvidence.uploadUsable`/`receiveUsable`); false for synthetic samples
    * and for a direction whose evidence was missing/empty/proofless. `measured`
-   * is the AND of every EXPECTED direction, so a partial sample (one direction
-   * unknown) can still carry a true directional flag. Consumers may act on such
-   * a flag only for that direction's independently verified evidence — never as
-   * global health.
+   * is true only when every expected direction is usable, so a partial sample
+   * (one direction unknown) can still carry a true directional flag. Consumers
+   * may act on such a flag only for that direction's independently verified
+   * evidence — never as global health.
    */
   uploadMeasured?: boolean;
   receiveMeasured?: boolean;
@@ -226,6 +271,8 @@ type WebRTCStat = {
   timestamp?: number;
   bytesSent?: number;
   framesSent?: number;
+  /** outbound-rtp: cumulative RTP packets sent */
+  packetsSent?: number;
   /** outbound-rtp: whether the RTP stream is configured to be sent */
   active?: boolean;
   /** outbound-rtp: id of the media-source stats object of its sender's track */
@@ -266,20 +313,20 @@ type QualityCheckState = {
  * Last-seen RR arrival timestamp per outbound SSRC, used as freshness proof.
  * `RTCStats.timestamp` on a remote-inbound-rtp object is spec-defined as the
  * time the corresponding RTCP RR was received (W3C webrtc-stats), so it is the
- * one standard marker of a NEW receiver report.
+ * one standard marker of a new receiver report.
  */
 type RemoteInboundFreshness = {
   timestamp?: number;
 };
 
-/** Which RTP directions ONE stats report proved anything usable about. */
+/** Which RTP directions a single stats report proved anything usable about. */
 type ReportEvidence = {
   /** the getStats() promise resolved and returned a report */
   present: boolean;
   /**
-   * The report yielded genuine UPLOAD health evidence: an authoritative
+   * The report yielded genuine upload health evidence: an authoritative
    * (selected) candidate-pair RTT routed to this report's upload path, a fresh
-   * remote-inbound receiver report (an RR always reports on OUR outbound RTP,
+   * remote-inbound receiver report (an RR always reports on our outbound RTP,
    * so it is upload evidence no matter which report carries it), or a matured
    * verified outbound stall. Structural entries (unselected candidate pairs,
    * bare outbound byte/frame counters) and unchanged/stale receiver reports
@@ -287,11 +334,11 @@ type ReportEvidence = {
    */
   uploadUsable: boolean;
   /**
-   * The report yielded genuine RECEIVE health evidence: an authoritative
+   * The report yielded genuine receive health evidence: an authoritative
    * (selected) candidate-pair RTT routed to this report's receive path, or a
    * real inbound-rtp delta (inbound RTP always proves the download direction is
-   * delivering, on whichever report carries it). Report identity is NOT a
-   * direction: a single-PC publisher-only session carries BOTH directions'
+   * delivering, on whichever report carries it). Report identity is not a
+   * direction: a single-PC publisher-only session carries both directions'
    * evidence in its one publisher report and has no subscriber report at all.
    */
   receiveUsable: boolean;
@@ -301,7 +348,7 @@ export default class ConnectionQualityMonitor {
   private room: Room | undefined;
 
   /**
-   * Injected by the caller: does this remote publisher currently report its OWN
+   * Injected by the caller: does this remote publisher currently report its own
    * upload as Poor/Lost? Their loss reaches me through the SFU, so it must not
    * be read as my download problem.
    */
@@ -309,14 +356,36 @@ export default class ConnectionQualityMonitor {
 
   private poorConnectionHistory: boolean[] = [];
   private lastPoorConnectionNotificationAt = 0;
-  private poorConnectionNotificationCount: number = 0;
+  private poorConnectionNotificationCount = 0;
+
+  /**
+   * Consecutive measured samples in which a lone remaining publisher looked poor
+   * (see resolveSinglePublisherDownloadIssue). Advanced only by measured samples,
+   * reset by a non-poor sample and by every baseline/stop boundary.
+   */
+  private singlePublisherPoorStreak = 0;
   private qualityCheckTimeout: ReturnType<typeof setTimeout> | null = null;
   private isConnectionCurrentlyPoor = false;
   private isCheckingQuality = false;
   private isStopped = true;
 
   private currentQuality: PnmConnectionQuality = PnmConnectionQuality.Excellent;
-  private qualityScore = MAX_SCORE;
+
+  /**
+   * User-visible overall status. Moves only when a full
+   * MIN_CONSECUTIVE_SAMPLES_FOR_STATUS_CHANGE window of measured samples is
+   * uniformly worse (→ least severe of them) or uniformly better (→ most severe
+   * of them) than the current value; synthetic samples never enter the window
+   * (see resolveDisplayedQuality).
+   */
+  private displayedQuality: PnmConnectionQuality = PnmConnectionQuality.Excellent;
+
+  /** Sliding window of the last measured worstQuality values (≤ window size). */
+  private measuredQualityWindow: PnmConnectionQuality[] = [];
+
+  /** Consecutive RTT-only-Lost measured samples, per direction. */
+  private uploadRttLostStreak = 0;
+  private receiveRttLostStreak = 0;
 
   private prevInboundStats: Record<string, PrevInboundStats> = {};
   private prevOutboundStats: Record<string, PrevOutboundStats> = {};
@@ -409,10 +478,14 @@ export default class ConnectionQualityMonitor {
     this.poorConnectionHistory = [];
     this.lastPoorConnectionNotificationAt = 0;
     this.poorConnectionNotificationCount = 0;
+    this.singlePublisherPoorStreak = 0;
     this.isConnectionCurrentlyPoor = false;
     this.isCheckingQuality = false;
     this.currentQuality = PnmConnectionQuality.Excellent;
-    this.qualityScore = MAX_SCORE;
+    this.displayedQuality = PnmConnectionQuality.Excellent;
+    this.measuredQualityWindow = [];
+    this.uploadRttLostStreak = 0;
+    this.receiveRttLostStreak = 0;
 
     // no delta/stuck/capture baseline (incl. prevAudioSourceStats) may survive
     // the stop boundary, so a later start on the same track id re-baselines
@@ -449,14 +522,20 @@ export default class ConnectionQualityMonitor {
     this.measurementGeneration += 1;
     this.clearDeltaBaselines();
     this.poorConnectionHistory = [];
+    this.singlePublisherPoorStreak = 0;
+    this.uploadRttLostStreak = 0;
+    this.receiveRttLostStreak = 0;
+    // the hysteresis window is baseline-local evidence: any baseline reset
+    // clears it, but a visibility reset on the same transport keeps the
+    // displayed status
+    this.measuredQualityWindow = [];
     // getStats() must never show a sample from the old baseline/generation
     this.lastStats = null;
     this.notifyStatsListeners();
 
-    // a fresh transport (connect/reconnect) must not inherit the old EMA, but a
-    // visibility reset on the SAME transport keeps the smoothed score
+    // a fresh transport (connect/reconnect) must not inherit the old status
     if (options?.resetScore) {
-      this.qualityScore = MAX_SCORE;
+      this.displayedQuality = PnmConnectionQuality.Excellent;
       this.currentQuality = PnmConnectionQuality.Excellent;
     }
   };
@@ -470,7 +549,7 @@ export default class ConnectionQualityMonitor {
   public getOverallQuality = () => this.currentQuality;
 
   /**
-   * Processes ONE report and reports which directions it proved anything for.
+   * Processes one report and reports which directions it proved anything for.
    * `uploadUsable`/`receiveUsable` are set only by genuine health evidence: an
    * authoritative (selected) candidate-pair RTT (upload, receive or both per
    * `rttTarget`), a fresh remote-inbound receiver report (always upload), a
@@ -478,8 +557,8 @@ export default class ConnectionQualityMonitor {
    * stall (always upload). Structural entries (unselected candidate pairs, bare
    * outbound byte/frame counters) and unchanged/stale receiver reports prove
    * nothing and must never count as a measurement. `rttTarget` routes the
-   * selected candidate pair's RTT to the upload, the receive, or BOTH paths:
-   * 'both' is used ONLY for the publisher report of a confirmed single-PC
+   * selected candidate pair's RTT to the upload, the receive, or both paths:
+   * 'both' is used only for the publisher report of a confirmed single-PC
    * `publisher-only` session, whose one transport carries both RTP directions.
    * In every other mode the publisher report is upload and the subscriber
    * report is receive, so a subscriber's receive quality can never inherit the
@@ -545,6 +624,21 @@ export default class ConnectionQualityMonitor {
 
     const outboundRecords: OutboundStreamRecord[] = [];
 
+    /*
+     * Fresh receiver-report loss, keyed by the outbound SSRC it reports on. The
+     * enumeration order of an RTCStatsReport is not meaningful: a
+     * remote-inbound-rtp may be listed before the outbound-rtp it reports on, so
+     * the loss cannot be applied inline. It is collected here and applied after
+     * the whole report is walked, once the per-SSRC packetsSent delta is known.
+     */
+    const freshRemoteInboundLoss = new Map<string, number>();
+    /*
+     * Raw packetsSent delta of this report's outbound-rtp streams, keyed by
+     * SSRC. Only set when a same-generation previous baseline exists and the
+     * delta is non-negative (a counter regression proves nothing).
+     */
+    const outboundPacketsSentDelta = new Map<string, number>();
+
     statsReport.forEach((rawStat) => {
       const stat = rawStat as WebRTCStat;
 
@@ -586,7 +680,7 @@ export default class ConnectionQualityMonitor {
         const timestamp = typeof stat.timestamp === 'number' ? stat.timestamp : undefined;
 
         /*
-         * Only a NEW receiver report may count. For remote-inbound-rtp the spec
+         * Only a new receiver report may count. For remote-inbound-rtp the spec
          * defines RTCStats.timestamp as the time the corresponding RTCP RR was
          * received, so a strictly advancing timestamp is the one standard
          * freshness proof. An unchanged (or absent) timestamp proves nothing,
@@ -603,11 +697,17 @@ export default class ConnectionQualityMonitor {
          * decision) nor count as a usable health signal.
          */
         if (hasFreshReport && typeof fractionLost === 'number' && Number.isFinite(fractionLost)) {
-          const loss = Math.max(0, fractionLost * 100);
-          state.myPacketLoss = Math.max(state.myPacketLoss, loss);
-          state.maxPacketLoss = Math.max(state.maxPacketLoss, loss);
-          // a receiver report is always about OUR outbound RTP, so it is
-          // upload evidence no matter which report carries it
+          // browsers report fractionLost already normalised (raw byte / 256, so
+          // 0..~0.996); * 100 yields 0..~100. The 0..100 clamp is defensive only
+          // and must not be read as a 0..255 normalisation.
+          const loss = Math.min(100, Math.max(0, fractionLost * 100));
+          // deferred: only contributes once the matching outbound-rtp's packetsSent
+          // delta passes the packet-count gate (see the forEach below)
+          freshRemoteInboundLoss.set(ssrc, loss);
+          // a receiver report is always about our outbound RTP, so it is
+          // upload evidence no matter which report carries it — independent of
+          // the packet-count gate (mirrors the receive-side low-packet rule): a
+          // low-packet RR still proves upload works, it just carries no loss.
           uploadUsable = true;
         }
 
@@ -632,7 +732,7 @@ export default class ConnectionQualityMonitor {
         state.activeOutboundSsrcs.add(ssrc);
 
         /*
-         * An absent counter is NOT a zero: bytesSent/framesSent are optional in
+         * An absent counter is not a zero: bytesSent/framesSent are optional in
          * the spec, so a missing one is an unmeasurable interval — it must
          * neither mature a stall nor overwrite the last known counter with 0.
          */
@@ -644,8 +744,28 @@ export default class ConnectionQualityMonitor {
           typeof stat.framesSent === 'number' && Number.isFinite(stat.framesSent)
             ? stat.framesSent
             : undefined;
+        const currentPacketsSent =
+          typeof stat.packetsSent === 'number' && Number.isFinite(stat.packetsSent)
+            ? stat.packetsSent
+            : undefined;
 
         const prev = this.prevOutboundStats[ssrc];
+
+        /*
+         * Packets sent in this interval, for the upload-loss gate. A comparable
+         * previous baseline in the same generation (prevOutboundStats is cleared
+         * on every baseline reset) is required; a missing counter or a regression
+         * proves nothing and leaves the interval unmeasurable (no loss value at
+         * all, never a zero).
+         */
+        if (
+          prev !== undefined &&
+          prev.packetsSent !== undefined &&
+          currentPacketsSent !== undefined &&
+          currentPacketsSent >= prev.packetsSent
+        ) {
+          outboundPacketsSentDelta.set(ssrc, currentPacketsSent - prev.packetsSent);
+        }
 
         const senderTrack = this.findSenderTrackByMid(stat.mid);
 
@@ -675,7 +795,7 @@ export default class ConnectionQualityMonitor {
         const baseEligible = matchingPub !== undefined && !isCanvasTrack;
 
         /*
-         * A stall is a property of the PUBLICATION interval, not of an SSRC:
+         * A stall is a property of the publication interval, not of an SSRC:
          * counters reset whenever the sender/publication identity or the
          * counter itself changes (SSRC reuse, track replacement, encoder
          * restart), so a new stream never inherits a matured stall.
@@ -688,7 +808,7 @@ export default class ConnectionQualityMonitor {
               prev.senderTrackId !== senderTrackId));
 
         /*
-         * Audio matures an interval only when capture is VERIFIED for it: the
+         * Audio matures an interval only when capture is verified for it: the
          * spec media-source energy delta proves the microphone produced audio
          * while nothing was sent (a real send stall). Silence/Opus DTX leaves
          * energy flat, and no audio-source stats at all leaves capture unknown,
@@ -760,6 +880,8 @@ export default class ConnectionQualityMonitor {
         this.prevOutboundStats[ssrc] = {
           bytesSent: currentBytes ?? prev?.bytesSent ?? 0,
           framesSent: currentFrames ?? prev?.framesSent ?? 0,
+          // keep the raw counter (or none when unreported); never bridge a gap
+          packetsSent: currentPacketsSent,
           stagnantCount,
           groupKey,
           senderTrackId,
@@ -800,25 +922,35 @@ export default class ConnectionQualityMonitor {
               /*
                * A remote publisher's own bad uplink propagates to every
                * subscriber through the SFU, so its loss is theirs: keep it out
-               * of MY receive-loss diagnostics (receivePacketLoss/rawPacketLoss).
+               * of my receive-loss diagnostics (receivePacketLoss/rawPacketLoss).
                */
               const selfReportedPoorUplink =
                 publisherIdentity !== undefined &&
                 this.isPublisherUplinkPoor?.(publisherIdentity) === true;
 
-              if (!selfReportedPoorUplink) {
+              /*
+               * Both diagnostics are per-stream worst-of aggregates (max), so a
+               * low-packet interval must be excluded from both instead of
+               * letting a single 1-of-4 lost packet dominate the sample as 25%
+               * loss. inboundPacketLoss/receivePacketLoss therefore share the
+               * rawPacketLoss minimum (MIN_ACTIVE_PACKETS_FOR_LOSS_ANALYSIS):
+               * when no stream reaches it, the sample carries no loss evidence
+               * and receivePacketLoss stays 0.
+               */
+              if (!selfReportedPoorUplink && total >= MIN_ACTIVE_PACKETS_FOR_LOSS_ANALYSIS) {
                 state.inboundPacketLoss = Math.max(state.inboundPacketLoss, loss);
-                // the rawPacketLoss diagnostic trusts only intervals with enough
-                // packets: a 1-of-2 sample must not read as 50% loss. The delta
-                // still drives inboundPacketLoss/classification.
-                if (total >= MIN_ACTIVE_PACKETS_FOR_RECEIVE_ANALYSIS) {
-                  state.maxPacketLoss = Math.max(state.maxPacketLoss, loss);
-                }
+                state.maxPacketLoss = Math.max(state.maxPacketLoss, loss);
               }
 
-              // a real delta over a known interval proves the download direction
-              // is delivering (even at zero loss), so it is genuine receive
-              // evidence on whichever report carries it
+              /*
+               * A real delta over a known interval proves the download direction
+               * is delivering (even at zero loss), so it is genuine receive
+               * evidence on whichever report carries it. This is independent of
+               * the packet-count gate above: a low-packet delta is still proof
+               * that receive works, it simply must not supply a loss value, so
+               * it must never flip receiveMeasured/measured to false when RTT
+               * evidence already justifies them.
+               */
               receiveUsable = true;
 
               state.remoteReceiveStats.push({
@@ -845,9 +977,32 @@ export default class ConnectionQualityMonitor {
     });
 
     /*
-     * Report-LOCAL source calculation only: this report's outbound records are
-     * judged here, but the shared flags are AGGREGATED with OR because both
-     * PeerConnections write into the same state. A publisher report that
+     * Upload-loss gate (see MIN_ACTIVE_PACKETS_FOR_LOSS_ANALYSIS). A fresh
+     * receiver report's fractionLost may only supply a loss value when the
+     * outbound stream it reports on (same SSRC) actually sent at least
+     * MIN_ACTIVE_PACKETS_FOR_LOSS_ANALYSIS packets in this interval. Quiet/DTX
+     * audio or a briefly-active simulcast layer can lose 1 of 4 packets, which
+     * fractionLost reports as 25% and would classify the upload as Lost — a
+     * false positive. With no comparable outbound delta (missing/regressed
+     * counters, first sample after a baseline reset, or the outbound-rtp carried
+     * by the other report) the interval is unknown and yields no loss value; the
+     * RR's upload evidence above is unaffected. Mirrors the receive-side gate.
+     */
+    freshRemoteInboundLoss.forEach((loss, ssrc) => {
+      const packetsSentDelta = outboundPacketsSentDelta.get(ssrc);
+      if (
+        packetsSentDelta !== undefined &&
+        packetsSentDelta >= MIN_ACTIVE_PACKETS_FOR_LOSS_ANALYSIS
+      ) {
+        state.myPacketLoss = Math.max(state.myPacketLoss, loss);
+        state.maxPacketLoss = Math.max(state.maxPacketLoss, loss);
+      }
+    });
+
+    /*
+     * Report-local source calculation only: this report's outbound records are
+     * judged here, but the shared flags are aggregated across reports because
+     * both PeerConnections write into the same state. A publisher report that
      * matured a stall must survive the subscriber report that is processed next
      * (and vice versa); a later empty/outbound-free report must never clear it.
      * Capture baselines are pruned once, after both reports, in the caller.
@@ -896,7 +1051,7 @@ export default class ConnectionQualityMonitor {
    * link, or through the source's `trackIdentifier`. The `mediaSourceId` link is
    * only trusted when the referenced source actually belongs to the sender: its
    * `trackIdentifier` must equal the resolved sender track id, otherwise an
-   * UNRELATED active capture track (a different publication's source) could
+   * unrelated active capture track (a different publication's source) could
    * falsely verify the mic. Anything unprovable stays unverified and therefore
    * never matures an audio stall.
    */
@@ -927,10 +1082,10 @@ export default class ConnectionQualityMonitor {
    * Spec-backed capture-activity delta of one audio media source
    * (RTCAudioSourceStats). `totalAudioEnergy` is the accumulated energy of the
    * captured samples and `totalSamplesDuration` is the cumulative produced
-   * duration in seconds. The energy is DURATION-WEIGHTED (each sample's squared
+   * duration in seconds. The energy is duration-weighted (each sample's squared
    * amplitude times its duration), so the produced duration cancels out and an
    * interval's RMS-like amplitude is sqrt(deltaEnergy / deltaDuration) with no
-   * explicit sample rate. A raw "energy advanced" test is NOT sufficient:
+   * explicit sample rate. A raw "energy advanced" test is not sufficient:
    * background noise has positive energy and a DTX-suppressed mic keeps the
    * counter creeping, so the delta is normalised by the produced sample
    * duration and required to clear a conservative floor
@@ -938,7 +1093,7 @@ export default class ConnectionQualityMonitor {
    *
    * Returns:
    *   - `undefined` when any counter (or its baseline) is unavailable: the
-   *     interval is UNKNOWN and must never be read as verified activity. There
+   *     interval is unknown and must never be read as verified activity. There
    *     is deliberately no fallback to "any positive energy" — the produced
    *     sample duration is required to interpret the energy.
    *   - `false` for a counter regression or a nonpositive produced duration:
@@ -1011,7 +1166,7 @@ export default class ConnectionQualityMonitor {
    * Camera stall: every non-idle layer of one active camera publication must be
    * stagnant. A layer the SDK reports as inactive (spec `active === false`, e.g.
    * a dynacast-paused simulcast layer) is not expected to progress, so it
-   * neither proves nor disproves a stall; a publication whose layers are ALL
+   * neither proves nor disproves a stall; a publication whose layers are all
    * reported inactive is a paused camera, not a stalled encoder. Screen-share
    * video never counts (it must never drive camera-critical adaptation).
    */
@@ -1069,10 +1224,10 @@ export default class ConnectionQualityMonitor {
 
     /*
      * A generation bump during the getStats() awaits makes this superseded
-     * collection entirely inert: it must process NOTHING and mutate NOTHING.
+     * collection entirely inert: it must process nothing and mutate nothing.
      * The reset that bumped the generation already cleared the delta maps
      * (resetMeasurementBaseline/stop), so clearing again here would erase the
-     * freshly established baselines of the NEW generation. The caller discards
+     * freshly established baselines of the new generation. The caller discards
      * this result via its own generation check.
      */
     if (generation !== this.measurementGeneration) {
@@ -1103,10 +1258,10 @@ export default class ConnectionQualityMonitor {
     const subscriberReport = sub.status === 'fulfilled' ? sub.value : undefined;
 
     /*
-     * Report identity is NOT a direction. `pcManager.mode` is the one public,
+     * Report identity is not a direction. `pcManager.mode` is the one public,
      * authoritative topology signal: current LiveKit V1 single-PC sessions use
-     * `publisher-only`, where the publisher PC carries BOTH send and receive and
-     * no subscriber PC exists, so its single report is judged for upload AND
+     * `publisher-only`, where the publisher PC carries both send and receive and
+     * no subscriber PC exists, so its single report is judged for upload and
      * receive. Topology is therefore determined from the mode alone — never from
      * the `needsPublisher`/`needsSubscriber` role flags or report presence,
      * which a dual-PC publisher-primary session can equally exhibit despite
@@ -1133,48 +1288,30 @@ export default class ConnectionQualityMonitor {
       publisherIdentityByTrackId,
     );
 
-    Object.keys(this.prevInboundStats).forEach((ssrc) => {
-      if (!state.activeInboundSsrcs.has(ssrc)) {
-        delete this.prevInboundStats[ssrc];
-      }
-    });
-
-    Object.keys(this.prevOutboundStats).forEach((ssrc) => {
-      if (!state.activeOutboundSsrcs.has(ssrc)) {
-        delete this.prevOutboundStats[ssrc];
-      }
-    });
-
-    Object.keys(this.prevRemoteInboundStats).forEach((ssrc) => {
-      if (!state.activeRemoteInboundSsrcs.has(ssrc)) {
-        delete this.prevRemoteInboundStats[ssrc];
-      }
-    });
+    this.pruneStaleKeys(this.prevInboundStats, state.activeInboundSsrcs);
+    this.pruneStaleKeys(this.prevOutboundStats, state.activeOutboundSsrcs);
+    this.pruneStaleKeys(this.prevRemoteInboundStats, state.activeRemoteInboundSsrcs);
 
     /*
-     * Capture baselines are pruned ONCE here, against the UNION of both
+     * Capture baselines are pruned once here, against the union of both
      * reports' media-source tracks, exactly like the baselines above. Pruning
      * inside a single report would judge the publisher's capture baselines
      * against only that report's tracks (or a subscriber-only snapshot), which
      * could wrongly erase a still-live publisher baseline between the reports.
      */
-    Object.keys(this.prevAudioSourceStats).forEach((trackIdentifier) => {
-      if (!state.activeAudioSourceTracks.has(trackIdentifier)) {
-        delete this.prevAudioSourceStats[trackIdentifier];
-      }
-    });
+    this.pruneStaleKeys(this.prevAudioSourceStats, state.activeAudioSourceTracks);
 
     /*
-     * This generation's DIRECTIONAL usability: whether each DIRECTION produced
-     * real health evidence, aggregated ACROSS BOTH reports. A direction is not a
+     * This generation's directional usability: whether each direction produced
+     * real health evidence, aggregated across both reports. A direction is not a
      * report — a single-PC publisher-only session proves its receive direction
      * through the publisher report's inbound deltas and selected-pair RTT, and
      * an RR/inbound delta carried by the "other" report still counts for its own
      * direction. It travels on the sample as uploadMeasured/receiveMeasured so a
      * partial sample (one direction unknown) can still expose the direction it
-     * DID verify, without ever claiming global health — `measured` remains the
-     * AND of the expected directions. A report's two flags are never blindly
-     * ORed into both directions.
+     * did verify, without ever claiming global health — `measured` still
+     * requires every expected direction. A report's two flags are never blindly
+     * merged into both directions.
      */
     const uploadUsable = publisherEvidence.uploadUsable || subscriberEvidence.uploadUsable;
     const receiveUsable = publisherEvidence.receiveUsable || subscriberEvidence.receiveUsable;
@@ -1183,11 +1320,11 @@ export default class ConnectionQualityMonitor {
       measured: this.resolveMeasured({
         /*
          * `needsPublisher`/`needsSubscriber` are only the SDK's
-         * required-connectivity ROLE flags (subscriber-primary flips them) and
+         * required-connectivity role flags (subscriber-primary flips them) and
          * neither proves the direction is idle: LiveKit allocates both
          * PeerConnections in every non-publisher-only mode, and a role that
-         * does not NEED a direction can still carry active media. So a
-         * direction is expected when it is required OR when it genuinely has
+         * does not need a direction can still carry active media. So a
+         * direction is expected when it is required or when it genuinely has
          * active media/subscriptions; otherwise a failed report on a direction
          * with real RTP would be read as manufactured recovery.
          */
@@ -1211,20 +1348,20 @@ export default class ConnectionQualityMonitor {
 
   /**
    * Conservative `measured` semantics: a sample counts as measured only when
-   * every EXPECTED DIRECTION produced genuinely usable evidence (see
+   * every expected direction produced genuinely usable evidence (see
    * `ReportEvidence.uploadUsable`/`receiveUsable`). A missing/failed report, or
    * a report that proves nothing (stale receiver report, unselected candidate
    * pairs, bare outbound counters), leaves its direction unknown — never healthy
    * recovery. A direction is expected when its connection is required
-   * (`needsPublisher`/`needsSubscriber`) OR when it has active
+   * (`needsPublisher`/`needsSubscriber`) or when it has active
    * media/subscriptions, so a direction that carries real RTP is always required
    * even if its role flag is false; a direction with neither is never required.
    *
-   * `uploadUsable`/`receiveUsable` are the per-DIRECTION usability values, not
+   * `uploadUsable`/`receiveUsable` are the per-direction usability values, not
    * per-report "known" flags: a single-PC publisher-only session proves both
    * directions through its one publisher report. The caller also publishes them
    * as uploadMeasured/receiveMeasured, so a partial sample still exposes the
-   * direction it DID verify without claiming global health.
+   * direction it did verify without claiming global health.
    */
   private resolveMeasured(input: {
     uploadExpected: boolean;
@@ -1256,7 +1393,7 @@ export default class ConnectionQualityMonitor {
    * Drops the delta/stuck baselines without touching score or history: an
    * unknown interval (disconnected room, missing PC manager) must never be
    * diffed against pre-gap counters or mature a phantom outbound-stuck on the
-   * next sample. A mid-flight generation bump does NOT call this: the
+   * next sample. A mid-flight generation bump does not call this: the
    * superseded await is inert (it processes nothing and mutates nothing), and
    * the reset that bumped the generation already cleared these baselines.
    */
@@ -1266,6 +1403,19 @@ export default class ConnectionQualityMonitor {
     this.prevRemoteInboundStats = {};
     this.prevAudioSourceStats = {};
   };
+
+  /**
+   * Drops every entry of a per-key baseline map whose key did not appear in the
+   * latest sample, so a stale SSRC/track baseline can never be diffed against a
+   * later reappearance.
+   */
+  private pruneStaleKeys<T>(map: Record<string, T>, activeKeys: Set<string>): void {
+    Object.keys(map).forEach((key) => {
+      if (!activeKeys.has(key)) {
+        delete map[key];
+      }
+    });
+  }
 
   private findSenderTrackByMid(mid?: string): MediaStreamTrack | null {
     if (!this.room || !mid) return null;
@@ -1418,7 +1568,7 @@ export default class ConnectionQualityMonitor {
 
   /**
    * Synthetic quality marked `measured: false`: no distress, no recovery
-   * evidence AND no directional validity — no direction was measured.
+   * evidence and no directional validity — no direction was measured.
    */
   private createStatsForSyntheticState(): QualityStats {
     return this.createStats({
@@ -1451,40 +1601,79 @@ export default class ConnectionQualityMonitor {
   }): QualityStats {
     const hasUploadSignal = input.uploadRtt !== null || input.myPacketLoss > 0;
 
-    const uploadQuality = hasUploadSignal
+    const rawUploadQuality = hasUploadSignal
       ? this.classify({
           packetLoss: input.myPacketLoss,
           rtt: input.uploadRtt,
         })
       : PnmConnectionQuality.Excellent;
 
+    const isLikelyDownloadIssue = this.isLikelyMyDownloadIssue(
+      input.remoteReceiveStats,
+      input.measured,
+      input.receiveRtt,
+    );
+
+    // receive quality is judged on the subscriber's own RTT only: it must
+    // never inherit the publisher-only upload RTT
+    const receiveLossForClassification = isLikelyDownloadIssue ? input.receivePacketLoss : 0;
+    const rawReceiveQuality = this.classify({
+      packetLoss: receiveLossForClassification,
+      rtt: input.receiveRtt,
+    });
+
     /*
-     * A frozen outbound VIDEO stream on a healthy transport is usually a
+     * RTT-only Lost hysteresis, per direction. A direction is "RTT-only Lost"
+     * when classify returned Lost while its packet loss stayed below
+     * LOST_PACKET_LOSS_THRESHOLD, i.e. the Lost came purely from
+     * rtt >= LOST_RTT_THRESHOLD. A single RTT spike may be Poor but never Lost:
+     * only MIN_CONSECUTIVE_RTT_LOST_SAMPLES consecutive measured samples
+     * escalate to Lost. Loss-backed Lost is never delayed. The streak only
+     * advances/resets on measured samples (unmeasured samples are ignored by
+     * consumers); on an unmeasured sample the streak is left untouched, so a
+     * pending (streak < MIN) RTT-only Lost is reported Poor, never Lost. The
+     * downgraded value is computed once here and feeds worstQuality,
+     * videoFreezeIsBenign, isMyConnectionPoor, isReceivingPoor and the emitted
+     * uploadQuality/receiveQuality, so they can never disagree. Trade-off: a
+     * genuine RTT-only Lost is surfaced ~one sample (5s) later; the adaptive
+     * controller's own 2-sample Lost streak still applies on top.
+     */
+    const uploadRttOnlyLost =
+      rawUploadQuality === PnmConnectionQuality.Lost &&
+      input.myPacketLoss < LOST_PACKET_LOSS_THRESHOLD;
+    const receiveRttOnlyLost =
+      rawReceiveQuality === PnmConnectionQuality.Lost &&
+      receiveLossForClassification < LOST_PACKET_LOSS_THRESHOLD;
+
+    if (input.measured) {
+      this.uploadRttLostStreak = uploadRttOnlyLost ? this.uploadRttLostStreak + 1 : 0;
+      this.receiveRttLostStreak = receiveRttOnlyLost ? this.receiveRttLostStreak + 1 : 0;
+    }
+
+    const uploadQuality =
+      uploadRttOnlyLost && this.uploadRttLostStreak < MIN_CONSECUTIVE_RTT_LOST_SAMPLES
+        ? PnmConnectionQuality.Poor
+        : rawUploadQuality;
+    const receiveQuality =
+      receiveRttOnlyLost && this.receiveRttLostStreak < MIN_CONSECUTIVE_RTT_LOST_SAMPLES
+        ? PnmConnectionQuality.Poor
+        : rawReceiveQuality;
+
+    /*
+     * A frozen outbound video stream on a healthy transport is usually a
      * consumption pause (dynacast stops encoding with no viewers): report
      * stuck only when transport distress or an audio freeze confirms a real
      * uplink problem. This is only a second gate — the stall itself already
      * requires every non-idle layer of the camera publication to be stagnant.
      * Audio stuck is never suppressed here, but it is only ever reported when
-     * capture activity was verified for the stalled interval.
+     * capture activity was verified for the stalled interval. Uses the final
+     * (post-hysteresis) upload quality, so a downgraded RTT-only Lost still
+     * suppresses the benign-freeze path exactly like a Poor does.
      */
     const videoFreezeIsBenign =
       uploadQuality !== PnmConnectionQuality.Poor &&
       uploadQuality !== PnmConnectionQuality.Lost &&
       !input.isUploadAudioStuck;
-
-    const isLikelyDownloadIssue = this.isLikelyMyDownloadIssue(input.remoteReceiveStats);
-
-    // receive quality is judged on the subscriber's own RTT only: it must
-    // never inherit the publisher-only upload RTT
-    const receiveQuality = isLikelyDownloadIssue
-      ? this.classify({
-          packetLoss: input.receivePacketLoss,
-          rtt: input.receiveRtt,
-        })
-      : this.classify({
-          packetLoss: 0,
-          rtt: input.receiveRtt,
-        });
 
     const worstQuality =
       uploadQuality === PnmConnectionQuality.Lost || receiveQuality === PnmConnectionQuality.Lost
@@ -1497,17 +1686,25 @@ export default class ConnectionQualityMonitor {
             ? PnmConnectionQuality.Good
             : PnmConnectionQuality.Excellent;
 
-    // synthetic/invalidated samples must not move the smoothed score; they
-    // report the last genuinely measured quality instead
+    /*
+     * Overall status by consecutive-sample hysteresis (see
+     * resolveDisplayedQuality). Only measured worstQuality values enter the
+     * window (synthetic samples never move the user-visible status); the status
+     * changes only when the whole window is uniformly worse or uniformly better
+     * than it. A single spike therefore never changes it, sustained Poor shows
+     * Poor, sustained Lost shows Lost, and recovery needs two consecutive
+     * better samples.
+     */
     if (input.measured) {
-      const rawScore = qualityToScore(worstQuality);
-      const factor = rawScore < this.qualityScore ? DECREASE_FACTOR : INCREASE_FACTOR;
+      this.measuredQualityWindow.push(worstQuality);
+      if (this.measuredQualityWindow.length > MIN_CONSECUTIVE_SAMPLES_FOR_STATUS_CHANGE) {
+        this.measuredQualityWindow.shift();
+      }
 
-      this.qualityScore = factor * rawScore + (1 - factor) * this.qualityScore;
-      this.qualityScore = Math.max(MIN_SCORE, Math.min(MAX_SCORE, this.qualityScore));
+      this.displayedQuality = this.resolveDisplayedQuality();
     }
 
-    const overallQuality = this.scoreToQuality(this.qualityScore);
+    const overallQuality = this.displayedQuality;
 
     const isMyConnectionPoor =
       uploadQuality === PnmConnectionQuality.Poor || uploadQuality === PnmConnectionQuality.Lost;
@@ -1526,7 +1723,9 @@ export default class ConnectionQualityMonitor {
       receiveQuality,
       overallQuality,
 
-      score: this.qualityScore,
+      // coarse severity of the displayed status (100/75/40/20), kept for the
+      // diagnostics tooltip
+      score: qualityToScore(overallQuality),
 
       myPacketLoss: input.myPacketLoss,
       myRtt: input.uploadRtt,
@@ -1546,41 +1745,58 @@ export default class ConnectionQualityMonitor {
     };
   }
 
-  /*
+  /**
    * A remote publisher's uplink loss propagates to every subscriber, so one
-   * lossy publisher must not read as MY download problem — counting streams
+   * lossy publisher must not read as my download problem — counting streams
    * would even double-count its audio+video. Group active streams by publisher
    * and drop any already self-reporting a poor uplink: a lone remaining
    * publisher counts only once it has passed that filter, while with several at
-   * least MIN_PUBLISHERS must be poor and the poor ratio must be met.
+   * least MIN_PUBLISHERS_FOR_DOWNLOAD_ISSUE must be poor and the poor ratio must
+   * be met.
    */
-  private isLikelyMyDownloadIssue(remoteReceiveStats: RemoteReceiveStats[]): boolean {
+  private isLikelyMyDownloadIssue(
+    remoteReceiveStats: RemoteReceiveStats[],
+    measured: boolean,
+    receiveRtt: number | null,
+  ): boolean {
     const publisherIsPoor = new Map<string, boolean>();
 
     for (const stat of remoteReceiveStats) {
       const total = stat.packetsLostDelta + stat.packetsReceivedDelta;
-      if (total < MIN_ACTIVE_PACKETS_FOR_RECEIVE_ANALYSIS) continue;
+      if (total < MIN_ACTIVE_PACKETS_FOR_LOSS_ANALYSIS) continue;
 
       // their uplink, not my download (see the injected predicate)
       if (stat.publisherIdentity && this.isPublisherUplinkPoor?.(stat.publisherIdentity)) {
         continue;
       }
 
-      // unmappable streams fall back to one group per SSRC (conservative)
-      const key = stat.publisherIdentity ?? `ssrc:${stat.ssrc}`;
+      // Every stream without a mapped publisher shares one bucket (see
+      // UNKNOWN_PUBLISHER_KEY): per-SSRC grouping would split one publisher's
+      // audio + video into two "publishers" and could satisfy the
+      // >= MIN_PUBLISHERS corroboration, which is strictly more permissive.
+      const key = stat.publisherIdentity ?? UNKNOWN_PUBLISHER_KEY;
       const poor =
         stat.quality === PnmConnectionQuality.Poor || stat.quality === PnmConnectionQuality.Lost;
 
       publisherIsPoor.set(key, (publisherIsPoor.get(key) ?? false) || poor);
     }
 
-    if (publisherIsPoor.size === 0) return false;
+    // no poor publisher at all is a clean (non-poor) sample: the lone-publisher
+    // corroboration streak must not survive it
+    if (publisherIsPoor.size === 0) {
+      this.singlePublisherPoorStreak = 0;
+      return false;
+    }
 
     const poorPublishers = [...publisherIsPoor.values()].filter(Boolean).length;
 
     if (publisherIsPoor.size < MIN_PUBLISHERS_FOR_DOWNLOAD_ISSUE) {
-      return poorPublishers > 0;
+      return this.resolveSinglePublisherDownloadIssue(poorPublishers > 0, measured, receiveRtt);
     }
+
+    // a multi-publisher sample is judged by the ratio rule; the lone-publisher
+    // streak does not apply here and must not leak into a later single-publisher one
+    this.singlePublisherPoorStreak = 0;
 
     return (
       poorPublishers >= MIN_PUBLISHERS_FOR_DOWNLOAD_ISSUE &&
@@ -1588,10 +1804,78 @@ export default class ConnectionQualityMonitor {
     );
   }
 
+  /**
+   * Below MIN_PUBLISHERS_FOR_DOWNLOAD_ISSUE the single remaining publisher's
+   * poorness is not enough on its own: it may be that publisher's own bad uplink
+   * relayed through the SFU. It is accepted only when corroborated by either
+   *   (a) the poor condition persisted for
+   *       MIN_CONSECUTIVE_POOR_SAMPLES_FOR_DOWNLOAD_ISSUE consecutive measured
+   *       samples (a local, lasting condition rather than a one-off burst), or
+   *   (b) the receive-side RTT is itself Poor-grade (GOOD_RTT_THRESHOLD) — a
+   *       local path problem independent of the publisher.
+   * The streak resets on a non-poor sample and at every baseline/stop boundary;
+   * synthetic (measured === false) samples never advance it. Trade-off: a real
+   * 1:1 downlink issue is flagged ~one measured sample later unless the RTT
+   * already confirms it. The multi-publisher path instead applies the ratio rule.
+   */
+  private resolveSinglePublisherDownloadIssue(
+    isPoor: boolean,
+    measured: boolean,
+    receiveRtt: number | null,
+  ): boolean {
+    if (!isPoor) {
+      this.singlePublisherPoorStreak = 0;
+      return false;
+    }
+
+    // only a measured sample may confirm a lasting condition
+    if (measured) {
+      this.singlePublisherPoorStreak += 1;
+    }
+
+    const rttCorroborates = receiveRtt !== null && receiveRtt >= GOOD_RTT_THRESHOLD;
+
+    return (
+      this.singlePublisherPoorStreak >= MIN_CONSECUTIVE_POOR_SAMPLES_FOR_DOWNLOAD_ISSUE ||
+      rttCorroborates
+    );
+  }
+
+  /**
+   * The "your connection is unstable" toast is loss-backed. A Poor/Lost upload
+   * caused only by a high upload RTT (>= GOOD_RTT_THRESHOLD with zero loss) must
+   * not blame the user's uplink: RTT alone cannot attribute the side (a slow
+   * server or a congested return path looks identical). The one signal
+   * attributable to my uplink is the remote-inbound-rtp loss ratio, already
+   * restricted by the packet-count gate to a >= MIN_ACTIVE_PACKETS_FOR_LOSS_ANALYSIS
+   * packetsSent delta, so a mildly Poor upload needs myPacketLoss >=
+   * GOOD_PACKET_LOSS_THRESHOLD. Loss-backed Lost is included by the same
+   * threshold, and a confirmed RTT-only Lost also counts (`uploadQuality ===
+   * Lost` alone qualifies): the RTT-only downgrade only reports Lost after
+   * MIN_CONSECUTIVE_RTT_LOST_SAMPLES consecutive measured samples, i.e. the
+   * session is genuinely unusable. Only measured samples can back distress (an
+   * unmeasured sample carries no evidence); handleQualityState is only ever fed
+   * measured samples, but the guard here keeps that invariant explicit.
+   */
+  private isNotifiableUploadDistress(stats: QualityStats): boolean {
+    return (
+      stats.measured &&
+      (stats.uploadQuality === PnmConnectionQuality.Poor ||
+        stats.uploadQuality === PnmConnectionQuality.Lost) &&
+      (stats.myPacketLoss >= GOOD_PACKET_LOSS_THRESHOLD ||
+        stats.uploadQuality === PnmConnectionQuality.Lost)
+    );
+  }
+
   private handleQualityState(stats: QualityStats) {
     this.currentQuality = stats.overallQuality;
 
-    this.poorConnectionHistory.push(stats.isMyConnectionPoor);
+    // the history window and its recovery accounting share one signal — a
+    // loss-backed (or confirmed Lost) upload sample is distress, everything
+    // else (incl. an RTT-only Poor) is a "good" entry
+    const uploadDistress = this.isNotifiableUploadDistress(stats);
+
+    this.poorConnectionHistory.push(uploadDistress);
     if (this.poorConnectionHistory.length > HISTORY_WINDOW_SIZE) {
       this.poorConnectionHistory.shift();
     }
@@ -1656,10 +1940,31 @@ export default class ConnectionQualityMonitor {
     return Math.max(uploadRtt, receiveRtt);
   }
 
-  private scoreToQuality(score: number): PnmConnectionQuality {
-    if (score > 80) return PnmConnectionQuality.Excellent;
-    if (score > 40) return PnmConnectionQuality.Good;
-    if (score > 20) return PnmConnectionQuality.Poor;
-    return PnmConnectionQuality.Lost;
+  /**
+   * Hysteresis decision. `measuredQualityWindow` holds the last
+   * MIN_CONSECUTIVE_SAMPLES_FOR_STATUS_CHANGE measured worstQuality values.
+   * With a full window: uniformly worse than displayed → the least severe of
+   * them (highest score, closest to the current status); uniformly better →
+   * the most severe of them (lowest score); anything mixed → unchanged. An
+   * incomplete window never changes the status.
+   */
+  private resolveDisplayedQuality(): PnmConnectionQuality {
+    const window = this.measuredQualityWindow;
+    if (window.length < MIN_CONSECUTIVE_SAMPLES_FOR_STATUS_CHANGE) {
+      return this.displayedQuality;
+    }
+
+    const displayedScore = qualityToScore(this.displayedQuality);
+    const allWorse = window.every((quality) => qualityToScore(quality) < displayedScore);
+    const allBetter = window.every((quality) => qualityToScore(quality) > displayedScore);
+
+    if (allWorse) {
+      return window.reduce((a, b) => (qualityToScore(a) >= qualityToScore(b) ? a : b));
+    }
+    if (allBetter) {
+      return window.reduce((a, b) => (qualityToScore(a) <= qualityToScore(b) ? a : b));
+    }
+
+    return this.displayedQuality;
   }
 }

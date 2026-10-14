@@ -150,7 +150,7 @@ function makePublisherRoom(
 ): Room {
   const resolveSpecs = () => (typeof specs === 'function' ? specs() : specs);
   // track/publication objects are cached per track id so the sender, the
-  // transceiver and the publication always hand out the SAME MediaStreamTrack:
+  // transceiver and the publication always hand out the same MediaStreamTrack:
   // the monitor resolves the publication through that identity
   const tracks = new Map<string, MediaStreamTrack>();
   const publications = new Map<string, unknown>();
@@ -220,7 +220,7 @@ function makePublisherRoom(
 }
 
 /**
- * A connected session with BOTH PeerConnections: the publisher publishes the
+ * A connected session with both PeerConnections: the publisher publishes the
  * given local tracks (its report served by `publisherReport`) and the subscriber
  * receives real media from a live subscribed remote track (its report served by
  * `subscriberReport`). `needsSubscriber` is true, so the receive direction is
@@ -268,10 +268,11 @@ function audioSource(
 
 /*
  * Realistic per-interval capture energies (the monitor samples every 5s). RMS =
- * sqrt(deltaEnergy / deltaDuration), so MEANINGFUL delivers sqrt(0.05 / 5) = 0.1
- * (a comfortable conversational voice well above the 0.01 floor) while
- * NOISE_FLOOR creeps sqrt(0.0002 / 5) ≈ 0.0063 (a live mic's background hiss,
- * below the floor). A flat energy/duration models user silence / Opus DTX.
+ * sqrt(deltaEnergy / deltaDuration), so MEANINGFUL_ENERGY_PER_INTERVAL delivers
+ * sqrt(0.05 / 5) = 0.1 (a comfortable conversational voice well above the 0.01
+ * floor) while NOISE_FLOOR_ENERGY_PER_INTERVAL creeps sqrt(0.0002 / 5) ≈ 0.0063
+ * (a live mic's background hiss, below the floor). A flat energy/duration models
+ * user silence / Opus DTX.
  */
 const MEANINGFUL_ENERGY_PER_INTERVAL = 0.05; // 5s interval -> RMS ~0.1
 const NOISE_FLOOR_ENERGY_PER_INTERVAL = 0.0002; // 5s interval -> RMS ~0.0063
@@ -342,7 +343,7 @@ function outbound(
   bytesSent: number,
   framesSent = 0,
   mid?: string,
-  extra: { active?: boolean; mediaSourceId?: string } = {},
+  extra: { active?: boolean; mediaSourceId?: string; packetsSent?: number } = {},
 ) {
   return { type: 'outbound-rtp', ssrc, kind, bytesSent, framesSent, mid, ...extra };
 }
@@ -416,7 +417,7 @@ function inboundHarness() {
 const SUBSCRIBER_REPORT = Promise.resolve([inbound('sub', 'video', 0, 0)]);
 
 /**
- * A subscriber report with its OWN selected candidate pair (receive RTT) and a
+ * A subscriber report with its own selected candidate pair (receive RTT) and a
  * real inbound media delta, so the download direction produces genuine, usable
  * evidence independent of the publisher report.
  */
@@ -438,10 +439,10 @@ const PUB_R3 = [...PUB_PAIR, inbound('pub', 'video', 12, 100)];
 const PUB_R5 = [...PUB_PAIR, inbound('pub', 'video', 14, 110)];
 
 /*
- * The contamination oracle: on the FIRST sample after a baseline reset the
+ * The contamination oracle: on the first sample after a baseline reset the
  * deltas are undefined (there is no previous sample), so remoteReceiveStats
- * MUST be empty. A stale report that had leaked into the reset baseline
- * (10/90 from PUB_STALE_R2) WOULD leave a baseline that produces deltas of
+ * must be empty. A stale report that had leaked into the reset baseline
+ * (10/90 from PUB_STALE_R2) would leave a baseline that produces deltas of
  * 2/10 on that first sample — i.e. receive stats present.
  */
 
@@ -492,10 +493,10 @@ describe('ConnectionQualityMonitor', () => {
     await settle(); // registers resolver 1, awaits its report
     expect(resolvers).toHaveLength(2);
 
-    // the lifecycle boundary (reconnect/visibility) crosses the room NOW
+    // the lifecycle boundary (reconnect/visibility) crosses the room now
     monitor.resetMeasurementBaseline();
 
-    // the stale report arrives AFTER the boundary
+    // the stale report arrives after the boundary
     resolvers[1](PUB_STALE_R2);
     await settle();
 
@@ -504,7 +505,7 @@ describe('ConnectionQualityMonitor', () => {
     expect(samples).toHaveLength(1);
     expect(monitor.getStats()).toBeNull();
 
-    // sample 3: the FIRST real sample on the fresh baseline
+    // sample 3: the first real sample on the fresh baseline
     await vi.advanceTimersByTimeAsync(5000);
     await settle();
     expect(resolvers).toHaveLength(3);
@@ -521,7 +522,7 @@ describe('ConnectionQualityMonitor', () => {
      * deltas 2/10 instead of none.
      */
     expect(sample3.remoteReceiveStats).toEqual([]);
-    // the processed R3 report now HAS established the fresh baseline 12/100
+    // the processed R3 report has established the fresh baseline 12/100
     expect(monitor.getStats()).toBe(sample3);
 
     // sample 4: delta against 12/100 proves the fresh chain continues cleanly
@@ -560,7 +561,7 @@ describe('ConnectionQualityMonitor', () => {
     await settle();
     expect(monitor.getStats()).not.toBeNull();
 
-    // the report the next sample WOULD see has already changed baselines
+    // the report the next sample would see has already changed baselines
     immediateReport = PUB_R3; // deltas 12 vs 0 => inbound loss 10.7%
 
     monitor.resetMeasurementBaseline();
@@ -574,29 +575,40 @@ describe('ConnectionQualityMonitor', () => {
     expect(sample?.remoteReceiveStats).toEqual([]);
   });
 
-  it('resetMeasurementBaseline resets the score only on the connect/reconnect path', async () => {
+  it('resetMeasurementBaseline resets the displayed quality only on the connect/reconnect path', async () => {
     const monitor = new ConnectionQualityMonitor();
-    monitor.start(
-      makeRoom({
-        publisherGetStats: () =>
-          Promise.resolve([
-            remoteInbound({ ssrc: 'a', fractionLost: 0.5, roundTripTime: 0.5, timestamp: 1000 }),
-          ]),
-      }),
-      () => undefined,
-    );
+    let report: unknown = [
+      remoteInbound({ ssrc: 'a', fractionLost: 0.5, roundTripTime: 0.5, timestamp: 1000 }),
+      outbound('a', 'audio', 1000, 0, undefined, { packetsSent: 100 }),
+    ];
+    monitor.start(makeRoom({ publisherGetStats: () => Promise.resolve(report) }), () => undefined);
 
+    // first sample establishes the outbound packetsSent baseline (no loss yet)
     await settle();
-    const measuredScore = monitor.getStats()?.score ?? 0;
+    // two consecutive measured loss-backed Lost samples are needed to move the
+    // user-visible status under the consecutive-sample hysteresis
+    report = [
+      remoteInbound({ ssrc: 'a', fractionLost: 0.5, roundTripTime: 0.5, timestamp: 2000 }),
+      outbound('a', 'audio', 2000, 0, undefined, { packetsSent: 130 }),
+    ];
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    report = [
+      remoteInbound({ ssrc: 'a', fractionLost: 0.5, roundTripTime: 0.5, timestamp: 3000 }),
+      outbound('a', 'audio', 3000, 0, undefined, { packetsSent: 160 }),
+    ];
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    const measuredScore = monitor.getStats()?.score ?? 100;
     expect(measuredScore).toBeLessThan(100);
-    expect(monitor.getOverallQuality()).toBe('poor');
+    expect(monitor.getOverallQuality()).toBe('lost');
 
-    // a visibility reset happens on the SAME transport, so the smoothed score
-    // (and the shown quality) must survive it
+    // a visibility reset happens on the same transport, so the displayed quality
+    // must survive it (the measured window is cleared, the status is kept)
     monitor.resetMeasurementBaseline();
-    expect(monitor.getOverallQuality()).toBe('poor');
+    expect(monitor.getOverallQuality()).toBe('lost');
 
-    // the connect/reconnect reset starts the fresh transport from a clean score
+    // the connect/reconnect reset starts the fresh transport from a clean status
     monitor.resetMeasurementBaseline({ resetScore: true });
     expect(monitor.getStats()).toBeNull();
     expect(monitor.getOverallQuality()).toBe('excellent');
@@ -630,7 +642,7 @@ describe('ConnectionQualityMonitor', () => {
     expect(samples).toHaveLength(1);
     expect(monitor.getStats()).toBeNull();
 
-    // unhide: the SAME handler fires again (fresh baseline from zero)
+    // unhide: the same handler fires again (fresh baseline from zero)
     hidden = false;
     documentListeners.get('visibilitychange')?.();
 
@@ -671,7 +683,7 @@ describe('ConnectionQualityMonitor', () => {
     monitor.stop();
     expect(monitor.getStats()).toBeNull();
 
-    // the deferred getStats resolves AFTER stop: must never reschedule or emit
+    // the deferred getStats resolves after stop: must never reschedule or emit
     resolvers[0](PUB_R3);
     await settle();
     await vi.advanceTimersByTimeAsync(30000);
@@ -784,7 +796,7 @@ describe('ConnectionQualityMonitor', () => {
     expect(samples[1].remoteReceiveStats[0].packetLoss).toBeCloseTo(50, 5);
     expect(samples[1].rawPacketLoss).toBe(0);
 
-    // an interval with enough packets IS trusted
+    // an interval with enough packets is trusted
     lost = 11;
     received = 11; // delta 10 lost / 10 received = 50% over 20 packets
     await vi.advanceTimersByTimeAsync(5000);
@@ -825,11 +837,11 @@ describe('ConnectionQualityMonitor download-issue attribution', () => {
     expect(samples[1].rawPacketLoss).toBe(0);
     expect(samples[1].isReceivingPoor).toBe(false);
     expect(samples[1].receiveQuality).toBe('excellent');
-    // diagnostic exposure is unchanged, only attributed to its publisher
+    // the stream is still exposed for diagnostics, just attributed to its publisher
     expect(samples[1].remoteReceiveStats[0].publisherIdentity).toBe('user1');
   });
 
-  it('a lone lossy publisher that does not self-report is plausibly my download issue', async () => {
+  it('a lone lossy publisher becomes my download issue only after consecutive measured poor samples', async () => {
     const samples: QualityStats[] = [];
     const h = inboundHarness();
     const streams = [h.stream('sa', 'audio', 'a1'), h.stream('sv', 'video', 'v1')];
@@ -845,17 +857,385 @@ describe('ConnectionQualityMonitor download-issue attribution', () => {
       () => false,
     );
 
-    await settle();
+    await settle(); // baseline 0/0
+
+    // sample 2: the first measured poor sample. One lone publisher's poorness is
+    // not enough on its own (its uplink may simply be relayed through the SFU)
+    // and the receive RTT (20ms) does not corroborate, so this is not my download
+    // issue yet, even though the loss is still recorded as receive evidence.
     h.advance('sa', 10, 10);
     h.advance('sv', 10, 10);
     await vi.advanceTimersByTimeAsync(5000);
     await settle();
 
     expect(samples).toHaveLength(2);
+    expect(samples[1].isLikelyDownloadIssue).toBe(false);
+    expect(samples[1].receivePacketLoss).toBeCloseTo(50, 5);
+    // not attributed to my download, so receive quality is judged on the (low)
+    // receive RTT only and must never be inflated to 'lost' by their loss
+    expect(samples[1].receiveQuality).toBe('excellent');
+    expect(samples[1].isReceivingPoor).toBe(false);
+
+    // sample 3: a second consecutive measured poor sample — the lone publisher's
+    // persisting poorness corroborates a local download issue
+    h.advance('sa', 10, 10);
+    h.advance('sv', 10, 10);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+
+    expect(samples).toHaveLength(3);
+    expect(samples[2].isLikelyDownloadIssue).toBe(true);
+    expect(samples[2].receivePacketLoss).toBeCloseTo(50, 5);
+    expect(samples[2].receiveQuality).toBe('lost');
+    expect(samples[2].isReceivingPoor).toBe(true);
+  });
+
+  it('a lone lossy publisher with a Poor-grade receive RTT is my download issue on the first poor sample', async () => {
+    const samples: QualityStats[] = [];
+    const h = inboundHarness();
+    const streams = [h.stream('sa', 'audio', 'a1'), h.stream('sv', 'video', 'v1')];
+
+    // the subscriber's own selected pair reports a 600ms RTT (>= GOOD_RTT_THRESHOLD),
+    // a local path problem independent of the publisher that corroborates the
+    // download issue without waiting for a second consecutive poor sample
+    const highRttSubscriberReport = () =>
+      h
+        .report(streams)
+        .map((entry) =>
+          entry.type === 'candidate-pair'
+            ? candidatePair('sub-pair', 0.6, { selected: true })
+            : entry,
+        );
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        publisherGetStats: () => Promise.resolve(PUB_PAIR),
+        subscriberGetStats: () => Promise.resolve(highRttSubscriberReport()),
+        remoteParticipants: new Map([remotePublisher('user1', ['a1', 'v1'])]),
+      }),
+      (s) => samples.push(s),
+      () => false,
+    );
+
+    await settle(); // baseline 0/0
+    h.advance('sa', 10, 10);
+    h.advance('sv', 10, 10);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+
+    expect(samples).toHaveLength(2);
+    expect(samples[1].receiveRtt).toBe(600);
     expect(samples[1].isLikelyDownloadIssue).toBe(true);
     expect(samples[1].receivePacketLoss).toBeCloseTo(50, 5);
     expect(samples[1].receiveQuality).toBe('lost');
     expect(samples[1].isReceivingPoor).toBe(true);
+  });
+
+  it('a clean sample between two lossy samples resets the lone-publisher streak', async () => {
+    const samples: QualityStats[] = [];
+    const h = inboundHarness();
+    const streams = [h.stream('sa', 'audio', 'a1'), h.stream('sv', 'video', 'v1')];
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        publisherGetStats: () => Promise.resolve(PUB_PAIR),
+        subscriberGetStats: () => Promise.resolve(h.report(streams)),
+        remoteParticipants: new Map([remotePublisher('user1', ['a1', 'v1'])]),
+      }),
+      (s) => samples.push(s),
+      () => false,
+    );
+
+    await settle(); // baseline 0/0
+
+    // lossy -> streak 1 (not yet my download issue)
+    h.advance('sa', 10, 10);
+    h.advance('sv', 10, 10);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    expect(samples[1].isLikelyDownloadIssue).toBe(false);
+
+    // a clean sample must reset the poor streak
+    h.advance('sa', 0, 20);
+    h.advance('sv', 0, 20);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    expect(samples[2].isLikelyDownloadIssue).toBe(false);
+
+    // lossy again: only streak 1, so still not my download issue
+    h.advance('sa', 10, 10);
+    h.advance('sv', 10, 10);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    expect(samples[3].isLikelyDownloadIssue).toBe(false);
+  });
+
+  it('resetMeasurementBaseline() resets the lone-publisher streak', async () => {
+    const samples: QualityStats[] = [];
+    const h = inboundHarness();
+    const streams = [h.stream('sa', 'audio', 'a1'), h.stream('sv', 'video', 'v1')];
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        publisherGetStats: () => Promise.resolve(PUB_PAIR),
+        subscriberGetStats: () => Promise.resolve(h.report(streams)),
+        remoteParticipants: new Map([remotePublisher('user1', ['a1', 'v1'])]),
+      }),
+      (s) => samples.push(s),
+      () => false,
+    );
+
+    await settle(); // baseline 0/0
+
+    // lossy -> streak 1: a lone publisher's poorness is not yet my download issue
+    h.advance('sa', 10, 10);
+    h.advance('sv', 10, 10);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    expect(samples[samples.length - 1]?.isLikelyDownloadIssue).toBe(false);
+
+    // the lifecycle boundary (reconnect/visibility) crosses the room
+    monitor.resetMeasurementBaseline();
+
+    // the next sample re-baselines the inbound counters (the reset dropped the
+    // previous deltas), so it carries no receive delta and re-baselines cleanly
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    expect(samples[samples.length - 1]?.isLikelyDownloadIssue).toBe(false);
+
+    // lossy again: the streak restarted at 1, so this is not yet my download
+    // issue even though the loss really happened (measured + ~50% loss proves a
+    // genuine post-reset delta was diffed)
+    h.advance('sa', 10, 10);
+    h.advance('sv', 10, 10);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    const secondLossy = samples[samples.length - 1] as QualityStats;
+    expect(secondLossy.measured).toBe(true);
+    expect(secondLossy.receivePacketLoss).toBeCloseTo(50, 5);
+    expect(secondLossy.isLikelyDownloadIssue).toBe(false);
+
+    // one more lossy sample: a second consecutive measured poor sample confirms
+    // the download issue, proving the harness (and the streak) is live again
+    h.advance('sa', 10, 10);
+    h.advance('sv', 10, 10);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    expect(samples[samples.length - 1]?.isLikelyDownloadIssue).toBe(true);
+  });
+
+  it('the receive loss gate ignores a low-packet interval while a >=20-packet interval is trusted', async () => {
+    const samples: QualityStats[] = [];
+    const h = inboundHarness();
+    const streams = [h.stream('sv', 'video', 'v1')];
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        publisherGetStats: () => Promise.resolve(PUB_PAIR),
+        subscriberGetStats: () => Promise.resolve(h.report(streams)),
+        remoteParticipants: new Map([remotePublisher('user1', ['v1'])]),
+      }),
+      (s) => samples.push(s),
+      () => false,
+    );
+
+    await settle(); // baseline 0/0
+
+    // a 1-lost / 3-received interval is only 4 packets: below the 20-packet gate,
+    // so it contributes no receive loss, yet the real delta still proves receive
+    // works (RTT evidence keeps the sample measured)
+    h.advance('sv', 1, 3);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+
+    expect(samples).toHaveLength(2);
+    expect(samples[1].measured).toBe(true);
+    expect(samples[1].receivePacketLoss).toBe(0);
+    expect(samples[1].remoteReceiveStats[0].packetLoss).toBeCloseTo(25, 5);
+
+    // a >=20-packet interval is trusted: cumulative delta 10/10 = 50% loss
+    h.advance('sv', 10, 10);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+
+    expect(samples).toHaveLength(3);
+    expect(samples[2].receivePacketLoss).toBeCloseTo(50, 5);
+  });
+
+  /**
+   * A publisher report that proves the upload direction (PUB_PAIR RTT) and
+   * carries both a fresh receiver report and the outbound-rtp it reports on, so
+   * the upload-loss packet gate can be exercised.
+   */
+  const uploadLossReport = (opts: {
+    ssrc: string;
+    packetsSent: number;
+    timestamp: number;
+    fractionLost?: number;
+  }) => [
+    ...PUB_PAIR,
+    remoteInbound({
+      ssrc: opts.ssrc,
+      fractionLost: opts.fractionLost ?? 0.25,
+      timestamp: opts.timestamp,
+    }),
+    outbound(opts.ssrc, 'audio', opts.packetsSent * 10, 0, undefined, {
+      packetsSent: opts.packetsSent,
+    }),
+  ];
+
+  it('a fresh receiver report over a <20-packet interval carries no upload loss', async () => {
+    const samples: QualityStats[] = [];
+    let report: unknown = uploadLossReport({ ssrc: 'a', packetsSent: 100, timestamp: 1000 });
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(makeRoom({ publisherGetStats: () => Promise.resolve(report) }), (s) =>
+      samples.push(s),
+    );
+
+    await settle(); // establishes the outbound packetsSent baseline
+
+    // only 4 packets sent in this interval: quiet/DTX audio (or a briefly active
+    // simulcast layer) losing 1 of 4 would read as 25% => Lost, a false positive,
+    // so the gate withholds the loss value while the RR still proves the upload
+    report = uploadLossReport({ ssrc: 'a', packetsSent: 104, timestamp: 2000 });
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+
+    expect(samples[1].measured).toBe(true);
+    expect(samples[1].uploadMeasured).toBe(true);
+    expect(samples[1].myPacketLoss).toBe(0);
+    expect(samples[1].uploadQuality).not.toBe(PnmConnectionQuality.Lost);
+  });
+
+  it('a fresh receiver report over a >=20-packet interval carries its upload loss', async () => {
+    const samples: QualityStats[] = [];
+    let report: unknown = uploadLossReport({ ssrc: 'a', packetsSent: 100, timestamp: 1000 });
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(makeRoom({ publisherGetStats: () => Promise.resolve(report) }), (s) =>
+      samples.push(s),
+    );
+
+    await settle();
+    report = uploadLossReport({ ssrc: 'a', packetsSent: 130, timestamp: 2000 });
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+
+    expect(samples[1].measured).toBe(true);
+    expect(samples[1].uploadMeasured).toBe(true);
+    expect(samples[1].myPacketLoss).toBeCloseTo(25, 5);
+    expect(samples[1].uploadQuality).toBe(PnmConnectionQuality.Lost);
+  });
+
+  it('applies the upload-loss gate regardless of report enumeration order', async () => {
+    const run = async (receiverReportFirst: boolean) => {
+      const samples: QualityStats[] = [];
+      let packetsSent = 100;
+      const build = () => {
+        const rr = remoteInbound({ ssrc: 'a', fractionLost: 0.25, timestamp: packetsSent });
+        const outboundStat = outbound('a', 'audio', packetsSent * 10, 0, undefined, {
+          packetsSent,
+        });
+        return receiverReportFirst
+          ? [...PUB_PAIR, rr, outboundStat]
+          : [...PUB_PAIR, outboundStat, rr];
+      };
+      let report: unknown = build();
+      const monitor = new ConnectionQualityMonitor();
+      monitor.start(makeRoom({ publisherGetStats: () => Promise.resolve(report) }), (s) =>
+        samples.push(s),
+      );
+      await settle();
+      packetsSent = 130;
+      report = build();
+      await vi.advanceTimersByTimeAsync(5000);
+      await settle();
+      return samples[1];
+    };
+
+    // the RTCStatsReport iteration order is not meaningful: a remote-inbound-rtp
+    // may be enumerated before the outbound-rtp it reports on
+    const receiverFirst = await run(true);
+    const outboundFirst = await run(false);
+    expect(receiverFirst.myPacketLoss).toBeCloseTo(25, 5);
+    expect(outboundFirst.myPacketLoss).toBeCloseTo(25, 5);
+  });
+
+  it('a fresh receiver report for an ssrc with no outbound-rtp carries no upload loss', async () => {
+    const samples: QualityStats[] = [];
+    let report: unknown = [
+      ...PUB_PAIR,
+      remoteInbound({ ssrc: 'a', fractionLost: 0.25, timestamp: 1000 }),
+      outbound('b', 'audio', 1000, 0, undefined, { packetsSent: 100 }),
+    ];
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(makeRoom({ publisherGetStats: () => Promise.resolve(report) }), (s) =>
+      samples.push(s),
+    );
+
+    await settle();
+    report = [
+      ...PUB_PAIR,
+      remoteInbound({ ssrc: 'a', fractionLost: 0.25, timestamp: 2000 }),
+      outbound('b', 'audio', 1300, 0, undefined, { packetsSent: 130 }),
+    ];
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+
+    // no comparable outbound delta for ssrc 'a': the interval is unknown, so the
+    // RR carries no loss value (conservative)
+    expect(samples[1].measured).toBe(true);
+    expect(samples[1].myPacketLoss).toBe(0);
+    expect(samples[1].uploadQuality).not.toBe(PnmConnectionQuality.Lost);
+  });
+
+  it('groups unmapped audio+video streams of one publisher into a single bucket', async () => {
+    const samples: QualityStats[] = [];
+    const h = inboundHarness();
+    const streams = [h.stream('sa', 'audio', 'a1'), h.stream('sv', 'video', 'v1')];
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        publisherGetStats: () => Promise.resolve(PUB_PAIR),
+        subscriberGetStats: () => Promise.resolve(h.report(streams)),
+        // no remoteParticipants mapping: neither stream can be attributed
+      }),
+      (s) => samples.push(s),
+      () => false,
+    );
+
+    await settle(); // baseline 0/0
+
+    h.advance('sa', 10, 10);
+    h.advance('sv', 10, 10);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+
+    // both unmapped streams share one bucket, so this is a single poor
+    // publisher: it must not satisfy the multi-publisher corroboration
+    // (per-SSRC grouping would have made these two streams look like two
+    // publishers and bypassed the single-publisher streak)
+    expect(samples[1].remoteReceiveStats).toHaveLength(2);
+    expect(samples[1].remoteReceiveStats.every((s) => s.publisherIdentity === undefined)).toBe(
+      true,
+    );
+    expect(samples[1].isLikelyDownloadIssue).toBe(false);
+
+    h.advance('sa', 10, 10);
+    h.advance('sv', 10, 10);
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+
+    // a second consecutive measured poor sample corroborates the single publisher
+    expect(samples[2].measured).toBe(true);
+    expect(samples[2].isLikelyDownloadIssue).toBe(true);
   });
 
   it('one lossy publisher among three is not my download issue', async () => {
@@ -966,7 +1346,7 @@ describe('ConnectionQualityMonitor measurement integrity', () => {
       await settle();
       expect(samples).toHaveLength(i + 1);
       expect(samples[i].measured).toBe(false);
-      // the smoothed score stays pinned at its untouched maximum
+      // the displayed score stays pinned at its untouched maximum
       expect(samples[i].score).toBe(100);
       await vi.advanceTimersByTimeAsync(5000);
     }
@@ -977,29 +1357,44 @@ describe('ConnectionQualityMonitor measurement integrity', () => {
     expect(monitor.getOverallQuality()).toBe('excellent');
   });
 
-  it('a measured poor sample moves the score once; later synthetic samples leave it untouched', async () => {
+  it('measured bad samples move the displayed score; later synthetic samples leave it untouched', async () => {
     vi.mocked(store.dispatch).mockClear();
     const samples: QualityStats[] = [];
-    const room = makeRoom({
-      publisherGetStats: () =>
-        Promise.resolve([
-          remoteInbound({
-            ssrc: 'a',
-            fractionLost: 0.5,
-            roundTripTime: 0.5,
-            timestamp: 1000,
-          }),
-        ]),
-    });
+    let report: unknown = [
+      remoteInbound({ ssrc: 'a', fractionLost: 0.5, roundTripTime: 0.5, timestamp: 1000 }),
+      outbound('a', 'audio', 1000, 0, undefined, { packetsSent: 100 }),
+    ];
+    const room = makeRoom({ publisherGetStats: () => Promise.resolve(report) });
 
     const monitor = new ConnectionQualityMonitor();
     monitor.start(room, (stats) => samples.push(stats));
 
+    // first sample establishes the outbound packetsSent baseline (no loss yet)
     await settle();
-    expect(samples[0].measured).toBe(true);
-    expect(samples[0].myPacketLoss).toBeCloseTo(50, 5);
-    expect(samples[0].uploadQuality).toBe('lost');
-    const measuredScore = samples[0].score;
+    // a fresh RR over an interval that really sent >= 20 packets carries the loss
+    report = [
+      remoteInbound({ ssrc: 'a', fractionLost: 0.5, roundTripTime: 0.5, timestamp: 2000 }),
+      outbound('a', 'audio', 2000, 0, undefined, { packetsSent: 130 }),
+    ];
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    expect(samples[1].measured).toBe(true);
+    expect(samples[1].myPacketLoss).toBeCloseTo(50, 5);
+    expect(samples[1].uploadQuality).toBe('lost');
+    // one Lost sample is a spike under the hysteresis: the displayed status is
+    // unchanged (a single spike never moves it)
+    expect(samples[1].overallQuality).toBe('excellent');
+
+    // a second consecutive measured Lost sample moves the displayed status
+    report = [
+      remoteInbound({ ssrc: 'a', fractionLost: 0.5, roundTripTime: 0.5, timestamp: 3000 }),
+      outbound('a', 'audio', 3000, 0, undefined, { packetsSent: 160 }),
+    ];
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    expect(samples[2].uploadQuality).toBe('lost');
+    expect(samples[2].overallQuality).toBe('lost');
+    const measuredScore = samples[2].score;
     expect(measuredScore).toBeLessThan(100);
 
     // the room leaves the connected state: every following sample is synthetic
@@ -1007,14 +1402,14 @@ describe('ConnectionQualityMonitor measurement integrity', () => {
 
     await vi.advanceTimersByTimeAsync(5000);
     await settle();
-    expect(samples[1].measured).toBe(false);
-    expect(samples[1].score).toBe(measuredScore);
+    expect(samples[3].measured).toBe(false);
+    expect(samples[3].score).toBe(measuredScore);
 
     await vi.advanceTimersByTimeAsync(5000);
     await settle();
-    expect(samples[2].score).toBe(measuredScore);
+    expect(samples[4].score).toBe(measuredScore);
     // overall quality is the last genuinely measured value, not degraded
-    expect(monitor.getOverallQuality()).toBe('poor');
+    expect(monitor.getOverallQuality()).toBe('lost');
   });
 
   it('uses the transport selected candidate pair and ignores a stale nominated pair', async () => {
@@ -1195,7 +1590,7 @@ describe('ConnectionQualityMonitor measurement integrity', () => {
 
     await settle();
     expect(samples).toHaveLength(1);
-    // a healthy publisher must NEVER manufacture healthy receive recovery
+    // a healthy publisher must never manufacture healthy receive recovery
     expect(samples[0].measured).toBe(false);
   });
 
@@ -1265,13 +1660,14 @@ describe('ConnectionQualityMonitor measurement integrity', () => {
   it('counts a newly arrived receiver report once and never re-counts a stale one', async () => {
     vi.mocked(store.dispatch).mockClear();
     const samples: QualityStats[] = [];
-    let report = [
+    let report: unknown = [
       remoteInbound({
         ssrc: 'a',
         fractionLost: 0.5,
         roundTripTime: 0.5,
         timestamp: 1000,
       }),
+      outbound('a', 'audio', 1000, 0, undefined, { packetsSent: 100 }),
     ];
 
     const monitor = new ConnectionQualityMonitor();
@@ -1279,23 +1675,10 @@ describe('ConnectionQualityMonitor measurement integrity', () => {
       samples.push(s),
     );
 
+    // first sample establishes the outbound packetsSent baseline (no loss yet)
     await settle();
-    expect(samples[0].measured).toBe(true);
-    expect(samples[0].myPacketLoss).toBeCloseTo(50, 5);
-    // a receiver report contributes loss only, never upload RTT
-    expect(samples[0].uploadRtt).toBeNull();
-    const measuredScore = samples[0].score;
 
-    // the SAME receiver report (arrival timestamp unchanged) proves nothing:
-    // unknown, never a manufactured recovery, and it must not move the score
-    await vi.advanceTimersByTimeAsync(5000);
-    await settle();
-    expect(samples[1].measured).toBe(false);
-    expect(samples[1].myPacketLoss).toBe(0);
-    expect(samples[1].uploadRtt).toBeNull();
-    expect(samples[1].score).toBe(measuredScore);
-
-    // a genuinely NEW receiver report is counted again
+    // a fresh RR over an interval that really sent >= 20 packets is counted once
     report = [
       remoteInbound({
         ssrc: 'a',
@@ -1303,12 +1686,40 @@ describe('ConnectionQualityMonitor measurement integrity', () => {
         roundTripTime: 0.5,
         timestamp: 2000,
       }),
+      outbound('a', 'audio', 2000, 0, undefined, { packetsSent: 130 }),
     ];
     await vi.advanceTimersByTimeAsync(5000);
     await settle();
-    expect(samples[2].measured).toBe(true);
-    expect(samples[2].myPacketLoss).toBeCloseTo(50, 5);
+    expect(samples[1].measured).toBe(true);
+    expect(samples[1].myPacketLoss).toBeCloseTo(50, 5);
+    // a receiver report contributes loss only, never upload RTT
+    expect(samples[1].uploadRtt).toBeNull();
+    const measuredScore = samples[1].score;
+
+    // the same receiver report (arrival timestamp unchanged) proves nothing:
+    // unknown, never a manufactured recovery, and it must not move the score
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    expect(samples[2].measured).toBe(false);
+    expect(samples[2].myPacketLoss).toBe(0);
     expect(samples[2].uploadRtt).toBeNull();
+    expect(samples[2].score).toBe(measuredScore);
+
+    // a genuinely new receiver report is counted again
+    report = [
+      remoteInbound({
+        ssrc: 'a',
+        fractionLost: 0.5,
+        roundTripTime: 0.5,
+        timestamp: 3000,
+      }),
+      outbound('a', 'audio', 3000, 0, undefined, { packetsSent: 160 }),
+    ];
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    expect(samples[3].measured).toBe(true);
+    expect(samples[3].myPacketLoss).toBeCloseTo(50, 5);
+    expect(samples[3].uploadRtt).toBeNull();
   });
 
   it('bare outbound counters alone never make a sample measured and preserve the score', async () => {
@@ -1321,6 +1732,7 @@ describe('ConnectionQualityMonitor measurement integrity', () => {
         roundTripTime: 0.5,
         timestamp: 1000,
       }),
+      outbound('a', 'audio', 1000, 0, undefined, { packetsSent: 100 }),
     ];
 
     const monitor = new ConnectionQualityMonitor();
@@ -1328,19 +1740,46 @@ describe('ConnectionQualityMonitor measurement integrity', () => {
       samples.push(s),
     );
 
+    // first sample establishes the outbound packetsSent baseline (no loss yet)
     await settle();
-    expect(samples[0].measured).toBe(true);
-    const score = samples[0].score;
+
+    // a fresh RR over an interval that really sent >= 20 packets is measured
+    report = [
+      remoteInbound({
+        ssrc: 'a',
+        fractionLost: 0.5,
+        roundTripTime: 0.5,
+        timestamp: 2000,
+      }),
+      outbound('a', 'audio', 2000, 0, undefined, { packetsSent: 130 }),
+    ];
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    expect(samples[1].measured).toBe(true);
+
+    // a second consecutive Lost sample moves the displayed status
+    report = [
+      remoteInbound({
+        ssrc: 'a',
+        fractionLost: 0.5,
+        roundTripTime: 0.5,
+        timestamp: 3000,
+      }),
+      outbound('a', 'audio', 3000, 0, undefined, { packetsSent: 160 }),
+    ];
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    const score = samples[2].score;
     expect(score).toBeLessThan(100);
 
     // outbound byte/frame counters alone prove nothing about link health
     report = [outbound('o', 'audio', 1000), outbound('v', 'video', 5000, 10)];
     await vi.advanceTimersByTimeAsync(5000);
     await settle();
-    expect(samples[1].measured).toBe(false);
-    expect(samples[1].score).toBe(score);
-    expect(samples[1].remoteReceiveStats).toEqual([]);
-    expect(monitor.getOverallQuality()).toBe('poor');
+    expect(samples[3].measured).toBe(false);
+    expect(samples[3].score).toBe(score);
+    expect(samples[3].remoteReceiveStats).toEqual([]);
+    expect(monitor.getOverallQuality()).toBe('lost');
   });
 
   it('unselected candidate pairs alone never make a sample measured', async () => {
@@ -1554,66 +1993,91 @@ describe('ConnectionQualityMonitor measurement integrity', () => {
 
   it('uses the receiver-report arrival timestamp as the freshness proof', async () => {
     const samples: QualityStats[] = [];
-    let report: unknown = [remoteInbound({ ssrc: 'a', fractionLost: 0.5, timestamp: 1000 })];
+    let report: unknown = [
+      remoteInbound({ ssrc: 'a', fractionLost: 0.5, timestamp: 1000 }),
+      outbound('a', 'audio', 1000, 0, undefined, { packetsSent: 100 }),
+    ];
 
     const monitor = new ConnectionQualityMonitor();
     monitor.start(makeRoom({ publisherGetStats: () => Promise.resolve(report) }), (s) =>
       samples.push(s),
     );
 
-    // a first-ever arrival timestamp is a genuinely fresh report
+    // first sample: a first-ever arrival timestamp is fresh (upload evidence),
+    // but there is no packetsSent delta yet, so it carries no loss value
     await settle();
     expect(samples[0].measured).toBe(true);
-    expect(samples[0].myPacketLoss).toBeCloseTo(50, 5);
+    expect(samples[0].myPacketLoss).toBe(0);
+
+    // a newer arrival timestamp over a >=20-packet interval is a new RR
+    report = [
+      remoteInbound({ ssrc: 'a', fractionLost: 0.5, timestamp: 2000 }),
+      outbound('a', 'audio', 2000, 0, undefined, { packetsSent: 130 }),
+    ];
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+    expect(samples[1].measured).toBe(true);
+    expect(samples[1].myPacketLoss).toBeCloseTo(50, 5);
 
     // an unchanged arrival timestamp means no new RR: stale
     await vi.advanceTimersByTimeAsync(5000);
     await settle();
-    expect(samples[1].measured).toBe(false);
-    expect(samples[1].myPacketLoss).toBe(0);
+    expect(samples[2].measured).toBe(false);
+    expect(samples[2].myPacketLoss).toBe(0);
 
     // a newer arrival timestamp is a genuinely new report
-    report = [remoteInbound({ ssrc: 'a', fractionLost: 0.5, timestamp: 2000 })];
+    report = [
+      remoteInbound({ ssrc: 'a', fractionLost: 0.5, timestamp: 3000 }),
+      outbound('a', 'audio', 3000, 0, undefined, { packetsSent: 160 }),
+    ];
     await vi.advanceTimersByTimeAsync(5000);
     await settle();
-    expect(samples[2].measured).toBe(true);
-    expect(samples[2].myPacketLoss).toBeCloseTo(50, 5);
+    expect(samples[3].measured).toBe(true);
+    expect(samples[3].myPacketLoss).toBeCloseTo(50, 5);
   });
 
   it('a non-advancing receiver-report arrival timestamp is never treated as fresh', async () => {
     const samples: QualityStats[] = [];
-    const rr = (timestamp: number) =>
+    let packetsSent = 100;
+    const rr = (timestamp: number) => [
       remoteInbound({
         ssrc: 'a',
         fractionLost: 0.5,
         roundTripTime: 0.5,
         timestamp,
-      });
-    let report: unknown = [rr(5000)];
+      }),
+      outbound('a', 'audio', packetsSent * 10, 0, undefined, { packetsSent }),
+    ];
+    let report: unknown = rr(5000);
 
     const monitor = new ConnectionQualityMonitor();
     monitor.start(makeRoom({ publisherGetStats: () => Promise.resolve(report) }), (s) =>
       samples.push(s),
     );
 
+    // first sample: the arrival timestamp is fresh, but there is no packetsSent
+    // delta yet, so it carries no loss value
     await settle();
     expect(samples[0].measured).toBe(true);
 
     // the same arrival timestamp (no new RR): unknown, never fresh
-    report = [rr(5000)];
+    packetsSent = 130;
+    report = rr(5000);
     await vi.advanceTimersByTimeAsync(5000);
     await settle();
     expect(samples[1].measured).toBe(false);
     expect(samples[1].myPacketLoss).toBe(0);
 
     // a regressed timestamp must not be fresh either
-    report = [rr(3000)];
+    packetsSent = 160;
+    report = rr(3000);
     await vi.advanceTimersByTimeAsync(5000);
     await settle();
     expect(samples[2].measured).toBe(false);
 
-    // a genuinely newer arrival timestamp is fresh again
-    report = [rr(6000)];
+    // a genuinely newer arrival timestamp (with a >=20-packet interval) is fresh again
+    packetsSent = 190;
+    report = rr(6000);
     await vi.advanceTimersByTimeAsync(5000);
     await settle();
     expect(samples[3].measured).toBe(true);
@@ -1683,7 +2147,7 @@ describe('ConnectionQualityMonitor measurement integrity', () => {
 
     const monitor = new ConnectionQualityMonitor();
 
-    // OLD loop on the old room, blocked on a deferred publisher report
+    // old loop on the old room, blocked on a deferred publisher report
     monitor.start(
       makeRoom({
         publisherGetStats: () =>
@@ -1711,7 +2175,7 @@ describe('ConnectionQualityMonitor measurement integrity', () => {
     expect(vi.getTimerCount()).toBe(1); // only the new loop's own reschedule
 
     /*
-     * The OLD in-flight report resolves after the new loop is established.
+     * The old in-flight report resolves after the new loop is established.
      * The superseded loop must be completely inert: it may neither emit nor
      * arm a rogue reschedule of its own. The armed-timer count is the
      * discriminator: a stale finally that reached the reschedule would leave
@@ -1777,7 +2241,7 @@ describe('ConnectionQualityMonitor measurement integrity', () => {
 
     const monitor = new ConnectionQualityMonitor();
 
-    // OLD loop blocked on a deferred report of its own room
+    // old loop blocked on a deferred report of its own room
     monitor.start(
       makeRoom({
         publisherGetStats: () =>
@@ -1791,14 +2255,14 @@ describe('ConnectionQualityMonitor measurement integrity', () => {
     await settle();
     expect(oldResolvers).toHaveLength(1);
 
-    // NEW loop: sample 1 establishes the inbound (0/0) and outbound (1000) baselines
+    // new loop: sample 1 establishes the inbound (0/0) and outbound (1000) baselines
     monitor.start(newRoom, (s) => samplesNew.push(s));
     await settle();
     expect(samplesNew).toHaveLength(1);
     expect(samplesNew[0].remoteReceiveStats).toEqual([]);
     expect(samplesNew[0].isUploadAudioStuck).toBe(false);
 
-    // the OLD await completes AFTER the new baselines exist
+    // the old await completes after the new baselines exist
     oldResolvers[0](PUB_R3);
     await settle();
     expect(samplesOld).toHaveLength(0);
@@ -1843,9 +2307,9 @@ describe('ConnectionQualityMonitor measurement integrity', () => {
 });
 
 /*
- * Conservative track-level stuck detection. These two flags feed the
- * camera/audio-critical adaptation actions, so every case here is about NOT
- * reporting a stall that the evidence does not actually prove.
+ * Track-level stuck detection. These two flags feed the camera/audio-critical
+ * adaptation actions, so every case here is about not reporting a stall that
+ * the evidence does not actually prove.
  */
 describe('ConnectionQualityMonitor track-level stuck detection', () => {
   const nextSample = async () => {
@@ -1854,20 +2318,26 @@ describe('ConnectionQualityMonitor track-level stuck detection', () => {
   };
 
   /**
-   * A fresh receiver report proving a Poor upload, so the benign-freeze gate
-   * can never be what suppresses a stall in these tests.
+   * A Poor upload path proven from the first sample, so the benign-freeze gate
+   * can never be what suppresses a stall in these tests. The authoritative
+   * selected-pair RTT (>= GOOD_RTT_THRESHOLD) makes uploadQuality Poor on its
+   * own; the fresh receiver report rides along as upload evidence. (A
+   * fractionLost alone could not prove Poor on the first sample: the upload-loss
+   * gate needs a packetsSent baseline from a previous sample.)
    */
-  const poorUplink = (timestamp: number) =>
-    remoteInbound({ ssrc: 'a', fractionLost: 0.15, roundTripTime: 0.05, timestamp });
+  const poorUplink = (timestamp: number) => [
+    remoteInbound({ ssrc: 'a', fractionLost: 0.15, roundTripTime: 0.05, timestamp }),
+    candidatePair('pub-pair', 0.6, { selected: true }),
+  ];
 
   it('never flags a camera when only one idle simulcast layer of it is stagnant', async () => {
     const samples: QualityStats[] = [];
     let timestamp = 1000;
-    // two layers of the SAME camera publication (same mid + sender): dynacast
+    // two layers of the same camera publication (same mid + sender): dynacast
     // paused the second one, so its counters never move again
     const idleLayer = () => outbound('layer-idle', 'video', 900, 20, 'v');
     const activeLayer = (bytes: number) => outbound('layer-active', 'video', bytes, 40, 'v');
-    let report: unknown = [poorUplink(timestamp), idleLayer(), activeLayer(5000)];
+    let report: unknown = [...poorUplink(timestamp), idleLayer(), activeLayer(5000)];
 
     const monitor = new ConnectionQualityMonitor();
     monitor.start(
@@ -1877,7 +2347,7 @@ describe('ConnectionQualityMonitor track-level stuck detection', () => {
 
     const interval = async (bytes: number) => {
       timestamp += 1000;
-      report = [poorUplink(timestamp), idleLayer(), activeLayer(bytes)];
+      report = [...poorUplink(timestamp), idleLayer(), activeLayer(bytes)];
       await nextSample();
     };
 
@@ -1898,7 +2368,7 @@ describe('ConnectionQualityMonitor track-level stuck detection', () => {
     const samples: QualityStats[] = [];
     let timestamp = 1000;
     const stalledLayers = (stamp: number) => [
-      poorUplink(stamp),
+      ...poorUplink(stamp),
       outbound('layer-hi', 'video', 900, 20, 'v'),
       outbound('layer-lo', 'video', 900, 40, 'v'),
     ];
@@ -1941,7 +2411,7 @@ describe('ConnectionQualityMonitor track-level stuck detection', () => {
     for (let i = 0; i < 3; i++) {
       timestamp += 1000;
       report = [
-        poorUplink(timestamp),
+        ...poorUplink(timestamp),
         outbound('layer-hi', 'video', 900, 20, 'v', { active: false }),
         outbound('layer-lo', 'video', 900, 40, 'v', { active: false }),
       ];
@@ -2029,7 +2499,7 @@ describe('ConnectionQualityMonitor track-level stuck detection', () => {
     /*
      * Direct, discriminating check of RMS = sqrt(deltaEnergy / deltaDuration)
      * at realistic amplitudes over a 5s interval. The produced duration
-     * cancels, so the decision depends ONLY on energy/duration — an explicit
+     * cancels, so the decision depends only on energy/duration — an explicit
      * sample rate would wrongly shift every one of these.
      */
     const cases: Array<{ label: string; energyPerInterval: number; stuck: boolean }> = [
@@ -2078,7 +2548,7 @@ describe('ConnectionQualityMonitor track-level stuck detection', () => {
     const samples: QualityStats[] = [];
     let timestamp = 1000;
     // a genuinely verified capture (meaningful energy over a produced duration)
-    // so the assertion tests SOURCE exclusion, not an unverified source
+    // so the assertion tests source exclusion, not an unverified source
     let energy = 0;
     let duration = 30;
     const specs: LocalMediaSpec[] = [
@@ -2088,7 +2558,7 @@ describe('ConnectionQualityMonitor track-level stuck detection', () => {
     // a frozen screen share whose audio source keeps capturing: without the
     // source separation these would drive "mute own camera" / audio-only
     const frozenShare = (stamp: number) => [
-      poorUplink(stamp),
+      ...poorUplink(stamp),
       outbound('ss-v', 'video', 900, 20, 'sv'),
       outbound('ss-a', 'audio', 1000, 0, 'sa'),
       audioSource('ss-audio', energy, { totalSamplesDuration: duration }),
@@ -2140,7 +2610,7 @@ describe('ConnectionQualityMonitor track-level stuck detection', () => {
 
       for (let i = 0; i < 3; i++) {
         timestamp += 1000;
-        report = [poorUplink(timestamp), outbound('v1', 'video', 900, 20, 'v')];
+        report = [...poorUplink(timestamp), outbound('v1', 'video', 900, 20, 'v')];
         await nextSample();
       }
 
@@ -2199,7 +2669,7 @@ describe('ConnectionQualityMonitor track-level stuck detection', () => {
     const samples: QualityStats[] = [];
     let timestamp = 1000;
     let specs: LocalMediaSpec[] = [{ ...CAMERA_SPEC, trackId: 'cam-1' }];
-    let report: unknown = [poorUplink(timestamp), outbound('v1', 'video', 5000, 40, 'v')];
+    let report: unknown = [...poorUplink(timestamp), outbound('v1', 'video', 5000, 40, 'v')];
 
     const monitor = new ConnectionQualityMonitor();
     monitor.start(
@@ -2212,7 +2682,7 @@ describe('ConnectionQualityMonitor track-level stuck detection', () => {
 
     const interval = async (bytes: number, frames: number) => {
       timestamp += 1000;
-      report = [poorUplink(timestamp), outbound('v1', 'video', bytes, frames, 'v')];
+      report = [...poorUplink(timestamp), outbound('v1', 'video', bytes, frames, 'v')];
       await nextSample();
     };
 
@@ -2304,7 +2774,7 @@ describe('ConnectionQualityMonitor track-level stuck detection', () => {
     await interval();
     expect(samples.every((sample) => sample.isUploadAudioStuck === false)).toBe(true);
 
-    // reactivation: the inactive intervals must NOT have accumulated a stall,
+    // reactivation: the inactive intervals must not have accumulated a stall,
     // so the fast path re-matures from a fresh count, not immediately
     active = true;
     await interval();
@@ -2318,7 +2788,7 @@ describe('ConnectionQualityMonitor track-level stuck detection', () => {
     let energy = 0;
     let duration = 30;
     // the mic outbound (sender track mic-1) points its mediaSourceId at a
-    // DIFFERENT, actively-capturing source: the identity mismatch must not be
+    // different, actively-capturing source: the identity mismatch must not be
     // read as proof that mic-1 produced audio
     const report = () => [
       outbound('o', 'audio', 1000, 0, 'm', { mediaSourceId: 'src-other' }),
@@ -2373,7 +2843,7 @@ describe('ConnectionQualityMonitor track-level stuck detection', () => {
     monitor.stop();
     monitor.start(room, (s) => samples.push(s));
 
-    // the restarted run must re-baseline BOTH the outbound counters and the
+    // the restarted run must re-baseline both the outbound counters and the
     // captured signal, so nothing matured before the stop carries over
     await settle();
     expect(samples[3].isUploadAudioStuck).toBe(false);
@@ -2428,7 +2898,7 @@ describe('ConnectionQualityMonitor dual-PC stall persistence', () => {
     await interval(); // one verified stagnant interval
     expect(samples[1].isUploadAudioStuck).toBe(false);
 
-    // the stall matures in the PUBLISHER report; the subscriber report that is
+    // the stall matures in the publisher report; the subscriber report that is
     // processed next must not clear it
     await interval();
     expect(samples[2].isUploadAudioStuck).toBe(true);
@@ -2447,6 +2917,9 @@ describe('ConnectionQualityMonitor dual-PC stall persistence', () => {
     let subReceived = 0;
     const stalledLayers = () => [
       remoteInbound({ ssrc: 'a', fractionLost: 0.15, roundTripTime: 0.05, timestamp }),
+      // authoritative Poor upload RTT so the benign-freeze gate is never what
+      // suppresses the stall (the RR loss alone cannot prove Poor on sample 0)
+      candidatePair('pub-pair', 0.6, { selected: true }),
       outbound('layer-hi', 'video', 900, 20, 'v'),
       outbound('layer-lo', 'video', 900, 40, 'v'),
     ];
@@ -2490,7 +2963,7 @@ describe('ConnectionQualityMonitor dual-PC stall persistence', () => {
 /*
  * Directional evidence under a partial (non-global) report: a verified upload
  * audio stall must stay visible (uploadMeasured:true) even when the download
- * direction's report is unusable and the sample is therefore NOT globally
+ * direction's report is unusable and the sample is therefore not globally
  * measured.
  */
 describe('ConnectionQualityMonitor directional evidence under partial reports', () => {
@@ -2516,7 +2989,7 @@ describe('ConnectionQualityMonitor directional evidence under partial reports', 
       makeDualRoom({
         specs: [MIC_SPEC],
         publisherReport: () => Promise.resolve(publisherReport()),
-        // the download direction is EXPECTED (needsSubscriber + subscribed
+        // the download direction is expected (needsSubscriber + subscribed
         // media) but its report is empty: it proves nothing about the link
         subscriberReport: () => Promise.resolve([]),
       }),
@@ -2535,7 +3008,7 @@ describe('ConnectionQualityMonitor directional evidence under partial reports', 
 
     const partial = samples[2];
     expect(partial.isUploadAudioStuck).toBe(true);
-    // the download direction is unknown -> the sample is NOT globally measured
+    // the download direction is unknown -> the sample is not globally measured
     expect(partial.measured).toBe(false);
     // ...but the upload direction's own report proved the stall
     expect(partial.uploadMeasured).toBe(true);
@@ -2583,8 +3056,8 @@ describe('ConnectionQualityMonitor directional evidence under partial reports', 
 });
 
 /*
- * Publisher-only single-PC topology (LiveKit SDK V1 join path): ONE publisher
- * transport carries BOTH RTP directions and there is NO subscriber
+ * Publisher-only single-PC topology (LiveKit SDK V1 join path): one publisher
+ * transport carries both RTP directions and there is no subscriber
  * PeerConnection, so Promise.allSettled(subscriber?.getStats()) yields a
  * fulfilled `undefined` with no subscriber report. The direction routing is
  * keyed on the public `pcManager.mode`, never on a missing subscriber report
@@ -2636,8 +3109,8 @@ describe('ConnectionQualityMonitor publisher-only single-PC direction routing', 
         needsPublisher: true,
         needsSubscriber: false,
         remoteParticipants: subscribedRemoteParticipants(),
-        // ONLY an inbound-rtp stream: no selected pair, no receiver report and
-        // no outbound activity, so nothing here can prove the UPLOAD direction
+        // only an inbound-rtp stream: no selected pair, no receiver report and
+        // no outbound activity, so nothing here can prove the upload direction
         publisherGetStats: () => Promise.resolve([inbound('pub', 'audio', 0, received)]),
       }),
       (s) => samples.push(s),
@@ -2669,7 +3142,7 @@ describe('ConnectionQualityMonitor publisher-only single-PC direction routing', 
         // subscribed remote media keeps the receive direction expected even
         // though needsSubscriber is false and there is no subscriber PC
         remoteParticipants: subscribedRemoteParticipants(),
-        // ONLY a fresh receiver report: it proves our outbound RTP reached the
+        // only a fresh receiver report: it proves our outbound RTP reached the
         // peer, but nothing about the receive direction
         publisherGetStats: () =>
           Promise.resolve([
@@ -2694,7 +3167,7 @@ describe('ConnectionQualityMonitor publisher-only single-PC direction routing', 
     monitor.start(
       makeRoom({
         // dual-PC publisher-primary: a separate subscriber PC exists but the
-        // role flags are IDENTICAL to a single-PC session (needsSubscriber
+        // role flags are identical to a single-PC session (needsSubscriber
         // false); only the mode tells them apart
         mode: 'publisher-primary',
         needsPublisher: true,
@@ -2753,8 +3226,8 @@ describe('ConnectionQualityMonitor publisher-only single-PC direction routing', 
 /*
  * Cross-report direction aggregation: a direction is a property of the RTP, not
  * of the report that happens to carry its evidence. A receiver report always
- * describes OUR outbound RTP (upload) and an inbound-rtp delta always describes
- * OUR download (receive), so the same evidence must be credited to its own
+ * describes our outbound RTP (upload) and an inbound-rtp delta always describes
+ * our download (receive), so the same evidence must be credited to its own
  * direction even when it arrives on the "other" report.
  */
 describe('ConnectionQualityMonitor cross-report direction aggregation', () => {
@@ -2771,7 +3244,7 @@ describe('ConnectionQualityMonitor cross-report direction aggregation', () => {
         needsSubscriber: true,
         // the publisher report proves nothing on its own
         publisherGetStats: () => Promise.resolve([]),
-        // an RR always reports on OUR outbound RTP, so its upload evidence must
+        // an RR always reports on our outbound RTP, so its upload evidence must
         // count even though the report carrying it is the subscriber's
         subscriberGetStats: () =>
           Promise.resolve([
@@ -2783,7 +3256,7 @@ describe('ConnectionQualityMonitor cross-report direction aggregation', () => {
 
     await settle();
     expect(samples[0].uploadMeasured).toBe(true);
-    // ...but it is NOT receive evidence: the download direction stays unmeasured
+    // ...but it is not receive evidence: the download direction stays unmeasured
     expect(samples[0].receiveMeasured).toBe(false);
     expect(samples[0].receiveRtt).toBeNull();
     expect(samples[0].measured).toBe(false);
@@ -2801,8 +3274,8 @@ describe('ConnectionQualityMonitor cross-report direction aggregation', () => {
         needsPublisher: true,
         needsSubscriber: false,
         remoteParticipants: subscribedRemoteParticipants(),
-        // ONLY an inbound-rtp stream: no selected pair, no receiver report and
-        // no outbound activity, so nothing here can prove the UPLOAD direction
+        // only an inbound-rtp stream: no selected pair, no receiver report and
+        // no outbound activity, so nothing here can prove the upload direction
         // even though the report carrying the delta is the publisher's
         publisherGetStats: () => Promise.resolve([inbound('pub', 'audio', 0, received)]),
         subscriberGetStats: () => Promise.resolve([]),
@@ -2818,7 +3291,7 @@ describe('ConnectionQualityMonitor cross-report direction aggregation', () => {
 
     const sample = samples[1];
     expect(sample.receiveMeasured).toBe(true);
-    // the inbound delta is RECEIVE evidence only, never upload
+    // the inbound delta is receive evidence only, never upload
     expect(sample.uploadMeasured).toBe(false);
     expect(sample.receiveRtt).toBeNull();
     // upload is expected (needsPublisher) and still unknown -> unmeasured
@@ -2857,12 +3330,433 @@ describe('ConnectionQualityMonitor cross-report direction aggregation', () => {
     await settle();
 
     const sample = samples[1];
-    // the selected-pair RTT credits upload and is NEVER borrowed for receive
+    // the selected-pair RTT credits upload and is never borrowed for receive
     expect(sample.uploadMeasured).toBe(true);
     expect(sample.uploadRtt).toBe(20);
     expect(sample.receiveRtt).toBeNull();
     // ...while the real inbound delta is genuine receive evidence
     expect(sample.receiveMeasured).toBe(true);
     expect(sample.measured).toBe(true);
+  });
+});
+
+/*
+ * Overall status hysteresis: the user-visible `overallQuality` moves only on
+ * consecutive measured samples, never on a single spike, and can reach Lost.
+ * Synthetic samples never enter the window.
+ */
+describe('ConnectionQualityMonitor overall status hysteresis', () => {
+  const nextSample = async () => {
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+  };
+
+  // A fresh receiver report over a genuinely >=20-packet interval: a loss-backed
+  // Lost upload (packet loss >= LOST_PACKET_LOSS_THRESHOLD), so the RTT-only Lost
+  // hysteresis never applies to it.
+  const lossLostReport = (timestamp: number, packetsSent: number) => [
+    remoteInbound({ ssrc: 'a', fractionLost: 0.9, timestamp }),
+    outbound('a', 'audio', packetsSent * 10, 0, undefined, { packetsSent }),
+  ];
+
+  // An authoritative selected-pair upload RTT. >= GOOD_RTT_THRESHOLD makes the
+  // upload Poor; both directions derive from this single report.
+  const rttReport = (seconds: number) => [
+    transport('pub-pair'),
+    candidatePair('pub-pair', seconds, { selected: true }),
+  ];
+
+  it('a single Lost-grade sample never changes the displayed status', async () => {
+    const samples: QualityStats[] = [];
+    let report: unknown = lossLostReport(1000, 100); // baseline, still excellent
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(makeRoom({ publisherGetStats: () => Promise.resolve(report) }), (s) =>
+      samples.push(s),
+    );
+
+    await settle(); // sample 0: excellent
+    expect(samples[0].overallQuality).toBe('excellent');
+
+    report = lossLostReport(2000, 130); // sample 1: loss-backed Lost
+    await nextSample();
+    expect(samples[1].uploadQuality).toBe('lost');
+    expect(samples[1].overallQuality).toBe('excellent');
+  });
+
+  it('two consecutive Poor samples change the status to poor and sustained Poor keeps it', async () => {
+    const samples: QualityStats[] = [];
+    const report = rttReport(0.6); // upload RTT 600ms -> Poor every sample
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(makeRoom({ publisherGetStats: () => Promise.resolve(report) }), (s) =>
+      samples.push(s),
+    );
+
+    await settle(); // sample 0: Poor, but a lone sample cannot move the status
+    expect(samples[0].uploadQuality).toBe('poor');
+    expect(samples[0].overallQuality).toBe('excellent');
+
+    await nextSample(); // sample 1: second consecutive Poor
+    expect(samples[1].overallQuality).toBe('poor');
+
+    await nextSample(); // sample 2: sustained Poor, no false recovery to Good
+    expect(samples[2].overallQuality).toBe('poor');
+  });
+
+  it('two consecutive Lost-grade samples reach a Lost displayed status', async () => {
+    const samples: QualityStats[] = [];
+    let report: unknown = lossLostReport(1000, 100);
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(makeRoom({ publisherGetStats: () => Promise.resolve(report) }), (s) =>
+      samples.push(s),
+    );
+
+    await settle();
+    report = lossLostReport(2000, 130);
+    await nextSample();
+    report = lossLostReport(3000, 160);
+    await nextSample();
+
+    expect(samples[2].uploadQuality).toBe('lost');
+    expect(samples[2].overallQuality).toBe('lost');
+  });
+
+  it('a Lost sample followed by a Poor sample settles on poor (least severe of the window)', async () => {
+    const samples: QualityStats[] = [];
+    let report: unknown = lossLostReport(1000, 100);
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(makeRoom({ publisherGetStats: () => Promise.resolve(report) }), (s) =>
+      samples.push(s),
+    );
+
+    await settle();
+    report = lossLostReport(2000, 130); // Lost
+    await nextSample();
+    report = rttReport(0.6); // Poor
+    await nextSample();
+
+    expect(samples[2].uploadQuality).toBe('poor');
+    // window = [Lost, Poor]: both worse than excellent -> the least severe
+    expect(samples[2].overallQuality).toBe('poor');
+  });
+
+  it('recovery needs two consecutive better samples', async () => {
+    const samples: QualityStats[] = [];
+    let report: unknown = lossLostReport(1000, 100);
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(makeRoom({ publisherGetStats: () => Promise.resolve(report) }), (s) =>
+      samples.push(s),
+    );
+
+    await settle();
+    report = lossLostReport(2000, 130);
+    await nextSample();
+    report = lossLostReport(3000, 160);
+    await nextSample();
+    expect(samples[2].overallQuality).toBe('lost');
+
+    report = rttReport(0.02); // excellent again
+    await nextSample(); // sample 3: one better sample is not enough
+    expect(samples[3].overallQuality).toBe('lost');
+
+    await nextSample(); // sample 4: second consecutive better sample recovers
+    expect(samples[4].overallQuality).toBe('excellent');
+  });
+
+  it('synthetic samples never move the displayed status', async () => {
+    const samples: QualityStats[] = [];
+    const room = makeRoom({ publisherGetStats: () => Promise.resolve(rttReport(0.6)) });
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(room, (s) => samples.push(s));
+
+    await settle();
+    await nextSample(); // two consecutive Poor samples -> poor
+    expect(monitor.getOverallQuality()).toBe('poor');
+
+    // the transport drops: every further sample is synthetic
+    (room as unknown as { state: string }).state = 'reconnecting';
+    await nextSample();
+    expect(samples[2].measured).toBe(false);
+    expect(samples[2].overallQuality).toBe('poor');
+    await nextSample();
+    expect(samples[3].overallQuality).toBe('poor');
+  });
+
+  it('resetMeasurementBaseline({ resetScore: true }) returns the status to excellent', async () => {
+    const report = rttReport(0.6);
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(makeRoom({ publisherGetStats: () => Promise.resolve(report) }), () => undefined);
+
+    await settle();
+    await nextSample();
+    expect(monitor.getOverallQuality()).toBe('poor');
+
+    monitor.resetMeasurementBaseline({ resetScore: true });
+    expect(monitor.getOverallQuality()).toBe('excellent');
+
+    // ...and the window was cleared, so a single fresh Poor sample cannot
+    // immediately re-degrade the status
+    await nextSample();
+    expect(monitor.getStats()?.overallQuality).toBe('excellent');
+  });
+});
+
+/*
+ * RTT-only Lost hysteresis: a Lost that comes purely from RTT (loss below
+ * LOST_PACKET_LOSS_THRESHOLD) must be corroborated by two consecutive measured
+ * samples, per direction; loss-backed Lost stays immediate.
+ */
+describe('ConnectionQualityMonitor RTT-only Lost hysteresis', () => {
+  const nextSample = async () => {
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+  };
+
+  const rttReport = (seconds: number) => [
+    transport('pub-pair'),
+    candidatePair('pub-pair', seconds, { selected: true }),
+  ];
+
+  // loss-backed Lost: a fresh RR over a genuinely >=20-packet interval
+  const lossLostReport = (timestamp: number, packetsSent: number) => [
+    remoteInbound({ ssrc: 'a', fractionLost: 0.9, timestamp }),
+    outbound('a', 'audio', packetsSent * 10, 0, undefined, { packetsSent }),
+  ];
+
+  it('a single RTT-only Lost spike is downgraded to poor; a second consecutive one is lost', async () => {
+    const samples: QualityStats[] = [];
+    let report: unknown = rttReport(0.02); // excellent baseline
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(makeRoom({ publisherGetStats: () => Promise.resolve(report) }), (s) =>
+      samples.push(s),
+    );
+
+    await settle();
+    report = rttReport(1.2); // 1200ms RTT, zero loss -> RTT-only Lost
+    await nextSample();
+    expect(samples[1].uploadRtt).toBe(1200);
+    expect(samples[1].myPacketLoss).toBe(0);
+    expect(samples[1].uploadQuality).toBe('poor'); // a lone spike is never Lost
+
+    await nextSample(); // second consecutive RTT-only Lost
+    expect(samples[2].uploadRtt).toBe(1200);
+    expect(samples[2].uploadQuality).toBe('lost');
+  });
+
+  it('spike / normal / spike never reaches Lost on the upload direction', async () => {
+    const samples: QualityStats[] = [];
+    let report: unknown = rttReport(0.02);
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(makeRoom({ publisherGetStats: () => Promise.resolve(report) }), (s) =>
+      samples.push(s),
+    );
+
+    await settle();
+    report = rttReport(1.2); // spike
+    await nextSample();
+    report = rttReport(0.02); // normal resets the streak
+    await nextSample();
+    report = rttReport(1.2); // spike again
+    await nextSample();
+
+    expect(samples[1].uploadQuality).toBe('poor');
+    expect(samples[2].uploadQuality).toBe('excellent');
+    expect(samples[3].uploadQuality).toBe('poor');
+    expect(samples.slice(1).some((s) => s.uploadQuality === 'lost')).toBe(false);
+  });
+
+  it('a loss-backed Lost (gated loss >= 20) is reported Lost immediately', async () => {
+    const samples: QualityStats[] = [];
+    let report: unknown = lossLostReport(1000, 100); // baseline, no loss yet
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(makeRoom({ publisherGetStats: () => Promise.resolve(report) }), (s) =>
+      samples.push(s),
+    );
+
+    await settle();
+    report = lossLostReport(2000, 130); // 90% loss over a 30-packet interval
+    await nextSample();
+
+    expect(samples[1].myPacketLoss).toBeGreaterThanOrEqual(20);
+    // never delayed by the RTT-only rule: the loss itself backs the Lost
+    expect(samples[1].uploadQuality).toBe('lost');
+  });
+
+  it('applies the same RTT-only Lost hysteresis to the receive direction', async () => {
+    const samples: QualityStats[] = [];
+    let subscriberRtt = 0.02;
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(
+      makeRoom({
+        needsPublisher: true,
+        needsSubscriber: true,
+        publisherGetStats: () => Promise.resolve(rttReport(0.02)),
+        subscriberGetStats: () =>
+          Promise.resolve([
+            transport('sub-pair'),
+            candidatePair('sub-pair', subscriberRtt, { selected: true }),
+          ]),
+      }),
+      (s) => samples.push(s),
+    );
+
+    await settle();
+    expect(samples[0].receiveQuality).toBe('excellent');
+
+    subscriberRtt = 1.2; // subscriber RTT 1200ms, no loss -> RTT-only Lost
+    await nextSample();
+    expect(samples[1].receiveRtt).toBe(1200);
+    expect(samples[1].receiveQuality).toBe('poor');
+
+    await nextSample();
+    expect(samples[2].receiveQuality).toBe('lost');
+  });
+
+  it('a downgraded RTT-only Lost spike is what feeds isMyConnectionPoor (never Lost)', async () => {
+    const samples: QualityStats[] = [];
+    let report: unknown = rttReport(0.02);
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(makeRoom({ publisherGetStats: () => Promise.resolve(report) }), (s) =>
+      samples.push(s),
+    );
+
+    await settle();
+    report = rttReport(1.2);
+    await nextSample();
+
+    // the once-computed downgraded value is what every consumer sees: still
+    // Poor (so isMyConnectionPoor stays true), but never reported as Lost
+    expect(samples[1].uploadQuality).toBe('poor');
+    expect(samples[1].isMyConnectionPoor).toBe(true);
+    expect(samples[1].overallQuality).toBe('excellent');
+  });
+});
+
+/*
+ * The "your connection is unstable" toast is loss-backed. A Poor upload that
+ * came only from a high upload RTT (>= GOOD_RTT_THRESHOLD, zero loss) is
+ * server/path-side and must not blame the user, while a gated remote-inbound
+ * loss ratio (>= 10% over a >=20-packet interval) or a confirmed RTT-only Lost
+ * (2 consecutive measured samples at >= LOST_RTT_THRESHOLD) does.
+ * `isMyConnectionPoor` stays true for RTT-only Poor.
+ */
+describe('ConnectionQualityMonitor loss-backed unstable-connection notification', () => {
+  const nextSample = async () => {
+    await vi.advanceTimersByTimeAsync(5000);
+    await settle();
+  };
+
+  // An authoritative selected-pair upload RTT with zero loss: 600ms is RTT-only
+  // Poor and 1200ms is (RTT-only) Lost under the RTT-only Lost hysteresis.
+  const rttReport = (seconds: number) => [
+    transport('pub-pair'),
+    candidatePair('pub-pair', seconds, { selected: true }),
+  ];
+
+  // A gated upload-loss sample: fractionLost 0.15 = 15% (Poor, loss-backed) over
+  // a packetsSent delta the packet-count gate trusts (>= MIN_ACTIVE_PACKETS_FOR_LOSS_ANALYSIS).
+  const lossReport = (timestamp: number, packetsSent: number) => [
+    remoteInbound({ ssrc: 'a', fractionLost: 0.15, timestamp }),
+    outbound('a', 'audio', packetsSent * 10, 0, undefined, { packetsSent }),
+  ];
+
+  it('five measured RTT-only Poor samples (600ms, zero loss) never notify, yet keep isMyConnectionPoor true', async () => {
+    vi.mocked(store.dispatch).mockClear();
+    const samples: QualityStats[] = [];
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(makeRoom({ publisherGetStats: () => Promise.resolve(rttReport(0.6)) }), (s) =>
+      samples.push(s),
+    );
+
+    await settle(); // sample 0
+    for (let i = 0; i < 4; i++) {
+      await nextSample(); // samples 1..4
+    }
+
+    // field semantics: RTT-only Poor stays "my connection poor"
+    expect(samples).toHaveLength(5);
+    samples.forEach((s) => {
+      expect(s.measured).toBe(true);
+      expect(s.uploadQuality).toBe('poor');
+      expect(s.isMyConnectionPoor).toBe(true);
+    });
+    // ...but it never blames the user's uplink
+    expect(store.dispatch).not.toHaveBeenCalled();
+  });
+
+  it('3 of 5 gated loss-backed Poor samples notify exactly once', async () => {
+    vi.mocked(store.dispatch).mockClear();
+    const samples: QualityStats[] = [];
+    let report: unknown = lossReport(1000, 100); // baseline: no packetsSent delta yet
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(makeRoom({ publisherGetStats: () => Promise.resolve(report) }), (s) =>
+      samples.push(s),
+    );
+
+    await settle(); // sample 0: loss gated out (no baseline) -> not distress
+    expect(samples[0].measured).toBe(true);
+    expect(samples[0].myPacketLoss).toBe(0);
+
+    report = lossReport(2000, 130);
+    await nextSample(); // sample 1: delta 30 -> 15% loss -> distress
+    report = lossReport(3000, 160);
+    await nextSample(); // sample 2: distress
+    expect(store.dispatch).not.toHaveBeenCalled();
+
+    report = lossReport(4000, 190);
+    await nextSample(); // sample 3: 3rd distress in the window -> notify once
+    expect(samples[3].myPacketLoss).toBeGreaterThanOrEqual(10);
+    expect(store.dispatch).toHaveBeenCalledTimes(1);
+    expect(store.dispatch).toHaveBeenCalledWith({
+      input: {
+        message: 'notifications.your-connection-lost-or-unstable',
+        typeOption: 'error',
+      },
+    });
+
+    report = lossReport(5000, 220);
+    await nextSample(); // sample 4: an already-poor session must not re-notify
+    expect(store.dispatch).toHaveBeenCalledTimes(1);
+  });
+
+  it('sustained RTT-only Lost (>= 1000ms) notifies once the Lost is confirmed', async () => {
+    vi.mocked(store.dispatch).mockClear();
+    const samples: QualityStats[] = [];
+
+    const monitor = new ConnectionQualityMonitor();
+    monitor.start(makeRoom({ publisherGetStats: () => Promise.resolve(rttReport(1.2)) }), (s) =>
+      samples.push(s),
+    );
+
+    await settle(); // sample 0: RTT-only Lost downgraded to Poor -> not distress
+    expect(samples[0].uploadQuality).toBe('poor');
+    expect(store.dispatch).not.toHaveBeenCalled();
+
+    await nextSample(); // sample 1: 2nd consecutive sample -> Lost confirmed -> distress
+    expect(samples[1].uploadQuality).toBe('lost');
+    await nextSample(); // sample 2: distress
+    expect(store.dispatch).not.toHaveBeenCalled();
+
+    await nextSample(); // sample 3: 3rd distress in the window -> notify
+    expect(store.dispatch).toHaveBeenCalledTimes(1);
+    expect(store.dispatch).toHaveBeenCalledWith({
+      input: {
+        message: 'notifications.your-connection-lost-or-unstable',
+        typeOption: 'error',
+      },
+    });
   });
 });
