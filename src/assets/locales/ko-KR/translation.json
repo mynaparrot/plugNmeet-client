@@ -53,7 +53,7 @@
     "room-disconnected-server-unresponsive": "서버가 응답하지 않아 연결이 끊어졌습니다.",
     "room-disconnected-reconnecting": "연결이 끊어졌습니다. 다시 연결 중...",
     "room-disconnected-network-error": "ネットワークの問題により切断されました。",
-    "your-connection-lost-or-unstable": "Your network is having trouble sending your audio and video. Others may hear or see you with interruptions.",
+    "your-connection-lost-or-unstable": "네트워크가 오디오와 영상을 보내는 데 문제가 생깁니다. 다른 사람들이 끊기면서 듣거나 볼 수 있습니다.",
     "need-to-disable-display-external-link": "비디오를 재생하려면 먼저 외부 링크 공유를 중지하십시오.",
     "need-to-disable-external-media-player": "外部リンクを共有するには、まずビデオプレーヤーを停止してください。",
     "websocket-disconnected": "연결이 끊어졌습니다. 다시 연결을 시도 중...",
