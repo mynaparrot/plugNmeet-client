@@ -75,7 +75,7 @@
     "nats-error-auth-title": "Bejelentkezési hiba",
     "nats-error-auth-body": "Nem tudtuk ellenőrizni az adatait. Lehet, hogy a munkamenet lejárt.",
     "user-logged-out": "Kijelentkezett.",
-    "media-server-disconnected-reconnecting": "Connection interrupted. Reconnecting...",
+    "media-server-disconnected-reconnecting": "Kapcsolat megszakadt. Újracsatlakozom...",
     "media-server-disconnected": "Leválasztva a médiaszerverről.",
     "preloaded-whiteboard-file-processing": "Táblafájl betöltése...",
     "preloaded-whiteboard-file-processing-error": "Hiba történt a táblafájl betöltésekor.",
