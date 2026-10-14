@@ -75,7 +75,7 @@
     "nats-error-auth-title": "خطای ورود",
     "nats-error-auth-body": "اطلاعات شما تأیید نشد. ممکن است نشست شما منقضی شده باشد.",
     "user-logged-out": "شما از سیستم خارج شده‌اید.",
-    "media-server-disconnected-reconnecting": "اتصال به سرور رسانه قطع شد. در حال اتصال مجدد...",
+    "media-server-disconnected-reconnecting": "ارتباط قطع شد. دوباره وصل می شوم...",
     "media-server-disconnected": "اتصال به سرور رسانه قطع شد.",
     "preloaded-whiteboard-file-processing": "در حال بارگذاری فایل تخته سفید...",
     "preloaded-whiteboard-file-processing-error": "در بارگذاری فایل تخته سفید خطایی رخ داد.",
