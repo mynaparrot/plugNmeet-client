@@ -53,7 +53,7 @@
     "room-disconnected-server-unresponsive": "Έχετε αποσυνδεθεί επειδή ο διακομιστής σταμάτησε να ανταποκρίνεται.",
     "room-disconnected-reconnecting": "Η σύνδεση χάθηκε. Γίνεται επανασύνδεση...",
     "room-disconnected-network-error": "Αποσυνδεθήκατε λόγω προβλήματος δικτύου.",
-    "your-connection-lost-or-unstable": "Your network is having trouble sending your audio and video. Others may hear or see you with interruptions.",
+    "your-connection-lost-or-unstable": "Το δίκτυό σας αντιμετωπίζει προβλήματα με την αποστολή του ήχου και του βίντεο. Άλλοι μπορεί να σας ακούσουν ή να σας δουν με διακοπές.",
     "need-to-disable-display-external-link": "Για να αναπαραγάγετε ένα βίντεο, παρακαλούμε σταματήστε πρώτα την κοινή χρήση του εξωτερικού συνδέσμου.",
     "need-to-disable-external-media-player": "Για να μοιραστείτε έναν εξωτερικό σύνδεσμο, παρακαλούμε σταματήστε πρώτα την αναπαραγωγή του βίντεο.",
     "websocket-disconnected": "Η σύνδεση χάθηκε, προσπάθεια επανασύνδεσης...",
