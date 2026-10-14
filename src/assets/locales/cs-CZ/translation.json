@@ -75,7 +75,7 @@
     "nats-error-auth-title": "Chyba přihlášení",
     "nats-error-auth-body": "Vaše údaje se nám nepodařilo ověřit. Je možné, že platnost vaší relace vypršela.",
     "user-logged-out": "Byli jste odhlášeni.",
-    "media-server-disconnected-reconnecting": "Ztráta připojení k serveru médií. Opětovné připojení...",
+    "media-server-disconnected-reconnecting": "Connection interrupted. Reconnecting...",
     "media-server-disconnected": "Odpojeno od serveru médií.",
     "preloaded-whiteboard-file-processing": "Načítání souboru tabule...",
     "preloaded-whiteboard-file-processing-error": "Při načítání souboru tabule došlo k chybě.",
