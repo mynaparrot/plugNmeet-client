@@ -53,7 +53,7 @@
     "room-disconnected-server-unresponsive": "Du har blivit frånkopplad eftersom servern slutade svara.",
     "room-disconnected-reconnecting": "Anslutningen har brutits. Återansluta...",
     "room-disconnected-network-error": "Du kopplades bort på grund av ett nätverksproblem.",
-    "your-connection-lost-or-unstable": "Your network is having trouble sending your audio and video. Others may hear or see you with interruptions.",
+    "your-connection-lost-or-unstable": "Ditt nätverk har problem med att skicka ditt ljud och bild. Andra kan höra eller se dig med avbrott.",
     "need-to-disable-display-external-link": "För att spela upp en video, sluta först dela den externa länken.",
     "need-to-disable-external-media-player": "Om du vill dela en extern länk måste du först stoppa videospelaren.",
     "websocket-disconnected": "Anslutningen bröts, försöker återansluta...",
