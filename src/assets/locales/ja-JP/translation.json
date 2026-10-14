@@ -53,7 +53,7 @@
     "room-disconnected-server-unresponsive": "サーバーが応答を停止したため、切断されました。",
     "room-disconnected-reconnecting": "接続が切れました。再接続しています...",
     "room-disconnected-network-error": "ネットワークの問題により切断されました。",
-    "your-connection-lost-or-unstable": "Your network is having trouble sending your audio and video. Others may hear or see you with interruptions.",
+    "your-connection-lost-or-unstable": "ネットワークが音声と映像の送信に問題を抱えています。他の人が中断しながらあなたの声を聞いたり見たりするかもしれません。",
     "need-to-disable-display-external-link": "ビデオを再生するには、まず外部リンクの共有を停止してください。",
     "need-to-disable-external-media-player": "外部リンクを共有するには、まずビデオプレーヤーを停止してください。",
     "websocket-disconnected": "接続が切れました。再接続を試みています...",
