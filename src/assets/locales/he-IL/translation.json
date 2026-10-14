@@ -75,7 +75,7 @@
     "nats-error-auth-title": "שגיאת התחברות",
     "nats-error-auth-body": "לא הצלחנו לאמת את המידע שלך. ייתכן שתוקף ההפעלה שלך פג.",
     "user-logged-out": "התנתקת.",
-    "media-server-disconnected-reconnecting": "Connection interrupted. Reconnecting...",
+    "media-server-disconnected-reconnecting": "החיבור נותק. מתחבר מחדש...",
     "media-server-disconnected": "מנותק משרת המדיה.",
     "preloaded-whiteboard-file-processing": "טוען קובץ לוח לבן...",
     "preloaded-whiteboard-file-processing-error": "אירעה שגיאה בטעינת קובץ לוח הציור.",
