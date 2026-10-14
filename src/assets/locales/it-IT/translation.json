@@ -75,7 +75,7 @@
     "nats-error-auth-title": "Errore di autenticazione",
     "nats-error-auth-body": "Impossibile verificare le sue informazioni. La sessione potrebbe essere scaduta.",
     "user-logged-out": "Lei è stato disconnesso.",
-    "media-server-disconnected-reconnecting": "Connection interrupted. Reconnecting...",
+    "media-server-disconnected-reconnecting": "Connessione interrotta. Riconnettendo...",
     "media-server-disconnected": "Disconnesso dal server multimediale.",
     "preloaded-whiteboard-file-processing": "Caricamento del file della lavagna...",
     "preloaded-whiteboard-file-processing-error": "Si è verificato un errore durante il caricamento del file della lavagna.",
