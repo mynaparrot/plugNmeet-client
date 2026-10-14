@@ -75,7 +75,7 @@
     "nats-error-auth-title": "Помилка входу в систему",
     "nats-error-auth-body": "Нам не вдалося перевірити вашу інформацію. Можливо, термін сеансу минув.",
     "user-logged-out": "Ви вийшли з облікового запису.",
-    "media-server-disconnected-reconnecting": "Втрачено з'єднання з медіасервером. Переключення...",
+    "media-server-disconnected-reconnecting": "З'єднання перервано. Відновлення...",
     "media-server-disconnected": "Відключено від медіасервера.",
     "preloaded-whiteboard-file-processing": "Завантаження файлу дошки...",
     "preloaded-whiteboard-file-processing-error": "Сталася помилка під час завантаження файлу дошки.",
