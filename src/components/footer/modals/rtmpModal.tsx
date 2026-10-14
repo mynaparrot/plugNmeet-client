@@ -17,6 +17,11 @@ import SettingsSwitch from '../../../helpers/ui/settingsSwitch';
 
 type Provider = 'youtube' | 'facebook' | 'other' | 'whip';
 
+const providers = {
+  youtube: 'rtmp://a.rtmp.youtube.com/live2',
+  facebook: 'rtmps://live-api-s.facebook.com:443/rtmp',
+};
+
 const RtmpModal = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
@@ -39,10 +44,6 @@ const RtmpModal = () => {
   const [serverKey, setServerKey] = useState<string>('');
   const [displayError, setDisplayError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
-  const providers = {
-    youtube: 'rtmp://a.rtmp.youtube.com/live2',
-    facebook: 'rtmps://live-api-s.facebook.com:443/rtmp',
-  };
 
   useEffect(() => {
     if (provider === 'other' || provider === 'whip') {
@@ -142,8 +143,15 @@ const RtmpModal = () => {
       dispatch(updateShowRtmpModal(false));
       setIsLoading(false);
     },
-    // oxlint-disable-next-line react/memo-dependencies react-hooks/exhaustive-deps
-    [provider, serverUrl, serverKey, dispatch, t],
+    [
+      provider,
+      serverUrl,
+      serverKey,
+      dispatch,
+      t,
+      enableAutoCloseChatPanel,
+      durationAfterLastMessage,
+    ],
   );
 
   const renderStartBroadcastModal = () => {
