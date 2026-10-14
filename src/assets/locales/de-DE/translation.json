@@ -75,7 +75,7 @@
     "nats-error-auth-title": "Anmeldefehler",
     "nats-error-auth-body": "Wir konnten Ihre Informationen nicht überprüfen. Ihre Sitzung ist möglicherweise abgelaufen.",
     "user-logged-out": "Sie wurden abgemeldet.",
-    "media-server-disconnected-reconnecting": "Connection interrupted. Reconnecting...",
+    "media-server-disconnected-reconnecting": "Verbindung unterbrochen. Wiederverbindung...",
     "media-server-disconnected": "Vom Medienserver getrennt.",
     "preloaded-whiteboard-file-processing": "Whiteboard-Datei wird geladen...",
     "preloaded-whiteboard-file-processing-error": "Beim Laden der Whiteboard-Datei ist ein Fehler aufgetreten.",
