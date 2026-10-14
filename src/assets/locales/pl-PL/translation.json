@@ -75,7 +75,7 @@
     "nats-error-auth-title": "Błąd logowania",
     "nats-error-auth-body": "Nie byliśmy w stanie zweryfikować Twoich danych. Twoja sesja mogła wygasnąć.",
     "user-logged-out": "Zostałeś wylogowany.",
-    "media-server-disconnected-reconnecting": "Utracono połączenie z serwerem mediów. Ponowne łączenie...",
+    "media-server-disconnected-reconnecting": "Connection interrupted. Reconnecting...",
     "media-server-disconnected": "Rozłączono z serwerem mediów.",
     "preloaded-whiteboard-file-processing": "Wczytywanie pliku tablicy...",
     "preloaded-whiteboard-file-processing-error": "Wystąpił błąd podczas ładowania pliku tablicy.",
