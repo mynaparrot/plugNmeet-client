@@ -75,7 +75,7 @@
     "nats-error-auth-title": "Kesalahan Autentikasi",
     "nats-error-auth-body": "Kami tidak dapat memverifikasi informasi Anda. Sesi Anda mungkin telah berakhir.",
     "user-logged-out": "Anda telah keluar.",
-    "media-server-disconnected-reconnecting": "Koneksi ke server media terputus. Menyambungkan kembali...",
+    "media-server-disconnected-reconnecting": "Koneksi terputus. Terhubung kembali...",
     "media-server-disconnected": "Terputus dari server media.",
     "preloaded-whiteboard-file-processing": "Memuat file papan tulis...",
     "preloaded-whiteboard-file-processing-error": "Terjadi kesalahan saat memuat file papan tulis.",
