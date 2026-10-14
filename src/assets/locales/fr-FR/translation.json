@@ -53,7 +53,7 @@
     "room-disconnected-server-unresponsive": "Vous avez été déconnecté(e) car le serveur ne répond plus.",
     "room-disconnected-reconnecting": "Connexion perdue. Reconnexion en cours...",
     "room-disconnected-network-error": "Vous avez été déconnecté(e) en raison d'un problème de réseau.",
-    "your-connection-lost-or-unstable": "Votre connexion est un peu instable en ce moment. D’autres peuvent remarquer des problèmes audio ou vidéo de votre part.",
+    "your-connection-lost-or-unstable": "Your network is having trouble sending your audio and video. Others may hear or see you with interruptions.",
     "need-to-disable-display-external-link": "Pour lire une vidéo, veuillez d'abord arrêter le partage du lien externe.",
     "need-to-disable-external-media-player": "Pour partager un lien externe, veuillez d'abord arrêter le lecteur vidéo.",
     "websocket-disconnected": "Connexion perdue, tentative de reconnexion...",
