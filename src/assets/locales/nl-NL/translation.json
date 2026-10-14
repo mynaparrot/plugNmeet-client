@@ -53,7 +53,7 @@
     "room-disconnected-server-unresponsive": "Je bent verbroken omdat de server niet meer reageert.",
     "room-disconnected-reconnecting": "Verbinding verbroken. Reconnecting...",
     "room-disconnected-network-error": "De verbinding is verbroken vanwege een netwerkprobleem.",
-    "your-connection-lost-or-unstable": "Je verbinding is nu wat onstabiel. Anderen merken misschien wat audio- of videoproblemen bij jou op.",
+    "your-connection-lost-or-unstable": "Your network is having trouble sending your audio and video. Others may hear or see you with interruptions.",
     "need-to-disable-display-external-link": "Als u een video wilt afspelen, moet u eerst stoppen met het delen van de externe link.",
     "need-to-disable-external-media-player": "Als u een externe link wilt delen, moet u eerst de videospeler stoppen.",
     "websocket-disconnected": "Verbinding verbroken, proberen opnieuw verbinding te maken...",
