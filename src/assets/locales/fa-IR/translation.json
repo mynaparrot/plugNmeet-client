@@ -489,6 +489,10 @@
       "screen-share-quality": "کیفیت اشتراک گذاری صفحه نمایش",
       "screen-share-quality-next-start": "کیفیت انتخاب شده دفعه بعد که شروع به اشتراک گذاری صفحه می کنید، اعمال می شود.",
       "quality-next-start": "تغییرات دفعه بعد که این دستگاه را روشن می کنید اعمال می شود.",
+      "noise-suppression": "سرکوب نویز (آزمایشی)",
+      "noise-suppression-help": "نویز پس زمینه را با GTCRN پاک می کند. بلافاصله اعمال می شود.",
+      "noise-suppression-unsupported": "خاموش کردن نویز در این مرورگر در دسترس نیست.",
+      "noise-suppression-failed": "نتوانستم خاموش کردن نویز را روی این دستگاه شروع کنم — با استفاده از صدای استاندارد.",
       "quality-disabled-background": "کیفیت دوربین هنگام انتخاب افکت پس زمینه در دسترس نیست.",
       "audio-preset": {
         "telephone": "تلفن",
