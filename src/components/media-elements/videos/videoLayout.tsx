@@ -64,6 +64,9 @@ const VideoLayout = ({
   const isEnabledFloatSelfView = useAppSelector(
     (state) => state.bottomIconsActivity.isEnabledFloatSelfView,
   );
+  const isActiveWebcam = useAppSelector((state) => state.bottomIconsActivity.isActiveWebcam);
+  // Float the self-view only when a local self-view tile actually exists.
+  const selfViewFloating = isEnabledFloatSelfView && isActiveWebcam;
 
   const isRecorder = store.getState().session.currentUser?.isRecorder;
   const { isMobile, isTablet, isDesktop, isSidebarOpen, isPortrait } = useDeviceInfo();
@@ -315,14 +318,14 @@ const VideoLayout = ({
         isPortrait,
         enabledVerticalViewMode,
         isSidebarOpen,
-        isEnabledFloatSelfView,
+        selfViewFloating,
       );
     } else if (isTablet && isPortrait) {
       layout = getElmsForTabletPortrait(
         items,
         isSidebarOpen,
         enabledVerticalViewMode,
-        isEnabledFloatSelfView,
+        selfViewFloating,
       );
     } else if (isTablet) {
       layout = getElmsForTablet(items, enabledVerticalViewMode, isSidebarOpen);
@@ -345,7 +348,7 @@ const VideoLayout = ({
     enabledVerticalViewMode,
     isSidebarOpen,
     isEnabledExtendedVerticalCamView,
-    isEnabledFloatSelfView,
+    selfViewFloating,
     pinParticipant,
     pinInStrip,
     currentPage,
