@@ -489,6 +489,10 @@
       "screen-share-quality": "איכות שיתוף המסך",
       "screen-share-quality-next-start": "איכות נבחרת חלה בפעם הבאה שתתחיל לשתף מסך.",
       "quality-next-start": "השינויים חלים בפעם הבאה שתפעיל את המכשיר הזה.",
+      "noise-suppression": "דיכוי רעש (ניסיוני)",
+      "noise-suppression-help": "מנקה רעשי רקע עם GTCRN. חל מיד.",
+      "noise-suppression-unsupported": "דיכוי רעש אינו זמין בדפדפן הזה.",
+      "noise-suppression-failed": "לא הצלחתי להפעיל דיכוי רעש במכשיר הזה — עם אודיו סטנדרטי.",
       "quality-disabled-background": "איכות המצלמה אינה זמינה בזמן שנבחר אפקט רקע.",
       "audio-preset": {
         "telephone": "טלפון",
