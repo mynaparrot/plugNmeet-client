@@ -11,7 +11,7 @@ import { store, useAppSelector } from '../../../../store';
 import { getConfigValue } from '../../../../helpers/utils';
 import sendAPIRequest from '../../../../helpers/api/plugNmeetAPI';
 import { backgroundImageUrls, loadBackgroundImageUrls } from './backgroundHelper';
-import { BackgroundConfig } from '../../../../helpers/libs/TrackProcessor';
+import { BackgroundConfig } from '../../../../helpers/libs/TwilioTrackProcessor';
 
 interface IBackgroundItemsProps {
   onSelect: (bg: BackgroundConfig) => void;

@@ -6,7 +6,7 @@ import {
 import { getInputMediaDevices, inputMediaDeviceKind } from '../../../helpers/utils';
 import { useAppDispatch } from '../../../store';
 import { updateVirtualBackground } from '../../../store/slices/roomSettingsSlice';
-import { BackgroundConfig } from '../../../helpers/libs/TrackProcessor';
+import { BackgroundConfig } from '../../../helpers/libs/TwilioTrackProcessor';
 import {
   getFirstRealVideoDeviceId,
   getStoredAudioDeviceId,

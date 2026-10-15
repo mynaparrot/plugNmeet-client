@@ -27,6 +27,7 @@
     "@nats-io/jetstream": "3.4.0",
     "@nats-io/nats-core": "3.4.0",
     "@reduxjs/toolkit": "2.13.0",
+    "@sapphi-red/web-noise-suppressor": "0.4.1",
     "@twilio/video-processors": "3.2.0",
     "axios": "1.20.0",
     "clsx": "2.1.1",

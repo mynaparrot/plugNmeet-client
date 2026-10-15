@@ -9,6 +9,7 @@ import {
   IMaxNumDisplayWebcams,
   IMediaDegradation,
   IMediaDevice,
+  IMicrophoneConfig,
   InitiatePrivateChat,
   IRoomSettings,
   UnreadMsgFromPayload,
@@ -17,7 +18,7 @@ import {
 } from './interfaces/roomSettings';
 import { AzureTokenInfo } from '../../components/translation-transcription/helpers/apiConnections';
 import { DB_STORE_NAMES, idbStore } from '../../helpers/libs/idb';
-import { BackgroundConfig } from '../../helpers/libs/TrackProcessor';
+import { BackgroundConfig } from '../../helpers/libs/TwilioTrackProcessor';
 
 const getStoredPreset = (key: DeviceSessionStorageKeys) => {
   try {
@@ -25,6 +26,30 @@ const getStoredPreset = (key: DeviceSessionStorageKeys) => {
   } catch {
     return '';
   }
+};
+
+const DEFAULT_MICROPHONE_CONFIG: IMicrophoneConfig = {
+  audioPreset: '',
+  noiseSuppression: false,
+};
+
+// Falls back to the defaults when the stored value is absent, malformed, or
+// sessionStorage is unavailable.
+const readStoredMicrophoneConfig = (): IMicrophoneConfig => {
+  try {
+    const raw = sessionStorage.getItem(DeviceSessionStorageKeys.MICROPHONE_CONFIG);
+    if (raw) {
+      const parsed = JSON.parse(raw) as Partial<IMicrophoneConfig> | null;
+      return {
+        audioPreset: typeof parsed?.audioPreset === 'string' ? parsed.audioPreset : '',
+        noiseSuppression: parsed?.noiseSuppression === true,
+      };
+    }
+  } catch {
+    // Corrupt JSON or unavailable storage: fall through to the defaults.
+  }
+
+  return { ...DEFAULT_MICROPHONE_CONFIG };
 };
 
 const initialState: IRoomSettings = {
@@ -36,7 +61,7 @@ const initialState: IRoomSettings = {
   videoDevices: [],
   selectedAudioDevice: '',
   selectedVideoDevice: '',
-  selectedAudioPreset: getStoredPreset(DeviceSessionStorageKeys.AUDIO_PRESET),
+  microphoneConfig: readStoredMicrophoneConfig(),
   selectedWebcamResolution: getStoredPreset(DeviceSessionStorageKeys.WEBCAM_RESOLUTION),
   selectedScreenShareResolution: getStoredPreset(DeviceSessionStorageKeys.SCREENSHARE_RESOLUTION),
   virtualBackground: { type: 'none' },
@@ -118,12 +143,26 @@ const roomSettingsSlice = createSlice({
         sessionStorage.removeItem(DeviceSessionStorageKeys.VIDEO_DEVICE);
       }
     },
-    updateSelectedAudioPreset: (state, action: PayloadAction<string>) => {
-      state.selectedAudioPreset = action.payload;
-      if (action.payload) {
-        sessionStorage.setItem(DeviceSessionStorageKeys.AUDIO_PRESET, action.payload);
-      } else {
-        sessionStorage.removeItem(DeviceSessionStorageKeys.AUDIO_PRESET);
+    updateMicrophoneConfig: (state, action: PayloadAction<Partial<IMicrophoneConfig>>) => {
+      state.microphoneConfig = {
+        ...state.microphoneConfig,
+        ...action.payload,
+      };
+
+      const { audioPreset, noiseSuppression } = state.microphoneConfig;
+      try {
+        // Keep storage in sync with the in-memory config; an all-default value
+        // is dropped so a fresh session starts clean.
+        if (!audioPreset && !noiseSuppression) {
+          sessionStorage.removeItem(DeviceSessionStorageKeys.MICROPHONE_CONFIG);
+        } else {
+          sessionStorage.setItem(
+            DeviceSessionStorageKeys.MICROPHONE_CONFIG,
+            JSON.stringify({ audioPreset, noiseSuppression }),
+          );
+        }
+      } catch {
+        // sessionStorage may be unavailable (private mode); keep in-memory only.
       }
     },
     updateSelectedWebcamResolution: (state, action: PayloadAction<string>) => {
@@ -279,7 +318,7 @@ export const {
   addVideoDevices,
   updateSelectedAudioDevice,
   updateSelectedVideoDevice,
-  updateSelectedAudioPreset,
+  updateMicrophoneConfig,
   updateSelectedWebcamResolution,
   updateSelectedScreenShareResolution,
   updateVirtualBackground,
