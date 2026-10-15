@@ -489,6 +489,10 @@
       "screen-share-quality": "Qualidade de partilha de ecrã",
       "screen-share-quality-next-start": "A qualidade selecionada aplica-se da próxima vez que começar a partilhar o ecrã.",
       "quality-next-start": "As alterações aplicam-se da próxima vez que iniciar este dispositivo.",
+      "noise-suppression": "Supressão de ruído (experimental)",
+      "noise-suppression-help": "Limpa o ruído de fundo com GTCRN. Aplica-se imediatamente.",
+      "noise-suppression-unsupported": "A supressão de ruído não está disponível neste navegador.",
+      "noise-suppression-failed": "Não consegui iniciar a supressão de ruído neste dispositivo — usando áudio padrão.",
       "quality-disabled-background": "A qualidade da câmara não está disponível enquanto um efeito de fundo está selecionado.",
       "audio-preset": {
         "telephone": "Telefone",
