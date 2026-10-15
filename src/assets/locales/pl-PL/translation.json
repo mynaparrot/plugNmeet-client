@@ -489,6 +489,10 @@
       "screen-share-quality": "Jakość udostępniania ekranu",
       "screen-share-quality-next-start": "Wybrana jakość obowiązuje przy następnym rozpoczęciu udostępniania ekranu.",
       "quality-next-start": "Zmiany obowiązują przy następnym uruchomieniu tego urządzenia.",
+      "noise-suppression": "Tłumienie szumów (eksperymentalne)",
+      "noise-suppression-help": "Usuwa szum tła za pomocą GTCRN. Stosuje się natychmiast.",
+      "noise-suppression-unsupported": "Tłumienie szumów nie jest dostępne w tej przeglądarce.",
+      "noise-suppression-failed": "Nie udało się uruchomić tłumienia szumów na tym urządzeniu — używając standardowego audio.",
       "quality-disabled-background": "Jakość aparatu jest niedostępna podczas wyboru efektu tła.",
       "audio-preset": {
         "telephone": "Telefon",
