@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useReducer, useState } from 'react';
+import React, { useEffect, useMemo, useReducer } from 'react';
 import {
   LocalParticipant,
   ParticipantEvent,
@@ -8,7 +8,8 @@ import {
 } from 'livekit-client';
 
 import VideoComponent from './video';
-import { useAppSelector } from '../../../store';
+import { useAppDispatch, useAppSelector } from '../../../store';
+import { updateIsEnabledFloatSelfView } from '../../../store/slices/bottomIconsActivitySlice';
 import { selectIsSpeakingByUserId } from '../../../store/slices/activeSpeakersSlice';
 import { VideoParticipantType } from './';
 import { RepeatIconSVG } from '../../../assets/Icons/RepeatIconSVG';
@@ -27,12 +28,13 @@ const VideoParticipant = ({
   displayPinIcon,
   displaySwitchCamIcon,
 }: VideoParticipantProps) => {
+  const dispatch = useAppDispatch();
   const isSpeaking = useAppSelector(selectIsSpeakingByUserId(userId));
   const activateWebcamsView = useAppSelector((state) => state.roomSettings.activateWebcamsView);
   const incomingWebcamPaused = useAppSelector(
     (state) => state.roomSettings.mediaDegradation.incomingWebcamPaused,
   );
-  const [floatView, setFloatView] = useState<boolean>(true);
+  const floatView = useAppSelector((state) => state.bottomIconsActivity.isEnabledFloatSelfView);
 
   const [version, forceUpdate] = useReducer((x: number) => x + 1, 0);
 
@@ -102,7 +104,7 @@ const VideoParticipant = ({
           <button
             type="button"
             className="switch-camera absolute top-3 start-4 z-50 text-white cursor-pointer h-7 w-7 rounded-full hidden items-center justify-center bg-black bg-opacity-50 focus-ring"
-            onClick={() => setFloatView(!floatView)}
+            onClick={() => dispatch(updateIsEnabledFloatSelfView(!floatView))}
           >
             <RepeatIconSVG />
           </button>

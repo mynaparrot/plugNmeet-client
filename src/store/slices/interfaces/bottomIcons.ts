@@ -36,4 +36,6 @@ export interface IBottomIconsSlice {
 
   totalUnreadChatMsgs: number;
   isEnabledExtendedVerticalCamView: boolean;
+  /** With 2 webcams the local self-view floats as a PiP over the remote. */
+  isEnabledFloatSelfView: boolean;
 }

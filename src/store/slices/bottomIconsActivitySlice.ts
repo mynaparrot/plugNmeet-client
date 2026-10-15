@@ -35,6 +35,7 @@ const initialState: IBottomIconsSlice = {
   totalUnreadChatMsgs: 0,
 
   isEnabledExtendedVerticalCamView: false,
+  isEnabledFloatSelfView: true,
 };
 
 const bottomIconsSlice = createSlice({
@@ -142,6 +143,9 @@ const bottomIconsSlice = createSlice({
     updateIsEnabledExtendedVerticalCamView: (state, action: PayloadAction<boolean>) => {
       state.isEnabledExtendedVerticalCamView = action.payload;
     },
+    updateIsEnabledFloatSelfView: (state, action: PayloadAction<boolean>) => {
+      state.isEnabledFloatSelfView = action.payload;
+    },
   },
 });
 
@@ -172,6 +176,7 @@ export const {
   updateDisplaySpeechSettingsModal,
   updateDisplaySpeechSettingOptionsModal,
   updateIsEnabledExtendedVerticalCamView,
+  updateIsEnabledFloatSelfView,
   updateDisplayInsightsAISettingsModal,
 } = bottomIconsSlice.actions;
 

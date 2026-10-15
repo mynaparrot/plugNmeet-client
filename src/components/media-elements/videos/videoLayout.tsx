@@ -61,6 +61,9 @@ const VideoLayout = ({
     (state) => state.bottomIconsActivity.isEnabledExtendedVerticalCamView,
   );
   const maxNumDisplayWebcams = useAppSelector((state) => state.roomSettings.maxNumDisplayWebcams);
+  const isEnabledFloatSelfView = useAppSelector(
+    (state) => state.bottomIconsActivity.isEnabledFloatSelfView,
+  );
 
   const isRecorder = store.getState().session.currentUser?.isRecorder;
   const { isMobile, isTablet, isDesktop, isSidebarOpen, isPortrait } = useDeviceInfo();
@@ -307,9 +310,20 @@ const VideoLayout = ({
 
     // Mobile always uses the mobile layout helper.
     if (isMobile) {
-      layout = getElmsForMobile(items, isPortrait, enabledVerticalViewMode, isSidebarOpen);
+      layout = getElmsForMobile(
+        items,
+        isPortrait,
+        enabledVerticalViewMode,
+        isSidebarOpen,
+        isEnabledFloatSelfView,
+      );
     } else if (isTablet && isPortrait) {
-      layout = getElmsForTabletPortrait(items, isSidebarOpen, enabledVerticalViewMode);
+      layout = getElmsForTabletPortrait(
+        items,
+        isSidebarOpen,
+        enabledVerticalViewMode,
+        isEnabledFloatSelfView,
+      );
     } else if (isTablet) {
       layout = getElmsForTablet(items, enabledVerticalViewMode, isSidebarOpen);
     } else {
@@ -331,6 +345,7 @@ const VideoLayout = ({
     enabledVerticalViewMode,
     isSidebarOpen,
     isEnabledExtendedVerticalCamView,
+    isEnabledFloatSelfView,
     pinParticipant,
     pinInStrip,
     currentPage,

@@ -106,11 +106,15 @@ export const getElmsForTablet = (
  * Rows are filled top-to-bottom; chunk() distributes evenly with the
  * last chunk receiving any remainder, matching the existing convention
  * used across all layout helpers.
+ *
+ * With 2 webcams the local self-view floats (`.its-me`) over the full-area
+ * remote; releasing the float stacks them into rows instead of side by side.
  */
 export const getElmsForTabletPortrait = (
   participants: ReactElement[],
   isSidebarOpen: boolean,
   isVerticalView: boolean,
+  floatSelfView: boolean,
 ) => {
   const n = participants.length;
   if (n === 0) {
@@ -127,8 +131,8 @@ export const getElmsForTabletPortrait = (
     // With sidebar: max 6 participants, max 2 columns.
     // Available width ~468px → 2 columns at ~220px each is comfortable.
     if (n <= 2) {
-      // 1-2 participants: single row
-      chunkParts = [participants];
+      // 1-2 participants: one row while floating, otherwise stacked.
+      chunkParts = floatSelfView ? [participants] : chunk(participants, 1);
     } else if (n <= 4) {
       // 3-4 participants: 2 rows
       chunkParts = chunk(participants, Math.ceil(n / 2));
@@ -140,8 +144,8 @@ export const getElmsForTabletPortrait = (
     // No sidebar: up to 9 participants, up to 3 columns.
     // Available width ~768px → 3 columns at ~240px each is comfortable.
     if (n <= 2) {
-      // 1-2 participants: single row
-      chunkParts = [participants];
+      // 1-2 participants: one row while floating, otherwise stacked.
+      chunkParts = floatSelfView ? [participants] : chunk(participants, 1);
     } else if (n <= 6) {
       // 3-6 participants: 2 rows, max 3 columns
       chunkParts = chunk(participants, Math.ceil(n / 2));
@@ -176,20 +180,24 @@ export const getElmsForTabletPortrait = (
 /*
  * Mobile layout reference (Default Grid View, non-vertical):
  *
- * Cams | Sidebar   | Portrait   | Landscape
- * -------------------------------------------
- * 1    | 1 row     | 1 row      | 1 row
- * 2    | 2 rows    | 2 rows     | 1 row of 2
- * 3    | 2+1       | 2+1        | 2+1
- * 4    | 2x2       | 2+2        | 2+2
- * 5    | -         | 2+2+1      | 2+2+1
- * 6    | -         | 2+2+2      | 2+2+2
+ * Cams | Sidebar    | Portrait   | Landscape
+ * ---------------------------------------------
+ * 1    | 1 row      | 1 row      | 1 row
+ * 2    | 1 row of 2 | 1 row of 2 | 1 row of 2
+ * 3    | 2+1        | 2+1        | 2+1
+ * 4    | 2x2        | 2+2        | 2+2
+ * 5    | -          | 2+2+1      | 2+2+1
+ * 6    | -          | 2+2+2      | 2+2+2
+ *
+ * With 2 webcams the local self-view floats (`.its-me`) over the full-area
+ * remote; releasing the float stacks them into rows instead of side by side.
  */
 export const getElmsForMobile = (
   participants: ReactElement[],
   isPortrait: boolean,
   isVerticalView: boolean,
   isSidebarOpen: boolean,
+  floatSelfView: boolean,
 ) => {
   const n = participants.length;
   if (n === 0) {
@@ -206,8 +214,8 @@ export const getElmsForMobile = (
     if (isSidebarOpen) {
       // With sidebar, max 4 participants.
       if (n <= 2) {
-        // 1-2 participants: each in own row
-        chunkParts = chunk(participants, 1);
+        // 1-2 participants: one row while floating, otherwise stacked.
+        chunkParts = floatSelfView ? [participants] : chunk(participants, 1);
       } else {
         // 4 participants: 2x2 grid
         chunkParts = chunk(participants, 2);
@@ -217,8 +225,8 @@ export const getElmsForMobile = (
       if (isPortrait) {
         // Portrait
         if (n <= 2) {
-          // 1-2 participants: each in own row
-          chunkParts = chunk(participants, 1);
+          // 1-2 participants: one row while floating, otherwise stacked.
+          chunkParts = floatSelfView ? [participants] : chunk(participants, 1);
         } else {
           // 4-6 Participants: 3-row by 2-column grid
           chunkParts = chunk(participants, 2);
