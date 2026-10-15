@@ -489,6 +489,10 @@
       "screen-share-quality": "Näytön jakamisen laatu",
       "screen-share-quality-next-start": "Valittu laatu pätee seuraavalla kerralla, kun aloitat ruudun jakamisen.",
       "quality-next-start": "Muutokset tulevat voimaan seuraavalla kerralla, kun käynnistät tämän laitteen.",
+      "noise-suppression": "Melunvaimennus (kokeellinen)",
+      "noise-suppression-help": "Poistaa taustamelun GTCRN:llä. Vaikuttaa heti.",
+      "noise-suppression-unsupported": "Melunvaimennus ei ole saatavilla tässä selaimessa.",
+      "noise-suppression-failed": "En saanut melua vaimentamaan tätä laitetta — käyttäen tavallista ääntä.",
       "quality-disabled-background": "Kameran laatu ei ole käytettävissä, kun taustaefekti on valittu.",
       "audio-preset": {
         "telephone": "Puhelin",
