@@ -489,6 +489,10 @@
       "screen-share-quality": "Képernyőmegosztás minősége",
       "screen-share-quality-next-start": "A kiválasztott minőség legközelebb érvényes, amikor elkezded a képernyőmegosztást.",
       "quality-next-start": "A változások legközelebb érvényesek, amikor elindítod ezt az eszközt.",
+      "noise-suppression": "Zajcsökkentés (kísérleti)",
+      "noise-suppression-help": "A háttérzajt tisztítja a GTCRN-nel. Azonnal érvényes.",
+      "noise-suppression-unsupported": "Zajcsökkentés ebben a böngészőben nem elérhető.",
+      "noise-suppression-failed": "Nem tudtam elindítani a zajelnyomást ezen az eszközön — normál hang használatával.",
       "quality-disabled-background": "A kamera minősége nem elérhető, amíg háttérhatást választanak.",
       "audio-preset": {
         "telephone": "Telefon",
