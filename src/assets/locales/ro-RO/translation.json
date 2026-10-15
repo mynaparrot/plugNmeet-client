@@ -489,6 +489,10 @@
       "screen-share-quality": "Calitatea partajării ecranului",
       "screen-share-quality-next-start": "Calitatea selectată se aplică data viitoare când începi partajarea ecranului.",
       "quality-next-start": "Modificările se aplică data viitoare când pornești acest dispozitiv.",
+      "noise-suppression": "Suprimarea zgomotului (experimentală)",
+      "noise-suppression-help": "Curăță zgomotul de fundal cu GTCRN. Se aplică imediat.",
+      "noise-suppression-unsupported": "Suprimarea zgomotului nu este disponibilă în acest browser.",
+      "noise-suppression-failed": "Nu am putut porni suprimarea zgomotului pe acest dispozitiv — folosind audio standard.",
       "quality-disabled-background": "Calitatea camerei nu este disponibilă în timp ce un efect de fundal este selectat.",
       "audio-preset": {
         "telephone": "Telefon",
