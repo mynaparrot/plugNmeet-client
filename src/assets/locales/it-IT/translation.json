@@ -489,6 +489,10 @@
       "screen-share-quality": "Qualità della condivisione dello schermo",
       "screen-share-quality-next-start": "La qualità selezionata si applica la prossima volta che inizi a condividere lo schermo.",
       "quality-next-start": "Le modifiche si applicano la prossima volta che accendi questo dispositivo.",
+      "noise-suppression": "Soppressione del rumore (sperimentale)",
+      "noise-suppression-help": "Elimina il rumore di fondo con GTCRN. Si applica immediatamente.",
+      "noise-suppression-unsupported": "La soppressione del rumore non è disponibile in questo browser.",
+      "noise-suppression-failed": "Non sono riuscito ad avviare la soppressione del rumore su questo dispositivo — usando l'audio standard.",
       "quality-disabled-background": "La qualità della telecamera non è disponibile mentre è selezionato un effetto di sfondo.",
       "audio-preset": {
         "telephone": "Telefono",
