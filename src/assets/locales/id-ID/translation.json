@@ -489,6 +489,10 @@
       "screen-share-quality": "Kualitas berbagi layar",
       "screen-share-quality-next-start": "Kualitas yang dipilih berlaku saat Anda mulai berbagi layar berikutnya.",
       "quality-next-start": "Perubahan berlaku saat Anda menyalakan perangkat ini berikutnya.",
+      "noise-suppression": "Penekanan kebisingan (eksperimental)",
+      "noise-suppression-help": "Membersihkan suara latar dengan GTCRN. Langsung diterapkan.",
+      "noise-suppression-unsupported": "Peredam kebisingan tidak tersedia di browser ini.",
+      "noise-suppression-failed": "Tidak bisa memulai peredam noise di perangkat ini — menggunakan audio standar.",
       "quality-disabled-background": "Kualitas kamera tidak tersedia saat efek latar belakang dipilih.",
       "audio-preset": {
         "telephone": "Telepon",
