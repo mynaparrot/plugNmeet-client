@@ -53,7 +53,7 @@
     "room-disconnected-server-unresponsive": "Ha sido desconectado porque el servidor ha dejado de responder.",
     "room-disconnected-reconnecting": "Se ha perdido la conexión. Reconectando...",
     "room-disconnected-network-error": "Ha sido desconectado debido a un problema de red.",
-    "your-connection-lost-or-unstable": "Tu red tiene problemas para enviar tu audio y vídeo. Otros pueden oírte o verte con interrupciones.",
+    "your-connection-lost-or-unstable": "Su red tiene problemas para enviar su audio y video. Otros pueden oírlo o verlo con interrupciones.",
     "need-to-disable-display-external-link": "Para reproducir un vídeo, primero deje de compartir el enlace externo.",
     "need-to-disable-external-media-player": "Para compartir un enlace externo, primero detenga el reproductor de vídeo.",
     "websocket-disconnected": "Se ha perdido la conexión, intentando reconectar...",
@@ -229,8 +229,8 @@
       },
       "video-paused-banner": "Conexión débil — video pausado para que el audio sea claro.",
       "video-stays-paused-banner": "Conexión débil — video pausado hasta que lo vuelva a activar.",
-      "video-quality-reduced-banner": "Conexión débil — calidad de vídeo reducida para mantener el audio claro.",
-      "restore-quality": "Restauración de calidad",
+      "video-quality-reduced-banner": "Conexión débil — calidad de video reducida para mantener el audio claro.",
+      "restore-quality": "Restaurar la calidad",
       "re-enable-video": "Reactivar el video",
       "resume-presentation": "Presentación del currículum"
     }
@@ -490,9 +490,9 @@
       "screen-share-quality-next-start": "La calidad seleccionada se aplicará la próxima vez que empiece a compartir pantalla.",
       "quality-next-start": "Los cambios se aplicarán la próxima vez que encienda este dispositivo.",
       "noise-suppression": "Supresión de ruido (experimental)",
-      "noise-suppression-help": "Elimina el ruido de fondo con GTCRN. Aplica inmediatamente.",
+      "noise-suppression-help": "Elimina el ruido de fondo con GTCRN. Se aplica de inmediato.",
       "noise-suppression-unsupported": "La supresión de ruido no está disponible en este navegador.",
-      "noise-suppression-failed": "No pude iniciar la supresión de ruido en este dispositivo — usando audio estándar.",
+      "noise-suppression-failed": "No se pudo iniciar la supresión de ruido en este dispositivo — usando audio estándar.",
       "quality-disabled-background": "La calidad de cámara no está disponible mientras se selecciona un efecto de fondo.",
       "audio-preset": {
         "telephone": "Teléfono",
