@@ -489,6 +489,10 @@
       "screen-share-quality": "Kvalita sdílení obrazovky",
       "screen-share-quality-next-start": "Vybraná kvalita platí při dalším spuštění sdílení obrazovky.",
       "quality-next-start": "Změny se uplatní při dalším spuštění tohoto zařízení.",
+      "noise-suppression": "Potlačení šumu (experimentální)",
+      "noise-suppression-help": "Odstraní šum na pozadí pomocí GTCRN. Aplikuje se okamžitě.",
+      "noise-suppression-unsupported": "Potlačení šumu v tomto prohlížeči není dostupné.",
+      "noise-suppression-failed": "Na tomto zařízení jsem nemohl spustit potlačení šumu — používal jsem standardní audio.",
       "quality-disabled-background": "Kvalita kamery není dostupná, dokud je vybrán efekt pozadí.",
       "audio-preset": {
         "telephone": "Telefon",
