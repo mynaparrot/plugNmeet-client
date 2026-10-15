@@ -489,6 +489,10 @@
       "screen-share-quality": "Skjermdelingskvalitet",
       "screen-share-quality-next-start": "Valgt kvalitet gjelder neste gang du starter skjermdeling.",
       "quality-next-start": "Endringer gjelder neste gang du starter denne enheten.",
+      "noise-suppression": "Støydemping (eksperimentell)",
+      "noise-suppression-help": "Fjerner bakgrunnsstøy med GTCRN. Gjelder umiddelbart.",
+      "noise-suppression-unsupported": "Støydemping er ikke tilgjengelig i denne nettleseren.",
+      "noise-suppression-failed": "Kunne ikke starte støydemping på denne enheten — med standard lyd.",
       "quality-disabled-background": "Kamerakvalitet er ikke tilgjengelig mens en bakgrunnseffekt er valgt.",
       "audio-preset": {
         "telephone": "Telefon",
