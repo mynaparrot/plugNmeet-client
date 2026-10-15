@@ -489,6 +489,10 @@
       "screen-share-quality": "Schermdelingskwaliteit",
       "screen-share-quality-next-start": "Geselecteerde kwaliteit geldt de volgende keer dat je begint met schermdelen.",
       "quality-next-start": "Wijzigingen gelden de volgende keer dat je dit apparaat start.",
+      "noise-suppression": "Geluidsonderdrukking (experimenteel)",
+      "noise-suppression-help": "Verwijdert achtergrondruis met GTCRN. Wordt direct toegepast.",
+      "noise-suppression-unsupported": "Ruisonderdrukking is niet beschikbaar in deze browser.",
+      "noise-suppression-failed": "Ik kon ruisonderdrukking niet starten op dit apparaat — met standaard audio.",
       "quality-disabled-background": "Camerakwaliteit is niet beschikbaar terwijl een achtergrondeffect is geselecteerd.",
       "audio-preset": {
         "telephone": "Telefoon",
