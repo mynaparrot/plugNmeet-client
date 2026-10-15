@@ -489,6 +489,10 @@
       "screen-share-quality": "螢幕分享品質",
       "screen-share-quality-next-start": "下次開始螢幕分享時會選擇品質。",
       "quality-next-start": "下次啟動此裝置時，變更將生效。",
+      "noise-suppression": "噪音抑制（實驗性）",
+      "noise-suppression-help": "用 GTCRN 清除背景噪音。立即生效。",
+      "noise-suppression-unsupported": "這個瀏覽器沒有降噪功能。",
+      "noise-suppression-failed": "用標準音訊無法啟動這台裝置的降噪功能。",
       "quality-disabled-background": "在選擇背景特效時，攝影機畫質無法使用。",
       "audio-preset": {
         "telephone": "電話",
