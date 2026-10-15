@@ -119,8 +119,7 @@ function manualChunks(id: string) {
     if (
       vendorChunkMap[chunk].some(
         (pkg) =>
-          id.includes(`/node_modules/${pkg}/`) ||
-          new RegExp(`/\\.pnpm/${pkg}(@|/)`).test(id),
+          id.includes(`/node_modules/${pkg}/`) || new RegExp(`/\\.pnpm/${pkg}(@|/)`).test(id),
       )
     ) {
       return chunk;
@@ -141,6 +140,7 @@ function manualChunks(id: string) {
 }
 
 function getStaticFilesToCopy(): ViteStaticCopyOptions {
+  const noiseSuppressorPkg = '../node_modules/@sapphi-red/web-noise-suppressor';
   return {
     targets: [
       {
@@ -155,6 +155,27 @@ function getStaticFilesToCopy(): ViteStaticCopyOptions {
         ].filter(Boolean),
         dest: 'assets/',
         rename: { stripBase: 1 },
+      },
+      {
+        src: `${noiseSuppressorPkg}/dist/gtcrn/workletProcessor.js`,
+        dest: 'assets/wasm/',
+        rename: { stripBase: true, name: 'gtcrn-worklet.js' },
+      },
+      {
+        // The worklet's inline sourceMappingURL keeps this filename.
+        src: `${noiseSuppressorPkg}/dist/gtcrn/workletProcessor.js.map`,
+        dest: 'assets/wasm/',
+        rename: { stripBase: true },
+      },
+      {
+        src: `${noiseSuppressorPkg}/dist/gtcrn.wasm`,
+        dest: 'assets/wasm/',
+        rename: { stripBase: true },
+      },
+      {
+        src: `${noiseSuppressorPkg}/LICENSE`,
+        dest: 'assets/wasm/',
+        rename: { stripBase: true, name: 'licenses/web-noise-suppressor-LICENSE.txt' },
       },
       {
         src: 'login.html',

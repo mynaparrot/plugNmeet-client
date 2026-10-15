@@ -4,7 +4,7 @@ import { isSupported } from '@twilio/video-processors';
 
 import { useAppDispatch } from '../../../../store';
 import { updateVirtualBackground } from '../../../../store/slices/roomSettingsSlice';
-import { BackgroundConfig } from '../../../../helpers/libs/TrackProcessor';
+import { BackgroundConfig } from '../../../../helpers/libs/TwilioTrackProcessor';
 import WebcamPreview from './webcamPreview';
 import BackgroundItems from './backgroundItems';
 

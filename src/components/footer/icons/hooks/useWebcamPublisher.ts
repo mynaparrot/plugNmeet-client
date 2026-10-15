@@ -9,7 +9,7 @@ import {
   BackgroundConfig,
   createVirtualBackgroundProcessor,
   TwilioBackgroundProcessor,
-} from '../../../../helpers/libs/TrackProcessor';
+} from '../../../../helpers/libs/TwilioTrackProcessor';
 
 const useWebcamPublisher = () => {
   const dispatch = useAppDispatch();

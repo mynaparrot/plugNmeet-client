@@ -129,7 +129,7 @@ export const getAudioPresetName = () => {
     'music',
   );
   return validPreset(
-    store.getState().roomSettings.selectedAudioPreset,
+    store.getState().roomSettings.microphoneConfig.audioPreset,
     AUDIO_PRESET_KEYS,
     configured,
   );

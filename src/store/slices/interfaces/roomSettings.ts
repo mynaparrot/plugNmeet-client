@@ -3,7 +3,7 @@ import { Theme } from '@excalidraw/excalidraw/element/types';
 import type { TypeOptions } from 'react-toastify';
 
 import { AzureTokenInfo } from '../../../components/translation-transcription/helpers/apiConnections';
-import { BackgroundConfig } from '../../../helpers/libs/TrackProcessor';
+import { BackgroundConfig } from '../../../helpers/libs/TwilioTrackProcessor';
 
 export enum VideoObjectFit {
   COVER = 'cover',
@@ -14,7 +14,8 @@ export enum DeviceSessionStorageKeys {
   AUDIO_DEVICE = 'pnm-selected-audio-device',
   VIDEO_DEVICE = 'pnm-selected-video-device',
   VIRTUAL_BACKGROUND = 'pnm-selected-virtualbg',
-  AUDIO_PRESET = 'pnm-audio-preset',
+  /** Grouped mic config (JSON). */
+  MICROPHONE_CONFIG = 'pnm-microphone-config',
   WEBCAM_RESOLUTION = 'pnm-webcam-resolution',
   SCREENSHARE_RESOLUTION = 'pnm-screenshare-resolution',
 }
@@ -28,7 +29,7 @@ export interface IRoomSettings {
   videoDevices: Array<IMediaDevice>;
   selectedAudioDevice: string;
   selectedVideoDevice: string;
-  selectedAudioPreset: string;
+  microphoneConfig: IMicrophoneConfig;
   selectedWebcamResolution: string;
   selectedScreenShareResolution: string;
   virtualBackground: BackgroundConfig;
@@ -63,6 +64,13 @@ export interface IRoomSettings {
   isSidePanelOpened: boolean;
   hasWebcamPages: boolean;
   maxNumDisplayWebcams: IMaxNumDisplayWebcams;
+}
+
+export interface IMicrophoneConfig {
+  /** Selected audio quality preset key; empty string = use config default. */
+  audioPreset: string;
+  /** Opt-in GTCRN noise suppression (experimental, default off). */
+  noiseSuppression: boolean;
 }
 
 export interface IMediaDegradation {

@@ -6,7 +6,7 @@ import { useAppSelector } from '../../../../store';
 import {
   createVirtualBackgroundProcessor,
   TwilioBackgroundProcessor,
-} from '../../../../helpers/libs/TrackProcessor';
+} from '../../../../helpers/libs/TwilioTrackProcessor';
 import { getWebcamResolution } from '../../../../helpers/utils';
 
 interface WebcamPreviewProps {

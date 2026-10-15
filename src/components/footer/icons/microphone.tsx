@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { createLocalTracks, LocalTrack, Track } from 'livekit-client';
+import { createLocalTracks, LocalAudioTrack, LocalTrack, Track } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 import { isEmpty } from 'es-toolkit/compat';
 import clsx from 'clsx';
@@ -15,10 +15,16 @@ import MicMenu from './mic-menu';
 import MicrophoneModal from '../modals/microphone';
 import {
   addAudioDevices,
+  addUserNotification,
+  updateMicrophoneConfig,
   updateSelectedAudioDevice,
 } from '../../../store/slices/roomSettingsSlice';
 import { getAudioPreset, sleep } from '../../../helpers/utils';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
+import {
+  applyNoiseSuppressorState,
+  disableNoiseSuppressor,
+} from '../../../helpers/libs/NoiseSuppressorTrackProcessor';
 import { Microphone } from '../../../assets/Icons/Microphone';
 import { MicrophoneOff } from '../../../assets/Icons/MicrophoneOff';
 import { PlusIcon } from '../../../assets/Icons/PlusIcon';
@@ -148,15 +154,77 @@ const MicrophoneIcon = () => {
     }
   };
 
+  const reportNoiseSuppressionFailure = useCallback(() => {
+    dispatch(updateMicrophoneConfig({ noiseSuppression: false }));
+    dispatch(
+      addUserNotification({
+        message: t('footer.modal.noise-suppression-failed'),
+        typeOption: 'error',
+      }),
+    );
+  }, [dispatch, t]);
+
+  /**
+   * Applies the requested GTCRN state to the live mic track. Returns whether it
+   * succeeded and persists the *truthful* resulting state, so the switch never
+   * shows suppression as on/off when the processor isn't.
+   */
+  const setTrackNoiseSuppression = useCallback(
+    async (track: LocalAudioTrack, desired: boolean): Promise<boolean> => {
+      const room = getMediaServerConnRoom();
+      const isCurrent = () =>
+        room?.localParticipant.getTrackPublication(Track.Source.Microphone)?.track === track;
+
+      const ok = await applyNoiseSuppressorState(track, desired, isCurrent, () => {
+        // Asynchronous worklet failure: detach and flip the preference off.
+        void disableNoiseSuppressor(track).finally(reportNoiseSuppressionFailure);
+      });
+
+      if (ok) {
+        dispatch(updateMicrophoneConfig({ noiseSuppression: desired }));
+        return true;
+      }
+      // Enable failures leave it off, disable failures leave it on.
+      dispatch(updateMicrophoneConfig({ noiseSuppression: !desired }));
+      dispatch(
+        addUserNotification({
+          message: t('footer.modal.noise-suppression-failed'),
+          typeOption: 'error',
+        }),
+      );
+      return false;
+    },
+    [dispatch, reportNoiseSuppressionFailure, t],
+  );
+
   const onCloseMicrophoneModal = useCallback(
     async (deviceId?: string) => {
       dispatch(updateShowMicrophoneModal(false));
 
-      if (isEmpty(deviceId) || !currentRoom || isPublishing.current) {
+      if (!currentRoom) {
+        return;
+      }
+
+      const activeTrack = currentRoom.localParticipant.getTrackPublication(Track.Source.Microphone)
+        ?.track as LocalAudioTrack | undefined;
+
+      // Already publishing: never recapture/republish the mic. A device swap is
+      // routed through LiveKit so the processor lifecycle stays intact.
+      if (activeTrack) {
+        if (deviceId && deviceId !== selectedAudioDevice) {
+          await currentRoom.switchActiveDevice('audioinput', deviceId);
+          dispatch(updateSelectedAudioDevice(deviceId));
+        }
+        return;
+      }
+
+      if (isEmpty(deviceId) || isPublishing.current) {
         return;
       }
       isPublishing.current = true;
 
+      let audioTrack: LocalTrack | undefined;
+      let published = false;
       try {
         const localTracks = await createLocalTracks({
           audio: {
@@ -165,13 +233,29 @@ const MicrophoneIcon = () => {
           video: false,
         });
 
-        const audioTrack = localTracks.find((track) => track.kind === Track.Kind.Audio);
+        audioTrack = localTracks.find((track) => track.kind === Track.Kind.Audio);
 
         if (audioTrack) {
           await currentRoom.localParticipant.publishTrack(audioTrack, {
             audioPreset: getAudioPreset(),
             source: Track.Source.Microphone,
           });
+          published = true;
+
+          // Attach only after the SDK owns the published track, because
+          // `setProcessor` runs on the SDK's own AudioContext, which doesn't
+          // exist until then. Read the preference fresh (not from a stale
+          // closure) so the very first publish honours the current config.
+          const wantNoiseSuppression =
+            store.getState().roomSettings.microphoneConfig.noiseSuppression;
+          if (wantNoiseSuppression && audioTrack instanceof LocalAudioTrack) {
+            await setTrackNoiseSuppression(audioTrack, true);
+          }
+
+          // Flip the mic "active" only once the initial attach has settled: the
+          // modal's live toggle keys off isActiveMicrophone, so exposing it
+          // earlier would let the user toggle suppression while this attach is
+          // still in flight and race the candidate.
           dispatch(updateIsActiveMicrophone(true));
 
           if (muteOnStartRef.current) {
@@ -184,20 +268,46 @@ const MicrophoneIcon = () => {
         }
       } catch (e) {
         console.error(e);
+        // Drop the candidate we captured so a failed publish leaves no live mic.
+        if (!published) {
+          audioTrack?.stop();
+        }
       } finally {
         isPublishing.current = false;
       }
     },
-    [dispatch, currentRoom, muteOnStartRef],
+    [dispatch, currentRoom, muteOnStartRef, selectedAudioDevice, setTrackNoiseSuppression],
+  );
+
+  /** Live toggle callback for the mic modal; the modal guards repeated clicks. */
+  const onNoiseSuppressionChange = useCallback(
+    async (desired: boolean): Promise<boolean> => {
+      const room = getMediaServerConnRoom();
+      const track = room?.localParticipant.getTrackPublication(Track.Source.Microphone)?.track as
+        | LocalAudioTrack
+        | undefined;
+      if (!track) {
+        // No live mic (inactive/landing): nothing to process, just persist it.
+        dispatch(updateMicrophoneConfig({ noiseSuppression: desired }));
+        return true;
+      }
+      return setTrackNoiseSuppression(track, desired);
+    },
+    [dispatch, setTrackNoiseSuppression],
   );
 
   // only for initial if device was selected in landing page
+  const didInitialAutoPublish = useRef(false);
   useEffect(() => {
+    if (didInitialAutoPublish.current) {
+      return;
+    }
+    didInitialAutoPublish.current = true;
     if (selectedAudioDevice) {
       sleep(500).then(() => onCloseMicrophoneModal(selectedAudioDevice));
     }
     //eslint-disable-next-line
-  }, [onCloseMicrophoneModal]);
+  }, []);
 
   const wrapperClasses = clsx(
     'relative footer-icon cursor-pointer min-w-10 md:min-w-11 3xl:min-w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[20px] border-[3px] 3xl:border-4',
@@ -280,9 +390,11 @@ const MicrophoneIcon = () => {
       {showMicrophoneModal && (
         <MicrophoneModal
           show={showMicrophoneModal}
+          initialDeviceId={selectedAudioDevice}
           initialDevices={knownAudioDevices}
           onCloseMicrophoneModal={onCloseMicrophoneModal}
           onDevicesLoaded={(devices) => dispatch(addAudioDevices(devices))}
+          onNoiseSuppressionChange={onNoiseSuppressionChange}
         />
       )}
     </>
