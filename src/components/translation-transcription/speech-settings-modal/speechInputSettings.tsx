@@ -52,7 +52,6 @@ const SpeechInputSettings = ({
           enabled={enableSpeech}
           onChange={setEnableSpeech}
           disabled={isServiceActive}
-          customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
         />
       </div>
       {enableSpeech && (
@@ -63,7 +62,6 @@ const SpeechInputSettings = ({
               enabled={allowTranscriptionStorage}
               onChange={setAllowTranscriptionStorage}
               disabled={isServiceActive}
-              customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
             />
           </div>
           <div className="grid gap-4 bg-white dark:bg-dark-primary py-4 px-6">

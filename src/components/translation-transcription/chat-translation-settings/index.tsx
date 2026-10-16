@@ -77,10 +77,10 @@ const ChatTranslationSettings = ({ setErrorMsg }: ChatTranslationSettingsProps) 
 
   return (
     <>
-      <div className="p-4 bg-Gray-2">
+      <div className="p-4 bg-Gray-25 dark:bg-dark-primary">
         <div className="main-wrap -my-4">
           <div className="grid">
-            <div className="grid gap-4 py-4 bg-white dark:bg-dark-primary">
+            <div className="grid gap-4 py-4 bg-Gray-25 dark:bg-dark-primary">
               <TransLangsSelector
                 label={t('speech-services.read-and-write-in-label', {
                   num: chatTranslationFeatures?.maxSelectedTransLangs ?? 2,

@@ -148,11 +148,10 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
             label={t('speech-services.enable-transcription')}
             enabled={enabledTranscription}
             onChange={setEnabledTranscription}
-            customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
           />
         </div>
         {enabledTranscription && (
-          <div className="grid gap-4 py-4 bg-white dark:bg-dark-primary">
+          <div className="grid gap-4 py-4 bg-Gray-25 dark:bg-dark-primary">
             <SpeechLangsSelector
               isServiceRunning={!!transcriptionFeatures?.isEnabled}
               selectedSpeechLangs={selectedSpeechLangs}
@@ -179,13 +178,12 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
                 label={t('speech-services.enable-translation')}
                 enabled={enableTranslation}
                 onChange={setEnableTranslation}
-                customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
                 disabled={transcriptionFeatures?.isEnabled}
               />
             </div>
             {enableTranslation && (
               <>
-                <div className="grid gap-4 py-4 bg-white dark:bg-dark-primary">
+                <div className="grid gap-4 py-4 bg-Gray-25 dark:bg-dark-primary">
                   <TransLangsSelector
                     isServiceRunning={!!transcriptionFeatures?.isEnabled}
                     label={t('speech-services.translation-langs-label', {
@@ -204,7 +202,6 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
                       enabled={enabledTransSynthesis}
                       onChange={setEnabledTransSynthesis}
                       disabled={transcriptionFeatures?.isEnabled}
-                      customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
                     />
                   </div>
                 )}
@@ -218,7 +215,7 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
 
   if (enabledSelfInsertEncryptionKey) {
     return (
-      <div className="p-4 bg-Gray-2">
+      <div className="p-4 bg-Gray-25 dark:bg-dark-primary">
         <div className="main-wrap -my-4 text-red-600">
           {t('insights.feature-disable-while-e2ee-self-key-enabled')}
         </div>
@@ -228,7 +225,7 @@ const TranscriptionSettings = ({ setErrorMsg }: TranscriptionSettingsProps) => {
 
   return (
     <>
-      <div className="p-4 bg-Gray-2">{renderContent()}</div>
+      <div className="p-4 bg-Gray-25 dark:bg-dark-primary">{renderContent()}</div>
       <div className="px-4 py-4 border-t border-Gray-100 dark:border-Gray-800 flex justify-end items-center gap-4 rounded-b-xl">
         {!transcriptionFeatures?.isEnabled && (
           <button

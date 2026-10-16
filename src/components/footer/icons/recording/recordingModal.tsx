@@ -59,19 +59,13 @@ const RecordingModal = ({ showModal, onCloseModal }: IRecordingModalProps) => {
 
   const radioOptions = useMemo(() => {
     const options: IRadioOption[] = [];
-    if (recordingFeatures?.isAllowLocal) {
-      options.push({
-        id: 'local',
-        value: RecordingType.RECORDING_TYPE_LOCAL,
-        label: t('footer.icons.local-recording'),
-        helpText: t('footer.icons.local-recording-des'),
-      });
-    }
     if (recordingFeatures?.isAllowCloud) {
+      const cloudSection = t('footer.icons.cloud-recording-group');
       options.push({
         id: 'full-screen',
         value: CloudRecordingVariants.FULL_SCREEN_CLOUD_RECORDING,
         label: t('footer.icons.cloud-recording'),
+        sectionLabel: cloudSection,
         disabled: !!e2eeFeatures?.enabledSelfInsertEncryptionKey,
         description: e2eeFeatures?.enabledSelfInsertEncryptionKey
           ? t('notifications.cloud-recording-not-supported-self-key')
@@ -85,6 +79,7 @@ const RecordingModal = ({ showModal, onCloseModal }: IRecordingModalProps) => {
           id: 'media-only',
           value: CloudRecordingVariants.MEDIA_ONLY_CLOUD_RECORDING,
           label: t('footer.icons.cloud-media-only-recording'),
+          sectionLabel: cloudSection,
           disabled: !!e2eeFeatures?.isEnabled,
           description: e2eeFeatures?.isEnabled
             ? t('notifications.media-only-recording-not-support-e2ee')
@@ -94,6 +89,15 @@ const RecordingModal = ({ showModal, onCloseModal }: IRecordingModalProps) => {
             : undefined,
         });
       }
+    }
+    if (recordingFeatures?.isAllowLocal) {
+      options.push({
+        id: 'local',
+        value: RecordingType.RECORDING_TYPE_LOCAL,
+        label: t('footer.icons.local-recording'),
+        sectionLabel: t('footer.icons.local-recording-group'),
+        helpText: t('footer.icons.local-recording-des'),
+      });
     }
     return options;
   }, [recordingFeatures, isCloud, e2eeFeatures, t]);

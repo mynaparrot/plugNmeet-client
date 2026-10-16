@@ -106,7 +106,7 @@ const AiTextChatSettings = ({ setErrorMsg, closeModal }: AiTextChatSettingsProps
 
   return (
     <>
-      <div className="p-4 bg-Gray-2">
+      <div className="p-4 bg-Gray-25 dark:bg-dark-primary">
         <div className="main-wrap -my-4">
           <div className="grid">
             <div className="bg-Gray-25 dark:bg-dark-primary border-y border-dotted border-Gray-100 dark:border-Gray-800 -mx-4 px-4 py-4">
@@ -114,7 +114,6 @@ const AiTextChatSettings = ({ setErrorMsg, closeModal }: AiTextChatSettingsProps
                 label={t('insights.ai-text-chat.enable')}
                 enabled={isEnabled}
                 onChange={setIsEnabled}
-                customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
               />
             </div>
             {isEnabled && (
@@ -124,7 +123,6 @@ const AiTextChatSettings = ({ setErrorMsg, closeModal }: AiTextChatSettingsProps
                     label={t('insights.ai-text-chat.enable-notepad-ai')}
                     enabled={!isNotepadAiDisabled}
                     onChange={(enabled) => setIsNotepadAiDisabled(!enabled)}
-                    customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
                   />
                 </div>
                 <div className="bg-Gray-25 dark:bg-dark-primary border-y border-dotted border-Gray-100 dark:border-Gray-800 -mx-4 px-4 py-4">
@@ -132,7 +130,6 @@ const AiTextChatSettings = ({ setErrorMsg, closeModal }: AiTextChatSettingsProps
                     label={t('insights.ai-text-chat.enable-whiteboard-ai')}
                     enabled={!isWhiteboardAiDisabled}
                     onChange={(enabled) => setIsWhiteboardAiDisabled(!enabled)}
-                    customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
                   />
                 </div>
                 <div className="bg-Gray-25 dark:bg-dark-primary border-y border-dotted border-Gray-100 dark:border-Gray-800 -mx-4 px-4 py-4">
@@ -140,25 +137,59 @@ const AiTextChatSettings = ({ setErrorMsg, closeModal }: AiTextChatSettingsProps
                     label={t('insights.ai-text-chat.enable-poll-ai')}
                     enabled={!isPollAiDisabled}
                     onChange={(enabled) => setIsPollAiDisabled(!enabled)}
-                    customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
                   />
                 </div>
-                <div className="bg-Gray-25 dark:bg-dark-primary border-y border-dotted border-Gray-100 dark:border-Gray-800 -mx-4 px-4 py-4">
-                  <SettingsSwitch
-                    label={t('insights.ai-text-chat.allow-everyone')}
-                    enabled={isAllowedEveryone}
-                    onChange={setIsAllowedEveryone}
-                    customCss="shadow-Icon-box h-11 border border-Gray-100 dark:border-Gray-800 rounded-2xl px-4 bg-white dark:bg-dark-primary"
-                  />
+                <div className="my-4 min-w-0 rounded-xl border border-Gray-200 dark:border-Gray-700 bg-Gray-50 dark:bg-dark-secondary2 p-3 sm:p-4">
+                  <fieldset className="m-0 min-w-0 border-0 p-0">
+                    <legend className="text-sm font-semibold text-Gray-900 dark:text-white">
+                      {t('insights.ai-text-chat.access-scope-title')}
+                    </legend>
+                    <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <label
+                        className={`flex items-center justify-center min-h-10 3xl:min-h-11 px-3 text-center text-sm 3xl:text-base font-semibold border rounded-[12px] md:rounded-[15px] cursor-pointer transition-all duration-300 shadow-button-shadow has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-Blue ${
+                          isAllowedEveryone
+                            ? 'bg-Blue2-50 dark:bg-Blue2-800 border-Blue2-500 text-Gray-950 dark:text-white'
+                            : 'bg-white hover:bg-Gray-100 dark:bg-dark-secondary dark:hover:bg-dark-secondary3 border-Gray-300 dark:border-Gray-800 text-Gray-800 dark:text-white'
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          id="ai-text-chat-access-everyone"
+                          name="ai-text-chat-access-scope"
+                          checked={isAllowedEveryone}
+                          onChange={() => setIsAllowedEveryone(true)}
+                          className="sr-only"
+                        />
+                        {t('insights.ai-text-chat.access-everyone')}
+                      </label>
+                      <label
+                        className={`flex items-center justify-center min-h-10 3xl:min-h-11 px-3 text-center text-sm 3xl:text-base font-semibold border rounded-[12px] md:rounded-[15px] cursor-pointer transition-all duration-300 shadow-button-shadow has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-Blue ${
+                          !isAllowedEveryone
+                            ? 'bg-Blue2-50 dark:bg-Blue2-800 border-Blue2-500 text-Gray-950 dark:text-white'
+                            : 'bg-white hover:bg-Gray-100 dark:bg-dark-secondary dark:hover:bg-dark-secondary3 border-Gray-300 dark:border-Gray-800 text-Gray-800 dark:text-white'
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          id="ai-text-chat-access-selected"
+                          name="ai-text-chat-access-scope"
+                          checked={!isAllowedEveryone}
+                          onChange={() => setIsAllowedEveryone(false)}
+                          className="sr-only"
+                        />
+                        {t('insights.ai-text-chat.access-selected')}
+                      </label>
+                    </div>
+                    {!isAllowedEveryone && (
+                      <div className="mt-4 border-t border-Gray-200 dark:border-Gray-700 pt-4">
+                        <UsersSelector
+                          selectedUsers={allowedUsers}
+                          setSelectedUsers={setAllowedUsers}
+                        />
+                      </div>
+                    )}
+                  </fieldset>
                 </div>
-                {!isAllowedEveryone && (
-                  <div className="bg-Gray-25 dark:bg-dark-primary border-y border-dotted border-Gray-100 dark:border-Gray-800 -mx-4 px-4 py-4">
-                    <UsersSelector
-                      selectedUsers={allowedUsers}
-                      setSelectedUsers={setAllowedUsers}
-                    />
-                  </div>
-                )}
               </>
             )}
           </div>
