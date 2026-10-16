@@ -1,5 +1,27 @@
 # Changelog
 
+## [2.5.4](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.3...v2.5.4) (2026-10-16)
+
+
+### Bug Fixes
+
+* attribute connection quality evidence correctly in single-PC sessions ([2508a7e](https://github.com/mynaparrot/plugNmeet-client/commit/2508a7ed8ee9d9f5f8e203646ab759ce879576fc))
+* auto select real mic by default ([9d9db3b](https://github.com/mynaparrot/plugNmeet-client/commit/9d9db3b631db2b4b727a455a2e3c32fec1c5fd40))
+* **feat:** added new experimental `Noise suppression` feature using GTCRN ([#1136](https://github.com/mynaparrot/plugNmeet-client/issues/1136)) ([1c38333](https://github.com/mynaparrot/plugNmeet-client/commit/1c383339bf3a459c2661e0c0cc711cf5f6de535e))
+* improve audio-first adaptation with reliable connection measurements and quality reduction before video pauses ([#1134](https://github.com/mynaparrot/plugNmeet-client/issues/1134)) ([d6a16bd](https://github.com/mynaparrot/plugNmeet-client/commit/d6a16bd1d244ae4bd2077585fb1b3c3263e33817))
+* improve connection quality measurement ([29616eb](https://github.com/mynaparrot/plugNmeet-client/commit/29616eb533145c1f4b7193d3dbeb81c1043a310d))
+* new Crowdin updates ([#1133](https://github.com/mynaparrot/plugNmeet-client/issues/1133)) ([2b0681e](https://github.com/mynaparrot/plugNmeet-client/commit/2b0681eb621035295f7ee1d35f58a7851e7be6b9))
+* reduce false-positive connection quality degradation reports ([#1135](https://github.com/mynaparrot/plugNmeet-client/issues/1135)) ([6b84d18](https://github.com/mynaparrot/plugNmeet-client/commit/6b84d18662f06064d1e2e240dafab0104fdf629a))
+* **rtmp:** include auto-close-chat options in startBroadcasting deps ([bc95294](https://github.com/mynaparrot/plugNmeet-client/commit/bc952941201a8635929517ba148fb5aa76ec49b0))
+* self cam floating view same as PC ([09355a5](https://github.com/mynaparrot/plugNmeet-client/commit/09355a5db4a2b2473078eb41639740dfc1bdeb5b))
+* selfViewFloating only enable when actually local webcam shared ([190f824](https://github.com/mynaparrot/plugNmeet-client/commit/190f824925f602a6222a61921c5402972635454e))
+* **turn:** fallback now requires meaningful, measured evidence that the current connection is struggling, rather than simply waiting for a timer ([5444303](https://github.com/mynaparrot/plugNmeet-client/commit/54443034d69b9f40851088f866ece18a628f6f28))
+* **turn:** migrate to class based implementation ([e14b3ac](https://github.com/mynaparrot/plugNmeet-client/commit/e14b3ac962e3cd60a15704b4de8a53a8c241f692))
+* **UI:** added option to select media quality during sharing ([dcd8c20](https://github.com/mynaparrot/plugNmeet-client/commit/dcd8c20fec803afb6d92104ce4a6ff9e35d6759e))
+* **UI:** updated few design ([b1bc78b](https://github.com/mynaparrot/plugNmeet-client/commit/b1bc78bb4f7271342c25797d84d153a62c90a68e))
+* use `useSyncExternalStore` for better retrieving the changes ([c76e8fc](https://github.com/mynaparrot/plugNmeet-client/commit/c76e8fc9001c7e5ba6c41f4947d04b0d2cf93997))
+* **UX:** for wider screen display raised hand as seperate icon ([d6841c1](https://github.com/mynaparrot/plugNmeet-client/commit/d6841c1c9df5d333dae000ebb9db1ca1a2ebb99e))
+
 ## [2.5.3](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.2...v2.5.3) (2026-10-06)
 
 
