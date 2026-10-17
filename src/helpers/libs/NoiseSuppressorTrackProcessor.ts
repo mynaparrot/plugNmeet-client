@@ -23,6 +23,11 @@ export const NOISE_SUPPRESSOR_PROCESSOR_NAME = 'pnm-gtcrn-noise-suppressor';
 const GTCRN_MAX_CHANNELS = 2;
 /** GTCRN's worklet only accepts 16 kHz or 48 kHz input. */
 const SUPPORTED_SAMPLE_RATES = new Set([16000, 48000]);
+/**
+ * GTCRN's model runs at 16 kHz mono, so when the SDK context isn't supported we
+ * run the worklet on a dedicated 16 kHz context instead of resampling 48↔16 kHz.
+ */
+const FALLBACK_SAMPLE_RATE = 16000;
 
 const assetPath = getConfigValue('staticAssetsPath', '/assets', 'STATIC_ASSETS_PATH');
 const workletUrl = `${assetPath}/wasm/gtcrn-worklet.js`;
@@ -105,6 +110,8 @@ class NoiseSuppressorTrackProcessor implements TrackProcessor<
   processedTrack?: MediaStreamTrack;
 
   private audioContext: AudioContext | null = null;
+  /** True only when `audioContext` is our fallback, so `destroy()` may close it. */
+  private ownsAudioContext = false;
   private sourceNode: MediaStreamAudioSourceNode | null = null;
   private workletNode: GtcrnWorkletNode | null = null;
   private destinationNode: MediaStreamAudioDestinationNode | null = null;
@@ -117,17 +124,42 @@ class NoiseSuppressorTrackProcessor implements TrackProcessor<
   constructor(private readonly onProcessorError?: () => void) {}
 
   async init(opts: AudioProcessorOptions) {
-    const ctx = opts.audioContext;
-    if (!ctx) {
+    try {
+      await this.buildGraph(opts);
+    } catch (e) {
+      // A partial init must never leak an owned fallback context or half-built
+      // graph. destroy() is idempotent, so a caller may still tear down again.
+      await this.destroy();
+      throw e;
+    }
+  }
+
+  private async buildGraph(opts: AudioProcessorOptions) {
+    const sdkContext = opts.audioContext;
+    if (!sdkContext) {
       throw new Error('GTCRN noise suppression requires the SDK audio context');
     }
-    if (!SUPPORTED_SAMPLE_RATES.has(ctx.sampleRate)) {
-      throw new Error(
-        `GTCRN noise suppression needs a 16 kHz or 48 kHz audio context (got ${ctx.sampleRate} Hz)`,
-      );
+
+    if (SUPPORTED_SAMPLE_RATES.has(sdkContext.sampleRate)) {
+      this.audioContext = sdkContext;
+      this.ownsAudioContext = false;
+    } else {
+      const fallbackCtx = new AudioContext({
+        latencyHint: 'interactive',
+        sampleRate: FALLBACK_SAMPLE_RATE,
+      });
+      // Claim the fallback before any later step can throw so a failed init
+      // always closes it through destroy() instead of leaking it.
+      this.audioContext = fallbackCtx;
+      this.ownsAudioContext = true;
+      if (!SUPPORTED_SAMPLE_RATES.has(fallbackCtx.sampleRate)) {
+        throw new Error(
+          `GTCRN noise suppression needs a 16 kHz or 48 kHz audio context (got ${fallbackCtx.sampleRate} Hz)`,
+        );
+      }
     }
 
-    this.audioContext = ctx;
+    const ctx = this.audioContext;
     this.rawTrack = opts.track;
     this.originalConstraints = readConstraints(opts.track);
 
@@ -168,9 +200,19 @@ class NoiseSuppressorTrackProcessor implements TrackProcessor<
   }
 
   async restart(opts: AudioProcessorOptions) {
-    // Rebuild from scratch if the graph is gone (restart opts carry no
-    // audioContext, so it must come from init()).
-    if (!this.audioContext || !this.workletNode || !this.destinationNode) {
+    // Rebuild when the graph is gone, or when the SDK moved to a context we
+    // can't keep using: a supported SDK context while we're on our owned 16 kHz
+    // fallback, or a different SDK context while we're already on the SDK's own.
+    const shouldSwitchContext = Boolean(
+      opts.audioContext &&
+      (this.ownsAudioContext
+        ? SUPPORTED_SAMPLE_RATES.has(opts.audioContext.sampleRate)
+        : opts.audioContext !== this.audioContext),
+    );
+    if (!this.audioContext || !this.workletNode || !this.destinationNode || shouldSwitchContext) {
+      // destroy() restores the browser's own suppression on the live track first
+      // so init() re-reads and re-disables cleanly, and closes any owned fallback
+      // context as the graph moves to the new context.
       await this.destroy();
       await this.init(opts);
       return;
@@ -191,11 +233,16 @@ class NoiseSuppressorTrackProcessor implements TrackProcessor<
     // Reconnect the new source track to the existing graph so the processed
     // track (and the sender's binding to it) stays stable across a device swap.
     this.disconnectSource();
-    this.sourceNode = this.audioContext.createMediaStreamSource(new MediaStream([opts.track]));
-    this.sourceNode.connect(this.workletNode);
-
-    if (!isSameTrack) {
-      await this.disableBrowserSuppression();
+    try {
+      this.sourceNode = this.audioContext.createMediaStreamSource(new MediaStream([opts.track]));
+      this.sourceNode.connect(this.workletNode);
+      if (!isSameTrack) {
+        await this.disableBrowserSuppression();
+      }
+    } catch (e) {
+      // Never leave a half-wired source hanging off the reused graph.
+      this.disconnectSource();
+      throw e;
     }
   }
 
@@ -232,11 +279,20 @@ class NoiseSuppressorTrackProcessor implements TrackProcessor<
       this.processedTrack = undefined;
 
       await this.restoreBrowserSuppression();
-
-      this.audioContext = null;
     } catch (e) {
       console.error('Failed to tear down GTCRN noise suppression', e);
     }
+
+    // Only close a context we created; the SDK's context is never ours to close.
+    if (this.ownsAudioContext && this.audioContext) {
+      try {
+        await this.audioContext.close();
+      } catch {
+        // already closed
+      }
+    }
+    this.ownsAudioContext = false;
+    this.audioContext = null;
   }
 
   private disconnectSource() {

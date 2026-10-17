@@ -22,10 +22,16 @@ export const createRawTrack = (
 });
 
 export class FakeAudioContext {
+  /** Every constructed context, so tests can find the processor's fallback. */
+  static instances: FakeAudioContext[] = [];
+
   sampleRate: number;
   state: AudioContextState = 'running';
   resume = vi.fn(async () => {});
   addModule = vi.fn(async () => {});
+  close = vi.fn(async () => {
+    this.state = 'closed';
+  });
   sourceNode = { connect: vi.fn(), disconnect: vi.fn() };
   processedTrack = { stop: vi.fn() };
   destinationNode = {
@@ -33,8 +39,10 @@ export class FakeAudioContext {
     stream: { getAudioTracks: () => [this.processedTrack] },
   };
 
-  constructor(sampleRate = 48000) {
-    this.sampleRate = sampleRate;
+  constructor(optionsOrRate: number | AudioContextOptions = 48000) {
+    this.sampleRate =
+      typeof optionsOrRate === 'number' ? optionsOrRate : (optionsOrRate.sampleRate ?? 48000);
+    FakeAudioContext.instances.push(this);
   }
 
   /** On the prototype so `'audioWorklet' in AudioContext.prototype` is true. */
@@ -65,6 +73,7 @@ export const flushPromises = async (): Promise<void> => {
 
 /** Installs the browser globals the processor (and its support check) relies on. */
 export const installAudioGlobals = () => {
+  FakeAudioContext.instances.length = 0;
   vi.stubGlobal('AudioContext', FakeAudioContext);
   vi.stubGlobal('AudioWorkletNode', {});
   vi.stubGlobal(

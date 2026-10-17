@@ -189,7 +189,7 @@ const MicrophoneIcon = () => {
       dispatch(
         addUserNotification({
           message: t('footer.modal.noise-suppression-failed'),
-          typeOption: 'error',
+          typeOption: 'warning',
         }),
       );
       return false;

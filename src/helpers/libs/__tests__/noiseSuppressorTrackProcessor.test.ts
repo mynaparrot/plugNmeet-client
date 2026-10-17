@@ -172,13 +172,10 @@ describe('capture constraint lifecycle', () => {
 });
 
 describe('failed enable cleanup', () => {
-  it.each<[string, unknown]>([
-    ['a missing SDK audio context', undefined],
-    ['an unsupported sample rate', new FakeAudioContext(44100)],
-  ])('rejects %s before loading assets or touching capture', async (_label, audioContext) => {
+  it('rejects a missing SDK audio context before loading assets or touching capture', async () => {
     const adapter = await bootAdapter();
     const raw = createRawTrack({ echoCancellation: true, noiseSuppression: true });
-    const track = createSdkTrack(raw, { audioContext });
+    const track = createSdkTrack(raw, { audioContext: undefined });
 
     expect(await adapter.enableNoiseSuppressor(track)).toBe(false);
     expect(track.getProcessor()).toBeUndefined();
@@ -229,6 +226,211 @@ describe('failed enable cleanup', () => {
       echoCancellation: true,
       noiseSuppression: true,
     });
+  });
+});
+
+describe('fallback audio context', () => {
+  const findFallback = (sdkContext: FakeAudioContext) =>
+    FakeAudioContext.instances.find((ctx) => ctx !== sdkContext);
+
+  it('runs on an owned 16 kHz context when the SDK context is unsupported', async () => {
+    const adapter = await bootAdapter();
+    const sdkContext = new FakeAudioContext(44100);
+    const raw = createRawTrack({ echoCancellation: true, noiseSuppression: true });
+    const track = createSdkTrack(raw, { audioContext: sdkContext });
+
+    expect(await adapter.enableNoiseSuppressor(track)).toBe(true);
+
+    const fallback = findFallback(sdkContext);
+    expect(fallback?.sampleRate).toBe(16000);
+    expect(fallback?.addModule).toHaveBeenCalledTimes(1);
+
+    await adapter.disableNoiseSuppressor(track);
+
+    expect(fallback?.close).toHaveBeenCalledTimes(1);
+    expect(fallback?.state).toBe('closed');
+    // The SDK's own context is never closed.
+    expect(sdkContext.close).not.toHaveBeenCalled();
+  });
+
+  it('closes the owned context when the graph fails to build on it', async () => {
+    const adapter = await bootAdapter();
+    const sdkContext = new FakeAudioContext(44100);
+    const raw = createRawTrack({ echoCancellation: true, noiseSuppression: true });
+    const track = createSdkTrack(raw, { audioContext: sdkContext });
+
+    // Old Firefox rejects media stream sources on a non-SDK context.
+    const sourceSpy = vi
+      .spyOn(FakeAudioContext.prototype, 'createMediaStreamSource')
+      .mockImplementation(() => {
+        throw new DOMException('not supported', 'NotSupportedError');
+      });
+
+    expect(await adapter.enableNoiseSuppressor(track)).toBe(false);
+    sourceSpy.mockRestore();
+
+    const fallback = findFallback(sdkContext);
+    expect(fallback?.close).toHaveBeenCalledTimes(1);
+    expect(sdkContext.close).not.toHaveBeenCalled();
+    expect(raw.applyConstraints).not.toHaveBeenCalled();
+  });
+
+  it('closes the owned context when browser suppression cannot be disabled', async () => {
+    const adapter = await bootAdapter();
+    const sdkContext = new FakeAudioContext(44100);
+    const raw = createRawTrack({ echoCancellation: true, noiseSuppression: true });
+    raw.applyConstraints.mockRejectedValueOnce(new Error('OverconstrainedError'));
+    const track = createSdkTrack(raw, { audioContext: sdkContext });
+
+    expect(await adapter.enableNoiseSuppressor(track)).toBe(false);
+
+    const fallback = findFallback(sdkContext);
+    expect(fallback?.close).toHaveBeenCalledTimes(1);
+    expect(sdkContext.close).not.toHaveBeenCalled();
+  });
+
+  it('fails cleanly when the fallback context cannot be constructed', async () => {
+    const adapter = await bootAdapter();
+    const sdkContext = new FakeAudioContext(44100);
+    const raw = createRawTrack({ echoCancellation: true, noiseSuppression: true });
+    const track = createSdkTrack(raw, { audioContext: sdkContext });
+
+    class BlockedContext extends FakeAudioContext {
+      constructor() {
+        super();
+        throw new Error('AudioContext blocked');
+      }
+    }
+    vi.stubGlobal('AudioContext', BlockedContext);
+
+    expect(await adapter.enableNoiseSuppressor(track)).toBe(false);
+    expect(raw.applyConstraints).not.toHaveBeenCalled();
+    expect(library.nodes).toHaveLength(0);
+  });
+
+  it('fails cleanly when the fallback context ignores the requested rate', async () => {
+    const adapter = await bootAdapter();
+    const sdkContext = new FakeAudioContext(44100);
+    const raw = createRawTrack({ echoCancellation: true, noiseSuppression: true });
+    const track = createSdkTrack(raw, { audioContext: sdkContext });
+
+    class IgnoringContext extends FakeAudioContext {
+      constructor() {
+        super(8000);
+      }
+    }
+    vi.stubGlobal('AudioContext', IgnoringContext);
+
+    expect(await adapter.enableNoiseSuppressor(track)).toBe(false);
+
+    const fallback = findFallback(sdkContext);
+    expect(fallback?.sampleRate).toBe(8000);
+    expect(fallback?.close).toHaveBeenCalledTimes(1);
+    expect(raw.applyConstraints).not.toHaveBeenCalled();
+    expect(library.nodes).toHaveLength(0);
+  });
+
+  it('reuses the owned fallback when restart keeps the same 44.1 kHz SDK context', async () => {
+    const adapter = await bootAdapter();
+    const sdkContext = new FakeAudioContext(44100);
+    const raw = createRawTrack({ echoCancellation: true, noiseSuppression: true });
+    const track = createSdkTrack(raw, { audioContext: sdkContext });
+    expect(await adapter.enableNoiseSuppressor(track)).toBe(true);
+    const fallback = findFallback(sdkContext);
+
+    await track.getProcessor().restart({ track: raw, kind: 'audio', audioContext: sdkContext });
+
+    // Same SDK context: no rebuild, so no second fallback and the original stays open.
+    expect(FakeAudioContext.instances).toHaveLength(2);
+    expect(fallback?.close).not.toHaveBeenCalled();
+    expect(fallback?.addModule).toHaveBeenCalledTimes(1);
+    expect(library.nodes).toHaveLength(1);
+    expect(library.nodes[0].destroy).not.toHaveBeenCalled();
+  });
+
+  it('closes the owned fallback and rebuilds when restart swaps the SDK context', async () => {
+    const adapter = await bootAdapter();
+    const ctxA = new FakeAudioContext(44100);
+    const raw = createRawTrack({ echoCancellation: true, noiseSuppression: true });
+    const track = createSdkTrack(raw, { audioContext: ctxA });
+    expect(await adapter.enableNoiseSuppressor(track)).toBe(true);
+    const fallbackA = findFallback(ctxA);
+    const ctxB = new FakeAudioContext(48000);
+
+    await track.getProcessor().restart({ track: raw, kind: 'audio', audioContext: ctxB });
+
+    expect(fallbackA?.close).toHaveBeenCalledTimes(1);
+    expect(ctxA.close).not.toHaveBeenCalled();
+    // ctxB is supported, so the graph runs on it directly with no new fallback.
+    expect(FakeAudioContext.instances).toHaveLength(3);
+    expect(library.nodes).toHaveLength(2);
+    expect(ctxB.addModule).toHaveBeenCalledTimes(1);
+  });
+
+  it('reuses the owned fallback when the swapped SDK context is still unsupported', async () => {
+    const adapter = await bootAdapter();
+    const ctxA = new FakeAudioContext(44100);
+    const raw = createRawTrack({ echoCancellation: true, noiseSuppression: true });
+    const track = createSdkTrack(raw, { audioContext: ctxA });
+    expect(await adapter.enableNoiseSuppressor(track)).toBe(true);
+    const fallbackA = findFallback(ctxA);
+    const ctxB = new FakeAudioContext(44100);
+
+    await track.getProcessor().restart({ track: raw, kind: 'audio', audioContext: ctxB });
+
+    // Both SDK contexts are unsupported, so the owned 16 kHz fallback is reused.
+    expect(FakeAudioContext.instances).toHaveLength(3);
+    expect(fallbackA?.close).not.toHaveBeenCalled();
+    expect(library.nodes).toHaveLength(1);
+    expect(library.nodes[0].destroy).not.toHaveBeenCalled();
+  });
+
+  it('reuses the owned fallback across device switches without rebuilding', async () => {
+    const adapter = await bootAdapter();
+    const sdkContext = new FakeAudioContext(44100);
+    const first = createRawTrack({ echoCancellation: true, noiseSuppression: true });
+    const track = createSdkTrack(first, { audioContext: sdkContext });
+    expect(await adapter.enableNoiseSuppressor(track)).toBe(true);
+    const fallback = findFallback(sdkContext);
+
+    const second = createRawTrack({ noiseSuppression: false, deviceId: 'dev-2' });
+    await track.getProcessor().restart({ track: second, kind: 'audio', audioContext: sdkContext });
+
+    // No second fallback is created and the original stays open and wired.
+    expect(FakeAudioContext.instances).toHaveLength(2);
+    expect(fallback?.close).not.toHaveBeenCalled();
+    expect(library.nodes).toHaveLength(1);
+    expect(library.nodes[0].destroy).not.toHaveBeenCalled();
+  });
+
+  it('tears down the new fallback and graph when a rebuild fails mid-init', async () => {
+    const adapter = await bootAdapter();
+    const ctxA = new FakeAudioContext(48000);
+    const raw = createRawTrack({ echoCancellation: true, noiseSuppression: true });
+    const track = createSdkTrack(raw, { audioContext: ctxA });
+    expect(await adapter.enableNoiseSuppressor(track)).toBe(true);
+    const ctxB = new FakeAudioContext(44100);
+
+    // The rebuild moves onto a fresh 16 kHz fallback and fails while wiring the
+    // source into it; nothing may be left behind.
+    const sourceSpy = vi
+      .spyOn(FakeAudioContext.prototype, 'createMediaStreamSource')
+      .mockImplementation(() => {
+        throw new DOMException('not supported', 'NotSupportedError');
+      });
+
+    await expect(
+      track.getProcessor().restart({ track: raw, kind: 'audio', audioContext: ctxB }),
+    ).rejects.toThrow();
+    sourceSpy.mockRestore();
+
+    const fallback = FakeAudioContext.instances.find((ctx) => ctx.sampleRate === 16000);
+    expect(fallback?.close).toHaveBeenCalledTimes(1);
+    // The old graph and the half-built new node are both torn down.
+    expect(library.nodes).toHaveLength(2);
+    expect(library.nodes[0].destroy).toHaveBeenCalledTimes(1);
+    expect(library.nodes[1].destroy).toHaveBeenCalledTimes(1);
+    expect(ctxB.close).not.toHaveBeenCalled();
   });
 });
 
@@ -285,6 +487,44 @@ describe('device switch and restart', () => {
       noiseSuppression: true,
       deviceId: 'dev-2',
     });
+  });
+
+  it('reuses the existing graph when restart keeps the same SDK context', async () => {
+    const adapter = await bootAdapter();
+    const sdkContext = new FakeAudioContext();
+    const raw = createRawTrack({ echoCancellation: true, noiseSuppression: true });
+    const track = createSdkTrack(raw, { audioContext: sdkContext });
+    expect(await adapter.enableNoiseSuppressor(track)).toBe(true);
+    const processed = track.getProcessor().processedTrack;
+
+    await track.getProcessor().restart({ track: raw, kind: 'audio', audioContext: sdkContext });
+
+    // Same context: the graph is kept and only the source is reconnected.
+    expect(library.nodes).toHaveLength(1);
+    expect(library.nodes[0].destroy).not.toHaveBeenCalled();
+    expect(track.getProcessor().processedTrack).toBe(processed);
+  });
+
+  it('rebuilds on the new SDK context when restart swaps it', async () => {
+    const adapter = await bootAdapter();
+    const ctxA = new FakeAudioContext();
+    const ctxB = new FakeAudioContext();
+    const raw = createRawTrack({ echoCancellation: true, noiseSuppression: true });
+    const track = createSdkTrack(raw, { audioContext: ctxA });
+    expect(await adapter.enableNoiseSuppressor(track)).toBe(true);
+    const first = track.getProcessor().processedTrack;
+
+    await track.getProcessor().restart({ track: raw, kind: 'audio', audioContext: ctxB });
+
+    // The old graph is torn down and a new one is built on the swapped context.
+    expect(library.nodes).toHaveLength(2);
+    expect(library.nodes[0].destroy).toHaveBeenCalledTimes(1);
+    expect(first?.stop).toHaveBeenCalledTimes(1);
+    expect(ctxB.addModule).toHaveBeenCalledTimes(1);
+    expect(track.getProcessor().processedTrack).not.toBe(first);
+    // The SDK's own contexts are never closed.
+    expect(ctxA.close).not.toHaveBeenCalled();
+    expect(ctxB.close).not.toHaveBeenCalled();
   });
 });
 
