@@ -491,7 +491,7 @@
       "screen-share-quality": "Chất lượng chia sẻ màn hình",
       "screen-share-quality-next-start": "Chất lượng đã chọn sẽ áp dụng lần tiếp theo khi bạn bắt đầu chia sẻ màn hình.",
       "quality-next-start": "Các thay đổi sẽ áp dụng lần tiếp theo khi bạn khởi động thiết bị này.",
-      "noise-suppression": "Giảm tiếng ồn (thử nghiệm)",
+      "noise-suppression": "Giảm tiếng ồn",
       "noise-suppression-help": "Làm sạch tiếng ồn nền với GTCRN. Áp dụng ngay lập tức.",
       "noise-suppression-unsupported": "Trình duyệt này không có chức năng giảm nhiễu.",
       "noise-suppression-failed": "Không thể khởi động chế độ giảm nhiễu trên thiết bị này — dùng âm thanh tiêu chuẩn.",
