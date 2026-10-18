@@ -491,7 +491,7 @@
       "screen-share-quality": "Screen share quality",
       "screen-share-quality-next-start": "Selected quality applies the next time you start screen sharing.",
       "quality-next-start": "Changes apply the next time you start this device.",
-      "noise-suppression": "Noise suppression (experimental)",
+      "noise-suppression": "Noise suppression",
       "noise-suppression-help": "Cleans up background noise with GTCRN. Applies immediately.",
       "noise-suppression-unsupported": "Noise suppression isn't available in this browser.",
       "noise-suppression-failed": "Couldn't start noise suppression on this device — using standard audio.",

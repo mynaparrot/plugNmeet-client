@@ -30,7 +30,7 @@ const getStoredPreset = (key: DeviceSessionStorageKeys) => {
 
 const DEFAULT_MICROPHONE_CONFIG: IMicrophoneConfig = {
   audioPreset: '',
-  noiseSuppression: false,
+  noiseSuppression: true,
 };
 
 // Falls back to the defaults when the stored value is absent, malformed, or
