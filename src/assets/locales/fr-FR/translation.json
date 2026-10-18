@@ -491,7 +491,7 @@
       "screen-share-quality": "Qualité du partage d’écran",
       "screen-share-quality-next-start": "La qualité sélectionnée s’applique la prochaine fois que vous commencez à partager l’écran.",
       "quality-next-start": "Les changements s’appliquent la prochaine fois que vous démarrez cet appareil.",
-      "noise-suppression": "Suppression du bruit (expérimentale)",
+      "noise-suppression": "Suppression du bruit",
       "noise-suppression-help": "Ça nettoie le bruit de fond avec GTCRN. Ça s’applique immédiatement.",
       "noise-suppression-unsupported": "La suppression du bruit n’est pas disponible dans ce navigateur.",
       "noise-suppression-failed": "Je n’ai pas pu démarrer la suppression du bruit sur cet appareil — en utilisant l’audio standard.",
