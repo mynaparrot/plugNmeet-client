@@ -491,7 +491,7 @@
       "screen-share-quality": "Skærmdelingskvalitet",
       "screen-share-quality-next-start": "Selected quality gælder næste gang, du starter skærmdeling.",
       "quality-next-start": "Ændringer gælder næste gang, du starter denne enhed.",
-      "noise-suppression": "Støjdæmpning (eksperimentel)",
+      "noise-suppression": "Støjdæmpning",
       "noise-suppression-help": "Renser baggrundsstøj med GTCRN. Gælder straks.",
       "noise-suppression-unsupported": "Støjdæmpning er ikke tilgængelig i denne browser.",
       "noise-suppression-failed": "Kunne ikke starte støjdæmpning på denne enhed — med almindelig lyd.",
