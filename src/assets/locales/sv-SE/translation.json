@@ -491,7 +491,7 @@
       "screen-share-quality": "Skärmdelningskvalitet",
       "screen-share-quality-next-start": "Vald kvalitet gäller nästa gång du börjar dela skärmen.",
       "quality-next-start": "Ändringar gäller nästa gång du startar denna enhet.",
-      "noise-suppression": "Bullerdämpning (experimentell)",
+      "noise-suppression": "Bullerdämpning",
       "noise-suppression-help": "Rensar bort bakgrundsljud med GTCRN. Appliceras omedelbart.",
       "noise-suppression-unsupported": "Brusdämpning är inte tillgängligt i denna webbläsare.",
       "noise-suppression-failed": "Kunde inte starta brusdämpning på den här enheten – med standardljud.",
