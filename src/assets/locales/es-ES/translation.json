@@ -491,7 +491,7 @@
       "screen-share-quality": "Calidad de pantalla compartida",
       "screen-share-quality-next-start": "La calidad seleccionada se aplicará la próxima vez que empiece a compartir pantalla.",
       "quality-next-start": "Los cambios se aplicarán la próxima vez que encienda este dispositivo.",
-      "noise-suppression": "Supresión de ruido (experimental)",
+      "noise-suppression": "Supresión de ruido",
       "noise-suppression-help": "Elimina el ruido de fondo con GTCRN. Se aplica de inmediato.",
       "noise-suppression-unsupported": "La supresión de ruido no está disponible en este navegador.",
       "noise-suppression-failed": "No se pudo iniciar la supresión de ruido en este dispositivo — usando audio estándar.",
