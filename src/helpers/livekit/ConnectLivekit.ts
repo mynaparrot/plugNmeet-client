@@ -39,6 +39,7 @@ import { roomConnectionStatus } from '../../components/app/helper';
 import {
   getConfigValue,
   isFirefoxMobile,
+  isMobileOrTablet,
   isUserRecorder,
   toNativeTwinIdentity,
   toPlugNmeetUserId,
@@ -263,7 +264,12 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
   };
 
   private async configureRoom() {
-    let videoCodec = getConfigValue<VideoCodec>('videoCodec', 'vp8', 'VIDEO_CODEC');
+    // Mobile/tablet: prefer hardware-accelerated h264; if the server's
+    // enabled_codecs lacks it, the SDK silently falls back to its first video codec.
+    let videoCodec = isMobileOrTablet()
+      ? getConfigValue<VideoCodec>('videoCodecMobile', 'h264', 'VIDEO_CODEC_MOBILE')
+      : getConfigValue<VideoCodec>('videoCodec', 'vp8', 'VIDEO_CODEC');
+
     if ((videoCodec === 'vp9' && !supportsVP9()) || (videoCodec === 'av1' && !supportsAV1())) {
       videoCodec = 'vp8';
     }
@@ -284,7 +290,6 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
       },
       publishDefaults: {
         simulcast,
-        videoSimulcastLayers: [VideoPresets.h90, VideoPresets.h180, VideoPresets.h360],
         stopMicTrackOnMute: getConfigValue<boolean>(
           'stopMicTrackOnMute',
           true,

@@ -1,5 +1,6 @@
 import { AudioPresets, ScreenSharePresets, VideoPresets } from 'livekit-client';
 import { errors } from '@nats-io/nats-core';
+import MobileDetect from 'mobile-detect';
 
 import i18n from './i18n';
 import { store } from '../store';
@@ -426,6 +427,15 @@ export const isFirefoxMobile = () => {
   const isFirefox = ua.includes('Firefox');
   const isMobile = ua.includes('Android') || ua.includes('Mobile') || ua.includes('Mobi');
   return isFirefox && isMobile;
+};
+
+export const isMobileOrTablet = () => {
+  const md = new MobileDetect(window.navigator.userAgent);
+
+  // MobileDetect 1.4.5 predates iPadOS 13's desktop-Mac UA, so check touch points too.
+  const isIpad = /Macintosh/i.test(window.navigator.userAgent) && navigator.maxTouchPoints > 1;
+
+  return isIpad || md.mobile() !== null || md.tablet() !== null;
 };
 
 export const cleanHtmlForChat = (rawText: string) => {

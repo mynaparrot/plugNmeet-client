@@ -33,6 +33,10 @@ window.plugNmeetConfig = {
   // Available options: 'vp8' | 'h264' | 'vp9' | 'av1'. Default: 'vp8'.
   videoCodec: 'vp8',
 
+  // Same options as videoCodec, used on phones and tablets where h264 is usually
+  // hardware-accelerated. Falls back to the server's first codec if unsupported. Default: 'h264'.
+  videoCodecMobile: 'h264',
+
   // Available options: 'h90' | 'h180' | 'h216' | 'h360' | 'h540' | 'h720' | 'h1080' | 'h1440' | 'h2160'.
   // Default: 'h1080'.
   defaultWebcamResolution: 'h1080',
