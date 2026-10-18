@@ -273,6 +273,7 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
     const adaptiveStream = isRecorder
       ? false
       : getConfigValue<boolean>('enableAdaptiveStream', true, 'ENABLE_ADAPTIVE_STREAM');
+    const simulcast = getConfigValue<boolean>('enableSimulcast', true, 'ENABLE_SIMULCAST');
 
     const roomOptions: RoomOptions = {
       adaptiveStream,
@@ -282,7 +283,7 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
         resolution: VideoPresets.h720.resolution,
       },
       publishDefaults: {
-        simulcast: getConfigValue<boolean>('enableSimulcast', true, 'ENABLE_SIMULCAST'),
+        simulcast,
         videoSimulcastLayers: [VideoPresets.h90, VideoPresets.h180, VideoPresets.h360],
         stopMicTrackOnMute: getConfigValue<boolean>(
           'stopMicTrackOnMute',
@@ -290,6 +291,8 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
           'STOP_MIC_TRACK_ON_MUTE',
         ),
         videoCodec: videoCodec,
+        // Use L1T3 for VP9 to enable rid-based simulcast.
+        ...(videoCodec === 'vp9' && simulcast ? { scalabilityMode: 'L1T3' as const } : {}),
       },
     };
 
