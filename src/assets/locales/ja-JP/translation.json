@@ -491,7 +491,7 @@
       "screen-share-quality": "画面共有の品質",
       "screen-share-quality-next-start": "次に画面共有を始めるときに選択された品質が適用されます。",
       "quality-next-start": "このデバイスを次に起動した際には変更が適用されます。",
-      "noise-suppression": "ノイズ抑制(実験的)",
+      "noise-suppression": "ノイズ抑制",
       "noise-suppression-help": "GTCRNで背景雑音を除去できます。即座に適用されます。",
       "noise-suppression-unsupported": "このブラウザではノイズ抑制機能が利用できません。",
       "noise-suppression-failed": "このデバイスではノイズ抑制が始まらなかったのですが、標準音声では使えませんでした。",
