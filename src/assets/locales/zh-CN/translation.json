@@ -491,7 +491,7 @@
       "screen-share-quality": "屏幕共享质量",
       "screen-share-quality-next-start": "下次开始屏幕共享时，选择质量会生效。",
       "quality-next-start": "下次启动该设备时，更改会生效。",
-      "noise-suppression": "噪声抑制（实验性）",
+      "noise-suppression": "降噪",
       "noise-suppression-help": "用GTCRN清理背景噪音。立即生效。",
       "noise-suppression-unsupported": "该浏览器不支持降噪功能。",
       "noise-suppression-failed": "用标准音频时，这台设备无法启动降噪功能。",
