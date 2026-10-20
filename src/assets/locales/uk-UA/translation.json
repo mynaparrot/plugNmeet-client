@@ -46,7 +46,7 @@
     "room-disconnected-default": "Вас відключили через несподівану помилку: {{reason}}. Будь ласка, спробуй повернутися.",
     "room-disconnected-client-initiated": "Ви відключилися від зустрічі. (Код ЄДРПОУ: {{code}})",
     "room-disconnected-duplicate-entry": "Хтось інший приєднався з тим самим ідентифікатором користувача.",
-    "room-disconnected-server-shutdown": "Сервер зустрічей вимкнено. (Код ЄДРПОУ: {{code}})",
+    "room-disconnected-server-shutdown": "Сервер зустрічей вимкнено. Код: {{code}}.",
     "room-disconnected-participant-removed": "Вас видалено із зустрічі.",
     "room-disconnected-room-ended": "Засідання завершилося.",
     "room-disconnected-state-mismatch": "Сталася помилка підключення. Будь ласка, спробуйте приєднатися знову. (Код ЄДРПОУ: {{code}})",
