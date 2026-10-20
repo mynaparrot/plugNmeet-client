@@ -1,9 +1,13 @@
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import { UploadedFileMergeReqSchema, UploadedFileResSchema } from 'plugnmeet-protocol-js';
-import { ExcalidrawElement, ExcalidrawImageElement } from '@excalidraw/excalidraw/element/types';
+import {
+  ExcalidrawElement,
+  ExcalidrawImageElement,
+  NonDeletedExcalidrawElement,
+} from '@excalidraw/excalidraw/element/types';
 import { AppState, BinaryFileData, ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import { toast, Id } from 'react-toastify';
-import { exportToCanvas } from '@excalidraw/excalidraw';
+import { exportScene } from '@excalidraw/excalidraw';
 
 // @ts-expect-error not an error
 import ExportWorkerUrl from './exportPdf.worker?worker&url';
@@ -326,19 +330,26 @@ class ExportPdfService {
     const exportWidth = Math.max(targetWidth, maxX - startX);
     const exportHeight = Math.max(targetHeight, maxY - startY);
 
-    const canvas = await exportToCanvas({
-      elements,
-      appState: {
-        ...appState,
-        exportBackground: true,
+    // light theme keeps the PDF print-friendly.
+    const canvas = await exportScene({
+      type: 'canvas',
+      data: {
+        elements: elements as NonDeletedExcalidrawElement[],
+        appState: {
+          viewBackgroundColor: appState.viewBackgroundColor,
+        },
+        files,
       },
-      files,
-      exportPadding: 0,
-      getDimensions: () => ({
-        width: exportWidth * SCALE,
-        height: exportHeight * SCALE,
+      config: {
+        theme: 'light',
+        canvasBackgroundColor: appState.viewBackgroundColor || '#ffffff',
+        padding: 0,
         scale: SCALE,
-      }),
+        width: exportWidth,
+        height: exportHeight,
+        fit: 'none',
+        position: 'topLeft',
+      },
     });
 
     // colorSpaceConversion: "none" keeps pixels byte-identical to the canvas.
