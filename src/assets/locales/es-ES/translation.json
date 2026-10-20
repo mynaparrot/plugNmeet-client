@@ -379,7 +379,7 @@
       "cloud-recording": "Grabación en la nube: Pantalla completa",
       "cloud-recording-des": "Graba la vista completa de la reunión, incluyendo todo el contenido y actividad en pantalla, en una sola grabación en la nube.",
       "cloud-media-only-recording": "Grabación en la nube: Solo multimedia",
-      "cloud-media-only-recording-des": "Graba solo los medios reunidos—audio, vídeo y pantallas compartidas—en una grabación combinada.",
+      "cloud-media-only-recording-des": "Graba únicamente los medios de la reunión —audio, video y pantalla compartida— en una sola grabación.",
       "cloud-recording-group": "Grabación en la nube",
       "local-recording-group": "Grabación local · Este dispositivo",
       "stop-rtmp-broadcasting": "Detener transmisión en vivo",
