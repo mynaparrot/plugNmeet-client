@@ -28,12 +28,14 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
   const [skipGetPollResponsesDetails, setSkipGetPollResponsesDetails] = useState<boolean>(true);
   const { data: pollDetailsResponses, refetch } = useGetPollResponsesDetailsQuery(item.id, {
     skip: skipGetPollResponsesDetails,
+    pollingInterval: 30 * 1000,
   });
 
   // load only the results for all other users
   const [skipGetPollResult, setSkipGetPollResult] = useState<boolean>(true);
   const { data: pollResponsesResult } = useGetPollResponsesResultQuery(item.id, {
     skip: skipGetPollResult,
+    pollingInterval: 30 * 1000,
   });
 
   useEffect(() => {

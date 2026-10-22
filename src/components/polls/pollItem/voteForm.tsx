@@ -87,11 +87,6 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
         selectedOptions: Array.from(selectedOptions, String),
       }),
     );
-
-    // notify to everyone; payload is the poll id (caches are invalidated on receipt)
-    if (conn) {
-      conn.sendDataMessage(DataMsgBodyType.NEW_POLL_RESPONSE, pollDataWithOption.pollId);
-    }
   };
 
   useEffect(() => {
@@ -107,6 +102,11 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
           typeOption,
         }),
       );
+
+      // notify to everyone; payload is the poll id (caches are invalidated on receipt)
+      if (addReqResponse.status && conn) {
+        void conn.sendDataMessage(DataMsgBodyType.NEW_POLL_RESPONSE, pollDataWithOption.pollId);
+      }
     }
     // We only want this to run when the response comes back.
     // eslint-disable-next-line react-hooks/exhaustive-deps
