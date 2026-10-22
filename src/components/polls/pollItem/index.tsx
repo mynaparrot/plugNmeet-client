@@ -77,13 +77,15 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
       };
     }
 
-    // Layer on admin-specific details if available
-    if (isAdmin && pollDetailsResponses?.responses) {
-      const details = pollDetailsResponses.responses;
-      baseObj.totalRespondents = Number(details.total_resp);
+    // Layer on admin-specific details if available (typed responsesDetails)
+    if (isAdmin && pollDetailsResponses?.responsesDetails) {
+      const details = pollDetailsResponses.responsesDetails;
+      baseObj.totalRespondents = Number(details.totalRespondents ?? 0);
 
+      // protojson omits zero-valued scalars (e.g. voteCount: 0), so explicit ?? 0 guards NaN
+      const counts = new Map(details.options.map((o) => [String(o.id), Number(o.voteCount ?? 0)]));
       for (const option of item.options) {
-        const count = Number(details[`${option.id}_count`] ?? 0);
+        const count = counts.get(String(option.id)) ?? 0;
         baseObj.options[option.id].votes = count;
         baseObj.totalVotes += count;
         if (count > 0 && baseObj.totalRespondents > 0) {
@@ -93,25 +95,14 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
         }
       }
 
-      if (details.all_respondents) {
-        try {
-          const respondents: Array<string> = JSON.parse(details.all_respondents);
-          for (const r of respondents) {
-            // format => userId:optionId(s):name, ids comma-joined for multi-select
-            const data = r.split(':');
-            if (data.length === 3) {
-              const respondent = { userId: data[0], name: data[2] };
-              for (const id of data[1].split(',')) {
-                if (baseObj.options[id]) {
-                  baseObj.options[id].respondents.push(respondent);
-                }
-              }
-              baseObj.allRespondents.push(respondent);
-            }
+      for (const r of details.respondents ?? []) {
+        const respondent = { userId: r.userId, name: r.name };
+        for (const id of r.optionIds ?? []) {
+          if (baseObj.options[String(id)]) {
+            baseObj.options[String(id)].respondents.push(respondent);
           }
-        } catch (e) {
-          console.error(e);
         }
+        baseObj.allRespondents.push(respondent);
       }
       return baseObj;
     }
@@ -119,14 +110,14 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
     // Layer on public results if available (for non-admins after poll ends)
     if (pollResponsesResult?.pollResponsesResult) {
       const result = pollResponsesResult.pollResponsesResult;
-      const totalResponses = Number(result.totalResponses);
+      const totalResponses = Number(result.totalResponses ?? 0);
       baseObj.totalRespondents = totalResponses;
-      baseObj.totalVotes = Number(result.totalVotes);
+      baseObj.totalVotes = Number(result.totalVotes ?? 0);
 
       for (const option of result.options) {
         const target = baseObj.options[option.id];
         if (target) {
-          const voteCount = Number(option.voteCount);
+          const voteCount = Number(option.voteCount ?? 0);
           target.votes = voteCount;
           // closed polls reveal the correct answers here
           target.isCorrect = option.isCorrect;
