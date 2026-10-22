@@ -151,9 +151,9 @@ const roomSettingsSlice = createSlice({
 
       const { audioPreset, noiseSuppression } = state.microphoneConfig;
       try {
-        // Keep storage in sync with the in-memory config; an all-default value
-        // is dropped so a fresh session starts clean.
-        if (!audioPreset && !noiseSuppression) {
+        // Keep storage in sync with the in-memory config; a value equal to the
+        // defaults is dropped so a fresh session starts clean.
+        if (!audioPreset && noiseSuppression) {
           sessionStorage.removeItem(DeviceSessionStorageKeys.MICROPHONE_CONFIG);
         } else {
           sessionStorage.setItem(

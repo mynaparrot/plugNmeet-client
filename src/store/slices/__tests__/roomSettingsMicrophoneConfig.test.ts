@@ -70,11 +70,11 @@ afterEach(() => {
 });
 
 describe('microphoneConfig hydration', () => {
-  it('defaults to an empty preset with noise suppression off', async () => {
+  it('defaults to an empty preset with noise suppression on', async () => {
     const { slice } = await loadSlice();
 
     const state = slice.default(undefined, { type: '@@init' });
-    expect(state.microphoneConfig).toEqual({ audioPreset: '', noiseSuppression: false });
+    expect(state.microphoneConfig).toEqual({ audioPreset: '', noiseSuppression: true });
   });
 
   it('reads the stored grouped JSON config', async () => {
@@ -90,7 +90,7 @@ describe('microphoneConfig hydration', () => {
     const { slice } = await loadSlice({ [CONFIG_KEY]: '{not json' });
 
     const state = slice.default(undefined, { type: '@@init' });
-    expect(state.microphoneConfig).toEqual({ audioPreset: '', noiseSuppression: false });
+    expect(state.microphoneConfig).toEqual({ audioPreset: '', noiseSuppression: true });
   });
 
   it('falls back to the defaults when reading storage throws', async () => {
@@ -103,7 +103,7 @@ describe('microphoneConfig hydration', () => {
     const slice = await import('../roomSettingsSlice');
 
     const state = slice.default(undefined, { type: '@@init' });
-    expect(state.microphoneConfig).toEqual({ audioPreset: '', noiseSuppression: false });
+    expect(state.microphoneConfig).toEqual({ audioPreset: '', noiseSuppression: true });
   });
 
   it('only enables noise suppression for a strict boolean true', async () => {
@@ -123,17 +123,17 @@ describe('updateMicrophoneConfig action', () => {
     let state = slice.default(undefined, { type: '@@init' });
 
     state = slice.default(state, slice.updateMicrophoneConfig({ audioPreset: 'speech' }));
-    expect(state.microphoneConfig).toEqual({ audioPreset: 'speech', noiseSuppression: false });
-    expect(JSON.parse(storage.getItem(CONFIG_KEY)!)).toEqual({
-      audioPreset: 'speech',
-      noiseSuppression: false,
-    });
-
-    state = slice.default(state, slice.updateMicrophoneConfig({ noiseSuppression: true }));
     expect(state.microphoneConfig).toEqual({ audioPreset: 'speech', noiseSuppression: true });
     expect(JSON.parse(storage.getItem(CONFIG_KEY)!)).toEqual({
       audioPreset: 'speech',
       noiseSuppression: true,
+    });
+
+    state = slice.default(state, slice.updateMicrophoneConfig({ noiseSuppression: false }));
+    expect(state.microphoneConfig).toEqual({ audioPreset: 'speech', noiseSuppression: false });
+    expect(JSON.parse(storage.getItem(CONFIG_KEY)!)).toEqual({
+      audioPreset: 'speech',
+      noiseSuppression: false,
     });
   });
 
@@ -147,21 +147,22 @@ describe('updateMicrophoneConfig action', () => {
     const next = slice.default(state, slice.updateMicrophoneConfig({ audioPreset: 'speech' }));
 
     // The in-memory choice still updates even though persistence failed.
-    expect(next.microphoneConfig).toEqual({ audioPreset: 'speech', noiseSuppression: false });
+    expect(next.microphoneConfig).toEqual({ audioPreset: 'speech', noiseSuppression: true });
     expect(storage.getItem(CONFIG_KEY)).toBeNull();
   });
 
-  it('clears storage when both values are back to their defaults', async () => {
+  it('persists a disabled noise suppression but clears storage back at the defaults', async () => {
     const { slice, storage } = await loadSlice();
 
     let state = slice.default(undefined, { type: '@@init' });
-    state = slice.default(state, slice.updateMicrophoneConfig({ noiseSuppression: true }));
-    expect(storage.getItem(CONFIG_KEY)).not.toBeNull();
+    state = slice.default(state, slice.updateMicrophoneConfig({ noiseSuppression: false }));
+    // Off is not the default anymore, so it must survive a reload.
+    expect(JSON.parse(storage.getItem(CONFIG_KEY)!)).toEqual({
+      audioPreset: '',
+      noiseSuppression: false,
+    });
 
-    slice.default(
-      state,
-      slice.updateMicrophoneConfig({ audioPreset: '', noiseSuppression: false }),
-    );
+    slice.default(state, slice.updateMicrophoneConfig({ audioPreset: '', noiseSuppression: true }));
     expect(storage.getItem(CONFIG_KEY)).toBeNull();
   });
 });
