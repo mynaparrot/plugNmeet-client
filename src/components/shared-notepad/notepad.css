@@ -1,0 +1,30 @@
+/*
+  The formatting toolbar is rendered as a child of BlockNoteView, which puts it
+  after the editor content inside `.bn-container`. Turning the container into a
+  column lets the toolbar wrapper come first (`order-first`) and stay pinned
+  with `position: sticky`, while any floating UI (menus, slash menu) is
+  absolutely positioned and therefore unaffected.
+*/
+.bn-container.notepad-editor {
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+  Inside the pinned bar the toolbar is a flat, centered row instead of a
+  floating pill. It fills the bar and wraps on narrow panels, so the buttons
+  are centered with even spacing and `overflow` stays `visible`: BlockNote
+  renders the hover tooltips inline (`withinPortal={false}`), and any scrolling
+  on the bar or the toolbar would clip them.
+*/
+.notepad-toolbar-bar > .bn-toolbar {
+  flex: 1 1 auto;
+  width: auto;
+  flex-wrap: wrap;
+  justify-content: center;
+  overflow: visible;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}

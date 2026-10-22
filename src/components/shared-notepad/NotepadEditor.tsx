@@ -7,17 +7,14 @@ import {
   useRef,
   useState,
 } from 'react';
-import type { FC } from 'react';
 import {
   BlockPopover,
   FormattingToolbar,
-  FormattingToolbarController,
   getDefaultReactSlashMenuItems,
   getFormattingToolbarItems,
   SuggestionMenuController,
   useCreateBlockNote,
 } from '@blocknote/react';
-import type { FormattingToolbarProps } from '@blocknote/react';
 import { BlockNoteView } from '@blocknote/mantine';
 import { withCollaboration } from '@blocknote/core/yjs';
 import { filterSuggestionItems } from '@blocknote/core/extensions';
@@ -26,6 +23,8 @@ import { filterSuggestionItems } from '@blocknote/core/extensions';
 import '@blocknote/core/fonts/inter.css';
 // @ts-ignore
 import '@blocknote/mantine/style.css';
+// @ts-ignore
+import './notepad.css';
 
 import { useTranslation } from 'react-i18next';
 import { useAppSelector } from '../../store';
@@ -141,27 +140,17 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
       });
     }, []);
 
-    const openAIMenuFromSelection = useCallback(() => {
+    // Acts on the selected text, or on the block the cursor sits in when
+    // nothing is selected (see `runNotepadAI`).
+    const openAIMenu = useCallback(() => {
       const text = editor.getSelectedText();
-      if (!text.trim()) {
-        return;
-      }
-      const blocks = editor.getSelection()?.blocks ?? [];
+      const selectionBlocks = editor.getSelection()?.blocks ?? [];
       const cursorBlock = editor.getTextCursorPosition().block;
-      setAiSelection({ text, blocks, cursorBlock });
-      const anchorId = blocks[0]?.id ?? cursorBlock.id;
-      setAiMenuBlockId(anchorId);
-    }, [editor]);
+      const blocks = selectionBlocks.length > 0 ? selectionBlocks : [cursorBlock];
 
-    const formattingToolbar = useCallback<FC<FormattingToolbarProps>>(
-      (props) => (
-        <FormattingToolbar {...props}>
-          {getFormattingToolbarItems(props.blockTypeSelectItems)}
-          {editable && <NotepadAIToolbarButton onClick={openAIMenuFromSelection} />}
-        </FormattingToolbar>
-      ),
-      [editable, openAIMenuFromSelection],
-    );
+      setAiSelection({ text, blocks, cursorBlock });
+      setAiMenuBlockId(blocks[0].id);
+    }, [editor]);
 
     // In view-only mode, keep the editor pinned to the latest content so the
     // recorder bot / locked participants always see newly appended content.
@@ -197,8 +186,19 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
           editable={editable}
           slashMenu={false}
           formattingToolbar={false}
+          className="notepad-editor"
         >
-          <FormattingToolbarController formattingToolbar={formattingToolbar} />
+          {/* Always visible, pinned above the content: selecting text is not
+              needed to reach the formatting options, and unlike the floating
+              toolbar it never has to chase the selection on touch devices. */}
+          {editable && (
+            <div className="notepad-toolbar-bar order-first sticky top-0 z-20 flex shrink-0 items-center border-b border-Gray-200 bg-white px-2 py-1 dark:border-Gray-800 dark:bg-[#1f1f1f]">
+              <FormattingToolbar>
+                {getFormattingToolbarItems()}
+                <NotepadAIToolbarButton onClick={openAIMenu} />
+              </FormattingToolbar>
+            </div>
+          )}
           <SuggestionMenuController
             triggerCharacter="/"
             getItems={async (query) =>
