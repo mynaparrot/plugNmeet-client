@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react';
-import { AnimatePresence, motion } from 'framer-motion';
 import clsx from 'clsx';
 
 export interface ITabItem {
@@ -63,21 +62,13 @@ const Tabs = ({ items, vertical = false, tabListCss, tabPanelsCss, uniqueKey }: 
         ))}
       </TabList>
       <TabPanels className={clsx('relative', tabPanelsCss)}>
-        <AnimatePresence mode="wait">
-          {items.map((item) => (
-            <TabPanel
-              key={item.id}
-              as={motion.div}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-              className="pt-2 xl:pt-5 outline-hidden"
-            >
-              {item.content}
-            </TabPanel>
-          ))}
-        </AnimatePresence>
+        {items.map((item) => (
+          // HeadlessUI unmounts the content of the unselected panels, so this
+          // animation replays each time a panel is selected.
+          <TabPanel key={item.id} className="pt-2 xl:pt-5 outline-hidden panel-in">
+            {item.content}
+          </TabPanel>
+        ))}
       </TabPanels>
     </TabGroup>
   );

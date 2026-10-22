@@ -204,7 +204,7 @@ const AudioDevicePicker = ({
       <div
         role="radiogroup"
         aria-label={t('footer.modal.select-microphone')}
-        className="grid max-h-56 gap-1.5 overflow-auto scrollBar pe-0.5"
+        className="grid max-h-56 grid-cols-1 gap-1.5 overflow-auto scrollBar pe-0.5"
       >
         {labelled.map((d) => {
           const selected = value === d.id;

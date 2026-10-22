@@ -1,8 +1,8 @@
 import React from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 import { BreakoutRoom } from 'plugnmeet-protocol-js';
+import clsx from 'clsx';
 
 import EndBtn from './endBtn';
 import BreakoutRoomUsers from './users';
@@ -40,11 +40,7 @@ const RoomItem = ({ room, setMessage }: RoomItemProps) => {
                   t('breakout-room.not-started')
                 )}
               </div>
-              <motion.div
-                animate={{ rotate: open ? 180 : 0 }}
-                transition={{ duration: 0.2 }}
-                className=""
-              >
+              <div className={clsx('transition-transform duration-200', open && 'rotate-180')}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
@@ -61,39 +57,35 @@ const RoomItem = ({ room, setMessage }: RoomItemProps) => {
                     strokeLinejoin="round"
                   />
                 </svg>
-              </motion.div>
+              </div>
             </div>
           </DisclosureButton>
 
-          <AnimatePresence>
-            {open && (
-              <DisclosurePanel
-                static
-                as={motion.div}
-                initial={{ opacity: 0, height: 0, overflow: 'hidden' }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className=""
-              >
-                <div className="wrap relative rounded-xl overflow-auto">
-                  <div className="inner p-5">
-                    <div className="row flex flex-wrap items-center justify-between mb-4">
-                      <ExtendDuration breakoutRoomId={room.id} setMessage={setMessage} />
-                      <div className="row flex mb-2">
-                        <JoinBtn breakoutRoomId={room.id} setMessage={setMessage} />
-                        <EndBtn breakoutRoomId={room.id} setMessage={setMessage} />
-                      </div>
+          {/* `transition` keeps the panel mounted until the collapse finishes;
+              the grid rows trick animates height without knowing the content size. */}
+          <DisclosurePanel
+            transition
+            className="grid grid-rows-[1fr] opacity-100 transition-[grid-template-rows,opacity] duration-200 ease-out data-closed:grid-rows-[0fr] data-closed:opacity-0"
+          >
+            <div className="overflow-hidden">
+              <div className="wrap relative rounded-xl overflow-auto">
+                <div className="inner p-5">
+                  <div className="row flex flex-wrap items-center justify-between mb-4">
+                    <ExtendDuration breakoutRoomId={room.id} setMessage={setMessage} />
+                    <div className="row flex mb-2">
+                      <JoinBtn breakoutRoomId={room.id} setMessage={setMessage} />
+                      <EndBtn breakoutRoomId={room.id} setMessage={setMessage} />
                     </div>
-                    <BreakoutRoomUsers
-                      users={room.users}
-                      breakoutRoomId={room.id}
-                      setMessage={setMessage}
-                    />
                   </div>
+                  <BreakoutRoomUsers
+                    users={room.users}
+                    breakoutRoomId={room.id}
+                    setMessage={setMessage}
+                  />
                 </div>
-              </DisclosurePanel>
-            )}
-          </AnimatePresence>
+              </div>
+            </div>
+          </DisclosurePanel>
         </div>
       )}
     </Disclosure>

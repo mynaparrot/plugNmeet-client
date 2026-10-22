@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PollInfo } from 'plugnmeet-protocol-js';
-import { AnimatePresence, motion } from 'framer-motion';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
+import clsx from 'clsx';
 
 import { store } from '../../../store';
 import PollActionsMenu from './pollActionsMenu';
@@ -188,10 +188,11 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
                 <span className="text-sm text-Gray-800 dark:text-white font-medium block text-start min-w-0 flex-1 overflow-hidden break-all">
                   {item.question}
                 </span>
-                <motion.div
-                  animate={{ rotate: open ? 180 : 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="shrink-0 group-hover:opacity-100 transition-opacity duration-200 text-Gray-800 dark:text-white"
+                <div
+                  className={clsx(
+                    'shrink-0 group-hover:opacity-100 transition-[opacity,transform] duration-200 text-Gray-800 dark:text-white',
+                    open && 'rotate-180',
+                  )}
                 >
                   <svg
                     width="16"
@@ -209,27 +210,21 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
                       strokeLinejoin="round"
                     />
                   </svg>
-                </motion.div>
+                </div>
               </DisclosureButton>
 
-              <AnimatePresence>
-                {open && (
-                  <DisclosurePanel
-                    static
-                    as={motion.div}
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                  >
-                    {pollDataWithOption && (
-                      <PollForm
-                        pollDataWithOption={pollDataWithOption}
-                        isRunning={item.isRunning}
-                      />
-                    )}
-                  </DisclosurePanel>
-                )}
-              </AnimatePresence>
+              {/* `transition` keeps the panel mounted until the collapse finishes;
+                  the grid rows trick animates height without knowing the content size. */}
+              <DisclosurePanel
+                transition
+                className="grid grid-rows-[1fr] opacity-100 transition-[grid-template-rows,opacity] duration-200 ease-out data-closed:grid-rows-[0fr] data-closed:opacity-0"
+              >
+                <div className="overflow-hidden">
+                  {pollDataWithOption && (
+                    <PollForm pollDataWithOption={pollDataWithOption} isRunning={item.isRunning} />
+                  )}
+                </div>
+              </DisclosurePanel>
             </>
           )}
         </Disclosure>

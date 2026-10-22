@@ -1,7 +1,7 @@
 import React, { ReactElement, useMemo } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
+import clsx from 'clsx';
 
 import { getFormatedRespondents, PollDataWithOption } from '../../utils';
 import { CheckMarkIconSVG } from '../../../../assets/Icons/CheckMarkIconSVG';
@@ -38,10 +38,8 @@ const Respondents = ({ pollDataWithOption }: RespondentsProps) => {
                     ({o.responsesPercentage + '%'})
                   </span>
                   {!pollDataWithOption.isAnonymous && (
-                    <motion.div
-                      animate={{ rotate: open ? 180 : 0 }}
-                      transition={{ duration: 0.2 }}
-                      className=""
+                    <div
+                      className={clsx('transition-transform duration-200', open && 'rotate-180')}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -59,27 +57,24 @@ const Respondents = ({ pollDataWithOption }: RespondentsProps) => {
                           strokeLinejoin="round"
                         />
                       </svg>
-                    </motion.div>
+                    </div>
                   )}
                 </div>
               </DisclosureButton>
 
-              <AnimatePresence>
-                {/* anonymous polls never render respondent names */}
-                {open && !pollDataWithOption.isAnonymous && (
-                  <DisclosurePanel
-                    static
-                    as={motion.div}
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                  >
-                    <div className="wrap relative rounded-xl overflow-auto">
-                      <div className="inner flex">{getFormatedRespondents(o.respondents)}</div>
-                    </div>
-                  </DisclosurePanel>
-                )}
-              </AnimatePresence>
+              {/* Polls created as anonymous can never be opened, so no respondent
+                  name is rendered. `transition` keeps the panel mounted until the
+                  collapse finishes; the grid rows trick animates the height. */}
+              <DisclosurePanel
+                transition
+                className="grid grid-rows-[1fr] opacity-100 transition-[grid-template-rows,opacity] duration-200 ease-out data-closed:grid-rows-[0fr] data-closed:opacity-0"
+              >
+                <div className="overflow-hidden">
+                  <div className="wrap relative rounded-xl overflow-auto">
+                    <div className="inner flex">{getFormatedRespondents(o.respondents)}</div>
+                  </div>
+                </div>
+              </DisclosurePanel>
             </div>
           )}
         </Disclosure>

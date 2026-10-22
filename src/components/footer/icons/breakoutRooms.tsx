@@ -106,7 +106,7 @@ const BreakoutRoomsIcon = () => {
     >
       <div className={innerDivClasses}>
         <span className="tooltip">{tooltipText}</span>
-        <BreakoutRoomIconSVG classes="" />
+        <BreakoutRoomIconSVG classes="h-5 w-auto" />
       </div>
     </button>
   );

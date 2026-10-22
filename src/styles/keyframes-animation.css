@@ -129,3 +129,20 @@
   animation: reaction-float-up var(--reaction-dur, 4s) ease-out forwards;
   will-change: transform, opacity;
 }
+.reaction-float {
+  animation: reaction-float-up var(--reaction-dur, 4s) ease-out forwards;
+  will-change: transform, opacity;
+}
+@keyframes panel-in {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.panel-in {
+  animation: panel-in 200ms ease-out;
+}
