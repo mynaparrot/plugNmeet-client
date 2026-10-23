@@ -6,7 +6,7 @@ import { BackToMainRoomReqSchema } from 'plugnmeet-protocol-js';
 
 import { store } from '../../store';
 import { useBackToMainMutation } from '../../store/services/breakoutRoomApi';
-import { buildAccessTokenUrl } from './utils/breakoutRoom';
+import { buildAccessTokenUrl, parseParentRoomId } from './utils/breakoutRoom';
 import { ArrowLeft } from '../../assets/Icons/ArrowLeft';
 import { getNatsConn } from '../../helpers/nats';
 
@@ -27,7 +27,9 @@ const BackToMainBtn = () => {
       roomId: session.currentRoom.roomId,
       userId: session.currentUser?.userId,
       isAdmin: session.currentUser?.metadata?.isAdmin,
-      parentRoomId: session.currentRoom.metadata?.parentRoomId,
+      // metadata carries the parent reference as `<roomId>:<tableId>`; the
+      // server expects the plain parent room id.
+      parentRoomId: parseParentRoomId(session.currentRoom.metadata?.parentRoomId),
       allowReturnToMainRoom:
         session.currentRoom.metadata?.roomFeatures?.breakoutRoomFeatures?.allowReturnToMainRoom,
       allowSelfSelect:

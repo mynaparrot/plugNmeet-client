@@ -26,6 +26,31 @@ export const buildAccessTokenUrl = (token: string): string => {
 };
 
 /**
+ * Extract the plain parent room id from a breakout room's metadata
+ * `parentRoomId` value.
+ *
+ * Breakout metadata carries the parent reference as
+ * `<plain parent roomId>:<parent DB table id>`. Room ids can never contain `:`
+ * (protocol validation), so the plain id is everything before the last colon
+ * and the suffix must be a positive integer. Anything else is rejected so that
+ * a composite value can never be used as a room key.
+ */
+export const parseParentRoomId = (parentRoomId?: string): string => {
+  if (!parentRoomId) {
+    return '';
+  }
+  const sep = parentRoomId.lastIndexOf(':');
+  if (sep <= 0) {
+    return '';
+  }
+  const tableId = parentRoomId.slice(sep + 1);
+  if (!/^\d+$/.test(tableId) || Number(tableId) <= 0) {
+    return '';
+  }
+  return parentRoomId.slice(0, sep);
+};
+
+/**
  * Auto-return the current user from a (ended) breakout room to the main room.
  *
  * Used by the NATS handlers when a breakout room ends while the user is still
@@ -55,7 +80,7 @@ export const autoReturnToMainRoom = async (): Promise<boolean> => {
   const req = create(BackToMainRoomReqSchema, {
     roomId: currentRoom.roomId,
     userId: state.session.currentUser?.userId ?? '',
-    parentRoomId: meta.parentRoomId,
+    parentRoomId: parseParentRoomId(meta.parentRoomId),
   });
 
   return store
