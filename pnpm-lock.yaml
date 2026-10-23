@@ -60,8 +60,8 @@ importers:
         specifier: 0.8.3
         version: 0.8.3
       i18next:
-        specifier: 26.5.5
-        version: 26.5.5(typescript@7.0.2)
+        specifier: 26.5.6
+        version: 26.5.6(typescript@7.0.2)
       i18next-browser-languagedetector:
         specifier: 8.2.1
         version: 8.2.1
@@ -84,8 +84,8 @@ importers:
         specifier: 0.12.0
         version: 0.12.0
       plugnmeet-protocol-js:
-        specifier: 1.6.2
-        version: 1.6.2(@bufbuild/protobuf@2.16.0)
+        specifier: 1.6.3-1
+        version: 1.6.3-1(@bufbuild/protobuf@2.16.0)
       react:
         specifier: 19.3.1
         version: 19.3.1
@@ -108,8 +108,8 @@ importers:
         specifier: 5.3.3
         version: 5.3.3(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react-i18next:
-        specifier: 17.1.1
-        version: 17.1.1(i18next@26.5.5(typescript@7.0.2))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)
+        specifier: 17.1.3
+        version: 17.1.3(i18next@26.5.6(typescript@7.0.2))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)
       react-player:
         specifier: 3.4.0
         version: 3.4.0(@svta/cml-cta@1.0.6(@svta/cml-structured-field-values@1.1.3(@svta/cml-utils@1.5.0))(@svta/cml-utils@1.5.0))(@svta/cml-structured-field-values@1.1.3(@svta/cml-utils@1.5.0))(@svta/cml-utils@1.5.0)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -2930,8 +2930,8 @@ packages:
     resolution: {integrity: sha512-nG9OQKvUsPiTVUBg1rCGmvmWhzxC9GOxVbGdTYyejHVMSUjutt1hiBNVSzhB/ZE7keL9Xkb880kUfhDovV5T5g==}
     engines: {node: '>=18'}
 
-  i18next@26.5.5:
-    resolution: {integrity: sha512-txdaNOlnZCdiTMSlEzl5hUJU8TC9R4J/RCR1G7XrDPbWT2t3mR142QPz84ZuZeXDt3yq+9zmsdPiakxYtmp3fw==}
+  i18next@26.5.6:
+    resolution: {integrity: sha512-GFWrDwGmYhOQS3bKvjA2Ir2ob9ScEdyY1UbeQJ10jyVACGQ6XxmDYqC/lxEj/IPEJlPQYNRnYffDET6TM8mnFg==}
     peerDependencies:
       typescript: ^5 || ^6 || ^7
     peerDependenciesMeta:
@@ -3400,8 +3400,8 @@ packages:
   player.style@0.3.5:
     resolution: {integrity: sha512-hknPiLjNtJP5zM0vCVXsl3Pef+uQnecYg8X/1vjd/Y3TdAgs/zxhck02SFTxRSckaObKemP5tUT8wTH7ByUmnw==}
 
-  plugnmeet-protocol-js@1.6.2:
-    resolution: {integrity: sha512-xxuk6Zteh/tDvW/xHbmj+kAZcR3yqpBvqSUhYbf2OcMz/l37vjxosE9F5VWVvvcR+tdAOI6PAFUnvxm8n0liBg==}
+  plugnmeet-protocol-js@1.6.3-1:
+    resolution: {integrity: sha512-cfUa2rNN2sEWma0DBKp7FSygjDwsJh2KKirkIIevlzjvLQVcxApcIznelhkK7wIFfuxdklNZz8jHBTrgu0LG6A==}
     peerDependencies:
       '@bufbuild/protobuf': ^2.13.0
 
@@ -3576,8 +3576,8 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  react-i18next@17.1.1:
-    resolution: {integrity: sha512-Q76xpzxrZNcqhB7M31Ns7isulGOlmhURqRsJOGlYgJJCyoy1pMq6tRl8KQycGNNY1vPaxbIdrogrqY9nkb+SEA==}
+  react-i18next@17.1.3:
+    resolution: {integrity: sha512-XfaTqU09NPuBDuADQ8TEPbE0Goc2Gh6FHu0qvdFWfOWCdGQWRxRY2Uo5tDPtGBdzu4COXp0LQCkQIYa0IhJXlA==}
     peerDependencies:
       i18next: '>= 26.2.0'
       react: '>= 16.8.0'
@@ -6691,7 +6691,7 @@ snapshots:
 
   i18next-http-backend@4.0.4: {}
 
-  i18next@26.5.5(typescript@7.0.2):
+  i18next@26.5.6(typescript@7.0.2):
     optionalDependencies:
       typescript: 7.0.2
 
@@ -7087,7 +7087,7 @@ snapshots:
     transitivePeerDependencies:
       - react
 
-  plugnmeet-protocol-js@1.6.2(@bufbuild/protobuf@2.16.0):
+  plugnmeet-protocol-js@1.6.3-1(@bufbuild/protobuf@2.16.0):
     dependencies:
       '@bufbuild/protobuf': 2.16.0
 
@@ -7327,11 +7327,11 @@ snapshots:
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
 
-  react-i18next@17.1.1(i18next@26.5.5(typescript@7.0.2))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2):
+  react-i18next@17.1.3(i18next@26.5.6(typescript@7.0.2))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2):
     dependencies:
       '@babel/runtime': 7.29.10
       html-parse-stringify: 4.0.1
-      i18next: 26.5.5(typescript@7.0.2)
+      i18next: 26.5.6(typescript@7.0.2)
       react: 19.3.1
       use-sync-external-store: 1.7.0(react@19.3.1)
     optionalDependencies:
