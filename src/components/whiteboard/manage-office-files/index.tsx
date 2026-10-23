@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
-import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
+import type { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import { debounce } from 'es-toolkit';
 import { useTranslation } from 'react-i18next';
 

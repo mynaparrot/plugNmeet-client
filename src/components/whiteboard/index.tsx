@@ -18,10 +18,9 @@ import {
 } from '@excalidraw/excalidraw/types';
 import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 import { SetViewportOptions } from '@excalidraw/excalidraw/viewport';
+import { RemoteExcalidrawElement } from '@excalidraw/excalidraw/data/reconcile';
 
-// @ts-ignore
 import '@excalidraw/excalidraw/index.css';
-// @ts-ignore
 import './style.css';
 
 import ManageOfficeFilesModal from './manage-office-files';
@@ -69,7 +68,6 @@ import ToolbarBar from '../../assets/Icons/ToolbarBar';
 import PdfIcon from '../../assets/Icons/PdfIcon';
 import { RefreshIcon } from '../../assets/Icons/RefreshIcon';
 import { sleep } from '../../helpers/utils';
-import { RemoteExcalidrawElement } from '@excalidraw/excalidraw/data/reconcile';
 
 interface WhiteboardProps {
   onReadyExcalidrawAPI?: (excalidrawAPI: ExcalidrawImperativeAPI) => void;
@@ -664,18 +662,22 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     >
       {isPresenter && excalidrawAPI && (
         <>
-          <ManageOfficeFilesModal
-            roomId={roomId}
-            excalidrawAPI={excalidrawAPI}
-            onClose={() => setIsOpenManageFilesUI(false)}
-            isOpen={isOpenManageFilesUI}
-            showSwitchingWarning={showSwitchingWarning}
-          />
-          <ExportPDFModal
-            excalidrawAPI={excalidrawAPI}
-            onClose={() => setIsOpenExportPdfUI(false)}
-            isOpen={isOpenExportPdfUI}
-          />
+          {isOpenManageFilesUI && (
+            <ManageOfficeFilesModal
+              roomId={roomId}
+              excalidrawAPI={excalidrawAPI}
+              onClose={() => setIsOpenManageFilesUI(false)}
+              isOpen={isOpenManageFilesUI}
+              showSwitchingWarning={showSwitchingWarning}
+            />
+          )}
+          {isOpenExportPdfUI && (
+            <ExportPDFModal
+              excalidrawAPI={excalidrawAPI}
+              onClose={() => setIsOpenExportPdfUI(false)}
+              isOpen={isOpenExportPdfUI}
+            />
+          )}
         </>
       )}
       <div dir="ltr" className="h-full w-full">

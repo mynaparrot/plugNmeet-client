@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
-import DisplayExternalLink from '../../display-external-link';
+import React, { Suspense, useMemo } from 'react';
 import { useCloseSidePanelsOnShow } from './useCloseSidePanelsOnShow';
+
+const DisplayExternalLink = React.lazy(() => import('../../display-external-link'));
 
 export const useDisplayExternalLink = (
   isActiveDisplayExternalLink: boolean,
@@ -28,7 +29,11 @@ export const useDisplayExternalLink = (
   return useMemo(() => {
     return (
       <div className={`${shouldShow ? 'w-full block' : 'hidden'}`}>
-        <DisplayExternalLink />
+        {shouldShow ? (
+          <Suspense fallback={null}>
+            <DisplayExternalLink />
+          </Suspense>
+        ) : null}
       </div>
     );
   }, [shouldShow]);

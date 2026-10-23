@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import React, { Suspense, useMemo } from 'react';
 
 import { useAppSelector } from '../../../store';
-import TranslationTranscription from '../../translation-transcription';
+
+const TranslationTranscription = React.lazy(() => import('../../translation-transcription'));
 
 export const useTranslationTranscription = () => {
   const isEnabled = useAppSelector(
@@ -12,7 +13,11 @@ export const useTranslationTranscription = () => {
 
   return useMemo(() => {
     if (isEnabled) {
-      return <TranslationTranscription />;
+      return (
+        <Suspense fallback={null}>
+          <TranslationTranscription />
+        </Suspense>
+      );
     }
     return null;
   }, [isEnabled]);

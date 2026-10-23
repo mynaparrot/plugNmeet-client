@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
 import Draggable from 'react-draggable';
 import { useTranslation } from 'react-i18next';
 
@@ -77,10 +77,10 @@ const SharedNotepad = () => {
             className="h-[calc(100%-80px)] w-full max-w-[550px] max-h-[500px] relative pointer-events-auto rounded-xl"
             ref={nodeRef}
           >
-            <div className="inner w-full h-full pt-[45px] relative bg-white dark:bg-[#1f1f1f] rounded-xl">
+            <div className="inner w-full h-full pt-[45px] relative bg-white dark:bg-[#1f1f1f] rounded-xl border border-Gray-200 dark:border-Gray-700 shadow-virtualPOP">
               <div
                 id="draggable-h1"
-                className="absolute top-0 w-full flex items-center justify-between cursor-move text-base font-medium leading-7 text-Gray-950 dark:text-white px-4 py-2 border border-Gray-100 dark:border-Gray-800! bg-white dark:bg-[#1f1f1f] rounded-t-xl"
+                className="absolute top-0 w-full flex items-center justify-between cursor-move text-base font-medium leading-7 text-Gray-950 dark:text-white px-4 py-2 border-b border-Gray-200 dark:border-Gray-700 bg-white dark:bg-[#1f1f1f] rounded-t-xl"
               >
                 <span>{t('footer.modal.shared-notepad')}</span>
                 <div className="flex items-center gap-2">

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { VideoQuality } from 'livekit-client';
-import { Theme } from '@excalidraw/excalidraw/element/types';
+import type { Theme } from '@excalidraw/excalidraw/element/types';
 
 import {
   ColumnCameraPosition,
@@ -16,7 +16,7 @@ import {
   UserNotification,
   VideoObjectFit,
 } from './interfaces/roomSettings';
-import { AzureTokenInfo } from '../../components/translation-transcription/helpers/apiConnections';
+import type { AzureTokenInfo } from '../../components/translation-transcription/helpers/apiConnections';
 import { DB_STORE_NAMES, idbStore } from '../../helpers/libs/idb';
 import { BackgroundConfig } from '../../helpers/libs/TwilioTrackProcessor';
 

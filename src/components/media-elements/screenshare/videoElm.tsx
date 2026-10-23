@@ -3,7 +3,6 @@ import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
-// @ts-ignore not error
 import './style.css';
 import { store, useAppSelector } from '../../../store';
 import { participantsSelector } from '../../../store/slices/participantSlice';

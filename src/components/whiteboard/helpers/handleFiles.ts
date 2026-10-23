@@ -1,5 +1,5 @@
-import { BinaryFileData, ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
-import {
+import type { BinaryFileData, ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
+import type {
   ExcalidrawImageElement,
   OrderedExcalidrawElement,
 } from '@excalidraw/excalidraw/element/types';

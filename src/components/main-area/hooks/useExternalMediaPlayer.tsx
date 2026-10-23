@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
-import ExternalMediaPlayer from '../../external-media-player';
+import React, { Suspense, useMemo } from 'react';
 import { useCloseSidePanelsOnShow } from './useCloseSidePanelsOnShow';
+
+const ExternalMediaPlayer = React.lazy(() => import('../../external-media-player'));
 
 export const useExternalMediaPlayer = (
   isActiveExternalMediaPlayer: boolean,
@@ -20,7 +21,11 @@ export const useExternalMediaPlayer = (
       <div
         className={`${shouldShow ? 'Div-external-media-player w-full flex items-center justify-center' : 'hidden'}`}
       >
-        <ExternalMediaPlayer />
+        {shouldShow ? (
+          <Suspense fallback={null}>
+            <ExternalMediaPlayer />
+          </Suspense>
+        ) : null}
       </div>
     );
   }, [shouldShow]);

@@ -1,11 +1,15 @@
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import { UploadedFileMergeReqSchema, UploadedFileResSchema } from 'plugnmeet-protocol-js';
-import {
+import type {
   ExcalidrawElement,
   ExcalidrawImageElement,
   NonDeletedExcalidrawElement,
 } from '@excalidraw/excalidraw/element/types';
-import { AppState, BinaryFileData, ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
+import type {
+  AppState,
+  BinaryFileData,
+  ExcalidrawImperativeAPI,
+} from '@excalidraw/excalidraw/types';
 import { toast, Id } from 'react-toastify';
 import { exportScene } from '@excalidraw/excalidraw';
 

@@ -1,4 +1,4 @@
-import { NormalizedZoomValue } from '@excalidraw/excalidraw/types';
+import type { NormalizedZoomValue } from '@excalidraw/excalidraw/types';
 import { DataMsgBodyType } from 'plugnmeet-protocol-js';
 import { isEqual } from 'es-toolkit';
 

@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import React, { Suspense, useMemo } from 'react';
 
 import { useAppSelector } from '../../../store';
-import InsightsAiTextChat from '../../insights-ai/ai-text-chat/display';
+
+const InsightsAiTextChat = React.lazy(() => import('../../insights-ai/ai-text-chat/display'));
 
 export const useInsightsAiTextChat = () => {
   const isEnabled = useAppSelector(
@@ -12,7 +13,11 @@ export const useInsightsAiTextChat = () => {
 
   return useMemo(() => {
     if (isEnabled) {
-      return <InsightsAiTextChat />;
+      return (
+        <Suspense fallback={null}>
+          <InsightsAiTextChat />
+        </Suspense>
+      );
     }
     return null;
   }, [isEnabled]);

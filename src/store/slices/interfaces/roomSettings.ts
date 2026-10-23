@@ -1,8 +1,8 @@
 import { VideoQuality } from 'livekit-client';
-import { Theme } from '@excalidraw/excalidraw/element/types';
+import type { Theme } from '@excalidraw/excalidraw/element/types';
 import type { TypeOptions } from 'react-toastify';
 
-import { AzureTokenInfo } from '../../../components/translation-transcription/helpers/apiConnections';
+import type { AzureTokenInfo } from '../../../components/translation-transcription/helpers/apiConnections';
 import { BackgroundConfig } from '../../../helpers/libs/TwilioTrackProcessor';
 
 export enum VideoObjectFit {

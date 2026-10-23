@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
+import type { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 
 import { useAppSelector } from '../../../../store';
 import { addPreloadedLibraryItems } from '../utils';

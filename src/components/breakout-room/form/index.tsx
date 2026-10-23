@@ -9,7 +9,7 @@ import {
 import { create } from '@bufbuild/protobuf';
 
 import RoomNumberSelector from './roomNumberSelector';
-import RoomBox from './roomBox';
+import DndRoomBox from './dndRoomBox';
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { RoomType, UserType } from './types';
 import { BreakoutRoomMessage } from '..';
@@ -320,21 +320,12 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
         </div>
       </div>
 
-      <div className="draggable-room-area overflow-hidden clear-both flex flex-wrap">
-        {roomList.map((room) => {
-          return (
-            <div className="room-box-wrap w-[calc(50%-6px)] m-[3px] sm:m-0 sm:w-auto" key={room.id}>
-              <RoomBox
-                roomId={room.id}
-                name={room.name}
-                users={users.filter((user) => user.roomId === room.id)}
-                customTitles={customTitles}
-                setCustomTitles={setCustomTitles}
-              />
-            </div>
-          );
-        })}
-      </div>
+      <DndRoomBox
+        roomList={roomList}
+        users={users}
+        customTitles={customTitles}
+        setCustomTitles={setCustomTitles}
+      />
 
       {isWhiteboardEnabled && (
         <WhiteboardShareSection

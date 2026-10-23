@@ -23,7 +23,6 @@ import { filterSuggestionItems } from '@blocknote/core/extensions';
 import '@blocknote/core/fonts/inter.css';
 // @ts-ignore
 import '@blocknote/mantine/style.css';
-// @ts-ignore
 import './notepad.css';
 
 import { useTranslation } from 'react-i18next';
