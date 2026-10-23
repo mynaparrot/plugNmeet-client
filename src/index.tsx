@@ -2,13 +2,9 @@ import React, { StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider as ReduxProvider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
-import { HTML5Backend } from 'react-dnd-html5-backend';
-import { DndProvider } from 'react-dnd';
 import { useTranslation } from 'react-i18next';
 
-// @ts-ignore
 import 'react-toastify/dist/ReactToastify.css';
-// @ts-ignore
 import './styles/index.css';
 import './helpers/i18n';
 
@@ -28,12 +24,10 @@ if (container) {
   root.render(
     <StrictMode>
       <ReduxProvider store={store}>
-        <DndProvider backend={HTML5Backend}>
-          <Suspense fallback={<Loading text="" />}>
-            <App />
-          </Suspense>
-          <ToastWrapper />
-        </DndProvider>
+        <Suspense fallback={<Loading text="" />}>
+          <App />
+        </Suspense>
+        <ToastWrapper />
       </ReduxProvider>
     </StrictMode>,
   );

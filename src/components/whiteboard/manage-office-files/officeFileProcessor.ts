@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
+import type { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import { AnalyticsEvents, AnalyticsEventType, RoomUploadedFileType } from 'plugnmeet-protocol-js';
 
 import { uploadResumableFile } from '../../../helpers/fileUpload';

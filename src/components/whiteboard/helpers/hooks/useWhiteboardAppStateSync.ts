@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import {
+import type {
   AppState,
   ExcalidrawImperativeAPI,
   NormalizedZoomValue,
 } from '@excalidraw/excalidraw/types';
-import { Theme } from '@excalidraw/excalidraw/element/types';
+import type { Theme } from '@excalidraw/excalidraw/element/types';
 import { debounce } from 'es-toolkit';
 
 import { useAppSelector } from '../../../../store';

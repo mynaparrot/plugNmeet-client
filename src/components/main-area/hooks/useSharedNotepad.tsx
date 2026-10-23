@@ -1,7 +1,9 @@
-import { useMemo } from 'react';
+import React, { Suspense, useMemo } from 'react';
 
 import { useAppSelector } from '../../../store';
-import SharedNotepadElement from '../../shared-notepad';
+import LazyFeatureFallback from '../lazyFeatureFallback';
+
+const SharedNotepadElement = React.lazy(() => import('../../shared-notepad'));
 
 export const useSharedNotepad = () => {
   const isActiveSharedNotepad = useAppSelector(
@@ -10,7 +12,11 @@ export const useSharedNotepad = () => {
 
   return useMemo(() => {
     if (isActiveSharedNotepad) {
-      return <SharedNotepadElement />;
+      return (
+        <Suspense fallback={<LazyFeatureFallback label="footer.modal.shared-notepad" />}>
+          <SharedNotepadElement />
+        </Suspense>
+      );
     }
     return null;
   }, [isActiveSharedNotepad]);

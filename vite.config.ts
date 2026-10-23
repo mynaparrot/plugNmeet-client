@@ -26,6 +26,7 @@ export default defineConfig({
     sourcemap: !isProduction,
     assetsInlineLimit: 0,
     chunkSizeWarningLimit: 6000,
+    cssCodeSplit: false,
     rolldownOptions: {
       output: {
         entryFileNames: 'assets/js/main-module.[hash].js',
@@ -76,10 +77,7 @@ function assetFileNames(names: string[]) {
     return 'assets/fonts/[name][extname]';
   }
   if (name.endsWith('.css')) {
-    if (name.startsWith('index.')) {
-      return 'assets/css/main.[hash][extname]';
-    }
-    return 'assets/css/[name].[hash][extname]';
+    return 'assets/css/main.[hash][extname]';
   }
   if (name.endsWith('.ico')) {
     return 'assets/imgs/[name][extname]';
@@ -90,6 +88,7 @@ function assetFileNames(names: string[]) {
 const vendorChunkMap: Record<string, string[]> = {
   mermaid: ['mermaid'],
   excalidraw: ['@excalidraw'],
+  blocknote: ['@blocknote', '@tiptap', 'prosemirror', 'lib0'],
   'react-libs': [
     'react-dnd',
     'dnd-core',
@@ -98,6 +97,8 @@ const vendorChunkMap: Record<string, string[]> = {
     'react-hotkeys-hook',
     'react-draggable',
     'react-player',
+    'marked',
+    'sanitize-html',
     '@headlessui',
     'i18next',
   ],

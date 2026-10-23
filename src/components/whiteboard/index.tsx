@@ -21,7 +21,6 @@ import { SetViewportOptions } from '@excalidraw/excalidraw/viewport';
 
 // @ts-ignore
 import '@excalidraw/excalidraw/index.css';
-// @ts-ignore
 import './style.css';
 
 import ManageOfficeFilesModal from './manage-office-files';
@@ -664,18 +663,22 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     >
       {isPresenter && excalidrawAPI && (
         <>
-          <ManageOfficeFilesModal
-            roomId={roomId}
-            excalidrawAPI={excalidrawAPI}
-            onClose={() => setIsOpenManageFilesUI(false)}
-            isOpen={isOpenManageFilesUI}
-            showSwitchingWarning={showSwitchingWarning}
-          />
-          <ExportPDFModal
-            excalidrawAPI={excalidrawAPI}
-            onClose={() => setIsOpenExportPdfUI(false)}
-            isOpen={isOpenExportPdfUI}
-          />
+          {isOpenManageFilesUI && (
+            <ManageOfficeFilesModal
+              roomId={roomId}
+              excalidrawAPI={excalidrawAPI}
+              onClose={() => setIsOpenManageFilesUI(false)}
+              isOpen={isOpenManageFilesUI}
+              showSwitchingWarning={showSwitchingWarning}
+            />
+          )}
+          {isOpenExportPdfUI && (
+            <ExportPDFModal
+              excalidrawAPI={excalidrawAPI}
+              onClose={() => setIsOpenExportPdfUI(false)}
+              isOpen={isOpenExportPdfUI}
+            />
+          )}
         </>
       )}
       <div dir="ltr" className="h-full w-full">

@@ -1,6 +1,6 @@
 import { convertToExcalidrawElements, hashElementsVersion } from '@excalidraw/excalidraw';
-import { ExcalidrawImperativeAPI, NormalizedZoomValue } from '@excalidraw/excalidraw/types';
-import {
+import type { ExcalidrawImperativeAPI, NormalizedZoomValue } from '@excalidraw/excalidraw/types';
+import type {
   ExcalidrawElement,
   ExcalidrawImageElement,
   OrderedExcalidrawElement,

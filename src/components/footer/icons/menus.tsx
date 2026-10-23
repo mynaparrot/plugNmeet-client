@@ -1,19 +1,21 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Menu, MenuButton, MenuItems } from '@headlessui/react';
 import { useTranslation } from 'react-i18next';
 
 import { useAppSelector } from '../../../store';
+import { FooterMenuIconSVG } from '../../../assets/Icons/FooterMenuIconSVG';
+import AdminMenus from './menus/adminMenus';
+import IconsInMenu from './menus/iconsInMenu';
+
 import LockSettingsModal from '../modals/lockSettingsModal';
 import RtmpModal from '../modals/rtmpModal';
 import ManageWaitingRoom from '../../waiting-room';
-import BreakoutRoom from '../../breakout-room';
-import { FooterMenuIconSVG } from '../../../assets/Icons/FooterMenuIconSVG';
 import ExternalMediaPlayerModal from '../../external-media-player/modal';
 import DisplayExternalLinkModal from '../../display-external-link/modal';
-import AdminMenus from './menus/adminMenus';
-import IconsInMenu from './menus/iconsInMenu';
 import TranslationTranscriptionSettingModal from '../../translation-transcription/settingModal';
 import InsightsAiSettingsModal from '../../insights-ai';
+
+const BreakoutRoom = React.lazy(() => import('../../breakout-room'));
 
 interface MenusIconProps {
   isAdmin: boolean;
@@ -81,7 +83,11 @@ const MenusIcon = ({ isAdmin }: MenusIconProps) => {
       {showRtmpModal && <RtmpModal />}
       {showExternalMediaPlayerModal && <ExternalMediaPlayerModal />}
       {showManageWaitingRoomModal && <ManageWaitingRoom />}
-      {showManageBreakoutRoomModal && <BreakoutRoom />}
+      {showManageBreakoutRoomModal && (
+        <Suspense fallback={null}>
+          <BreakoutRoom />
+        </Suspense>
+      )}
       {showDisplayExternalLinkModal && <DisplayExternalLinkModal />}
       {showSpeechSettingsModal && <TranslationTranscriptionSettingModal />}
       {showInsightsAISettingsModal && <InsightsAiSettingsModal />}

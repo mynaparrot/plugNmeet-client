@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
+import type { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import { toast } from 'react-toastify';
 
 import { store } from '../../../../store';

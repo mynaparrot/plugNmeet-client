@@ -1,9 +1,11 @@
-import { useEffect, useMemo } from 'react';
+import React, { Suspense, useEffect, useMemo } from 'react';
 import { debounce } from 'es-toolkit';
 
 import { useAppDispatch, useAppSelector } from '../../../store';
-import Whiteboard from '../../whiteboard';
 import { triggerRefreshWhiteboard } from '../../../store/slices/whiteboard';
+import LazyFeatureFallback from '../lazyFeatureFallback';
+
+const Whiteboard = React.lazy(() => import('../../whiteboard'));
 
 export const useWhiteboard = (
   isActiveWhiteboard: boolean,
@@ -38,7 +40,11 @@ export const useWhiteboard = (
     const whiteboardWillBeVisible = !isActiveScreenShare && isActiveWhiteboard;
 
     if (whiteboardWillBeVisible) {
-      return <Whiteboard />;
+      return (
+        <Suspense fallback={<LazyFeatureFallback label="whiteboard.whiteboard-area" />}>
+          <Whiteboard />
+        </Suspense>
+      );
     }
     return null;
   }, [isActiveScreenShare, isActiveWhiteboard]);

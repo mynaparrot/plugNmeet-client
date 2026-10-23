@@ -10,8 +10,8 @@ import {
   updateIsWebcamMuted,
   updateShowVideoShareModal,
 } from '../../../store/slices/bottomIconsActivitySlice';
-import ShareWebcamModal from '../modals/webcam';
 import WebcamMenu from './webcam-menu';
+import ShareWebcamModal from '../modals/webcam';
 import {
   addVideoDevices,
   updateSelectedVideoDevice,
