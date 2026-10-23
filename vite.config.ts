@@ -32,7 +32,6 @@ export default defineConfig({
         entryFileNames: 'assets/js/main-module.[hash].js',
         chunkFileNames: 'assets/chunks/[name].[hash].js',
         assetFileNames: ({ names }) => assetFileNames(names),
-        manualChunks: manualChunks,
       },
       watch: {
         exclude: 'node_modules/**',
@@ -83,61 +82,6 @@ function assetFileNames(names: string[]) {
     return 'assets/imgs/[name][extname]';
   }
   return 'assets/js/[name][extname]';
-}
-
-const vendorChunkMap: Record<string, string[]> = {
-  mermaid: ['mermaid'],
-  excalidraw: ['@excalidraw'],
-  blocknote: ['@blocknote', '@tiptap', 'prosemirror', 'lib0'],
-  'react-libs': [
-    'react-dnd',
-    'dnd-core',
-    'react-cool-virtual',
-    'react-virtual',
-    'react-hotkeys-hook',
-    'react-draggable',
-    'react-player',
-    'marked',
-    'sanitize-html',
-    '@headlessui',
-    'i18next',
-  ],
-  pnm: ['plugnmeet-protocol', '@bufbuild', 'axios', '@nats-io', 'redux'],
-};
-
-function manualChunks(id: string) {
-  if (!id.includes('node_modules')) {
-    return null;
-  }
-
-  // Ensure CSS from dependencies is grouped with vendor
-  if (id.endsWith('.css')) {
-    return 'vendor';
-  }
-
-  // Grouping logic based on path
-  for (const chunk in vendorChunkMap) {
-    if (
-      vendorChunkMap[chunk].some(
-        (pkg) =>
-          id.includes(`/node_modules/${pkg}/`) || new RegExp(`/\\.pnpm/${pkg}(@|/)`).test(id),
-      )
-    ) {
-      return chunk;
-    }
-  }
-
-  // Group React ecosystem
-  if (
-    id.includes('/node_modules/react/') ||
-    id.includes('/node_modules/react-dom/') ||
-    id.includes('/.pnpm/react@') ||
-    id.includes('/.pnpm/react-dom@')
-  ) {
-    return 'react';
-  }
-
-  return 'vendor';
 }
 
 function getStaticFilesToCopy(): ViteStaticCopyOptions {
