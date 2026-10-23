@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PollInfo } from 'plugnmeet-protocol-js';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
@@ -6,6 +6,7 @@ import clsx from 'clsx';
 
 import { store } from '../../../store';
 import PollActionsMenu from './pollActionsMenu';
+import PollCountdown from './pollCountdown';
 import PollForm from './voteForm';
 import {
   useGetPollResponsesDetailsQuery,
@@ -163,14 +164,17 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
             </div>
           )}
         </div>
-        <div className="menu relative -me-4">
-          {isAdmin && pollDataWithOption && (
-            <PollActionsMenu
-              isRunning={item.isRunning}
-              setViewDetails={setViewDetails}
-              pollDataWithOption={pollDataWithOption}
-            />
-          )}
+        <div className="right flex items-center gap-1">
+          <PollCountdown expiresAt={Number(item.expiresAt ?? 0)} isRunning={item.isRunning} />
+          <div className="menu relative -me-4">
+            {isAdmin && pollDataWithOption && (
+              <PollActionsMenu
+                isRunning={item.isRunning}
+                setViewDetails={setViewDetails}
+                pollDataWithOption={pollDataWithOption}
+              />
+            )}
+          </div>
         </div>
       </div>
       <div className="bg-white dark:bg-dark-primary px-4 py-4 border border-Gray-200 dark:border-Gray-700 shadow-button-shadow dark:shadow-none rounded-xl">
@@ -260,4 +264,4 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
   );
 };
 
-export default PollItem;
+export default memo(PollItem);

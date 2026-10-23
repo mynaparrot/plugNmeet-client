@@ -14,13 +14,6 @@ import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 import { LoadingIcon } from '../../../assets/Icons/Loading';
 import { CheckMarkIconSVG } from '../../../assets/Icons/CheckMarkIconSVG';
 
-// formatCountdown renders remaining seconds as mm:ss for the expiry countdown
-const formatCountdown = (secs: number) => {
-  const m = Math.floor(secs / 60);
-  const s = secs % 60;
-  return `${m}:${String(s).padStart(2, '0')}`;
-};
-
 interface PollFormProps {
   pollDataWithOption: PollDataWithOption;
   isRunning: boolean;
@@ -33,23 +26,23 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
   const conn = getNatsConn();
   const currentUser = useMemo(() => store.getState().session.currentUser, []);
 
-  // expiry countdown for fixed-duration polls (expiresAt 0 = no limit)
+  // header owns the visible countdown; the form only gates expired submissions
   const expiresAt = pollDataWithOption.expiresAt ?? 0;
-  const [remaining, setRemaining] = useState<number>(() =>
-    expiresAt > 0 ? Math.max(0, expiresAt - Math.floor(Date.now() / 1000)) : 0,
-  );
-  // tick once per second; interval is cleaned up on unmount
+  const [locallyClosed, setLocallyClosed] = useState<boolean>(false);
   useEffect(() => {
     if (!isRunning || expiresAt <= 0) {
+      setLocallyClosed(false);
       return;
     }
-    const tick = () => setRemaining(Math.max(0, expiresAt - Math.floor(Date.now() / 1000)));
-    tick();
-    const interval = setInterval(tick, 1000);
-    return () => clearInterval(interval);
+    // one-shot check near expiry; the server's POLL_CLOSED confirms
+    const msLeft = expiresAt * 1000 - Date.now();
+    if (msLeft <= 0) {
+      setLocallyClosed(true);
+      return;
+    }
+    const timeout = setTimeout(() => setLocallyClosed(true), msLeft);
+    return () => clearTimeout(timeout);
   }, [isRunning, expiresAt]);
-  // locally treat an expired poll as closed; the server's POLL_CLOSED confirms
-  const locallyClosed = isRunning && expiresAt > 0 && remaining <= 0;
 
   const [voted, setVoted] = useState<boolean>(false);
   const { data: userVoteData } = useGetUserSelectedOptionQuery({
@@ -220,19 +213,6 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
             className={'inline w-10 h-10 me-3 text-Gray-200 dark:text-Gray-800 animate-spin'}
             fillColor={'#004D90'}
           />
-        </div>
-      )}
-      {isRunning && !voted && expiresAt > 0 && (
-        <div className="time-remaining flex items-center justify-end mt-3">
-          <span
-            className="border border-Gray-200 dark:border-Gray-700 bg-Gray-50 dark:bg-dark-secondary2 shadow-button-shadow dark:shadow-none rounded-full h-[22px] px-1.5 text-xs text-Gray-700 dark:text-dark-text font-medium flex items-center"
-            aria-label={t('polls.time-remaining')}
-            title={t('polls.time-remaining')}
-            // plain mm:ss digits; keep the colon order stable in RTL layouts
-            dir="ltr"
-          >
-            {formatCountdown(remaining)}
-          </span>
         </div>
       )}
       {!isRunning || voted || selectedOptions.size === 0 ? null : (
