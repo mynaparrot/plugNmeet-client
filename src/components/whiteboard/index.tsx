@@ -18,8 +18,8 @@ import {
 } from '@excalidraw/excalidraw/types';
 import { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 import { SetViewportOptions } from '@excalidraw/excalidraw/viewport';
+import { RemoteExcalidrawElement } from '@excalidraw/excalidraw/data/reconcile';
 
-// @ts-ignore
 import '@excalidraw/excalidraw/index.css';
 import './style.css';
 
@@ -68,7 +68,6 @@ import ToolbarBar from '../../assets/Icons/ToolbarBar';
 import PdfIcon from '../../assets/Icons/PdfIcon';
 import { RefreshIcon } from '../../assets/Icons/RefreshIcon';
 import { sleep } from '../../helpers/utils';
-import { RemoteExcalidrawElement } from '@excalidraw/excalidraw/data/reconcile';
 
 interface WhiteboardProps {
   onReadyExcalidrawAPI?: (excalidrawAPI: ExcalidrawImperativeAPI) => void;
