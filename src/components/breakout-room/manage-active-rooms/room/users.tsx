@@ -17,6 +17,7 @@ import {
   useReInviteMutation,
 } from '../../../../store/services/breakoutRoomApi';
 import { store } from '../../../../store';
+import { parseParentRoomId } from '../../utils/breakoutRoom';
 
 interface IBreakoutRoomUsersProps {
   users: Array<BreakoutRoomUser>;
@@ -62,8 +63,11 @@ const BreakoutRoomUsers = ({
   const moveUserTo = (name: string, userId: string, targetRoomId: string, targetTitle: string) => {
     // The server resolves the parent room from the request's token, so passing
     // the breakout room's roomId here is harmless; we still pass the parent id.
+    // metadata carries the parent reference as `<roomId>:<tableId>`, so only
+    // the plain parent room id may be sent.
     const currentRoom = store.getState().session.currentRoom;
-    const roomId = currentRoom?.metadata?.parentRoomId || currentRoom?.roomId || '';
+    const roomId =
+      parseParentRoomId(currentRoom?.metadata?.parentRoomId) || currentRoom?.roomId || '';
 
     moveUser(
       create(MoveBreakoutRoomUserReqSchema, {
@@ -105,9 +109,11 @@ const BreakoutRoomUsers = ({
   const reInviteUser = (name: string, userId: string) => {
     // The server resolves the parent room from the request's token, so passing
     // the breakout room's roomId here is harmless; we still pass the parent id
-    // for clarity.
+    // for clarity. metadata carries the parent reference as `<roomId>:<tableId>`,
+    // so only the plain parent room id may be sent.
     const currentRoom = store.getState().session.currentRoom;
-    const roomId = currentRoom?.metadata?.parentRoomId || currentRoom?.roomId || '';
+    const roomId =
+      parseParentRoomId(currentRoom?.metadata?.parentRoomId) || currentRoom?.roomId || '';
 
     reInvite(create(ReInviteBreakoutRoomReqSchema, { breakoutRoomId, userId, roomId }))
       .unwrap()

@@ -11,7 +11,7 @@ import {
   useJoinRoomMutation,
 } from '../../../store/services/breakoutRoomApi';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
-import { buildAccessTokenUrl } from '../utils/breakoutRoom';
+import { buildAccessTokenUrl, parseParentRoomId } from '../utils/breakoutRoom';
 import { CloseIconSVG } from '../../../assets/Icons/CloseIconSVG';
 import { LoadingIcon } from '../../../assets/Icons/Loading';
 import { getNatsConn } from '../../../helpers/nats';
@@ -70,7 +70,10 @@ const RoomsPanel = () => {
   };
 
   const isCurrentRoom = (roomId: string) => {
-    return `${currentRoom.metadata?.parentRoomId}-${roomId}` === currentRoom.roomId;
+    // metadata carries the parent reference as `<roomId>:<tableId>`; compare
+    // using the plain parent room id only.
+    const parentRoomId = parseParentRoomId(currentRoom.metadata?.parentRoomId);
+    return !!parentRoomId && `${parentRoomId}-${roomId}` === currentRoom.roomId;
   };
 
   return (
