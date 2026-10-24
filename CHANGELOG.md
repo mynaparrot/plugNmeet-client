@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.5.5](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.4...v2.5.5) (2026-10-24)
+
+
+### Bug Fixes
+
+* `exportScene` replaces the removed `exportToCanvas` in latest version ([1bc6c4d](https://github.com/mynaparrot/plugNmeet-client/commit/1bc6c4d8aca9a35afffe6d03697a309d9df50baa))
+* **audio:** by default enable Noise suppression ([11156b6](https://github.com/mynaparrot/plugNmeet-client/commit/11156b69ed92aba20912fcb6c5c77b0d15510968))
+* **audio:** if the `sampleRate` isn't supported then fallback to default `GTCRN` sample rate `16 kHz` ([aaa3413](https://github.com/mynaparrot/plugNmeet-client/commit/aaa341328f58fa2b4c75e584a128c84400665663))
+* **breakout-room:** attribute breakout-room usage costs to the parent room ([#1144](https://github.com/mynaparrot/plugNmeet-client/issues/1144)) ([7f2a587](https://github.com/mynaparrot/plugNmeet-client/commit/7f2a58757939e266985f92c0f9f4d42433d1c952))
+* bump proto ([ccefb00](https://github.com/mynaparrot/plugNmeet-client/commit/ccefb004777728a39729acca2d5ec2bbccd1d8c2))
+* default noiseSuppression is true now + update tests ([bb13704](https://github.com/mynaparrot/plugNmeet-client/commit/bb13704c78d787f3915cb8a78a165deb3c5e289f))
+* lazy-load heavy features to shrink first-load bundle ([#1145](https://github.com/mynaparrot/plugNmeet-client/issues/1145)) ([cf9633d](https://github.com/mynaparrot/plugNmeet-client/commit/cf9633d1a951d3604c0d6e62cb3b1054c6e5692e))
+* new Crowdin updates ([#1140](https://github.com/mynaparrot/plugNmeet-client/issues/1140)) ([699b429](https://github.com/mynaparrot/plugNmeet-client/commit/699b4294b7db2fbaca0fc481ea791a57b262edcb))
+* **poll:** refactor poll storage and make concurrent voting atomic ([#1143](https://github.com/mynaparrot/plugNmeet-client/issues/1143)) ([cf1ae53](https://github.com/mynaparrot/plugNmeet-client/commit/cf1ae538c0420c095ffcacbfd62f5ce83749d8dd))
+* **poll:** use `30s` pollingInterval to fetch result ([372d3db](https://github.com/mynaparrot/plugNmeet-client/commit/372d3db80c650b67da78c3420b7e72244736d30c))
+* remove our manualChunks and let `rolldown` to take care chunks ([2bec501](https://github.com/mynaparrot/plugNmeet-client/commit/2bec50132d6d50054739480aa26a528278a81462))
+* **shared notepad:** added top static toolbar instated of floating ([f4e7793](https://github.com/mynaparrot/plugNmeet-client/commit/f4e779306e5ecc7b6bf4fc25ae61776f4cbf2ce1))
+* **UI:** removed `framer-motion` + UI update ([36eace8](https://github.com/mynaparrot/plugNmeet-client/commit/36eace8f7f0f9a1ca0ed0406ef97d52e6e114a12))
+* use `L1T3` for `VP9` to enable `rid-based` simulcast ([c37644b](https://github.com/mynaparrot/plugNmeet-client/commit/c37644bccccf7149de44c86fa3c3c2bdee9ee573))
+* **video:** on phones and tablets now default codec is `h264` where h264 is usually hardware-accelerated ([eac7b17](https://github.com/mynaparrot/plugNmeet-client/commit/eac7b17865850dce56ac715e652ac20c145ffcc4))
+
 ## [2.5.4](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.3...v2.5.4) (2026-10-16)
 
 
