@@ -491,7 +491,7 @@
       "screen-share-quality": "جودة مشاركة الشاشة",
       "screen-share-quality-next-start": "الجودة المحددة تنطبق في المرة القادمة التي تبدأ فيها بمشاركة الشاشة.",
       "quality-next-start": "التغييرات تنطبق في المرة القادمة التي تشغل فيها هذا الجهاز.",
-      "noise-suppression": "قمع الضوضاء (تجريبي)",
+      "noise-suppression": "كبت الضوضاء",
       "noise-suppression-help": "ينظف الضوضاء الخلفية باستخدام GTCRN. ينطبق فورا.",
       "noise-suppression-unsupported": "كتم الضوضاء غير متوفر في هذا المتصفح.",
       "noise-suppression-failed": "لم أتمكن من بدء كتم الضوضاء على هذا الجهاز — باستخدام الصوت العادي.",

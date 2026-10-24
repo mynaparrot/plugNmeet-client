@@ -491,7 +491,7 @@
       "screen-share-quality": "Ekran paylaşımı kalitesi",
       "screen-share-quality-next-start": "Seçilmiş kalite, bir dahaki ekran paylaşımına başladığınızda geçerlidir.",
       "quality-next-start": "Bu cihazı bir dahaki kez başlattığınızda değişiklikler geçerlidir.",
-      "noise-suppression": "Gürültü bastırma (deneysel)",
+      "noise-suppression": "Gürültü bastırma",
       "noise-suppression-help": "GTCRN ile arka plan gürültüsünü temizler. Hemen uygulanır.",
       "noise-suppression-unsupported": "Bu tarayıcıda gürültü bastırma yok.",
       "noise-suppression-failed": "Bu cihazda standart ses kullanarak gürültü bastırmayı başlatamadım.",

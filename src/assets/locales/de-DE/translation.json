@@ -491,7 +491,7 @@
       "screen-share-quality": "Bildschirmfreigabe Qualität",
       "screen-share-quality-next-start": "Die ausgewählte Qualität gilt beim nächsten Bildschirmfreigabe.",
       "quality-next-start": "Änderungen gelten beim nächsten Start dieses Geräts.",
-      "noise-suppression": "Lärmunterdrückung (experimentell)",
+      "noise-suppression": "Lärmunterdrückung",
       "noise-suppression-help": "Beseitigt Hintergrundgeräusche mit GTCRN. Wird sofort angewendet.",
       "noise-suppression-unsupported": "Geräuschunterdrückung ist in diesem Browser nicht verfügbar.",
       "noise-suppression-failed": "Ich konnte die Rauschunterdrückung auf diesem Gerät nicht starten – mit Standard-Audio.",
