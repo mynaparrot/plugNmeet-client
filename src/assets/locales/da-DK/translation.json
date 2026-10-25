@@ -322,6 +322,8 @@
     "file-upload-success": "Filen blev uploadet",
     "file-upload-default-error": "Der opstod en fejl under upload af filen.",
     "chat-box-placeholder": "Send en meddelelse, indsæt et billede, eller slip en fil her (Ny linje: Skift + Enter)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "Vent venligst, sender...",
     "reply": "Svar",
     "edit-message": "Rediger besked",
@@ -342,6 +344,8 @@
     "new-messages": "Nye beskeder",
     "scroll-to-bottom": "Scroll ned til bunden",
     "sync-chat": "Synkroniser chat med ligesindede",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "Indlæs tidligere beskeder",
     "system-name": "System"
   },
