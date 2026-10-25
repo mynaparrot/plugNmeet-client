@@ -322,6 +322,8 @@
     "file-upload-success": "Tiedoston lataus onnistui",
     "file-upload-default-error": "Tiedoston lataamisessa tapahtui virhe.",
     "chat-box-placeholder": "Lähetä viesti, liitä kuva tai pudota tiedosto tähän (Uusi rivi: Vaihto + Enter)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "Odottakaa, lähettäen...",
     "reply": "Vastaa",
     "edit-message": "Muokkausviesti",
@@ -342,6 +344,8 @@
     "new-messages": "Uudet viestit",
     "scroll-to-bottom": "Selaa alas",
     "sync-chat": "Synkronoi chat vertaisten kanssa",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "Lataa aikaisempia viestejä",
     "system-name": "Järjestelmä"
   },
