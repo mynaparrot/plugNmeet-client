@@ -12,16 +12,17 @@ import { ConnectionStatusPanel } from './connectionStatus';
 
 interface IHeaderMenusProps {
   onOpenAlert(task: string): void;
+  onOpenExportHub(): void;
 }
 
-const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
+const HeaderMenus = ({ onOpenAlert, onOpenExportHub }: IHeaderMenusProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
   const isBreakoutRoom = useAppSelector(
     (state) => !!state.session.currentRoom.metadata?.isBreakoutRoom,
   );
-
+  const isAdmin = useAppSelector((state) => !!state.session.currentUser?.metadata?.isAdmin);
   const [showConnectionStats, setShowConnectionStats] = useState(false);
   const overallQuality = useAppSelector((state) => state.session.overallConnectionQuality);
   const overallColor = useMemo(() => {
@@ -34,7 +35,7 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
       unmount={false}
       anchor="bottom end"
       transition
-      className="HeaderSettingMenu z-50 bg-white dark:bg-dark-primary w-[244px] shadow-dropdown-menu rounded-[15px] overflow-hidden border border-Gray-100 dark:border-Gray-700 p-2 ring-0 focus:outline-hidden focus-ring [--anchor-gap:8px] transition ease-out data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150"
+      className="HeaderSettingMenu z-50 bg-white dark:bg-dark-primary w-[244px] min-w-max shadow-dropdown-menu rounded-[15px] overflow-hidden border border-Gray-100 dark:border-Gray-700 p-2 ring-0 focus:outline-hidden focus-ring [--anchor-gap:8px] transition ease-out data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150"
     >
       {/* Mobile-only: connection status row that expands the stats panel inline */}
       <MenuItem disabled={true}>
@@ -99,6 +100,19 @@ const HeaderMenus = ({ onOpenAlert }: IHeaderMenusProps) => {
           {t('header.menus.keyboard-shortcuts')}
         </button>
       </MenuItem>
+
+      {isAdmin && (
+        <MenuItem>
+          <button
+            type="button"
+            className="h-9 md:h-10 w-full cursor-pointer flex items-center whitespace-nowrap hover:bg-Gray-50 dark:hover:bg-dark-secondary2 data-[focus]:bg-Gray-50 dark:data-[focus]:bg-dark-secondary2 text-sm gap-2 leading-none font-medium text-Gray-950 dark:text-white px-2 md:px-3 rounded-lg transition-all duration-300 relative"
+            onClick={() => onOpenExportHub()}
+          >
+            <i className="pnm-download text-primary-color dark:text-Blue2-500 text-lg me-2 transition ease-in" />
+            {t('header.menus.export')}
+          </button>
+        </MenuItem>
+      )}
 
       {!isBreakoutRoom && (
         <MenuItem>
