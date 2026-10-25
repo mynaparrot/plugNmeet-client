@@ -322,6 +322,8 @@
     "file-upload-success": "Dosya başarıyla yüklendi.",
     "file-upload-default-error": "Dosya yüklenirken bir hata oluştu.",
     "chat-box-placeholder": "Bir mesaj gönderin, bir resim yapıştırın veya bir dosyayı buraya bırakın (Yeni satır: Shift + Enter)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "Gönderiliyor, lütfen bekleyin...",
     "reply": "Yanıt",
     "edit-message": "Mesajı düzenle",
@@ -342,6 +344,8 @@
     "new-messages": "Yeni mesajlar",
     "scroll-to-bottom": "Aşağıya kaydırın",
     "sync-chat": "Arkadaşlarınızla senkronize sohbet",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "Daha erken mesajları yükle",
     "system-name": "Sistem"
   },
