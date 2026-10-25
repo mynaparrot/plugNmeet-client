@@ -580,6 +580,7 @@
     "previous-page": "Forrige side",
     "next-page": "Næste side",
     "take-over-presenter": "Overtag som vært",
+    "save-pending-warning": "Whiteboard page couldn't be saved yet. It will keep retrying in the background.",
     "export-pdf-selected-pages": "Udvalgte sider",
     "export-pdf-selected-pages-count": "Udvalgt ({{count}})",
     "export-pdf-select-pages-label": "Vælg sider til eksport:",
