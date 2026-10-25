@@ -322,6 +322,8 @@
     "file-upload-success": "A fájl feltöltése sikeresen",
     "file-upload-default-error": "Hiba történt a fájl feltöltésekor.",
     "chat-box-placeholder": "Üzenet küldése, kép beillesztése vagy fájl eldobása ide (Új sor: Shift + Enter)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "Kérlek, várj, küldöm...",
     "reply": "Válasz",
     "edit-message": "Üzenet szerkesztése",
@@ -342,6 +344,8 @@
     "new-messages": "Új üzenetek",
     "scroll-to-bottom": "Görgess le az alulra",
     "sync-chat": "Szinkronizált chat társakkal",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "Korábbi üzenetek betöltése",
     "system-name": "Rendszer"
   },
