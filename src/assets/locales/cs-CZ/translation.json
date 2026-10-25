@@ -322,6 +322,8 @@
     "file-upload-success": "Soubor byl úspěšně nahrán",
     "file-upload-default-error": "Při nahrávání souboru došlo k chybě.",
     "chat-box-placeholder": "Odešlete zprávu, vložte obrázek nebo sem přetáhněte soubor (Nový řádek: Shift + Enter)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "Prosím, počkejte, posílám...",
     "reply": "Odpověď",
     "edit-message": "Editační zpráva",
@@ -342,6 +344,8 @@
     "new-messages": "Nové zprávy",
     "scroll-to-bottom": "Posuňte se na konec",
     "sync-chat": "Synchronizujte chat s kolegy",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "Načíst dřívější zprávy",
     "system-name": "Systém"
   },
