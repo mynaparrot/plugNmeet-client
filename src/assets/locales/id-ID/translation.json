@@ -322,6 +322,8 @@
     "file-upload-success": "File berhasil diunggah.",
     "file-upload-default-error": "Terjadi kesalahan saat mengunggah file.",
     "chat-box-placeholder": "Kirim pesan, tempel gambar, atau letakkan file di sini (Baris baru: Shift + Enter)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "Mengirim, harap tunggu...",
     "reply": "Balas",
     "edit-message": "Edit pesan",
@@ -342,6 +344,8 @@
     "new-messages": "Pesan baru",
     "scroll-to-bottom": "Gulir ke bawah",
     "sync-chat": "Sinkronkan obrolan dengan rekan sesama",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "Muat pesan sebelumnya",
     "system-name": "Sistem"
   },
