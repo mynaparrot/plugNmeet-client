@@ -322,6 +322,8 @@
     "file-upload-success": "Tệp được tải lên thành công",
     "file-upload-default-error": "Đã xảy ra lỗi khi tải tệp lên.",
     "chat-box-placeholder": "Gửi tin nhắn, dán hình ảnh hoặc thả file tại đây (Dòng mới: Shift + Enter)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "Vui lòng đợi, gửi...",
     "reply": "Trả lời",
     "edit-message": "Chỉnh sửa tin nhắn",
@@ -342,6 +344,8 @@
     "new-messages": "Tin nhắn mới",
     "scroll-to-bottom": "Cuộn xuống cuối",
     "sync-chat": "Đồng bộ trò chuyện với các trang web ngang hàng",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "Tải các tin nhắn trước đó",
     "system-name": "Hệ thống"
   },
