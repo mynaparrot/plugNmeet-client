@@ -322,6 +322,8 @@
     "file-upload-success": "Το αρχείο μεταφορτώθηκε με επιτυχία",
     "file-upload-default-error": "Παρουσιάστηκε σφάλμα κατά τη μεταφόρτωση του αρχείου.",
     "chat-box-placeholder": "Στείλτε ένα μήνυμα, επικολλήστε μια εικόνα ή αποθέστε ένα αρχείο εδώ (Νέα γραμμή: Shift + Enter)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "Παρακαλώ περιμένετε, αποστολή...",
     "reply": "απάντηση",
     "edit-message": "Επεξεργασία μηνύματος",
@@ -342,6 +344,8 @@
     "new-messages": "Νέα μηνύματα",
     "scroll-to-bottom": "Κύλιση προς τα κάτω",
     "sync-chat": "Συγχρονισμός συνομιλίας με συνομηλίκους",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "Φόρτωση προηγούμενων μηνυμάτων",
     "system-name": "Σύστημα"
   },
