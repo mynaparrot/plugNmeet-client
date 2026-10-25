@@ -322,6 +322,8 @@
     "file-upload-success": "檔案上傳成功。",
     "file-upload-default-error": "上傳檔案時出錯。",
     "chat-box-placeholder": "在此處傳送訊息、貼上圖片或拖放檔案（換行：Shift + Enter）",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "正在傳送，請稍候...",
     "reply": "回覆",
     "edit-message": "編輯訊息",
@@ -342,6 +344,8 @@
     "new-messages": "新訊息",
     "scroll-to-bottom": "往最底部捲動",
     "sync-chat": "與同儕同步聊天",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "載入先前訊息",
     "system-name": "系統"
   },
