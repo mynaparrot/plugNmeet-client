@@ -322,6 +322,8 @@
     "file-upload-success": "הקובץ הועלה בהצלחה",
     "file-upload-default-error": "אירעה שגיאה בהעלאת הקובץ.",
     "chat-box-placeholder": "שליחת הודעה, הדבקת תמונה או שחרור קובץ כאן (שורה חדשה: Shift + Enter)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "בבקשה חכה, שולח...",
     "reply": "תגובה",
     "edit-message": "עריכת הודעה",
@@ -342,6 +344,8 @@
     "new-messages": "מסרים חדשים",
     "scroll-to-bottom": "גלול למטה",
     "sync-chat": "סנכרון צ'אט עם עמיתים",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "טעין הודעות מוקדמות",
     "system-name": "מערכת"
   },
