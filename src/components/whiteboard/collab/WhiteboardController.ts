@@ -103,6 +103,9 @@ export class WhiteboardController {
   private initialRequestResolver: ((data: { fileId: string; page: number } | null) => void) | null =
     null;
   private initialRequestTimer: ReturnType<typeof setTimeout> | null = null;
+  // Scope Redux held when the initial bootstrap was requested: a donor whose
+  // answer arrives after the presenter moved on must not override that scope.
+  private initialRequestScope: { fileId: string; page: number } | null = null;
   private saveTimer: ReturnType<typeof setTimeout> | null = null;
   // Local-origin doc updates (user annotations) counted since the last
   // analytics flush. Sent as an INCRBY delta, so it resets after each send.
@@ -254,7 +257,16 @@ export class WhiteboardController {
    */
   sync = (fileId: string, page: number, options?: { hydrate?: boolean }): Promise<void> => {
     const hydrate = options?.hydrate ?? true;
-    this.syncChain = this.syncChain.then(() => this.doSync(fileId, page, hydrate));
+    return this.enqueueSyncStep(() => this.doSync(fileId, page, hydrate));
+  };
+
+  /**
+   * Append a step to the serialized doc lifecycle. A rejected step must not
+   * poison the chain: the next step still runs.
+   */
+  private enqueueSyncStep = (step: () => Promise<unknown>): Promise<void> => {
+    const run = () => step().then(() => undefined);
+    this.syncChain = this.syncChain.then(run, run);
     return this.syncChain;
   };
 
@@ -1279,16 +1291,11 @@ export class WhiteboardController {
         return;
       }
 
-      // No presenter online: hydrate from the server instead of waiting for
-      // a peer sync that would never answer (skips the 4s timeout).
+      // No presenter online: no peer can answer, so report the store scope and
+      // let the caller hydrate from the server (no 4s timeout wait). The switch
+      // itself stays inside the caller's navigation ownership.
       if (!this.hasPresenterOnline()) {
-        void this.hydrateFromServerAsNonPresenter().then(() => {
-          const state = store.getState();
-          resolve({
-            fileId: this.fileId || state.whiteboard.currentWhiteboardOfficeFileId,
-            page: this.page || state.whiteboard.currentPage,
-          });
-        });
+        resolve(this.storeScope());
         return;
       }
 
@@ -1302,6 +1309,7 @@ export class WhiteboardController {
       }
 
       this.initialRequestResolver = resolve;
+      this.initialRequestScope = this.storeScope();
       this.pendingSyncRequestIds.clear();
       const emptyStateVector = Y.encodeStateVector(new Y.Doc());
 
@@ -1323,15 +1331,26 @@ export class WhiteboardController {
     });
   };
 
-  /** Server-side hydration (canonical checkpoint + diff) for a presenter-less join. */
-  private async hydrateFromServerAsNonPresenter(): Promise<void> {
-    const state = store.getState();
-    const fileId = state.whiteboard.currentWhiteboardOfficeFileId;
-    const page = state.whiteboard.currentPage;
-    await this.sync(fileId, page, { hydrate: true });
-  }
+  /** Scope currently authorized in Redux (presenter-driven for followers). */
+  private storeScope = (): { fileId: string; page: number } => {
+    const { currentWhiteboardOfficeFileId, currentPage } = store.getState().whiteboard;
+    return { fileId: currentWhiteboardOfficeFileId, page: currentPage };
+  };
+
+  /** True when Redux was moved to a newer scope after the bootstrap was requested. */
+  private isInitialBootstrapStale = (): boolean => {
+    if (!this.initialRequestScope) {
+      return false;
+    }
+    const scope = this.storeScope();
+    return (
+      scope.fileId !== this.initialRequestScope.fileId ||
+      scope.page !== this.initialRequestScope.page
+    );
+  };
 
   private resolveInitialRequest = (data: { fileId: string; page: number } | null) => {
+    this.initialRequestScope = null;
     if (this.initialRequestResolver) {
       const resolve = this.initialRequestResolver;
       this.initialRequestResolver = null;
@@ -1553,19 +1572,44 @@ export class WhiteboardController {
     let donorPage = this.page;
 
     if (hasInitialData) {
+      let initialData: WhiteboardDataAsDonorData;
       try {
-        const initialData = JSON.parse(scope.initial_data!) as WhiteboardDataAsDonorData;
-
-        donorFileId = initialData.currentWhiteboardOfficeFileId;
-        donorPage = initialData.currentPageNumber;
-
-        store.dispatch(addWhiteboardDataSentFromDonor(initialData));
+        initialData = JSON.parse(scope.initial_data!) as WhiteboardDataAsDonorData;
       } catch (error) {
         console.error('[WhiteboardController] failed to parse initial whiteboard data', error);
         return;
       }
 
-      await this.setupDoc(donorFileId, donorPage);
+      // A newer presenter-authorized scope arrived while this bootstrap was in
+      // flight: bootstrapping the donor would drag everyone back to the old
+      // page. Hand the newest scope to the caller instead.
+      if (this.isInitialBootstrapStale()) {
+        this.resolveInitialRequest(this.storeScope());
+        return;
+      }
+
+      donorFileId = initialData.currentWhiteboardOfficeFileId;
+      donorPage = initialData.currentPageNumber;
+
+      store.dispatch(addWhiteboardDataSentFromDonor(initialData));
+
+      // The donor setup shares the serialized doc lifecycle with page/file
+      // switches, and is dropped when a newer authorized scope won the race
+      // while it waited in the chain.
+      let donorScopeReady = false;
+      await this.enqueueSyncStep(async () => {
+        const scope = this.storeScope();
+        if (scope.fileId !== donorFileId || scope.page !== donorPage) {
+          return;
+        }
+        await this.setupDoc(donorFileId, donorPage);
+        donorScopeReady = true;
+      });
+
+      if (!donorScopeReady) {
+        this.resolveInitialRequest(this.storeScope());
+        return;
+      }
 
       if (!this.doc || !this.elementsMap) {
         return;

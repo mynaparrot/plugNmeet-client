@@ -66,6 +66,7 @@ vi.mock('../../collab/whiteboardPersistence', () => ({
   saveWhiteboardPageSnapshot: vi.fn(async () => undefined),
 }));
 
+import { store } from '../../../store';
 import { SAVE_ACK_TIMEOUT_MS, WhiteboardController } from '../collab/WhiteboardController';
 import {
   SAVE_MAX_WAIT_MS,
@@ -146,6 +147,14 @@ const sourceUpdates = (count: number, prefix: string) => {
   return updates;
 };
 
+const deferred = () => {
+  let resolve!: () => void;
+  const promise = new Promise<void>((r) => {
+    resolve = r;
+  });
+  return { promise, resolve };
+};
+
 let active: WhiteboardController | null = null;
 
 const setup = (participants: Peer[]) => {
@@ -206,6 +215,20 @@ beforeEach(() => {
   documentStub.visibilityState = 'visible';
   (globalThis as { document: unknown }).document = documentStub;
   vi.clearAllMocks();
+  // The real reducer moves the store to the donor scope; mirror that so the
+  // serialized donor setup sees the scope it dispatched.
+  vi.mocked(store.dispatch).mockImplementation(((action: {
+    type?: string;
+    payload?: Record<string, unknown>;
+  }) => {
+    if (action?.type === 'donor' && action.payload) {
+      const whiteboard = (state.current as { whiteboard: Record<string, unknown> }).whiteboard;
+      whiteboard.currentWhiteboardOfficeFileId = action.payload.currentWhiteboardOfficeFileId;
+      whiteboard.currentPage = action.payload.currentPageNumber;
+      whiteboard.currentOfficeFilePages = action.payload.currentOfficeFilePages;
+    }
+    return action;
+  }) as never);
 });
 
 afterEach(async () => {
@@ -614,5 +637,135 @@ describe('SESSION_DATA save ack', () => {
 
     await expect(pending).resolves.toBe(false);
     expect(ackWaitersOf(controller).size).toBe(0);
+  });
+});
+
+describe('serialized doc lifecycle', () => {
+  it('runs the next sync after a rejected one', async () => {
+    const controller = setup([]);
+    const order: string[] = [];
+    const doSync = vi
+      .spyOn(
+        controller as unknown as {
+          doSync: (fileId: string, page: number, hydrate: boolean) => Promise<void>;
+        },
+        'doSync',
+      )
+      .mockImplementationOnce(async () => {
+        order.push('first');
+        throw new Error('hydration failed');
+      })
+      .mockImplementation(async () => {
+        order.push('second');
+      });
+
+    await expect(controller.sync('file1', 1)).rejects.toThrow('hydration failed');
+    await expect(controller.sync('file1', 2)).resolves.toBeUndefined();
+
+    expect(order).toEqual(['first', 'second']);
+    expect(doSync).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('initial bootstrap ownership', () => {
+  const donorInitialData = (page: number) => ({
+    currentPageNumber: page,
+    currentWhiteboardOfficeFileId: 'donor-file',
+    currentOfficeFilePages: '',
+    appState: {
+      height: 100,
+      width: 100,
+      scrollX: 0,
+      scrollY: 0,
+      zoomValue: 1,
+      theme: 'light',
+      viewBackgroundColor: '#fff',
+      zenModeEnabled: false,
+      gridSize: null,
+    },
+  });
+
+  const deliverInitialData = (
+    controller: WhiteboardController,
+    requestId: string,
+    page: number,
+    binMessage = sourceUpdates(1, 'boot')[0],
+  ) =>
+    controller.handleMessage(
+      DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE,
+      binMessage,
+      'peer1',
+      requestId,
+      JSON.stringify({
+        fileId: 'donor-file',
+        page,
+        initial_data: JSON.stringify(donorInitialData(page)),
+      }),
+    );
+
+  it('ignores a donor bootstrap that answers after a newer presenter scope', async () => {
+    const controller = setup([{ userId: 'me' }, { userId: 'peer1', isPresenter: true }]);
+    const initial = controller.requestInitialData();
+    const requestId = Array.from(internalsOf(controller).pendingSyncRequestIds)[0];
+
+    // Presenter moved to page 2 while the bootstrap request was in flight.
+    const storeState = state.current as { whiteboard: { currentPage: number } };
+    storeState.whiteboard.currentPage = 2;
+
+    deliverInitialData(controller, requestId, 1);
+    await vi.advanceTimersByTimeAsync(0);
+
+    await expect(initial).resolves.toEqual({ fileId: 'file1', page: 2 });
+    expect(vi.mocked(store.dispatch)).not.toHaveBeenCalled();
+    expect(controller.getSnapshot()).toBeNull();
+  });
+
+  it('still bootstraps from the donor when nothing newer was authorized', async () => {
+    const controller = setup([{ userId: 'me' }, { userId: 'peer1', isPresenter: true }]);
+    const initial = controller.requestInitialData();
+    const requestId = Array.from(internalsOf(controller).pendingSyncRequestIds)[0];
+
+    deliverInitialData(controller, requestId, 3);
+    await vi.advanceTimersByTimeAsync(0);
+
+    await expect(initial).resolves.toEqual({ fileId: 'donor-file', page: 3 });
+    expect(vi.mocked(store.dispatch)).toHaveBeenCalledWith(
+      expect.objectContaining({ type: 'donor' }),
+    );
+    expect(controller.getSnapshot()?.page).toBe(3);
+  });
+
+  it('drops the donor setup when a newer scope wins while it waits for the doc lifecycle', async () => {
+    const controller = setup([{ userId: 'me' }, { userId: 'peer1', isPresenter: true }]);
+    const gate = deferred();
+    vi.spyOn(
+      controller as unknown as {
+        doSync: (fileId: string, page: number, hydrate: boolean) => Promise<void>;
+      },
+      'doSync',
+    ).mockImplementation(async () => {
+      await gate.promise;
+    });
+
+    // A page/file switch already occupies the serialized doc lifecycle.
+    const switching = controller.sync('file1', 1);
+    const initial = controller.requestInitialData();
+    const requestId = Array.from(internalsOf(controller).pendingSyncRequestIds)[0];
+    deliverInitialData(controller, requestId, 3);
+    await vi.advanceTimersByTimeAsync(0); // the donor setup waits in the chain
+
+    // A newer presenter scope arrives before the donor setup can run.
+    const storeState = state.current as {
+      whiteboard: { currentWhiteboardOfficeFileId: string; currentPage: number };
+    };
+    storeState.whiteboard.currentWhiteboardOfficeFileId = 'file2';
+    storeState.whiteboard.currentPage = 4;
+
+    gate.resolve();
+    await switching;
+    await vi.advanceTimersByTimeAsync(0);
+
+    await expect(initial).resolves.toEqual({ fileId: 'file2', page: 4 });
+    expect(controller.getSnapshot()).toBeNull();
   });
 });

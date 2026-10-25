@@ -53,6 +53,12 @@ import {
 } from './helpers/handleFiles';
 import { getWhiteboardController } from './collab';
 import type { WhiteboardPresence } from './collab/types';
+import {
+  LatestNavigationQueue,
+  runNavigationTransition,
+  type NavigationTarget,
+  type OfficePageLoad,
+} from './helpers/navigationQueue';
 import { getNatsConn } from '../../helpers/nats';
 import {
   A4_VIEWPORT_PADDING_LEFT,
@@ -128,6 +134,19 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
   // The yjs CRDT session (doc + elements map) owns all whiteboard scene sync.
   const controller = useMemo(() => getWhiteboardController(), []);
+
+  // Latest-request-wins ownership for page/file switches and the bootstrap.
+  const navigation = useMemo(() => new LatestNavigationQueue(), []);
+
+  /** Whether the controller's active doc is still the newest navigation target. */
+  const isControllerAtTarget = useCallback(() => {
+    const target = navigation.target;
+    if (!target) {
+      return true;
+    }
+    const snapshot = controller.getSnapshot();
+    return !!snapshot && snapshot.fileId === target.fileId && snapshot.page === target.page;
+  }, [controller, navigation]);
 
   // Determines if the current user has editing privileges.
   const canEdit = useMemo(() => {
@@ -224,11 +243,26 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     controller.configure({
       excalidrawAPI,
       roomSid,
-      onRemoteUpdate: () => applySceneToExcalidraw({ init: false }),
+      onRemoteUpdate: () => {
+        // During a switch only the doc of the newest navigation target may
+        // paint: an obsolete controller scope must not leak onto the canvas.
+        if (isSwitching.current && !isControllerAtTarget()) {
+          return;
+        }
+        applySceneToExcalidraw({ init: false });
+      },
       canWrite: () => canEdit,
       isPrimaryResponder: () => !!isPresenter,
     });
-  }, [excalidrawAPI, controller, roomSid, canEdit, isPresenter, applySceneToExcalidraw]);
+  }, [
+    excalidrawAPI,
+    controller,
+    roomSid,
+    canEdit,
+    isPresenter,
+    applySceneToExcalidraw,
+    isControllerAtTarget,
+  ]);
 
   // Resync the active CRDT doc after reconnects and when the tab becomes
   // visible again (state-vector handshake with the room).
@@ -369,81 +403,192 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   );
 
   /**
-   * Handles the logic for switching between whiteboard pages or office documents.
-   * It cleans the canvas and prepares it for new data.
+   * Releases the switch lock. Only the navigation owner calls this (the queue,
+   * once nothing is left), and only while the CRDT is still at the newest
+   * target: the canvas of a stale scope must never be merged into another page.
    */
-  const handleSwitchPageOrDocument = useCallback(async () => {
-    // 1. Do nothing if Excalidraw API is not ready.
-    if (!excalidrawAPI) return;
+  const releaseTransitionLock = useCallback(() => {
+    isSwitching.current = false;
+    if (!excalidrawAPI || !isControllerAtTarget()) {
+      return;
+    }
+    // Edits made while the switch was in progress were dropped by the guard in
+    // handleCanvasChange; merge whatever is on the canvas now (idempotent, the
+    // merge is version-aware).
+    syncCanvasToCrdt(
+      excalidrawAPI.getSceneElementsIncludingDeleted(),
+      excalidrawAPI.getAppState(),
+      excalidrawAPI.getFiles(),
+      { force: true },
+    );
+  }, [excalidrawAPI, syncCanvasToCrdt, isControllerAtTarget]);
 
-    // 2. Set a flag to prevent other actions during the transition.
-    isSwitching.current = true;
+  /**
+   * One page/file switch. Every side effect runs behind the transition's
+   * ownership check, so an obsolete (superseded) transition leaves no trace on
+   * the canvas, the CRDT, or the room.
+   */
+  const runNavigation = useCallback(
+    async (target: NavigationTarget, isCurrent: () => boolean): Promise<boolean> => {
+      if (!excalidrawAPI) {
+        return false;
+      }
 
-    // 3. Clean up the whiteboard canvas for all users.
-    resetWhiteboardState(excalidrawAPI);
+      return runNavigationTransition(target, isCurrent, {
+        isPresenter: !!isPresenter,
+        reset: () => {
+          isSwitching.current = true;
+          resetWhiteboardState(excalidrawAPI);
+        },
+        sync: (next) => controller.sync(next.fileId, next.page, { hydrate: !!isPresenter }),
+        paint: () => applySceneToExcalidraw({ init: true }),
+        // Office pages are presenter-only and idempotent per page: a page that
+        // already has CRDT content needs no insert.
+        loadOfficePage: (next, stillCurrent) =>
+          controller.getElements().length > 0
+            ? Promise.resolve(null)
+            : syncOfficeFilePage(next.fileId, next.page, stillCurrent),
+        applyOfficePage: (load: OfficePageLoad | null) => {
+          // Re-read the live scene: edits made while the page image was loading
+          // must survive the insert.
+          const scene = load
+            ? [...excalidrawAPI.getSceneElementsIncludingDeleted(), ...load.elements]
+            : controller.getElements();
+          const pageInfo = resolvePageInfoFromElements(scene);
 
-    // 4. Point the CRDT at the new page/file and apply the hydrated/remote
-    // scene for everyone (presenter and followers alike). Scene content now
-    // syncs via yjs, so there is no sendClearWhiteboardSignal() anymore.
-    try {
-      await controller.sync(currentWhiteboardOfficeFileId, currentPage, {
-        hydrate: !!isPresenter,
-      });
-      applySceneToExcalidraw({ init: true });
+          if (load) {
+            excalidrawAPI.addFiles(load.images);
+          }
+          excalidrawAPI.updateScene({
+            elements: addBoundaryToElements(scene, pageInfo),
+          });
+          scrollToBoundary(excalidrawAPI, pageInfo);
 
-      if (isPresenter) {
-        // 5. If the new page has no CRDT content yet, insert the office page
-        // elements (presenter-only, idempotent per page).
-        const hasLocal = controller.getElements().length > 0;
-        let elements: readonly ExcalidrawElement[] | null | undefined = null;
-
-        if (!hasLocal) {
-          elements = await syncOfficeFilePage(currentPage);
-        }
-
-        const scene = elements ?? controller.getElements();
-        const pageInfo = resolvePageInfoFromElements(scene);
-        excalidrawAPI.updateScene({
-          elements: addBoundaryToElements(scene, pageInfo),
-        });
-        scrollToBoundary(excalidrawAPI, pageInfo);
-
-        // 6. Persist any newly inserted office-page elements into the CRDT so
-        // they reach followers.
-        if (elements && elements.length) {
-          controller.mergeElements(elements);
-        }
-
+          // Persist any newly inserted office-page elements into the CRDT so
+          // they reach followers.
+          if (load?.elements.length) {
+            controller.mergeElements(load.elements);
+          }
+        },
         // Broadcast the full authoritative scene so followers converge without
         // relying solely on incremental updates.
+        broadcast: () => controller.broadcastFullState(),
+      });
+    },
+    [
+      excalidrawAPI,
+      isPresenter,
+      controller,
+      resetWhiteboardState,
+      syncOfficeFilePage,
+      addBoundaryToElements,
+      scrollToBoundary,
+      applySceneToExcalidraw,
+    ],
+  );
+
+  // The queue keeps the callbacks of its first drain cycle, so every job must
+  // dispatch through the latest render (fresh steps, fresh office-page state).
+  const runNavigationRef = useRef(runNavigation);
+  const releaseLockRef = useRef(releaseTransitionLock);
+  useEffect(() => {
+    runNavigationRef.current = runNavigation;
+    releaseLockRef.current = releaseTransitionLock;
+  });
+
+  const dispatchNavigation = useCallback(
+    (target: NavigationTarget, isCurrent: () => boolean) =>
+      runNavigationRef.current(target, isCurrent),
+    [],
+  );
+
+  const releaseNavigationLock = useCallback(() => releaseLockRef.current(), []);
+
+  /**
+   * Queues a switch to `target`. Only the newest target is applied; the queued
+   * work is serialized so teardown/hydration never interleave.
+   */
+  const startNavigation = useCallback(
+    (target: NavigationTarget, options?: { force?: boolean }) => {
+      navigation.request(target, options);
+      void navigation.drain(dispatchNavigation, releaseNavigationLock);
+    },
+    [navigation, dispatchNavigation, releaseNavigationLock],
+  );
+
+  /**
+   * Initial navigation: resolves the room's active scope (donor data for
+   * followers, the store scope for the presenter) and paints it. It owns
+   * navigation through the same queue, so a page/file switch that arrives first
+   * supersedes it and it never touches the CRDT or the room afterwards.
+   */
+  const runInitialNavigation = useCallback(
+    async (isCurrent: () => boolean): Promise<void> => {
+      if (!excalidrawAPI || !isCurrent()) {
+        return;
+      }
+      isSwitching.current = true;
+
+      // Read the live values: a page/file change may already have landed.
+      let target: NavigationTarget = {
+        fileId: currentFileIdRef.current,
+        page: currentPageRef.current,
+      };
+
+      if (isPresenter) {
+        // Keep broadcasting the active file id (control message) so followers
+        // converge on the same file/page. Scene content syncs via yjs.
+        await broadcastCurrentFileId(target.fileId, target.page);
+        await Promise.race([sleep(300), navigation.waitForSupersede()]);
+        if (!isCurrent()) {
+          return;
+        }
+      } else {
+        const donor = await Promise.race([
+          controller.requestInitialData(),
+          navigation.waitForSupersede().then(() => null),
+        ]);
+        if (!isCurrent()) {
+          return;
+        }
+        target = {
+          fileId: donor?.fileId ?? currentFileIdRef.current,
+          page: donor?.page ?? currentPageRef.current,
+        };
+      }
+
+      // Checked immediately before the switch: an obsolete bootstrap must not
+      // enqueue an older scope behind a newer sync. Without a presenter online
+      // nobody can answer a peer sync, so hydrate from the server instead.
+      const hydrate = !!isPresenter || !controller.hasPresenterOnline();
+      await controller.sync(target.fileId, target.page, { hydrate });
+      if (!isCurrent()) {
+        return;
+      }
+
+      applySceneToExcalidraw({ init: true });
+      const elements = excalidrawAPI.getSceneElements();
+      const pageInfo = resolvePageInfoFromElements(elements);
+      if (isPresenter) {
+        excalidrawAPI.updateScene({
+          elements: addBoundaryToElements(elements, pageInfo),
+        });
+      }
+      scrollToBoundary(excalidrawAPI, pageInfo);
+      if (isPresenter) {
         controller.broadcastFullState();
       }
-    } finally {
-      // 7. Always release the switch lock, even if syncing/loading throws.
-      isSwitching.current = false;
-      // Edits made while the switch was in progress were dropped by the guard
-      // in handleCanvasChange; merge whatever is on the canvas now (idempotent,
-      // the merge is version-aware).
-      syncCanvasToCrdt(
-        excalidrawAPI.getSceneElementsIncludingDeleted(),
-        excalidrawAPI.getAppState(),
-        excalidrawAPI.getFiles(),
-        { force: true },
-      );
-    }
-  }, [
-    excalidrawAPI,
-    isPresenter,
-    currentPage,
-    currentWhiteboardOfficeFileId,
-    controller,
-    resetWhiteboardState,
-    syncOfficeFilePage,
-    addBoundaryToElements,
-    scrollToBoundary,
-    applySceneToExcalidraw,
-    syncCanvasToCrdt,
-  ]);
+    },
+    [
+      excalidrawAPI,
+      isPresenter,
+      controller,
+      navigation,
+      addBoundaryToElements,
+      scrollToBoundary,
+      applySceneToExcalidraw,
+    ],
+  );
 
   // clean up during exit: drop presence from the room and clear image state.
   useEffect(() => {
@@ -453,82 +598,31 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     };
   }, [controller]);
 
-  // on mount: point the CRDT at the current page/file and apply the scene.
+  // on mount: point the CRDT at the active page/file and apply the scene.
   // Followers converge via the state-vector sync handshake; the presenter
   // additionally broadcasts the active file id (control message).
   useEffect(() => {
     if (!excalidrawAPI) {
       return;
     }
-
-    const initialize = async () => {
-      isSwitching.current = true;
-      try {
-        if (isPresenter) {
-          // Keep broadcasting the active file id (control message) so followers
-          // converge on the same file/page. Scene content now syncs via yjs, so
-          // there is no sendClearWhiteboardSignal() anymore.
-          await broadcastCurrentFileId(currentWhiteboardOfficeFileId, currentPage);
-          await sleep(300);
-
-          await controller.sync(currentWhiteboardOfficeFileId, currentPage, {
-            hydrate: true,
-          });
-          applySceneToExcalidraw({ init: true });
-
-          const elements = excalidrawAPI.getSceneElements();
-          const pageInfo = resolvePageInfoFromElements(elements);
-          excalidrawAPI.updateScene({
-            elements: addBoundaryToElements(elements, pageInfo),
-          });
-          scrollToBoundary(excalidrawAPI, pageInfo);
-          controller.broadcastFullState();
-        } else {
-          const donor = await controller.requestInitialData();
-
-          await controller.sync(
-            donor?.fileId ?? currentWhiteboardOfficeFileId,
-            donor?.page ?? currentPage,
-            { hydrate: false },
-          );
-
-          applySceneToExcalidraw({ init: true });
-
-          const elements = excalidrawAPI.getSceneElements();
-          const pageInfo = resolvePageInfoFromElements(elements);
-          scrollToBoundary(excalidrawAPI, pageInfo);
-        }
-      } finally {
-        isSwitching.current = false;
-        // Same as a page switch: merge edits made during init (idempotent).
-        syncCanvasToCrdt(
-          excalidrawAPI.getSceneElementsIncludingDeleted(),
-          excalidrawAPI.getAppState(),
-          excalidrawAPI.getFiles(),
-          { force: true },
-        );
-      }
-    };
-
-    setTimeout(() => void initialize(), 300);
+    const timer = setTimeout(() => {
+      void navigation.startBootstrap(runInitialNavigation, releaseNavigationLock);
+    }, 300);
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [excalidrawAPI, controller, applySceneToExcalidraw]);
+  }, [excalidrawAPI]);
 
   // Effect for page or file changes
   useEffect(() => {
     const hasFileChanged = previousFileId && currentWhiteboardOfficeFileId !== previousFileId;
     const hasPageChanged = previousPage && currentPage !== previousPage;
 
-    if (!isSwitching.current && (hasFileChanged || hasPageChanged)) {
-      void handleSwitchPageOrDocument();
+    if (hasFileChanged || hasPageChanged) {
+      // Never dropped while a previous switch is still running: the queue keeps
+      // only the newest target and supersedes the older one.
+      startNavigation({ fileId: currentWhiteboardOfficeFileId, page: currentPage });
     }
-  }, [
-    currentWhiteboardOfficeFileId,
-    previousFileId,
-    currentPage,
-    previousPage,
-    handleSwitchPageOrDocument,
-  ]);
+  }, [currentWhiteboardOfficeFileId, previousFileId, currentPage, previousPage, startNavigation]);
 
   /**
    * This is the primary callback for any change on the Excalidraw canvas.
@@ -774,7 +868,12 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
                 <button
                   type="button"
                   className="radix-menu-item dropdown-menu-item dropdown-menu-item-base focus-ring"
-                  onClick={handleSwitchPageOrDocument}
+                  onClick={() =>
+                    startNavigation(
+                      { fileId: currentWhiteboardOfficeFileId, page: currentPage },
+                      { force: true },
+                    )
+                  }
                 >
                   <div className="dropdown-menu-item__icon">
                     <RefreshIcon />

@@ -1,12 +1,12 @@
 import { useCallback, useEffect } from 'react';
-import type { BinaryFileData, ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
-import type { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
+import type { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 
-import { useAppSelector } from '../../../../store';
+import { store, useAppSelector } from '../../../../store';
 import { IWhiteboardFile } from '../../../../store/slices/interfaces/whiteboard';
 import { fetchFileWithElm, preloadOfficeFilePages } from '../handleFiles';
 import { broadcastCurrentOfficeFilePages } from '../handleRequests';
 import { getConfigValue } from '../../../../helpers/utils';
+import { findOfficePageFile, type OfficePageLoad } from '../navigationQueue';
 
 interface IUseOfficePageSyncer {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
@@ -17,34 +17,41 @@ interface IUseOfficePageSyncer {
 const useOfficePageSyncer = ({ excalidrawAPI, isPresenter, currentPage }: IUseOfficePageSyncer) => {
   const currentOfficeFilePages = useAppSelector((state) => state.whiteboard.currentOfficeFilePages);
 
+  /**
+   * Loads the office page image of `fileId`. The page list is read from the
+   * store at call time and scoped to that file, so a queued switch can never
+   * fetch a page with another file's metadata. Purely a fetch: the caller
+   * applies the result, so a superseded navigation never adds files or paints.
+   */
   const syncOfficeFilePage = useCallback(
-    async (pageToSync: number) => {
-      if (!excalidrawAPI || !isPresenter || currentOfficeFilePages === '') {
-        return;
+    async (
+      fileId: string,
+      pageToSync: number,
+      isCurrent?: () => boolean,
+    ): Promise<OfficePageLoad | null> => {
+      if (!excalidrawAPI || !isPresenter) {
+        return null;
       }
 
-      const newImages: Array<BinaryFileData> = [];
-      const newElements: Array<ExcalidrawElement> = [];
-      const localElements = excalidrawAPI.getSceneElementsIncludingDeleted();
-
-      let file: IWhiteboardFile | undefined;
-      try {
-        const documentPages: Array<IWhiteboardFile> = JSON.parse(currentOfficeFilePages);
-        file = documentPages.find((f) => f.currentPage === pageToSync && f.isOfficeFile);
-      } catch (e) {
-        console.error('Failed to parse office file page data.', e);
-        return;
-      }
-
+      const { currentWhiteboardOfficeFileId, currentOfficeFilePages } = store.getState().whiteboard;
+      const file = findOfficePageFile<IWhiteboardFile>(
+        currentOfficeFilePages,
+        fileId,
+        currentWhiteboardOfficeFileId,
+        pageToSync,
+      );
       if (!file) {
-        return;
+        return null;
       }
 
       // Simplified check: if an element with this ID already exists, skip it.
-      const elementExists = localElements.some((el) => el.id === file?.id);
+      const elementExists = excalidrawAPI
+        .getSceneElementsIncludingDeleted()
+        .some((el) => el.id === file.id);
       if (elementExists) {
-        return;
+        return null;
       }
+
       const url =
         getConfigValue<string>('serverUrl', 'http://localhost:8080', 'PLUG_N_MEET_SERVER_URL') +
         '/download/uploadedFile/' +
@@ -58,19 +65,16 @@ const useOfficePageSyncer = ({ excalidrawAPI, isPresenter, currentPage }: IUseOf
         file.metaFilePath,
       );
 
-      if (result) {
-        newImages.push(result.image);
-        newElements.push(...result.elms);
-      } else {
-        return; // No result, no need to proceed
+      if (!result) {
+        return null; // No result, no need to proceed
+      }
+      if (isCurrent && !isCurrent()) {
+        return null; // navigation moved on: drop the result instead of applying it
       }
 
-      // Add all binary file data at once.
-      excalidrawAPI.addFiles(newImages);
-
-      return [...localElements, ...newElements];
+      return { images: [result.image], elements: result.elms };
     },
-    [excalidrawAPI, isPresenter, currentOfficeFilePages],
+    [excalidrawAPI, isPresenter],
   );
 
   /**
