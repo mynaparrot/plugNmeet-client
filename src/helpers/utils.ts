@@ -533,3 +533,17 @@ export function base64ToUint8(base64: string): Uint8Array {
   }
   return bytes;
 }
+
+// Triggers a browser download for in-memory text content (exports).
+export const downloadTextFile = (content: string, fileName: string, mimeType: string) => {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  // Revoke after the browser has started the download, otherwise some browsers cancel it.
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+};

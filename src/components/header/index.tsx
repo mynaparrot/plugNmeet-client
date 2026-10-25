@@ -6,6 +6,7 @@ import { store, useAppSelector } from '../../store';
 import HeaderMenus from './menus';
 import RoomSettings from './room-settings';
 import KeyboardShortcuts from './keyboardShortcuts';
+import ExportHub from '../export-hub';
 import VolumeControl from './volumeControl';
 import DurationView from './durationView';
 import DarkThemeSwitcher from './darkThemeSwitcher';
@@ -28,6 +29,7 @@ const Header = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalText, setModalText] = useState('');
   const [onConfirm, setOnConfirm] = useState<() => void>(() => () => {});
+  const [showExportHub, setShowExportHub] = useState<boolean>(false);
 
   useEffect(() => {
     if (roomTitle) {
@@ -84,7 +86,10 @@ const Header = () => {
                     </div>
                   </MenuButton>
 
-                  <HeaderMenus onOpenAlert={() => handleLogout()} />
+                  <HeaderMenus
+                    onOpenAlert={() => handleLogout()}
+                    onOpenExportHub={() => setShowExportHub(true)}
+                  />
                 </div>
               )}
             </Menu>
@@ -103,6 +108,7 @@ const Header = () => {
         />
         <RoomSettings />
         <KeyboardShortcuts />
+        <ExportHub show={showExportHub} onClose={() => setShowExportHub(false)} />
       </>
     )
   );
