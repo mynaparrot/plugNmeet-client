@@ -322,6 +322,8 @@
     "file-upload-success": "ফাইল সফলভাবে আপলোড হয়েছে।",
     "file-upload-default-error": "ফাইল আপলোড করার সময় একটি ত্রুটি ঘটেছে।",
     "chat-box-placeholder": "একটি বার্তা পাঠান, একটি ছবি পেস্ট করুন, বা এখানে একটি ফাইল ড্রপ করুন (নতুন লাইন: Shift + Enter)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "পাঠানো হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...",
     "reply": "উত্তর",
     "edit-message": "বার্তা সম্পাদনা করুন",
@@ -342,6 +344,8 @@
     "new-messages": "নতুন বার্তা",
     "scroll-to-bottom": "নীচে স্ক্রোল করুন",
     "sync-chat": "সহকর্মীদের সাথে চ্যাট সিঙ্ক করুন",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "পূর্ববর্তী বার্তাগুলি লোড করুন",
     "system-name": "সিস্টেম"
   },
