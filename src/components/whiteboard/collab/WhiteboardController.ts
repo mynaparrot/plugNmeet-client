@@ -53,6 +53,32 @@ const SYNC_RETRY_DELAY_MS = 2000;
 const MAX_SYNC_REQUEST_ATTEMPTS = 3;
 const INITIAL_REQUEST_TIMEOUT_MS = 4000;
 const SERVER_FIRST_SYNC_TIMEOUT_MS = 1500;
+const MISSING_UPDATE_RESYNC_THROTTLE_MS = 2000;
+// Stop firing targeted resyncs for a gap that never heals; anti-entropy still
+// covers it at one peer per tick.
+const MAX_MISSING_UPDATE_RESYNCS = 5;
+const ANTI_ENTROPY_INTERVAL_MS = 25000;
+const ANTI_ENTROPY_JITTER_MS = 5000;
+const CANONICAL_RETRY_BASE_MS = 2000;
+const CANONICAL_RETRY_MAX_MS = 30000;
+/** How long a SESSION_DATA save waits for its SESSION_DATA_SAVE_RESPONSE ack. */
+export const SAVE_ACK_TIMEOUT_MS = 3000;
+/** Backoff for retrying an unconfirmed save (page still active or upload stashed). */
+const SAVE_RETRY_BASE_MS = 2000;
+const SAVE_RETRY_MAX_MS = 30000;
+/** Total time a page/file switch may spend flushing the active page. */
+const SAVE_FLUSH_TIMEOUT_MS = 5000;
+/** Pause between flush attempts so an instantly failing save cannot spin. */
+const SAVE_FLUSH_RETRY_DELAY_MS = 500;
+
+/** Content of a page the presenter left before the server confirmed the save. */
+interface PendingPageUpload {
+  update: Uint8Array;
+  /** Plan-time state vector; becomes the baseline once the upload is acked. */
+  stateVector: Uint8Array;
+  /** True when the page's canonical snapshot never arrived (upload goes to the ~d key). */
+  unconfirmed: boolean;
+}
 
 export class WhiteboardController {
   private doc: Y.Doc | null = null;
@@ -71,9 +97,15 @@ export class WhiteboardController {
   private syncRequestAttempts = 0;
   private backupResponseTimers = new Map<string, ReturnType<typeof setTimeout>>();
   private syncRetryTimer: ReturnType<typeof setTimeout> | null = null;
+  private antiEntropyTimer: ReturnType<typeof setTimeout> | null = null;
+  private lastMissingUpdateResyncAt = 0;
+  private missingUpdateResyncs = 0;
   private initialRequestResolver: ((data: { fileId: string; page: number } | null) => void) | null =
     null;
   private initialRequestTimer: ReturnType<typeof setTimeout> | null = null;
+  // Scope Redux held when the initial bootstrap was requested: a donor whose
+  // answer arrives after the presenter moved on must not override that scope.
+  private initialRequestScope: { fileId: string; page: number } | null = null;
   private saveTimer: ReturnType<typeof setTimeout> | null = null;
   // Local-origin doc updates (user annotations) counted since the last
   // analytics flush. Sent as an INCRBY delta, so it resets after each send.
@@ -89,6 +121,27 @@ export class WhiteboardController {
       timer: ReturnType<typeof setTimeout>;
     }
   >();
+  // In-flight fetch per key, so concurrent callers share one request/response.
+  private sessionDataFetches = new Map<string, Promise<boolean>>();
+  // Waiter per SESSION_DATA_SAVE requestId, resolved by SESSION_DATA_SAVE_RESPONSE.
+  private saveAckWaiters = new Map<
+    string,
+    {
+      resolve: (ok: boolean) => void;
+      timer: ReturnType<typeof setTimeout>;
+    }
+  >();
+  // All server saves run one at a time through this chain, so a new plan can
+  // never overtake an in-flight upload (which would reorder writes per key).
+  private saveChain: Promise<unknown> = Promise.resolve();
+  private saveRetryTimer: ReturnType<typeof setTimeout> | null = null;
+  private saveRetryAttempt = 0;
+  // Pages the presenter left before the save was confirmed; retried in the
+  // background (survives page changes, dropped on destroy / lost presenter).
+  private pendingPageUploads = new Map<string, PendingPageUpload>();
+  private pendingUploadTimers = new Map<string, ReturnType<typeof setTimeout>>();
+  // Retry timers for unconfirmed canonical snapshots (late/empty responses).
+  private canonicalRetryTimers = new Map<string, ReturnType<typeof setTimeout>>();
   // Pages whose canonical checkpoint snapshot has NOT yet been confirmed
   // present by the server. While a key is in this set, the local partial
   // state for that page must not be treated as authoritative: saves and
@@ -204,7 +257,16 @@ export class WhiteboardController {
    */
   sync = (fileId: string, page: number, options?: { hydrate?: boolean }): Promise<void> => {
     const hydrate = options?.hydrate ?? true;
-    this.syncChain = this.syncChain.then(() => this.doSync(fileId, page, hydrate));
+    return this.enqueueSyncStep(() => this.doSync(fileId, page, hydrate));
+  };
+
+  /**
+   * Append a step to the serialized doc lifecycle. A rejected step must not
+   * poison the chain: the next step still runs.
+   */
+  private enqueueSyncStep = (step: () => Promise<unknown>): Promise<void> => {
+    const run = () => step().then(() => undefined);
+    this.syncChain = this.syncChain.then(run, run);
     return this.syncChain;
   };
 
@@ -261,20 +323,42 @@ export class WhiteboardController {
         canonicalArrived = await this.fetchSessionData(canonicalKey);
       }
       if (canonicalArrived) {
-        this.unconfirmedCanonicalKeys.delete(canonicalKey);
+        this.confirmCanonical(canonicalKey);
       } else {
         this.unconfirmedCanonicalKeys.add(canonicalKey);
         console.warn(
-          `[WhiteboardController] canonical snapshot for ${canonicalKey} did not arrive; saves and full-state broadcasts for this page are paused until it arrives`,
+          `[WhiteboardController] canonical snapshot for ${canonicalKey} did not arrive; saving to the diff key only (no checkpoint) and pausing full-state broadcasts until it arrives`,
         );
+        this.scheduleCanonicalRetry(canonicalKey);
       }
       // The diff is still fetched and applied locally even when the canonical is
       // unconfirmed; the gates below keep the partial state non-authoritative.
       await this.fetchSessionData(diffKeyOf(canonicalKey));
+
+      const pending = this.pendingPageUploads.get(canonicalKey);
+      if (pending) {
+        // The presenter's own content from before the switch: merge it into the
+        // hydrated doc (same lineage, so a raw Yjs update is enough) and drop
+        // the entry so a stale background retry can't overwrite what this doc
+        // uploads next.
+        this.applyRemoteUpdate(pending.update);
+        this.pendingPageUploads.delete(canonicalKey);
+        const pendingTimer = this.pendingUploadTimers.get(canonicalKey);
+        if (pendingTimer) {
+          clearTimeout(pendingTimer);
+          this.pendingUploadTimers.delete(canonicalKey);
+        }
+      }
+      // A hydration builds a fresh doc, so any baseline recorded for this key
+      // belongs to a doc that no longer exists: the next save is a checkpoint.
+      this.getSyncState(canonicalKey).reset();
     }
 
     this.generation++;
     this.emitChange();
+    // Anti-entropy runs for the lifetime of the doc (covers both doSync and
+    // the donor-initial-data path that also creates a doc).
+    this.scheduleAntiEntropy();
 
     return true;
   };
@@ -299,6 +383,19 @@ export class WhiteboardController {
   /** `teardown()` plus tear down room presence and forget the transport/config entirely. */
   destroy = async () => {
     await this.teardown();
+    // No further ack can arrive: settle everything still waiting. Pending page
+    // uploads (which outlive a page) die with the controller.
+    for (const waiter of this.saveAckWaiters.values()) {
+      clearTimeout(waiter.timer);
+      waiter.resolve(false);
+    }
+    this.saveAckWaiters.clear();
+    for (const t of this.pendingUploadTimers.values()) {
+      clearTimeout(t);
+    }
+    this.pendingUploadTimers.clear();
+    this.pendingPageUploads.clear();
+    this.resetSaveRetry();
     this.destroyPresence();
     this.config = null;
   };
@@ -327,10 +424,15 @@ export class WhiteboardController {
   private teardownDoc = async () => {
     const hadPendingSave = this.saveTimer !== null;
     this.clearSaveTimers();
-    // Flush before the doc is destroyed. Force a full checkpoint when changes
-    // were pending; when idle this is a cheap retry — it no-ops via empty-diff
-    // if the last flush already succeeded, and recovers a failed upload.
-    await this._saveRemoteNow(hadPendingSave);
+    this.resetSaveRetry();
+    // Single save attempt before the doc is destroyed — a page switch must not
+    // block on acks. A full checkpoint is forced when changes were pending;
+    // when idle this no-ops via empty-diff. Unconfirmed content is stashed and
+    // retried in the background.
+    const confirmed = await this._saveRemoteNow({ forceCheckpoint: hadPendingSave });
+    if (!confirmed && this.doc && this.isCurrentUserPresenter()) {
+      this.stashPendingUpload(this.doc);
+    }
     // Track the last-seen live state in the local export cache (presenter-only;
     // flushLocalSnapshot is a no-op for other roles).
     await this.flushLocalSnapshot();
@@ -339,6 +441,16 @@ export class WhiteboardController {
       clearTimeout(this.syncRetryTimer);
       this.syncRetryTimer = null;
     }
+    if (this.antiEntropyTimer) {
+      clearTimeout(this.antiEntropyTimer);
+      this.antiEntropyTimer = null;
+    }
+    for (const t of this.canonicalRetryTimers.values()) {
+      clearTimeout(t);
+    }
+    this.canonicalRetryTimers.clear();
+    this.lastMissingUpdateResyncAt = 0;
+    this.missingUpdateResyncs = 0;
     for (const t of this.backupResponseTimers.values()) {
       clearTimeout(t);
     }
@@ -364,52 +476,205 @@ export class WhiteboardController {
     this.pendingAnnotations = 0;
   };
 
-  private async _saveRemoteNow(forceCheckpoint = false) {
+  /** Run `task` once every previously queued save has settled. */
+  private enqueueSave = <T>(task: () => Promise<T>): Promise<T> => {
+    const run = this.saveChain.then(task, task);
+    this.saveChain = run.then(
+      () => undefined,
+      () => undefined,
+    );
+    return run;
+  };
+
+  /**
+   * Save the active page to the server. Resolves `true` when the server holds
+   * everything the doc contained at plan time — which also covers "nothing to
+   * save" (empty diff, empty map, no longer presenter, page already switched).
+   * `false` means the content is still local-only.
+   */
+  private _saveRemoteNow = (options: { forceCheckpoint?: boolean } = {}): Promise<boolean> => {
     this.clearSaveTimers();
     this.flushAnnotations();
 
-    const { doc, elementsMap, fileId } = this;
-    if (!this.config || !doc || !elementsMap || !fileId) {
-      return;
+    const doc = this.doc;
+    const elementsMap = this.elementsMap;
+    if (!this.config || !doc || !elementsMap || !this.fileId) {
+      return Promise.resolve(true);
     }
     if (!this.isCurrentUserPresenter() || elementsMap.size === 0) {
+      return Promise.resolve(true);
+    }
+
+    const canonicalKey = this.pageKey(this.fileId, this.page);
+    const forceCheckpoint = options.forceCheckpoint ?? false;
+    // Planning happens inside the chain: the previous save is acked by then, so
+    // this plan already covers every edit that coalesced while it was in flight.
+    return this.enqueueSave(async () => {
+      if (this.doc !== doc) {
+        return true; // page switched; its teardown save covers this content
+      }
+      try {
+        const state = this.getSyncState(canonicalKey);
+        let update: Uint8Array;
+        let key: string;
+        let checkpointSV: Uint8Array | undefined;
+        if (this.unconfirmedCanonicalKeys.has(canonicalKey)) {
+          // Never overwrite a canonical we have not seen: ship the full state to
+          // the ~d key instead (hydration applies canonical then ~d, and Yjs
+          // merges). The checkpoint baseline stays untouched.
+          update = Y.encodeStateAsUpdate(doc);
+          key = diffKeyOf(canonicalKey);
+        } else {
+          const plan = state.planSave(doc, canonicalKey, { forceCheckpoint });
+          if (plan.skipReason === 'empty-diff') {
+            return true; // nothing changed since the last checkpoint
+          }
+          update = plan.update;
+          key = plan.key;
+          checkpointSV = plan.kind === 'checkpoint' ? plan.stateVector : undefined;
+        }
+        const wire = compress(update);
+        if (wire.length > SESSION_DATA_MAX_WIRE_BYTES) {
+          // Oversize: the NATS max_payload would reject it. Skip the send but
+          // keep degradation safe (server keeps last good checkpoint; live peers
+          // remain authoritative). We deliberately do NOT noteCheckpointUploaded
+          // so the next flush retries the checkpoint rather than baselining diffs
+          // against an upload the server never received.
+          console.warn(
+            `[WhiteboardController] SESSION_DATA payload for ${key} is too large (${wire.length} bytes); skipping upload`,
+          );
+          return false;
+        }
+        // Server is the source of truth for sync.
+        const ok = await this.uploadSessionData(wire, key);
+        if (ok && checkpointSV) {
+          state.noteCheckpointUploaded(checkpointSV, wire.length);
+        }
+        return ok;
+      } catch (e) {
+        console.error('[WhiteboardController] failed to save page', e);
+        return false;
+      }
+    });
+  };
+
+  /**
+   * Save and, when unconfirmed while still on the same page, re-arm a backoff
+   * retry instead of waiting for the next edit.
+   */
+  private saveWithRetry = async (forceCheckpoint = false) => {
+    if (await this._saveRemoteNow({ forceCheckpoint })) {
+      this.resetSaveRetry();
       return;
     }
-    try {
-      const canonicalKey = this.pageKey(fileId, this.page);
-      if (this.unconfirmedCanonicalKeys.has(canonicalKey)) {
-        console.warn(
-          `[WhiteboardController] skipping save for ${canonicalKey}: canonical snapshot unconfirmed (partial hydration); retrying after the snapshot arrives`,
-        );
-        return;
-      }
-      const state = this.getSyncState(canonicalKey);
-      const plan = state.planSave(doc, canonicalKey, { forceCheckpoint });
-      if (plan.skipReason === 'empty-diff') {
-        // Nothing changed since the last checkpoint; skip the upload entirely.
-        return;
-      }
-      const wire = compress(plan.update);
-      if (wire.length > SESSION_DATA_MAX_WIRE_BYTES) {
-        // Oversize: the NATS max_payload would reject it. Skip the send but
-        // keep degradation safe (server keeps last good checkpoint; live peers
-        // remain authoritative). We deliberately do NOT noteCheckpointUploaded
-        // so the next flush retries the checkpoint rather than baselining diffs
-        // against an upload the server never received.
-        console.warn(
-          `[WhiteboardController] SESSION_DATA payload for ${plan.key} is too large (${wire.length} bytes); skipping upload`,
-        );
-        return;
-      }
-      // Server is the source of truth for sync.
-      await this.uploadSessionData(wire, plan.key);
-      if (plan.kind === 'checkpoint') {
-        state.noteCheckpointUploaded(doc, wire.length);
-      }
-    } catch (e) {
-      console.error('[WhiteboardController] failed to save page', e);
+    this.scheduleSaveRetry();
+  };
+
+  private resetSaveRetry = () => {
+    this.saveRetryAttempt = 0;
+    if (this.saveRetryTimer) {
+      clearTimeout(this.saveRetryTimer);
+      this.saveRetryTimer = null;
     }
-  }
+  };
+
+  private scheduleSaveRetry = () => {
+    if (this.saveRetryTimer || !this.doc || !this.isCurrentUserPresenter()) return;
+    const delay = Math.min(SAVE_RETRY_MAX_MS, SAVE_RETRY_BASE_MS * 2 ** this.saveRetryAttempt);
+    this.saveRetryTimer = setTimeout(() => {
+      this.saveRetryTimer = null;
+      this.saveRetryAttempt++;
+      void this.saveWithRetry();
+    }, delay);
+  };
+
+  /**
+   * Force-persist the active page before a page/file switch. Retries for up to
+   * ~SAVE_FLUSH_TIMEOUT_MS; if still unconfirmed the content is stashed and
+   * retried in the background so the switch can proceed without losing it.
+   */
+  flushBeforeSwitch = async (): Promise<boolean> => {
+    const doc = this.doc;
+    if (!doc || !this.isCurrentUserPresenter()) {
+      return true; // nothing this user is allowed to persist
+    }
+    this.resetSaveRetry();
+    // Only a page with pending changes needs a full checkpoint; a clean page
+    // stays a no-op save.
+    const forceCheckpoint = this.saveTimer !== null;
+    const deadline = Date.now() + SAVE_FLUSH_TIMEOUT_MS;
+    let ok = await this._saveRemoteNow({ forceCheckpoint });
+    while (!ok && this.doc === doc && Date.now() < deadline) {
+      const remaining = Math.max(0, deadline - Date.now());
+      await new Promise((resolve) =>
+        setTimeout(resolve, Math.min(SAVE_FLUSH_RETRY_DELAY_MS, remaining)),
+      );
+      if (this.doc !== doc || Date.now() >= deadline) break;
+      ok = await this._saveRemoteNow({ forceCheckpoint });
+    }
+    if (ok) {
+      await this.flushLocalSnapshot();
+      return true;
+    }
+    this.stashPendingUpload(doc);
+    return false;
+  };
+
+  /** Keep unconfirmed content of a page we are leaving and retry it in the background. */
+  private stashPendingUpload = (doc: Y.Doc) => {
+    const key = this.pageKey(this.fileId, this.page);
+    this.pendingPageUploads.set(key, {
+      update: Y.encodeStateAsUpdate(doc),
+      stateVector: Y.encodeStateVector(doc),
+      unconfirmed: this.unconfirmedCanonicalKeys.has(key),
+    });
+    this.schedulePendingUploadRetry(key);
+  };
+
+  private schedulePendingUploadRetry = (key: string, attempt = 0) => {
+    if (!this.isCurrentUserPresenter()) {
+      // Not authoritative any more: never overwrite the new presenter's state.
+      this.pendingPageUploads.delete(key);
+      return;
+    }
+    const existing = this.pendingUploadTimers.get(key);
+    if (existing) {
+      clearTimeout(existing);
+    }
+    const delay = Math.min(SAVE_RETRY_MAX_MS, SAVE_RETRY_BASE_MS * 2 ** attempt);
+    const timer = setTimeout(() => {
+      this.pendingUploadTimers.delete(key);
+      void this.retryPendingUpload(key, attempt);
+    }, delay);
+    this.pendingUploadTimers.set(key, timer);
+  };
+
+  /** Upload stashed page content (through the save chain) until the server acks it. */
+  private retryPendingUpload = async (key: string, attempt: number) => {
+    const pending = this.pendingPageUploads.get(key);
+    if (!pending) {
+      return;
+    }
+    if (!this.isCurrentUserPresenter()) {
+      this.pendingPageUploads.delete(key);
+      return;
+    }
+    const wire = compress(pending.update);
+    const ok = await this.enqueueSave(() =>
+      this.uploadSessionData(wire, pending.unconfirmed ? diffKeyOf(key) : key),
+    );
+    if (this.pendingPageUploads.get(key) !== pending) {
+      return; // hydration superseded it with a newer checkpoint
+    }
+    if (!ok) {
+      this.schedulePendingUploadRetry(key, attempt + 1);
+      return;
+    }
+    this.pendingPageUploads.delete(key);
+    if (!pending.unconfirmed) {
+      this.getSyncState(key).noteCheckpointUploaded(pending.stateVector, wire.length);
+    }
+  };
 
   /**
    * Unconditionally persist the active (fileId, page) scope from the live doc
@@ -418,14 +683,6 @@ export class WhiteboardController {
   flushLocalSnapshot = async () => {
     if (!this.isCurrentUserPresenter() || !this.doc || !this.fileId) return;
     await saveWhiteboardPageSnapshot(this.fileId, this.page, Y.encodeStateAsUpdate(this.doc));
-  };
-
-  /**
-   * Will update remote + local IDB
-   */
-  public saveCurrentState = async () => {
-    await this._saveRemoteNow();
-    await this.flushLocalSnapshot();
   };
 
   /**
@@ -460,7 +717,7 @@ export class WhiteboardController {
       // Server protocol save first, then mirror the live doc into the local IDB
       // export cache so it always holds current data during active editing.
       try {
-        await this._saveRemoteNow();
+        await this.saveWithRetry();
         await this.flushLocalSnapshot();
       } catch (e) {
         console.error('[WhiteboardController] scheduled save failed', e);
@@ -495,15 +752,32 @@ export class WhiteboardController {
     );
   };
 
-  uploadSessionData = async (update: Uint8Array, key: string, targetRoomId?: string) => {
+  /**
+   * Send a SESSION_DATA save and resolve `true` only once the server acks it
+   * (SESSION_DATA_SAVE_RESPONSE echoes our requestId). No NATS connection,
+   * encryption failure and a missed ack all resolve `false`.
+   */
+  uploadSessionData = async (
+    update: Uint8Array,
+    key: string,
+    targetRoomId?: string,
+  ): Promise<boolean> => {
     const conn = getNatsConn();
-    if (!conn || !this.fileId) return;
+    if (!conn || !this.fileId) return false;
     let value = update;
     if (conn.enableE2EE) {
       const enc = await conn.encryptData(update);
-      if (typeof enc === 'undefined') return;
+      if (typeof enc === 'undefined') return false;
       value = enc;
     }
+    const requestId = crypto.randomUUID();
+    const acked = new Promise<boolean>((resolve) => {
+      const timer = setTimeout(() => {
+        this.saveAckWaiters.delete(requestId);
+        resolve(false);
+      }, SAVE_ACK_TIMEOUT_MS);
+      this.saveAckWaiters.set(requestId, { resolve, timer });
+    });
     conn.sendMessageToCoreWorker(
       create(NatsMsgClientToServerSchema, {
         event: NatsMsgClientToServerEvents.SESSION_DATA_SAVE,
@@ -512,12 +786,25 @@ export class WhiteboardController {
           create(SessionDataHeaderSchema, {
             dataType: SessionDataType.WHITEBOARD,
             key,
+            requestId,
             ...(targetRoomId ? { targetRoomId } : {}),
           }),
         ),
         binMsg: value,
       }),
     );
+    return acked;
+  };
+
+  /** Resolve the save waiters for a SESSION_DATA_SAVE_RESPONSE (header only). */
+  handleSessionDataSaveResponse = (header: SessionDataHeader) => {
+    const requestId = header.requestId;
+    if (!requestId) return;
+    const waiter = this.saveAckWaiters.get(requestId);
+    if (!waiter) return;
+    clearTimeout(waiter.timer);
+    this.saveAckWaiters.delete(requestId);
+    waiter.resolve(header.success === true);
   };
 
   /**
@@ -528,8 +815,15 @@ export class WhiteboardController {
    * resolving the waiter, so awaiting the canonical key guarantees the base
    * snapshot is in the doc before the rolling diff is requested/applied.
    */
-  fetchSessionData = (key: string) =>
-    new Promise<boolean>((resolve) => {
+  fetchSessionData = (key: string): Promise<boolean> => {
+    // Single-flight per key: a concurrent caller must not overwrite the first
+    // caller's waiter (whose timeout would then delete the newer one).
+    const inFlight = this.sessionDataFetches.get(key);
+    if (inFlight) {
+      return inFlight;
+    }
+
+    const promise = new Promise<boolean>((resolve) => {
       const conn = getNatsConn();
       if (!conn) {
         resolve(false);
@@ -553,7 +847,16 @@ export class WhiteboardController {
           ),
         }),
       );
+    }).finally(() => {
+      // Only drop our own entry: a newer fetch may already have registered.
+      if (this.sessionDataFetches.get(key) === promise) {
+        this.sessionDataFetches.delete(key);
+      }
     });
+
+    this.sessionDataFetches.set(key, promise);
+    return promise;
+  };
 
   handleSessionDataResponse = (header: SessionDataHeader, value: Uint8Array) => {
     if (header.dataType !== SessionDataType.WHITEBOARD) return;
@@ -580,13 +883,14 @@ export class WhiteboardController {
     if (value && value.length > 0) {
       // apply the active page live as a raw Yjs update (never decode+rebuild)
       if (doc && isActive) {
-        Y.applyUpdate(doc, value, WHITEBOARD_REMOTE_ORIGIN);
-        this.config?.onRemoteUpdate?.();
-        if (!isDiffKey(key) && this.unconfirmedCanonicalKeys.delete(key)) {
+        // Shared path: also detects missing dependencies and triggers resync.
+        this.applyRemoteUpdate(value);
+        if (!isDiffKey(key) && this.unconfirmedCanonicalKeys.has(key)) {
           // Late-arriving canonical for a page we marked unconfirmed: the doc
           // is now complete — persist a fresh checkpoint and push the full
           // state so everyone converges.
-          void this._saveRemoteNow(true);
+          this.confirmCanonical(key);
+          void this.saveWithRetry(true);
           this.broadcastFullState();
         }
       }
@@ -613,6 +917,63 @@ export class WhiteboardController {
     const local = await listWhiteboardPages(fileId);
     const missing = expected.filter((p) => !local.includes(p));
     await Promise.all(missing.map((page) => this.fetchSessionData(this.pageKey(fileId, page))));
+  };
+
+  /** Mark a page's canonical snapshot as confirmed and stop retrying it. */
+  private confirmCanonical = (key: string) => {
+    this.unconfirmedCanonicalKeys.delete(key);
+    const timer = this.canonicalRetryTimers.get(key);
+    if (timer) {
+      clearTimeout(timer);
+      this.canonicalRetryTimers.delete(key);
+    }
+  };
+
+  /**
+   * A canonical snapshot that never arrived leaves the page stuck (saves and
+   * full-state broadcasts stay paused). Retry with backoff while the same page
+   * is active and its canonical is still unconfirmed.
+   */
+  private scheduleCanonicalRetry = (key: string, attempt = 0) => {
+    const existing = this.canonicalRetryTimers.get(key);
+    if (existing) {
+      clearTimeout(existing);
+    }
+    const delay = Math.min(CANONICAL_RETRY_MAX_MS, CANONICAL_RETRY_BASE_MS * 2 ** attempt);
+    const timer = setTimeout(() => {
+      this.canonicalRetryTimers.delete(key);
+      void this.retryCanonical(key, attempt);
+    }, delay);
+    this.canonicalRetryTimers.set(key, timer);
+  };
+
+  private retryCanonical = async (key: string, attempt: number) => {
+    if (!this.doc || key !== this.pageKey(this.fileId, this.page)) {
+      return;
+    }
+    if (!this.unconfirmedCanonicalKeys.has(key)) {
+      return;
+    }
+
+    const arrived = await this.fetchSessionData(key);
+    if (!this.doc || key !== this.pageKey(this.fileId, this.page)) {
+      return;
+    }
+
+    if (arrived) {
+      // A non-empty response was already handled by handleSessionDataResponse;
+      // this covers the late EMPTY case, where nothing was applied.
+      if (this.unconfirmedCanonicalKeys.has(key)) {
+        this.confirmCanonical(key);
+        void this.saveWithRetry(true);
+        this.broadcastFullState();
+      }
+      return;
+    }
+
+    if (this.unconfirmedCanonicalKeys.has(key)) {
+      this.scheduleCanonicalRetry(key, attempt + 1);
+    }
   };
 
   /**
@@ -763,9 +1124,81 @@ export class WhiteboardController {
       return;
     }
     this.config?.onRemoteUpdate?.();
+    this.detectMissingUpdates();
   };
 
-  private sendSyncRequest = () => {
+  /**
+   * Yjs parks updates whose causal dependencies are missing in the doc store
+   * (`pendingStructs`/`pendingDs`); they stay unintegrated until an earlier
+   * update arrives, so ask the room for the missing history. Throttled: a
+   * burst of out-of-order updates must not turn into a request storm.
+   */
+  private detectMissingUpdates = () => {
+    const docStore = this.doc?.store;
+    if (!docStore) {
+      return;
+    }
+    if (!docStore.pendingStructs && !docStore.pendingDs) {
+      this.missingUpdateResyncs = 0; // everything integrated again
+      return;
+    }
+    // Initial handshake in flight: sendSyncRequest() would clear
+    // pendingSyncRequestIds and reject its response, so let the handshake
+    // deliver the missing history instead.
+    if (this.initialRequestResolver) {
+      return;
+    }
+    const now = Date.now();
+    if (
+      this.missingUpdateResyncs >= MAX_MISSING_UPDATE_RESYNCS ||
+      now - this.lastMissingUpdateResyncAt < MISSING_UPDATE_RESYNC_THROTTLE_MS
+    ) {
+      return;
+    }
+    this.lastMissingUpdateResyncAt = now;
+    this.missingUpdateResyncs += 1;
+    console.warn(
+      '[WhiteboardController] remote update is missing earlier updates; requesting a resync',
+    );
+    this.syncRequestAttempts = 0;
+    this.sendSyncRequest();
+  };
+
+  /**
+   * Anti-entropy: every ~25s (±5s) hand our state vector to a single peer so
+   * a dropped update heals without user action. One peer per tick keeps the
+   * cost flat in large rooms.
+   */
+  private scheduleAntiEntropy = () => {
+    if (this.antiEntropyTimer) {
+      clearTimeout(this.antiEntropyTimer);
+    }
+    const jitter = Math.round((Math.random() * 2 - 1) * ANTI_ENTROPY_JITTER_MS);
+    this.antiEntropyTimer = setTimeout(() => {
+      this.antiEntropyTimer = null;
+      this.runAntiEntropyTick();
+    }, ANTI_ENTROPY_INTERVAL_MS + jitter);
+  };
+
+  private runAntiEntropyTick = () => {
+    if (!this.doc) {
+      return;
+    }
+    this.scheduleAntiEntropy();
+
+    if (typeof document !== 'undefined' && document.visibilityState !== 'visible') {
+      return;
+    }
+    // Never compete with the initial handshake or an in-flight sync.
+    if (this.pendingSyncRequestIds.size > 0 || this.initialRequestResolver) {
+      return;
+    }
+
+    this.syncRequestAttempts = 0;
+    this.sendSyncRequest(1);
+  };
+
+  private sendSyncRequest = (maxTargets?: number) => {
     const { doc, config } = this;
     if (!doc || !config) {
       return;
@@ -789,8 +1222,9 @@ export class WhiteboardController {
     }
 
     this.pendingSyncRequestIds.clear();
+    const recipients = maxTargets === undefined ? targets : targets.slice(0, maxTargets);
     const stateVector = Y.encodeStateVector(doc);
-    for (const toUserId of targets) {
+    for (const toUserId of recipients) {
       const requestId = crypto.randomUUID();
       this.pendingSyncRequestIds.add(requestId);
       this.sendWhiteboardData(
@@ -857,16 +1291,11 @@ export class WhiteboardController {
         return;
       }
 
-      // No presenter online: hydrate from the server instead of waiting for
-      // a peer sync that would never answer (skips the 4s timeout).
+      // No presenter online: no peer can answer, so report the store scope and
+      // let the caller hydrate from the server (no 4s timeout wait). The switch
+      // itself stays inside the caller's navigation ownership.
       if (!this.hasPresenterOnline()) {
-        void this.hydrateFromServerAsNonPresenter().then(() => {
-          const state = store.getState();
-          resolve({
-            fileId: this.fileId || state.whiteboard.currentWhiteboardOfficeFileId,
-            page: this.page || state.whiteboard.currentPage,
-          });
-        });
+        resolve(this.storeScope());
         return;
       }
 
@@ -880,6 +1309,7 @@ export class WhiteboardController {
       }
 
       this.initialRequestResolver = resolve;
+      this.initialRequestScope = this.storeScope();
       this.pendingSyncRequestIds.clear();
       const emptyStateVector = Y.encodeStateVector(new Y.Doc());
 
@@ -901,15 +1331,26 @@ export class WhiteboardController {
     });
   };
 
-  /** Server-side hydration (canonical checkpoint + diff) for a presenter-less join. */
-  private async hydrateFromServerAsNonPresenter(): Promise<void> {
-    const state = store.getState();
-    const fileId = state.whiteboard.currentWhiteboardOfficeFileId;
-    const page = state.whiteboard.currentPage;
-    await this.sync(fileId, page, { hydrate: true });
-  }
+  /** Scope currently authorized in Redux (presenter-driven for followers). */
+  private storeScope = (): { fileId: string; page: number } => {
+    const { currentWhiteboardOfficeFileId, currentPage } = store.getState().whiteboard;
+    return { fileId: currentWhiteboardOfficeFileId, page: currentPage };
+  };
+
+  /** True when Redux was moved to a newer scope after the bootstrap was requested. */
+  private isInitialBootstrapStale = (): boolean => {
+    if (!this.initialRequestScope) {
+      return false;
+    }
+    const scope = this.storeScope();
+    return (
+      scope.fileId !== this.initialRequestScope.fileId ||
+      scope.page !== this.initialRequestScope.page
+    );
+  };
 
   private resolveInitialRequest = (data: { fileId: string; page: number } | null) => {
+    this.initialRequestScope = null;
     if (this.initialRequestResolver) {
       const resolve = this.initialRequestResolver;
       this.initialRequestResolver = null;
@@ -1131,19 +1572,44 @@ export class WhiteboardController {
     let donorPage = this.page;
 
     if (hasInitialData) {
+      let initialData: WhiteboardDataAsDonorData;
       try {
-        const initialData = JSON.parse(scope.initial_data!) as WhiteboardDataAsDonorData;
-
-        donorFileId = initialData.currentWhiteboardOfficeFileId;
-        donorPage = initialData.currentPageNumber;
-
-        store.dispatch(addWhiteboardDataSentFromDonor(initialData));
+        initialData = JSON.parse(scope.initial_data!) as WhiteboardDataAsDonorData;
       } catch (error) {
         console.error('[WhiteboardController] failed to parse initial whiteboard data', error);
         return;
       }
 
-      await this.setupDoc(donorFileId, donorPage);
+      // A newer presenter-authorized scope arrived while this bootstrap was in
+      // flight: bootstrapping the donor would drag everyone back to the old
+      // page. Hand the newest scope to the caller instead.
+      if (this.isInitialBootstrapStale()) {
+        this.resolveInitialRequest(this.storeScope());
+        return;
+      }
+
+      donorFileId = initialData.currentWhiteboardOfficeFileId;
+      donorPage = initialData.currentPageNumber;
+
+      store.dispatch(addWhiteboardDataSentFromDonor(initialData));
+
+      // The donor setup shares the serialized doc lifecycle with page/file
+      // switches, and is dropped when a newer authorized scope won the race
+      // while it waited in the chain.
+      let donorScopeReady = false;
+      await this.enqueueSyncStep(async () => {
+        const scope = this.storeScope();
+        if (scope.fileId !== donorFileId || scope.page !== donorPage) {
+          return;
+        }
+        await this.setupDoc(donorFileId, donorPage);
+        donorScopeReady = true;
+      });
+
+      if (!donorScopeReady) {
+        this.resolveInitialRequest(this.storeScope());
+        return;
+      }
 
       if (!this.doc || !this.elementsMap) {
         return;

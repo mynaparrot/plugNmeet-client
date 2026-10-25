@@ -338,8 +338,10 @@ export class NotepadController {
       // so neither checkpoints nor diffs are written locally.
       // Server is the source of truth for sync.
       await this.uploadSessionData(wire, plan.key);
-      if (plan.kind === 'checkpoint') {
-        this.syncState.noteCheckpointUploaded(this.doc, wire.length);
+      // Notepad saves carry no requestId/ack, so the plan-time SV is the best
+      // baseline available.
+      if (plan.kind === 'checkpoint' && plan.stateVector) {
+        this.syncState.noteCheckpointUploaded(plan.stateVector, wire.length);
       }
     } catch (e) {
       console.error('[NotepadController] failed to save snapshot', e);

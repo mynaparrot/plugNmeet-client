@@ -334,6 +334,9 @@ export default class SubscriptionHandler {
     [NatsMsgServerToClientEvents.SESSION_DATA_FETCH_RESPONSE]: async (p) => {
       await this.handleSessionDataFetchResponse(p);
     },
+    [NatsMsgServerToClientEvents.SESSION_DATA_SAVE_RESPONSE]: (p) => {
+      this.handleSessionDataSaveResponse(p);
+    },
   };
 
   /**
@@ -372,6 +375,14 @@ export default class SubscriptionHandler {
       getWhiteboardController().handleSessionDataResponse(header, value);
     } else if (header.dataType === SessionDataType.NOTEPAD) {
       getNotepadController().handleSessionDataResponse(header, value);
+    }
+  }
+
+  /** SESSION_DATA_SAVE_RESPONSE carries the header only (no payload). */
+  private handleSessionDataSaveResponse(p: NatsMsgServerToClient) {
+    const header = fromJsonString(SessionDataHeaderSchema, p.msg);
+    if (header.dataType === SessionDataType.WHITEBOARD) {
+      getWhiteboardController().handleSessionDataSaveResponse(header);
     }
   }
 

@@ -2,6 +2,7 @@ import { DataChannelMessage, DataMsgBodyType } from 'plugnmeet-protocol-js';
 
 import { store } from '../../store';
 import { getWhiteboardController } from '../../components/whiteboard/collab';
+import { participantsSelector } from '../../store/slices/participantSlice';
 import {
   setWhiteboardCurrentPage,
   updateCurrentOfficeFilePages,
@@ -27,12 +28,12 @@ export default class HandleWhiteboard {
         }
         break;
       case DataMsgBodyType.PAGE_CHANGE:
-        if (!this.isCurrentUserPresenter()) {
+        if (this.shouldApplyPageOrFileChange(payload.fromUserId)) {
           store.dispatch(setWhiteboardCurrentPage(Number(payload.message)));
         }
         break;
       case DataMsgBodyType.FILE_CHANGE:
-        if (!this.isCurrentUserPresenter()) {
+        if (this.shouldApplyPageOrFileChange(payload.fromUserId)) {
           const { fileId, page } = JSON.parse(payload.message) as {
             fileId: string;
             page: number;
@@ -52,6 +53,18 @@ export default class HandleWhiteboard {
         break;
     }
   };
+
+  /**
+   * Only the presenter may drive page/file changes for everyone else, and a
+   * user never follows their own echo.
+   */
+  private shouldApplyPageOrFileChange(fromUserId?: string) {
+    if (this.isCurrentUserPresenter() || !fromUserId) {
+      return false;
+    }
+    return !!participantsSelector.selectAll(store.getState()).find((p) => p.userId === fromUserId)
+      ?.metadata?.isPresenter;
+  }
 
   private isCurrentUserPresenter() {
     return store.getState().session.currentUser?.metadata?.isPresenter;

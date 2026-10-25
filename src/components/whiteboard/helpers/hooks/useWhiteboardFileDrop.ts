@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 
 import { store } from '../../../../store';
 import { updateCurrentWhiteboardOfficeFileId } from '../../../../store/slices/whiteboard';
+import { addUserNotification } from '../../../../store/slices/roomSettingsSlice';
 import i18n from '../../../../helpers/i18n';
 import { sleep } from '../../../../helpers/utils';
 import officeFileProcessor from '../../manage-office-files/officeFileProcessor';
@@ -24,7 +25,13 @@ const getExtension = (fileName: string): string => {
   return parts.length > 1 ? (parts.pop() as string) : '';
 };
 
+// A switch waits for the presenter's save; ignore drops while one is running.
+let isSwitching = false;
+
 const switchToFile = async (fileId: string) => {
+  if (isSwitching) {
+    return;
+  }
   if (!store.getState().session.currentUser?.metadata?.isPresenter) {
     return;
   }
@@ -32,12 +39,25 @@ const switchToFile = async (fileId: string) => {
     return;
   }
 
-  await getWhiteboardController().saveCurrentState();
-  // fresh new file ID and first page
-  const page = 1;
-  await broadcastCurrentFileId(fileId, page);
-  await sleep(300);
-  store.dispatch(updateCurrentWhiteboardOfficeFileId({ fileId, page }));
+  isSwitching = true;
+  try {
+    // Flush the current page to the server before leaving it.
+    if (!(await getWhiteboardController().flushBeforeSwitch())) {
+      store.dispatch(
+        addUserNotification({
+          message: i18n.t('whiteboard.save-pending-warning'),
+          typeOption: 'warning',
+        }),
+      );
+    }
+    // fresh new file ID and first page
+    const page = 1;
+    await broadcastCurrentFileId(fileId, page);
+    await sleep(300);
+    store.dispatch(updateCurrentWhiteboardOfficeFileId({ fileId, page }));
+  } finally {
+    isSwitching = false;
+  }
 };
 
 // Capture-phase listener runs before Excalidraw's onDrop.
