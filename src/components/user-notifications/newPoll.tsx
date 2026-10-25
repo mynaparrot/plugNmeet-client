@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { setActiveSidePanel } from '../../../store/slices/bottomIconsActivitySlice';
-import { useAppDispatch } from '../../../store';
-import { PollsIconSVG } from '../../../assets/Icons/PollsIconSVG';
-import ActionButton from '../../../helpers/ui/actionButton';
+import { setActiveSidePanel } from '../../store/slices/bottomIconsActivitySlice';
+import { useAppDispatch } from '../../store';
+import { PollsIconSVG } from '../../assets/Icons/PollsIconSVG';
+import ActionButton from '../../helpers/ui/actionButton';
 
 interface INewPollProps {
   createdAt: number | undefined;

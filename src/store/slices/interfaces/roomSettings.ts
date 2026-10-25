@@ -117,6 +117,8 @@ export interface UserNotification {
   newInstance?: boolean;
   autoClose?: number | false;
   created?: number;
+  /** How the notification is presented; defaults to a toast. */
+  presentation?: 'toast' | 'modal';
   disableToastNotification?: boolean;
   disablePersistentStorage?: boolean;
 }

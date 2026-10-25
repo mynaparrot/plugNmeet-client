@@ -21,6 +21,7 @@ interface IModalProps {
   customBodyClass?: string;
   renderButtons?: () => React.ReactNode;
   unmount?: boolean;
+  closeOnEscape?: boolean;
 }
 
 const Modal = ({
@@ -33,6 +34,7 @@ const Modal = ({
   customBodyClass,
   renderButtons,
   unmount,
+  closeOnEscape,
 }: IModalProps) => {
   const [isOpen, setIsOpen] = useState(show);
 
@@ -52,6 +54,25 @@ const Modal = ({
   useEffect(() => {
     setIsOpen(show);
   }, [show]);
+
+  // Opt-in Escape handling. The default stays off so existing dialogs keep
+  // their current close-button-only behavior.
+  useEffect(() => {
+    if (!isOpen || !closeOnEscape) {
+      return;
+    }
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') {
+        return;
+      }
+      // Mark handled so HeadlessUI's Dialog doesn't also process the event.
+      event.preventDefault();
+      setIsOpen(false);
+    };
+    // Capture phase so this runs before HeadlessUI's bubble-phase handler.
+    window.addEventListener('keydown', handleKeyDown, true);
+    return () => window.removeEventListener('keydown', handleKeyDown, true);
+  }, [isOpen, closeOnEscape]);
 
   return (
     <Transition appear show={isOpen} as={Fragment} afterLeave={onClose}>

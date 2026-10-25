@@ -4,6 +4,9 @@
   "license": "MIT",
   "author": "Jibon L. Costa",
   "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "start": "vite",

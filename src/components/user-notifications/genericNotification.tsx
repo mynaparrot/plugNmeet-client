@@ -1,8 +1,8 @@
 import React from 'react';
 import clsx from 'clsx';
 
-import { UserNotification } from '../../../store/slices/interfaces/roomSettings';
-import { NotifyIconSVG } from '../../../assets/Icons/NotifyIconSVG';
+import { UserNotification } from '../../store/slices/interfaces/roomSettings';
+import { NotifyIconSVG } from '../../assets/Icons/NotifyIconSVG';
 
 interface IGenericNotificationProps {
   notification: UserNotification;

@@ -124,4 +124,4 @@ const RemoveParticipantAlertModal = ({
   );
 };
 
-export default RemoveParticipantAlertModal;
+export default React.memo(RemoveParticipantAlertModal);

@@ -1,4 +1,5 @@
 import React, { memo } from 'react';
+import clsx from 'clsx';
 
 import Avatar from './avatar';
 import ParticipantName from './name';
@@ -20,6 +21,7 @@ interface IParticipantComponentProps {
   participant: IVisibleParticipantInfo;
   currentUser: ICurrentUser | undefined;
   isRemoteParticipant: boolean;
+  isHighlighted?: boolean;
   openRemoveParticipantAlert(name: string, userId: string, type: string): void;
 }
 
@@ -27,6 +29,7 @@ const ParticipantComponent = ({
   participant,
   currentUser,
   isRemoteParticipant,
+  isHighlighted,
   openRemoveParticipantAlert,
 }: IParticipantComponentProps) => {
   const onOpenRemoveParticipantAlert = (user_id: string, type: string) => {
@@ -37,7 +40,12 @@ const ParticipantComponent = ({
   const currentUserIsAdmin = !!store.getState().session.currentUser?.metadata?.isAdmin;
 
   return (
-    <div className="flex items-center justify-between relative w-full gap-2">
+    <div
+      className={clsx(
+        'flex items-center justify-between relative w-full gap-2 rounded-lg px-1 -mx-1 transition-colors duration-200',
+        isHighlighted && 'bg-Green-100 dark:bg-Green-900',
+      )}
+    >
       <div className="left flex items-center gap-1.5 3xl:gap-[10px]">
         <Avatar participant={participant} />
         <ParticipantName

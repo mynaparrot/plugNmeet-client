@@ -23,6 +23,13 @@ vi.hoisted(() => {
 
 vi.mock('../../../helpers/i18n', () => ({ default: { t: (key: string) => key } }));
 
+// The slice graph reaches `helpers/utils` through TwilioTrackProcessor, and that
+// module pulls in sanitize-html, which needs a newer Node than these reducer
+// tests do. Only `getConfigValue` is touched, so stub that one export away.
+vi.mock('../../../helpers/utils', () => ({
+  getConfigValue: (_key: string, defaultValue: unknown) => defaultValue,
+}));
+
 // Avoid booting the real app store (its slice graph warns under module resets);
 // the reducer under test is imported directly below.
 vi.mock('../../../store', () => ({

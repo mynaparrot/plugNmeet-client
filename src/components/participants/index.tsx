@@ -6,8 +6,10 @@ import ParticipantComponent from './participant';
 import RemoveParticipantAlertModal, {
   IRemoveParticipantAlertModalData,
 } from './removeParticipantAlertModal';
+import RandomPickerModal from './randomPickerModal';
 import { SearchIconSVG } from '../../assets/Icons/SearchIconSVG';
 import { CloseIconSVG } from '../../assets/Icons/CloseIconSVG';
+import { ShuffleIconSVG } from '../../assets/Icons/ShuffleIconSVG';
 
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import { selectVisibleParticipants } from '../../store/slices/participantSlice';
@@ -19,6 +21,8 @@ const ParticipantsComponent = () => {
   const [searchParticipant, setSearchParticipant] = useState<string>('');
   const [removeParticipantData, setRemoveParticipantData] =
     useState<IRemoveParticipantAlertModalData>();
+  const [showRandomPicker, setShowRandomPicker] = useState<boolean>(false);
+  const [highlightedUserId, setHighlightedUserId] = useState<string>();
 
   const { currentUser, currentIsAdmin, currentUserUserId, allowViewOtherUsers } = useMemo(() => {
     const session = store.getState().session;
@@ -64,6 +68,11 @@ const ParticipantsComponent = () => {
     dispatch(setActiveSidePanel(null));
   };
 
+  const closeRandomPicker = useCallback(() => {
+    setShowRandomPicker(false);
+    setHighlightedUserId(undefined);
+  }, []);
+
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -85,12 +94,13 @@ const ParticipantsComponent = () => {
           key={participant.userId}
           participant={participant}
           isRemoteParticipant={isRemoteParticipant}
+          isHighlighted={participant.userId === highlightedUserId}
           openRemoveParticipantAlert={onOpenRemoveParticipantAlert}
           currentUser={currentUser}
         />
       );
     },
-    [participants, currentUser, onOpenRemoveParticipantAlert],
+    [participants, currentUser, highlightedUserId, onOpenRemoveParticipantAlert],
   );
 
   return (
@@ -99,18 +109,29 @@ const ParticipantsComponent = () => {
         ref={closeBtnRef}
         type="button"
         aria-label={t('close').toString()}
-        className="inline-block absolute z-50 end-3 3xl:end-5 top-[10px] text-Gray-600 dark:text-white cursor-pointer focus-ring"
+        className="absolute z-50 end-3 3xl:end-5 top-0 h-10 inline-flex items-center justify-center text-Gray-600 dark:text-white cursor-pointer focus-ring"
         onClick={closePanel}
       >
         <CloseIconSVG />
       </button>
       <div className="inner-wrapper relative z-20 w-full">
         <div className="top flex items-center h-10 px-3 3xl:px-5">
-          <p className="text-sm text-Gray-950 dark:text-white font-medium leading-tight">
+          <p className="min-w-0 truncate text-sm text-Gray-950 dark:text-white font-medium leading-tight">
             {t('left-panel.participants', {
               total: participants.length,
             })}
           </p>
+          {currentIsAdmin && (
+            <button
+              type="button"
+              aria-label={t('left-panel.picker.open').toString()}
+              title={t('left-panel.picker.open').toString()}
+              className="shrink-0 ms-auto me-7 inline-flex items-center justify-center w-7 h-7 rounded-lg text-Gray-600 dark:text-white hover:bg-Gray-100 dark:hover:bg-Gray-800 transition-colors duration-200 cursor-pointer focus-ring"
+              onClick={() => setShowRandomPicker(true)}
+            >
+              <ShuffleIconSVG />
+            </button>
+          )}
         </div>
         <div className="search-participants-wrap h-[55px] flex items-center px-3 3xl:px-5 border-y border-Gray-200 dark:border-Gray-800">
           <div className="w-full relative">
@@ -153,6 +174,14 @@ const ParticipantsComponent = () => {
           userId={removeParticipantData.userId}
           removeType={removeParticipantData.removeType}
           closeAlertModal={onCloseAlertModal}
+        />
+      )}
+
+      {currentIsAdmin && showRandomPicker && (
+        <RandomPickerModal
+          excludeUserId={currentUserUserId}
+          onResult={setHighlightedUserId}
+          onClose={closeRandomPicker}
         />
       )}
     </div>

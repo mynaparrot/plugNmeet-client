@@ -92,6 +92,8 @@ export default class HandleDataMessage {
           addUserNotification({
             message: i18n.t(payload.message),
             typeOption: 'warning',
+            // ALERTs interrupt with a single dialog instead of a toast.
+            presentation: 'modal',
           }),
         );
         break;

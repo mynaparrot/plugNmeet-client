@@ -13,7 +13,7 @@ import DarkThemeSwitcher from './darkThemeSwitcher';
 import HeaderLogo from './headerLogo';
 import { getNatsConn } from '../../helpers/nats';
 import { HeaderMenuIcon } from '../../assets/Icons/HeaderMenuIcon';
-import UserNotifications from './user-notifications';
+import UserNotifications from '../user-notifications';
 import ConnectionStatus from './connectionStatus';
 import MediaDegradationBanner from './mediaDegradationBanner';
 import ConfirmationModal from '../../helpers/ui/confirmationModal';

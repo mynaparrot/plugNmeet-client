@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { setActiveSidePanel } from '../../../store/slices/bottomIconsActivitySlice';
-import { useAppDispatch } from '../../../store';
-import ActionButton from '../../../helpers/ui/actionButton';
-import { BreakoutRoomIconSVG } from '../../../assets/Icons/BreakoutRoomIconSVG';
+import { setActiveSidePanel } from '../../store/slices/bottomIconsActivitySlice';
+import { useAppDispatch } from '../../store';
+import ActionButton from '../../helpers/ui/actionButton';
+import { BreakoutRoomIconSVG } from '../../assets/Icons/BreakoutRoomIconSVG';
 
 interface NewBreakoutRoomProps {
   createdAt?: number;

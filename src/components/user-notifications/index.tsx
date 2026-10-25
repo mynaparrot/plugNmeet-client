@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useMemo, useRef, useState } from 'react';
+import React, { ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
@@ -8,51 +8,52 @@ import NewPoll from './newPoll';
 import NewBreakoutRoom from './newBreakoutRoom';
 import GenericNotification from './genericNotification';
 
-import { store, useAppSelector } from '../../../store';
-import { APP_LAYOUT_CLASSES } from '../../../helpers/dimensions';
-import { UserNotification } from '../../../store/slices/interfaces/roomSettings';
-import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
-import { NotifyIconSVG } from '../../../assets/Icons/NotifyIconSVG';
+import { store, useAppSelector } from '../../store';
+import { APP_LAYOUT_CLASSES } from '../../helpers/dimensions';
+import Modal from '../../helpers/ui/modal';
+import { UserNotification } from '../../store/slices/interfaces/roomSettings';
+import { PopupCloseSVGIcon } from '../../assets/Icons/PopupCloseSVGIcon';
+import { NotifyIconSVG } from '../../assets/Icons/NotifyIconSVG';
+import { showBrowserNotification } from './utils';
 
 const UserNotifications = () => {
   const { t } = useTranslation();
   const toastId = useRef<number | string>('toastId');
   const userNotifications = useAppSelector((state) => state.roomSettings.userNotifications);
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState<number>(0);
+  const [modalNotification, setModalNotification] = useState<UserNotification>();
+  const isTabVisible = useAppSelector((state) => state.roomSettings.isPNMWindowTabVisible);
+  // Dedupes the alert dialog effect, including StrictMode's double invocation.
+  const presentedModalIds = useRef<Set<number>>(new Set());
+  // Dedupes the browser notification sent while the tab is in the background.
+  const notifiedModalIds = useRef<Set<number>>(new Set());
 
   const reversedNotifications = useMemo(
     () => [...userNotifications].reverse(),
     [userNotifications],
   );
 
-  const displayToast = (message: string | ReactElement, notification: UserNotification) => {
-    if (notification.disableToastNotification) {
-      return;
-    }
-
-    toast(message, {
-      type: notification.typeOption,
-      autoClose: notification.autoClose,
-      toastId: notification.newInstance ? undefined : toastId.current,
-      className: 'notification-toast',
-    });
-
-    const isPNMWindowTabVisible = store.getState().roomSettings.isPNMWindowTabVisible;
-    if (!isPNMWindowTabVisible) {
-      setHasUnreadNotifications((prevState) => prevState + 1);
-
-      if ('Notification' in window && Notification.permission === 'granted') {
-        // we'll see if website has any favicon icon, then we'll use it
-        const favicon = document.querySelector("link[rel*='icon']");
-        let icon: string | undefined = undefined;
-        if (favicon) {
-          icon = favicon.getAttribute('href') ?? undefined;
-        }
-        // oxlint-disable-next-line no-new
-        new Notification(notification.message, { icon });
+  const displayToast = useCallback(
+    (message: string | ReactElement, notification: UserNotification) => {
+      // Modal notifications are presented by the alert dialog effect instead.
+      if (notification.disableToastNotification || notification.presentation === 'modal') {
+        return;
       }
-    }
-  };
+
+      toast(message, {
+        type: notification.typeOption,
+        autoClose: notification.autoClose,
+        toastId: notification.newInstance ? undefined : toastId.current,
+        className: 'notification-toast',
+      });
+
+      if (!store.getState().roomSettings.isPNMWindowTabVisible) {
+        setHasUnreadNotifications((prevState) => prevState + 1);
+        showBrowserNotification(notification.message);
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     if (!userNotifications.length) {
@@ -74,90 +75,131 @@ const UserNotifications = () => {
         toastElm = <GenericNotification key={lastNotif.created} notification={lastNotif} />;
     }
     displayToast(toastElm, lastNotif);
-    // oxlint-disable-next-line react/exhaustive-effect-dependencies
+    // oxlint-disable-next-line
   }, [userNotifications]);
 
-  const displayIcon = (open: boolean) => {
-    if (open) {
-      setTimeout(() => setHasUnreadNotifications(0), 300);
+  useEffect(() => {
+    if (modalNotification) {
+      // Only one alert dialog at a time; the rest stay in the notification list.
+      return;
     }
-    if (hasUnreadNotifications > 0) {
-      return (
-        <div className="relative">
-          <NotifyIconSVG classes="w-3.5 md:w-4 h-auto text-Gray-950 dark:text-white" />
-          <span className="unseen-notification-count bg-secondary-color w-4 3xl:w-5 h-4 3xl:h-5 rounded-full text-[10px] 3xl:text-xs text-white absolute -top-2 -end-1 flex justify-center items-center">
-            {hasUnreadNotifications}
-          </span>
-        </div>
+
+    // Restored history entries carry disableToastNotification, so they never
+    // re-present as a toast or a dialog after a reload.
+    const next = [...userNotifications]
+      .reverse()
+      .find(
+        (notification) =>
+          notification.presentation === 'modal' &&
+          !notification.disableToastNotification &&
+          notification.created !== undefined &&
+          !presentedModalIds.current.has(notification.created),
       );
-    } else {
-      return <NotifyIconSVG classes="w-3.5 md:w-4 h-auto text-Gray-950 dark:text-white" />;
+    if (!next || next.created === undefined) {
+      return;
     }
-  };
+
+    // Backgrounded tab: announce it once through the system notification and
+    // keep it pending. `presentedModalIds` is only marked below, so the effect
+    // picks the notification up again once the tab becomes visible.
+    if (!isTabVisible) {
+      if (!notifiedModalIds.current.has(next.created)) {
+        notifiedModalIds.current.add(next.created);
+        setHasUnreadNotifications((prevState) => prevState + 1);
+        showBrowserNotification(next.message);
+      }
+      return;
+    }
+
+    presentedModalIds.current.add(next.created);
+    setModalNotification(next);
+  }, [userNotifications, modalNotification, isTabVisible]);
+
+  const displayIcon = useCallback(
+    (open: boolean) => {
+      if (open) {
+        setTimeout(() => setHasUnreadNotifications(0), 300);
+      }
+      if (hasUnreadNotifications > 0) {
+        return (
+          <div className="relative">
+            <NotifyIconSVG classes="w-3.5 md:w-4 h-auto text-Gray-950 dark:text-white" />
+            <span className="unseen-notification-count bg-secondary-color w-4 3xl:w-5 h-4 3xl:h-5 rounded-full text-[10px] 3xl:text-xs text-white absolute -top-2 -end-1 flex justify-center items-center">
+              {hasUnreadNotifications}
+            </span>
+          </div>
+        );
+      } else {
+        return <NotifyIconSVG classes="w-3.5 md:w-4 h-auto text-Gray-950 dark:text-white" />;
+      }
+    },
+    [hasUnreadNotifications],
+  );
 
   return (
-    <Popover className="relative flex">
-      {({ open, close }) => (
-        <>
-          <PopoverButton
-            className={`w-7 md:w-8 h-7 md:h-8 flex items-center justify-center rounded-[10px] cursor-pointer focus-ring ${open ? 'bg-Gray-50 dark:bg-Gray-800' : ''}`}
-          >
-            {displayIcon(open)}
-          </PopoverButton>
-          <PopoverPanel
-            transition
-            className={clsx([
-              `side-panel-bg-color notifications-panel fixed ${APP_LAYOUT_CLASSES.notificationsPanel} end-0 bg-Gray-25 dark:bg-dark-primary border-s border-Gray-200 dark:border-Gray-800`,
-              'flex flex-col',
-              'transition ease-out',
-              'data-[closed]:opacity-0',
-              'data-[enter]:duration-300 ltr:data-[enter]:data-[closed]:translate-x-full rtl:data-[enter]:data-[closed]:-translate-x-full',
-              'data-[leave]:duration-300 ltr:data-[leave]:data-[closed]:translate-x-full rtl:data-[leave]:data-[closed]:-translate-x-full',
-            ])}
-          >
-            <div className="top flex items-center justify-between h-10 px-3 border-b border-Gray-200 dark:border-Gray-800">
-              <p className="text-sm text-Gray-950 dark:text-white font-medium leading-tight">
-                {t('notifications.title')}
-              </p>
-              <button
-                type="button"
-                aria-label={t('close').toString()}
-                className="close cursor-pointer focus-ring"
-                onClick={() => {
-                  close();
-                }}
-              >
-                <PopupCloseSVGIcon classes="text-Gray-600" />
-              </button>
-            </div>
-            <div
-              className={`scrollBar overflow-auto ${APP_LAYOUT_CLASSES.notificationsScroll} py-4`}
-              tabIndex={0}
+    <>
+      <Popover className="relative flex">
+        {({ open, close }) => (
+          <>
+            <PopoverButton
+              className={`w-7 md:w-8 h-7 md:h-8 flex items-center justify-center rounded-[10px] cursor-pointer focus-ring ${open ? 'bg-Gray-50 dark:bg-Gray-800' : ''}`}
             >
-              <ul className="inner grid gap-2 list-none">
-                {reversedNotifications.map((notif) => {
-                  switch (notif.notificationCat) {
-                    case 'new-poll-created':
-                      return (
-                        <li key={notif.created}>
-                          <NewPoll createdAt={notif.created} onClosePopover={close} />
-                        </li>
-                      );
-                    case 'breakout-room-invitation':
-                      return (
-                        <li key={notif.created}>
-                          <NewBreakoutRoom createdAt={notif.created} onClosePopover={close} />
-                        </li>
-                      );
-                    default:
-                      return (
-                        <li key={notif.created}>
-                          <GenericNotification notification={notif} />
-                        </li>
-                      );
-                  }
-                })}
-                {/* <div className="notification flex gap-4 py-2 px-4 border-b border-Gray-200">
+              {displayIcon(open)}
+            </PopoverButton>
+            <PopoverPanel
+              transition
+              className={clsx([
+                `side-panel-bg-color notifications-panel fixed ${APP_LAYOUT_CLASSES.notificationsPanel} end-0 bg-Gray-25 dark:bg-dark-primary border-s border-Gray-200 dark:border-Gray-800`,
+                'flex flex-col',
+                'transition ease-out',
+                'data-[closed]:opacity-0',
+                'data-[enter]:duration-300 ltr:data-[enter]:data-[closed]:translate-x-full rtl:data-[enter]:data-[closed]:-translate-x-full',
+                'data-[leave]:duration-300 ltr:data-[leave]:data-[closed]:translate-x-full rtl:data-[leave]:data-[closed]:-translate-x-full',
+              ])}
+            >
+              <div className="top flex items-center justify-between h-10 px-3 border-b border-Gray-200 dark:border-Gray-800">
+                <p className="text-sm text-Gray-950 dark:text-white font-medium leading-tight">
+                  {t('notifications.title')}
+                </p>
+                <button
+                  type="button"
+                  aria-label={t('close').toString()}
+                  className="close cursor-pointer focus-ring"
+                  onClick={() => {
+                    close();
+                  }}
+                >
+                  <PopupCloseSVGIcon classes="text-Gray-600" />
+                </button>
+              </div>
+              <div
+                className={`scrollBar overflow-auto ${APP_LAYOUT_CLASSES.notificationsScroll} py-4`}
+                tabIndex={0}
+              >
+                <ul className="inner grid gap-2 list-none">
+                  {reversedNotifications.map((notif) => {
+                    switch (notif.notificationCat) {
+                      case 'new-poll-created':
+                        return (
+                          <li key={notif.created}>
+                            <NewPoll createdAt={notif.created} onClosePopover={close} />
+                          </li>
+                        );
+                      case 'breakout-room-invitation':
+                        return (
+                          <li key={notif.created}>
+                            <NewBreakoutRoom createdAt={notif.created} onClosePopover={close} />
+                          </li>
+                        );
+                      default:
+                        return (
+                          <li key={notif.created}>
+                            <GenericNotification notification={notif} />
+                          </li>
+                        );
+                    }
+                  })}
+                  {/* <div className="notification flex gap-4 py-2 px-4 border-b border-Gray-200">
                       <div className="name w-9 h-9 rounded-xl bg-Blue2-700 text-sm font-medium uppercase text-white relative inline-flex items-center justify-center">
                         NB
                         <span className="w-5 h-5 bg-Gray-100 border border-white inline-flex items-center justify-center p-[2px] rounded-full absolute -bottom-1 -right-1 text-Blue2-700">
@@ -285,12 +327,23 @@ const UserNotifications = () => {
                         <span className="text-Gray-800 text-xs">12:04 AM</span>
                       </div>
                     </div> */}
-              </ul>
-            </div>
-          </PopoverPanel>
-        </>
+                </ul>
+              </div>
+            </PopoverPanel>
+          </>
+        )}
+      </Popover>
+      {modalNotification && (
+        <Modal
+          show={true}
+          onClose={() => setModalNotification(undefined)}
+          title={t('notifications.alert-title')}
+          closeOnEscape
+        >
+          <GenericNotification notification={modalNotification} />
+        </Modal>
       )}
-    </Popover>
+    </>
   );
 };
 
