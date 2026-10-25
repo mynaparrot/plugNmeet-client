@@ -322,6 +322,8 @@
     "file-upload-success": "Fișierul încărcat cu succes",
     "file-upload-default-error": "A apărut o eroare la încărcarea fișierului.",
     "chat-box-placeholder": "Trimiteți un mesaj, lipiți o imagine sau plasați un fișier aici (Linie nouă: Shift + Enter)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "Te rog, așteaptă, trimiți...",
     "reply": "Răspuns",
     "edit-message": "Editare mesaj",
@@ -342,6 +344,8 @@
     "new-messages": "Mesaje noi",
     "scroll-to-bottom": "Derulează până jos",
     "sync-chat": "Chat sincronizat cu colegii",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "Încarcă mesajele anterioare",
     "system-name": "Sistem"
   },
