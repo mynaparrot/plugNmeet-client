@@ -322,6 +322,8 @@
     "file-upload-success": "Fichier téléversé avec succès.",
     "file-upload-default-error": "Une erreur est survenue lors du téléversement du fichier.",
     "chat-box-placeholder": "Envoyez un message, collez une image ou déposez un fichier ici (Nouvelle ligne : Maj + Entrée)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "Envoi en cours, veuillez patienter...",
     "reply": "Réponse",
     "edit-message": "Message de modification",
@@ -342,6 +344,8 @@
     "new-messages": "Nouveaux messages",
     "scroll-to-bottom": "Défiler jusqu’en bas",
     "sync-chat": "Synchronisez le chat avec vos pairs",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "Charger les messages précédents",
     "system-name": "Système"
   },
