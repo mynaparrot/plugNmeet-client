@@ -322,6 +322,8 @@
     "file-upload-success": "文件上传成功。",
     "file-upload-default-error": "上传文件时出错。",
     "chat-box-placeholder": "在此处发送消息、粘贴图片或拖放文件（换行：Shift + Enter）",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "正在发送，请稍候...",
     "reply": "回复",
     "edit-message": "编辑消息",
@@ -342,6 +344,8 @@
     "new-messages": "新消息",
     "scroll-to-bottom": "滚动到底部",
     "sync-chat": "与对等者同步聊天",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "加载早期消息",
     "system-name": "系统"
   },
