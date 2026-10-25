@@ -319,6 +319,56 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   );
 
   /**
+   * Merges the canvas scene into the CRDT (which broadcasts the resulting
+   * update). Pending image uploads are skipped here and synced by the
+   * follow-up onChange once their status becomes 'saved'.
+   */
+  const syncCanvasToCrdt = useCallback(
+    (
+      elements: readonly ExcalidrawElement[],
+      appState: AppState,
+      files: BinaryFiles | null | undefined,
+      options?: { force?: boolean },
+    ) => {
+      if (!excalidrawAPI || !canEdit) {
+        return;
+      }
+      const { elms, version } = getSceneAndVersionWithoutBoundary(elements);
+      if (!elms.length) {
+        return;
+      }
+      // Skip re-broadcasting the scene we just applied, or a redundant CRDT
+      // write of an unchanged scene. `force` bypasses that gate (page switch).
+      if (!options?.force && version === lastBroadcastOrReceivedSceneVersion.current) {
+        return;
+      }
+      lastBroadcastOrReceivedSceneVersion.current = version;
+
+      const syncableElements: ExcalidrawElement[] = [];
+      for (const elm of elms) {
+        if (isPendingImageElement(elm)) {
+          const fileData = elm.fileId ? files?.[elm.fileId] : undefined;
+          if (fileData) {
+            void uploadCanvasBinaryFile(elm, fileData, excalidrawAPI);
+          }
+          continue;
+        }
+        syncableElements.push(elm);
+      }
+      if (syncableElements.length) {
+        controller.mergeElements(
+          syncableElements,
+          (id) =>
+            id === appState.editingTextElement?.id ||
+            id === appState.resizingElement?.id ||
+            id === appState.newElement?.id,
+        );
+      }
+    },
+    [excalidrawAPI, canEdit, controller],
+  );
+
+  /**
    * Handles the logic for switching between whiteboard pages or office documents.
    * It cleans the canvas and prepares it for new data.
    */
@@ -371,6 +421,15 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     } finally {
       // 7. Always release the switch lock, even if syncing/loading throws.
       isSwitching.current = false;
+      // Edits made while the switch was in progress were dropped by the guard
+      // in handleCanvasChange; merge whatever is on the canvas now (idempotent,
+      // the merge is version-aware).
+      syncCanvasToCrdt(
+        excalidrawAPI.getSceneElementsIncludingDeleted(),
+        excalidrawAPI.getAppState(),
+        excalidrawAPI.getFiles(),
+        { force: true },
+      );
     }
   }, [
     excalidrawAPI,
@@ -383,6 +442,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     addBoundaryToElements,
     scrollToBoundary,
     applySceneToExcalidraw,
+    syncCanvasToCrdt,
   ]);
 
   // clean up during exit: drop presence from the room and clear image state.
@@ -440,6 +500,13 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         }
       } finally {
         isSwitching.current = false;
+        // Same as a page switch: merge edits made during init (idempotent).
+        syncCanvasToCrdt(
+          excalidrawAPI.getSceneElementsIncludingDeleted(),
+          excalidrawAPI.getAppState(),
+          excalidrawAPI.getFiles(),
+          { force: true },
+        );
       }
     };
 
@@ -484,43 +551,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       }
 
       // Presenters or unlocked users can broadcast scene changes.
-      if (canEdit) {
-        const { elms, version: currentSceneVersion } = getSceneAndVersionWithoutBoundary(elements);
-
-        if (
-          elms.length &&
-          // Prevent re-broadcasting the scene we just received/applied, and skip
-          // redundant CRDT writes when nothing actually changed.
-          currentSceneVersion !== lastBroadcastOrReceivedSceneVersion.current
-        ) {
-          lastBroadcastOrReceivedSceneVersion.current = currentSceneVersion;
-
-          // Pending images must be uploaded before they can be synced; they are
-          // written into the CRDT by the follow-up onChange after the upload
-          // flips `status` to 'saved' (uploadCanvasBinaryFile updates the scene
-          // element in place).
-          const syncableElements: ExcalidrawElement[] = [];
-          for (const elm of elms) {
-            if (isPendingImageElement(elm)) {
-              const fileData = elm.fileId && files && files[elm.fileId];
-              if (fileData) {
-                void uploadCanvasBinaryFile(elm, fileData, excalidrawAPI);
-              }
-              continue;
-            }
-            syncableElements.push(elm);
-          }
-          if (syncableElements.length) {
-            controller.mergeElements(
-              syncableElements,
-              (id) =>
-                id === appState.editingTextElement?.id ||
-                id === appState.resizingElement?.id ||
-                id === appState.newElement?.id,
-            );
-          }
-        }
-      }
+      syncCanvasToCrdt(elements, appState, files);
 
       // Only the presenter can broadcast app state changes (zoom, scroll, etc.).
       if (isPresenter) {
@@ -537,7 +568,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         );
       }
     },
-    [excalidrawAPI, currentUser, canEdit, isPresenter, controller],
+    [excalidrawAPI, currentUser, isPresenter, syncCanvasToCrdt],
   );
 
   // oxlint-disable-next-line react-hooks/exhaustive-deps

@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { PopupCloseSVGIcon } from '../../../assets/Icons/PopupCloseSVGIcon';
 import { updateCurrentWhiteboardOfficeFileId } from '../../../store/slices/whiteboard';
+import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 import { store, useAppDispatch } from '../../../store';
 import FileUploadProgress from './fileUploadProgress';
 import UploadedFilesList from './uploadedFilesList';
@@ -33,6 +34,8 @@ const ManageOfficeFilesModal = ({
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const [refresh, setRefresh] = useState(0);
+  // A file switch waits for the presenter's save; ignore repeats meanwhile.
+  const isFlushingRef = useRef(false);
 
   const { allowedFileTypes, maxAllowedFileSize, officeFileTypes } = useMemo(() => {
     const maxAllowedFileSize =
@@ -78,7 +81,7 @@ const ManageOfficeFilesModal = ({
   const debouncedAddToWhiteboard = useMemo(
     () =>
       debounce(async (officeFile: IWhiteboardOfficeFile) => {
-        if (!excalidrawAPI) {
+        if (!excalidrawAPI || isFlushingRef.current) {
           return;
         }
         // save current file information
@@ -89,23 +92,37 @@ const ManageOfficeFilesModal = ({
           return;
         }
 
-        // Flush the current page's yjs snapshot to IndexedDB before switching.
-        await getWhiteboardController().saveCurrentState();
-        const lastPage = await loadWhiteboardLastPage(officeFile.fileId);
-        const page = lastPage ?? 1;
-        // broadcast first so that user can prepare for file
-        await broadcastCurrentFileId(officeFile.fileId, page);
-        await sleep(300);
-        // now update our store
-        dispatch(
-          updateCurrentWhiteboardOfficeFileId({
-            fileId: officeFile.fileId,
-            page,
-          }),
-        );
-        onClose();
+        isFlushingRef.current = true;
+        try {
+          // Flush the current page to the server before switching files.
+          const saved = await getWhiteboardController().flushBeforeSwitch();
+          if (!saved) {
+            dispatch(
+              addUserNotification({
+                message: t('whiteboard.save-pending-warning'),
+                typeOption: 'warning',
+              }),
+            );
+          }
+          const lastPage = await loadWhiteboardLastPage(officeFile.fileId);
+          const page = lastPage ?? 1;
+          // broadcast first so that user can prepare for file
+          await broadcastCurrentFileId(officeFile.fileId, page);
+          await sleep(300);
+          // now update our store
+          dispatch(
+            updateCurrentWhiteboardOfficeFileId({
+              fileId: officeFile.fileId,
+              page,
+            }),
+          );
+          onClose();
+        } finally {
+          isFlushingRef.current = false;
+        }
       }, 300),
-    [excalidrawAPI, dispatch, onClose],
+    // oxlint-disable-next-line react/memo-dependencies
+    [excalidrawAPI, dispatch, onClose, t],
   );
 
   return (

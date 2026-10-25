@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 import { toast } from 'react-toastify';
 import {
@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import { setWhiteboardCurrentPage } from '../../store/slices/whiteboard';
+import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import { broadcastCurrentPageNumber } from './helpers/handleRequests';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { sleep } from '../../helpers/utils';
@@ -47,23 +48,43 @@ const FooterUI = ({
     };
   }, []);
 
+  // A page switch waits for the presenter's save; ignore repeated clicks meanwhile.
+  const isFlushingRef = useRef(false);
+
   const debouncedSetCurrentPage = useMemo(
     () =>
       debounce(async (newPage: number) => {
-        // First, flush the current page's yjs snapshot to IndexedDB.
-        if (isPresenter && excalidrawAPI) {
-          await getWhiteboardController().saveCurrentState();
+        if (isFlushingRef.current) {
+          return;
         }
-        // Remember the last page for the current file.
-        const { currentWhiteboardOfficeFileId } = store.getState().whiteboard;
-        await saveWhiteboardLastPage(currentWhiteboardOfficeFileId, newPage);
-        // broadcast first so that user can prepare for page change
-        await broadcastCurrentPageNumber(newPage);
-        await sleep(300);
-        // Then, proceed with changing the page.
-        dispatch(setWhiteboardCurrentPage(newPage));
+        isFlushingRef.current = true;
+        try {
+          // Flush the current page to the server before leaving it.
+          if (isPresenter && excalidrawAPI) {
+            const saved = await getWhiteboardController().flushBeforeSwitch();
+            if (!saved) {
+              dispatch(
+                addUserNotification({
+                  message: t('whiteboard.save-pending-warning'),
+                  typeOption: 'warning',
+                }),
+              );
+            }
+          }
+          // Remember the last page for the current file.
+          const { currentWhiteboardOfficeFileId } = store.getState().whiteboard;
+          await saveWhiteboardLastPage(currentWhiteboardOfficeFileId, newPage);
+          // broadcast first so that user can prepare for page change
+          await broadcastCurrentPageNumber(newPage);
+          await sleep(300);
+          // Then, proceed with changing the page.
+          dispatch(setWhiteboardCurrentPage(newPage));
+        } finally {
+          isFlushingRef.current = false;
+        }
       }, 300),
-    [dispatch, isPresenter, excalidrawAPI],
+    // oxlint-disable-next-line react/memo-dependencies
+    [dispatch, isPresenter, excalidrawAPI, t],
   );
 
   const setCurrentPage = (page: number) => {

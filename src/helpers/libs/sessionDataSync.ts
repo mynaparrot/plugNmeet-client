@@ -90,12 +90,19 @@ export type PlanSaveResult =
       kind: 'checkpoint' | 'diff';
       update: Uint8Array;
       key: string;
+      /**
+       * Checkpoint only: the state vector captured at plan time. Record it as
+       * the new baseline once the upload is confirmed, so edits made while the
+       * upload was in flight land in the next diff.
+       */
+      stateVector?: Uint8Array;
       skipReason?: undefined;
     }
   | {
       kind: 'diff';
       update: Uint8Array;
       key: string;
+      stateVector?: undefined;
       skipReason: 'empty-diff';
     };
 
@@ -139,19 +146,11 @@ export class SessionDataSyncState {
     // No baseline yet → full checkpoint. Also covers first-save-after-
     // hydration, rejoin and presenter switch (the SV is reset to null there).
     if (this.lastCheckpointSV === null) {
-      return {
-        kind: 'checkpoint',
-        update: Y.encodeStateAsUpdate(doc),
-        key: canonicalKey,
-      };
+      return this.checkpointPlan(doc, canonicalKey);
     }
 
     if (forceCheckpoint) {
-      return {
-        kind: 'checkpoint',
-        update: Y.encodeStateAsUpdate(doc),
-        key: canonicalKey,
-      };
+      return this.checkpointPlan(doc, canonicalKey);
     }
 
     // No-op save: the document has not changed since the last checkpoint.
@@ -178,20 +177,12 @@ export class SessionDataSyncState {
       CHECKPOINT_DIFF_RATIO * this.lastCheckpointWireBytes,
     );
     if (diffWireBytes > sizeThreshold) {
-      return {
-        kind: 'checkpoint',
-        update: Y.encodeStateAsUpdate(doc),
-        key: canonicalKey,
-      };
+      return this.checkpointPlan(doc, canonicalKey);
     }
 
     // Refresh a stale checkpoint so late joiners still get a recent full state.
     if (this.nowFn() - this.lastCheckpointAt > CHECKPOINT_MAX_AGE_MS) {
-      return {
-        kind: 'checkpoint',
-        update: Y.encodeStateAsUpdate(doc),
-        key: canonicalKey,
-      };
+      return this.checkpointPlan(doc, canonicalKey);
     }
 
     return {
@@ -201,14 +192,26 @@ export class SessionDataSyncState {
     };
   }
 
+  private checkpointPlan(doc: Y.Doc, canonicalKey: string): PlanSaveResult {
+    return {
+      kind: 'checkpoint',
+      update: Y.encodeStateAsUpdate(doc),
+      key: canonicalKey,
+      stateVector: Y.encodeStateVector(doc),
+    };
+  }
+
   /**
    * Record that a checkpoint upload succeeded. MUST only be called after a
-   * successful-send decision — never for oversize payloads, so the next flush
+   * confirmed upload — never for oversize/failed ones — so the next flush
    * retries the checkpoint rather than baselining diffs against an upload the
    * server never received.
+   *
+   * @param stateVector The state vector captured at plan time (see
+   *                    {@link PlanSaveResult.stateVector}).
    */
-  noteCheckpointUploaded(doc: Y.Doc, wireBytes: number): void {
-    this.lastCheckpointSV = Y.encodeStateVector(doc);
+  noteCheckpointUploaded(stateVector: Uint8Array, wireBytes: number): void {
+    this.lastCheckpointSV = stateVector;
     this.lastCheckpointWireBytes = wireBytes;
     this.lastCheckpointAt = this.nowFn();
   }
