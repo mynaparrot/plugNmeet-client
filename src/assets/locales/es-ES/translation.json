@@ -580,6 +580,7 @@
     "previous-page": "Página anterior",
     "next-page": "Página siguiente",
     "take-over-presenter": "Asumir el papel de presentador",
+    "save-pending-warning": "Whiteboard page couldn't be saved yet. It will keep retrying in the background.",
     "export-pdf-selected-pages": "Páginas seleccionadas",
     "export-pdf-selected-pages-count": "Seleccionados ({{count}})",
     "export-pdf-select-pages-label": "Seleccionar páginas para exportar:",
