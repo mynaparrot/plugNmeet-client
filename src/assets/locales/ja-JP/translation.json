@@ -322,6 +322,8 @@
     "file-upload-success": "ファイルが正常にアップロードされました。",
     "file-upload-default-error": "ファイルのアップロード中にエラーが発生しました。",
     "chat-box-placeholder": "メッセージを送信、画像を貼り付け、またはファイルをここにドロップ（改行：Shift + Enter）",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "送信中です。お待ちください...",
     "reply": "返信",
     "edit-message": "編集メッセージ",
@@ -342,6 +344,8 @@
     "new-messages": "新しいメッセージ",
     "scroll-to-bottom": "一番下までスクロール",
     "sync-chat": "ピアとチャットを同期する",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "以前のメッセージを読み込む",
     "system-name": "システム"
   },
