@@ -322,6 +322,8 @@
     "file-upload-success": "Datei erfolgreich hochgeladen.",
     "file-upload-default-error": "Beim Hochladen der Datei ist ein Fehler aufgetreten.",
     "chat-box-placeholder": "Senden Sie eine Nachricht, fügen Sie ein Bild ein oder legen Sie eine Datei hier ab (Neue Zeile: Umschalt + Eingabe)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "Wird gesendet, bitte warten...",
     "reply": "Antwort",
     "edit-message": "Nachricht bearbeiten",
@@ -342,6 +344,8 @@
     "new-messages": "Neue Botschaften",
     "scroll-to-bottom": "Scrollen Sie nach unten",
     "sync-chat": "Chat mit Peers synchronisieren",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "Frühere Nachrichten laden",
     "system-name": "System"
   },
