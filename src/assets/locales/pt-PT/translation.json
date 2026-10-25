@@ -322,6 +322,8 @@
     "file-upload-success": "Ficheiro carregado com sucesso.",
     "file-upload-default-error": "Ocorreu um erro ao carregar o ficheiro.",
     "chat-box-placeholder": "Envie uma mensagem, cole uma imagem ou largue um ficheiro aqui (Nova linha: Shift + Enter)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "A enviar, por favor, aguarde...",
     "reply": "Resposta",
     "edit-message": "Editar mensagem",
@@ -342,6 +344,8 @@
     "new-messages": "Novas mensagens",
     "scroll-to-bottom": "Deslocar até ao fim",
     "sync-chat": "Chat sincronizado com pares",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "Carregar mensagens anteriores",
     "system-name": "Sistema"
   },
