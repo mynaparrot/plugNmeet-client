@@ -322,6 +322,8 @@
     "file-upload-success": "Filen ble lastet opp",
     "file-upload-default-error": "Det oppsto en feil under opplasting av filen.",
     "chat-box-placeholder": "Send en melding, lim inn et bilde eller slipp en fil her (Ny linje: Shift + Enter)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "Vennligst vent, sender...",
     "reply": "Svar",
     "edit-message": "Rediger melding",
@@ -342,6 +344,8 @@
     "new-messages": "Nye meldinger",
     "scroll-to-bottom": "Scroll til bunnen",
     "sync-chat": "Synkroniser chat med jevnaldrende",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "Last inn tidligere meldinger",
     "system-name": "System"
   },
