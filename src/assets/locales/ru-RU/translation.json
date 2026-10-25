@@ -322,6 +322,8 @@
     "file-upload-success": "Файл успешно загружен",
     "file-upload-default-error": "Произошла ошибка при загрузке файла.",
     "chat-box-placeholder": "Отправьте сообщение",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "Пожалуйста, подождите, отправляю...",
     "reply": "Ответить",
     "edit-message": "Сообщение для редактирования",
@@ -342,6 +344,8 @@
     "new-messages": "Новые сообщения",
     "scroll-to-bottom": "Прокрутите вниз",
     "sync-chat": "Синхронизируйте чат с коллегами",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "Загрузка предыдущих сообщений",
     "system-name": "Система"
   },
