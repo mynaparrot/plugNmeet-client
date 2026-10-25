@@ -580,6 +580,7 @@
     "previous-page": "Předchozí stránka",
     "next-page": "Další stránka",
     "take-over-presenter": "Převezměte roli moderátora",
+    "save-pending-warning": "Whiteboard page couldn't be saved yet. It will keep retrying in the background.",
     "export-pdf-selected-pages": "Vybrané stránky",
     "export-pdf-selected-pages-count": "Vybraný ({{count}})",
     "export-pdf-select-pages-label": "Vyberte stránky k exportu:",
