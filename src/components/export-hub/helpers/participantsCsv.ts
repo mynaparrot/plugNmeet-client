@@ -52,10 +52,10 @@ const toIsoTimestamp = (joinedAt: number): string => {
 export const buildParticipantsCsv = (participants: IParticipant[]): string => {
   const header = [
     i18n.t('export-hub.participants-csv-name'),
+    i18n.t('export-hub.participants-csv-user-id'),
     i18n.t('export-hub.participants-csv-role'),
     i18n.t('export-hub.participants-csv-joined-at'),
     i18n.t('export-hub.participants-csv-online'),
-    i18n.t('export-hub.participants-csv-user-id'),
   ]
     .map(escapeCsvField)
     .join(',');
@@ -65,6 +65,7 @@ export const buildParticipantsCsv = (participants: IParticipant[]): string => {
     .map((participant) =>
       [
         participant.name ?? '',
+        participant.userId ?? '',
         i18n.t(ROLE_KEYS[roleOf(participant)]),
         toIsoTimestamp(participant.joinedAt),
         i18n.t(
@@ -72,7 +73,6 @@ export const buildParticipantsCsv = (participants: IParticipant[]): string => {
             ? 'export-hub.participants-online-yes'
             : 'export-hub.participants-online-no',
         ),
-        participant.userId ?? '',
       ]
         .map(escapeCsvField)
         .join(','),

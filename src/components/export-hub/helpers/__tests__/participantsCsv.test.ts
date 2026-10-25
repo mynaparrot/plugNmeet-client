@@ -12,10 +12,10 @@ import { exportHubT } from './i18nTestUtils';
 const t = (key: string) => exportHubT(i18n, key);
 const HEADER = [
   t('participants-csv-name'),
+  t('participants-csv-user-id'),
   t('participants-csv-role'),
   t('participants-csv-joined-at'),
   t('participants-csv-online'),
-  t('participants-csv-user-id'),
 ].join(',');
 
 const participant = (overrides: Record<string, unknown> = {}) =>
@@ -35,7 +35,7 @@ describe('buildParticipantsCsv', () => {
     expect(buildParticipantsCsv([]).trim()).toBe(HEADER);
   });
 
-  it('writes name, role, ISO join time, online flag and user id', () => {
+  it('writes name, user id, role, ISO join time and online flag', () => {
     const csv = buildParticipantsCsv([
       participant({
         metadata: { isAdmin: true, isPresenter: true, waitForApproval: false },
@@ -46,10 +46,10 @@ describe('buildParticipantsCsv', () => {
     expect(csv.split('\r\n')[1]).toBe(
       [
         'Alice',
+        'u1',
         t('participants-role-admin'),
         '2023-11-14T22:13:20.000Z',
         t('participants-online-no'),
-        'u1',
       ].join(','),
     );
   });
@@ -60,8 +60,8 @@ describe('buildParticipantsCsv', () => {
       participant({ userId: 'u3', name: 'Carol', metadata: {} }),
     ]);
 
-    expect(csv).toContain(`Bob,${t('participants-role-presenter')},`);
-    expect(csv).toContain(`Carol,${t('participants-role-participant')},`);
+    expect(csv).toContain(`Bob,u2,${t('participants-role-presenter')},`);
+    expect(csv).toContain(`Carol,u3,${t('participants-role-participant')},`);
   });
 
   it('excludes bots and waiting-room users', () => {
@@ -80,7 +80,7 @@ describe('buildParticipantsCsv', () => {
     ]);
 
     expect(csv.split('\r\n')[1]).toBe(
-      `Hidden,${t('participants-role-participant')},2023-11-14T22:13:20.000Z,${t('participants-online-yes')},hidden`,
+      `Hidden,hidden,${t('participants-role-participant')},2023-11-14T22:13:20.000Z,${t('participants-online-yes')}`,
     );
   });
 
@@ -88,7 +88,7 @@ describe('buildParticipantsCsv', () => {
     const csv = buildParticipantsCsv([participant({ name: 'Doe, "Jane"' })]);
 
     expect(csv.split('\r\n')[1]).toBe(
-      `"Doe, ""Jane""",${t('participants-role-participant')},2023-11-14T22:13:20.000Z,${t('participants-online-yes')},u1`,
+      `"Doe, ""Jane""",u1,${t('participants-role-participant')},2023-11-14T22:13:20.000Z,${t('participants-online-yes')}`,
     );
   });
 
@@ -114,7 +114,7 @@ describe('buildParticipantsCsv', () => {
     ]);
 
     expect(csv.split('\r\n')[1]).toBe(
-      `'\t=1+1,${t('participants-role-participant')},2023-11-14T22:13:20.000Z,${t('participants-online-yes')},u1`,
+      `'\t=1+1,u1,${t('participants-role-participant')},2023-11-14T22:13:20.000Z,${t('participants-online-yes')}`,
     );
     expect(csv).toContain('"\'\r=1+1"');
   });
@@ -156,18 +156,18 @@ describe('buildParticipantsCsv', () => {
     ]);
     const rows = csv.split('\r\n');
 
-    expect(rows[1].split(',').pop()).toBe("'=1+1");
+    expect(rows[1].split(',')[1]).toBe("'=1+1");
     expect(rows[2]).toBe(
-      `Bob,${t('participants-role-participant')},2023-11-14T22:13:20.000Z,${t(
+      `Bob,"'=cmd|""x"",y",${t('participants-role-participant')},2023-11-14T22:13:20.000Z,${t(
         'participants-online-yes',
-      )},"'=cmd|""x"",y"`,
+      )}`,
     );
   });
 
   it('writes the user id but not the session id or metadata', () => {
     const csv = buildParticipantsCsv([participant()]);
 
-    expect(csv.split('\r\n')[1].endsWith(',u1')).toBe(true);
+    expect(csv.split('\r\n')[1].split(',')[1]).toBe('u1');
     expect(csv).not.toContain('sid-1');
   });
 });

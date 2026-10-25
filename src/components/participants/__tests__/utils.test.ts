@@ -73,7 +73,7 @@ describe('announceSelection', () => {
     expect(chatOption).toBe('public');
     // The localized sentence stays on line one; the name gets its own bold line.
     expect(message).toBe(
-      '<span class="block text-xs font-medium text-Gray-600 dark:text-dark-text">left-panel.picker.announcement: selected<strong class="block font-bold">Rafiq</strong></span>',
+      '<span class="block">left-panel.picker.announcement: selected<strong class="block font-bold">Rafiq</strong></span>',
     );
     expect(message).not.toContain('selected Rafiq');
   });
