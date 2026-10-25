@@ -580,6 +580,7 @@
     "previous-page": "Edellinen sivu",
     "next-page": "Seuraava sivu",
     "take-over-presenter": "Ota juontajan tehtävä",
+    "save-pending-warning": "Whiteboard page couldn't be saved yet. It will keep retrying in the background.",
     "export-pdf-selected-pages": "Valikoituja sivuja",
     "export-pdf-selected-pages-count": "Valitut ({{count}})",
     "export-pdf-select-pages-label": "Valitse vientisivut:",
