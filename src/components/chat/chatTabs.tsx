@@ -19,6 +19,7 @@ import i18n from '../../helpers/i18n';
 import { getNatsConn } from '../../helpers/nats';
 import ChatTranslation from './chatTranslation';
 import { DropdownIconSVG } from '../../assets/Icons/DropdownIconSVG';
+import { usePip } from '../pip/pipProvider';
 
 interface IChatOption {
   id: string;
@@ -85,6 +86,7 @@ interface ChatTabsProps {
 const ChatTabs = ({ isRecorder }: ChatTabsProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const { isSupported: isPipSupported, openPip } = usePip();
 
   const { chatOptions, selectedChatOption, selectedTitle, hasUnreadMessages } =
     useAppSelector(selectChatTabsData);
@@ -151,6 +153,17 @@ const ChatTabs = ({ isRecorder }: ChatTabsProps) => {
           <ChatTranslation />
         </div>
         <div className="flex items-center gap-1">
+          {selectedChatOption === 'public' && isPipSupported && (
+            <button
+              type="button"
+              aria-label={t('right-panel.public-chat-pip').toString()}
+              title={t('right-panel.public-chat-pip').toString()}
+              className="flex h-7 w-7 items-center justify-center text-Gray-600 cursor-pointer focus-ring"
+              onClick={() => openPip('chat')}
+            >
+              <i className="icon pnm-pip text-[14px]" />
+            </button>
+          )}
           {selectedChatOption === 'public' && (
             <button
               type="button"

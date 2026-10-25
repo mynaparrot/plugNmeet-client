@@ -1,7 +1,7 @@
 import { ReactElement } from 'react';
 import { Track, VideoTrack } from 'livekit-client';
-import { VideoParticipantProps } from '../../videoParticipant';
-import i18n from '../../../../../helpers/i18n';
+import { VideoParticipantProps } from '../media-elements/videos/videoParticipant';
+import i18n from '../../helpers/i18n';
 
 export const MAX_NUM_WEBCAMS_PIP = 5;
 export const PIP_WINDOW_HEIGHT = 600;
@@ -95,6 +95,136 @@ export const injectPipStyles = (win: Window) => {
       font-weight: 700;
       color: #ffffff;
       user-select: none;
+    }
+
+    .pip-chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      box-sizing: border-box;
+      background-color: #0b0b0b;
+      color: #f5f5f5;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    .pip-chat-list {
+      flex: 1 1 auto;
+      min-height: 0;
+      margin: 0;
+      padding: 6px;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow-y: auto;
+      overflow-wrap: anywhere;
+    }
+
+    .pip-chat-item {
+      border-radius: 6px;
+      padding: 4px 6px;
+      background-color: #1a1a1a;
+    }
+
+    .pip-chat-name {
+      margin: 0 0 2px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #00a1f2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pip-chat-body {
+      font-size: 12px;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    .pip-chat-body p {
+      margin: 0 0 4px;
+    }
+
+    .pip-chat-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    .pip-chat-body a {
+      color: #00a1f2;
+    }
+
+    .pip-chat-body code {
+      background-color: #262626;
+      border-radius: 3px;
+      padding: 0 2px;
+      font-size: 11px;
+    }
+
+    .pip-chat-body pre {
+      margin: 0 0 4px;
+      overflow-x: auto;
+    }
+
+    /* Long code blocks and tables must not widen the whole window. */
+    .pip-chat-body table {
+      display: block;
+      overflow-x: auto;
+    }
+
+    .pip-chat-empty {
+      color: #9ca3af;
+      font-size: 12px;
+      text-align: center;
+      padding: 8px;
+    }
+
+    .pip-chat-form {
+      display: flex;
+      flex: 0 0 auto;
+      gap: 6px;
+      padding: 6px;
+      border-top: 1px solid #262626;
+      background-color: #0b0b0b;
+    }
+
+    .pip-chat-input {
+      flex: 1 1 auto;
+      min-width: 0;
+      padding: 6px 8px;
+      border: 1px solid #3f3f46;
+      border-radius: 6px;
+      background-color: #1a1a1a;
+      color: #f5f5f5;
+      font-family: inherit;
+      font-size: 12px;
+    }
+
+    .pip-chat-input::placeholder {
+      color: #9ca3af;
+    }
+
+    .pip-chat-input:focus {
+      outline: none;
+      border-color: #00a1f2;
+    }
+
+    .pip-chat-send {
+      flex: 0 0 auto;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 6px;
+      background-color: #00a1f2;
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .pip-chat-send:disabled {
+      cursor: default;
+      opacity: 0.5;
     }
   `;
 

@@ -5,7 +5,7 @@ import ErrorPage, { IErrorPageProps } from '../extra-pages/Error';
 import Loading from '../extra-pages/Loading';
 import Footer from '../footer';
 import Header from '../header';
-import MainArea from '../main-area';
+import MainAreaWithPip from '../main-area';
 import Landing from '../landing';
 import InsertE2EEKey from '../extra-pages/InsertE2EEKey';
 import DummyAudio from './dummyAudio';
@@ -151,7 +151,7 @@ const App = () => {
         aria-label="Main content"
       >
         <Header />
-        <MainArea />
+        <MainAreaWithPip />
         <Footer />
         <AudioNotification />
         <DummyAudio />

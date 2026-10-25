@@ -322,6 +322,8 @@
     "file-upload-success": "File uploaded successfully",
     "file-upload-default-error": "There was an error uploading the file.",
     "chat-box-placeholder": "Send a message, paste an image, or drop a file here (New line: Shift + Enter)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "Please wait, sending...",
     "reply": "Reply",
     "edit-message": "Edit message",
@@ -342,6 +344,8 @@
     "new-messages": "New messages",
     "scroll-to-bottom": "Scroll to bottom",
     "sync-chat": "Sync chat with peers",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "Load earlier messages",
     "system-name": "System"
   },

@@ -23,6 +23,8 @@ import ChatComponent from '../chat';
 import ParticipantsComponent from '../participants';
 import RoomsPanel from '../breakout-room/roomsPanel';
 import SidePanel from './sidePanel';
+import { PipProvider } from '../pip/pipProvider';
+import PublicChatPip from '../pip/publicChatPip';
 
 const MainArea = () => {
   const { t } = useTranslation();
@@ -239,4 +241,11 @@ const MainArea = () => {
   );
 };
 
-export default MainArea;
+const MainAreaWithPip = () => (
+  <PipProvider>
+    <MainArea />
+    <PublicChatPip />
+  </PipProvider>
+);
+
+export default MainAreaWithPip;

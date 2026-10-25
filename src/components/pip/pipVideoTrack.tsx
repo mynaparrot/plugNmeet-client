@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { TrackEvent, VideoTrack } from 'livekit-client';
-import { generateAvatarInitial } from '../../../../../helpers/utils';
+import { generateAvatarInitial } from '../../helpers/utils';
 
 interface IPipVideoTrackProps {
   videoTrack?: VideoTrack;
