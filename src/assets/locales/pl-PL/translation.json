@@ -322,6 +322,8 @@
     "file-upload-success": "Plik został przesłany pomyślnie.",
     "file-upload-default-error": "Wystąpił błąd podczas przesyłania pliku.",
     "chat-box-placeholder": "Wyślij wiadomość, wklej obraz lub upuść plik tutaj (Nowy wiersz: Shift + Enter)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "Proszę czekać, wysyłanie...",
     "reply": "Odpowiedź",
     "edit-message": "Edytuj wiadomość",
@@ -342,6 +344,8 @@
     "new-messages": "Nowe wiadomości",
     "scroll-to-bottom": "Przewiń na dół",
     "sync-chat": "Synchronizuj czat z rówieśnikami",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "Załaduj wcześniejsze wiadomości",
     "system-name": "System"
   },
