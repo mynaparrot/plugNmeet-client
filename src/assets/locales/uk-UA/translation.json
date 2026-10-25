@@ -322,6 +322,8 @@
     "file-upload-success": "Файл успішно завантажено",
     "file-upload-default-error": "Під час завантаження файлу сталася помилка.",
     "chat-box-placeholder": "Надішліть повідомлення, вставте зображення або перетягніть файл сюди (Новий рядок: Shift + Enter)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "Будь ласка, зачекайте, надсилаю...",
     "reply": "Відповідь",
     "edit-message": "Редагування повідомлення",
@@ -342,6 +344,8 @@
     "new-messages": "Нові повідомлення",
     "scroll-to-bottom": "Прокрутіть вниз",
     "sync-chat": "Синхронізація чату з колегами",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "Завантажити попередні повідомлення",
     "system-name": "Система"
   },
