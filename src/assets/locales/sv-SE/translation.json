@@ -322,6 +322,8 @@
     "file-upload-success": "Filen har laddats upp",
     "file-upload-default-error": "Det gick inte att ladda upp filen.",
     "chat-box-placeholder": "Skicka ett meddelande, klistra in en bild eller släpp en fil här (Ny rad: Skift + Retur)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "Vänligen vänta, skickar...",
     "reply": "Svar",
     "edit-message": "Redigera meddelande",
@@ -342,6 +344,8 @@
     "new-messages": "Nya budskap",
     "scroll-to-bottom": "Scrolla ner",
     "sync-chat": "Synkronisera chatten med peers",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "Ladda tidigare meddelanden",
     "system-name": "System"
   },
