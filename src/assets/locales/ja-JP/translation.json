@@ -1008,7 +1008,7 @@
     "chat-e2ee-warning": "This meeting is end-to-end encrypted: the exported file will contain plain text.",
     "chat-empty": "No public chat messages are available to export.",
     "participants-title": "Current participants (CSV)",
-    "participants-help": "Participants in the current roster: {{total}}. Columns: name, role, joined at, online, user ID.",
+    "participants-help": "Participants in the current roster: {{total}}. Columns: name, user ID, role, joined at, online.",
     "participants-empty": "There are no participants to export.",
     "polls-title": "Poll results (TXT)",
     "polls-help": "Polls in this session with their question, options, status and current vote counts, captured when you export. Respondent names are never included.",
