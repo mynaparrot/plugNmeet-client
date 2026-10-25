@@ -322,6 +322,8 @@
     "file-upload-success": "File caricato con successo.",
     "file-upload-default-error": "Si è verificato un errore durante il caricamento del file.",
     "chat-box-placeholder": "Invia un messaggio, incolla un'immagine o trascina un file qui (Nuova riga: Maiusc + Invio)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "Invio in corso, attendere prego...",
     "reply": "Risposta",
     "edit-message": "Modifica messaggio",
@@ -342,6 +344,8 @@
     "new-messages": "Nuovi messaggi",
     "scroll-to-bottom": "Scorri fino in fondo",
     "sync-chat": "Chat sincronizzata con i colleghi",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "Carica i messaggi precedenti",
     "system-name": "Sistema"
   },
