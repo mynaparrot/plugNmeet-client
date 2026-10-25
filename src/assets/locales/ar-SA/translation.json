@@ -322,6 +322,8 @@
     "file-upload-success": "تم رفع الملف بنجاح.",
     "file-upload-default-error": "حدث خطأ أثناء رفع الملف.",
     "chat-box-placeholder": "أرسل رسالة، الصق صورة، أو اسحب ملفاً هنا (سطر جديد: Shift + Enter)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "جارٍ الإرسال، يرجى الانتظار...",
     "reply": "رد",
     "edit-message": "تعديل الرسالة",
@@ -342,6 +344,8 @@
     "new-messages": "رسائل جديدة",
     "scroll-to-bottom": "التمرير إلى الأسفل",
     "sync-chat": "مزامنة الدردشة مع الأقران",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "تحميل الرسائل السابقة",
     "system-name": "النظام"
   },
