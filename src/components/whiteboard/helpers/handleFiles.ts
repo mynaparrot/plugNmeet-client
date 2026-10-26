@@ -57,6 +57,11 @@ export interface OfficePageInfo {
 const processedImageElements: Map<string, string> = new Map();
 const uploadPromises: Map<string, Promise<void>> = new Map();
 const imageDataCache: Map<string, BinaryFileData> = new Map();
+const memoryImageCache: Map<string, string> = new Map();
+const inFlightImageFetches: Map<string, Promise<string | null>> = new Map();
+/** Data URL -> already decoded `<img>` (what Excalidraw's image cache stores). */
+const decodedHtmlImageCache: Map<string, HTMLImageElement> = new Map();
+const inFlightHtmlImageDecodes: Map<string, Promise<HTMLImageElement | null>> = new Map();
 
 export const createAndRegisterOfficeFile = (
   whiteboardFileConversionRes: WhiteboardFileConversionRes,
@@ -262,45 +267,187 @@ export const resolveOfficePageInfo = async (
 };
 
 /**
+ * Decodes a data URL into an `HTMLImageElement` and keeps it for the session.
+ * Concurrent calls share one decode; environments without `Image` resolve null.
+ */
+export const preloadHtmlImage = (dataURL: string): Promise<HTMLImageElement | null> => {
+  const cached = decodedHtmlImageCache.get(dataURL);
+  if (cached) {
+    return Promise.resolve(cached);
+  }
+  const inFlight = inFlightHtmlImageDecodes.get(dataURL);
+  if (inFlight) {
+    return inFlight;
+  }
+  if (typeof Image === 'undefined') {
+    return Promise.resolve(null);
+  }
+
+  const promise = new Promise<HTMLImageElement | null>((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const finish = () => {
+        decodedHtmlImageCache.set(dataURL, img);
+        resolve(img);
+      };
+      if (typeof img.decode === 'function') {
+        img.decode().then(finish, finish);
+      } else {
+        finish();
+      }
+    };
+    img.onerror = () => resolve(null);
+    img.src = dataURL;
+  }).finally(() => {
+    inFlightHtmlImageDecodes.delete(dataURL);
+  });
+
+  inFlightHtmlImageDecodes.set(dataURL, promise);
+  return promise;
+};
+
+/** Internal Excalidraw image cache (`Map<FileId, {image, mimeType}>`). */
+type ExcalidrawImageCache = Map<string, { image: HTMLImageElement; mimeType: string }>;
+
+/**
+ * Resolves Excalidraw's internal `App.imageCache`, tolerating renames/removals in
+ * future `@excalidraw/excalidraw` versions.
+ *
+ * Not part of the public API, but stable in 0.18: `AppSelection` (handed out as
+ * `excalidrawAPI.selection`) and `AppViewport` (whose `setViewport` the API
+ * re-exports) both keep a back reference to their `App`, which owns the cache.
+ * Returns `null` when neither path still yields a `Map` — including when a
+ * future version replaces either property with a throwing getter.
+ */
+const getExcalidrawImageCache = (
+  excalidrawAPI: ExcalidrawImperativeAPI,
+): ExcalidrawImageCache | null => {
+  try {
+    const api = excalidrawAPI as unknown as {
+      selection?: { app?: { imageCache?: unknown } };
+      setViewport?: { app?: { imageCache?: unknown } };
+    };
+    const candidates = [api?.selection?.app?.imageCache, api?.setViewport?.app?.imageCache];
+    for (const candidate of candidates) {
+      if (candidate instanceof Map) {
+        return candidate as ExcalidrawImageCache;
+      }
+    }
+  } catch {
+    // Unknown internals are not an error: the caller falls back to `addFiles`.
+  }
+  return null;
+};
+
+/**
+ * Hands already decoded `<img>` elements to Excalidraw's image cache so the next
+ * frame draws the real image instead of a placeholder. Must run *after*
+ * `addFiles`, which drops the image-cache entry of each newly registered file.
+ *
+ * @returns `true` when the internal cache was found and every file was primed,
+ * `false` otherwise (unknown internals, or an image that was never decoded).
+ * Callers should then let Excalidraw decode through the public `addFiles` API,
+ * which works regardless of how Excalidraw's internals are shaped.
+ */
+export const primeExcalidrawImageCache = (
+  excalidrawAPI: ExcalidrawImperativeAPI,
+  files: readonly BinaryFileData[],
+): boolean => {
+  const cache = getExcalidrawImageCache(excalidrawAPI);
+  if (!cache) {
+    return false;
+  }
+  let primedAll = true;
+  for (const file of files) {
+    const decoded = decodedHtmlImageCache.get(file.dataURL);
+    if (decoded) {
+      cache.set(file.id, { image: decoded, mimeType: file.mimeType });
+    } else {
+      primedAll = false;
+    }
+  }
+  return primedAll;
+};
+
+/**
+ * Asks Excalidraw to (re)decode the images of the elements currently on the
+ * canvas. Runs on a microtask so it lands right after a caller's synchronous
+ * `updateScene`, and only touches the public API — `addFiles` always triggers
+ * Excalidraw's internal `addNewImagesToImageCache()`, which is what makes this a
+ * hard guarantee instead of a bet on `App.imageCache` surviving future bumps.
+ */
+const scheduleImageCacheFallback = (excalidrawAPI: ExcalidrawImperativeAPI): void => {
+  queueMicrotask(() => {
+    excalidrawAPI.addFiles([]);
+  });
+};
+
+/**
  * Fetches an image from a URL, converts it to a base64 Data URL,
  * and caches it in memory. If the image is already in the cache,
  * it returns the cached data directly.
  * @param url The URL of the image to fetch and cache.
  * @returns A promise that resolves to the base64 Data URL of the image, or null if fetching fails.
  */
-const fetchAndCacheImage = async (url: string): Promise<string | null> => {
-  // 1. Check if the image is already in the cache.
-  const cachedImage = await idbGet<string>(DB_STORE_NAMES.IMAGE_CACHE, url);
-  if (cachedImage) {
-    return cachedImage;
+export const fetchAndCacheImage = (url: string): Promise<string | null> => {
+  // Fast path: already fetched this session (avoids an async IDB roundtrip).
+  const inMemory = memoryImageCache.get(url);
+  if (inMemory) {
+    return Promise.resolve(inMemory);
+  }
+  // Coalesce concurrent requests for the same image.
+  const inFlight = inFlightImageFetches.get(url);
+  if (inFlight) {
+    return inFlight;
   }
 
-  let base64: string | null = null;
-  try {
-    // 2. If not cached, fetch the image from the network.
-    const res = await fetch(url);
-    if (!res.ok) {
-      console.error(`Failed to fetch file from ${url}: ${res.statusText}`);
-    } else {
-      // 3. Convert the response to a blob, then to a base64 Data URL.
-      const imageData = await res.blob();
-      base64 = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(imageData);
-      });
+  const fetchPromise = (async (): Promise<string | null> => {
+    // 1. Check if the image is already in the cache.
+    const cachedImage = await idbGet<string>(DB_STORE_NAMES.IMAGE_CACHE, url);
+    if (cachedImage) {
+      memoryImageCache.set(url, cachedImage);
+      void preloadHtmlImage(cachedImage);
+      return cachedImage;
     }
-  } catch (error) {
-    console.error(`Error fetching or processing file from ${url}:`, error);
-  } finally {
-    // 4. If the fetch was successful, store the base64 data in the cache.
-    if (base64) {
-      await idbStore(DB_STORE_NAMES.IMAGE_CACHE, url, base64);
+
+    let base64: string | null = null;
+    try {
+      // 2. If not cached, fetch the image from the network.
+      const res = await fetch(url);
+      if (!res.ok) {
+        console.error(`Failed to fetch file from ${url}: ${res.statusText}`);
+      } else {
+        // 3. Convert the response to a blob, then to a base64 Data URL.
+        const imageData = await res.blob();
+        base64 = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(imageData);
+        });
+      }
+    } catch (error) {
+      console.error(`Error fetching or processing file from ${url}:`, error);
+    } finally {
+      // 4. If the fetch was successful, store the base64 data in the cache.
+      if (base64) {
+        memoryImageCache.set(url, base64);
+        // Decode in the background: a later page switch primes Excalidraw's
+        // image cache with an already resolved `<img>`.
+        void preloadHtmlImage(base64);
+        await idbStore(DB_STORE_NAMES.IMAGE_CACHE, url, base64);
+      }
     }
-  }
-  // 5. Return the result (either the base64 string or null if it failed).
-  return base64;
+    // 5. Return the result (either the base64 string or null if it failed).
+    return base64;
+  })();
+
+  inFlightImageFetches.set(url, fetchPromise);
+  const cleanup = () => {
+    inFlightImageFetches.delete(url);
+  };
+  fetchPromise.then(cleanup, cleanup);
+  return fetchPromise;
 };
 
 export const fetchFileWithElm = async (
@@ -332,12 +479,11 @@ export const fetchFileWithElm = async (
       fileMimeType === 'image/jpeg' ||
       fileMimeType === 'image/jpg'
     ) {
-      const image = new Image();
-      image.src = imgData;
-      await new Promise((resolve, reject) => {
-        image.onload = resolve;
-        image.onerror = reject;
-      });
+      // Decoding gives both the bitmap Excalidraw wants and its pixel size.
+      const image = await preloadHtmlImage(imgData);
+      if (!image) {
+        return null;
+      }
 
       const boundary = getBoundaryMetrics(
         pageInfo.orientation,
@@ -346,13 +492,13 @@ export const fetchFileWithElm = async (
       );
 
       const { fileHeight, fileWidth } = getFileDimension(
-        image.height,
-        image.width,
+        image.naturalHeight || image.height,
+        image.naturalWidth || image.width,
         boundary.width,
         boundary.height,
       );
 
-      return prepareForExcalidraw(
+      const res = prepareForExcalidraw(
         file_id,
         url,
         imgData,
@@ -364,7 +510,11 @@ export const fetchFileWithElm = async (
         uploaderWhiteboardWidth,
         pageInfo,
       );
+      imageDataCache.set(res.image.id, res.image);
+      return res;
     } else if (fileMimeType === 'image/svg+xml') {
+      await preloadHtmlImage(imgData);
+
       const boundary = getBoundaryMetrics(
         pageInfo.orientation,
         pageInfo.pageWidth,
@@ -373,7 +523,7 @@ export const fetchFileWithElm = async (
       const fileWidth = boundary.width * 0.9;
       const fileHeight = fileWidth * (boundary.height / boundary.width);
 
-      return prepareForExcalidraw(
+      const res = prepareForExcalidraw(
         file_id,
         url,
         imgData,
@@ -385,6 +535,8 @@ export const fetchFileWithElm = async (
         uploaderWhiteboardWidth,
         pageInfo,
       );
+      imageDataCache.set(res.image.id, res.image);
+      return res;
     } else {
       console.error('unsupported file type:', fileMimeType);
       return null;
@@ -634,21 +786,47 @@ export const getImageData = async (
   return null;
 };
 
+/** Whether the canvas image cache already holds `fileId`. */
+const canvasHasFile = (excalidrawAPI: ExcalidrawImperativeAPI, fileId: string): boolean => {
+  const canvasFiles = excalidrawAPI.getFiles();
+  return (
+    Boolean(canvasFiles[fileId]) || Object.values(canvasFiles).some((file) => file.id === fileId)
+  );
+};
+
 export const ensureImageDataIsLoaded = async (
   excalidrawAPI: ExcalidrawImperativeAPI,
   elm: ExcalidrawImageElement,
   customData: ImageCustomData,
 ) => {
-  if (!elm.fileId || processedImageElements.has(elm.id)) {
+  if (!elm.fileId) {
     return;
   }
 
+  if (canvasHasFile(excalidrawAPI, elm.fileId)) {
+    return;
+  }
+
+  if (processedImageElements.has(elm.id)) {
+    return;
+  }
   processedImageElements.set(elm.id, elm.fileId);
 
-  const canvasFiles = excalidrawAPI.getFiles();
-  const fileExist = Object.values(canvasFiles).some((file) => file.id === elm.fileId);
-  if (fileExist) {
-    // do nothing
+  // Fast path: binary data already in memory (e.g. after closing and reopening
+  // the whiteboard). Both calls run synchronously, so the scene is registered
+  // and primed before the caller's `updateScene` paints it.
+  const cached = imageDataCache.get(elm.fileId);
+  if (cached) {
+    excalidrawAPI.addFiles([cached]);
+    if (!primeExcalidrawImageCache(excalidrawAPI, [cached])) {
+      // Priming failed (undecoded image, or `app.imageCache` gone in a future
+      // Excalidraw version). `addFiles` ran while the scene was still empty, so
+      // Excalidraw could not decode anything yet; repeat it on a microtask —
+      // i.e. right after the caller's synchronous `updateScene` — and the
+      // public API decodes the images immediately instead of after the
+      // throttled refresh.
+      scheduleImageCacheFallback(excalidrawAPI);
+    }
     return;
   }
 
@@ -659,11 +837,38 @@ export const ensureImageDataIsLoaded = async (
     return;
   }
 
-  excalidrawAPI.addFiles([imageData]);
+  // Another caller's coalesced fetch may have registered the file meanwhile.
+  if (!canvasHasFile(excalidrawAPI, imageData.id)) {
+    excalidrawAPI.addFiles([imageData]);
+    // On failure the element may not be on the canvas yet, so let Excalidraw
+    // retry the decode through its public API right after `updateScene`.
+    if (!primeExcalidrawImageCache(excalidrawAPI, [imageData])) {
+      scheduleImageCacheFallback(excalidrawAPI);
+    }
+  }
 };
 
-export function cleanProcessedImageElementsMap() {
+/**
+ * Drops every cached image reference for the given Excalidraw instance:
+ * the per-element bookkeeping, the files held by the public API, and the
+ * internal decoded-image cache. Safe to call with a missing instance.
+ */
+export function cleanProcessedImageElementsMap(excalidrawAPI?: ExcalidrawImperativeAPI | null) {
   processedImageElements.clear();
+  if (!excalidrawAPI) {
+    return;
+  }
+  try {
+    const files = excalidrawAPI.getFiles?.();
+    if (files && typeof files === 'object') {
+      for (const key of Object.keys(files)) {
+        delete files[key];
+      }
+    }
+    getExcalidrawImageCache(excalidrawAPI)?.clear();
+  } catch {
+    // Ignore if Excalidraw internals change in a future version.
+  }
 }
 
 /**
@@ -716,13 +921,17 @@ export const preloadOfficeFilePages = (allPages: IWhiteboardFile[], currentPage:
 
     const url = getDownloadBaseUrl() + fileToPreload.filePath;
 
-    // Prefetch image + page meta (meta is required for office page size).
-    await Promise.all([
+    // Prefetch image + page meta (meta is required for office page size), then
+    // finish the decode so the page is fully ready before it is switched to.
+    const [dataUrl] = await Promise.all([
       fetchAndCacheImage(url),
       fileToPreload.isOfficeFile
         ? resolveOfficePageInfo(fileToPreload.metaFilePath, fileToPreload.filePath)
         : Promise.resolve(defaultOfficePageInfo()),
     ]);
+    if (dataUrl) {
+      await preloadHtmlImage(dataUrl);
+    }
   });
 
   // We run all promises concurrently but don't block the main thread.

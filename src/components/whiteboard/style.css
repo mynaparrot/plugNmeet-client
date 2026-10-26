@@ -123,7 +123,8 @@
         }
       }
       .renderForParticipant {
-        button {
+        button,
+        .page-number {
           height: var(--lg-button-size);
           background-color: var(--color-surface-low);
           border-radius: var(--border-radius-lg);
@@ -131,6 +132,8 @@
           display: flex;
           align-items: center;
           justify-content: center;
+        }
+        button {
           &:not(:disabled):hover {
             background: var(--button-hover-bg);
             color: #b8b8b8;

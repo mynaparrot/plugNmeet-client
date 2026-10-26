@@ -48,6 +48,7 @@ import {
 } from './helpers/utils';
 import {
   cleanProcessedImageElementsMap,
+  primeExcalidrawImageCache,
   registerRoomWhiteboardFiles,
   uploadCanvasBinaryFile,
 } from './helpers/handleFiles';
@@ -211,7 +212,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       );
 
       // 6. Ensure that any image elements have their binary data loaded.
-      // This is crucial when receiving scenes from remote peers.
+      // This is crucial when receiving scenes from remote peers. In-memory
+      // `BinaryFileData` (e.g. after closing and reopening the whiteboard) is
+      // registered synchronously, so the `updateScene` below paints the real
+      // images on its first frame.
       ensureAllImagesDataIsLoaded(excalidrawAPI, reconciledElements);
 
       // 7. Record the received scene version so the follow-up onChange (fired
@@ -238,6 +242,11 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     if (!excalidrawAPI) {
       return;
     }
+
+    // A fresh Excalidraw instance starts with an empty image cache, so stale
+    // bookkeeping from a previous instance must never make image elements look
+    // already processed (that would leave them as grey placeholders).
+    cleanProcessedImageElementsMap(excalidrawAPI);
 
     controller.configure({
       excalidrawAPI,
@@ -295,14 +304,14 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const resetWhiteboardState = useCallback((excalidrawAPI: ExcalidrawImperativeAPI) => {
     // 1. Clean up the whiteboard canvas
     excalidrawAPI.updateScene({ elements: [] });
-    excalidrawAPI.addFiles([]);
     excalidrawAPI.history.clear();
 
     // Reset the last scene version so a page/file switch re-arms the guard.
     lastBroadcastOrReceivedSceneVersion.current = -1;
 
-    // 2. Reset the internal state for a clean slate.
-    cleanProcessedImageElementsMap();
+    // 2. Reset the internal state (and Excalidraw's files/image cache) for a
+    // clean slate, so nothing from the previous file leaks into the next one.
+    cleanProcessedImageElementsMap(excalidrawAPI);
     setIsFollowing(true);
   }, []);
 
@@ -448,19 +457,31 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
             ? Promise.resolve(null)
             : syncOfficeFilePage(next.fileId, next.page, stillCurrent),
         applyOfficePage: (load: OfficePageLoad | null) => {
-          // Re-read the live scene: edits made while the page image was loading
-          // must survive the insert.
-          const scene = load
-            ? [...excalidrawAPI.getSceneElementsIncludingDeleted(), ...load.elements]
-            : controller.getElements();
+          // Re-read the live scene: `paint()` already reconciled the CRDT
+          // elements, and edits made while the page image loaded must survive.
+          const existingScene = excalidrawAPI.getSceneElementsIncludingDeleted();
+          const scene = load ? [...existingScene, ...load.elements] : existingScene;
           const pageInfo = resolvePageInfoFromElements(scene);
 
           if (load) {
             excalidrawAPI.addFiles(load.images);
           }
+          // `addFiles` drops the image-cache entry of each new file, so hand
+          // over the pre-decoded bitmaps afterwards.
+          const primed = load ? primeExcalidrawImageCache(excalidrawAPI, load.images) : true;
           excalidrawAPI.updateScene({
             elements: addBoundaryToElements(scene, pageInfo),
           });
+          if (!primed) {
+            // Nothing was primed (image not pre-decoded, or Excalidraw's
+            // internal cache was renamed/removed in a future version) and the
+            // `addFiles` above ran while the scene was still empty, so
+            // Excalidraw could not decode anything yet. Re-running the public
+            // `addFiles` now that the scene holds the image elements triggers
+            // its internal decode pass, so the bitmaps are ready on the next
+            // frame instead of after the throttled refresh.
+            excalidrawAPI.addFiles([]);
+          }
           scrollToBoundary(excalidrawAPI, pageInfo);
 
           // Persist any newly inserted office-page elements into the CRDT so

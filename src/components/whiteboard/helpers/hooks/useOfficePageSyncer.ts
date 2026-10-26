@@ -88,16 +88,26 @@ const useOfficePageSyncer = ({ excalidrawAPI, isPresenter, currentPage }: IUseOf
       void broadcastCurrentOfficeFilePages(currentOfficeFilePages);
     }
 
-    if (currentOfficeFilePages !== '') {
-      try {
-        const documentPages: Array<IWhiteboardFile> = JSON.parse(currentOfficeFilePages);
-        if (documentPages.length) {
-          preloadOfficeFilePages(documentPages, currentPage);
-        }
-      } catch (e) {
-        console.error('Failed to parse office file pages for preloading.', e);
-      }
+    if (currentOfficeFilePages === '') {
+      return;
     }
+
+    let documentPages: Array<IWhiteboardFile>;
+    try {
+      documentPages = JSON.parse(currentOfficeFilePages);
+    } catch (e) {
+      console.error('Failed to parse office file pages for preloading.', e);
+      return;
+    }
+    if (!documentPages.length) {
+      return;
+    }
+
+    // Defer adjacent pages so the active page's fetch/hydration gets priority.
+    const timer = setTimeout(() => {
+      preloadOfficeFilePages(documentPages, currentPage);
+    }, 150);
+    return () => clearTimeout(timer);
   }, [isPresenter, currentOfficeFilePages, currentPage]);
 
   return {

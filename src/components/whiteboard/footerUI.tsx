@@ -211,7 +211,7 @@ const FooterUI = ({
             {isFollowing ? t('whiteboard.unfollow') : t('whiteboard.follow')}
           </button>
         )}
-        {t('whiteboard.page', { count: currentPage })}
+        <span className="page-number px-2.5">{t('whiteboard.page', { count: currentPage })}</span>
       </div>
     );
   };
