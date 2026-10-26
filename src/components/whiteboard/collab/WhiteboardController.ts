@@ -46,14 +46,21 @@ import type {
   WhiteboardYjsSnapshot,
 } from './types';
 import { WhiteboardDataAsDonorData } from '../../../store/slices/interfaces/whiteboard';
-import { addWhiteboardDataSentFromDonor } from '../../../store/slices/whiteboard';
+import {
+  addWhiteboardDataSentFromDonor,
+  setWhiteboardCurrentPage,
+  updateCurrentWhiteboardOfficeFileId,
+} from '../../../store/slices/whiteboard';
 
 export const WHITEBOARD_REMOTE_ORIGIN = 'whiteboard-remote';
 const SYNC_RETRY_DELAY_MS = 2000;
 const MAX_SYNC_REQUEST_ATTEMPTS = 3;
+export const INITIAL_REQUEST_RETRY_MS = 500;
 const INITIAL_REQUEST_TIMEOUT_MS = 4000;
 const SERVER_FIRST_SYNC_TIMEOUT_MS = 1500;
 const MISSING_UPDATE_RESYNC_THROTTLE_MS = 2000;
+/** Per-peer throttle for pointing a peer that is stuck on a stale scope at the live one. */
+const STALE_PEER_NUDGE_THROTTLE_MS = 2000;
 // Stop firing targeted resyncs for a gap that never heals; anti-entropy still
 // covers it at one peer per tick.
 const MAX_MISSING_UPDATE_RESYNCS = 5;
@@ -100,6 +107,7 @@ export class WhiteboardController {
   private antiEntropyTimer: ReturnType<typeof setTimeout> | null = null;
   private lastMissingUpdateResyncAt = 0;
   private missingUpdateResyncs = 0;
+  private stalePeerNudgeAt = new Map<string, number>();
   private initialRequestResolver: ((data: { fileId: string; page: number } | null) => void) | null =
     null;
   private initialRequestTimer: ReturnType<typeof setTimeout> | null = null;
@@ -163,6 +171,19 @@ export class WhiteboardController {
   private isCurrentUserPresenter = (): boolean =>
     !!store.getState().session.currentUser?.metadata?.isPresenter;
 
+  /** Whether `userId` is an online, approved presenter. */
+  private isUserPresenter = (userId?: string): boolean =>
+    !!userId &&
+    participantsSelector
+      .selectAll(store.getState())
+      .some(
+        (p) =>
+          p.userId === userId &&
+          p.isOnline &&
+          !p.metadata?.waitForApproval &&
+          p.metadata?.isPresenter,
+      );
+
   /** Whether any online peer other than the current user is the presenter. */
   hasPresenterOnline = () => {
     const state = store.getState();
@@ -216,6 +237,61 @@ export class WhiteboardController {
 
   private matchesActiveScope = (scope: WhiteboardScope | null): boolean =>
     !!scope && !!this.doc && scope.fileId === this.fileId && scope.page === this.page;
+
+  /**
+   * Whether `doc` has finished hydrating the scope Redux already points at.
+   * False during an in-flight page/file switch, when Redux is ahead of `doc`.
+   */
+  private isActiveScopeSettled = (): boolean => {
+    if (!this.doc) {
+      return false;
+    }
+    const authorized = this.storeScope();
+    return this.fileId === authorized.fileId && this.page === authorized.page;
+  };
+
+  /**
+   * The presenter owns the active page, so its doc is the source of truth even
+   * when the page is empty — unless the canonical snapshot is still unconfirmed.
+   */
+  private isActiveScopeAuthoritative = (): boolean =>
+    this.isActiveScopeSettled() &&
+    this.isCurrentUserPresenter() &&
+    !this.unconfirmedCanonicalKeys.has(this.pageKey(this.fileId, this.page));
+
+  /**
+   * Privately point a peer stuck on a stale `(fileId, page)` at the live one.
+   * Works even when the presenter's current page is empty, and the peer's
+   * navigation then re-runs `sync()` for the corrected scope.
+   */
+  private nudgeStalePeer = (toUserId: string, scope: WhiteboardScope) => {
+    const conn = getNatsConn();
+    if (!conn || !scope.fileId || typeof scope.page !== 'number') {
+      return;
+    }
+    // During a switch Redux already holds the new scope while this doc is
+    // still the old one: never drag a peer that is ahead of us back.
+    if (!this.isActiveScopeSettled()) {
+      return;
+    }
+    const now = Date.now();
+    if (now - (this.stalePeerNudgeAt.get(toUserId) ?? 0) < STALE_PEER_NUDGE_THROTTLE_MS) {
+      return;
+    }
+    this.stalePeerNudgeAt.set(toUserId, now);
+
+    if (scope.fileId !== this.fileId) {
+      void conn.sendWhiteboardData(DataMsgBodyType.FILE_CHANGE, {
+        message: JSON.stringify({ fileId: this.fileId, page: this.page }),
+        to: toUserId,
+      });
+    } else if (scope.page !== this.page) {
+      void conn.sendWhiteboardData(DataMsgBodyType.PAGE_CHANGE, {
+        message: `${this.page}`,
+        to: toUserId,
+      });
+    }
+  };
 
   subscribe = (cb: () => void) => {
     this.listeners.add(cb);
@@ -451,6 +527,7 @@ export class WhiteboardController {
     this.canonicalRetryTimers.clear();
     this.lastMissingUpdateResyncAt = 0;
     this.missingUpdateResyncs = 0;
+    this.stalePeerNudgeAt.clear();
     for (const t of this.backupResponseTimers.values()) {
       clearTimeout(t);
     }
@@ -1096,6 +1173,23 @@ export class WhiteboardController {
             }
           }
           this.applyRemoteUpdate(payload);
+        } else if (scope?.fileId && typeof scope.page === 'number') {
+          if (this.isCurrentUserPresenter()) {
+            if (this.doc) {
+              this.nudgeStalePeer(fromUserId, scope);
+            }
+          } else if (this.isUserPresenter(fromUserId)) {
+            // The presenter switched while we missed the page/file message:
+            // adopt the authorized scope; the Redux watcher re-runs navigation.
+            const currentStore = this.storeScope();
+            if (currentStore.fileId !== scope.fileId) {
+              store.dispatch(
+                updateCurrentWhiteboardOfficeFileId({ fileId: scope.fileId, page: scope.page }),
+              );
+            } else if (currentStore.page !== scope.page) {
+              store.dispatch(setWhiteboardCurrentPage(scope.page));
+            }
+          }
         }
         break;
       }
@@ -1302,8 +1396,7 @@ export class WhiteboardController {
       // Single-flight: cancel any previous pending initial request.
       this.resolveInitialRequest(null);
 
-      const targets = this.getSyncRequestTargets();
-      if (targets.length === 0) {
+      if (this.getSyncRequestTargets().length === 0) {
         resolve(null);
         return;
       }
@@ -1311,19 +1404,41 @@ export class WhiteboardController {
       this.initialRequestResolver = resolve;
       this.initialRequestScope = this.storeScope();
       this.pendingSyncRequestIds.clear();
-      const emptyStateVector = Y.encodeStateVector(new Y.Doc());
 
-      for (const toUserId of targets) {
-        const requestId = crypto.randomUUID();
-        this.pendingSyncRequestIds.add(requestId);
-        this.sendWhiteboardData(
-          DataMsgBodyType.WHITEBOARD_SYNC_REQUEST,
-          emptyStateVector,
-          requestId,
-          undefined,
-          toUserId,
-        );
-      }
+      const sendInitialRequest = () => {
+        const emptyStateVector = Y.encodeStateVector(new Y.Doc());
+        for (const toUserId of this.getSyncRequestTargets()) {
+          const requestId = crypto.randomUUID();
+          this.pendingSyncRequestIds.add(requestId);
+          this.sendWhiteboardData(
+            DataMsgBodyType.WHITEBOARD_SYNC_REQUEST,
+            emptyStateVector,
+            requestId,
+            undefined,
+            toUserId,
+          );
+        }
+      };
+
+      /*
+       * A presenter that is still hydrating (setupDoc/fetchSessionData) cannot
+       * answer the first request, so retry fast instead of waiting for the 4s
+       * timeout. Earlier request ids stay pending: a late answer to any attempt
+       * still resolves the bootstrap.
+       */
+      const scheduleRetry = () => {
+        this.syncRetryTimer = setTimeout(() => {
+          this.syncRetryTimer = null;
+          if (!this.initialRequestResolver || this.isInitialBootstrapStale()) {
+            return;
+          }
+          sendInitialRequest();
+          scheduleRetry();
+        }, INITIAL_REQUEST_RETRY_MS);
+      };
+
+      sendInitialRequest();
+      scheduleRetry();
 
       this.initialRequestTimer = setTimeout(() => {
         this.resolveInitialRequest(null);
@@ -1428,6 +1543,19 @@ export class WhiteboardController {
 
     const senderScope = this.parseScope(message);
 
+    if (
+      doc &&
+      this.isCurrentUserPresenter() &&
+      senderScope?.fileId &&
+      typeof senderScope.page === 'number' &&
+      !this.matchesActiveScope(senderScope)
+    ) {
+      // The requester is on a page/file the room has left; redirect it to the
+      // live scope instead of serving a stale snapshot (works on empty pages).
+      this.nudgeStalePeer(fromUserId, senderScope);
+      return;
+    }
+
     if (!senderScope || !senderScope.fileId || typeof senderScope.page !== 'number') {
       sendFullInitialData = true;
 
@@ -1458,7 +1586,10 @@ export class WhiteboardController {
     }
 
     if (sendFullInitialData) {
-      if (doc && elementsMap && elementsMap.size > 0) {
+      // A blank page is still authoritative for its presenter: answering with an
+      // empty update plus the scope metadata is what tells a newly joined peer
+      // where the room is, instead of leaving it without a response.
+      if (doc && elementsMap && (elementsMap.size > 0 || this.isActiveScopeAuthoritative())) {
         // Full-state payloads are gzip-compressed, flagged via scope.gzip.
         responseUpdate = compress(Y.encodeStateAsUpdate(doc));
       } else {
@@ -1475,7 +1606,12 @@ export class WhiteboardController {
         // Full-state payloads are gzip-compressed, flagged via scope.gzip.
         responseUpdate = compress(stored);
       }
-    } else if (doc && elementsMap && this.matchesActiveScope(senderScope) && elementsMap.size > 0) {
+    } else if (
+      doc &&
+      elementsMap &&
+      this.matchesActiveScope(senderScope) &&
+      (elementsMap.size > 0 || this.isActiveScopeAuthoritative())
+    ) {
       responseUpdate = Y.encodeStateAsUpdate(doc, binMessage);
 
       responseMessage = this.buildScopeMessage({

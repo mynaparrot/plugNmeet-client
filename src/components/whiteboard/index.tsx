@@ -73,7 +73,6 @@ const DEFAULT_PAGE_INFO: ResolvedPageInfo = {
 import ToolbarBar from '../../assets/Icons/ToolbarBar';
 import PdfIcon from '../../assets/Icons/PdfIcon';
 import { RefreshIcon } from '../../assets/Icons/RefreshIcon';
-import { sleep } from '../../helpers/utils';
 
 interface WhiteboardProps {
   onReadyExcalidrawAPI?: (excalidrawAPI: ExcalidrawImperativeAPI) => void;
@@ -537,9 +536,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
       if (isPresenter) {
         // Keep broadcasting the active file id (control message) so followers
-        // converge on the same file/page. Scene content syncs via yjs.
+        // converge on the same file/page. Scene content syncs via yjs. The send
+        // does not wait for followers: hydrating the presenter's own scene must
+        // not be delayed by a fixed settle time.
         await broadcastCurrentFileId(target.fileId, target.page);
-        await Promise.race([sleep(300), navigation.waitForSupersede()]);
         if (!isCurrent()) {
           return;
         }

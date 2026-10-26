@@ -6,7 +6,6 @@ import { store } from '../../../../store';
 import { updateCurrentWhiteboardOfficeFileId } from '../../../../store/slices/whiteboard';
 import { addUserNotification } from '../../../../store/slices/roomSettingsSlice';
 import i18n from '../../../../helpers/i18n';
-import { sleep } from '../../../../helpers/utils';
 import officeFileProcessor from '../../manage-office-files/officeFileProcessor';
 import { getWhiteboardController } from '../../collab';
 import { broadcastCurrentFileId } from '../handleRequests';
@@ -52,9 +51,8 @@ const switchToFile = async (fileId: string) => {
     }
     // fresh new file ID and first page
     const page = 1;
-    await broadcastCurrentFileId(fileId, page);
-    await sleep(300);
     store.dispatch(updateCurrentWhiteboardOfficeFileId({ fileId, page }));
+    await broadcastCurrentFileId(fileId, page);
   } finally {
     isSwitching = false;
   }

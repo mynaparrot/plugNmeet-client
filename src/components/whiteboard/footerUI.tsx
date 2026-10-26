@@ -15,7 +15,6 @@ import { setWhiteboardCurrentPage } from '../../store/slices/whiteboard';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import { broadcastCurrentPageNumber } from './helpers/handleRequests';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
-import { sleep } from '../../helpers/utils';
 import { getWhiteboardController, saveWhiteboardLastPage } from './collab';
 
 interface IFooterUIProps {
@@ -74,11 +73,10 @@ const FooterUI = ({
           // Remember the last page for the current file.
           const { currentWhiteboardOfficeFileId } = store.getState().whiteboard;
           await saveWhiteboardLastPage(currentWhiteboardOfficeFileId, newPage);
-          // broadcast first so that user can prepare for page change
-          await broadcastCurrentPageNumber(newPage);
-          await sleep(300);
-          // Then, proceed with changing the page.
+          // Switch locally first: the page change must already be visible to this
+          // client (and to the controller's scope) before peers react to it.
           dispatch(setWhiteboardCurrentPage(newPage));
+          await broadcastCurrentPageNumber(newPage);
         } finally {
           isFlushingRef.current = false;
         }

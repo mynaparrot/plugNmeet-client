@@ -13,7 +13,6 @@ import UploadedFilesList from './uploadedFilesList';
 import { IWhiteboardOfficeFile } from '../../../store/slices/interfaces/whiteboard';
 import { getWhiteboardController, loadWhiteboardLastPage } from '../collab';
 import { broadcastCurrentFileId } from '../helpers/handleRequests';
-import { sleep } from '../../../helpers/utils';
 import { RefreshIcon } from '../../../assets/Icons/RefreshIcon';
 
 interface ManageOfficeFilesModalProps {
@@ -106,16 +105,14 @@ const ManageOfficeFilesModal = ({
           }
           const lastPage = await loadWhiteboardLastPage(officeFile.fileId);
           const page = lastPage ?? 1;
-          // broadcast first so that user can prepare for file
-          await broadcastCurrentFileId(officeFile.fileId, page);
-          await sleep(300);
-          // now update our store
+          // Switch locally first so the new file is live here before peers react.
           dispatch(
             updateCurrentWhiteboardOfficeFileId({
               fileId: officeFile.fileId,
               page,
             }),
           );
+          await broadcastCurrentFileId(officeFile.fileId, page);
           onClose();
         } finally {
           isFlushingRef.current = false;

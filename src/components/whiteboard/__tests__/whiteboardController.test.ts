@@ -45,6 +45,11 @@ vi.mock('../../../store/slices/participantSlice', () => ({
 
 vi.mock('../../../store/slices/whiteboard', () => ({
   addWhiteboardDataSentFromDonor: (input: unknown) => ({ type: 'donor', payload: input }),
+  setWhiteboardCurrentPage: (payload: number) => ({ type: 'page-change', payload }),
+  updateCurrentWhiteboardOfficeFileId: (payload: { fileId: string; page: number }) => ({
+    type: 'file-change',
+    payload,
+  }),
 }));
 
 vi.mock('../../../helpers/utils', () => ({
@@ -60,21 +65,26 @@ vi.mock('../../../helpers/libs/idb', () => ({
   idbGetAllKeys: vi.fn(async () => []),
 }));
 
-vi.mock('../../collab/whiteboardPersistence', () => ({
+vi.mock('../collab/whiteboardPersistence', () => ({
   listWhiteboardPages: vi.fn(async () => []),
   loadWhiteboardPageSnapshot: vi.fn(async () => undefined),
   saveWhiteboardPageSnapshot: vi.fn(async () => undefined),
 }));
 
 import { store } from '../../../store';
-import { SAVE_ACK_TIMEOUT_MS, WhiteboardController } from '../collab/WhiteboardController';
+import {
+  INITIAL_REQUEST_RETRY_MS,
+  SAVE_ACK_TIMEOUT_MS,
+  WhiteboardController,
+} from '../collab/WhiteboardController';
+import { loadWhiteboardPageSnapshot } from '../collab/whiteboardPersistence';
 import {
   SAVE_MAX_WAIT_MS,
   SessionDataSyncState,
   decompress,
 } from '../../../helpers/libs/sessionDataSync';
 
-type Peer = { userId: string; isPresenter?: boolean };
+type Peer = { userId: string; isPresenter?: boolean; isOnline?: boolean };
 type Internals = {
   pendingSyncRequestIds: Set<string>;
   initialRequestResolver: unknown;
@@ -98,7 +108,7 @@ const setStoreState = (participants: Peer[]) => {
       userId: p.userId,
       name: p.userId,
       joinedAt: 1,
-      isOnline: true,
+      isOnline: p.isOnline ?? true,
       metadata: { isPresenter: !!p.isPresenter },
     })),
     whiteboard: {
@@ -113,7 +123,19 @@ const setStoreState = (participants: Peer[]) => {
 const makeController = () => {
   const controller = new WhiteboardController();
   controller.configure({
-    excalidrawAPI: {} as never,
+    excalidrawAPI: {
+      getAppState: () => ({
+        height: 600,
+        width: 800,
+        scrollX: 0,
+        scrollY: 0,
+        zoom: { value: 1 },
+        theme: 'light',
+        viewBackgroundColor: '#ffffff',
+        zenModeEnabled: false,
+        gridSize: null,
+      }),
+    } as never,
     roomSid: 'room-sid',
     onRemoteUpdate: () => undefined,
     canWrite: () => true,
@@ -131,6 +153,8 @@ const sends = (type: DataMsgBodyType) =>
 
 const syncRequestSends = () => sends(DataMsgBodyType.WHITEBOARD_SYNC_REQUEST);
 const sceneUpdateSends = () => sends(DataMsgBodyType.SCENE_UPDATE);
+const pageChangeSends = () => sends(DataMsgBodyType.PAGE_CHANGE);
+const fileChangeSends = () => sends(DataMsgBodyType.FILE_CHANGE);
 
 const header = (key: string) =>
   ({ dataType: SessionDataType.WHITEBOARD, key }) as SessionDataHeader;
@@ -720,6 +744,51 @@ describe('initial bootstrap ownership', () => {
     expect(controller.getSnapshot()).toBeNull();
   });
 
+  it('retries the bootstrap request after 500ms and resolves from the retry answer', async () => {
+    const controller = setup([{ userId: 'me' }, { userId: 'peer1', isPresenter: true }]);
+    const initial = controller.requestInitialData();
+    const firstId = Array.from(internalsOf(controller).pendingSyncRequestIds)[0];
+    expect(syncRequestSends()).toHaveLength(1);
+
+    // The presenter is still hydrating: the first request stays unanswered.
+    await vi.advanceTimersByTimeAsync(INITIAL_REQUEST_RETRY_MS - 100);
+    expect(syncRequestSends()).toHaveLength(1);
+
+    await vi.advanceTimersByTimeAsync(100);
+    const retryId = Array.from(internalsOf(controller).pendingSyncRequestIds).find(
+      (id) => id !== firstId,
+    );
+    expect(syncRequestSends()).toHaveLength(2);
+    expect(retryId).toBeDefined();
+
+    // Answering the retry resolves long before the 4s timeout.
+    deliverInitialData(controller, retryId!, 3);
+    await vi.advanceTimersByTimeAsync(0);
+
+    await expect(initial).resolves.toEqual({ fileId: 'donor-file', page: 3 });
+    expect(internalsOf(controller).pendingSyncRequestIds.size).toBe(0);
+
+    // Request timeout and retry loop are gone with the resolved bootstrap.
+    await vi.advanceTimersByTimeAsync(INITIAL_REQUEST_RETRY_MS * 10);
+    expect(syncRequestSends()).toHaveLength(2);
+  });
+
+  it('still accepts a late answer to an earlier request id after a retry', async () => {
+    const controller = setup([{ userId: 'me' }, { userId: 'peer1', isPresenter: true }]);
+    const initial = controller.requestInitialData();
+    const firstId = Array.from(internalsOf(controller).pendingSyncRequestIds)[0];
+
+    await vi.advanceTimersByTimeAsync(INITIAL_REQUEST_RETRY_MS);
+    expect(syncRequestSends()).toHaveLength(2);
+    expect(internalsOf(controller).pendingSyncRequestIds.has(firstId)).toBe(true);
+
+    deliverInitialData(controller, firstId, 2);
+    await vi.advanceTimersByTimeAsync(0);
+
+    await expect(initial).resolves.toEqual({ fileId: 'donor-file', page: 2 });
+    expect(internalsOf(controller).pendingSyncRequestIds.size).toBe(0);
+  });
+
   it('still bootstraps from the donor when nothing newer was authorized', async () => {
     const controller = setup([{ userId: 'me' }, { userId: 'peer1', isPresenter: true }]);
     const initial = controller.requestInitialData();
@@ -767,5 +836,369 @@ describe('initial bootstrap ownership', () => {
 
     await expect(initial).resolves.toEqual({ fileId: 'file2', page: 4 });
     expect(controller.getSnapshot()).toBeNull();
+  });
+});
+
+describe('presenter scope self-healing', () => {
+  const scope = (fileId: string, page: number) => JSON.stringify({ fileId, page });
+  const update = (prefix: string) => sourceUpdates(1, prefix)[0];
+  const emptyStateVector = new Uint8Array([0, 0]);
+
+  const presenterOn = async (fileId: string, page: number, peers: Peer[] = []) => {
+    const controller = setup([{ userId: 'me', isPresenter: true }, ...peers]);
+    const whiteboard = (
+      state.current as {
+        whiteboard: { currentWhiteboardOfficeFileId: string; currentPage: number };
+      }
+    ).whiteboard;
+    whiteboard.currentWhiteboardOfficeFileId = fileId;
+    whiteboard.currentPage = page;
+    await controller.sync(fileId, page, { hydrate: false });
+    conn.sendWhiteboardData.mockClear();
+    return controller;
+  };
+
+  const followerOn = async (fileId: string, page: number) => {
+    const controller = setup([
+      { userId: 'me' },
+      { userId: 'peer1', isPresenter: true },
+      { userId: 'peer2' },
+    ]);
+    await controller.sync(fileId, page, { hydrate: false });
+    conn.sendWhiteboardData.mockClear();
+    return controller;
+  };
+
+  describe('follower adopts the presenter scope from a stale SCENE_UPDATE', () => {
+    it('adopts a different page', async () => {
+      const controller = await followerOn('file1', 1);
+      vi.mocked(store.dispatch).mockClear();
+
+      controller.handleMessage(
+        DataMsgBodyType.SCENE_UPDATE,
+        update('adopt-page'),
+        'peer1',
+        undefined,
+        scope('file1', 3),
+      );
+
+      expect(store.dispatch).toHaveBeenCalledWith({ type: 'page-change', payload: 3 });
+      // The Redux watcher owns the navigation/sync, not the controller.
+      expect(controller.getSnapshot()!.page).toBe(1);
+    });
+
+    it('adopts a different file', async () => {
+      const controller = await followerOn('file1', 1);
+      vi.mocked(store.dispatch).mockClear();
+
+      controller.handleMessage(
+        DataMsgBodyType.SCENE_UPDATE,
+        update('adopt-file'),
+        'peer1',
+        undefined,
+        scope('file2', 4),
+      );
+
+      expect(store.dispatch).toHaveBeenCalledWith({
+        type: 'file-change',
+        payload: { fileId: 'file2', page: 4 },
+      });
+    });
+
+    it('ignores scopes from non-presenters and offline presenters', async () => {
+      const controller = await followerOn('file1', 1);
+      vi.mocked(store.dispatch).mockClear();
+
+      controller.handleMessage(
+        DataMsgBodyType.SCENE_UPDATE,
+        update('non-presenter'),
+        'peer2',
+        undefined,
+        scope('file2', 2),
+      );
+      expect(store.dispatch).not.toHaveBeenCalled();
+
+      const participant = (
+        state.current as { participants: { userId: string; isOnline: boolean }[] }
+      ).participants.find((p) => p.userId === 'peer1')!;
+      participant.isOnline = false;
+      controller.handleMessage(
+        DataMsgBodyType.SCENE_UPDATE,
+        update('offline-presenter'),
+        'peer1',
+        undefined,
+        scope('file2', 2),
+      );
+      expect(store.dispatch).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('presenter nudges stale peers', () => {
+    it('sends a targeted PAGE_CHANGE for a stale SCENE_UPDATE', async () => {
+      const controller = await presenterOn('file1', 1, [{ userId: 'peer1' }]);
+
+      controller.handleMessage(
+        DataMsgBodyType.SCENE_UPDATE,
+        update('stale-page'),
+        'peer1',
+        undefined,
+        scope('file1', 2),
+      );
+
+      expect(pageChangeSends()).toEqual([
+        [DataMsgBodyType.PAGE_CHANGE, { message: '1', to: 'peer1' }],
+      ]);
+      // The stale update is not applied to the live doc.
+      expect(controller.getElements()).toHaveLength(0);
+    });
+
+    it('sends a targeted FILE_CHANGE for a stale file', async () => {
+      const controller = await presenterOn('file1', 2, [{ userId: 'peer1' }]);
+
+      controller.handleMessage(
+        DataMsgBodyType.SCENE_UPDATE,
+        update('stale-file'),
+        'peer1',
+        undefined,
+        scope('file2', 1),
+      );
+
+      expect(fileChangeSends()).toEqual([
+        [
+          DataMsgBodyType.FILE_CHANGE,
+          { message: JSON.stringify({ fileId: 'file1', page: 2 }), to: 'peer1' },
+        ],
+      ]);
+      expect(pageChangeSends()).toHaveLength(0);
+    });
+
+    it('throttles nudges per peer', async () => {
+      const controller = await presenterOn('file1', 1, [{ userId: 'peer1' }, { userId: 'peer2' }]);
+
+      controller.handleMessage(
+        DataMsgBodyType.SCENE_UPDATE,
+        update('throttle-1'),
+        'peer1',
+        undefined,
+        scope('file1', 2),
+      );
+      controller.handleMessage(
+        DataMsgBodyType.SCENE_UPDATE,
+        update('throttle-2'),
+        'peer1',
+        undefined,
+        scope('file1', 3),
+      );
+      expect(pageChangeSends()).toHaveLength(1);
+
+      controller.handleMessage(
+        DataMsgBodyType.SCENE_UPDATE,
+        update('throttle-3'),
+        'peer2',
+        undefined,
+        scope('file1', 2),
+      );
+      expect(pageChangeSends()).toHaveLength(2);
+
+      await vi.advanceTimersByTimeAsync(2100);
+      conn.sendWhiteboardData.mockClear();
+      controller.handleMessage(
+        DataMsgBodyType.SCENE_UPDATE,
+        update('throttle-4'),
+        'peer1',
+        undefined,
+        scope('file1', 2),
+      );
+      expect(pageChangeSends()).toHaveLength(1);
+    });
+
+    it('does not pull back a peer that is ahead while this doc is still switching', async () => {
+      const controller = await presenterOn('file1', 1, [{ userId: 'peer1' }]);
+      (state.current as { whiteboard: { currentPage: number } }).whiteboard.currentPage = 2;
+
+      controller.handleMessage(
+        DataMsgBodyType.SCENE_UPDATE,
+        update('ahead'),
+        'peer1',
+        undefined,
+        scope('file1', 2),
+      );
+
+      expect(pageChangeSends()).toHaveLength(0);
+      expect(fileChangeSends()).toHaveLength(0);
+    });
+  });
+
+  describe('sync requests', () => {
+    it('redirects a stale peer instead of serving a snapshot', async () => {
+      const controller = await presenterOn('file1', 2, [{ userId: 'peer1' }]);
+
+      controller.handleMessage(
+        DataMsgBodyType.WHITEBOARD_SYNC_REQUEST,
+        emptyStateVector,
+        'peer1',
+        'req-stale-page',
+        scope('file1', 1),
+      );
+      await vi.advanceTimersByTimeAsync(0);
+
+      // The live page is empty, yet the peer still learns the scope.
+      expect(pageChangeSends()).toEqual([
+        [DataMsgBodyType.PAGE_CHANGE, { message: '2', to: 'peer1' }],
+      ]);
+      expect(sends(DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE)).toHaveLength(0);
+      expect(loadWhiteboardPageSnapshot).not.toHaveBeenCalled();
+    });
+
+    it('redirects a stale peer to the presenter file', async () => {
+      const controller = await presenterOn('file2', 3, [{ userId: 'peer1' }]);
+
+      controller.handleMessage(
+        DataMsgBodyType.WHITEBOARD_SYNC_REQUEST,
+        emptyStateVector,
+        'peer1',
+        'req-stale-file',
+        scope('file1', 1),
+      );
+      await vi.advanceTimersByTimeAsync(0);
+
+      expect(fileChangeSends()).toEqual([
+        [
+          DataMsgBodyType.FILE_CHANGE,
+          { message: JSON.stringify({ fileId: 'file2', page: 3 }), to: 'peer1' },
+        ],
+      ]);
+      expect(sends(DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE)).toHaveLength(0);
+    });
+
+    it('answers a sync request that matches the active scope', async () => {
+      const controller = await presenterOn('file1', 1, [{ userId: 'peer1' }]);
+      controller.mergeElements([el('el1')]);
+      conn.sendWhiteboardData.mockClear();
+
+      controller.handleMessage(
+        DataMsgBodyType.WHITEBOARD_SYNC_REQUEST,
+        emptyStateVector,
+        'peer1',
+        'req-live',
+        scope('file1', 1),
+      );
+      await vi.advanceTimersByTimeAsync(1000);
+
+      const responses = sends(DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE);
+      expect(responses).toHaveLength(1);
+      expect(JSON.parse(responses[0][1].message!)).toMatchObject({ fileId: 'file1', page: 1 });
+      expect(pageChangeSends()).toHaveLength(0);
+    });
+
+    it('still serves a cached snapshot to a non-presenter requesting another page', async () => {
+      const controller = await followerOn('file1', 1);
+      vi.mocked(loadWhiteboardPageSnapshot).mockResolvedValueOnce(update('snapshot'));
+      conn.sendWhiteboardData.mockClear();
+
+      controller.handleMessage(
+        DataMsgBodyType.WHITEBOARD_SYNC_REQUEST,
+        emptyStateVector,
+        'peer1',
+        'req-old-page',
+        scope('file1', 5),
+      );
+      await vi.advanceTimersByTimeAsync(1000);
+
+      expect(loadWhiteboardPageSnapshot).toHaveBeenCalledWith('file1', 5);
+      const responses = sends(DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE);
+      expect(responses).toHaveLength(1);
+      expect(JSON.parse(responses[0][1].message!)).toEqual({
+        fileId: 'file1',
+        page: 5,
+        gzip: true,
+      });
+      expect(pageChangeSends()).toHaveLength(0);
+      expect(fileChangeSends()).toHaveLength(0);
+    });
+  });
+
+  describe('blank pages', () => {
+    it('bootstraps a new joiner from an empty presenter page', async () => {
+      const controller = await presenterOn('file1', 2, [{ userId: 'peer1' }]);
+
+      controller.handleMessage(
+        DataMsgBodyType.WHITEBOARD_SYNC_REQUEST,
+        emptyStateVector,
+        'peer1',
+        'req-bootstrap',
+      );
+      await vi.advanceTimersByTimeAsync(1000);
+
+      const responses = sends(DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE);
+      expect(responses).toHaveLength(1);
+      expect(JSON.parse(responses[0][1].message!)).toMatchObject({
+        fileId: 'file1',
+        page: 2,
+        gzip: true,
+      });
+      expect(JSON.parse(JSON.parse(responses[0][1].message!).initial_data)).toMatchObject({
+        currentWhiteboardOfficeFileId: 'file1',
+        currentPageNumber: 2,
+      });
+      expect(loadWhiteboardPageSnapshot).not.toHaveBeenCalled();
+    });
+
+    it('answers a state-vector request on an empty presenter page', async () => {
+      const controller = await presenterOn('file1', 1, [{ userId: 'peer1' }]);
+
+      controller.handleMessage(
+        DataMsgBodyType.WHITEBOARD_SYNC_REQUEST,
+        emptyStateVector,
+        'peer1',
+        'req-empty-live',
+        scope('file1', 1),
+      );
+      await vi.advanceTimersByTimeAsync(1000);
+
+      const responses = sends(DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE);
+      expect(responses).toHaveLength(1);
+      expect(JSON.parse(responses[0][1].message!)).toMatchObject({
+        fileId: 'file1',
+        page: 1,
+        stateVector: expect.any(String),
+      });
+      expect(loadWhiteboardPageSnapshot).not.toHaveBeenCalled();
+    });
+
+    it('does not let an empty follower claim the active scope', async () => {
+      const controller = await followerOn('file1', 1);
+
+      controller.handleMessage(
+        DataMsgBodyType.WHITEBOARD_SYNC_REQUEST,
+        emptyStateVector,
+        'peer2',
+        'req-empty-follower',
+        scope('file1', 1),
+      );
+      await vi.advanceTimersByTimeAsync(1000);
+
+      expect(sends(DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE)).toHaveLength(0);
+      // Only a stored snapshot could answer, and there is none.
+      expect(loadWhiteboardPageSnapshot).toHaveBeenCalledWith('file1', 1);
+    });
+
+    it('is not authoritative while the presenter is still switching', async () => {
+      const controller = await presenterOn('file1', 1, [{ userId: 'peer1' }]);
+      // Redux already moved to page 2 while `doc` still holds page 1.
+      (state.current as { whiteboard: { currentPage: number } }).whiteboard.currentPage = 2;
+
+      controller.handleMessage(
+        DataMsgBodyType.WHITEBOARD_SYNC_REQUEST,
+        emptyStateVector,
+        'peer1',
+        'req-in-flight',
+        scope('file1', 1),
+      );
+      await vi.advanceTimersByTimeAsync(1000);
+
+      expect(sends(DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE)).toHaveLength(0);
+      expect(loadWhiteboardPageSnapshot).toHaveBeenCalledWith('file1', 1);
+    });
   });
 });
