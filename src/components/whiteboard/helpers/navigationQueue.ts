@@ -120,6 +120,8 @@ export class LatestNavigationQueue {
   private newestTarget: NavigationTarget | null = null;
   private activeDrain: Promise<void> | null = null;
   private supersedeWaiters = new Set<() => void>();
+  private latestTransition: NavigationTransition | null = null;
+  private latestOnIdle: (() => void) | undefined;
 
   /** Record a navigation request; every older target is now obsolete. */
   request(target: NavigationTarget, options: { force?: boolean } = {}): void {
@@ -215,6 +217,9 @@ export class LatestNavigationQueue {
 
   /** Run queued targets one at a time until nothing is left. */
   drain(transition: NavigationTransition, onIdle?: () => void): Promise<void> {
+    // The queue outlives a render: always use the newest callbacks.
+    this.latestTransition = transition;
+    this.latestOnIdle = onIdle;
     if (this.activeDrain) {
       return this.activeDrain;
     }
@@ -231,7 +236,7 @@ export class LatestNavigationQueue {
         do {
           for (let next = this.take(); next; next = this.take()) {
             try {
-              await transition(next.target, () => next.token === this.latestToken);
+              await this.latestTransition!(next.target, () => next.token === this.latestToken);
             } catch (error) {
               // A rejected transition must not poison the queue: newer work
               // still runs.
@@ -244,7 +249,7 @@ export class LatestNavigationQueue {
         this.activeDrain = null;
         settle();
         if (this.canRelease()) {
-          onIdle?.();
+          this.latestOnIdle?.();
         }
       }
     })();

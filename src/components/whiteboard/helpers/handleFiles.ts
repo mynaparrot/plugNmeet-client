@@ -100,10 +100,8 @@ export const createAndRegisterOfficeFile = (
 };
 
 /**
- * Fetches the room's converted whiteboard files from the server and registers
- * any that are missing from the local store. The server record carries the
- * authoritative `totalPages`, which a user who didn't upload the file (e.g. an
- * admin promoted to presenter) has no other way to learn.
+ * Registers the room's converted whiteboard files missing from the local store;
+ * the server record carries the authoritative `totalPages`.
  */
 export const registerRoomWhiteboardFiles = async (roomId: string) => {
   const body = create(GetRoomUploadedFilesReqSchema, {
@@ -148,11 +146,7 @@ export const toOfficePageMetaPath = (imagePathOrUrl: string): string => {
   return imagePathOrUrl.replace(/\.png(\?.*)?$/i, '_meta.json$1');
 };
 
-/**
- * Loads page_N_meta.json written beside converted page images.
- * Multi-cluster safe: same download path / storage hooks as the PNGs.
- * Cached in IDB the same way as office page images.
- */
+/** Loads page_N_meta.json written beside converted page images (IDB-cached). */
 export const fetchOfficePageMeta = async (
   metaFilePathOrUrl: string,
 ): Promise<WhiteboardOfficePageMeta | null> => {
@@ -235,10 +229,8 @@ const defaultOfficePageInfo = (): OfficePageInfo => {
 };
 
 /**
- * Always loads page_N_meta.json for office pages.
- * Frame size = standard A4 long side + the page's real aspect ratio
- * (A4 pages map to the exact standard A4 frames);
- * falls back to portrait A4 if meta cannot be fetched.
+ * Loads the page's meta for its exact frame size; A4 long side + real aspect
+ * ratio, falling back to portrait A4 if the meta cannot be fetched.
  */
 export const resolveOfficePageInfo = async (
   metaFilePath?: string,
@@ -310,14 +302,8 @@ export const preloadHtmlImage = (dataURL: string): Promise<HTMLImageElement | nu
 type ExcalidrawImageCache = Map<string, { image: HTMLImageElement; mimeType: string }>;
 
 /**
- * Resolves Excalidraw's internal `App.imageCache`, tolerating renames/removals in
- * future `@excalidraw/excalidraw` versions.
- *
- * Not part of the public API, but stable in 0.18: `AppSelection` (handed out as
- * `excalidrawAPI.selection`) and `AppViewport` (whose `setViewport` the API
- * re-exports) both keep a back reference to their `App`, which owns the cache.
- * Returns `null` when neither path still yields a `Map` — including when a
- * future version replaces either property with a throwing getter.
+ * Resolves Excalidraw's internal `App.imageCache` (not public API, stable in 0.18)
+ * via the `selection`/`setViewport` back references; null if neither yields a `Map`.
  */
 const getExcalidrawImageCache = (
   excalidrawAPI: ExcalidrawImperativeAPI,
@@ -340,14 +326,9 @@ const getExcalidrawImageCache = (
 };
 
 /**
- * Hands already decoded `<img>` elements to Excalidraw's image cache so the next
- * frame draws the real image instead of a placeholder. Must run *after*
- * `addFiles`, which drops the image-cache entry of each newly registered file.
- *
- * @returns `true` when the internal cache was found and every file was primed,
- * `false` otherwise (unknown internals, or an image that was never decoded).
- * Callers should then let Excalidraw decode through the public `addFiles` API,
- * which works regardless of how Excalidraw's internals are shaped.
+ * Primes Excalidraw's image cache with pre-decoded bitmaps; must run *after*
+ * `addFiles`, which drops each new file's cache entry. Returns true when all
+ * files were primed — otherwise callers should let the public `addFiles` decode.
  */
 export const primeExcalidrawImageCache = (
   excalidrawAPI: ExcalidrawImperativeAPI,
@@ -370,11 +351,8 @@ export const primeExcalidrawImageCache = (
 };
 
 /**
- * Asks Excalidraw to (re)decode the images of the elements currently on the
- * canvas. Runs on a microtask so it lands right after a caller's synchronous
- * `updateScene`, and only touches the public API — `addFiles` always triggers
- * Excalidraw's internal `addNewImagesToImageCache()`, which is what makes this a
- * hard guarantee instead of a bet on `App.imageCache` surviving future bumps.
+ * Asks Excalidraw to (re)decode the on-canvas images on a microtask, so it lands
+ * right after the caller's `updateScene` and only uses the public `addFiles` API.
  */
 const scheduleImageCacheFallback = (excalidrawAPI: ExcalidrawImperativeAPI): void => {
   queueMicrotask(() => {
@@ -383,11 +361,8 @@ const scheduleImageCacheFallback = (excalidrawAPI: ExcalidrawImperativeAPI): voi
 };
 
 /**
- * Fetches an image from a URL, converts it to a base64 Data URL,
- * and caches it in memory. If the image is already in the cache,
- * it returns the cached data directly.
- * @param url The URL of the image to fetch and cache.
- * @returns A promise that resolves to the base64 Data URL of the image, or null if fetching fails.
+ * Fetches an image URL, converts it to a base64 Data URL and caches it in memory.
+ * Resolves null when the fetch fails.
  */
 export const fetchAndCacheImage = (url: string): Promise<string | null> => {
   // Fast path: already fetched this session (avoids an async IDB roundtrip).
@@ -812,19 +787,12 @@ export const ensureImageDataIsLoaded = async (
   }
   processedImageElements.set(elm.id, elm.fileId);
 
-  // Fast path: binary data already in memory (e.g. after closing and reopening
-  // the whiteboard). Both calls run synchronously, so the scene is registered
-  // and primed before the caller's `updateScene` paints it.
+  // Fast path: binary data already in memory (e.g. after reopening the whiteboard).
   const cached = imageDataCache.get(elm.fileId);
   if (cached) {
     excalidrawAPI.addFiles([cached]);
     if (!primeExcalidrawImageCache(excalidrawAPI, [cached])) {
-      // Priming failed (undecoded image, or `app.imageCache` gone in a future
-      // Excalidraw version). `addFiles` ran while the scene was still empty, so
-      // Excalidraw could not decode anything yet; repeat it on a microtask —
-      // i.e. right after the caller's synchronous `updateScene` — and the
-      // public API decodes the images immediately instead of after the
-      // throttled refresh.
+      // Priming failed: let Excalidraw decode right after the caller's `updateScene`.
       scheduleImageCacheFallback(excalidrawAPI);
     }
     return;
@@ -848,11 +816,7 @@ export const ensureImageDataIsLoaded = async (
   }
 };
 
-/**
- * Drops every cached image reference for the given Excalidraw instance:
- * the per-element bookkeeping, the files held by the public API, and the
- * internal decoded-image cache. Safe to call with a missing instance.
- */
+/** Drops all cached image references for the instance (element bookkeeping, files, cache). */
 export function cleanProcessedImageElementsMap(excalidrawAPI?: ExcalidrawImperativeAPI | null) {
   processedImageElements.clear();
   if (!excalidrawAPI) {
@@ -872,14 +836,8 @@ export function cleanProcessedImageElementsMap(excalidrawAPI?: ExcalidrawImperat
 }
 
 /**
- * Preloads office file pages to improve navigation performance by fetching
- * image data and storing it in an in-memory cache.
- *
- * The strategy is as follows:
- * - If on page 1, it preloads the next 5 pages.
- * - Otherwise, it preloads the previous 2 and next 4 pages.
- * @param allPages An array of all IWhiteboardFile objects for the document.
- * @param currentPage The current page number (1-based).
+ * Preloads office page images into the in-memory cache: the next 5 pages on page 1,
+ * otherwise the previous 2 and the next 4.
  */
 export const preloadOfficeFilePages = (allPages: IWhiteboardFile[], currentPage: number) => {
   const pagesToPreload: number[] = [];

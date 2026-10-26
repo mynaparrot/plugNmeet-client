@@ -120,15 +120,6 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const previousFileId = usePrevious(currentWhiteboardOfficeFileId);
   const previousPage = usePrevious(currentPage);
 
-  // Keep mutable references to decouple state-sync values from high-frequency drawing dependencies
-  const currentPageRef = useRef(currentPage);
-  const currentFileIdRef = useRef(currentWhiteboardOfficeFileId);
-
-  useEffect(() => {
-    currentPageRef.current = currentPage;
-    currentFileIdRef.current = currentWhiteboardOfficeFileId;
-  }, [currentPage, currentWhiteboardOfficeFileId]);
-
   const isSwitching = useRef(false);
   const lastBroadcastOrReceivedSceneVersion = useRef<number>(-1);
 
@@ -177,12 +168,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     isPresenter: !!isPresenter,
   });
 
-  /**
-   * Applies the current yjs CRDT scene to the Excalidraw canvas.
-   *
-   * `controller.getElements()` returns the elements map in Yjs iteration order,
-   * which is not guaranteed to be Excalidraw z-order, reconcileElements will take care
-   */
+  /** Paints the yjs CRDT scene; `reconcileElements` restores Excalidraw's z-order. */
   const applySceneToExcalidraw = useCallback(
     ({ init = false }: { init?: boolean } = {}) => {
       // 1. Do nothing if Excalidraw API is not ready.
@@ -201,31 +187,21 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       const localElements = excalidrawAPI.getSceneElementsIncludingDeleted();
       const appState = excalidrawAPI.getAppState();
 
-      // 5. Reconcile local elements with remote elements to prevent conflicts
-      // and merge changes smoothly. The cast satisfies the
-      // `RemoteExcalidrawElement[]` parameter type; the elements originate from
-      // this client's own serialized scene so they are structurally compatible.
+      // 5. The cast satisfies the `RemoteExcalidrawElement[]` parameter type.
       const reconciledElements = reconcileElements(
         localElements,
         remoteElements as RemoteExcalidrawElement[],
         appState,
       );
 
-      // 6. Ensure that any image elements have their binary data loaded.
-      // This is crucial when receiving scenes from remote peers. In-memory
-      // `BinaryFileData` (e.g. after closing and reopening the whiteboard) is
-      // registered synchronously, so the `updateScene` below paints the real
-      // images on its first frame.
+      // 6. Register cached binary data synchronously so the images paint immediately.
       ensureAllImagesDataIsLoaded(excalidrawAPI, reconciledElements);
 
-      // 7. Record the received scene version so the follow-up onChange (fired
-      // by updateScene) doesn't re-broadcast the same scene back to the room.
+      // 7. Keep the follow-up onChange from re-broadcasting what we just applied.
       lastBroadcastOrReceivedSceneVersion.current =
         getSceneAndVersionWithoutBoundary(reconciledElements).version;
 
       // 8. Update the Excalidraw scene with the reconciled elements.
-      // `captureUpdate: NEVER` prevents this update from being added to the undo/redo history,
-      // as it's a sync operation, not a user action.
       excalidrawAPI.updateScene({
         elements: reconciledElements,
         captureUpdate: init ? CaptureUpdateAction.IMMEDIATELY : CaptureUpdateAction.NEVER,
@@ -243,9 +219,8 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       return;
     }
 
-    // A fresh Excalidraw instance starts with an empty image cache, so stale
-    // bookkeeping from a previous instance must never make image elements look
-    // already processed (that would leave them as grey placeholders).
+    // A fresh instance has an empty image cache: stale bookkeeping would leave
+    // image elements as grey placeholders.
     cleanProcessedImageElementsMap(excalidrawAPI);
 
     controller.configure({
@@ -290,10 +265,8 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     };
   }, []);
 
-  // Backfill any pages the current presenter is missing from the server-side
-  // session data store (whiteboard snapshots only; gated to presenters).
-  // Also register the room's office files so a promoted presenter gets the
-  // authoritative page count for the active file instead of the store default.
+  // Presenter only: backfill missing page snapshots and register the room's
+  // office files (authoritative page counts for a promoted presenter).
   useEffect(() => {
     if (isPresenter) {
       void getWhiteboardController().backfillMissingPages();
@@ -302,22 +275,18 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   }, [isPresenter, roomId]);
 
   const resetWhiteboardState = useCallback((excalidrawAPI: ExcalidrawImperativeAPI) => {
-    // 1. Clean up the whiteboard canvas
     excalidrawAPI.updateScene({ elements: [] });
     excalidrawAPI.history.clear();
 
-    // Reset the last scene version so a page/file switch re-arms the guard.
+    // Re-arm the broadcast guard for the next page/file.
     lastBroadcastOrReceivedSceneVersion.current = -1;
 
-    // 2. Reset the internal state (and Excalidraw's files/image cache) for a
-    // clean slate, so nothing from the previous file leaks into the next one.
+    // Drop the image cache so nothing from the previous file leaks into the next.
     cleanProcessedImageElementsMap(excalidrawAPI);
     setIsFollowing(true);
   }, []);
 
-  /**
-   * Positions the viewport at the page boundary with an initial width-based zoom.
-   */
+  /** Positions the viewport at the page boundary with a width-based zoom. */
   const scrollToBoundary = useCallback(
     (api: ExcalidrawImperativeAPI, pageInfo: ResolvedPageInfo = DEFAULT_PAGE_INFO) => {
       const { width: viewportWidth } = api.getAppState();
@@ -360,11 +329,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     [isPresenter],
   );
 
-  /**
-   * Merges the canvas scene into the CRDT (which broadcasts the resulting
-   * update). Pending image uploads are skipped here and synced by the
-   * follow-up onChange once their status becomes 'saved'.
-   */
+  /** Merges the canvas scene into the CRDT; pending images sync via the follow-up onChange. */
   const syncCanvasToCrdt = useCallback(
     (
       elements: readonly ExcalidrawElement[],
@@ -411,18 +376,15 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   );
 
   /**
-   * Releases the switch lock. Only the navigation owner calls this (the queue,
-   * once nothing is left), and only while the CRDT is still at the newest
-   * target: the canvas of a stale scope must never be merged into another page.
+   * Releases the switch lock. Only the queue calls this once nothing is left,
+   * and only while the CRDT is still at the newest target.
    */
   const releaseTransitionLock = useCallback(() => {
     isSwitching.current = false;
     if (!excalidrawAPI || !isControllerAtTarget()) {
       return;
     }
-    // Edits made while the switch was in progress were dropped by the guard in
-    // handleCanvasChange; merge whatever is on the canvas now (idempotent, the
-    // merge is version-aware).
+    // Edits dropped during the switch are merged now (the merge is version-aware).
     syncCanvasToCrdt(
       excalidrawAPI.getSceneElementsIncludingDeleted(),
       excalidrawAPI.getAppState(),
@@ -431,11 +393,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     );
   }, [excalidrawAPI, syncCanvasToCrdt, isControllerAtTarget]);
 
-  /**
-   * One page/file switch. Every side effect runs behind the transition's
-   * ownership check, so an obsolete (superseded) transition leaves no trace on
-   * the canvas, the CRDT, or the room.
-   */
+  /** One page/file switch; a superseded transition leaves no trace anywhere. */
   const runNavigation = useCallback(
     async (target: NavigationTarget, isCurrent: () => boolean): Promise<boolean> => {
       if (!excalidrawAPI) {
@@ -450,15 +408,13 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         },
         sync: (next) => controller.sync(next.fileId, next.page, { hydrate: !!isPresenter }),
         paint: () => applySceneToExcalidraw({ init: true }),
-        // Office pages are presenter-only and idempotent per page: a page that
-        // already has CRDT content needs no insert.
+        // Office pages are presenter-only and idempotent: existing CRDT content needs no insert.
         loadOfficePage: (next, stillCurrent) =>
           controller.getElements().length > 0
             ? Promise.resolve(null)
             : syncOfficeFilePage(next.fileId, next.page, stillCurrent),
         applyOfficePage: (load: OfficePageLoad | null) => {
-          // Re-read the live scene: `paint()` already reconciled the CRDT
-          // elements, and edits made while the page image loaded must survive.
+          // Re-read the live scene: edits made while the page image loaded must survive.
           const existingScene = excalidrawAPI.getSceneElementsIncludingDeleted();
           const scene = load ? [...existingScene, ...load.elements] : existingScene;
           const pageInfo = resolvePageInfoFromElements(scene);
@@ -466,32 +422,25 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           if (load) {
             excalidrawAPI.addFiles(load.images);
           }
-          // `addFiles` drops the image-cache entry of each new file, so hand
-          // over the pre-decoded bitmaps afterwards.
+          // `addFiles` drops the image-cache entry of each new file, so hand over
+          // the pre-decoded bitmaps afterwards.
           const primed = load ? primeExcalidrawImageCache(excalidrawAPI, load.images) : true;
           excalidrawAPI.updateScene({
             elements: addBoundaryToElements(scene, pageInfo),
           });
           if (!primed) {
-            // Nothing was primed (image not pre-decoded, or Excalidraw's
-            // internal cache was renamed/removed in a future version) and the
-            // `addFiles` above ran while the scene was still empty, so
-            // Excalidraw could not decode anything yet. Re-running the public
-            // `addFiles` now that the scene holds the image elements triggers
-            // its internal decode pass, so the bitmaps are ready on the next
-            // frame instead of after the throttled refresh.
+            // Nothing was primed and the scene was empty on `addFiles`: re-running it
+            // with the image elements present lets Excalidraw decode right away.
             excalidrawAPI.addFiles([]);
           }
           scrollToBoundary(excalidrawAPI, pageInfo);
 
-          // Persist any newly inserted office-page elements into the CRDT so
-          // they reach followers.
+          // Persist newly inserted office-page elements so followers receive them.
           if (load?.elements.length) {
             controller.mergeElements(load.elements);
           }
         },
-        // Broadcast the full authoritative scene so followers converge without
-        // relying solely on incremental updates.
+        // Broadcast the full authoritative scene so followers converge.
         broadcast: () => controller.broadcastFullState(),
       });
     },
@@ -507,40 +456,18 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     ],
   );
 
-  // The queue keeps the callbacks of its first drain cycle, so every job must
-  // dispatch through the latest render (fresh steps, fresh office-page state).
-  const runNavigationRef = useRef(runNavigation);
-  const releaseLockRef = useRef(releaseTransitionLock);
-  useEffect(() => {
-    runNavigationRef.current = runNavigation;
-    releaseLockRef.current = releaseTransitionLock;
-  });
-
-  const dispatchNavigation = useCallback(
-    (target: NavigationTarget, isCurrent: () => boolean) =>
-      runNavigationRef.current(target, isCurrent),
-    [],
-  );
-
-  const releaseNavigationLock = useCallback(() => releaseLockRef.current(), []);
-
-  /**
-   * Queues a switch to `target`. Only the newest target is applied; the queued
-   * work is serialized so teardown/hydration never interleave.
-   */
+  /** Queues a switch to `target`; only the newest target is ever applied. */
   const startNavigation = useCallback(
     (target: NavigationTarget, options?: { force?: boolean }) => {
       navigation.request(target, options);
-      void navigation.drain(dispatchNavigation, releaseNavigationLock);
+      void navigation.drain(runNavigation, releaseTransitionLock);
     },
-    [navigation, dispatchNavigation, releaseNavigationLock],
+    [navigation, runNavigation, releaseTransitionLock],
   );
 
   /**
-   * Initial navigation: resolves the room's active scope (donor data for
-   * followers, the store scope for the presenter) and paints it. It owns
-   * navigation through the same queue, so a page/file switch that arrives first
-   * supersedes it and it never touches the CRDT or the room afterwards.
+   * Initial navigation: resolves the room's active scope (donor data for followers,
+   * the store scope for the presenter) and paints it; a newer switch supersedes it.
    */
   const runInitialNavigation = useCallback(
     async (isCurrent: () => boolean): Promise<void> => {
@@ -550,16 +477,11 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       isSwitching.current = true;
 
       // Read the live values: a page/file change may already have landed.
-      let target: NavigationTarget = {
-        fileId: currentFileIdRef.current,
-        page: currentPageRef.current,
-      };
+      const { currentWhiteboardOfficeFileId, currentPage } = store.getState().whiteboard;
+      let target: NavigationTarget = { fileId: currentWhiteboardOfficeFileId, page: currentPage };
 
       if (isPresenter) {
-        // Keep broadcasting the active file id (control message) so followers
-        // converge on the same file/page. Scene content syncs via yjs. The send
-        // does not wait for followers: hydrating the presenter's own scene must
-        // not be delayed by a fixed settle time.
+        // Broadcast the active file id (control message); scene content syncs via yjs.
         await broadcastCurrentFileId(target.fileId, target.page);
         if (!isCurrent()) {
           return;
@@ -573,14 +495,12 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           return;
         }
         target = {
-          fileId: donor?.fileId ?? currentFileIdRef.current,
-          page: donor?.page ?? currentPageRef.current,
+          fileId: donor?.fileId ?? currentWhiteboardOfficeFileId,
+          page: donor?.page ?? currentPage,
         };
       }
 
-      // Checked immediately before the switch: an obsolete bootstrap must not
-      // enqueue an older scope behind a newer sync. Without a presenter online
-      // nobody can answer a peer sync, so hydrate from the server instead.
+      // Hydrate from the server when no presenter is online to answer a peer sync.
       const hydrate = !!isPresenter || !controller.hasPresenterOnline();
       await controller.sync(target.fileId, target.page, { hydrate });
       if (!isCurrent()) {
@@ -620,14 +540,12 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   }, [controller]);
 
   // on mount: point the CRDT at the active page/file and apply the scene.
-  // Followers converge via the state-vector sync handshake; the presenter
-  // additionally broadcasts the active file id (control message).
   useEffect(() => {
     if (!excalidrawAPI) {
       return;
     }
     const timer = setTimeout(() => {
-      void navigation.startBootstrap(runInitialNavigation, releaseNavigationLock);
+      void navigation.startBootstrap(runInitialNavigation, releaseTransitionLock);
     }, 300);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -646,14 +564,8 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   }, [currentWhiteboardOfficeFileId, previousFileId, currentPage, previousPage, startNavigation]);
 
   /**
-   * This is the primary callback for any change on the Excalidraw canvas.
-   *
-   * It's important to note that on every change (e.g., drawing, moving, resizing),
-   * this function receives the *entire* scene's elements, not just the modified ones.
-   *
-   * Local edits are written into the yjs CRDT (which broadcasts the resulting
-   * update to the room); pending image uploads are handled first and synced by
-   * the follow-up onChange once their status becomes 'saved'.
+   * Primary canvas callback; it receives the entire scene on every change. Local edits
+   * go into the CRDT, pending images sync via the follow-up onChange once saved.
    */
   const handleCanvasChange = useCallback(
     (elements: readonly ExcalidrawElement[], appState: AppState, files: BinaryFiles) => {
