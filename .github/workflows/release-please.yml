@@ -9,7 +9,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  release-client:
+  build-and-release:
     runs-on: ubuntu-latest
     steps:
       - uses: googleapis/release-please-action@v5
@@ -30,6 +30,10 @@ jobs:
           version: 'latest'
       - name: Install dependencies
         run: pnpm install
+      - name: Check lint
+        run: pnpm run lint
+      - name: Unit tests
+        run: pnpm run test
       - name: Release as beta
         if: ${{ ! steps.release.outputs.release_created }}
         run: |
@@ -45,22 +49,11 @@ jobs:
 
           # now create zip file
           pnpm run build
-          echo ${BETA_VERSION} > dist/version.txt
-          mkdir -p tmp/client
+          node -p "require('./package.json').version" > dist/version.txt
+          mkdir -p tmp/client tmp/upload
           rsync -ar LICENSE dist tmp/client/
           cd tmp
-          zip -X -r client.zip client
-      - name: Upload by ftp
-        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
-        if: ${{ ! steps.release.outputs.release_created }}
-        with:
-          server: ${{ secrets.PNM_FTP_HOST }}
-          username: ${{ secrets.PNM_FTP_USER }}
-          password: ${{ secrets.PNM_FTP_PASSWORD }}
-          local-dir: './tmp/'
-          state-name: '.client-sync-state.json'
-          exclude: |
-            **/client/**
+          zip -X -r upload/client.zip client
       - name: Release as production
         if: ${{ steps.release.outputs.release_created }}
         env:
@@ -71,8 +64,17 @@ jobs:
           ## save latest version tag
           echo ${{ steps.release.outputs.tag_name }} > dist/version.txt
 
-          mkdir -p tmp/client
+          mkdir -p tmp/client tmp/upload
           rsync -ar LICENSE dist tmp/client/
           cd tmp
-          zip -X -r client.zip client
-          gh release upload ${{ steps.release.outputs.tag_name }} client.zip
+          zip -X -r upload/client.zip client
+          gh release upload ${{ steps.release.outputs.tag_name }} upload/client.zip
+      - name: Upload beta by ftp
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        if: ${{ ! steps.release.outputs.release_created }}
+        with:
+          server: ${{ secrets.PNM_FTP_HOST }}
+          username: ${{ secrets.PNM_FTP_USER }}
+          password: ${{ secrets.PNM_FTP_PASSWORD }}
+          local-dir: './tmp/upload/'
+          state-name: '.client-sync-state.json'
