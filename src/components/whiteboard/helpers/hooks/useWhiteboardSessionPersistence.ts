@@ -8,8 +8,8 @@ import type {
 
 import { DB_STORE_NAMES, idbDel, idbGet, idbStore } from '../../../../helpers/libs/idb';
 
-const ACTIVE_TOOL_STORAGE_KEY = 'pnm-whiteboard-active-tool';
-const VIEWPORT_STORAGE_PREFIX = 'pnm-whiteboard-viewport';
+const ACTIVE_TOOL_STORAGE_KEY = 'active-tool';
+const VIEWPORT_STORAGE_PREFIX = 'viewport';
 
 // Drawing/text tools are worth remembering; niche and transient tools are not.
 // "image" is excluded: restoring it would reopen the OS file dialog.

@@ -47,8 +47,8 @@ vi.mock('../../../helpers/libs/idb', () => ({
 }));
 
 const STORE = 'whiteboard';
-const TOOL_STORAGE_KEY = 'pnm-whiteboard-active-tool';
-const viewportKey = (fileId: string, page: number) => `pnm-whiteboard-viewport:${fileId}:${page}`;
+const TOOL_STORAGE_KEY = 'active-tool';
+const viewportKey = (fileId: string, page: number) => `viewport:${fileId}:${page}`;
 
 const tool = (type: string) => ({ type }) as unknown as AppState['activeTool'];
 
