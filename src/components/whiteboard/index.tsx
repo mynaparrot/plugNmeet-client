@@ -35,6 +35,7 @@ import useWhiteboardSetup from './helpers/hooks/useWhiteboardSetup';
 import useWhiteboardAppStateSync from './helpers/hooks/useWhiteboardAppStateSync';
 import useOfficePageSyncer from './helpers/hooks/useOfficePageSyncer';
 import useWhiteboardFileDrop from './helpers/hooks/useWhiteboardFileDrop';
+import useWhiteboardActiveToolPersistence from './helpers/hooks/useWhiteboardActiveToolPersistence';
 import {
   A4_BOUNDARY_GUIDE_ID,
   ensureAllImagesDataIsLoaded,
@@ -152,6 +153,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const { viewModeEnabled } = useWhiteboardSetup({
     excalidrawAPI,
     canEdit,
+  });
+  useWhiteboardActiveToolPersistence({
+    excalidrawAPI,
+    viewModeEnabled,
   });
   useWhiteboardAppStateSync({
     excalidrawAPI,
