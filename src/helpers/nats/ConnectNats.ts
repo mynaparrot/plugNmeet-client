@@ -359,6 +359,13 @@ export default class ConnectNats {
       }
     }
 
+    // When switching rooms, the caller navigates to the new room itself.
+    // Scheduling the logout redirect here would replace that pending
+    // navigation if the new room takes longer than 3s to respond.
+    if (msg === 'notifications.switching-room') {
+      return;
+    }
+
     // Handle post-session navigation after a delay
     setTimeout(() => {
       if (!meta?.isBreakoutRoom && meta?.logoutUrl && isValidHttpUrl(meta.logoutUrl)) {
