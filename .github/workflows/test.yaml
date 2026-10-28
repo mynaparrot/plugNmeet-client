@@ -20,5 +20,7 @@ jobs:
         run: pnpm install
       - name: lint
         run: pnpm run lint
+      - name: Unit tests
+        run: pnpm run test
       - name: Build check
         run: pnpm run build
