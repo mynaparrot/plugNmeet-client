@@ -299,12 +299,12 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
    * page boundary with a width-based zoom.
    */
   const restoreOrScrollToBoundary = useCallback(
-    (
+    async (
       api: ExcalidrawImperativeAPI,
       pageInfo: ResolvedPageInfo = DEFAULT_PAGE_INFO,
       target?: NavigationTarget,
-    ) => {
-      if (target && tryRestoreViewport(target.fileId, target.page)) {
+    ): Promise<void> => {
+      if (target && (await tryRestoreViewport(target.fileId, target.page))) {
         return;
       }
 
@@ -432,7 +432,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           controller.getElements().length > 0
             ? Promise.resolve(null)
             : syncOfficeFilePage(next.fileId, next.page, stillCurrent),
-        applyOfficePage: (load: OfficePageLoad | null) => {
+        applyOfficePage: async (load: OfficePageLoad | null) => {
           // Re-read the live scene: edits made while the page image loaded must survive.
           const existingScene = excalidrawAPI.getSceneElementsIncludingDeleted();
           const scene = load ? [...existingScene, ...load.elements] : existingScene;
@@ -452,12 +452,14 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
             // with the image elements present lets Excalidraw decode right away.
             excalidrawAPI.addFiles([]);
           }
-          restoreOrScrollToBoundary(excalidrawAPI, pageInfo, target);
-
           // Persist newly inserted office-page elements so followers receive them.
+          // Merged before the viewport restore awaits: a superseded transition must
+          // never write this page's elements into the CRDT of the next page.
           if (load?.elements.length) {
             controller.mergeElements(load.elements);
           }
+
+          await restoreOrScrollToBoundary(excalidrawAPI, pageInfo, target);
         },
         // Broadcast the full authoritative scene so followers converge.
         broadcast: () => controller.broadcastFullState(),
@@ -534,7 +536,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           elements: addBoundaryToElements(elements, pageInfo),
         });
       }
-      restoreOrScrollToBoundary(excalidrawAPI, pageInfo, target);
+      await restoreOrScrollToBoundary(excalidrawAPI, pageInfo, target);
+      if (!isCurrent()) {
+        return;
+      }
       if (isPresenter) {
         controller.broadcastFullState();
       }

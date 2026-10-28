@@ -158,6 +158,32 @@ describe('latest navigation wins', () => {
     expect(rec.paints).toEqual([1, 2]); // 1 painted while it still owned the switch
   });
 
+  it('drops the broadcast when the switch is superseded while applying the office page', async () => {
+    const rec = recorder();
+    const queue = new LatestNavigationQueue();
+    const applying = deferred<void>();
+    const base = rec.steps;
+    rec.steps = (t) => ({
+      ...base(t),
+      // Applying may await (the viewport restore reads IndexedDB).
+      applyOfficePage: async () => {
+        rec.applied.push(t.page);
+        await applying.promise;
+      },
+    });
+
+    queue.request(target(1));
+    const drain = queue.drain(transitionWith(rec));
+    await flush(); // page 1 is applying its office page
+    queue.request(target(2));
+    applying.resolve();
+    await drain;
+
+    // Page 1 lost ownership while applying: only page 2 reaches the room.
+    expect(rec.applied).toEqual([1, 2]);
+    expect(rec.broadcasts).toEqual([2]);
+  });
+
   it('does not queue a redundant switch to the destination already in flight', async () => {
     const rec = recorder();
     const queue = new LatestNavigationQueue();

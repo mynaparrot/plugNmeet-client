@@ -6,6 +6,8 @@ import type {
   ToolType,
 } from '@excalidraw/excalidraw/types';
 
+import { DB_STORE_NAMES, idbDel, idbGet, idbStore } from '../../../../helpers/libs/idb';
+
 const ACTIVE_TOOL_STORAGE_KEY = 'pnm-whiteboard-active-tool';
 const VIEWPORT_STORAGE_PREFIX = 'pnm-whiteboard-viewport';
 
@@ -13,6 +15,12 @@ const VIEWPORT_STORAGE_PREFIX = 'pnm-whiteboard-viewport';
 // "image" is excluded: restoring it would reopen the OS file dialog.
 // oxfmt-ignore
 const RESTORABLE_TOOLS = new Set<string>(['freedraw', 'laser', 'arrow', 'line', 'text', 'hand', 'rectangle', 'diamond', 'ellipse', 'stickynote']);
+
+/**
+ * The unmount write of one instance can still be landing while a remount reads
+ * the tool back, so restores wait for it (read-after-write on the same database).
+ */
+let activeToolPendingWrite: Promise<void> | null = null;
 
 export const createActiveToolPersistence = (
   api: Pick<ExcalidrawImperativeAPI, 'setActiveTool'>,
@@ -28,31 +36,45 @@ export const createActiveToolPersistence = (
         lastTool = null;
       }
     },
-    tryRestore() {
+    async tryRestore(): Promise<void> {
       if (restored) {
         return;
       }
       restored = true;
+
+      let stored: string | undefined;
       try {
-        const stored = sessionStorage.getItem(ACTIVE_TOOL_STORAGE_KEY);
-        if (stored && RESTORABLE_TOOLS.has(stored)) {
-          api.setActiveTool({ type: stored as ToolType });
-        }
-        // drop the stored value immediately: never restore a stale tool later
-        sessionStorage.removeItem(ACTIVE_TOOL_STORAGE_KEY);
+        await activeToolPendingWrite;
+        stored = await idbGet<string>(DB_STORE_NAMES.WHITEBOARD, ACTIVE_TOOL_STORAGE_KEY);
+      } catch {
+        // storage unavailable
+        return;
+      }
+
+      if (typeof stored === 'string' && RESTORABLE_TOOLS.has(stored)) {
+        api.setActiveTool({ type: stored as ToolType });
+      }
+      // drop the stored value immediately: never restore a stale tool later
+      try {
+        await idbDel(DB_STORE_NAMES.WHITEBOARD, ACTIVE_TOOL_STORAGE_KEY);
       } catch {
         // storage unavailable
       }
     },
-    persist() {
+    async persist(): Promise<void> {
       if (!lastTool) {
         return;
       }
-      try {
-        sessionStorage.setItem(ACTIVE_TOOL_STORAGE_KEY, lastTool);
-      } catch {
-        // storage unavailable
-      }
+      const tool = lastTool;
+      const write = (async () => {
+        try {
+          await idbStore(DB_STORE_NAMES.WHITEBOARD, ACTIVE_TOOL_STORAGE_KEY, tool);
+        } catch {
+          // storage unavailable
+        }
+      })();
+      activeToolPendingWrite = write;
+      await write;
     },
   };
 };
@@ -75,29 +97,22 @@ const viewportKey = (fileId: string, page: number) =>
 const isFiniteNumber = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value);
 
-const parseViewport = (raw: string): ViewportSnapshot | null => {
-  try {
-    const parsed: unknown = JSON.parse(raw);
-    if (!parsed || typeof parsed !== 'object') {
-      return null;
-    }
-    const { scrollX, scrollY, zoom } = parsed as Partial<ViewportSnapshot>;
-    if (
-      !isFiniteNumber(scrollX) ||
-      !isFiniteNumber(scrollY) ||
-      !isFiniteNumber(zoom) ||
-      zoom <= 0
-    ) {
-      return null;
-    }
-    return { scrollX, scrollY, zoom };
-  } catch {
+const parseViewport = (raw: unknown): ViewportSnapshot | null => {
+  if (!raw || typeof raw !== 'object') {
     return null;
   }
+  const { scrollX, scrollY, zoom } = raw as Partial<ViewportSnapshot>;
+  if (!isFiniteNumber(scrollX) || !isFiniteNumber(scrollY) || !isFiniteNumber(zoom) || zoom <= 0) {
+    return null;
+  }
+  return { scrollX, scrollY, zoom };
 };
 
 export const createViewportPersistence = (api: Pick<ExcalidrawImperativeAPI, 'updateScene'>) => {
   let lastViewport: ScopedViewport | null = null;
+  // The write of the page being left can still be in flight when the next page
+  // restores, and IndexedDB reads are async: restores wait for it.
+  let pendingWrite: Promise<void> | null = null;
 
   return {
     onViewportChange(fileId: string, page: number, scrollX: number, scrollY: number, zoom: number) {
@@ -113,31 +128,51 @@ export const createViewportPersistence = (api: Pick<ExcalidrawImperativeAPI, 'up
       }
       lastViewport = { fileId, page, scrollX, scrollY, zoom };
     },
-    persistViewport() {
-      if (!lastViewport) {
+    async persistViewport(): Promise<void> {
+      // Capture and consume the scope synchronously: a following page switch must
+      // never re-persist this viewport under the key of the new page.
+      const snapshot = lastViewport;
+      lastViewport = null;
+      if (!snapshot) {
         return;
       }
-      const { fileId, page, scrollX, scrollY, zoom } = lastViewport;
-      try {
-        sessionStorage.setItem(
-          viewportKey(fileId, page),
-          JSON.stringify({ scrollX, scrollY, zoom }),
-        );
-      } catch {
-        // storage unavailable
-      }
+      const { fileId, page, scrollX, scrollY, zoom } = snapshot;
+      const write = (async () => {
+        try {
+          await idbStore(DB_STORE_NAMES.WHITEBOARD, viewportKey(fileId, page), {
+            scrollX,
+            scrollY,
+            zoom,
+          });
+        } catch {
+          // storage unavailable
+        }
+      })();
+      pendingWrite = write;
+      await write;
     },
-    tryRestoreViewport(fileId: string, page: number): boolean {
+    async tryRestoreViewport(fileId: string, page: number): Promise<boolean> {
       const key = viewportKey(fileId, page);
-      let raw: string | null = null;
       try {
-        raw = sessionStorage.getItem(key);
-        // drop the stored value immediately: never restore a stale viewport later
-        sessionStorage.removeItem(key);
+        await pendingWrite;
+      } catch {
+        // a failed write must never block the restore
+      }
+
+      let raw: unknown;
+      try {
+        raw = await idbGet<unknown>(DB_STORE_NAMES.WHITEBOARD, key);
       } catch {
         // storage unavailable
       }
-      const viewport = raw ? parseViewport(raw) : null;
+      // drop the stored value immediately: never restore a stale viewport later
+      try {
+        await idbDel(DB_STORE_NAMES.WHITEBOARD, key);
+      } catch {
+        // storage unavailable
+      }
+
+      const viewport = parseViewport(raw);
       if (!viewport) {
         // nothing stored for this scope: forget the previous scope so it is
         // never re-persisted under the wrong key after switching pages
@@ -191,7 +226,7 @@ const useWhiteboardSessionPersistence = ({
       return;
     }
     const unsubscribe = excalidrawAPI.onStateChange('activeTool', toolPersistence.onToolChange);
-    toolPersistence.tryRestore();
+    void toolPersistence.tryRestore();
     return unsubscribe;
   }, [excalidrawAPI, toolPersistence, viewModeEnabled]);
 
@@ -214,23 +249,23 @@ const useWhiteboardSessionPersistence = ({
     if (scope.fileId === currentFileId && scope.page === currentPage) {
       return;
     }
-    viewportPersistence?.persistViewport();
+    void viewportPersistence?.persistViewport();
     scopeRef.current = { fileId: currentFileId, page: currentPage };
   }, [currentFileId, currentPage, viewportPersistence]);
 
   // persist on unmount only: the imperative API is unsafe during teardown.
   useEffect(() => {
     return () => {
-      toolPersistence?.persist();
-      viewportPersistence?.persistViewport();
+      void toolPersistence?.persist();
+      void viewportPersistence?.persistViewport();
     };
   }, [toolPersistence, viewportPersistence]);
 
   /** Restores the stored viewport of `fileId:page`; true when it was applied. */
   const tryRestoreViewport = useCallback(
-    (fileId: string, page: number) => {
+    async (fileId: string, page: number): Promise<boolean> => {
       bootstrappedRef.current = true;
-      return viewportPersistence?.tryRestoreViewport(fileId, page) ?? false;
+      return (await viewportPersistence?.tryRestoreViewport(fileId, page)) ?? false;
     },
     [viewportPersistence],
   );

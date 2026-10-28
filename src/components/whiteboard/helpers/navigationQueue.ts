@@ -59,7 +59,7 @@ export interface NavigationTransitionSteps {
     isCurrent: () => boolean,
   ) => Promise<OfficePageLoad | null>;
   /** Apply a loaded office page, or the current CRDT scene when null. */
-  applyOfficePage: (load: OfficePageLoad | null) => void;
+  applyOfficePage: (load: OfficePageLoad | null) => Promise<void> | void;
   /** Presenter-only: broadcast the full authoritative scene. */
   broadcast: () => void;
 }
@@ -91,7 +91,12 @@ export const runNavigationTransition = async (
   if (!isCurrent()) {
     return false;
   }
-  steps.applyOfficePage(load);
+  // Applying may await (the viewport restore reads IndexedDB) and can take long
+  // enough to be superseded, which must not reach the room.
+  await steps.applyOfficePage(load);
+  if (!isCurrent()) {
+    return false;
+  }
   steps.broadcast();
   return true;
 };

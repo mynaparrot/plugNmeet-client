@@ -63,6 +63,7 @@ vi.mock('../../../helpers/libs/idb', () => ({
   idbStore: vi.fn(async () => ({})),
   idbGet: vi.fn(async () => undefined),
   idbGetAllKeys: vi.fn(async () => []),
+  idbDel: vi.fn(async () => undefined),
 }));
 
 vi.mock('../collab/whiteboardPersistence', () => ({
