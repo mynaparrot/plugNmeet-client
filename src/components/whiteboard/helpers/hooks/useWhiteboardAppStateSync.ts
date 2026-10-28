@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import type {
   AppState,
   ExcalidrawImperativeAPI,
@@ -28,6 +28,11 @@ const useWhiteboardAppStateSync = ({
   const refreshWhiteboardSignal = useAppSelector(
     (state) => state.whiteboard.refreshWhiteboardSignal,
   );
+  // A signal raised before this mount (an earlier sidebar/screen-share toggle)
+  // must not recalibrate the freshly restored viewport on remount, so it is
+  // treated as already handled.
+  const handledFollowSignalRef = useRef(refreshWhiteboardSignal);
+  const handledPresenterSignalRef = useRef(refreshWhiteboardSignal);
 
   const debouncedSync = useMemo(
     () =>
@@ -111,8 +116,10 @@ const useWhiteboardAppStateSync = ({
       !isPresenter &&
       isFollowing &&
       whiteboardAppState &&
-      refreshWhiteboardSignal > 0
+      refreshWhiteboardSignal > 0 &&
+      refreshWhiteboardSignal !== handledFollowSignalRef.current
     ) {
+      handledFollowSignalRef.current = refreshWhiteboardSignal;
       debouncedSync(excalidrawAPI, whiteboardAppState);
     }
 
@@ -159,7 +166,13 @@ const useWhiteboardAppStateSync = ({
   );
 
   useEffect(() => {
-    if (excalidrawAPI && isPresenter && refreshWhiteboardSignal > 0) {
+    if (
+      excalidrawAPI &&
+      isPresenter &&
+      refreshWhiteboardSignal > 0 &&
+      refreshWhiteboardSignal !== handledPresenterSignalRef.current
+    ) {
+      handledPresenterSignalRef.current = refreshWhiteboardSignal;
       debouncedRefreshPresenterViewport(excalidrawAPI);
     }
 

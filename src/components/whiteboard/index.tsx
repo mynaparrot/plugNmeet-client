@@ -35,7 +35,7 @@ import useWhiteboardSetup from './helpers/hooks/useWhiteboardSetup';
 import useWhiteboardAppStateSync from './helpers/hooks/useWhiteboardAppStateSync';
 import useOfficePageSyncer from './helpers/hooks/useOfficePageSyncer';
 import useWhiteboardFileDrop from './helpers/hooks/useWhiteboardFileDrop';
-import useWhiteboardActiveToolPersistence from './helpers/hooks/useWhiteboardActiveToolPersistence';
+import useWhiteboardSessionPersistence from './helpers/hooks/useWhiteboardSessionPersistence';
 import {
   A4_BOUNDARY_GUIDE_ID,
   ensureAllImagesDataIsLoaded,
@@ -154,9 +154,12 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     excalidrawAPI,
     canEdit,
   });
-  useWhiteboardActiveToolPersistence({
+  const { tryRestoreViewport } = useWhiteboardSessionPersistence({
     excalidrawAPI,
     viewModeEnabled,
+    currentFileId: currentWhiteboardOfficeFileId,
+    currentPage,
+    isSwitching,
   });
   useWhiteboardAppStateSync({
     excalidrawAPI,
@@ -291,9 +294,20 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     setIsFollowing(true);
   }, []);
 
-  /** Positions the viewport at the page boundary with a width-based zoom. */
-  const scrollToBoundary = useCallback(
-    (api: ExcalidrawImperativeAPI, pageInfo: ResolvedPageInfo = DEFAULT_PAGE_INFO) => {
+  /**
+   * Restores the stored viewport of `target`, else positions the viewport at the
+   * page boundary with a width-based zoom.
+   */
+  const restoreOrScrollToBoundary = useCallback(
+    (
+      api: ExcalidrawImperativeAPI,
+      pageInfo: ResolvedPageInfo = DEFAULT_PAGE_INFO,
+      target?: NavigationTarget,
+    ) => {
+      if (target && tryRestoreViewport(target.fileId, target.page)) {
+        return;
+      }
+
       const { width: viewportWidth } = api.getAppState();
       const {
         width: targetWidth,
@@ -314,7 +328,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         },
       });
     },
-    [],
+    [tryRestoreViewport],
   );
 
   const addBoundaryToElements = useCallback(
@@ -438,7 +452,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
             // with the image elements present lets Excalidraw decode right away.
             excalidrawAPI.addFiles([]);
           }
-          scrollToBoundary(excalidrawAPI, pageInfo);
+          restoreOrScrollToBoundary(excalidrawAPI, pageInfo, target);
 
           // Persist newly inserted office-page elements so followers receive them.
           if (load?.elements.length) {
@@ -456,7 +470,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       resetWhiteboardState,
       syncOfficeFilePage,
       addBoundaryToElements,
-      scrollToBoundary,
+      restoreOrScrollToBoundary,
       applySceneToExcalidraw,
     ],
   );
@@ -520,7 +534,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           elements: addBoundaryToElements(elements, pageInfo),
         });
       }
-      scrollToBoundary(excalidrawAPI, pageInfo);
+      restoreOrScrollToBoundary(excalidrawAPI, pageInfo, target);
       if (isPresenter) {
         controller.broadcastFullState();
       }
@@ -531,7 +545,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       controller,
       navigation,
       addBoundaryToElements,
-      scrollToBoundary,
+      restoreOrScrollToBoundary,
       applySceneToExcalidraw,
     ],
   );
@@ -685,7 +699,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
   const initialStateViewport = useMemo(() => {
     // Fixed portrait reference frame. Do not retarget by orientation at runtime —
-    // page switches only adjust scroll/zoom via scrollToBoundary.
+    // page switches only adjust scroll/zoom via restoreOrScrollToBoundary.
     const {
       width: targetWidth,
       height: targetHeight,
