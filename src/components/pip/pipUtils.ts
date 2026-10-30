@@ -58,6 +58,7 @@ export const injectPipStyles = (win: Window) => {
 
   style.textContent = `
     .pip-flex-container {
+      position: relative;
       display: flex;
       flex-direction: column;
       width: 100%;
@@ -67,6 +68,41 @@ export const injectPipStyles = (win: Window) => {
       padding: 6px;
       overflow: hidden;
       background-color: #000000;
+    }
+
+    /* Informational overlay: never intercepts pointer events. */
+    .pip-status {
+      position: absolute;
+      top: 10px;
+      inset-inline-end: 10px;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      max-width: calc(100% - 20px);
+      padding: 3px 6px;
+      border-radius: 999px;
+      background-color: rgba(0, 0, 0, 0.65);
+      color: #f5f5f5;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+      font-size: 11px;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .pip-status-item {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .pip-status-item svg {
+      display: block;
+      width: 12px;
+      height: 13px;
+      flex: 0 0 auto;
     }
 
     .pip-video-item,

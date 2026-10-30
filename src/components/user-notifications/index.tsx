@@ -8,10 +8,14 @@ import NewPoll from './newPoll';
 import NewBreakoutRoom from './newBreakoutRoom';
 import GenericNotification from './genericNotification';
 
-import { store, useAppSelector } from '../../store';
+import { store, useAppDispatch, useAppSelector } from '../../store';
 import { APP_LAYOUT_CLASSES } from '../../helpers/dimensions';
 import Modal from '../../helpers/ui/modal';
 import { UserNotification } from '../../store/slices/interfaces/roomSettings';
+import {
+  clearUnreadNotificationsCount,
+  incrementUnreadNotificationsCount,
+} from '../../store/slices/roomSettingsSlice';
 import { PopupCloseSVGIcon } from '../../assets/Icons/PopupCloseSVGIcon';
 import { NotifyIconSVG } from '../../assets/Icons/NotifyIconSVG';
 import { showBrowserNotification } from './utils';
@@ -19,8 +23,11 @@ import { showBrowserNotification } from './utils';
 const UserNotifications = () => {
   const { t } = useTranslation();
   const toastId = useRef<number | string>('toastId');
+  const dispatch = useAppDispatch();
   const userNotifications = useAppSelector((state) => state.roomSettings.userNotifications);
-  const [hasUnreadNotifications, setHasUnreadNotifications] = useState<number>(0);
+  const hasUnreadNotifications = useAppSelector(
+    (state) => state.roomSettings.unreadNotificationsCount,
+  );
   const [modalNotification, setModalNotification] = useState<UserNotification>();
   const isTabVisible = useAppSelector((state) => state.roomSettings.isPNMWindowTabVisible);
   // Dedupes the alert dialog effect, including StrictMode's double invocation.
@@ -48,11 +55,11 @@ const UserNotifications = () => {
       });
 
       if (!store.getState().roomSettings.isPNMWindowTabVisible) {
-        setHasUnreadNotifications((prevState) => prevState + 1);
+        dispatch(incrementUnreadNotificationsCount());
         showBrowserNotification(notification.message);
       }
     },
-    [],
+    [dispatch],
   );
 
   useEffect(() => {
@@ -105,7 +112,7 @@ const UserNotifications = () => {
     if (!isTabVisible) {
       if (!notifiedModalIds.current.has(next.created)) {
         notifiedModalIds.current.add(next.created);
-        setHasUnreadNotifications((prevState) => prevState + 1);
+        dispatch(incrementUnreadNotificationsCount());
         showBrowserNotification(next.message);
       }
       return;
@@ -113,12 +120,13 @@ const UserNotifications = () => {
 
     presentedModalIds.current.add(next.created);
     setModalNotification(next);
-  }, [userNotifications, modalNotification, isTabVisible]);
+  }, [userNotifications, modalNotification, isTabVisible, dispatch]);
 
   const displayIcon = useCallback(
     (open: boolean) => {
       if (open) {
-        setTimeout(() => setHasUnreadNotifications(0), 300);
+        // Keep the old delay so the popover opens before the badge disappears.
+        setTimeout(() => dispatch(clearUnreadNotificationsCount()), 300);
       }
       if (hasUnreadNotifications > 0) {
         return (
@@ -133,7 +141,7 @@ const UserNotifications = () => {
         return <NotifyIconSVG classes="w-3.5 md:w-4 h-auto text-Gray-950 dark:text-white" />;
       }
     },
-    [hasUnreadNotifications],
+    [hasUnreadNotifications, dispatch],
   );
 
   return (

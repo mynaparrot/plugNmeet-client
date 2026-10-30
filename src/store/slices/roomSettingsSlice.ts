@@ -99,6 +99,7 @@ const initialState: IRoomSettings = {
   isPNMWindowTabVisible: true,
   focusActiveSpeakerWebcam: true,
   userNotifications: [],
+  unreadNotificationsCount: 0,
   isSidePanelOpened: false,
   hasWebcamPages: false,
   maxNumDisplayWebcams: {
@@ -295,6 +296,12 @@ const roomSettingsSlice = createSlice({
     setAllUserNotifications: (state, action: PayloadAction<UserNotification[]>) => {
       state.userNotifications = action.payload;
     },
+    incrementUnreadNotificationsCount: (state) => {
+      state.unreadNotificationsCount += 1;
+    },
+    clearUnreadNotificationsCount: (state) => {
+      state.unreadNotificationsCount = 0;
+    },
     updateIsSidePanelOpened: (state, action: PayloadAction<boolean>) => {
       state.isSidePanelOpened = action.payload;
     },
@@ -351,6 +358,8 @@ export const {
   addSelfInsertedE2EESecretKey,
   addUserNotification,
   setAllUserNotifications,
+  incrementUnreadNotificationsCount,
+  clearUnreadNotificationsCount,
   updateIsSidePanelOpened,
   updateSelectedChatTransLang,
   updateHasWebcamPages,

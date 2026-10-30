@@ -61,6 +61,11 @@ export interface IRoomSettings {
   focusActiveSpeakerWebcam: boolean;
   selfInsertedE2EESecretKey?: string;
   userNotifications: UserNotification[];
+  /**
+   * Notifications the user has not read yet. Shared so the header bell and the
+   * webcam PiP status stay in sync.
+   */
+  unreadNotificationsCount: number;
   isSidePanelOpened: boolean;
   hasWebcamPages: boolean;
   maxNumDisplayWebcams: IMaxNumDisplayWebcams;

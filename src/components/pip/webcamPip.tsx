@@ -6,10 +6,23 @@ import { VideoParticipantProps } from '../media-elements/videos/videoParticipant
 import { getPipItems, IPipItem } from './pipUtils';
 import PipVideoTrack from './pipVideoTrack';
 import { usePip } from './pipProvider';
+import { useAppSelector } from '../../store';
+import { selectRaisedHandsQueue } from '../../store/slices/participantSlice';
+import { ChatIconSVG } from '../../assets/Icons/ChatIconSVG';
+import { HandsIconSVG } from '../../assets/Icons/HandsIconSVG';
+import { NotifyIconSVG } from '../../assets/Icons/NotifyIconSVG';
+import { getPipStatusItems, PipStatusKind } from './pipStatus';
 
 interface IWebcamPipProps {
   pipParticipants: ReactElement<VideoParticipantProps>[];
 }
+
+// Sizes and colours come from the injected PiP CSS, so no class names are needed.
+const STATUS_ICONS: Record<PipStatusKind, React.ReactNode> = {
+  chat: <ChatIconSVG />,
+  'raised-hand': <HandsIconSVG classes="" />,
+  notification: <NotifyIconSVG classes="" />,
+};
 
 /**
  * Document PiP view of the webcam strip. Renders the portal content and the
@@ -23,6 +36,22 @@ const WebcamPip = ({ pipParticipants }: IWebcamPipProps) => {
   const pipItems = useMemo<IPipItem[]>(() => {
     return getPipItems(pipParticipants);
   }, [pipParticipants]);
+
+  const chatUnread = useAppSelector((state) => state.bottomIconsActivity.totalUnreadChatMsgs);
+  const raisedHands = useAppSelector((state) => selectRaisedHandsQueue(state).count);
+  const unreadNotifications = useAppSelector(
+    (state) => state.roomSettings.unreadNotificationsCount,
+  );
+
+  const statusItems = useMemo(
+    () =>
+      getPipStatusItems({
+        chatUnread,
+        raisedHands,
+        notifications: unreadNotifications,
+      }),
+    [chatUnread, raisedHands, unreadNotifications],
+  );
 
   // The strip no longer owns the window: close it on unmount only while it is
   // still showing the webcam view, so a chat PiP survives.
@@ -43,6 +72,21 @@ const WebcamPip = ({ pipParticipants }: IWebcamPipProps) => {
               } as React.CSSProperties & Record<'--pip-count', number>
             }
           >
+            {statusItems.length > 0 && (
+              <div className="pip-status" role="status" aria-live="polite">
+                {statusItems.map((item) => (
+                  <span
+                    key={item.kind}
+                    className="pip-status-item"
+                    role="img"
+                    aria-label={`${t(`pip-status.${item.kind}`)}: ${item.count}`}
+                  >
+                    {STATUS_ICONS[item.kind]}
+                    <span aria-hidden="true">{item.text}</span>
+                  </span>
+                ))}
+              </div>
+            )}
             {pipItems.map((item) => (
               <PipVideoTrack key={item.key} videoTrack={item.videoTrack} name={item.name} />
             ))}
