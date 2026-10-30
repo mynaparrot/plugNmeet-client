@@ -14,7 +14,6 @@
   "participant-menu": "گزینه‌های شرکت‌کننده",
   "participant-volume": "تنظیم صدای شرکت‌کننده",
   "participant-webcam-on": "دوربین روشن است",
-  "pip": "تصویر در تصویر",
   "please-wait": "لطفاً منتظر بمانید...",
   "are-you-sure-to-close": "آیا مطمئن هستید که می‌خواهید ببندید؟",
   "you-are-about-to-close": "شما در حال بستن هستید",
@@ -1077,5 +1076,18 @@
     "poll-total-responses": "Responses: {{count}}",
     "poll-total-votes": "Total votes: {{votes}} from {{count}} respondents",
     "poll-results-unavailable": "Vote counts are not available for this poll."
+  },
+  "pip": {
+    "label": "Picture-in-Picture",
+    "status": {
+      "chat": "Unread chat messages",
+      "raised-hand": "Raised hands",
+      "notification": "Unread notifications"
+    },
+    "switcher": {
+      "label": "Switch picture-in-picture view",
+      "chat": "Show chat",
+      "webcam": "Show webcams"
+    }
   }
 }
