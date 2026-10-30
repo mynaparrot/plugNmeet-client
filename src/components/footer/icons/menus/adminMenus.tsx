@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { store, useAppDispatch, useAppSelector } from '../../../../store';
 import useSharedNotepad from './hooks/useSharedNotepad';
+import useCountdownTimer from './hooks/useCountdownTimer';
 import usePolls from './hooks/usePolls';
 import useMuteAll from './hooks/useMuteAll';
 import useExternalMediaPlayer from './hooks/useExternalMediaPlayer';
@@ -24,6 +25,7 @@ import { PollsIconSVG } from '../../../../assets/Icons/PollsIconSVG';
 import { BreakoutRoomIconSVG } from '../../../../assets/Icons/BreakoutRoomIconSVG';
 import { RoomLockIconSVG } from '../../../../assets/Icons/RoomLockIconSVG';
 import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
+import { TimerIconSVG } from '../../../../assets/Icons/TimerIconSVG';
 import MenuItemHelper from './menuItemHelper';
 
 const AdminMenus = () => {
@@ -43,6 +45,7 @@ const AdminMenus = () => {
   }, []);
 
   const { toggleSharedNotepad, sharedNotepadStatus } = useSharedNotepad();
+  const { toggleCountdownTimer, isActiveCountdownTimer } = useCountdownTimer();
   const { togglePolls, isActivePoll } = usePolls();
   const { muteAllUsers } = useMuteAll();
   const { toggleExternalMediaPlayer, isActiveExternalMediaPlayer } = useExternalMediaPlayer();
@@ -146,6 +149,18 @@ const AdminMenus = () => {
               : t('footer.menus.enable-shared-notepad')
           }
           isActive={sharedNotepadStatus}
+        />
+      )}
+      {roomFeatures?.countdownTimerFeatures?.isAllow && (
+        <MenuItemHelper
+          onClick={toggleCountdownTimer}
+          icon={<TimerIconSVG classes="w-5 h-5" />}
+          text={
+            isActiveCountdownTimer
+              ? t('footer.menus.disable-countdown-timer')
+              : t('footer.menus.enable-countdown-timer')
+          }
+          isActive={isActiveCountdownTimer}
         />
       )}
       <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ms-3 my-0.5"></div>

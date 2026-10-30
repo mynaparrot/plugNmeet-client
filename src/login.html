@@ -342,9 +342,7 @@
               />
             </div>
             <div class="item">
-              <label for="api_secret" class="form-label"
-                >plugNmeet API Secret</label
-              >
+              <label for="api_secret" class="form-label">plugNmeet API Secret</label>
               <input
                 type="password"
                 name="api_secret"
@@ -375,11 +373,7 @@
                     <option value="room14">Room 14</option>
                     <option value="room15">Room 15</option>
                   </select>
-                  <button
-                    class="btn btn-secondary"
-                    type="button"
-                    id="show-custom-room"
-                  >
+                  <button class="btn btn-secondary" type="button" id="show-custom-room">
                     Custom
                   </button>
                 </div>
@@ -387,20 +381,8 @@
               <div id="room-custom" style="display: none">
                 <div class="input-group">
                   <input type="text" id="room_id_input" class="form-control" />
-                  <button
-                    class="btn btn-secondary"
-                    type="button"
-                    id="random-room"
-                  >
-                    Random
-                  </button>
-                  <button
-                    class="btn btn-secondary"
-                    type="button"
-                    id="show-room-list"
-                  >
-                    List
-                  </button>
+                  <button class="btn btn-secondary" type="button" id="random-room">Random</button>
+                  <button class="btn btn-secondary" type="button" id="show-room-list">List</button>
                 </div>
               </div>
             </div>
@@ -414,39 +396,15 @@
             <div class="item">
               <label for="name" class="form-label">Name</label>
               <div class="input-group">
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  required
-                  class="form-control"
-                />
-                <button
-                  class="btn btn-secondary"
-                  type="button"
-                  id="random-name"
-                >
-                  Random
-                </button>
+                <input type="text" name="name" id="name" required class="form-control" />
+                <button class="btn btn-secondary" type="button" id="random-name">Random</button>
               </div>
             </div>
             <div class="item">
               <label for="user_id" class="form-label">User Id</label>
               <div class="input-group">
-                <input
-                  type="text"
-                  name="user_id"
-                  id="user_id"
-                  required
-                  class="form-control"
-                />
-                <button
-                  class="btn btn-secondary"
-                  type="button"
-                  id="random-user-id"
-                >
-                  Random
-                </button>
+                <input type="text" name="user_id" id="user_id" required class="form-control" />
+                <button class="btn btn-secondary" type="button" id="random-user-id">Random</button>
               </div>
             </div>
           </div>
@@ -462,47 +420,39 @@
       const loginForm = document.getElementById('loginForm');
       let API_KEY, API_SECRET;
       document.getElementById('user_id').value = Date.now();
-      document.getElementById('name').value =
-        'user-' + Math.floor(Math.random() * 100);
+      document.getElementById('name').value = 'user-' + Math.floor(Math.random() * 100);
       const toUrl = window.location.href.replace(/\/login.*$/i, '');
 
       const roomSelection = document.getElementById('room-selection');
       const roomCustom = document.getElementById('room-custom');
       let useCustomRoom = false;
 
-      document
-        .getElementById('show-custom-room')
-        .addEventListener('click', () => {
-          roomSelection.style.display = 'none';
-          roomCustom.style.display = 'block';
-          useCustomRoom = true;
-          document.getElementById('room_id_input').value =
-            'room-' + Math.random().toString(36).substring(7);
-        });
+      document.getElementById('show-custom-room').addEventListener('click', () => {
+        roomSelection.style.display = 'none';
+        roomCustom.style.display = 'block';
+        useCustomRoom = true;
+        document.getElementById('room_id_input').value =
+          'room-' + Math.random().toString(36).substring(7);
+      });
 
       document.getElementById('random-room').addEventListener('click', () => {
         document.getElementById('room_id_input').value =
           'room-' + Math.random().toString(36).substring(7);
       });
 
-      document
-        .getElementById('show-room-list')
-        .addEventListener('click', () => {
-          roomSelection.style.display = 'block';
-          roomCustom.style.display = 'none';
-          useCustomRoom = false;
-        });
-
-      document.getElementById('random-name').addEventListener('click', () => {
-        document.getElementById('name').value =
-          'user-' + Math.floor(Math.random() * 100);
+      document.getElementById('show-room-list').addEventListener('click', () => {
+        roomSelection.style.display = 'block';
+        roomCustom.style.display = 'none';
+        useCustomRoom = false;
       });
 
-      document
-        .getElementById('random-user-id')
-        .addEventListener('click', () => {
-          document.getElementById('user_id').value = Date.now();
-        });
+      document.getElementById('random-name').addEventListener('click', () => {
+        document.getElementById('name').value = 'user-' + Math.floor(Math.random() * 100);
+      });
+
+      document.getElementById('random-user-id').addEventListener('click', () => {
+        document.getElementById('user_id').value = Date.now();
+      });
 
       loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -581,6 +531,9 @@
                 is_allow: true,
                 // enable_dial_in_on_create: true,
                 // hide_phone_number: false,
+              },
+              countdown_timer_features: {
+                is_allow: true,
               },
               insights_features: {
                 is_allow: true,
@@ -668,14 +621,10 @@
             user_info: userInfo,
           };
 
-          const roomJoinRes = await sendRequest(
-            getJoinTokenReq,
-            'room/getJoinToken',
-          );
+          const roomJoinRes = await sendRequest(getJoinTokenReq, 'room/getJoinToken');
 
           if (roomJoinRes.status) {
-            window.location.href =
-              toUrl + '/?access_token=' + roomJoinRes.token;
+            window.location.href = toUrl + '/?access_token=' + roomJoinRes.token;
           } else {
             alert(roomJoinRes.msg);
           }
@@ -713,11 +662,7 @@
       };
 
       // copied from https://stackoverflow.com/a/76117805/1281864
-      const getHashSignature = async (
-        secretKey,
-        message,
-        algorithm = 'SHA-256',
-      ) => {
+      const getHashSignature = async (secretKey, message, algorithm = 'SHA-256') => {
         // Convert the message and secretKey to Uint8Array
         const encoder = new TextEncoder();
         const messageUint8Array = encoder.encode(message);
@@ -733,11 +678,7 @@
         );
 
         // Sign the message with HMAC and the CryptoKey
-        const signature = await window.crypto.subtle.sign(
-          'HMAC',
-          cryptoKey,
-          messageUint8Array,
-        );
+        const signature = await window.crypto.subtle.sign('HMAC', cryptoKey, messageUint8Array);
 
         // Convert the signature ArrayBuffer to a hex string
         const hashArray = Array.from(new Uint8Array(signature));
