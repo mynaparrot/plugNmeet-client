@@ -134,59 +134,71 @@ const ReactionsIcon = () => {
   return (
     <>
       <Popover className="reactions relative footer-icon">
-        <PopoverButton
-          className={clsx(
-            'w-10 md:w-11 3xl:w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 cursor-pointer outline-none focus-ring',
-            isActiveRaisehand
-              ? 'border-transparent max-md:border-[rgba(124,206,247,0.25)] max-md:dark:border-Gray-800'
-              : 'border-transparent',
-          )}
-          aria-label={t('footer.icons.reactions').toString()}
-        >
-          <div className={innerDivClasses}>
-            <span className="tooltip">{t('footer.icons.reactions')}</span>
-            <ReactionsIconSVG classes={'h-[18px] 3xl:h-[22px] w-auto'} />
-          </div>
-        </PopoverButton>
-
-        <PopoverPanel
-          transition
-          className="absolute bottom-full start-1/2 ltr:-translate-x-1/2 rtl:translate-x-1/2 mb-3 z-50 transition ease-out data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150"
-        >
-          <div className="flex flex-col gap-2 p-2 rounded-2xl bg-white dark:bg-dark-primary border border-Gray-100 dark:border-Gray-700 shadow-lg">
-            {canReact && (
-              <div className="flex items-center gap-1">
-                {REACTION_EMOJIS.map((emoji) => (
-                  <button
-                    key={emoji}
-                    type="button"
-                    aria-label={emoji}
-                    className="w-9 h-9 3xl:w-10 3xl:h-10 flex items-center justify-center text-xl 3xl:text-2xl rounded-full hover:bg-Gray-50 dark:hover:bg-dark-secondary2 transition-transform duration-150 hover:scale-125 cursor-pointer focus-ring"
-                    onClick={() => sendReaction(emoji)}
-                  >
-                    {emoji}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {allowRaiseHand && (
-              <button
-                type="button"
-                onClick={toggleRaiseHand}
-                className={clsx(
-                  'w-full flex items-center justify-center gap-2 h-9 3xl:h-10 px-3 rounded-xl border text-sm font-medium whitespace-nowrap cursor-pointer transition-colors duration-150 focus-ring md:hidden',
-                  isActiveRaisehand
-                    ? 'bg-Blue2-50 dark:bg-dark-secondary2 border-Blue2-500 text-Blue2-700 dark:text-dark-text'
-                    : 'bg-white dark:bg-dark-primary border-Gray-200 dark:border-dark-secondary2 text-Gray-950 dark:text-dark-text hover:bg-Gray-50 dark:hover:bg-dark-secondary2',
-                )}
+        {({ open }) => (
+          <>
+            <PopoverButton
+              className={clsx(
+                'w-10 md:w-11 3xl:w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 cursor-pointer outline-none focus-ring',
+                open
+                  ? 'border-[rgba(124,206,247,0.25)] dark:border-Gray-800'
+                  : isActiveRaisehand
+                    ? 'border-transparent max-md:border-[rgba(124,206,247,0.25)] max-md:dark:border-Gray-800'
+                    : 'border-transparent',
+              )}
+              aria-label={t('footer.icons.reactions').toString()}
+            >
+              <div
+                className={clsx(innerDivClasses, {
+                  'bg-gray-100 dark:bg-Gray-700': open,
+                })}
               >
-                <span aria-hidden>✋</span>
-                {isActiveRaisehand ? t('footer.icons.lower-hand') : t('footer.icons.raise-hand')}
-              </button>
-            )}
-          </div>
-        </PopoverPanel>
+                <span className="tooltip">{t('footer.icons.reactions')}</span>
+                <ReactionsIconSVG classes={'h-[18px] 3xl:h-[22px] w-auto'} />
+              </div>
+            </PopoverButton>
+
+            <PopoverPanel
+              transition
+              className="absolute bottom-full start-1/2 ltr:-translate-x-1/2 rtl:translate-x-1/2 mb-3 z-50 transition ease-out data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150"
+            >
+              <div className="flex flex-col gap-2 p-2 rounded-2xl bg-white dark:bg-dark-primary border border-Gray-100 dark:border-Gray-700 shadow-lg">
+                {canReact && (
+                  <div className="flex items-center gap-1">
+                    {REACTION_EMOJIS.map((emoji) => (
+                      <button
+                        key={emoji}
+                        type="button"
+                        aria-label={emoji}
+                        className="w-9 h-9 3xl:w-10 3xl:h-10 flex items-center justify-center text-xl 3xl:text-2xl rounded-full hover:bg-Gray-50 dark:hover:bg-dark-secondary2 transition-transform duration-150 hover:scale-125 cursor-pointer focus-ring"
+                        onClick={() => sendReaction(emoji)}
+                      >
+                        {emoji}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {allowRaiseHand && (
+                  <button
+                    type="button"
+                    onClick={toggleRaiseHand}
+                    className={clsx(
+                      'w-full flex items-center justify-center gap-2 h-9 3xl:h-10 px-3 rounded-xl border text-sm font-medium whitespace-nowrap cursor-pointer transition-colors duration-150 focus-ring md:hidden',
+                      isActiveRaisehand
+                        ? 'bg-Blue2-50 dark:bg-dark-secondary2 border-Blue2-500 text-Blue2-700 dark:text-dark-text'
+                        : 'bg-white dark:bg-dark-primary border-Gray-200 dark:border-dark-secondary2 text-Gray-950 dark:text-dark-text hover:bg-Gray-50 dark:hover:bg-dark-secondary2',
+                    )}
+                  >
+                    <span aria-hidden>✋</span>
+                    {isActiveRaisehand
+                      ? t('footer.icons.lower-hand')
+                      : t('footer.icons.raise-hand')}
+                  </button>
+                )}
+              </div>
+            </PopoverPanel>
+          </>
+        )}
       </Popover>
 
       {allowRaiseHand && raiseHandButton('hidden md:block')}
