@@ -33,7 +33,7 @@ const PipStatusIndicators = ({ items }: IPipStatusIndicatorsProps) => {
           key={item.kind}
           className="pip-status-item"
           role="img"
-          aria-label={`${t(`pip-status.${item.kind}`)}: ${item.count}`}
+          aria-label={`${t(`pip.status.${item.kind}`)}: ${item.count}`}
         >
           {STATUS_ICONS[item.kind]}
           <span aria-hidden="true">{item.text}</span>

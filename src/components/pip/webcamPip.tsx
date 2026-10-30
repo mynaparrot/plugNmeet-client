@@ -1,7 +1,6 @@
-import React, { ReactElement, useEffect, useMemo } from 'react';
+import React, { ReactElement, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import clsx from 'clsx';
 
 import { VideoParticipantProps } from '../media-elements/videos/videoParticipant';
 import { getPipItems, IPipItem } from './pipUtils';
@@ -23,7 +22,7 @@ interface IWebcamPipProps {
  */
 const WebcamPip = ({ pipParticipants }: IWebcamPipProps) => {
   const { t } = useTranslation();
-  const { pipWindow, content, isSupported, openPip, releasePip } = usePip();
+  const { pipWindow, content, isSupported, openPip } = usePip();
 
   const pipItems = useMemo<IPipItem[]>(() => {
     return getPipItems(pipParticipants);
@@ -45,21 +44,13 @@ const WebcamPip = ({ pipParticipants }: IWebcamPipProps) => {
     [chatUnread, raisedHands, unreadNotifications],
   );
 
-  const hasStatus = statusItems.length > 0;
-
-  // The strip no longer owns the window: close it on unmount only while it is
-  // still showing the webcam view, so a chat PiP survives.
-  useEffect(() => {
-    return () => releasePip('webcam');
-  }, [releasePip]);
-
   return (
     <>
       {pipWindow &&
         content === 'webcam' &&
         createPortal(
           <div
-            className={clsx('pip-flex-container', hasStatus && 'pip-flex-with-status')}
+            className="pip-flex-container"
             style={
               {
                 '--pip-count': Math.max(pipItems.length, 1),
@@ -78,7 +69,7 @@ const WebcamPip = ({ pipParticipants }: IWebcamPipProps) => {
         <button
           type="button"
           className="cam-pip cursor-pointer w-7 h-7 rounded-full bg-Gray-950/50 dark:bg-Gray-50 shadow-shadowXS flex items-center justify-center absolute top-2 end-2 z-50 opacity-0 group-hover:opacity-100 transition-all duration-300"
-          aria-label={t('pip')}
+          aria-label={t('pip.label')}
           onPointerDown={(event) => {
             event.stopPropagation();
           }}
@@ -90,7 +81,7 @@ const WebcamPip = ({ pipParticipants }: IWebcamPipProps) => {
             event.stopPropagation();
             openPip('webcam');
           }}
-          title={t('pip')}
+          title={t('pip.label')}
         >
           <i className="icon pnm-pip text-[14px] text-white dark:text-Gray-900" />
         </button>

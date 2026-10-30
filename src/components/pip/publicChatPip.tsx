@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
-import clsx from 'clsx';
 
 import { store, useAppSelector } from '../../store';
 import { selectPublicChatMessages } from '../../store/slices/chatMessagesSlice';
@@ -13,6 +12,7 @@ import { canSendPublicChatMessage } from './chatPermissions';
 import { usePip } from './pipProvider';
 import { getPipStatusItems } from './pipStatus';
 import PipStatusIndicators from './pipStatusIndicators';
+import PipModeSwitcher from './pipModeSwitcher';
 
 /** Number of most recent public messages rendered in the PiP window. */
 const MAX_PIP_MESSAGES = 30;
@@ -23,7 +23,8 @@ const BOTTOM_THRESHOLD = 24;
 /**
  * Public chat inside the shared PiP window. It lives outside of the chat side
  * panel so the window survives the panel being closed, and it never touches the
- * unread counters or the selected tab of the panel.
+ * unread counters or the selected tab of the panel. It is also always mounted,
+ * so it renders the mode switcher for both PiP views.
  */
 const PublicChatPip = () => {
   const { t } = useTranslation();
@@ -41,7 +42,6 @@ const PublicChatPip = () => {
     () => getPipStatusItems({ raisedHands, notifications: unreadNotifications }),
     [raisedHands, unreadNotifications],
   );
-  const hasStatus = statusItems.length > 0;
 
   // Values that are static for the room lifetime, read once on mount.
   const { isRecorder, isAdmin, defaultLockSettings } = useMemo(() => {
@@ -164,12 +164,20 @@ const PublicChatPip = () => {
     return () => form.removeEventListener('submit', onSubmit);
   }, [pipWindow, content, canSend, sendMessage]);
 
-  if (!pipWindow || content !== 'chat') {
+  if (!pipWindow || !content) {
     return null;
   }
 
+  // The switcher is owned here because this component stays mounted while the
+  // webcam strip (and its PiP view) can disappear, and switching back to chat
+  // must not depend on that lifecycle.
+  if (content === 'webcam') {
+    return createPortal(<PipModeSwitcher />, pipWindow.document.body);
+  }
+
   return createPortal(
-    <div className={clsx('pip-chat-container', hasStatus && 'pip-chat-with-status')}>
+    <div className="pip-chat-container">
+      <PipModeSwitcher />
       <PipStatusIndicators items={statusItems} />
       <ul
         ref={attachList}

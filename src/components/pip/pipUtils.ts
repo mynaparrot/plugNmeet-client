@@ -61,6 +61,11 @@ export const injectPipStyles = (win: Window) => {
   const style = win.document.createElement('style');
 
   style.textContent = `
+    /* The mode switcher floats over the top-left corner and the status badges
+       over the top-right one, so both views always reserve a band at the top:
+       content then starts below the controls instead of underneath them. The
+       extra top padding only shrinks the content box, so the --pip-count based
+       max-height calculation stays correct. */
     .pip-flex-container {
       position: relative;
       display: flex;
@@ -69,17 +74,54 @@ export const injectPipStyles = (win: Window) => {
       height: 100%;
       gap: 6px;
       box-sizing: border-box;
-      padding: 6px;
+      padding: 38px 6px 6px;
       overflow: hidden;
       background-color: #000000;
     }
 
-    /* Status badges float over the top-right corner, so reserve a band above
-       the tiles: the first webcam then starts below the badges instead of
-       looking attached to them. The extra top padding only shrinks the content
-       box, so the --pip-count based max-height calculation stays correct. */
-    .pip-flex-container.pip-flex-with-status {
-      padding-top: 36px;
+    /* Chat / webcam switch, always visible over the top-left corner. */
+    .pip-mode-switcher {
+      position: absolute;
+      top: 8px;
+      inset-inline-start: 8px;
+      z-index: 2;
+      display: flex;
+      gap: 4px;
+    }
+
+    .pip-mode-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 6px;
+      background-color: rgba(0, 0, 0, 0.65);
+      color: #f5f5f5;
+      cursor: pointer;
+    }
+
+    .pip-mode-button:hover {
+      background-color: rgba(0, 0, 0, 0.85);
+    }
+
+    .pip-mode-button[aria-pressed='true'] {
+      border-color: #00a1f2;
+      background-color: #00a1f2;
+      color: #ffffff;
+    }
+
+    .pip-mode-button:focus-visible {
+      outline: 2px solid #ffffff;
+      outline-offset: 1px;
+    }
+
+    .pip-mode-button svg {
+      display: block;
+      width: 15px;
+      height: 15px;
     }
 
     /* Informational only: never intercepts pointer events. */
@@ -155,17 +197,11 @@ export const injectPipStyles = (win: Window) => {
       flex-direction: column;
       height: 100%;
       box-sizing: border-box;
+      padding-top: 38px;
       background-color: #0b0b0b;
       color: #f5f5f5;
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
       overflow: hidden;
-    }
-
-    /* Status badges float over the top-right corner, so reserve room above the
-       list: the scroll viewport then starts below them and messages scrolled up
-       can never slide underneath the badges. */
-    .pip-chat-with-status {
-      padding-top: 34px;
     }
 
     .pip-chat-list {
