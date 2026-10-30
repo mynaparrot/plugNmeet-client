@@ -14,7 +14,6 @@
   "participant-menu": "참여자 옵션",
   "participant-volume": "참가자 수를 조정하세요",
   "participant-webcam-on": "카메라 켜져 있어",
-  "pip": "픽처 인 픽처",
   "please-wait": "기다려 주십시오...",
   "are-you-sure-to-close": "닫으시겠습니까?",
   "you-are-about-to-close": "곧 닫힙니다.",
@@ -1077,5 +1076,18 @@
     "poll-total-responses": "Responses: {{count}}",
     "poll-total-votes": "Total votes: {{votes}} from {{count}} respondents",
     "poll-results-unavailable": "Vote counts are not available for this poll."
+  },
+  "pip": {
+    "label": "Picture-in-Picture",
+    "status": {
+      "chat": "Unread chat messages",
+      "raised-hand": "Raised hands",
+      "notification": "Unread notifications"
+    },
+    "switcher": {
+      "label": "Switch picture-in-picture view",
+      "chat": "Show chat",
+      "webcam": "Show webcams"
+    }
   }
 }
