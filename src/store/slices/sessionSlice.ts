@@ -43,7 +43,6 @@ const initialState: ISession = {
         allowWebcams: true,
         muteOnStart: false,
         allowScreenShare: true,
-        allowRtmp: true,
         allowViewOtherWebcams: true,
         allowViewOtherUsersList: true,
         adminOnlyWebcams: false,
