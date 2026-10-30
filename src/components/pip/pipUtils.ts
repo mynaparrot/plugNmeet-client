@@ -9,7 +9,11 @@ export const PIP_WINDOW_WIDTH = 280;
 
 export type DocumentPictureInPictureWindow = Window & {
   documentPictureInPicture?: {
-    requestWindow: (options: { width: number; height: number }) => Promise<Window>;
+    requestWindow: (options: {
+      width: number;
+      height: number;
+      preferInitialWindowPlacement?: boolean;
+    }) => Promise<Window>;
   };
 };
 

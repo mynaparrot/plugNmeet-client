@@ -125,7 +125,11 @@ export const PipProvider = ({ children }: { children: React.ReactNode }) => {
       // requestWindow() needs transient user activation, so it is called
       // synchronously here instead of from an effect.
       documentPictureInPicture
-        .requestWindow({ width: PIP_WINDOW_WIDTH, height: PIP_WINDOW_HEIGHT })
+        .requestWindow({
+          width: PIP_WINDOW_WIDTH,
+          height: PIP_WINDOW_HEIGHT,
+          preferInitialWindowPlacement: true,
+        })
         .then((win) => {
           pipWindowRef.current = win;
           injectPipStyles(win);
