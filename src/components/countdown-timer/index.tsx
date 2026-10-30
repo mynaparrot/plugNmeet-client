@@ -5,9 +5,17 @@ import clsx from 'clsx';
 
 import useCountdownTimerState from './hooks/useCountdownTimerState';
 import useCountdownTimerActions from './hooks/useCountdownTimerActions';
-import TimerBadgeContent, { getTimerBadgeClasses } from './timerBadgeContent';
+import TimerBadgeContent from './timerBadgeContent';
+import { getTimerBadgeClasses } from './utils';
 import SetupPanel from './setupPanel';
 import LiveControlPanel from './liveControlPanel';
+
+export interface ITimerBadgeState {
+  isIdle: boolean;
+  isPaused: boolean;
+  isUrgent: boolean;
+  isFinished: boolean;
+}
 
 const CountdownTimer = () => {
   const { t } = useTranslation();
@@ -30,7 +38,7 @@ const CountdownTimer = () => {
     return null;
   }
 
-  const badgeState = { isIdle, isPaused, isUrgent, isFinished };
+  const badgeState: ITimerBadgeState = { isIdle, isPaused, isUrgent, isFinished };
   const badgeClasses = getTimerBadgeClasses(badgeState);
 
   if (!isAdmin) {
@@ -64,7 +72,7 @@ const CountdownTimer = () => {
             isLoading={isLoading}
             onStart={(durationSeconds) => {
               setIsSettingNewTimer(false);
-              startTimer(durationSeconds);
+              void startTimer(durationSeconds);
             }}
           />
         ) : (

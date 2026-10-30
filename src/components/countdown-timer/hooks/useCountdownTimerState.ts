@@ -6,23 +6,14 @@ import {
   addUserNotification,
   updatePlayAudioNotification,
 } from '../../../store/slices/roomSettingsSlice';
-
-const TICK_INTERVAL_MS = 250;
-const URGENT_SECONDS = 10;
-
-export type CountdownTimerStatus = 'idle' | 'running' | 'paused';
-
-const pad = (value: number) => value.toString().padStart(2, '0');
-
-export const formatTime = (totalSeconds: number) => {
-  const safe = Math.max(0, Math.floor(totalSeconds));
-  const hours = Math.floor(safe / 3600);
-  const minutes = Math.floor((safe % 3600) / 60);
-
-  return hours > 0
-    ? `${pad(hours)}:${pad(minutes)}:${pad(safe % 60)}`
-    : `${pad(minutes)}:${pad(safe % 60)}`;
-};
+import {
+  formatTime,
+  getRemainingSeconds,
+  getTimerFlags,
+  shouldNotifyTimerEnd,
+  TICK_INTERVAL_MS,
+  type CountdownTimerStatus,
+} from './../utils';
 
 const useCountdownTimerState = () => {
   const dispatch = useAppDispatch();
@@ -31,7 +22,7 @@ const useCountdownTimerState = () => {
   const timerFeatures = useAppSelector(
     (state) => state.session.currentRoom.metadata?.roomFeatures?.countdownTimerFeatures,
   );
-  const isAdmin = useAppSelector((state) => state.session.currentUser?.metadata?.isAdmin);
+  const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
   const isRecorder = store.getState().session.currentUser?.isRecorder;
 
   const status = (timerFeatures?.status || 'idle') as CountdownTimerStatus;
@@ -39,37 +30,41 @@ const useCountdownTimerState = () => {
   const pausedRemaining = timerFeatures?.remainingSeconds ?? 0;
 
   const [remainingSeconds, setRemainingSeconds] = useState(() =>
-    status === 'running' && endTime > 0 ? Math.max(0, Math.ceil((endTime - Date.now()) / 1000)) : 0,
+    getRemainingSeconds({ status, endTime, pausedRemaining, nowMs: Date.now() }),
   );
   // -1 until the first measurement, so a late join never fakes a "reached zero" transition.
   const previousRemainingRef = useRef(-1);
   const notifiedEndTimeRef = useRef(0);
 
   useEffect(() => {
-    if (status === 'paused') {
-      setRemainingSeconds(pausedRemaining);
-      return;
-    }
+    const update = () =>
+      setRemainingSeconds(
+        getRemainingSeconds({ status, endTime, pausedRemaining, nowMs: Date.now() }),
+      );
+
     if (status !== 'running' || endTime <= 0) {
-      setRemainingSeconds(0);
+      update();
       return;
     }
 
-    const tick = () => setRemainingSeconds(Math.max(0, Math.ceil((endTime - Date.now()) / 1000)));
-    tick();
-    const interval = window.setInterval(tick, TICK_INTERVAL_MS);
+    update();
+    const interval = window.setInterval(update, TICK_INTERVAL_MS);
 
     return () => window.clearInterval(interval);
   }, [status, endTime, pausedRemaining]);
 
   useEffect(() => {
-    const previous = previousRemainingRef.current;
+    const previousSeconds = previousRemainingRef.current;
     previousRemainingRef.current = remainingSeconds;
 
-    if (status !== 'running' || endTime <= 0 || previous <= 0 || remainingSeconds > 0) {
-      return;
-    }
-    if (notifiedEndTimeRef.current === endTime) {
+    const ended = shouldNotifyTimerEnd({
+      status,
+      endTime,
+      previousSeconds,
+      currentSeconds: remainingSeconds,
+      notifiedEndTime: notifiedEndTimeRef.current,
+    });
+    if (!ended) {
       return;
     }
 
@@ -83,9 +78,6 @@ const useCountdownTimerState = () => {
     );
   }, [status, endTime, remainingSeconds, dispatch, t]);
 
-  const isIdle = status === 'idle';
-  const isPaused = status === 'paused';
-
   return {
     isAdmin: !!isAdmin,
     isRecorder: !!isRecorder,
@@ -94,10 +86,7 @@ const useCountdownTimerState = () => {
     status,
     remainingSeconds,
     formattedTime: formatTime(remainingSeconds),
-    isIdle,
-    isPaused,
-    isFinished: status === 'running' && remainingSeconds === 0,
-    isUrgent: status === 'running' && remainingSeconds > 0 && remainingSeconds <= URGENT_SECONDS,
+    ...getTimerFlags(status, remainingSeconds),
   };
 };
 

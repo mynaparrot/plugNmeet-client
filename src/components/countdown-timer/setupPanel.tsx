@@ -3,13 +3,9 @@ import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
 import ActionButton from '../../helpers/ui/actionButton';
+import { clampDurationInput } from './utils';
 
 const PRESETS = [1, 3, 5, 10, 15];
-
-const clamp = (value: string, max: number) => {
-  const parsed = Number.parseInt(value, 10);
-  return Number.isNaN(parsed) ? 0 : Math.min(Math.max(parsed, 0), max);
-};
 
 interface ISetupPanelProps {
   isLoading: boolean;
@@ -70,7 +66,7 @@ const SetupPanel = ({ isLoading, onStart }: ISetupPanelProps) => {
             min={0}
             max={99}
             value={minutes}
-            onChange={(e) => setMinutes(clamp(e.target.value, 99))}
+            onChange={(e) => setMinutes(clampDurationInput(e.target.value, 99))}
             className="default-input h-9 w-14 px-1 text-center tabular-nums"
           />
         </div>
@@ -94,7 +90,7 @@ const SetupPanel = ({ isLoading, onStart }: ISetupPanelProps) => {
             min={0}
             max={59}
             value={seconds}
-            onChange={(e) => setSeconds(clamp(e.target.value, 59))}
+            onChange={(e) => setSeconds(clampDurationInput(e.target.value, 59))}
             className="default-input h-9 w-14 px-1 text-center tabular-nums"
           />
         </div>
