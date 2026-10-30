@@ -426,6 +426,8 @@
       "room-lock-settings": "Настройки блокировки",
       "enable-shared-notepad": "Включить общий блокнот",
       "disable-shared-notepad": "Отключение функции «Общий блокнот»",
+      "enable-countdown-timer": "Enable Countdown Timer",
+      "disable-countdown-timer": "Disable Countdown Timer",
       "mute-microphone": "Отключить микрофон",
       "unmute-microphone": "Включить микрофон",
       "leave-microphone": "Выключить микрофон",
@@ -638,6 +640,34 @@
     "reject-and-block-user": "Отклонить и заблокировать",
     "user-waiting": "{{name}} ожидает одобрения.",
     "no-pending-user": "Желающих присоединиться нет."
+  },
+  "countdown-timer": {
+    "title": "Countdown Timer",
+    "aria-label": "Countdown timer",
+    "set-timer": "Set timer",
+    "minutes": "Minutes",
+    "seconds": "Seconds",
+    "presets": "Quick presets",
+    "preset-min": "{{count}}m",
+    "start": "Start",
+    "pause": "Pause",
+    "resume": "Resume",
+    "extend": "+1 min",
+    "set-new-timer": "Set new timer",
+    "end-timer": "End timer",
+    "running": "Running",
+    "paused": "Paused",
+    "ended": "Time's up",
+    "ended-notification": "The countdown timer has ended.",
+    "errors": {
+      "only-admin": "Only admin can perform this task.",
+      "not-allowed": "The countdown timer is not enabled for this room.",
+      "not-active": "The countdown timer is not active.",
+      "invalid-duration": "Please enter a valid duration (up to 24 hours).",
+      "not-running": "The countdown timer is not running.",
+      "not-paused": "The countdown timer is not paused.",
+      "generic": "Could not update the countdown timer. Please try again."
+    }
   },
   "polls": {
     "title": "Опросы",
