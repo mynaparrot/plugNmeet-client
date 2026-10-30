@@ -14,7 +14,6 @@
   "participant-menu": "参加者オプション",
   "participant-volume": "参加者数を調整する",
   "participant-webcam-on": "カメラが回ってる",
-  "pip": "ピクチャー・イン・ピクチャー",
   "please-wait": "お待ちください...",
   "are-you-sure-to-close": "閉じてもよろしいですか？",
   "you-are-about-to-close": "まもなく閉じます。",
@@ -1077,5 +1076,18 @@
     "poll-total-responses": "Responses: {{count}}",
     "poll-total-votes": "Total votes: {{votes}} from {{count}} respondents",
     "poll-results-unavailable": "Vote counts are not available for this poll."
+  },
+  "pip": {
+    "label": "Picture-in-Picture",
+    "status": {
+      "chat": "Unread chat messages",
+      "raised-hand": "Raised hands",
+      "notification": "Unread notifications"
+    },
+    "switcher": {
+      "label": "Switch picture-in-picture view",
+      "chat": "Show chat",
+      "webcam": "Show webcams"
+    }
   }
 }
