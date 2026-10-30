@@ -14,7 +14,6 @@
   "participant-menu": "অংশগ্রহণকারীর বিকল্প",
   "participant-volume": "অংশগ্রহণকারীর ভলিউম সামঞ্জস্য করুন",
   "participant-webcam-on": "ক্যামেরা চালু আছে",
-  "pip": "পিকচার-ইন-পিকচার",
   "please-wait": "অনুগ্রহ করে অপেক্ষা করুন...",
   "are-you-sure-to-close": "আপনি কি বন্ধ করতে নিশ্চিত?",
   "you-are-about-to-close": "আপনি বন্ধ করতে চলেছেন।",
@@ -1077,5 +1076,18 @@
     "poll-total-responses": "Responses: {{count}}",
     "poll-total-votes": "Total votes: {{votes}} from {{count}} respondents",
     "poll-results-unavailable": "Vote counts are not available for this poll."
+  },
+  "pip": {
+    "label": "Picture-in-Picture",
+    "status": {
+      "chat": "Unread chat messages",
+      "raised-hand": "Raised hands",
+      "notification": "Unread notifications"
+    },
+    "switcher": {
+      "label": "Switch picture-in-picture view",
+      "chat": "Show chat",
+      "webcam": "Show webcams"
+    }
   }
 }
