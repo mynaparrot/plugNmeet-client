@@ -14,7 +14,6 @@
   "participant-menu": "Osallistujavaihtoehdot",
   "participant-volume": "Säädä osallistujien määrää",
   "participant-webcam-on": "Kamera on päällä",
-  "pip": "Kuva kuvassa",
   "please-wait": "Ole hyvä ja odota...",
   "are-you-sure-to-close": "Oletko varma, että haluat sulkea?",
   "you-are-about-to-close": "Olet sulkemassa",
@@ -1077,5 +1076,18 @@
     "poll-total-responses": "Responses: {{count}}",
     "poll-total-votes": "Total votes: {{votes}} from {{count}} respondents",
     "poll-results-unavailable": "Vote counts are not available for this poll."
+  },
+  "pip": {
+    "label": "Picture-in-Picture",
+    "status": {
+      "chat": "Unread chat messages",
+      "raised-hand": "Raised hands",
+      "notification": "Unread notifications"
+    },
+    "switcher": {
+      "label": "Switch picture-in-picture view",
+      "chat": "Show chat",
+      "webcam": "Show webcams"
+    }
   }
 }
