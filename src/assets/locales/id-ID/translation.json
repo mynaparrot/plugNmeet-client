@@ -1079,6 +1079,7 @@
   },
   "pip": {
     "label": "Picture-in-Picture",
+    "speaking": "{{name}} is speaking",
     "status": {
       "chat": "Unread chat messages",
       "raised-hand": "Raised hands",
