@@ -6,19 +6,15 @@ import { VideoParticipantProps } from '../media-elements/videos/videoParticipant
 import { getPipItems, IPipItem } from './pipUtils';
 import PipVideoTrack from './pipVideoTrack';
 import { usePip } from './pipProvider';
-import { useAppSelector } from '../../store';
-import { selectRaisedHandsQueue } from '../../store/slices/participantSlice';
-import { getPipStatusItems } from './pipStatus';
-import PipStatusIndicators from './pipStatusIndicators';
 
 interface IWebcamPipProps {
   pipParticipants: ReactElement<VideoParticipantProps>[];
 }
 
 /**
- * Document PiP view of the webcam strip. Renders the portal content and the
- * strip's PiP button, so it has to be rendered inside the strip wrapper to
- * keep the button's position and hover behaviour.
+ * Document PiP view of the webcam strip: webcam tiles plus the strip's PiP
+ * button. The button has to live inside the strip wrapper to keep its position
+ * and hover behaviour, and the shared header is mounted by PublicChatPip.
  */
 const WebcamPip = ({ pipParticipants }: IWebcamPipProps) => {
   const { t } = useTranslation();
@@ -27,22 +23,6 @@ const WebcamPip = ({ pipParticipants }: IWebcamPipProps) => {
   const pipItems = useMemo<IPipItem[]>(() => {
     return getPipItems(pipParticipants);
   }, [pipParticipants]);
-
-  const chatUnread = useAppSelector((state) => state.bottomIconsActivity.totalUnreadChatMsgs);
-  const raisedHands = useAppSelector((state) => selectRaisedHandsQueue(state).count);
-  const unreadNotifications = useAppSelector(
-    (state) => state.roomSettings.unreadNotificationsCount,
-  );
-
-  const statusItems = useMemo(
-    () =>
-      getPipStatusItems({
-        chatUnread,
-        raisedHands,
-        notifications: unreadNotifications,
-      }),
-    [chatUnread, raisedHands, unreadNotifications],
-  );
 
   return (
     <>
@@ -57,7 +37,6 @@ const WebcamPip = ({ pipParticipants }: IWebcamPipProps) => {
               } as React.CSSProperties & Record<'--pip-count', number>
             }
           >
-            <PipStatusIndicators items={statusItems} />
             {pipItems.map((item) => (
               <PipVideoTrack key={item.key} videoTrack={item.videoTrack} name={item.name} />
             ))}

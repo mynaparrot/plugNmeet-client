@@ -4,15 +4,12 @@ import { useTranslation } from 'react-i18next';
 
 import { store, useAppSelector } from '../../store';
 import { selectPublicChatMessages } from '../../store/slices/chatMessagesSlice';
-import { selectRaisedHandsQueue } from '../../store/slices/participantSlice';
 import { cleanHtmlForChat } from '../../helpers/utils';
 import { getNatsConn } from '../../helpers/nats';
 import { renderMarkdown } from '../insights-ai/ai-text-chat/helpers/renderMarkdown';
 import { canSendPublicChatMessage } from './chatPermissions';
 import { usePip } from './pipProvider';
-import { getPipStatusItems } from './pipStatus';
-import PipStatusIndicators from './pipStatusIndicators';
-import PipModeSwitcher from './pipModeSwitcher';
+import PipHeader from './pipHeader';
 
 /** Number of most recent public messages rendered in the PiP window. */
 const MAX_PIP_MESSAGES = 30;
@@ -24,24 +21,13 @@ const BOTTOM_THRESHOLD = 24;
  * Public chat inside the shared PiP window. It lives outside of the chat side
  * panel so the window survives the panel being closed, and it never touches the
  * unread counters or the selected tab of the panel. It is also always mounted,
- * so it renders the mode switcher for both PiP views.
+ * so it mounts the shared header for both PiP views.
  */
 const PublicChatPip = () => {
   const { t } = useTranslation();
   const { pipWindow, content } = usePip();
 
   const messages = useAppSelector(selectPublicChatMessages);
-
-  // Unread chat is deliberately left out: the reader is already looking at chat.
-  const raisedHands = useAppSelector((state) => selectRaisedHandsQueue(state).count);
-  const unreadNotifications = useAppSelector(
-    (state) => state.roomSettings.unreadNotificationsCount,
-  );
-
-  const statusItems = useMemo(
-    () => getPipStatusItems({ raisedHands, notifications: unreadNotifications }),
-    [raisedHands, unreadNotifications],
-  );
 
   // Values that are static for the room lifetime, read once on mount.
   const { isRecorder, isAdmin, defaultLockSettings } = useMemo(() => {
@@ -168,17 +154,16 @@ const PublicChatPip = () => {
     return null;
   }
 
-  // The switcher is owned here because this component stays mounted while the
+  // The header is owned here because this component stays mounted while the
   // webcam strip (and its PiP view) can disappear, and switching back to chat
   // must not depend on that lifecycle.
   if (content === 'webcam') {
-    return createPortal(<PipModeSwitcher />, pipWindow.document.body);
+    return createPortal(<PipHeader />, pipWindow.document.body);
   }
 
   return createPortal(
     <div className="pip-chat-container">
-      <PipModeSwitcher />
-      <PipStatusIndicators items={statusItems} />
+      <PipHeader />
       <ul
         ref={attachList}
         className="pip-chat-list"

@@ -2,12 +2,10 @@ import React, { useEffect, useMemo } from 'react';
 import { throttle } from 'es-toolkit';
 
 import { useAppSelector } from '../../store';
-import { selectSpeakingParticipants } from '../../store/slices/activeSpeakersSlice';
-import { participantsSelector } from '../../store/slices/participantSlice';
-import SpeakerComponent from './speaker';
 import { getMediaServerConn } from '../../helpers/livekit/utils';
 import { APP_LAYOUT_CLASSES } from '../../helpers/dimensions';
 import { IActiveSpeaker } from '../../store/slices/interfaces/activeSpeakers';
+import useActiveSpeakers from './useActiveSpeakers';
 
 const ACTIVE_SPEAKER_VIDEO_REARRANGE_DURATION = 8000;
 
@@ -31,8 +29,7 @@ const reOrderWebcams = throttle(
 );
 
 const ActiveSpeakers = ({ activeSidePanel }) => {
-  const activeSpeakers = useAppSelector(selectSpeakingParticipants);
-  const participantIds = useAppSelector(participantsSelector.selectIds);
+  const activeSpeakers = useActiveSpeakers();
   const focusActiveSpeakerWebcam = useAppSelector(
     (state) => state.roomSettings.focusActiveSpeakerWebcam,
   );
@@ -60,28 +57,20 @@ const ActiveSpeakers = ({ activeSidePanel }) => {
     // oxlint-disable-next-line exhaustive-deps, react/exhaustive-effect-dependencies
   }, [speakingParticipantIds, room, focusActiveSpeakerWebcam, hasWebcamPages]);
 
-  const activeSpeakersElms = useMemo(() => {
-    // Create a Set for efficient O(1) lookups.
-    const participantIdSet = new Set(participantIds);
-
-    // Filter the speakers first, which is more performant.
-    const validSpeakers = activeSpeakers.filter((speaker) => participantIdSet.has(speaker.userId));
-
-    if (!validSpeakers.length) {
-      return null;
-    }
-
-    return validSpeakers.map((speaker) => (
-      <SpeakerComponent key={speaker.userId} speaker={speaker} />
-    ));
-  }, [activeSpeakers, participantIds]);
-
   return (
-    activeSpeakersElms && (
+    activeSpeakers.length > 0 && (
       <div
         className={`active-speakers-wrap flex items-center justify-center absolute top-0 start-0 pointer-events-none ${activeSidePanel ? APP_LAYOUT_CLASSES.activeSpeakersOpen : 'w-full'}`}
       >
-        {activeSpeakersElms}
+        {activeSpeakers.map((speaker) => (
+          <div
+            key={speaker.userId}
+            className="speaker m-1 px-3 py-1 primaryColor text-[12px] rounded-2xl inline-flex items-center bg-white border border-solid border-white dark:border-Gray-800 dark:bg-Gray-800 dark:text-white"
+          >
+            <i className="pnm-mic-unmute text-[10px] secondaryColor me-2" />
+            {speaker.name}
+          </div>
+        ))}
       </div>
     )
   );

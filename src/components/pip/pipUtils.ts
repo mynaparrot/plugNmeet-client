@@ -61,11 +61,10 @@ export const injectPipStyles = (win: Window) => {
   const style = win.document.createElement('style');
 
   style.textContent = `
-    /* The mode switcher floats over the top-left corner and the status badges
-       over the top-right one, so both views always reserve a band at the top:
-       content then starts below the controls instead of underneath them. The
-       extra top padding only shrinks the content box, so the --pip-count based
-       max-height calculation stays correct. */
+    /* Both views reserve a band at the top for the header row, so content
+       starts below it instead of underneath it. The extra top padding only
+       shrinks the content box, so the --pip-count based max-height calculation
+       stays correct. */
     .pip-flex-container {
       position: relative;
       display: flex;
@@ -79,14 +78,36 @@ export const injectPipStyles = (win: Window) => {
       background-color: #000000;
     }
 
-    /* Chat / webcam switch, always visible over the top-left corner. */
-    .pip-mode-switcher {
+    /* Three-column header band: switch on the left, speaker in the middle,
+       badges on the right. Columns are assigned explicitly so the row keeps its
+       layout when the speaker or the badges are absent. Only the switch is
+       interactive, so the row itself never blocks the content. */
+    .pip-header {
       position: absolute;
-      top: 8px;
-      inset-inline-start: 8px;
+      top: 6px;
+      inset-inline: 0;
       z-index: 2;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 6px;
+      padding: 0 8px;
+      box-sizing: border-box;
+      color: #f5f5f5;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+      font-size: 11px;
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .pip-mode-switcher {
       display: flex;
+      grid-column: 1;
+      justify-self: start;
+      flex: 0 0 auto;
       gap: 4px;
+      pointer-events: auto;
     }
 
     .pip-mode-button {
@@ -124,30 +145,49 @@ export const injectPipStyles = (win: Window) => {
       height: 15px;
     }
 
+    /* Shrinks first so a long name never pushes the switch or badges out. */
+    .pip-speaking-indicator {
+      display: flex;
+      grid-column: 2;
+      justify-self: center;
+      align-items: center;
+      gap: 4px;
+      min-width: 0;
+      max-width: 100%;
+      flex: 0 1 auto;
+      padding: 4px 6px;
+      border-radius: 999px;
+      background-color: rgba(0, 0, 0, 0.65);
+      pointer-events: none;
+    }
+
+    .pip-speaking-icon {
+      display: block;
+      width: 13px;
+      height: 13px;
+      flex: 0 0 auto;
+    }
+
+    .pip-speaking-name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
     /* Informational only: never intercepts pointer events. */
     .pip-status {
       display: flex;
+      grid-column: 3;
+      justify-self: end;
+      flex: 0 0 auto;
       align-items: center;
       gap: 4px;
       padding: 3px 6px;
       border-radius: 999px;
       background-color: rgba(0, 0, 0, 0.65);
-      color: #f5f5f5;
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
-      font-size: 11px;
-      line-height: 1;
       font-variant-numeric: tabular-nums;
       pointer-events: none;
-      user-select: none;
-    }
-
-    /* Floats over the top-right corner of the positioned PiP container. */
-    .pip-status-overlay {
-      position: absolute;
-      top: 10px;
-      inset-inline-end: 10px;
-      z-index: 1;
-      max-width: calc(100% - 20px);
     }
 
     .pip-status-item {
