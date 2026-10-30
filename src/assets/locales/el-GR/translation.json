@@ -14,7 +14,6 @@
   "participant-menu": "Επιλογές συμμετεχόντων",
   "participant-volume": "Προσαρμογή της έντασης ήχου των συμμετεχόντων",
   "participant-webcam-on": "Η κάμερα είναι ενεργοποιημένη",
-  "pip": "Εικόνα σε εικόνα",
   "please-wait": "Παρακαλώ περιμένετε...",
   "are-you-sure-to-close": "Είστε βέβαιοι ότι θέλετε να κλείσετε;",
   "you-are-about-to-close": "Πρόκειται να κλείσετε",
@@ -1077,5 +1076,18 @@
     "poll-total-responses": "Responses: {{count}}",
     "poll-total-votes": "Total votes: {{votes}} from {{count}} respondents",
     "poll-results-unavailable": "Vote counts are not available for this poll."
+  },
+  "pip": {
+    "label": "Picture-in-Picture",
+    "status": {
+      "chat": "Unread chat messages",
+      "raised-hand": "Raised hands",
+      "notification": "Unread notifications"
+    },
+    "switcher": {
+      "label": "Switch picture-in-picture view",
+      "chat": "Show chat",
+      "webcam": "Show webcams"
+    }
   }
 }
