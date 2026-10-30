@@ -84,8 +84,8 @@ importers:
         specifier: 0.12.0
         version: 0.12.0
       plugnmeet-protocol-js:
-        specifier: 1.6.3
-        version: 1.6.3(@bufbuild/protobuf@2.16.0)
+        specifier: link:../protocol/js
+        version: link:../protocol/js
       react:
         specifier: 19.3.1
         version: 19.3.1
@@ -3399,12 +3399,6 @@ packages:
 
   player.style@0.3.5:
     resolution: {integrity: sha512-hknPiLjNtJP5zM0vCVXsl3Pef+uQnecYg8X/1vjd/Y3TdAgs/zxhck02SFTxRSckaObKemP5tUT8wTH7ByUmnw==}
-
-  plugnmeet-protocol-js@1.6.3:
-    resolution: {integrity: sha512-U9aCFEbJn+aLCFrNAIiLc4673Htn+bztsLcbjpkQ0VErPKyBOFwXelYXz+wU7wsOymPoK2HmgvrC3t+wlcmjKg==}
-    engines: {node: '>=22.7'}
-    peerDependencies:
-      '@bufbuild/protobuf': ^2.13.0
 
   png-chunk-text@1.0.0:
     resolution: {integrity: sha512-DEROKU3SkkLGWNMzru3xPVgxyd48UGuMSZvioErCure6yhOc/pRH2ZV+SEn7nmaf7WNf3NdIpH+UTrRdKyq9Lw==}
@@ -7087,10 +7081,6 @@ snapshots:
       media-chrome: 4.19.4(react@19.3.1)
     transitivePeerDependencies:
       - react
-
-  plugnmeet-protocol-js@1.6.3(@bufbuild/protobuf@2.16.0):
-    dependencies:
-      '@bufbuild/protobuf': 2.16.0
 
   png-chunk-text@1.0.0: {}
 
