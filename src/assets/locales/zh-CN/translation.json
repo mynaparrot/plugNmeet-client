@@ -426,6 +426,8 @@
       "room-lock-settings": "会议锁定设置",
       "enable-shared-notepad": "启用共享记事本",
       "disable-shared-notepad": "禁用共享记事本",
+      "enable-countdown-timer": "Enable Countdown Timer",
+      "disable-countdown-timer": "Disable Countdown Timer",
       "mute-microphone": "静音麦克风",
       "unmute-microphone": "取消麦克风静音",
       "leave-microphone": "关闭麦克风",
@@ -638,6 +640,34 @@
     "reject-and-block-user": "拒绝并屏蔽",
     "user-waiting": "{{name}} 正在等待进入。",
     "no-pending-user": "没有等待加入的人。"
+  },
+  "countdown-timer": {
+    "title": "Countdown Timer",
+    "aria-label": "Countdown timer",
+    "set-timer": "Set timer",
+    "minutes": "Minutes",
+    "seconds": "Seconds",
+    "presets": "Quick presets",
+    "preset-min": "{{count}}m",
+    "start": "Start",
+    "pause": "Pause",
+    "resume": "Resume",
+    "extend": "+1 min",
+    "set-new-timer": "Set new timer",
+    "end-timer": "End timer",
+    "running": "Running",
+    "paused": "Paused",
+    "ended": "Time's up",
+    "ended-notification": "The countdown timer has ended.",
+    "errors": {
+      "only-admin": "Only admin can perform this task.",
+      "not-allowed": "The countdown timer is not enabled for this room.",
+      "not-active": "The countdown timer is not active.",
+      "invalid-duration": "Please enter a valid duration (up to 24 hours).",
+      "not-running": "The countdown timer is not running.",
+      "not-paused": "The countdown timer is not paused.",
+      "generic": "Could not update the countdown timer. Please try again."
+    }
   },
   "polls": {
     "title": "投票",
