@@ -1,5 +1,48 @@
 # Changelog
 
+## [2.5.5](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.4...v2.5.5) (2026-10-30)
+
+
+### Features
+
+* **whiteboard:** harden sync persistence, recovery, and presenter navigation ([#1150](https://github.com/mynaparrot/plugNmeet-client/issues/1150)) ([7bd18ce](https://github.com/mynaparrot/plugNmeet-client/commit/7bd18ce261a9d272ec3be34e2c6c5527cb11c9f4))
+* **whiteboard:** restore last viewpoint and fallback `ScrollToBoundary` ([72e2fb0](https://github.com/mynaparrot/plugNmeet-client/commit/72e2fb0333e8925bee0ffdbad039edc2cad4d81a))
+
+
+### Bug Fixes
+
+* `exportScene` replaces the removed `exportToCanvas` in latest version ([1bc6c4d](https://github.com/mynaparrot/plugNmeet-client/commit/1bc6c4d8aca9a35afffe6d03697a309d9df50baa))
+* **audio:** by default enable Noise suppression ([11156b6](https://github.com/mynaparrot/plugNmeet-client/commit/11156b69ed92aba20912fcb6c5c77b0d15510968))
+* **audio:** if the `sampleRate` isn't supported then fallback to default `GTCRN` sample rate `16 kHz` ([aaa3413](https://github.com/mynaparrot/plugNmeet-client/commit/aaa341328f58fa2b4c75e584a128c84400665663))
+* **breakout-room:** attribute breakout-room usage costs to the parent room ([#1144](https://github.com/mynaparrot/plugNmeet-client/issues/1144)) ([7f2a587](https://github.com/mynaparrot/plugNmeet-client/commit/7f2a58757939e266985f92c0f9f4d42433d1c952))
+* bump proto ([ccefb00](https://github.com/mynaparrot/plugNmeet-client/commit/ccefb004777728a39729acca2d5ec2bbccd1d8c2))
+* **ci:** add unit test ([dd17814](https://github.com/mynaparrot/plugNmeet-client/commit/dd17814a26c278b98d08f482210c50cb6be7d3cd))
+* **ci:** merged into 1 and cleanup ([4c997de](https://github.com/mynaparrot/plugNmeet-client/commit/4c997de0f15100dddf7c1beb63418650afba8c71))
+* correct order of export ([04fccfa](https://github.com/mynaparrot/plugNmeet-client/commit/04fccfadffc43cb75a525c77a4d70369e2d3f9dd))
+* default noiseSuppression is true now + update tests ([bb13704](https://github.com/mynaparrot/plugNmeet-client/commit/bb13704c78d787f3915cb8a78a165deb3c5e289f))
+* **feat:** add option to open chat in PiP as well ([192b9b6](https://github.com/mynaparrot/plugNmeet-client/commit/192b9b6880dfbe3edd1747e517c31093c96d03cc))
+* **feat:** added new menu to export live session data ([#1149](https://github.com/mynaparrot/plugNmeet-client/issues/1149)) ([ba31181](https://github.com/mynaparrot/plugNmeet-client/commit/ba31181621ae467d03f2fd56978e4236f2276158))
+* **feat:** added simple random participant picker ([5d0cf50](https://github.com/mynaparrot/plugNmeet-client/commit/5d0cf50e530a72bd983893c8f8956e0b69736dc0))
+* lazy-load heavy features to shrink first-load bundle ([#1145](https://github.com/mynaparrot/plugNmeet-client/issues/1145)) ([cf9633d](https://github.com/mynaparrot/plugNmeet-client/commit/cf9633d1a951d3604c0d6e62cb3b1054c6e5692e))
+* new Crowdin updates ([#1140](https://github.com/mynaparrot/plugNmeet-client/issues/1140)) ([699b429](https://github.com/mynaparrot/plugNmeet-client/commit/699b4294b7db2fbaca0fc481ea791a57b262edcb))
+* **poll:** refactor poll storage and make concurrent voting atomic ([#1143](https://github.com/mynaparrot/plugNmeet-client/issues/1143)) ([cf1ae53](https://github.com/mynaparrot/plugNmeet-client/commit/cf1ae538c0420c095ffcacbfd62f5ce83749d8dd))
+* **poll:** use `30s` pollingInterval to fetch result ([372d3db](https://github.com/mynaparrot/plugNmeet-client/commit/372d3db80c650b67da78c3420b7e72244736d30c))
+* reaction icon color display as active upon clicking ([417f4a8](https://github.com/mynaparrot/plugNmeet-client/commit/417f4a86acad13be8fcc2af172d1ce85cfffa299))
+* remove our manualChunks and let `rolldown` to take care chunks ([2bec501](https://github.com/mynaparrot/plugNmeet-client/commit/2bec50132d6d50054739480aa26a528278a81462))
+* **shared notepad:** added top static toolbar instated of floating ([f4e7793](https://github.com/mynaparrot/plugNmeet-client/commit/f4e779306e5ecc7b6bf4fc25ae61776f4cbf2ce1))
+* **UI:** removed `framer-motion` + UI update ([36eace8](https://github.com/mynaparrot/plugNmeet-client/commit/36eace8f7f0f9a1ca0ed0406ef97d52e6e114a12))
+* use `L1T3` for `VP9` to enable `rid-based` simulcast ([c37644b](https://github.com/mynaparrot/plugNmeet-client/commit/c37644bccccf7149de44c86fa3c3c2bdee9ee573))
+* **video:** on phones and tablets now default codec is `h264` where h264 is usually hardware-accelerated ([eac7b17](https://github.com/mynaparrot/plugNmeet-client/commit/eac7b17865850dce56ac715e652ac20c145ffcc4))
+* **whiteboard:** every SCENE_UPDATE should check fileId + page number to ensure proper sync ([ef62dac](https://github.com/mynaparrot/plugNmeet-client/commit/ef62dac77791738ed0a4712e3e54ab6cc7c655ca))
+* **whiteboard:** persist and restore last usage tool ([6cd2cf8](https://github.com/mynaparrot/plugNmeet-client/commit/6cd2cf8f1daddbc502c55af25af1b9fb86c89709))
+* **whiteboard:** remove prefix as we're already in whiteboard store ([897e4cc](https://github.com/mynaparrot/plugNmeet-client/commit/897e4cc35defacba205eb22433b7cec0e1094132))
+* **whiteboard:** replace sessionStorage with IDB ([d381696](https://github.com/mynaparrot/plugNmeet-client/commit/d381696293d123501614316a36313c61ef5b7e24))
+
+
+### Performance Improvements
+
+* **whiteboard:** pre-decode page images and prime Excalidraw image cache ([9f21e7d](https://github.com/mynaparrot/plugNmeet-client/commit/9f21e7d5af1b4e8daf8215e519802369139ab275))
+
 ## [2.5.4](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.3...v2.5.4) (2026-10-16)
 
 
