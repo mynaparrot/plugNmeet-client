@@ -426,6 +426,8 @@
       "room-lock-settings": "تنظیمات قفل جلسه",
       "enable-shared-notepad": "فعال کردن دفترچه یادداشت مشترک",
       "disable-shared-notepad": "غیرفعال کردن دفترچه یادداشت مشترک",
+      "enable-countdown-timer": "Enable Countdown Timer",
+      "disable-countdown-timer": "Disable Countdown Timer",
       "mute-microphone": "بی‌صدا کردن میکروفون",
       "unmute-microphone": "باصدا کردن میکروفون",
       "leave-microphone": "خاموش کردن میکروفون",
@@ -638,6 +640,34 @@
     "reject-and-block-user": "رد و مسدود کردن",
     "user-waiting": "{{name}} در انتظار پذیرش است.",
     "no-pending-user": "کسی در انتظار پیوستن نیست."
+  },
+  "countdown-timer": {
+    "title": "Countdown Timer",
+    "aria-label": "Countdown timer",
+    "set-timer": "Set timer",
+    "minutes": "Minutes",
+    "seconds": "Seconds",
+    "presets": "Quick presets",
+    "preset-min": "{{count}}m",
+    "start": "Start",
+    "pause": "Pause",
+    "resume": "Resume",
+    "extend": "+1 min",
+    "set-new-timer": "Set new timer",
+    "end-timer": "End timer",
+    "running": "Running",
+    "paused": "Paused",
+    "ended": "Time's up",
+    "ended-notification": "The countdown timer has ended.",
+    "errors": {
+      "only-admin": "Only admin can perform this task.",
+      "not-allowed": "The countdown timer is not enabled for this room.",
+      "not-active": "The countdown timer is not active.",
+      "invalid-duration": "Please enter a valid duration (up to 24 hours).",
+      "not-running": "The countdown timer is not running.",
+      "not-paused": "The countdown timer is not paused.",
+      "generic": "Could not update the countdown timer. Please try again."
+    }
   },
   "polls": {
     "title": "نظرسنجی‌ها",
