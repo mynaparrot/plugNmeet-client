@@ -28,6 +28,20 @@ describe('getPipStatusItems', () => {
     ]);
   });
 
+  it('treats omitted counts as zero', () => {
+    expect(getPipStatusItems({})).toEqual([]);
+    expect(getPipStatusItems({ chatUnread: 0 })).toEqual([]);
+  });
+
+  it('allows a view to supply only the counts it shows', () => {
+    const items = getPipStatusItems({ raisedHands: 3, notifications: 12 });
+
+    expect(items.map((item) => [item.kind, item.count, item.text])).toEqual([
+      ['raised-hand', 3, '3'],
+      ['notification', 12, '12'],
+    ]);
+  });
+
   it('caps each badge independently', () => {
     const items = getPipStatusItems({ chatUnread: 150, raisedHands: 1, notifications: 0 });
 

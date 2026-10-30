@@ -1,14 +1,18 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import clsx from 'clsx';
 
 import { store, useAppSelector } from '../../store';
 import { selectPublicChatMessages } from '../../store/slices/chatMessagesSlice';
+import { selectRaisedHandsQueue } from '../../store/slices/participantSlice';
 import { cleanHtmlForChat } from '../../helpers/utils';
 import { getNatsConn } from '../../helpers/nats';
 import { renderMarkdown } from '../insights-ai/ai-text-chat/helpers/renderMarkdown';
 import { canSendPublicChatMessage } from './chatPermissions';
 import { usePip } from './pipProvider';
+import { getPipStatusItems } from './pipStatus';
+import PipStatusIndicators from './pipStatusIndicators';
 
 /** Number of most recent public messages rendered in the PiP window. */
 const MAX_PIP_MESSAGES = 30;
@@ -26,6 +30,18 @@ const PublicChatPip = () => {
   const { pipWindow, content } = usePip();
 
   const messages = useAppSelector(selectPublicChatMessages);
+
+  // Unread chat is deliberately left out: the reader is already looking at chat.
+  const raisedHands = useAppSelector((state) => selectRaisedHandsQueue(state).count);
+  const unreadNotifications = useAppSelector(
+    (state) => state.roomSettings.unreadNotificationsCount,
+  );
+
+  const statusItems = useMemo(
+    () => getPipStatusItems({ raisedHands, notifications: unreadNotifications }),
+    [raisedHands, unreadNotifications],
+  );
+  const hasStatus = statusItems.length > 0;
 
   // Values that are static for the room lifetime, read once on mount.
   const { isRecorder, isAdmin, defaultLockSettings } = useMemo(() => {
@@ -153,7 +169,8 @@ const PublicChatPip = () => {
   }
 
   return createPortal(
-    <div className="pip-chat-container">
+    <div className={clsx('pip-chat-container', hasStatus && 'pip-chat-with-status')}>
+      <PipStatusIndicators items={statusItems} />
       <ul
         ref={attachList}
         className="pip-chat-list"

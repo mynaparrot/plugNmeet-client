@@ -74,16 +74,19 @@ export const injectPipStyles = (win: Window) => {
       background-color: #000000;
     }
 
-    /* Informational overlay: never intercepts pointer events. */
+    /* Status badges float over the top-right corner, so reserve a band above
+       the tiles: the first webcam then starts below the badges instead of
+       looking attached to them. The extra top padding only shrinks the content
+       box, so the --pip-count based max-height calculation stays correct. */
+    .pip-flex-container.pip-flex-with-status {
+      padding-top: 36px;
+    }
+
+    /* Informational only: never intercepts pointer events. */
     .pip-status {
-      position: absolute;
-      top: 10px;
-      inset-inline-end: 10px;
-      z-index: 1;
       display: flex;
       align-items: center;
       gap: 4px;
-      max-width: calc(100% - 20px);
       padding: 3px 6px;
       border-radius: 999px;
       background-color: rgba(0, 0, 0, 0.65);
@@ -94,6 +97,15 @@ export const injectPipStyles = (win: Window) => {
       font-variant-numeric: tabular-nums;
       pointer-events: none;
       user-select: none;
+    }
+
+    /* Floats over the top-right corner of the positioned PiP container. */
+    .pip-status-overlay {
+      position: absolute;
+      top: 10px;
+      inset-inline-end: 10px;
+      z-index: 1;
+      max-width: calc(100% - 20px);
     }
 
     .pip-status-item {
@@ -138,6 +150,7 @@ export const injectPipStyles = (win: Window) => {
     }
 
     .pip-chat-container {
+      position: relative;
       display: flex;
       flex-direction: column;
       height: 100%;
@@ -146,6 +159,13 @@ export const injectPipStyles = (win: Window) => {
       color: #f5f5f5;
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
       overflow: hidden;
+    }
+
+    /* Status badges float over the top-right corner, so reserve room above the
+       list: the scroll viewport then starts below them and messages scrolled up
+       can never slide underneath the badges. */
+    .pip-chat-with-status {
+      padding-top: 34px;
     }
 
     .pip-chat-list {

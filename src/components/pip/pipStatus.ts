@@ -3,10 +3,11 @@ const MAX_BADGE_COUNT = 99;
 
 export type PipStatusKind = 'chat' | 'raised-hand' | 'notification';
 
+/** Omitted counts count as zero, so a view can supply only the indicators it shows. */
 export interface IPipStatusCounts {
-  chatUnread: number;
-  raisedHands: number;
-  notifications: number;
+  chatUnread?: number;
+  raisedHands?: number;
+  notifications?: number;
 }
 
 export interface IPipStatusItem {
@@ -23,9 +24,9 @@ export const formatPipStatusCount = (count: number): string =>
 /** Returns only the indicators with something to report, in display order. */
 export const getPipStatusItems = (counts: IPipStatusCounts): IPipStatusItem[] => {
   const items: Omit<IPipStatusItem, 'text'>[] = [
-    { kind: 'chat', count: counts.chatUnread },
-    { kind: 'raised-hand', count: counts.raisedHands },
-    { kind: 'notification', count: counts.notifications },
+    { kind: 'chat', count: counts.chatUnread ?? 0 },
+    { kind: 'raised-hand', count: counts.raisedHands ?? 0 },
+    { kind: 'notification', count: counts.notifications ?? 0 },
   ];
 
   return items

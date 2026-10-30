@@ -1,6 +1,7 @@
 import React, { ReactElement, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
+import clsx from 'clsx';
 
 import { VideoParticipantProps } from '../media-elements/videos/videoParticipant';
 import { getPipItems, IPipItem } from './pipUtils';
@@ -8,21 +9,12 @@ import PipVideoTrack from './pipVideoTrack';
 import { usePip } from './pipProvider';
 import { useAppSelector } from '../../store';
 import { selectRaisedHandsQueue } from '../../store/slices/participantSlice';
-import { ChatIconSVG } from '../../assets/Icons/ChatIconSVG';
-import { HandsIconSVG } from '../../assets/Icons/HandsIconSVG';
-import { NotifyIconSVG } from '../../assets/Icons/NotifyIconSVG';
-import { getPipStatusItems, PipStatusKind } from './pipStatus';
+import { getPipStatusItems } from './pipStatus';
+import PipStatusIndicators from './pipStatusIndicators';
 
 interface IWebcamPipProps {
   pipParticipants: ReactElement<VideoParticipantProps>[];
 }
-
-// Sizes and colours come from the injected PiP CSS, so no class names are needed.
-const STATUS_ICONS: Record<PipStatusKind, React.ReactNode> = {
-  chat: <ChatIconSVG />,
-  'raised-hand': <HandsIconSVG classes="" />,
-  notification: <NotifyIconSVG classes="" />,
-};
 
 /**
  * Document PiP view of the webcam strip. Renders the portal content and the
@@ -53,6 +45,8 @@ const WebcamPip = ({ pipParticipants }: IWebcamPipProps) => {
     [chatUnread, raisedHands, unreadNotifications],
   );
 
+  const hasStatus = statusItems.length > 0;
+
   // The strip no longer owns the window: close it on unmount only while it is
   // still showing the webcam view, so a chat PiP survives.
   useEffect(() => {
@@ -65,28 +59,14 @@ const WebcamPip = ({ pipParticipants }: IWebcamPipProps) => {
         content === 'webcam' &&
         createPortal(
           <div
-            className="pip-flex-container"
+            className={clsx('pip-flex-container', hasStatus && 'pip-flex-with-status')}
             style={
               {
                 '--pip-count': Math.max(pipItems.length, 1),
               } as React.CSSProperties & Record<'--pip-count', number>
             }
           >
-            {statusItems.length > 0 && (
-              <div className="pip-status" role="status" aria-live="polite">
-                {statusItems.map((item) => (
-                  <span
-                    key={item.kind}
-                    className="pip-status-item"
-                    role="img"
-                    aria-label={`${t(`pip-status.${item.kind}`)}: ${item.count}`}
-                  >
-                    {STATUS_ICONS[item.kind]}
-                    <span aria-hidden="true">{item.text}</span>
-                  </span>
-                ))}
-              </div>
-            )}
+            <PipStatusIndicators items={statusItems} />
             {pipItems.map((item) => (
               <PipVideoTrack key={item.key} videoTrack={item.videoTrack} name={item.name} />
             ))}
