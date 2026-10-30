@@ -14,7 +14,6 @@
   "participant-menu": "Opciones de participante",
   "participant-volume": "Ajustar el volumen de participantes",
   "participant-webcam-on": "La cámara está encendida",
-  "pip": "Imagen en imagen",
   "please-wait": "Por favor, espere...",
   "are-you-sure-to-close": "¿Está seguro de que desea cerrar?",
   "you-are-about-to-close": "Está a punto de cerrar",
@@ -1077,5 +1076,18 @@
     "poll-total-responses": "Responses: {{count}}",
     "poll-total-votes": "Total votes: {{votes}} from {{count}} respondents",
     "poll-results-unavailable": "Vote counts are not available for this poll."
+  },
+  "pip": {
+    "label": "Picture-in-Picture",
+    "status": {
+      "chat": "Unread chat messages",
+      "raised-hand": "Raised hands",
+      "notification": "Unread notifications"
+    },
+    "switcher": {
+      "label": "Switch picture-in-picture view",
+      "chat": "Show chat",
+      "webcam": "Show webcams"
+    }
   }
 }
