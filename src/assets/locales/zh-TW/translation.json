@@ -14,7 +14,6 @@
   "participant-menu": "參與者選擇權",
   "participant-volume": "調整參與者數量",
   "participant-webcam-on": "攝影機開著",
-  "pip": "畫中畫",
   "please-wait": "請稍候...",
   "are-you-sure-to-close": "您確定要關閉嗎？",
   "you-are-about-to-close": "您即將關閉。",
@@ -1077,5 +1076,18 @@
     "poll-total-responses": "Responses: {{count}}",
     "poll-total-votes": "Total votes: {{votes}} from {{count}} respondents",
     "poll-results-unavailable": "Vote counts are not available for this poll."
+  },
+  "pip": {
+    "label": "Picture-in-Picture",
+    "status": {
+      "chat": "Unread chat messages",
+      "raised-hand": "Raised hands",
+      "notification": "Unread notifications"
+    },
+    "switcher": {
+      "label": "Switch picture-in-picture view",
+      "chat": "Show chat",
+      "webcam": "Show webcams"
+    }
   }
 }
