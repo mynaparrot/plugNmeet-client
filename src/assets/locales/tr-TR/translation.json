@@ -723,6 +723,13 @@
     "quiz-mode-desc": "Her seçeneğin yanındaki kutuyu kullanarak doğru seçenek(ler)i işaretleyin. Katılımcılar, sadece anket kapandıktan sonra doğru cevabı görür.",
     "anonymous-voting-desc": "Seçmen tercihleri gizli kalır — yöneticiler bile kimin oy verdiğini göremez.",
     "duration-desc": "Zaman dolduğunda anket otomatik olarak kapanır.",
+    "text-answer": "Text answer",
+    "text-answer-placeholder": "Type your answer here...",
+    "your-answer": "Your answer",
+    "ai-check-answers": "Check with AI",
+    "ai-recheck-answers": "Recheck with AI",
+    "ai-check-title": "AI Answer Review",
+    "ai-share-chat": "Share in Chat",
     "notifications": {
       "created-successfully": "Anket oluşturuldu.",
       "response-added": "Oylünüz sunuldu.",
@@ -730,7 +737,8 @@
       "end-poll-success": "Anket sona erdi.",
       "reopen-poll-success": "Anket yeniden açıldı.",
       "ai-generated": "Yapay zeka taslağı hazır — inceleyin ve oluşturun.",
-      "poll-reopened": "Bir sandık yeniden açıldı."
+      "poll-reopened": "Bir sandık yeniden açıldı.",
+      "ai-shared-chat": "AI review has been shared in the chat."
     },
     "errors": {
       "generic": "Bir şeyler ters gitti. Lütfen tekrar dene.",
@@ -752,7 +760,9 @@
       "user-and-poll-id-required": "Hem kullanıcı kimliği hem de anket kimliği gereklidir.",
       "ai-disabled": "Yapay zeka anket oluşturma devre dışı bırakıldı.",
       "ai-invalid-response": "Yapay zeka yanıtı kullanılamadı. Lütfen tekrar deneyin.",
-      "ai-request-timeout": "Anket yapay zeka talebi zamanla doldu"
+      "ai-request-timeout": "Anket yapay zeka talebi zamanla doldu",
+      "text-answer-required": "Please enter your answer before submitting.",
+      "text-answer-too-long": "Your answer cannot exceed 500 characters."
     }
   },
   "breakout-room": {
@@ -1068,6 +1078,7 @@
     "poll-status-closed": "closed",
     "poll-type-multiple": "multiple choice",
     "poll-type-single": "single choice",
+    "poll-type-text": "text answer",
     "poll-tag-quiz": "quiz",
     "poll-tag-anonymous": "anonymous",
     "poll-question": "Q: {{question}}",
