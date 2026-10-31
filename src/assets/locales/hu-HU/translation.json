@@ -723,6 +723,13 @@
     "quiz-mode-desc": "Jelöld meg a helyes opciót a mellette lévő jelölőnégyzetben. A résztvevők csak a szavazás lezárása után látják a helyes választ.",
     "anonymous-voting-desc": "A választói választások rejtettek maradnak — még az adminok sem látják, ki szavazott.",
     "duration-desc": "A szavazás automatikusan bezárul, amikor lejár az idő.",
+    "text-answer": "Text answer",
+    "text-answer-placeholder": "Type your answer here...",
+    "your-answer": "Your answer",
+    "ai-check-answers": "Check with AI",
+    "ai-recheck-answers": "Recheck with AI",
+    "ai-check-title": "AI Answer Review",
+    "ai-share-chat": "Share in Chat",
     "notifications": {
       "created-successfully": "A szavazás elkészült.",
       "response-added": "A szavazatát benyújtották.",
@@ -730,7 +737,8 @@
       "end-poll-success": "A szavazás véget ért.",
       "reopen-poll-success": "A szavazóhelyiséget újra megnyitották.",
       "ai-generated": "AI draft kész — nézd át és készítsd el.",
-      "poll-reopened": "Újranyitottak egy szavazóhelyiséget."
+      "poll-reopened": "Újranyitottak egy szavazóhelyiséget.",
+      "ai-shared-chat": "AI review has been shared in the chat."
     },
     "errors": {
       "generic": "Valami félresikerült. Kérem, próbálja újra.",
@@ -752,7 +760,9 @@
       "user-and-poll-id-required": "Mind felhasználói azonosító, mind szavazási azonosító szükséges.",
       "ai-disabled": "Az AI szavazói generálása le van tiltva.",
       "ai-invalid-response": "Az AI válasz nem volt használható. Kérem, próbálja újra.",
-      "ai-request-timeout": "A felmérési MI kérés időlejárt"
+      "ai-request-timeout": "A felmérési MI kérés időlejárt",
+      "text-answer-required": "Please enter your answer before submitting.",
+      "text-answer-too-long": "Your answer cannot exceed 500 characters."
     }
   },
   "breakout-room": {
@@ -1068,6 +1078,7 @@
     "poll-status-closed": "closed",
     "poll-type-multiple": "multiple choice",
     "poll-type-single": "single choice",
+    "poll-type-text": "text answer",
     "poll-tag-quiz": "quiz",
     "poll-tag-anonymous": "anonymous",
     "poll-question": "Q: {{question}}",
