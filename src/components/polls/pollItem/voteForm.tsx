@@ -81,8 +81,11 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
       if (trimmed === '' || isLoading) {
         return;
       }
-      // keep the answer around to show it back as feedback once the vote is in
-      setSubmittedText(trimmed);
+      // keep the answer around to show it back as feedback once the vote is in;
+      // anonymous polls must not echo it back (matches the reload behaviour)
+      if (!pollDataWithOption.isAnonymous) {
+        setSubmittedText(trimmed);
+      }
       addResponse(
         create(SubmitPollResponseReqSchema, {
           pollId: pollDataWithOption.pollId,
@@ -122,6 +125,11 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
           typeOption,
         }),
       );
+
+      // hide the form immediately instead of waiting for the cache invalidation round-trip
+      if (addReqResponse.status) {
+        setVoted(true);
+      }
 
       // notify to everyone; payload is the poll id (caches are invalidated on receipt)
       if (addReqResponse.status && conn) {
