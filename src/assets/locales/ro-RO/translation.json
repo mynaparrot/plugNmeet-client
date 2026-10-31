@@ -723,6 +723,13 @@
     "quiz-mode-desc": "Marcați opțiunea corectă folosind căsuța de bifat de lângă fiecare opțiune. Participanții văd răspunsul corect doar după închiderea sondajului.",
     "anonymous-voting-desc": "Alegerile alegătorilor rămân ascunse — chiar și administratorii nu pot vedea cine a votat.",
     "duration-desc": "Sondajul se închide automat când timpul expiră.",
+    "text-answer": "Text answer",
+    "text-answer-placeholder": "Type your answer here...",
+    "your-answer": "Your answer",
+    "ai-check-answers": "Check with AI",
+    "ai-recheck-answers": "Recheck with AI",
+    "ai-check-title": "AI Answer Review",
+    "ai-share-chat": "Share in Chat",
     "notifications": {
       "created-successfully": "Sondajul a fost creat.",
       "response-added": "Votul tău a fost trimis.",
@@ -730,7 +737,8 @@
       "end-poll-success": "Sondajul s-a încheiat.",
       "reopen-poll-success": "Secția de vot a fost redeschisă.",
       "ai-generated": "Draft AI gata — revizuiește și creează.",
-      "poll-reopened": "A fost redeschis un sondaj."
+      "poll-reopened": "A fost redeschis un sondaj.",
+      "ai-shared-chat": "AI review has been shared in the chat."
     },
     "errors": {
       "generic": "Ceva a mers prost. Te rog să încerci din nou.",
@@ -752,7 +760,9 @@
       "user-and-poll-id-required": "Sunt necesare atât ID-ul utilizatorului, cât și ID-ul sondajului.",
       "ai-disabled": "Generarea de sondaje AI este dezactivată.",
       "ai-invalid-response": "Răspunsul AI nu a putut fi folosit. Vă rugăm să încercați din nou.",
-      "ai-request-timeout": "Cererea pentru sondaje AI expirată"
+      "ai-request-timeout": "Cererea pentru sondaje AI expirată",
+      "text-answer-required": "Please enter your answer before submitting.",
+      "text-answer-too-long": "Your answer cannot exceed 500 characters."
     }
   },
   "breakout-room": {
@@ -1068,6 +1078,7 @@
     "poll-status-closed": "closed",
     "poll-type-multiple": "multiple choice",
     "poll-type-single": "single choice",
+    "poll-type-text": "text answer",
     "poll-tag-quiz": "quiz",
     "poll-tag-anonymous": "anonymous",
     "poll-question": "Q: {{question}}",
