@@ -18,12 +18,20 @@ export const POLL_AI_INSTRUCTIONS = `Generate ONE poll for a live meeting tool f
 
 Rules:
 - Return ONLY strict JSON: no markdown fences, no commentary.
-- Shape: {"question": string, "options": [{"text": string, "is_correct": boolean}], "is_multiple": boolean, "is_quiz": boolean}
+- Shape: {"question": string, "options": [{"text": string, "is_correct": boolean}], "is_multiple": boolean, "is_quiz": boolean, "is_text_answer": boolean}
 - Provide 2 to 6 options with short option texts and a concise question.
 - Set "is_correct" to true only when "is_quiz" is true, and a quiz poll must have at least one correct option.
 - Choose "is_multiple" and "is_quiz" to fit the topic; use "is_quiz" for knowledge-check topics.
+- Set "is_text_answer" to true (and "options": [], "is_multiple": false, "is_quiz": false) ONLY when the user asks for an open-ended, manual text, or short-answer question without options. Otherwise set "is_text_answer": false and provide 2 to 6 options.
 
 Return ONLY strict JSON.`;
+
+export const POLL_AI_CHECK_INSTRUCTIONS = `You are helping a teacher review student responses to a live classroom question.
+
+Rules:
+- Return plain text only (no markdown fences, no HTML). Keep it concise, warm, and easy to read (3 to 6 short lines).
+- If the question has a factual or math answer: state the correct answer clearly first, then note which submitted answers are correct (even if formatted differently, like units or words) and which are incorrect.
+- If the question is open-ended or asks for a short paragraph: summarize the main ideas and highlight strong responses.`;
 
 export interface AIPollDraftOption {
   text: string;
@@ -35,6 +43,7 @@ export interface AIPollDraft {
   options: AIPollDraftOption[];
   isMultiple: boolean;
   isQuiz: boolean;
+  isTextAnswer: boolean;
 }
 
 /** Thrown when the AI output cannot be parsed into a valid poll draft. */
@@ -77,6 +86,12 @@ export const parseAIPollDraft = (text: string): AIPollDraft => {
     throw new AIPollParseError('AI poll output has no question');
   }
 
+  const isTextAnswer = raw.is_text_answer === true;
+  if (isTextAnswer) {
+    // Text-answer polls have no options, are never multiple choice or quizzes.
+    return { question, options: [], isMultiple: false, isQuiz: false, isTextAnswer: true };
+  }
+
   if (!Array.isArray(raw.options)) {
     throw new AIPollParseError('AI poll output has no options');
   }
@@ -112,22 +127,22 @@ export const parseAIPollDraft = (text: string): AIPollDraft => {
     options: normalizedOptions,
     isMultiple,
     isQuiz,
+    isTextAnswer: false,
   };
 };
 
 /**
  * Sends a poll AI prompt through the existing AI text chat stream endpoint,
  * tagged with requestFrom = POLL and a client-generated stream id so the
- * matching chunks can be correlated back to this call. The response is
- * expected to be strict JSON, parsed by parseAIPollDraft.
+ * matching chunks can be correlated back to this call. Resolves with the full
+ * streamed text once the final chunk arrives.
  */
-export const generatePollWithAI = async (prompt: string): Promise<string> => {
+export const executePollAIStream = async (promptText: string): Promise<string> => {
   const streamId = crypto.randomUUID();
-  const text = `${POLL_AI_INSTRUCTIONS}\n\nUser request:\n${prompt}`;
 
   const body = create(InsightsAITextChatContentSchema, {
     role: InsightsAITextChatRole.INSIGHTS_AI_TEXT_CHAT_ROLE_USER,
-    text,
+    text: promptText,
     streamId,
     requestFrom: InsightsAIRequestSource.INSIGHTS_AI_REQUEST_SOURCE_POLL,
   });
@@ -165,6 +180,28 @@ export const generatePollWithAI = async (prompt: string): Promise<string> => {
   }
 
   return streamPromise;
+};
+
+/**
+ * Generates one poll draft from the user's topic description. The response is
+ * expected to be strict JSON, parsed by parseAIPollDraft.
+ */
+export const generatePollWithAI = async (prompt: string): Promise<string> => {
+  return executePollAIStream(`${POLL_AI_INSTRUCTIONS}\n\nUser request:\n${prompt}`);
+};
+
+/**
+ * Asks the AI to review submitted text answers. Only the answer text and its
+ * count are sent — never respondent names or IDs.
+ */
+export const analyzePollTextAnswersWithAI = async (
+  question: string,
+  answers: { text: string; count: number }[],
+): Promise<string> => {
+  const answerLines = answers.map((a) => `- "${a.text}" (${a.count})`).join('\n');
+  return executePollAIStream(
+    `${POLL_AI_CHECK_INSTRUCTIONS}\n\nQuestion: ${question}\nAnswers (count):\n${answerLines}`,
+  );
 };
 
 /**

@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PollInfo } from 'plugnmeet-protocol-js';
+import { PollInfo, PollTextAnswerResult } from 'plugnmeet-protocol-js';
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react';
 import clsx from 'clsx';
 
@@ -19,6 +19,33 @@ interface PollItemProps {
   item: PollInfo;
   serialNum: number;
 }
+
+/**
+ * Grouped free-text answers reuse the options shape, so the details modal,
+ * the "did not respond" list and chat publishing work without extra code.
+ */
+const buildTextAnswerOptions = (
+  textAnswers: PollTextAnswerResult[],
+  totalRespondents: number,
+): PollDataWithOption['options'] => {
+  const options: PollDataWithOption['options'] = {};
+  textAnswers.forEach((entry, index) => {
+    const id = index + 1;
+    const votes = Number(entry.count ?? 0);
+    options[id] = {
+      id,
+      text: entry.text ?? '',
+      votes,
+      isCorrect: false,
+      responsesPercentage:
+        votes > 0 && totalRespondents > 0
+          ? Math.round((votes / totalRespondents + Number.EPSILON) * 100)
+          : 0,
+      respondents: [],
+    };
+  });
+  return options;
+};
 
 const PollItem = ({ item, serialNum }: PollItemProps) => {
   const { t } = useTranslation();
@@ -58,21 +85,22 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
       question: item.question,
       totalRespondents: 0,
       totalVotes: 0,
-      isAnonymous: item.isAnonymous,
-      isMultiple: item.isMultiple,
-      isQuiz: item.isQuiz,
+      isAnonymous: !!item.isAnonymous,
+      isMultiple: !!item.isMultiple,
+      isQuiz: !!item.isQuiz,
+      isTextAnswer: !!item.isTextAnswer,
       // expires_at is a JS_STRING int64 over the wire; Number() for the countdown
       expiresAt: Number(item.expiresAt ?? 0),
       allRespondents: [],
     };
 
-    for (const option of item.options) {
+    for (const option of item.options ?? []) {
       baseObj.options[option.id] = {
         id: option.id,
         text: option.text,
         votes: 0,
         // real is_correct is revealed by the server only once the poll is closed
-        isCorrect: option.isCorrect,
+        isCorrect: !!option.isCorrect,
         responsesPercentage: 0,
         respondents: [],
       };
@@ -83,9 +111,32 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
       const details = pollDetailsResponses.responsesDetails;
       baseObj.totalRespondents = Number(details.totalRespondents ?? 0);
 
+      if (item.isTextAnswer) {
+        baseObj.totalVotes = baseObj.totalRespondents;
+        baseObj.options = buildTextAnswerOptions(
+          details.textAnswers ?? [],
+          baseObj.totalRespondents,
+        );
+        // map the normalized answer text back to its grouped option
+        const idByText = new Map(
+          Object.values(baseObj.options).map((o) => [o.text.trim().toLowerCase(), o.id]),
+        );
+        for (const r of details.respondents ?? []) {
+          const respondent = { userId: r.userId, name: r.name, textAnswer: r.textAnswer ?? '' };
+          const id = idByText.get((r.textAnswer ?? '').trim().toLowerCase());
+          if (id) {
+            baseObj.options[id].respondents.push(respondent);
+          }
+          baseObj.allRespondents.push(respondent);
+        }
+        return baseObj;
+      }
+
       // protojson omits zero-valued scalars (e.g. voteCount: 0), so explicit ?? 0 guards NaN
-      const counts = new Map(details.options.map((o) => [String(o.id), Number(o.voteCount ?? 0)]));
-      for (const option of item.options) {
+      const counts = new Map(
+        (details.options ?? []).map((o) => [String(o.id), Number(o.voteCount ?? 0)]),
+      );
+      for (const option of item.options ?? []) {
         const count = counts.get(String(option.id)) ?? 0;
         baseObj.options[option.id].votes = count;
         baseObj.totalVotes += count;
@@ -112,16 +163,24 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
     if (pollResponsesResult?.pollResponsesResult) {
       const result = pollResponsesResult.pollResponsesResult;
       const totalResponses = Number(result.totalResponses ?? 0);
+
+      if (item.isTextAnswer) {
+        baseObj.totalRespondents = totalResponses;
+        baseObj.totalVotes = totalResponses;
+        baseObj.options = buildTextAnswerOptions(result.textAnswers ?? [], totalResponses);
+        return baseObj;
+      }
+
       baseObj.totalRespondents = totalResponses;
       baseObj.totalVotes = Number(result.totalVotes ?? 0);
 
-      for (const option of result.options) {
+      for (const option of result.options ?? []) {
         const target = baseObj.options[option.id];
         if (target) {
           const voteCount = Number(option.voteCount ?? 0);
           target.votes = voteCount;
           // closed polls reveal the correct answers here
-          target.isCorrect = option.isCorrect;
+          target.isCorrect = !!option.isCorrect;
           if (voteCount > 0 && totalResponses > 0) {
             target.responsesPercentage = Math.round(
               (voteCount / totalResponses + Number.EPSILON) * 100,
@@ -165,11 +224,11 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
           )}
         </div>
         <div className="right flex items-center gap-1">
-          <PollCountdown expiresAt={Number(item.expiresAt ?? 0)} isRunning={item.isRunning} />
+          <PollCountdown expiresAt={Number(item.expiresAt ?? 0)} isRunning={!!item.isRunning} />
           <div className="menu relative -me-4">
             {isAdmin && pollDataWithOption && (
               <PollActionsMenu
-                isRunning={item.isRunning}
+                isRunning={!!item.isRunning}
                 setViewDetails={setViewDetails}
                 pollDataWithOption={pollDataWithOption}
               />
@@ -178,7 +237,7 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
         </div>
       </div>
       <div className="bg-white dark:bg-dark-primary px-4 py-4 border border-Gray-200 dark:border-Gray-700 shadow-button-shadow dark:shadow-none rounded-xl">
-        <Disclosure defaultOpen={item.isRunning} as="div">
+        <Disclosure defaultOpen={!!item.isRunning} as="div">
           {({ open }) => (
             <>
               <DisclosureButton className="flex items-center justify-between gap-3 w-full cursor-pointer">
@@ -218,7 +277,10 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
               >
                 <div className="overflow-hidden">
                   {pollDataWithOption && (
-                    <PollForm pollDataWithOption={pollDataWithOption} isRunning={item.isRunning} />
+                    <PollForm
+                      pollDataWithOption={pollDataWithOption}
+                      isRunning={!!item.isRunning}
+                    />
                   )}
                 </div>
               </DisclosurePanel>
@@ -251,7 +313,7 @@ const PollItem = ({ item, serialNum }: PollItemProps) => {
                 <DetailsModal
                   onCloseViewDetails={() => setViewDetails(false)}
                   pollDataWithOption={pollDataWithOption}
-                  isRunning={item.isRunning}
+                  isRunning={!!item.isRunning}
                   serialNum={serialNum}
                   refetch={refetch}
                 />

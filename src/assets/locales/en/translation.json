@@ -723,6 +723,13 @@
     "quiz-mode-desc": "Mark the correct option(s) using the checkbox next to each option. Participants only see the correct answer after the poll closes.",
     "anonymous-voting-desc": "Voter choices stay hidden — even admins can't see who voted.",
     "duration-desc": "Poll closes automatically when time runs out.",
+    "text-answer": "Text answer",
+    "text-answer-placeholder": "Type your answer here...",
+    "your-answer": "Your answer",
+    "ai-check-answers": "Check with AI",
+    "ai-recheck-answers": "Recheck with AI",
+    "ai-check-title": "AI Answer Review",
+    "ai-share-chat": "Share in Chat",
     "notifications": {
       "created-successfully": "The poll has been created.",
       "response-added": "Your vote has been submitted.",
@@ -730,7 +737,8 @@
       "end-poll-success": "The poll has ended.",
       "reopen-poll-success": "The poll has been reopened.",
       "ai-generated": "AI draft ready — review and create.",
-      "poll-reopened": "A poll has been reopened."
+      "poll-reopened": "A poll has been reopened.",
+      "ai-shared-chat": "AI review has been shared in the chat."
     },
     "errors": {
       "generic": "Something went wrong. Please try again.",
@@ -752,7 +760,9 @@
       "user-and-poll-id-required": "Both user ID and poll ID are required.",
       "ai-disabled": "AI poll generation is disabled.",
       "ai-invalid-response": "The AI response could not be used. Please try again.",
-      "ai-request-timeout": "Poll AI request timed out"
+      "ai-request-timeout": "Poll AI request timed out",
+      "text-answer-required": "Please enter your answer before submitting.",
+      "text-answer-too-long": "Your answer cannot exceed 500 characters."
     }
   },
   "breakout-room": {
@@ -1068,6 +1078,7 @@
     "poll-status-closed": "closed",
     "poll-type-multiple": "multiple choice",
     "poll-type-single": "single choice",
+    "poll-type-text": "text answer",
     "poll-tag-quiz": "quiz",
     "poll-tag-anonymous": "anonymous",
     "poll-question": "Q: {{question}}",

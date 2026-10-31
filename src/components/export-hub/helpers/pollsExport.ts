@@ -17,6 +17,7 @@ export interface PollExportEntry {
   isAnonymous: boolean;
   isMultiple: boolean;
   isQuiz: boolean;
+  isTextAnswer?: boolean;
   options: PollExportOption[];
   totalRespondents: number;
   totalVotes: number;
@@ -34,6 +35,36 @@ export const toPollExportEntry = (
   poll: PollInfo,
   details?: PollResponsesDetails,
 ): PollExportEntry => {
+  if (poll.isTextAnswer) {
+    const totalRespondents = Number(details?.totalRespondents ?? 0);
+    // percentages are kept for parity with choice polls but never printed
+    const options = (details?.textAnswers ?? []).map((item) => {
+      const votes = Number(item.count ?? 0);
+      return {
+        text: item.text ?? '',
+        votes,
+        isCorrect: false,
+        responsesPercentage:
+          votes > 0 && totalRespondents > 0
+            ? Math.round((votes / totalRespondents + Number.EPSILON) * 100)
+            : 0,
+      };
+    });
+
+    return {
+      question: poll.question,
+      isRunning: !!poll.isRunning,
+      isAnonymous: !!poll.isAnonymous,
+      isMultiple: false,
+      isQuiz: false,
+      isTextAnswer: true,
+      options,
+      totalRespondents,
+      totalVotes: totalRespondents,
+      resultsAvailable: !!details,
+    };
+  }
+
   const counts = new Map<string, number>();
   for (const option of details?.options ?? []) {
     counts.set(String(option.id), Number(option.voteCount ?? 0));
@@ -41,7 +72,7 @@ export const toPollExportEntry = (
 
   const totalRespondents = Number(details?.totalRespondents ?? 0);
   let totalVotes = 0;
-  const options = poll.options.map((option) => {
+  const options = (poll.options ?? []).map((option) => {
     const votes = counts.get(String(option.id)) ?? 0;
     totalVotes += votes;
     return {
@@ -111,11 +142,13 @@ const pollHeader = (poll: PollExportEntry, index: number): string => {
       ? i18n.t('export-hub.poll-status-open')
       : i18n.t('export-hub.poll-status-closed'),
   ];
-  tags.push(
-    poll.isMultiple
-      ? i18n.t('export-hub.poll-type-multiple')
-      : i18n.t('export-hub.poll-type-single'),
-  );
+  if (poll.isTextAnswer) {
+    tags.push(i18n.t('export-hub.poll-type-text'));
+  } else if (poll.isMultiple) {
+    tags.push(i18n.t('export-hub.poll-type-multiple'));
+  } else {
+    tags.push(i18n.t('export-hub.poll-type-single'));
+  }
   if (poll.isQuiz) {
     tags.push(i18n.t('export-hub.poll-tag-quiz'));
   }
@@ -128,8 +161,10 @@ const pollHeader = (poll: PollExportEntry, index: number): string => {
 const optionLine = (poll: PollExportEntry, option: PollExportOption): string => {
   const correct =
     poll.isQuiz && option.isCorrect ? ` ${i18n.t('export-hub.poll-correct-answer')}` : '';
+  // percentages are meaningless for free-form answers
+  const showPercentage = !poll.isTextAnswer && poll.totalRespondents > 0;
   const votes = poll.resultsAvailable
-    ? `${option.votes}${poll.totalRespondents > 0 ? ` (${option.responsesPercentage}%)` : ''}`
+    ? `${option.votes}${showPercentage ? ` (${option.responsesPercentage}%)` : ''}`
     : i18n.t('export-hub.poll-option-unavailable');
   return `  - ${oneLine(option.text)}: ${votes}${correct}`;
 };

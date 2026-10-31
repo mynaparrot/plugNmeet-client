@@ -5,6 +5,7 @@ import clsx from 'clsx';
 
 import { getFormatedRespondents, PollDataWithOption } from '../../utils';
 import { CheckMarkIconSVG } from '../../../../assets/Icons/CheckMarkIconSVG';
+import { generateAvatarInitial } from '../../../../helpers/utils';
 
 interface RespondentsProps {
   pollDataWithOption: PollDataWithOption;
@@ -15,6 +16,10 @@ const Respondents = ({ pollDataWithOption }: RespondentsProps) => {
 
   const optionDisclosures = useMemo(() => {
     const elms: Array<ReactElement> = [];
+    // text answers are listed per answer/respondent instead of per option
+    if (pollDataWithOption.isTextAnswer) {
+      return elms;
+    }
     for (const key in pollDataWithOption.options) {
       const o = pollDataWithOption.options[key];
       const elm = (
@@ -70,7 +75,7 @@ const Respondents = ({ pollDataWithOption }: RespondentsProps) => {
                 className="grid grid-rows-[1fr] opacity-100 transition-[grid-template-rows,opacity] duration-200 ease-out data-closed:grid-rows-[0fr] data-closed:opacity-0"
               >
                 <div className="overflow-hidden">
-                  <div className="wrap relative rounded-xl overflow-auto">
+                  <div className="wrap relative rounded-xl overflow-auto max-h-48 scrollBar scrollBar2">
                     <div className="inner flex">{getFormatedRespondents(o.respondents)}</div>
                   </div>
                 </div>
@@ -97,7 +102,54 @@ const Respondents = ({ pollDataWithOption }: RespondentsProps) => {
             })}
       </p>
       <div className="relative">
-        <div className="wrap grid gap-3">{optionDisclosures}</div>
+        {pollDataWithOption.isTextAnswer ? (
+          <div className="wrap grid gap-2.5 max-h-64 overflow-y-auto scrollBar scrollBar2 pe-1 content-start">
+            {pollDataWithOption.isAnonymous
+              ? Object.values(pollDataWithOption.options).map((o) => (
+                  <div
+                    key={o.id}
+                    className="flex items-start justify-between gap-2 bg-Gray-50 dark:bg-dark-secondary rounded-xl border border-Gray-200 dark:border-Gray-800 px-3.5 py-2.5 text-sm"
+                  >
+                    <span
+                      dir="auto"
+                      className="text-Gray-900 dark:text-white min-w-0 flex-1 whitespace-pre-wrap break-words"
+                    >
+                      {o.text}
+                    </span>
+                    {o.votes > 1 && (
+                      <span className="shrink-0 rounded-full bg-white dark:bg-dark-secondary3 border border-Gray-200 dark:border-Gray-700 px-2 py-0.5 text-xs font-semibold text-Gray-700 dark:text-white">
+                        ×{o.votes}
+                      </span>
+                    )}
+                  </div>
+                ))
+              : pollDataWithOption.allRespondents.map((r) => (
+                  <div
+                    key={r.userId}
+                    className="bg-Gray-50 dark:bg-dark-secondary rounded-xl border border-Gray-200 dark:border-Gray-800 px-3.5 py-2.5 grid gap-1.5"
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="w-5 h-5 shrink-0 rounded-md bg-Blue2-700 dark:bg-dark-secondary2 flex items-center justify-center text-white text-[9px] font-semibold">
+                        {generateAvatarInitial(r.name)}
+                      </span>
+                      <span className="text-xs font-semibold text-Gray-800 dark:text-white truncate">
+                        {r.name}
+                      </span>
+                    </div>
+                    <p
+                      dir="auto"
+                      className="text-sm text-Gray-900 dark:text-white whitespace-pre-wrap break-words bg-white dark:bg-dark-secondary3 rounded-lg px-3 py-2 border border-Gray-100 dark:border-Gray-800"
+                    >
+                      {r.textAnswer}
+                    </p>
+                  </div>
+                ))}
+          </div>
+        ) : (
+          <div className="wrap grid gap-3 max-h-64 overflow-y-auto scrollBar scrollBar2 pe-1">
+            {optionDisclosures}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -3,7 +3,10 @@ import {
   ConnectionState,
   DisconnectReason,
   ExternalE2EEKeyProvider,
+  getLogger,
   isE2EESupported,
+  LogLevel,
+  LoggerNames,
   RemoteParticipant,
   RemoteTrackPublication,
   Room,
@@ -61,6 +64,8 @@ import {
   teardownNativePublisher,
 } from '../nativeBridge';
 
+declare const IS_PRODUCTION: boolean;
+
 /** Only surface the "reconnecting" toast if the transport is still down that long. */
 const RECONNECTING_TOAST_DELAY_MS = 3000;
 
@@ -115,6 +120,13 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
     }
     this.handleMediaTracks = new HandleMediaTracks(this);
     this.participantMediaManager = new ParticipantMediaManager(this, this.localUserId);
+    // Keep the SDK's internal logging out of the console in production; dev keeps
+    // it visible. persist=false avoids writing levels to localStorage.
+    if (IS_PRODUCTION) {
+      Object.values(LoggerNames).forEach((name) => {
+        getLogger(name).setLevel(LogLevel.silent, false);
+      });
+    }
     void this.configureRoom();
 
     this.connectionQualityMonitor = new ConnectionQualityMonitor();
