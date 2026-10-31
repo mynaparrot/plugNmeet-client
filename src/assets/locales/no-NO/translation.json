@@ -723,6 +723,13 @@
     "quiz-mode-desc": "Merk riktige alternativer ved å krysse av ved siden av hvert alternativ. Deltakerne ser kun riktig svar etter at avstemningen er avsluttet.",
     "anonymous-voting-desc": "Velgervalg forblir skjult — selv administratorer kan ikke se hvem som stemte.",
     "duration-desc": "Poll stenger automatisk når tiden går ut.",
+    "text-answer": "Text answer",
+    "text-answer-placeholder": "Type your answer here...",
+    "your-answer": "Your answer",
+    "ai-check-answers": "Check with AI",
+    "ai-recheck-answers": "Recheck with AI",
+    "ai-check-title": "AI Answer Review",
+    "ai-share-chat": "Share in Chat",
     "notifications": {
       "created-successfully": "Meningsmålingen er opprettet.",
       "response-added": "Din stemme er sendt inn.",
@@ -730,7 +737,8 @@
       "end-poll-success": "Avstemningen er avsluttet.",
       "reopen-poll-success": "Valglokalet er gjenåpnet.",
       "ai-generated": "AI-utkast klart — gjennomgå og lag.",
-      "poll-reopened": "En avstemning har blitt gjenåpnet."
+      "poll-reopened": "En avstemning har blitt gjenåpnet.",
+      "ai-shared-chat": "AI review has been shared in the chat."
     },
     "errors": {
       "generic": "Noe gikk galt. Vennligst prøv igjen.",
@@ -752,7 +760,9 @@
       "user-and-poll-id-required": "Både bruker-ID og poll-ID er påkrevd.",
       "ai-disabled": "AI-pollgenerering er deaktivert.",
       "ai-invalid-response": "AI-svaret kunne ikke brukes. Vennligst prøv igjen.",
-      "ai-request-timeout": "Forespørsel om AI-avstemning gikk ut på tid"
+      "ai-request-timeout": "Forespørsel om AI-avstemning gikk ut på tid",
+      "text-answer-required": "Please enter your answer before submitting.",
+      "text-answer-too-long": "Your answer cannot exceed 500 characters."
     }
   },
   "breakout-room": {
@@ -1068,6 +1078,7 @@
     "poll-status-closed": "closed",
     "poll-type-multiple": "multiple choice",
     "poll-type-single": "single choice",
+    "poll-type-text": "text answer",
     "poll-tag-quiz": "quiz",
     "poll-tag-anonymous": "anonymous",
     "poll-question": "Q: {{question}}",
