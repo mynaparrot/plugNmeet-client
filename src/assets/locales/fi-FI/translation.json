@@ -723,6 +723,13 @@
     "quiz-mode-desc": "Merkitse oikeat vaihtoehdot valintaruudulla kunkin vaihtoehdon vieressä. Osallistujat näkevät oikean vastauksen vasta äänestyksen sulkeuduttua.",
     "anonymous-voting-desc": "Äänestäjien valinnat pysyvät piilossa — edes ylläpitäjät eivät näe, kuka äänesti.",
     "duration-desc": "Äänestys sulkeutuu automaattisesti, kun aika loppuu.",
+    "text-answer": "Text answer",
+    "text-answer-placeholder": "Type your answer here...",
+    "your-answer": "Your answer",
+    "ai-check-answers": "Check with AI",
+    "ai-recheck-answers": "Recheck with AI",
+    "ai-check-title": "AI Answer Review",
+    "ai-share-chat": "Share in Chat",
     "notifications": {
       "created-successfully": "Kysely on luotu.",
       "response-added": "Äänesi on toimitettu.",
@@ -730,7 +737,8 @@
       "end-poll-success": "Äänestys on päättynyt.",
       "reopen-poll-success": "Äänestyspaikka on avattu uudelleen.",
       "ai-generated": "Tekoälyluonnos valmiina — tarkista ja luo.",
-      "poll-reopened": "Äänestys on avattu uudelleen."
+      "poll-reopened": "Äänestys on avattu uudelleen.",
+      "ai-shared-chat": "AI review has been shared in the chat."
     },
     "errors": {
       "generic": "Jokin meni pieleen. Yritä uudelleen.",
@@ -752,7 +760,9 @@
       "user-and-poll-id-required": "Sekä käyttäjätunnus että äänestystunnus vaaditaan.",
       "ai-disabled": "Tekoälykyselyjen generointi on pois päältä.",
       "ai-invalid-response": "Tekoälyvastausta ei voitu käyttää. Yritä uudelleen.",
-      "ai-request-timeout": "Kyselyn tekoälypyyntö aikakatkaistu"
+      "ai-request-timeout": "Kyselyn tekoälypyyntö aikakatkaistu",
+      "text-answer-required": "Please enter your answer before submitting.",
+      "text-answer-too-long": "Your answer cannot exceed 500 characters."
     }
   },
   "breakout-room": {
@@ -1068,6 +1078,7 @@
     "poll-status-closed": "closed",
     "poll-type-multiple": "multiple choice",
     "poll-type-single": "single choice",
+    "poll-type-text": "text answer",
     "poll-tag-quiz": "quiz",
     "poll-tag-anonymous": "anonymous",
     "poll-question": "Q: {{question}}",
