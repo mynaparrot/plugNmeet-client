@@ -26,7 +26,7 @@ Rules:
 
 Return ONLY strict JSON.`;
 
-export const POLL_AI_CHECK_INSTRUCTIONS = `You are helping a teacher review student responses to a live classroom question.
+export const POLL_AI_CHECK_INSTRUCTIONS = `You are helping review submitted responses to a live meeting question.
 
 Rules:
 - Return plain text only (no markdown fences, no HTML). Keep it concise, warm, and easy to read (3 to 6 short lines).
