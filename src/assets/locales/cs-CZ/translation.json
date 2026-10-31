@@ -723,6 +723,13 @@
     "quiz-mode-desc": "Označte správnou možnost pomocí zaškrtávacího políčka vedle každé možnosti. Účastníci uvidí správnou odpověď až po uzavření ankety.",
     "anonymous-voting-desc": "Volby voličů zůstávají skryté — ani administrátoři nemohou vidět, kdo hlasoval.",
     "duration-desc": "Anketa se automaticky uzavře, když vyprší čas.",
+    "text-answer": "Text answer",
+    "text-answer-placeholder": "Type your answer here...",
+    "your-answer": "Your answer",
+    "ai-check-answers": "Check with AI",
+    "ai-recheck-answers": "Recheck with AI",
+    "ai-check-title": "AI Answer Review",
+    "ai-share-chat": "Share in Chat",
     "notifications": {
       "created-successfully": "Průzkum byl vytvořen.",
       "response-added": "Váš hlas byl odevzdán.",
@@ -730,7 +737,8 @@
       "end-poll-success": "Hlasování skončilo.",
       "reopen-poll-success": "Hlasování bylo znovu otevřeno.",
       "ai-generated": "AI připravena na návrh — zkontrolovat a tvořit.",
-      "poll-reopened": "Hlasování bylo znovu otevřeno."
+      "poll-reopened": "Hlasování bylo znovu otevřeno.",
+      "ai-shared-chat": "AI review has been shared in the chat."
     },
     "errors": {
       "generic": "Něco se pokazilo. Zkuste to prosím znovu.",
@@ -752,7 +760,9 @@
       "user-and-poll-id-required": "Je vyžadováno jak uživatelské ID, tak ID ankety.",
       "ai-disabled": "Generování AI je deaktivováno.",
       "ai-invalid-response": "Odpověď AI nebyla použita. Zkuste to prosím znovu.",
-      "ai-request-timeout": "Žádost o průzkum AI vypršela"
+      "ai-request-timeout": "Žádost o průzkum AI vypršela",
+      "text-answer-required": "Please enter your answer before submitting.",
+      "text-answer-too-long": "Your answer cannot exceed 500 characters."
     }
   },
   "breakout-room": {
@@ -1068,6 +1078,7 @@
     "poll-status-closed": "closed",
     "poll-type-multiple": "multiple choice",
     "poll-type-single": "single choice",
+    "poll-type-text": "text answer",
     "poll-tag-quiz": "quiz",
     "poll-tag-anonymous": "anonymous",
     "poll-question": "Q: {{question}}",
