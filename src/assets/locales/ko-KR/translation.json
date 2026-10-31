@@ -723,6 +723,13 @@
     "quiz-mode-desc": "각 옵션 옆의 체크박스를 사용해 올바른 선택지를 표시하세요. 참가자들은 투표가 종료된 후에야 올바른 답을 볼 수 있습니다.",
     "anonymous-voting-desc": "유권자 선택은 숨겨져 있어요 — 관리자조차 누가 투표했는지 볼 수 없어요.",
     "duration-desc": "시간이 다 되면 투표가 자동으로 종료됩니다.",
+    "text-answer": "Text answer",
+    "text-answer-placeholder": "Type your answer here...",
+    "your-answer": "Your answer",
+    "ai-check-answers": "Check with AI",
+    "ai-recheck-answers": "Recheck with AI",
+    "ai-check-title": "AI Answer Review",
+    "ai-share-chat": "Share in Chat",
     "notifications": {
       "created-successfully": "투표가 만들어졌습니다.",
       "response-added": "투표가 제출되었습니다.",
@@ -730,7 +737,8 @@
       "end-poll-success": "투표가 종료되었습니다.",
       "reopen-poll-success": "투표가 다시 열렸습니다.",
       "ai-generated": "AI 초안 준비 — 검토 및 작성.",
-      "poll-reopened": "투표가 다시 열렸습니다."
+      "poll-reopened": "투표가 다시 열렸습니다.",
+      "ai-shared-chat": "AI review has been shared in the chat."
     },
     "errors": {
       "generic": "뭔가 잘못됐어. 다시 시도해 주세요.",
@@ -752,7 +760,9 @@
       "user-and-poll-id-required": "사용자 ID와 투표 ID 모두 필요합니다.",
       "ai-disabled": "AI 투표 생성은 비활성화되어 있습니다.",
       "ai-invalid-response": "AI 응답을 사용할 수 없었습니다. 다시 시도해 주세요.",
-      "ai-request-timeout": "투표 AI 요청 시간 초과"
+      "ai-request-timeout": "투표 AI 요청 시간 초과",
+      "text-answer-required": "Please enter your answer before submitting.",
+      "text-answer-too-long": "Your answer cannot exceed 500 characters."
     }
   },
   "breakout-room": {
@@ -1068,6 +1078,7 @@
     "poll-status-closed": "closed",
     "poll-type-multiple": "multiple choice",
     "poll-type-single": "single choice",
+    "poll-type-text": "text answer",
     "poll-tag-quiz": "quiz",
     "poll-tag-anonymous": "anonymous",
     "poll-question": "Q: {{question}}",
