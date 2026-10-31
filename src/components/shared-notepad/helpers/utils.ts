@@ -1,12 +1,13 @@
+import type { Dictionary } from '@blocknote/core';
 // oxfmt-ignore
 import { en, de, fr, es, ar, fa, he,  hr,  is, it, ja, ko, nl, no, pl, pt, ru, sk, uk, vi, zh, zhTW } from '@blocknote/core/locales';
 
 // oxfmt-ignore
-const blockNoteLocales: Record<string, typeof en> = {
+const blockNoteLocales: Record<string, Dictionary> = {
   en, de, fr, es, ar, fa, he,  hr,  is, it, ja, ko, nl, no, pl, pt, ru, sk, uk, vi, zh, 'zh-tw': zhTW,
 };
 
-export const getBlockNoteDictionary = (language: string): typeof en => {
+export const getBlockNoteDictionary = (language: string): Dictionary => {
   const lang = language.toLowerCase();
 
   if (lang === 'zh-tw' || lang === 'zh-hant' || lang === 'zh-hk') {
