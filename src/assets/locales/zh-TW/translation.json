@@ -723,6 +723,13 @@
     "quiz-mode-desc": "請在每個選項旁的勾選框中標記正確選項。參與者只有在投票結束後才能看到正確答案。",
     "anonymous-voting-desc": "選民選擇保持隱藏——連管理員都看不到誰投票。",
     "duration-desc": "投票時間一到就會自動結束。",
+    "text-answer": "Text answer",
+    "text-answer-placeholder": "Type your answer here...",
+    "your-answer": "Your answer",
+    "ai-check-answers": "Check with AI",
+    "ai-recheck-answers": "Recheck with AI",
+    "ai-check-title": "AI Answer Review",
+    "ai-share-chat": "Share in Chat",
     "notifications": {
       "created-successfully": "該投票已經建立。",
       "response-added": "您的投票已提交。",
@@ -730,7 +737,8 @@
       "end-poll-success": "投票結束。",
       "reopen-poll-success": "投票已經重新開放。",
       "ai-generated": "AI 草稿準備好了——審閱並創作。",
-      "poll-reopened": "民調已重新開放。"
+      "poll-reopened": "民調已重新開放。",
+      "ai-shared-chat": "AI review has been shared in the chat."
     },
     "errors": {
       "generic": "出了問題。請再試一次。",
@@ -752,7 +760,9 @@
       "user-and-poll-id-required": "使用者 ID 與輪詢 ID 皆為必填。",
       "ai-disabled": "AI 民調生成功能已被停用。",
       "ai-invalid-response": "無法使用AI回應。請再試一次。",
-      "ai-request-timeout": "投票 AI 請求逾時"
+      "ai-request-timeout": "投票 AI 請求逾時",
+      "text-answer-required": "Please enter your answer before submitting.",
+      "text-answer-too-long": "Your answer cannot exceed 500 characters."
     }
   },
   "breakout-room": {
@@ -1068,6 +1078,7 @@
     "poll-status-closed": "closed",
     "poll-type-multiple": "multiple choice",
     "poll-type-single": "single choice",
+    "poll-type-text": "text answer",
     "poll-tag-quiz": "quiz",
     "poll-tag-anonymous": "anonymous",
     "poll-question": "Q: {{question}}",
