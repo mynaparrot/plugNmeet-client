@@ -723,6 +723,13 @@
     "quiz-mode-desc": "Отмечайте правильный вариант(и), используя галочку рядом с каждым вариантом. Участники видят правильный ответ только после закрытия опроса.",
     "anonymous-voting-desc": "Выбор избирателей остаётся скрытым — даже администраторы не видят, кто проголосовал.",
     "duration-desc": "Избирательный участок закрывается автоматически, когда время истекает.",
+    "text-answer": "Text answer",
+    "text-answer-placeholder": "Type your answer here...",
+    "your-answer": "Your answer",
+    "ai-check-answers": "Check with AI",
+    "ai-recheck-answers": "Recheck with AI",
+    "ai-check-title": "AI Answer Review",
+    "ai-share-chat": "Share in Chat",
     "notifications": {
       "created-successfully": "Опрос создан.",
       "response-added": "Ваш голос был подан.",
@@ -730,7 +737,8 @@
       "end-poll-success": "Опрос завершён.",
       "reopen-poll-success": "Опрос был возобновлен.",
       "ai-generated": "Черновик AI готов — просматривайте и создавайте.",
-      "poll-reopened": "Опрос был возобновлён."
+      "poll-reopened": "Опрос был возобновлён.",
+      "ai-shared-chat": "AI review has been shared in the chat."
     },
     "errors": {
       "generic": "Что-то пошло не так. Пожалуйста, попробуйте ещё раз.",
@@ -752,7 +760,9 @@
       "user-and-poll-id-required": "Требуется как user ID, так и poll ID.",
       "ai-disabled": "Генерация опросов с помощью ИИ отключена.",
       "ai-invalid-response": "Ответ ИИ не удалось использовать. Пожалуйста, попробуйте ещё раз.",
-      "ai-request-timeout": "Запрос на опрос ИИ истёк"
+      "ai-request-timeout": "Запрос на опрос ИИ истёк",
+      "text-answer-required": "Please enter your answer before submitting.",
+      "text-answer-too-long": "Your answer cannot exceed 500 characters."
     }
   },
   "breakout-room": {
@@ -1068,6 +1078,7 @@
     "poll-status-closed": "closed",
     "poll-type-multiple": "multiple choice",
     "poll-type-single": "single choice",
+    "poll-type-text": "text answer",
     "poll-tag-quiz": "quiz",
     "poll-tag-anonymous": "anonymous",
     "poll-question": "Q: {{question}}",
