@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.6.0](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.5...v2.6.0) (2026-10-31)
+
+
+### Features
+
+* **countdown-timer:** host-controlled meeting countdown timer ([#1152](https://github.com/mynaparrot/plugNmeet-client/issues/1152)) ([0be5ba5](https://github.com/mynaparrot/plugNmeet-client/commit/0be5ba56f9bb76157fe38b9a714df6a496cc656a))
+* **pip:** Add activity indicators to chat PiP ([89ab4f2](https://github.com/mynaparrot/plugNmeet-client/commit/89ab4f27dc157fafc2d33e358a55107824d8dad4))
+* **pip:** Add activity indicators to webcam PiP ([c583313](https://github.com/mynaparrot/plugNmeet-client/commit/c58331367ec2bbfe7e357d8a6a5c9c0bcd376ab6))
+* **pip:** added simple switcher between webcam and chat ([12a19bb](https://github.com/mynaparrot/plugNmeet-client/commit/12a19bbfcf6ce56b5300533fd2117441e0a5af31))
+* **pip:** added single user talking indicator ([eaf8936](https://github.com/mynaparrot/plugNmeet-client/commit/eaf893651fd722c362974d0a2dd983b08744a706))
+* **polls:** add text-answer polls UI, AI answer review, chat cards, and TXT export ([#1154](https://github.com/mynaparrot/plugNmeet-client/issues/1154)) ([172100c](https://github.com/mynaparrot/plugNmeet-client/commit/172100c189a4d8a2c297e8bc07a5d069deefb071))
+
+
+### Bug Fixes
+
+* make poll AI check-in instructions meeting-agnostic ([f1a61ee](https://github.com/mynaparrot/plugNmeet-client/commit/f1a61ee4cf7660856ade475beefad77b128b6955))
+* **pip:** added `preferInitialWindowPlacement: true` to the Document PiP open request so the browser uses the configured initial size when reopening ([0187ef6](https://github.com/mynaparrot/plugNmeet-client/commit/0187ef6f36545720522f106ba80942d5bd2b14b6))
+
 ## [2.5.5](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.4...v2.5.5) (2026-10-30)
 
 
