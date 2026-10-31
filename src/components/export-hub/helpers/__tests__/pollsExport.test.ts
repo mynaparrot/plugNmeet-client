@@ -73,6 +73,63 @@ describe('toPollExportEntry', () => {
     expect(entry.resultsAvailable).toBe(false);
   });
 
+  it('maps grouped text answers instead of options', () => {
+    const entry = toPollExportEntry(poll({ isTextAnswer: true, options: [] }), {
+      totalRespondents: 4,
+      options: [],
+      respondents: [],
+      textAnswers: [
+        { text: 'Blue', count: 3 },
+        { text: 'Green', count: 1 },
+      ],
+    } as never);
+
+    expect(entry.isTextAnswer).toBe(true);
+    expect(entry.options.map((option) => [option.text, option.votes])).toEqual([
+      ['Blue', 3],
+      ['Green', 1],
+    ]);
+    expect(entry.options.map((option) => option.responsesPercentage)).toEqual([75, 25]);
+    expect(entry.totalVotes).toBe(4);
+  });
+
+  it('tolerates proto3 JSON omission of empty arrays and default scalars', () => {
+    const entry = toPollExportEntry(
+      poll({
+        isTextAnswer: true,
+        isRunning: undefined,
+        isAnonymous: undefined,
+        isMultiple: undefined,
+        isQuiz: undefined,
+        options: undefined,
+      }),
+      {
+        totalRespondents: 1,
+        options: undefined,
+        respondents: undefined,
+        // an empty answer string is omitted from the JSON payload
+        textAnswers: [{ count: 1 }],
+      } as never,
+    );
+
+    expect(entry.isTextAnswer).toBe(true);
+    expect(entry.isRunning).toBe(false);
+    expect(entry.isAnonymous).toBe(false);
+    expect(entry.options).toEqual([
+      { text: '', votes: 1, isCorrect: false, responsesPercentage: 100 },
+    ]);
+  });
+
+  it('tolerates an omitted options array on a choice poll', () => {
+    const entry = toPollExportEntry(poll({ options: undefined }), {
+      totalRespondents: 0,
+      options: undefined,
+    } as never);
+
+    expect(entry.options).toEqual([]);
+    expect(entry.totalVotes).toBe(0);
+  });
+
   it('never carries respondent identities', () => {
     const entry = toPollExportEntry(poll({ isAnonymous: true }), details());
 
@@ -171,6 +228,25 @@ describe('buildPollsTxt', () => {
     );
 
     expect(txt).toContain(t('poll-question', { question: 'line one line two' }));
+  });
+
+  it('writes text answers as the poll type and answer list', () => {
+    const txt = buildPollsTxt(
+      [
+        toPollExportEntry(poll({ isTextAnswer: true, options: [] }), {
+          totalRespondents: 2,
+          options: [],
+          respondents: [],
+          textAnswers: [{ text: 'Blue', count: 2 }],
+        } as never),
+      ],
+      exportedAt,
+    );
+
+    expect(txt).toContain(heading(1, [t('poll-status-closed'), t('poll-type-text')]));
+    expect(txt).toContain('  - Blue: 2');
+    expect(txt).not.toContain('%');
+    expect(txt).toContain(t('poll-total-responses', { count: 2 }));
   });
 
   it('marks an empty export', () => {

@@ -6,6 +6,7 @@ import EndPollBtn from './endPollBtn';
 import PublishResultBtn from './publishResultBtn';
 import NotRespondents from './notRespondents';
 import Respondents from './respondents';
+import AICheck from './aiCheck';
 import { PollDataWithOption } from '../../utils';
 import { CloseIconSVG } from '../../../../assets/Icons/CloseIconSVG';
 
@@ -80,6 +81,9 @@ const DetailsModal = ({
                   <div className="line h-1 w-full bg-Gray-50 dark:bg-Gray-800"></div>
                   <NotRespondents pollDataWithOption={pollDataWithOption} />
                 </>
+              )}
+              {pollDataWithOption.isTextAnswer && !isRunning && (
+                <AICheck pollDataWithOption={pollDataWithOption} />
               )}
               <div className="px-5 py-5 flex justify-end bg-Gray-25 dark:bg-dark-secondary border-t border-Gray-100 dark:border-Gray-800">
                 {isRunning ? (

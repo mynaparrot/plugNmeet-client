@@ -8,12 +8,13 @@ import { CreatePollOptions } from './index';
 import OptionsView from './optionsView';
 import { POLL_QUICK_TYPES, PollQuickTypePreset, presetOptionTexts } from './presets';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
-import { useAppDispatch, useAppSelector } from '../../../store';
+import { useAppDispatch } from '../../../store';
 import { AIPollParseError, generatePollWithAI, parseAIPollDraft } from './pollAI';
 import { LoadingIcon } from '../../../assets/Icons/Loading';
 import SettingsSwitch from '../../../helpers/ui/settingsSwitch';
 import Dropdown, { ISelectOption } from '../../../helpers/ui/dropdown';
 import Tabs, { ITabItem } from '../../../helpers/ui/tabs';
+import useIsPollAIEnabled from '../hooks/useIsPollAIEnabled';
 
 interface FormViewProps {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -43,21 +44,11 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
   const [isAnonymous, setIsAnonymous] = useState<boolean>(false);
   const [isMultiple, setIsMultiple] = useState<boolean>(false);
   const [isQuiz, setIsQuiz] = useState<boolean>(false);
+  const [isTextAnswer, setIsTextAnswer] = useState<boolean>(false);
   const [duration, setDuration] = useState<number>(0);
   const [error, setError] = useState<string>('');
 
-  // Same client-readable gating as the notepad/whiteboard AI features.
-  const aiTextChatFeatures = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures?.aiFeatures
-        ?.aiTextChatFeatures,
-  );
-  const currentUser = useAppSelector((state) => state.session.currentUser);
-  const pollAIEnabled =
-    !!aiTextChatFeatures?.isEnabled &&
-    !aiTextChatFeatures?.isPollAiDisabled &&
-    (aiTextChatFeatures?.isAllowedEveryone ||
-      (aiTextChatFeatures?.allowedUserIds ?? []).includes(currentUser?.userId ?? ''));
+  const pollAIEnabled = useIsPollAIEnabled();
 
   const durationOptions: ISelectOption[] = [
     { value: 0, text: t('polls.duration-no-limit') },
@@ -69,6 +60,10 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
 
   // Quick type preset: replaces options only, question and toggles stay untouched
   const applyPreset = (preset: PollQuickTypePreset) => {
+    // presets only make sense with options, so they are disabled in text-answer mode
+    if (isTextAnswer) {
+      return;
+    }
     const texts = presetOptionTexts(preset, t);
     setOptions(
       texts.map((text, index) => ({
@@ -90,15 +85,20 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
       const text = await generatePollWithAI(aiPrompt);
       const draft = parseAIPollDraft(text);
       setQuestion(draft.question);
-      setOptions(
-        draft.options.map((option, index) => ({
-          id: index + 1,
-          text: option.text,
-          isCorrect: option.isCorrect,
-        })),
-      );
+      setIsTextAnswer(draft.isTextAnswer);
       setIsMultiple(draft.isMultiple);
       setIsQuiz(draft.isQuiz);
+      // Text-answer drafts keep the existing option slots, so switching back to
+      // a choice poll still has at least two valid options.
+      if (!draft.isTextAnswer && draft.options.length > 0) {
+        setOptions(
+          draft.options.map((option, index) => ({
+            id: index + 1,
+            text: option.text,
+            isCorrect: option.isCorrect,
+          })),
+        );
+      }
       dispatch(
         addUserNotification({
           message: t('polls.notifications.ai-generated'),
@@ -148,7 +148,7 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
   useEffect(() => {
     setError('');
     // oxlint-disable-next-line react/exhaustive-effect-dependencies
-  }, [question, options, isQuiz]);
+  }, [question, options, isQuiz, isTextAnswer]);
 
   const onSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -163,7 +163,7 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
     }
 
     // Prevent submission if any option is empty
-    if (options.some((opt) => opt.text.trim() === '')) {
+    if (!isTextAnswer && options.some((opt) => opt.text.trim() === '')) {
       dispatch(
         addUserNotification({
           message: t('polls.errors.option-required'),
@@ -174,17 +174,19 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
     }
 
     // Mirror of server rules: quiz polls need at least one correct option
-    if (isQuiz && !options.some((opt) => opt.isCorrect)) {
+    if (!isTextAnswer && isQuiz && !options.some((opt) => opt.isCorrect)) {
       setError(t('polls.errors.select-correct-option'));
       return;
     }
 
     const body = create(CreatePollReqSchema, {
       question,
-      options,
+      // a text-answer poll has no options and is neither multiple nor a quiz
+      options: isTextAnswer ? [] : options,
       isAnonymous,
-      isMultiple,
-      isQuiz,
+      isMultiple: isTextAnswer ? false : isMultiple,
+      isQuiz: isTextAnswer ? false : isQuiz,
+      isTextAnswer,
       duration,
     });
     createPoll(body);
@@ -201,7 +203,8 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
             <button
               key={preset.id}
               type="button"
-              className="h-8 px-3 bg-Gray-50 dark:bg-Gray-800 rounded-[11px] text-xs md:text-sm text-Gray-800 dark:text-white font-semibold flex items-center hover:bg-Gray-100 dark:hover:bg-dark-secondary2 transition-all duration-300 cursor-pointer"
+              className="h-8 px-3 bg-Gray-50 dark:bg-Gray-800 rounded-[11px] text-xs md:text-sm text-Gray-800 dark:text-white font-semibold flex items-center hover:bg-Gray-100 dark:hover:bg-dark-secondary2 transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-Gray-50 dark:disabled:hover:bg-Gray-800"
+              disabled={isTextAnswer}
               onClick={() => applyPreset(preset)}
             >
               {presetOptionTexts(preset, t).join(' / ')}
@@ -272,52 +275,78 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
           autoComplete="off"
         />
       </div>
-      <OptionsView options={options} setOptions={setOptions} isQuiz={isQuiz} />
-      {/* Advanced poll settings */}
-      <div className="poll-settings-area border-b border-Gray-100 dark:border-Gray-800 pb-4 grid gap-4">
-        <div>
-          <p className="text-sm text-Gray-800 dark:text-white font-medium mb-2 inline-block">
-            {t('polls.question-type')}
-          </p>
-          <div
-            role="radiogroup"
-            aria-label={t('polls.question-type')}
-            className="grid grid-cols-2 gap-2"
+      <div className="question-type-area border-b border-Gray-100 dark:border-Gray-800 pb-4 bg-Gray-25 dark:bg-dark-primary">
+        <p className="text-sm text-Gray-800 dark:text-white font-medium mb-2 inline-block">
+          {t('polls.question-type')}
+        </p>
+        <div
+          role="radiogroup"
+          aria-label={t('polls.question-type')}
+          className="grid grid-cols-3 gap-2"
+        >
+          <label
+            className={`flex items-center justify-center h-10 3xl:h-11 text-sm 3xl:text-base font-semibold border rounded-[12px] md:rounded-[15px] cursor-pointer transition-all duration-300 shadow-button-shadow ${
+              !isMultiple && !isTextAnswer
+                ? 'bg-Blue2-50 dark:bg-dark-secondary2 border-Blue2-500 text-Gray-950 dark:text-white'
+                : 'bg-Gray-50 hover:bg-Gray-100 dark:bg-dark-secondary border-Gray-300 dark:border-Gray-800 text-Gray-800 dark:text-white'
+            }`}
           >
-            <label
-              className={`flex items-center justify-center h-10 3xl:h-11 text-sm 3xl:text-base font-semibold border rounded-[12px] md:rounded-[15px] cursor-pointer transition-all duration-300 shadow-button-shadow ${
-                !isMultiple
-                  ? 'bg-Blue2-50 dark:bg-dark-secondary2 border-Blue2-500 text-Gray-950 dark:text-white'
-                  : 'bg-Gray-50 hover:bg-Gray-100 dark:bg-dark-secondary border-Gray-300 dark:border-Gray-800 text-Gray-800 dark:text-white'
-              }`}
-            >
-              <input
-                type="radio"
-                name="poll-question-type"
-                className="sr-only"
-                checked={!isMultiple}
-                onChange={() => setIsMultiple(false)}
-              />
-              {t('polls.single-choice')}
-            </label>
-            <label
-              className={`flex items-center justify-center h-10 3xl:h-11 text-sm 3xl:text-base font-semibold border rounded-[12px] md:rounded-[15px] cursor-pointer transition-all duration-300 shadow-button-shadow ${
-                isMultiple
-                  ? 'bg-Blue2-50 dark:bg-dark-secondary2 border-Blue2-500 text-Gray-950 dark:text-white'
-                  : 'bg-Gray-50 hover:bg-Gray-100 dark:bg-dark-secondary border-Gray-300 dark:border-Gray-800 text-Gray-800 dark:text-white'
-              }`}
-            >
-              <input
-                type="radio"
-                name="poll-question-type"
-                className="sr-only"
-                checked={isMultiple}
-                onChange={() => setIsMultiple(true)}
-              />
-              {t('polls.multiple-choice')}
-            </label>
-          </div>
+            <input
+              type="radio"
+              name="poll-question-type"
+              className="sr-only"
+              checked={!isMultiple && !isTextAnswer}
+              onChange={() => {
+                setIsMultiple(false);
+                setIsTextAnswer(false);
+              }}
+            />
+            {t('polls.single-choice')}
+          </label>
+          <label
+            className={`flex items-center justify-center h-10 3xl:h-11 text-sm 3xl:text-base font-semibold border rounded-[12px] md:rounded-[15px] cursor-pointer transition-all duration-300 shadow-button-shadow ${
+              isMultiple && !isTextAnswer
+                ? 'bg-Blue2-50 dark:bg-dark-secondary2 border-Blue2-500 text-Gray-950 dark:text-white'
+                : 'bg-Gray-50 hover:bg-Gray-100 dark:bg-dark-secondary border-Gray-300 dark:border-Gray-800 text-Gray-800 dark:text-white'
+            }`}
+          >
+            <input
+              type="radio"
+              name="poll-question-type"
+              className="sr-only"
+              checked={isMultiple && !isTextAnswer}
+              onChange={() => {
+                setIsMultiple(true);
+                setIsTextAnswer(false);
+              }}
+            />
+            {t('polls.multiple-choice')}
+          </label>
+          <label
+            className={`flex items-center justify-center h-10 3xl:h-11 text-sm 3xl:text-base font-semibold border rounded-[12px] md:rounded-[15px] cursor-pointer transition-all duration-300 shadow-button-shadow ${
+              isTextAnswer
+                ? 'bg-Blue2-50 dark:bg-dark-secondary2 border-Blue2-500 text-Gray-950 dark:text-white'
+                : 'bg-Gray-50 hover:bg-Gray-100 dark:bg-dark-secondary border-Gray-300 dark:border-Gray-800 text-Gray-800 dark:text-white'
+            }`}
+          >
+            <input
+              type="radio"
+              name="poll-question-type"
+              className="sr-only"
+              checked={isTextAnswer}
+              onChange={() => {
+                setIsTextAnswer(true);
+                setIsMultiple(false);
+                setIsQuiz(false);
+              }}
+            />
+            {t('polls.text-answer')}
+          </label>
         </div>
+      </div>
+      {!isTextAnswer && <OptionsView options={options} setOptions={setOptions} isQuiz={isQuiz} />}
+      {/* Advanced poll settings */}
+      <div className="poll-settings-area pt-4 border-b border-Gray-100 dark:border-Gray-800 pb-4 grid gap-4">
         <div>
           <SettingsSwitch
             label={t('polls.anonymous-voting')}
@@ -328,12 +357,14 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
             {t('polls.anonymous-voting-desc')}
           </p>
         </div>
-        <div>
-          <SettingsSwitch label={t('polls.quiz-mode')} enabled={isQuiz} onChange={setIsQuiz} />
-          <p className="text-xs md:text-sm opacity-70 dark:opacity-80 mt-1">
-            {t('polls.quiz-mode-desc')}
-          </p>
-        </div>
+        {!isTextAnswer && (
+          <div>
+            <SettingsSwitch label={t('polls.quiz-mode')} enabled={isQuiz} onChange={setIsQuiz} />
+            <p className="text-xs md:text-sm opacity-70 dark:opacity-80 mt-1">
+              {t('polls.quiz-mode-desc')}
+            </p>
+          </div>
+        )}
         <div>
           <Dropdown
             id="polls-duration"

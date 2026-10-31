@@ -34,7 +34,7 @@ const NotRespondents = ({ pollDataWithOption }: NotRespondentsProps) => {
           count: notRespondentsCount,
         })}
       </p>
-      <div className="wrap relative rounded-xl bg-Gray-50 dark:bg-dark-secondary border border-gray-300 dark:border-Gray-800 overflow-auto">
+      <div className="wrap relative rounded-xl bg-Gray-50 dark:bg-dark-secondary border border-gray-300 dark:border-Gray-800 overflow-auto max-h-44 scrollBar scrollBar2">
         <div className="inner flex">{formattedNotRespondents}</div>
       </div>
     </div>

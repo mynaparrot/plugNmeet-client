@@ -19,10 +19,14 @@ interface PollFormProps {
   isRunning: boolean;
 }
 
+const MAX_TEXT_ANSWER_LENGTH = 500;
+
 const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const [selectedOptions, setSelectedOptions] = useState<Set<number>>(new Set());
+  const [textAnswer, setTextAnswer] = useState<string>('');
+  const [submittedText, setSubmittedText] = useState<string>('');
   const conn = getNatsConn();
   const currentUser = useMemo(() => store.getState().session.currentUser, []);
 
@@ -61,12 +65,35 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
     if (!pollDataWithOption.isAnonymous && userVoteData.voted && userVoteData.voted.length > 0) {
       setSelectedOptions(new Set(userVoteData.voted.map(Number)));
     }
+    // text answers can only be echoed back for non-anonymous polls
+    if (!pollDataWithOption.isAnonymous && userVoteData.votedText) {
+      setSubmittedText(userVoteData.votedText);
+    }
   }, [userVoteData, pollDataWithOption.isAnonymous]);
 
   const [addResponse, { isLoading, data: addReqResponse }] = useAddResponseMutation();
 
   const onSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (pollDataWithOption.isTextAnswer) {
+      const trimmed = textAnswer.trim();
+      if (trimmed === '' || isLoading) {
+        return;
+      }
+      // keep the answer around to show it back as feedback once the vote is in
+      setSubmittedText(trimmed);
+      addResponse(
+        create(SubmitPollResponseReqSchema, {
+          pollId: pollDataWithOption.pollId,
+          userId: currentUser?.userId ?? '',
+          name: currentUser?.name ?? '',
+          selectedOptions: [],
+          textAnswer: trimmed,
+        }),
+      );
+      return;
+    }
 
     if (selectedOptions.size === 0 || isLoading) {
       return;
@@ -196,6 +223,36 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
     // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [onClickSelectOption, pollDataWithOption, selectedOptions, isRunning]);
 
+  // admins read answers in the Details modal; the sidebar lists them once the poll closes
+  const textAnswerResults = useMemo(() => {
+    const elms: Array<ReactElement> = [];
+    if (isRunning) {
+      return elms;
+    }
+    for (const key in pollDataWithOption.options) {
+      const o = pollDataWithOption.options[key];
+      elms.push(
+        <div
+          key={`text-answer-${pollDataWithOption.pollId}-${o.id}`}
+          className="flex items-start justify-between gap-2 bg-Gray-50 dark:bg-dark-secondary border border-Gray-200 dark:border-Gray-700 rounded-xl px-3 py-2 text-sm min-w-0"
+        >
+          <span
+            dir="auto"
+            className="text-Gray-900 dark:text-white min-w-0 flex-1 whitespace-pre-wrap break-words"
+          >
+            {o.text}
+          </span>
+          {o.votes > 1 && (
+            <span className="shrink-0 rounded-full bg-white dark:bg-dark-primary border border-Gray-200 dark:border-Gray-700 px-2 py-0.5 text-xs font-semibold text-Gray-700 dark:text-white">
+              ×{o.votes}
+            </span>
+          )}
+        </div>,
+      );
+    }
+    return elms;
+  }, [pollDataWithOption, isRunning]);
+
   return (
     <form className="group" onSubmit={onSubmit} name={`voteForm-${pollDataWithOption.pollId}`}>
       {pollDataWithOption.isAnonymous && (
@@ -206,24 +263,78 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
           </span>
         </div>
       )}
-      {pollOption}
+      {pollDataWithOption.isTextAnswer ? (
+        <>
+          {isRunning && !voted && !locallyClosed && (
+            <>
+              <textarea
+                dir="auto"
+                rows={2}
+                maxLength={MAX_TEXT_ANSWER_LENGTH}
+                value={textAnswer}
+                onChange={(e) => setTextAnswer(e.currentTarget.value)}
+                placeholder={t('polls.text-answer-placeholder')}
+                autoComplete="off"
+                className="rounded-xl border border-Gray-300 dark:border-Gray-600 bg-white dark:bg-dark-secondary shadow-input w-full px-3 py-2 text-sm text-Gray-950 dark:text-white outline-hidden focus:border-[rgba(0,161,242,1)] my-2"
+              />
+              <div className="text-xs text-Gray-500 dark:text-dark-text text-end">
+                {textAnswer.length}/{MAX_TEXT_ANSWER_LENGTH}
+              </div>
+              {textAnswer.trim().length > 0 && (
+                <div className="button-section flex items-center justify-end mt-3">
+                  <button
+                    className="primary-button h-8 px-5 cursor-pointer flex items-center justify-center rounded-[10px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Blue dark:bg-dark-secondary2 border border-DarkBlue dark:border-dark-secondary2 transition-all duration-300 hover:bg-DarkBlue shadow-button-shadow dark:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
+                    type="submit"
+                    disabled={isLoading}
+                  >
+                    {t('polls.submit')}
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+          {voted && (
+            <div className="my-2 rounded-xl border border-Green-700/40 bg-Green-50/50 dark:bg-dark-secondary px-3 py-2 text-sm text-Gray-900 dark:text-white">
+              {submittedText ? (
+                <>
+                  {t('polls.your-answer')}:{' '}
+                  <span className="font-medium whitespace-pre-wrap break-words">
+                    {submittedText}
+                  </span>
+                </>
+              ) : (
+                t('polls.you-voted')
+              )}
+            </div>
+          )}
+          {textAnswerResults.length > 0 && (
+            <div className="max-h-60 overflow-y-auto scrollBar scrollBar2 pe-1 grid gap-1.5 mt-2">
+              {textAnswerResults}
+            </div>
+          )}
+        </>
+      ) : (
+        <>
+          {pollOption}
+          {!isRunning || voted || selectedOptions.size === 0 ? null : (
+            <div className="button-section flex items-center justify-end mt-3">
+              <button
+                className="primary-button h-8 px-5 cursor-pointer flex items-center justify-center rounded-[10px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Blue dark:bg-dark-secondary2 border border-DarkBlue dark:border-dark-secondary2 transition-all duration-300 hover:bg-DarkBlue shadow-button-shadow dark:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
+                type="submit"
+                disabled={locallyClosed}
+              >
+                {t('polls.submit')}
+              </button>
+            </div>
+          )}
+        </>
+      )}
       {isLoading && (
         <div className="absolute text-center top-1/2 -translate-y-1/2 z-999 start-0 end-0 m-auto">
           <LoadingIcon
             className={'inline w-10 h-10 me-3 text-Gray-200 dark:text-Gray-800 animate-spin'}
             fillColor={'#004D90'}
           />
-        </div>
-      )}
-      {!isRunning || voted || selectedOptions.size === 0 ? null : (
-        <div className="button-section flex items-center justify-end mt-3">
-          <button
-            className="primary-button h-8 px-5 cursor-pointer flex items-center justify-center rounded-[10px] text-sm 3xl:text-base font-medium 3xl:font-semibold text-white bg-Blue dark:bg-dark-secondary2 border border-DarkBlue dark:border-dark-secondary2 transition-all duration-300 hover:bg-DarkBlue shadow-button-shadow dark:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
-            type="submit"
-            disabled={locallyClosed}
-          >
-            {t('polls.submit')}
-          </button>
         </div>
       )}
     </form>
