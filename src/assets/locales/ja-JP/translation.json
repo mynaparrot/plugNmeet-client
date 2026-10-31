@@ -723,6 +723,13 @@
     "quiz-mode-desc": "各選択肢の横にあるチェックボックスで正しい選択肢にマークしてください。参加者は投票終了後にのみ正しい答えを見ることができます。",
     "anonymous-voting-desc": "有権者の選択は隠されたままで、管理者でさえ誰が投票したかを見ることはできません。",
     "duration-desc": "投票は時間切れで自動的に終了します。",
+    "text-answer": "Text answer",
+    "text-answer-placeholder": "Type your answer here...",
+    "your-answer": "Your answer",
+    "ai-check-answers": "Check with AI",
+    "ai-recheck-answers": "Recheck with AI",
+    "ai-check-title": "AI Answer Review",
+    "ai-share-chat": "Share in Chat",
     "notifications": {
       "created-successfully": "この投票は作成されました。",
       "response-added": "あなたの投票は提出されました。",
@@ -730,7 +737,8 @@
       "end-poll-success": "世論調査は終了しました。",
       "reopen-poll-success": "投票は再開されました。",
       "ai-generated": "AIドラフト準備完了 — レビューと作成。",
-      "poll-reopened": "投票が再開されました。"
+      "poll-reopened": "投票が再開されました。",
+      "ai-shared-chat": "AI review has been shared in the chat."
     },
     "errors": {
       "generic": "何かがうまくいかなかった。もう一度お願いします。",
@@ -752,7 +760,9 @@
       "user-and-poll-id-required": "ユーザーIDと投票IDの両方が必要です。",
       "ai-disabled": "AI投票生成は無効化されています。",
       "ai-invalid-response": "AI応答は使用できませんでした。もう一度お試しください。",
-      "ai-request-timeout": "投票AIリクエストのタイムアウト"
+      "ai-request-timeout": "投票AIリクエストのタイムアウト",
+      "text-answer-required": "Please enter your answer before submitting.",
+      "text-answer-too-long": "Your answer cannot exceed 500 characters."
     }
   },
   "breakout-room": {
@@ -1068,6 +1078,7 @@
     "poll-status-closed": "closed",
     "poll-type-multiple": "multiple choice",
     "poll-type-single": "single choice",
+    "poll-type-text": "text answer",
     "poll-tag-quiz": "quiz",
     "poll-tag-anonymous": "anonymous",
     "poll-question": "Q: {{question}}",
