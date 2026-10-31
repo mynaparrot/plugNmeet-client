@@ -723,6 +723,13 @@
     "quiz-mode-desc": "Markeer de juiste optie (of de juiste opties) met het selectievakje naast elke optie. Deelnemers zien het juiste antwoord pas nadat de poll is gesloten.",
     "anonymous-voting-desc": "Kiezerskeuzes blijven verborgen — zelfs beheerders kunnen niet zien wie er heeft gestemd.",
     "duration-desc": "De poll sluit automatisch wanneer de tijd om is.",
+    "text-answer": "Text answer",
+    "text-answer-placeholder": "Type your answer here...",
+    "your-answer": "Your answer",
+    "ai-check-answers": "Check with AI",
+    "ai-recheck-answers": "Recheck with AI",
+    "ai-check-title": "AI Answer Review",
+    "ai-share-chat": "Share in Chat",
     "notifications": {
       "created-successfully": "De peiling is opgezet.",
       "response-added": "Uw stem is ingediend.",
@@ -730,7 +737,8 @@
       "end-poll-success": "De peiling is afgelopen.",
       "reopen-poll-success": "De stembus is heropend.",
       "ai-generated": "AI-conceptklaar — review en creëer.",
-      "poll-reopened": "Er is een stembureau heropend."
+      "poll-reopened": "Er is een stembureau heropend.",
+      "ai-shared-chat": "AI review has been shared in the chat."
     },
     "errors": {
       "generic": "Er is iets misgegaan. Probeer het alsjeblieft opnieuw.",
@@ -752,7 +760,9 @@
       "user-and-poll-id-required": "Zowel gebruikers-ID als poll-ID zijn vereist.",
       "ai-disabled": "AI-pollgeneratie is uitgeschakeld.",
       "ai-invalid-response": "De AI-reactie kon niet worden gebruikt. Probeer het alsjeblieft opnieuw.",
-      "ai-request-timeout": "Poll AI-verzoek verlopen op tijd"
+      "ai-request-timeout": "Poll AI-verzoek verlopen op tijd",
+      "text-answer-required": "Please enter your answer before submitting.",
+      "text-answer-too-long": "Your answer cannot exceed 500 characters."
     }
   },
   "breakout-room": {
@@ -1068,6 +1078,7 @@
     "poll-status-closed": "closed",
     "poll-type-multiple": "multiple choice",
     "poll-type-single": "single choice",
+    "poll-type-text": "text answer",
     "poll-tag-quiz": "quiz",
     "poll-tag-anonymous": "anonymous",
     "poll-question": "Q: {{question}}",
