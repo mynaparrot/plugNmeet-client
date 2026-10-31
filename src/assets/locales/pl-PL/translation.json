@@ -723,6 +723,13 @@
     "quiz-mode-desc": "Zaznacz poprawną opcję (lub opcje) za pomocą pola wyboru obok każdej opcji. Uczestnicy widzą poprawną odpowiedź dopiero po zamknięciu ankiety.",
     "anonymous-voting-desc": "Wybory wyborców pozostają ukryte — nawet administratorzy nie mogą zobaczyć, kto głosował.",
     "duration-desc": "Ankieta zamyka się automatycznie, gdy czas się skończy.",
+    "text-answer": "Text answer",
+    "text-answer-placeholder": "Type your answer here...",
+    "your-answer": "Your answer",
+    "ai-check-answers": "Check with AI",
+    "ai-recheck-answers": "Recheck with AI",
+    "ai-check-title": "AI Answer Review",
+    "ai-share-chat": "Share in Chat",
     "notifications": {
       "created-successfully": "Ankieta została stworzona.",
       "response-added": "Twój głos został oddany.",
@@ -730,7 +737,8 @@
       "end-poll-success": "Sondaż się zakończył.",
       "reopen-poll-success": "Głosowanie zostało wznowione.",
       "ai-generated": "AI gotowy do szkicowania — przeglądaj i tworzysz.",
-      "poll-reopened": "Ponownie otwarto ankietę."
+      "poll-reopened": "Ponownie otwarto ankietę.",
+      "ai-shared-chat": "AI review has been shared in the chat."
     },
     "errors": {
       "generic": "Coś poszło nie tak. Proszę spróbować ponownie.",
@@ -752,7 +760,9 @@
       "user-and-poll-id-required": "Wymagane są zarówno identyfikatory użytkownika, jak i identyfikatora ankiety.",
       "ai-disabled": "Generowanie ankiet przez AI jest wyłączone.",
       "ai-invalid-response": "Odpowiedź AI nie została użyta. Proszę spróbować ponownie.",
-      "ai-request-timeout": "Prośba o ankietę AI wygasła"
+      "ai-request-timeout": "Prośba o ankietę AI wygasła",
+      "text-answer-required": "Please enter your answer before submitting.",
+      "text-answer-too-long": "Your answer cannot exceed 500 characters."
     }
   },
   "breakout-room": {
@@ -1068,6 +1078,7 @@
     "poll-status-closed": "closed",
     "poll-type-multiple": "multiple choice",
     "poll-type-single": "single choice",
+    "poll-type-text": "text answer",
     "poll-tag-quiz": "quiz",
     "poll-tag-anonymous": "anonymous",
     "poll-question": "Q: {{question}}",
