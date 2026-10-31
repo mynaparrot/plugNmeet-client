@@ -723,6 +723,13 @@
     "quiz-mode-desc": "گزینه(های) درست را با استفاده از کادر انتخاب کنار هر گزینه علامت بزنید. شرکت کنندگان فقط پس از بسته شدن نظرسنجی پاسخ صحیح را می بینند.",
     "anonymous-voting-desc": "انتخاب های رأی دهندگان پنهان می ماند — حتی مدیران هم نمی توانند ببینند چه کسی رأی داده است.",
     "duration-desc": "نظرسنجی به طور خودکار وقتی زمان تمام می شود بسته می شود.",
+    "text-answer": "Text answer",
+    "text-answer-placeholder": "Type your answer here...",
+    "your-answer": "Your answer",
+    "ai-check-answers": "Check with AI",
+    "ai-recheck-answers": "Recheck with AI",
+    "ai-check-title": "AI Answer Review",
+    "ai-share-chat": "Share in Chat",
     "notifications": {
       "created-successfully": "این نظرسنجی ایجاد شده است.",
       "response-added": "رأی شما ارسال شده است.",
@@ -730,7 +737,8 @@
       "end-poll-success": "نظرسنجی به پایان رسیده است.",
       "reopen-poll-success": "نظرسنجی دوباره بازگشایی شده است.",
       "ai-generated": "آماده پیش نویس هوش مصنوعی — بازبینی و ایجاد.",
-      "poll-reopened": "یک نظرسنجی دوباره باز شده است."
+      "poll-reopened": "یک نظرسنجی دوباره باز شده است.",
+      "ai-shared-chat": "AI review has been shared in the chat."
     },
     "errors": {
       "generic": "یه مشکلی پیش اومده. لطفا دوباره تلاش کن.",
@@ -752,7 +760,9 @@
       "user-and-poll-id-required": "هر دو شناسه کاربری و شناسه نظرسنجی الزامی هستند.",
       "ai-disabled": "تولید نظرسنجی با هوش مصنوعی غیرفعال است.",
       "ai-invalid-response": "پاسخ هوش مصنوعی قابل استفاده نبود. لطفا دوباره تلاش کنید.",
-      "ai-request-timeout": "درخواست هوش مصنوعی نظرسنجی به پایان رسید"
+      "ai-request-timeout": "درخواست هوش مصنوعی نظرسنجی به پایان رسید",
+      "text-answer-required": "Please enter your answer before submitting.",
+      "text-answer-too-long": "Your answer cannot exceed 500 characters."
     }
   },
   "breakout-room": {
@@ -1068,6 +1078,7 @@
     "poll-status-closed": "closed",
     "poll-type-multiple": "multiple choice",
     "poll-type-single": "single choice",
+    "poll-type-text": "text answer",
     "poll-tag-quiz": "quiz",
     "poll-tag-anonymous": "anonymous",
     "poll-question": "Q: {{question}}",
