@@ -723,6 +723,13 @@
     "quiz-mode-desc": "Позначайте правильні варіанти, використовуючи галочку поруч із кожним варіантом. Учасники бачать правильну відповідь лише після закриття опитування.",
     "anonymous-voting-desc": "Вибір виборців залишається прихованим — навіть адміністратори не можуть побачити, хто голосував.",
     "duration-desc": "Дільництво закривається автоматично, коли час закінчується.",
+    "text-answer": "Text answer",
+    "text-answer-placeholder": "Type your answer here...",
+    "your-answer": "Your answer",
+    "ai-check-answers": "Check with AI",
+    "ai-recheck-answers": "Recheck with AI",
+    "ai-check-title": "AI Answer Review",
+    "ai-share-chat": "Share in Chat",
     "notifications": {
       "created-successfully": "Опитування створено.",
       "response-added": "Ваш голос подано.",
@@ -730,7 +737,8 @@
       "end-poll-success": "Опитування завершено.",
       "reopen-poll-success": "Опитування було відновлено.",
       "ai-generated": "Чернетка AI готова — переглядайте та створюйте.",
-      "poll-reopened": "Опитування було відновлено."
+      "poll-reopened": "Опитування було відновлено.",
+      "ai-shared-chat": "AI review has been shared in the chat."
     },
     "errors": {
       "generic": "Щось пішло не так. Будь ласка, спробуйте ще раз.",
@@ -752,7 +760,9 @@
       "user-and-poll-id-required": "Потрібні як user ID, так і poll ID.",
       "ai-disabled": "Генерація опитувань за допомогою ШІ вимкнена.",
       "ai-invalid-response": "Відповідь ШІ не вдалося використати. Будь ласка, спробуйте ще раз.",
-      "ai-request-timeout": "Запит на голосування AI закінчився"
+      "ai-request-timeout": "Запит на голосування AI закінчився",
+      "text-answer-required": "Please enter your answer before submitting.",
+      "text-answer-too-long": "Your answer cannot exceed 500 characters."
     }
   },
   "breakout-room": {
@@ -1068,6 +1078,7 @@
     "poll-status-closed": "closed",
     "poll-type-multiple": "multiple choice",
     "poll-type-single": "single choice",
+    "poll-type-text": "text answer",
     "poll-tag-quiz": "quiz",
     "poll-tag-anonymous": "anonymous",
     "poll-question": "Q: {{question}}",
