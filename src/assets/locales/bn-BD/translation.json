@@ -723,6 +723,13 @@
     "quiz-mode-desc": "প্রতিটি বিকল্পের পাশের চেকবক্স ব্যবহার করে সঠিক বিকল্প (গুলি) চিহ্নিত করুন। অংশগ্রহণকারীরা পোল বন্ধ হওয়ার পরেই কেবল সঠিক উত্তরটি দেখতে পান।",
     "anonymous-voting-desc": "ভোটারদের পছন্দগুলি লুকিয়ে থাকে - এমনকি প্রশাসকরাও দেখতে পাচ্ছেন না কে ভোট দিয়েছে।",
     "duration-desc": "সময় শেষ হয়ে গেলে পোল স্বয়ংক্রিয়ভাবে বন্ধ হয়।",
+    "text-answer": "Text answer",
+    "text-answer-placeholder": "Type your answer here...",
+    "your-answer": "Your answer",
+    "ai-check-answers": "Check with AI",
+    "ai-recheck-answers": "Recheck with AI",
+    "ai-check-title": "AI Answer Review",
+    "ai-share-chat": "Share in Chat",
     "notifications": {
       "created-successfully": "পোল তৈরি করা হয়েছে।",
       "response-added": "আপনার ভোট জমা দেওয়া হয়েছে।",
@@ -730,7 +737,8 @@
       "end-poll-success": "ভোট শেষ হয়েছে।",
       "reopen-poll-success": "ভোট পুনরায় শুরু করা হয়েছে।",
       "ai-generated": "এআই খসড়া প্রস্তুত - পর্যালোচনা এবং তৈরি করুন।",
-      "poll-reopened": "একটি জরিপ পুনরায় শুরু করা হয়েছে।"
+      "poll-reopened": "একটি জরিপ পুনরায় শুরু করা হয়েছে।",
+      "ai-shared-chat": "AI review has been shared in the chat."
     },
     "errors": {
       "generic": "কিছু ভুল হয়েছে। দয়া করে আবার চেষ্টা করুন।",
@@ -752,7 +760,9 @@
       "user-and-poll-id-required": "ইউজার আইডি এবং পোল আইডি উভয়ই প্রয়োজন।",
       "ai-disabled": "এআই পোল জেনারেশন অক্ষম করা হয়েছে।",
       "ai-invalid-response": "এআই প্রতিক্রিয়া ব্যবহার করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।",
-      "ai-request-timeout": "পোল AI অনুরোধের সময়সীমা শেষ হয়েছে"
+      "ai-request-timeout": "পোল AI অনুরোধের সময়সীমা শেষ হয়েছে",
+      "text-answer-required": "Please enter your answer before submitting.",
+      "text-answer-too-long": "Your answer cannot exceed 500 characters."
     }
   },
   "breakout-room": {
@@ -1068,6 +1078,7 @@
     "poll-status-closed": "closed",
     "poll-type-multiple": "multiple choice",
     "poll-type-single": "single choice",
+    "poll-type-text": "text answer",
     "poll-tag-quiz": "quiz",
     "poll-tag-anonymous": "anonymous",
     "poll-question": "Q: {{question}}",
