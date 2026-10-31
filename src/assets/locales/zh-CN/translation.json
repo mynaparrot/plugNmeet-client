@@ -723,6 +723,13 @@
     "quiz-mode-desc": "请通过每个选项旁的复选框标记正确选项。参与者只有在投票结束后才能看到正确答案。",
     "anonymous-voting-desc": "投票者的选择保持隐藏——甚至管理员也看不到谁投票了。",
     "duration-desc": "投票在时间结束时自动关闭。",
+    "text-answer": "Text answer",
+    "text-answer-placeholder": "Type your answer here...",
+    "your-answer": "Your answer",
+    "ai-check-answers": "Check with AI",
+    "ai-recheck-answers": "Recheck with AI",
+    "ai-check-title": "AI Answer Review",
+    "ai-share-chat": "Share in Chat",
     "notifications": {
       "created-successfully": "投票已经创建。",
       "response-added": "您的投票已提交。",
@@ -730,7 +737,8 @@
       "end-poll-success": "投票已经结束。",
       "reopen-poll-success": "投票结果已重新开放。",
       "ai-generated": "AI草稿准备好——审核并创建。",
-      "poll-reopened": "投票已重新开放。"
+      "poll-reopened": "投票已重新开放。",
+      "ai-shared-chat": "AI review has been shared in the chat."
     },
     "errors": {
       "generic": "出了点问题。请再试一次。",
@@ -752,7 +760,9 @@
       "user-and-poll-id-required": "用户ID和投票ID都是必需的。",
       "ai-disabled": "AI投票生成功能被禁用。",
       "ai-invalid-response": "AI回复无法使用。请再试一次。",
-      "ai-request-timeout": "投票 AI 请求超时"
+      "ai-request-timeout": "投票 AI 请求超时",
+      "text-answer-required": "Please enter your answer before submitting.",
+      "text-answer-too-long": "Your answer cannot exceed 500 characters."
     }
   },
   "breakout-room": {
@@ -1068,6 +1078,7 @@
     "poll-status-closed": "closed",
     "poll-type-multiple": "multiple choice",
     "poll-type-single": "single choice",
+    "poll-type-text": "text answer",
     "poll-tag-quiz": "quiz",
     "poll-tag-anonymous": "anonymous",
     "poll-question": "Q: {{question}}",
