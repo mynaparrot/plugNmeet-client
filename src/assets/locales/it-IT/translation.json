@@ -723,6 +723,13 @@
     "quiz-mode-desc": "Segna l'opzione corretta usando la casella accanto a ciascuna opzione. I partecipanti vedono la risposta corretta solo dopo la chiusura del sondaggio.",
     "anonymous-voting-desc": "Le scelte degli elettori rimangono nascoste — nemmeno gli amministratori possono vedere chi ha votato.",
     "duration-desc": "Il sondaggio si chiude automaticamente quando il tempo scade.",
+    "text-answer": "Text answer",
+    "text-answer-placeholder": "Type your answer here...",
+    "your-answer": "Your answer",
+    "ai-check-answers": "Check with AI",
+    "ai-recheck-answers": "Recheck with AI",
+    "ai-check-title": "AI Answer Review",
+    "ai-share-chat": "Share in Chat",
     "notifications": {
       "created-successfully": "Il sondaggio è stato creato.",
       "response-added": "Il tuo voto è stato sottomesso.",
@@ -730,7 +737,8 @@
       "end-poll-success": "Il sondaggio è finito.",
       "reopen-poll-success": "Il seggio è stato riaperto.",
       "ai-generated": "Pronta alla bozza dell'IA — revisiona e crea.",
-      "poll-reopened": "Un seggio è stato riaperto."
+      "poll-reopened": "Un seggio è stato riaperto.",
+      "ai-shared-chat": "AI review has been shared in the chat."
     },
     "errors": {
       "generic": "Qualcosa è andato storto. Per favore, riprova.",
@@ -752,7 +760,9 @@
       "user-and-poll-id-required": "Sono richiesti sia l'ID utente che l'ID del sondaggio.",
       "ai-disabled": "La generazione dei sondaggi tramite IA è disabilitata.",
       "ai-invalid-response": "La risposta AI non poteva essere utilizzata. Per favore, riprova.",
-      "ai-request-timeout": "Richiesta di sondaggio AI in scadenze"
+      "ai-request-timeout": "Richiesta di sondaggio AI in scadenze",
+      "text-answer-required": "Please enter your answer before submitting.",
+      "text-answer-too-long": "Your answer cannot exceed 500 characters."
     }
   },
   "breakout-room": {
@@ -1068,6 +1078,7 @@
     "poll-status-closed": "closed",
     "poll-type-multiple": "multiple choice",
     "poll-type-single": "single choice",
+    "poll-type-text": "text answer",
     "poll-tag-quiz": "quiz",
     "poll-tag-anonymous": "anonymous",
     "poll-question": "Q: {{question}}",
