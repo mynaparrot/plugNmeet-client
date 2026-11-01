@@ -20,6 +20,10 @@ const ExternalMediaPlayer = () => {
     if (playBackUrl) {
       dispatch(resetExternalMediaPlayer());
     }
+    // never replay a stale event into a remounted player
+    return () => {
+      dispatch(resetExternalMediaPlayer());
+    };
   }, [dispatch, playBackUrl]);
 
   return (

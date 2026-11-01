@@ -9,7 +9,10 @@ import ConnectNats from './ConnectNats';
 import { store } from '../../store';
 import { pollsApi } from '../../store/services/pollsApi';
 import { updateParticipant } from '../../store/slices/participantSlice';
-import { addExternalMediaPlayerEvent } from '../../store/slices/externalMediaPlayer';
+import {
+  addExternalMediaPlayerEvent,
+  type IExternalMediaPlayerEvent,
+} from '../../store/slices/externalMediaPlayer';
 import { addReaction, IReaction, REACTION_EMOJIS } from '../../store/slices/reactionsSlice';
 import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import i18n from '../i18n';
@@ -164,8 +167,12 @@ export default class HandleDataMessage {
     if (msg === '') {
       return;
     }
-    const data = JSON.parse(msg);
-    store.dispatch(addExternalMediaPlayerEvent(data));
+    try {
+      const data = JSON.parse(msg) as IExternalMediaPlayerEvent;
+      store.dispatch(addExternalMediaPlayerEvent(data));
+    } catch {
+      // ignore malformed payloads from older or untrusted peers
+    }
   }
 
   public handleSpeechSubtitleText(message: string) {
