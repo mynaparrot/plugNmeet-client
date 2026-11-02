@@ -8,6 +8,7 @@ import type {
 
 import { getConfigValue } from '../../../helpers/utils';
 import { ensureImageDataIsLoaded, ImageCustomData } from './handleFiles';
+import { sanitizeLibraryBlob } from './librarySanitizer';
 import {
   DEFAULT_A4_MARGIN,
   DEFAULT_PAGE_ORIENTATION,
@@ -45,7 +46,8 @@ export const addPreloadedLibraryItems = async (excalidrawAPI: ExcalidrawImperati
       return libraryCache.get(item)!;
     }
     const request = await fetch(item);
-    const blob = await request.blob();
+    // Libraries are restored item-by-item, so cross-item arrow bindings must be cleared first.
+    const blob = await sanitizeLibraryBlob(await request.blob());
     libraryCache.set(item, blob);
     return blob;
   });
