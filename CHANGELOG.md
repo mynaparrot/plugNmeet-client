@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.5.6](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.5...v2.5.6) (2026-11-03)
+
+
+### Bug Fixes
+
+* **nats:** scope client inboxPrefix and ACL by roomId and userId ([ceb12d4](https://github.com/mynaparrot/plugNmeet-client/commit/ceb12d4df6d3a3760188df62d5775990773b9e93))
+* **whiteboard:** sanitize library before use ([6fbd5e3](https://github.com/mynaparrot/plugNmeet-client/commit/6fbd5e343108475174c47d0d71d32ef0c18ec98d))
+
 ## [2.5.5](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.4...v2.5.5) (2026-10-30)
 
 
