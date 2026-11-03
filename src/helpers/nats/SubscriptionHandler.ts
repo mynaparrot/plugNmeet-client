@@ -78,8 +78,6 @@ export default class SubscriptionHandler {
       console.error('subscribeToRoomEvents failed:', e);
       this.connectNats.setErrorStatus(i18n.t('notifications.nats-error-title'), formatNatsError(e));
     });
-    // we'll still need this for any pub/sub based messages
-    void this.subscribeToSystemPublicPubSub();
   };
 
   /**
@@ -421,6 +419,7 @@ export default class SubscriptionHandler {
     this.connectNats.isAdmin = data.localUser.isAdmin;
     const localUser = await this._handleParticipants.addLocalParticipantInfo(data.localUser);
     this.connectNats.userName = localUser.name;
+    this.connectNats.setConnectedInWaitingRoom(!!localUser.metadata?.waitForApproval);
 
     // 6. We'll initialize the media server class.
     const mediaInitialized = await this.connectNats.initializeMediaServer(
@@ -552,6 +551,7 @@ export default class SubscriptionHandler {
     // These subscriptions are set up after initial data is loaded to ensure
     // that all necessary user and room information is available.
     Promise.all([
+      this.subscribeToSystemPublicPubSub(),
       this.subscribeToChat(),
       this.subscribeToWhiteboard(),
       this.subscribeToDataChannel(),
