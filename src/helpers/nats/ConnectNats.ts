@@ -261,7 +261,7 @@ export default class ConnectNats {
         name: `plugnmeet-client-${this._roomId}_${this._userId}`,
         servers: this._natsWSUrls,
         authenticator: tokenAuthenticator(() => this._token),
-        inboxPrefix: `_INBOX.${this._userId}`,
+        inboxPrefix: `_INBOX.${this._roomId}.${this._userId}`,
         pingInterval: PING_INTERVAL,
         noEcho: true,
       });
