@@ -95,6 +95,10 @@ export default class ConnectNats {
   private pongMissedToastId: any;
   private isRoomReconnecting: boolean = false;
   private _mediaServerDataRequested = false;
+  // the user connected while waiting for approval, so the connection needs to
+  // be re-created once approved (new token with different permissions)
+  private _connectedInWaitingRoom = false;
+  private _isReconnectingForApproval = false;
 
   // state setters
   private readonly _setErrorState: Dispatch<IErrorPageProps>;
@@ -255,7 +259,36 @@ export default class ConnectNats {
     this._currentRoomInfo = currentRoomInfo;
   }
 
-  public openConn = async () => {
+  /**
+   * Opens the NATS connection and sets up JetStream, subscriptions and the
+   * periodic tasks. When `isReconnect` is true (e.g. after the user has been
+   * approved from the waiting room), the existing connection is fully closed
+   * first and the already-running periodic tasks are kept as they are.
+   */
+  public openConn = async (isReconnect = false): Promise<boolean> => {
+    if (isReconnect) {
+      this._isReconnectingForApproval = true;
+      this.messageQueue.setIsConnected(false);
+
+      // stop the old connection's status checker and clear its reconnect UI
+      clearInterval(this.statusCheckerInterval);
+      this.statusCheckerInterval = undefined;
+      if (this.toastIdConnecting) {
+        toast.dismiss(this.toastIdConnecting);
+        this.toastIdConnecting = undefined;
+      }
+      this.isRoomReconnecting = false;
+
+      // fully close the old connection (including its subscriptions and status
+      // iterator) before creating the new one
+      const oldNc = this._nc;
+      this._nc = undefined;
+      if (oldNc && !oldNc.isClosed()) {
+        await oldNc.close();
+        await oldNc.closed();
+      }
+    }
+
     try {
       this._nc = await wsconnect({
         name: `plugnmeet-client-${this._roomId}_${this._userId}`,
@@ -266,36 +299,43 @@ export default class ConnectNats {
         noEcho: true,
       });
       this.messageQueue.setNc(this._nc);
-
       console.info(`connected ${this._nc.getServer()}`);
     } catch (e) {
+      this._isReconnectingForApproval = false;
       console.error(e);
       this.setErrorStatus(i18n.t('notifications.nats-error-title'), formatNatsError(e));
-      return;
+      return false;
     }
 
-    this._setRoomConnectionStatusState('receiving-data');
+    if (!isReconnect) {
+      this._setRoomConnectionStatusState('receiving-data');
+    }
+
     this._js = jetstream(this._nc);
     this.messageQueue.setJs(this._js);
     this.messageQueue.setIsConnected(true);
+    this._isReconnectingForApproval = false;
 
     // now change status to connected
     store.dispatch(updateIsNatsServerConnected(true));
     // start monitoring connection
     this.monitorConnStatus().then();
-
     // initialize all subscriptions
     this.subscriptionHandler.initializeSubscriptions();
 
-    this.startTokenRenewInterval();
-    this.startPingToServer();
+    if (!isReconnect) {
+      this.startTokenRenewInterval();
+      this.startPingToServer();
 
-    // request for initial data
-    this.sendMessageToSystemWorker(
-      create(NatsMsgClientToServerSchema, {
-        event: NatsMsgClientToServerEvents.REQ_INITIAL_DATA,
-      }),
-    );
+      // request for initial data
+      this.sendMessageToSystemWorker(
+        create(NatsMsgClientToServerSchema, {
+          event: NatsMsgClientToServerEvents.REQ_INITIAL_DATA,
+        }),
+      );
+    }
+
+    return true;
   };
 
   public endSession = async (msg: string, backToMainRoom?: boolean) => {
@@ -380,26 +420,44 @@ export default class ConnectNats {
     this._setRoomConnectionStatusState(status);
   }
 
+  public setConnectedInWaitingRoom(val: boolean) {
+    this._connectedInWaitingRoom = val;
+  }
+
   private async monitorConnStatus() {
-    if (typeof this._nc === 'undefined') {
+    // keep a reference to the connection this monitor belongs to, so that
+    // events from a replaced/old connection can be ignored
+    const nc = this._nc;
+    if (typeof nc === 'undefined') {
       return;
     }
     const startStatusChecker = () => {
       if (typeof this.statusCheckerInterval === 'undefined') {
         this.statusCheckerInterval = setInterval(() => {
-          if (this._nc?.isClosed()) {
-            this.messageQueue.setIsConnected(false);
-            this.endSession('notifications.room-disconnected-network-error');
-
+          if (nc.isClosed() || this._nc !== nc) {
             clearInterval(this.statusCheckerInterval);
             this.statusCheckerInterval = undefined;
+            // the connection is being replaced intentionally (e.g. reconnect
+            // after approval), so it must not end the session
+            if (this._nc !== nc || this._isReconnectingForApproval) {
+              return;
+            }
+            this.messageQueue.setIsConnected(false);
+            this.endSession('notifications.room-disconnected-network-error');
             this.isRoomReconnecting = false;
           }
         }, STATUS_CHECKER_INTERVAL);
       }
     };
 
-    for await (const s of this._nc.status()) {
+    for await (const s of nc.status()) {
+      // the old connection is being closed intentionally to reconnect after
+      // approval, or it has already been replaced, so its status events must
+      // not affect the session
+      if (this._isReconnectingForApproval || this._nc !== nc) {
+        return;
+      }
+
       switch (s.type) {
         case 'disconnect':
         case 'staleConnection':
@@ -409,10 +467,10 @@ export default class ConnectNats {
           store.dispatch(updateIsNatsServerConnected(false));
           this.messageQueue.setIsConnected(false);
           if (s.type === 'staleConnection') {
-            await this._nc.close();
+            await nc.close();
           } else if (s.type === 'close') {
-            if (!this._nc.isClosed()) {
-              await this._nc.close();
+            if (!nc.isClosed()) {
+              await nc.close();
             }
           }
           break;
@@ -913,9 +971,18 @@ export default class ConnectNats {
    * Requests media server data to establish the media connection.
    * Call only when ready to join — the media token may expire if requested too early.
    */
-  public requestMediaServerData = () => {
+  public requestMediaServerData = async () => {
     if (this._mediaServerDataRequested) return;
     this._mediaServerDataRequested = true;
+
+    if (this._connectedInWaitingRoom) {
+      this._connectedInWaitingRoom = false;
+      const ok = await this.openConn(true);
+      if (!ok) {
+        this._mediaServerDataRequested = false;
+        return;
+      }
+    }
 
     this.sendMessageToSystemWorker(
       create(NatsMsgClientToServerSchema, {
