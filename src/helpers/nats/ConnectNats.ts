@@ -57,7 +57,12 @@ const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000,
   PING_INTERVAL = 10 * 1000,
   STATUS_CHECKER_INTERVAL = 500,
   USERS_SYNC_INTERVAL = 30 * 1000,
-  MAX_MISSED_PONGS = 12;
+  MAX_MISSED_PONGS = 12,
+  // retry quickly so short drops recover before they become user visible
+  RECONNECT_TIME_WAIT = 1000,
+  // delay the UI/media disruption of a drop, so transient websocket failures
+  // (proxies, cloudflare) do not pause media or flash the reconnecting toast
+  DISCONNECT_GRACE_PERIOD = 3000;
 export type PrivateDataDeliveryType = 'CHAT' | 'DATA_MSG' | 'WHITEBOARD_MSG';
 
 export default class ConnectNats {
@@ -90,6 +95,7 @@ export default class ConnectNats {
   private tokenRenewInterval: any;
   private pingInterval: any;
   private statusCheckerInterval: any;
+  private disconnectGraceTimer: any;
   private reconciliationInterval: any;
   private missedPongs = 0;
   private pongMissedToastId: any;
@@ -271,6 +277,7 @@ export default class ConnectNats {
       this.messageQueue.setIsConnected(false);
 
       // stop the old connection's status checker and clear its reconnect UI
+      this.clearDisconnectGraceTimer();
       clearInterval(this.statusCheckerInterval);
       this.statusCheckerInterval = undefined;
       if (this.toastIdConnecting) {
@@ -299,6 +306,7 @@ export default class ConnectNats {
         inboxPrefix: `_INBOX.${this._roomId}.${this._userId}`,
         pingInterval: PING_INTERVAL,
         noEcho: true,
+        reconnectTimeWait: RECONNECT_TIME_WAIT,
       });
       this.messageQueue.setNc(this._nc);
       console.info(`connected ${this._nc.getServer()}`);
@@ -360,6 +368,7 @@ export default class ConnectNats {
     clearInterval(this.reconciliationInterval);
     clearInterval(this.statusCheckerInterval);
     this.statusCheckerInterval = undefined;
+    this.clearDisconnectGraceTimer();
     if (this.toastIdConnecting) {
       toast.dismiss(this.toastIdConnecting);
       this.toastIdConnecting = undefined;
@@ -428,6 +437,45 @@ export default class ConnectNats {
     this._connectedInWaitingRoom = val;
   }
 
+  /**
+   * Cancels a pending disconnect grace period (the connection is back or the
+   * session is being torn down).
+   */
+  private clearDisconnectGraceTimer() {
+    if (this.disconnectGraceTimer) {
+      clearTimeout(this.disconnectGraceTimer);
+      this.disconnectGraceTimer = undefined;
+    }
+  }
+
+  /**
+   * Defers the user visible disconnect state (media pause + reconnecting toast)
+   * by `DISCONNECT_GRACE_PERIOD`, so short lived drops go unnoticed.
+   */
+  private startDisconnectGracePeriod(nc: NatsConnection) {
+    if (this.disconnectGraceTimer) {
+      return;
+    }
+    this.disconnectGraceTimer = setTimeout(() => {
+      this.disconnectGraceTimer = undefined;
+      // the connection was replaced or is being recreated after approval
+      if (this._isReconnectingForApproval || this._nc !== nc) {
+        return;
+      }
+      store.dispatch(updateIsNatsServerConnected(false));
+      if (!this.toastIdConnecting) {
+        this.toastIdConnecting = toast.loading(
+          i18n.t('notifications.room-disconnected-reconnecting'),
+          {
+            type: 'warning',
+            closeButton: false,
+            autoClose: false,
+          },
+        );
+      }
+    }, DISCONNECT_GRACE_PERIOD);
+  }
+
   private async monitorConnStatus() {
     // keep a reference to the connection this monitor belongs to, so that
     // events from a replaced/old connection can be ignored
@@ -441,6 +489,7 @@ export default class ConnectNats {
           if (nc.isClosed() || this._nc !== nc) {
             clearInterval(this.statusCheckerInterval);
             this.statusCheckerInterval = undefined;
+            this.clearDisconnectGraceTimer();
             // the connection is being replaced intentionally (e.g. reconnect
             // after approval), so it must not end the session
             if (this._nc !== nc || this._isReconnectingForApproval) {
@@ -457,36 +506,42 @@ export default class ConnectNats {
     for await (const s of nc.status()) {
       // the old connection is being closed intentionally to reconnect after
       // approval, or it has already been replaced, so its status events must
-      // not affect the session
+      // not affect the session (any pending grace timer is cleared by
+      // openConn(true)/endSession)
       if (this._isReconnectingForApproval || this._nc !== nc) {
         return;
       }
 
       switch (s.type) {
-        case 'disconnect':
-        case 'staleConnection':
         case 'close':
-          // when nats connection drops during that time, it disconnects first
-          // then start reconnecting, so we can set false here only
+          // the connection is gone for good, so nothing is left to wait for
+          this.clearDisconnectGraceTimer();
           store.dispatch(updateIsNatsServerConnected(false));
           this.messageQueue.setIsConnected(false);
           break;
+        case 'disconnect':
+        case 'staleConnection':
+          // buffer outgoing messages right away, but keep media and the UI
+          // untouched until the grace period expires
+          this.messageQueue.setIsConnected(false);
+          // catch a permanent close while we wait for the reconnect
+          startStatusChecker();
+          this.startDisconnectGracePeriod(nc);
+          break;
         case 'reconnecting':
           if (!this.isRoomReconnecting) {
-            this.toastIdConnecting = toast.loading(
-              i18n.t('notifications.room-disconnected-reconnecting'),
-              {
-                type: 'warning',
-                closeButton: false,
-                autoClose: false,
-              },
-            );
             this.isRoomReconnecting = true;
             startStatusChecker();
+            // the toast/UI update is owned by the grace timer; only schedule it
+            // here when no drop event scheduled one (and none already fired)
+            if (!this.disconnectGraceTimer && !this.toastIdConnecting) {
+              this.startDisconnectGracePeriod(nc);
+            }
           }
           break;
         case 'reconnect':
         case 'forceReconnect':
+          this.clearDisconnectGraceTimer();
           if (this.toastIdConnecting) {
             toast.dismiss(this.toastIdConnecting);
             this.toastIdConnecting = undefined;
