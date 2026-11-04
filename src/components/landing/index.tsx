@@ -20,7 +20,6 @@ import { LoadingIcon } from '../../assets/Icons/Loading';
 import MicrophoneIcon from './microphone';
 import WebcamIcon from './webcam';
 import WebcamPreview from '../footer/modals/webcam/webcamPreview';
-import MicrophoneModal from '../footer/modals/microphone';
 import { isHybridMode } from '../../helpers/nativeBridge';
 import useLogo from '../../helpers/hooks/useLogo';
 
@@ -85,9 +84,6 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
 
   const [showLoadingMsg, setShowLoadingMsg] = useState<string | undefined>(undefined);
   const [isReadyToConn, setIsReadyToConn] = useState<boolean | undefined>(undefined);
-  // Picker modal state lives here so the "Enable microphone" button
-  // can open the same picker (not just enumerate devices silently).
-  const [showMicPicker, setShowMicPicker] = useState(false);
 
   useEffect(() => {
     switch (roomConnectionStatus) {
@@ -146,56 +142,31 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
     return t('landing.join-prompt');
   }, [hybrid, lockMicrophone, lockWebcam, isWebcamAllowed, t]);
 
-  // "Enable microphone" single-device case: enumerate, then open the mic
-  // picker modal so the user explicitly picks + tests a mic.
-  const enableMicAndOpenPicker = useCallback(async () => {
-    await enableMediaDevices('audio');
-    setShowMicPicker(true);
-  }, [enableMediaDevices]);
+  const enableAvailableDevices = useCallback(async () => {
+    const availableKinds: ('audio' | 'video')[] = [];
+    if (!lockMicrophone) availableKinds.push('audio');
+    if (!lockWebcam && isWebcamAllowed) availableKinds.push('video');
 
-  // "Enable mic+cam" quick path: check permission, enumerate, auto-select
-  // stored-or-first-real for both mic and cam. No popup — the preview tile
-  // + menu icons stay available for change/test afterwards.
-  const enableBothQuick = useCallback(async () => {
-    await enableMediaDevices('both', { quickEnable: true });
-  }, [enableMediaDevices]);
-
-  const closeMicPicker = useCallback(
-    (deviceId?: string) => {
-      setShowMicPicker(false);
-      if (typeof deviceId === 'string' && deviceId) {
-        setSelectedAudioDevice(deviceId);
+    if (availableKinds.length === 2) {
+      try {
+        await enableMediaDevices('both', { quickEnable: true });
+        return;
+      } catch {
+        // Retry separately so one unavailable or denied device doesn't block the other.
       }
-      // cancel / no pick -> stay inactive, selection untouched
-    },
-    [setSelectedAudioDevice],
-  );
-
-  const getEnableDeviceButton = useCallback(() => {
-    if (lockMicrophone) {
-      return {
-        text: t('landing.enable-cam-btn'),
-        action: () => enableMediaDevices('video'),
-      };
-    } else if (lockWebcam || !isWebcamAllowed) {
-      return {
-        text: t('landing.enable-mic-btn'),
-        action: enableMicAndOpenPicker,
-      };
     }
-    return {
-      text: t('landing.enable-mic-cam-btn'),
-      action: enableBothQuick,
-    };
-  }, [
-    t,
-    lockMicrophone,
-    lockWebcam,
-    isWebcamAllowed,
-    enableMediaDevices,
-    enableMicAndOpenPicker,
-    enableBothQuick,
-  ]);
+
+    await Promise.allSettled(
+      availableKinds.map((kind) => enableMediaDevices(kind, { quickEnable: true })),
+    );
+  }, [lockMicrophone, lockWebcam, isWebcamAllowed, enableMediaDevices]);
+
+  const enableDeviceButtonText =
+    !lockMicrophone && !lockWebcam && isWebcamAllowed
+      ? t('landing.enable-mic-cam-btn')
+      : lockMicrophone
+        ? t('landing.enable-cam-btn')
+        : t('landing.enable-mic-btn');
 
   return (
     isStartup && (
@@ -336,17 +307,15 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
                         {t('join')}
                       </button>
                     ) : (
-                      // Sub-case 2b: No device selected yet, show the "Enable..." and "Listener" buttons.
+                      // Keep the permission request available until media is selected or the user joins as a listener.
                       <>
                         <button
                           type="button"
-                          className="primary-button w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold hover:bg-white border rounded-[15px] transition-all duration-300 shadow-button-shadow relative border-[#0088CC] bg-Blue text-white hover:text-Gray-950 disabled:bg-Gray-200 disabled:border-Gray-300 disabled:text-Gray-400 disabled:cursor-not-allowed"
                           disabled={isReadyToConn === true}
-                          onClick={getEnableDeviceButton().action}
+                          className="primary-button w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold hover:bg-white border rounded-[15px] transition-all duration-300 shadow-button-shadow relative border-[#0088CC] bg-Blue text-white hover:text-Gray-950 disabled:bg-Gray-200 disabled:border-Gray-300 disabled:text-Gray-400 disabled:cursor-not-allowed"
+                          onClick={() => void enableAvailableDevices()}
                         >
-                          <span className="relative flex items-center justify-center gap-2">
-                            {getEnableDeviceButton().text}
-                          </span>
+                          {enableDeviceButtonText}
                         </button>
                         <button
                           id="listenOnlyJoin"
@@ -366,16 +335,6 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
             </div>
           </div>
         </div>
-        {showMicPicker && !lockMicrophone && (
-          <MicrophoneModal
-            show={showMicPicker}
-            mode="select"
-            initialDeviceId={selectedAudioDevice}
-            initialDevices={audioDevices}
-            onCloseMicrophoneModal={closeMicPicker}
-            onDevicesLoaded={setAudioDevices}
-          />
-        )}
       </div>
     )
   );

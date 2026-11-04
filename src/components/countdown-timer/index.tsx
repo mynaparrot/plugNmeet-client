@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import clsx from 'clsx';
+import Draggable from 'react-draggable';
 
 import useCountdownTimerState from './hooks/useCountdownTimerState';
 import useCountdownTimerActions from './hooks/useCountdownTimerActions';
@@ -33,6 +34,17 @@ const CountdownTimer = () => {
   const { isLoading, startTimer, pauseTimer, resumeTimer, extendTimer, stopTimer } =
     useCountdownTimerActions();
   const [isSettingNewTimer, setIsSettingNewTimer] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const nodeRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 767px)');
+    const updateIsMobile = () => setIsMobile(mediaQuery.matches);
+
+    updateIsMobile();
+    mediaQuery.addEventListener('change', updateIsMobile);
+    return () => mediaQuery.removeEventListener('change', updateIsMobile);
+  }, []);
 
   if (isRecorder || !isAllow || !isActive || (!isAdmin && isIdle)) {
     return null;
@@ -41,24 +53,14 @@ const CountdownTimer = () => {
   const badgeState: ITimerBadgeState = { isIdle, isPaused, isUrgent, isFinished };
   const badgeClasses = getTimerBadgeClasses(badgeState);
 
-  if (!isAdmin) {
-    return (
-      <div
-        role="timer"
-        aria-live="off"
-        aria-label={t('countdown-timer.aria-label')}
-        className={badgeClasses}
-      >
-        <TimerBadgeContent {...badgeState} formattedTime={formattedTime} />
-      </div>
-    );
-  }
-
-  return (
+  const badge = isAdmin ? (
     <Popover className="relative">
       <PopoverButton
         aria-label={t('countdown-timer.aria-label')}
-        className={clsx('group cursor-pointer focus-ring', badgeClasses)}
+        className={clsx(
+          'group cursor-pointer focus-ring countdown-timer-drag-handle max-md:cursor-move max-md:touch-none',
+          badgeClasses,
+        )}
       >
         <TimerBadgeContent {...badgeState} formattedTime={formattedTime} showChevron />
       </PopoverButton>
@@ -90,6 +92,31 @@ const CountdownTimer = () => {
         )}
       </PopoverPanel>
     </Popover>
+  ) : (
+    <div
+      role="timer"
+      aria-live="off"
+      aria-label={t('countdown-timer.aria-label')}
+      className={clsx(
+        'countdown-timer-drag-handle max-md:cursor-move max-md:touch-none',
+        badgeClasses,
+      )}
+    >
+      <TimerBadgeContent {...badgeState} formattedTime={formattedTime} />
+    </div>
+  );
+
+  return (
+    <Draggable
+      nodeRef={nodeRef}
+      handle=".countdown-timer-drag-handle"
+      bounds="#main-area"
+      disabled={!isMobile}
+    >
+      <div ref={nodeRef} className="inline-block">
+        {badge}
+      </div>
+    </Draggable>
   );
 };
 
