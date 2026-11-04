@@ -105,6 +105,7 @@ const CountdownTimer = () => {
       handle=".countdown-timer-drag-handle"
       bounds="#main-area"
       disabled={!isMobile}
+      allowMobileScroll={true}
     >
       <div ref={nodeRef} className="inline-block">
         {badge}
