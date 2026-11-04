@@ -6,7 +6,7 @@ import {
   updateMaxNumDisplayWebcams,
 } from '../../store/slices/roomSettingsSlice';
 import { useAppDispatch } from '../../store';
-import { getConfigValue } from '../utils';
+import { getConfigValue, isValidHttpUrl } from '../utils';
 import { IMaxNumDisplayWebcams } from '../../store/slices/interfaces/roomSettings';
 
 export interface ICustomDesignParams {
@@ -37,6 +37,16 @@ export interface ICustomDesignParams {
 function isObject(value: any): value is object {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
+
+const CSS_BREAKOUT_RE = /[;{}()"'\\<>]|url\(/i;
+
+const sanitizeCssValue = (val?: string): string | undefined => {
+  const trimmed = val?.trim();
+  if (!trimmed || CSS_BREAKOUT_RE.test(trimmed)) {
+    return undefined;
+  }
+  return trimmed;
+};
 
 const useClientCustomization = () => {
   const dispatch = useAppDispatch();
@@ -131,8 +141,9 @@ const useClientCustomization = () => {
 
     let css = '';
 
-    if (designCustomParams.primary_color) {
-      const color = designCustomParams.primary_color;
+    const primaryColor = sanitizeCssValue(designCustomParams.primary_color);
+    if (primaryColor) {
+      const color = primaryColor;
       css += `body:not(.dark) .primaryColor{ color: ${color}}`;
       css += `body:not(.dark) .text-primary-color { color: ${color}}`;
       css += `body:not(.dark) .placeholder\\:text-primaryColor\\/70::placeholder { color: ${color}}`;
@@ -146,8 +157,9 @@ const useClientCustomization = () => {
       }`;
     }
 
-    if (designCustomParams.secondary_color) {
-      const color = designCustomParams.secondary_color;
+    const secondaryColor = sanitizeCssValue(designCustomParams.secondary_color);
+    if (secondaryColor) {
+      const color = secondaryColor;
       css += `body:not(.dark) .secondaryColor { color: ${color} !important;}`;
       css += `body:not(.dark) .text-secondary-color { color: ${color} !important;}`;
       css += `body:not(.dark) .bg-secondary-color { background: ${color} !important;}`;
@@ -159,47 +171,52 @@ const useClientCustomization = () => {
       css += `body:not(.dark) .excalidraw { --color-primary-light: ${color}; }`;
     }
 
-    if (designCustomParams.background_image) {
+    const backgroundImage = designCustomParams.background_image?.trim();
+    if (backgroundImage && isValidHttpUrl(backgroundImage) && !/["'()\\;]/.test(backgroundImage)) {
       css += `body:not(.dark) #main-area, body:not(.dark) .error-app-bg, body:not(.dark) .waiting-room { 
-        background: url("${designCustomParams.background_image}") !important;
+        background: url("${backgroundImage}") !important;
         background-position: center !important;
         background-repeat: no-repeat !important;
         background-size: cover !important;
       }`;
-    } else if (designCustomParams.background_color) {
-      css += `body:not(.dark) #main-area, body:not(.dark) .error-app-bg, body:not(.dark) .waiting-room { 
-        background: ${designCustomParams.background_color} !important;
-      }`;
-    }
-
-    if (designCustomParams.header_bg_color) {
-      css += `body:not(.dark) header#main-header { background: ${designCustomParams.header_bg_color}; }`;
-    }
-
-    if (designCustomParams.footer_bg_color) {
-      css += `body:not(.dark) footer#main-footer { background: ${designCustomParams.footer_bg_color}; }`;
-    }
-
-    if (designCustomParams.footer_icon_bg_color && designCustomParams.footer_icon_color) {
-      css += `body:not(.dark) .footer-icon-bg { background: ${designCustomParams.footer_icon_bg_color}; color: ${designCustomParams.footer_icon_color}; }`;
     } else {
-      if (designCustomParams.footer_icon_bg_color) {
-        css += `body:not(.dark) .footer-icon-bg { background: ${designCustomParams.footer_icon_bg_color}; }`;
+      const backgroundColor = sanitizeCssValue(designCustomParams.background_color);
+      if (backgroundColor) {
+        css += `body:not(.dark) #main-area, body:not(.dark) .error-app-bg, body:not(.dark) .waiting-room { 
+        background: ${backgroundColor} !important;
+      }`;
       }
-      if (designCustomParams.footer_icon_color) {
-        css += `body:not(.dark) .footer-icon-bg { color: ${designCustomParams.footer_icon_color}; }`;
+    }
+
+    const headerBgColor = sanitizeCssValue(designCustomParams.header_bg_color);
+    if (headerBgColor) {
+      css += `body:not(.dark) header#main-header { background: ${headerBgColor}; }`;
+    }
+
+    const footerBgColor = sanitizeCssValue(designCustomParams.footer_bg_color);
+    if (footerBgColor) {
+      css += `body:not(.dark) footer#main-footer { background: ${footerBgColor}; }`;
+    }
+
+    const footerIconBgColor = sanitizeCssValue(designCustomParams.footer_icon_bg_color);
+    const footerIconColor = sanitizeCssValue(designCustomParams.footer_icon_color);
+    if (footerIconBgColor && footerIconColor) {
+      css += `body:not(.dark) .footer-icon-bg { background: ${footerIconBgColor}; color: ${footerIconColor}; }`;
+    } else {
+      if (footerIconBgColor) {
+        css += `body:not(.dark) .footer-icon-bg { background: ${footerIconBgColor}; }`;
+      }
+      if (footerIconColor) {
+        css += `body:not(.dark) .footer-icon-bg { color: ${footerIconColor}; }`;
       }
     }
 
     // Primary button customization
-    const primaryBtnBg =
-      designCustomParams.primary_btn_bg_color || designCustomParams.primary_color;
-    const primaryBtnText = designCustomParams.primary_btn_text_color;
+    const primaryBtnBg = sanitizeCssValue(designCustomParams.primary_btn_bg_color) || primaryColor;
+    const primaryBtnText = sanitizeCssValue(designCustomParams.primary_btn_text_color);
 
     if (primaryBtnBg) {
-      if (designCustomParams.primary_btn_bg_color || designCustomParams.primary_color) {
-        css += `body:not(.dark) .primary-button { background: ${primaryBtnBg}; }`;
-      }
+      css += `body:not(.dark) .primary-button { background: ${primaryBtnBg}; }`;
       if (primaryBtnText) {
         css += `body:not(.dark) .primary-button { color: ${primaryBtnText}; }`;
       }
@@ -207,32 +224,32 @@ const useClientCustomization = () => {
 
     // Secondary button customization
     const secondaryBtnBg =
-      designCustomParams.secondary_btn_bg_color || designCustomParams.secondary_color;
-    const secondaryBtnText = designCustomParams.secondary_btn_text_color;
+      sanitizeCssValue(designCustomParams.secondary_btn_bg_color) || secondaryColor;
+    const secondaryBtnText = sanitizeCssValue(designCustomParams.secondary_btn_text_color);
 
     if (secondaryBtnBg) {
-      if (designCustomParams.secondary_btn_bg_color || designCustomParams.secondary_color) {
-        css += `body:not(.dark) .secondary-button { background: ${secondaryBtnBg}; }`;
-      }
+      css += `body:not(.dark) .secondary-button { background: ${secondaryBtnBg}; }`;
       if (secondaryBtnText) {
         css += `body:not(.dark) .secondary-button { color: ${secondaryBtnText}; }`;
       }
     }
 
     const sidePanelBgColor =
-      designCustomParams.side_panel_bg_color || designCustomParams.right_side_bg_color;
+      sanitizeCssValue(designCustomParams.side_panel_bg_color) ||
+      sanitizeCssValue(designCustomParams.right_side_bg_color);
     if (sidePanelBgColor) {
       css += `body:not(.dark) .side-panel-bg-color { background: ${sidePanelBgColor}; }`;
     }
 
     const head = document.head;
-    let link: HTMLLinkElement, style: HTMLStyleElement;
+    let link: HTMLLinkElement | undefined, style: HTMLStyleElement | undefined;
 
-    if (designCustomParams.custom_css_url) {
+    const customCssUrl = designCustomParams.custom_css_url;
+    if (customCssUrl && isValidHttpUrl(customCssUrl)) {
       link = document.createElement('link');
       link.type = 'text/css';
       link.rel = 'stylesheet';
-      link.href = designCustomParams.custom_css_url;
+      link.href = customCssUrl;
       head.appendChild(link);
     }
 
@@ -250,7 +267,7 @@ const useClientCustomization = () => {
           head.removeChild(customStyle);
         }
       }
-      if (designCustomParams.custom_css_url && link) {
+      if (link) {
         head.removeChild(link);
       }
     };

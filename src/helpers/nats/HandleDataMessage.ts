@@ -22,6 +22,7 @@ import { TextWithInfo } from '../../store/slices/interfaces/speechServices';
 import { addSpeechSubtitleText } from '../../store/slices/speechServicesSlice';
 import { addAllChatMessages, selectPublicChatMessages } from '../../store/slices/chatMessagesSlice';
 import { PnmConnectionQuality } from '../livekit/ConnectionQualityMonitor';
+import { cleanHtmlForChat } from '../utils';
 
 const CHAT_SYNC_CHUNK_SIZE = 50;
 // Hard cap on a single received sync chunk: a malicious/buggy peer could
@@ -43,6 +44,7 @@ const isSyncableChatMessage = (msg: unknown): msg is ChatMessage => {
     m.id !== '' &&
     typeof m.fromUserId === 'string' &&
     m.fromUserId !== '' &&
+    m.fromUserId !== 'system' &&
     typeof m.sentAt === 'string' &&
     typeof m.message === 'string' &&
     typeof m.isPrivate === 'boolean'
@@ -244,6 +246,9 @@ export default class HandleDataMessage {
       const data = parsed.filter(isSyncableChatMessage).slice(0, CHAT_SYNC_CHUNK_SIZE);
       if (!data.length) {
         return;
+      }
+      for (const item of data) {
+        item.message = cleanHtmlForChat(item.message);
       }
       store.dispatch(
         addAllChatMessages({

@@ -19,7 +19,12 @@ export default class HandleChat {
     this.connectNats = connectNats;
   }
 
-  public handleMsg = async (payload: ChatMessage) => {
+  public handleMsg = async (payload: ChatMessage, fromPeer = false) => {
+    // Server-sent system messages arrive through handleSysChatMsg; peers must not spoof them.
+    if (fromPeer && payload.fromUserId === 'system') {
+      return;
+    }
+
     // If this is a private message, we should only process it if we are the sender or the receiver.
     if (
       payload.isPrivate &&

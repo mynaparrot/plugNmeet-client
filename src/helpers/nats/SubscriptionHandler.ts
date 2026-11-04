@@ -158,7 +158,7 @@ export default class SubscriptionHandler {
       dataToParse = data;
     }
     const payload = fromBinary(ChatMessageSchema, dataToParse);
-    await this._handleChat.handleMsg(payload);
+    await this._handleChat.handleMsg(payload, true);
   }
 
   /**
