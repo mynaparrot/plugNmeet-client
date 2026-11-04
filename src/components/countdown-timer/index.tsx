@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import clsx from 'clsx';
 import Draggable from 'react-draggable';
 
+import { useAppSelector } from '../../store';
 import useCountdownTimerState from './hooks/useCountdownTimerState';
 import useCountdownTimerActions from './hooks/useCountdownTimerActions';
 import TimerBadgeContent from './timerBadgeContent';
@@ -34,17 +35,9 @@ const CountdownTimer = () => {
   const { isLoading, startTimer, pauseTimer, resumeTimer, extendTimer, stopTimer } =
     useCountdownTimerActions();
   const [isSettingNewTimer, setIsSettingNewTimer] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const screenWidth = useAppSelector((state) => state.bottomIconsActivity.screenWidth);
+  const isMobile = screenWidth < 768;
   const nodeRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(max-width: 767px)');
-    const updateIsMobile = () => setIsMobile(mediaQuery.matches);
-
-    updateIsMobile();
-    mediaQuery.addEventListener('change', updateIsMobile);
-    return () => mediaQuery.removeEventListener('change', updateIsMobile);
-  }, []);
 
   if (isRecorder || !isAllow || !isActive || (!isAdmin && isIdle)) {
     return null;
