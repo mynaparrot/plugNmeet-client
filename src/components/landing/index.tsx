@@ -112,7 +112,7 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
         const conn = getNatsConn();
         if (conn) {
           setShowLoadingMsg(t('landing.connecting-media-server'));
-          conn.requestMediaServerData();
+          void conn.requestMediaServerData();
         }
       }
     }

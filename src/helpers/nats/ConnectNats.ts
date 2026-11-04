@@ -293,6 +293,8 @@ export default class ConnectNats {
       this._nc = await wsconnect({
         name: `plugnmeet-client-${this._roomId}_${this._userId}`,
         servers: this._natsWSUrls,
+        // only use the configured WS URLs; cluster-gossiped servers are NATS endpoints without websocket
+        ignoreClusterUpdates: true,
         authenticator: tokenAuthenticator(() => this._token),
         inboxPrefix: `_INBOX.${this._roomId}.${this._userId}`,
         pingInterval: PING_INTERVAL,
@@ -319,7 +321,7 @@ export default class ConnectNats {
     // now change status to connected
     store.dispatch(updateIsNatsServerConnected(true));
     // start monitoring connection
-    this.monitorConnStatus().then();
+    void this.monitorConnStatus();
     // initialize all subscriptions
     this.subscriptionHandler.initializeSubscriptions();
 
@@ -466,13 +468,6 @@ export default class ConnectNats {
           // then start reconnecting, so we can set false here only
           store.dispatch(updateIsNatsServerConnected(false));
           this.messageQueue.setIsConnected(false);
-          if (s.type === 'staleConnection') {
-            await nc.close();
-          } else if (s.type === 'close') {
-            if (!nc.isClosed()) {
-              await nc.close();
-            }
-          }
           break;
         case 'reconnecting':
           if (!this.isRoomReconnecting) {
