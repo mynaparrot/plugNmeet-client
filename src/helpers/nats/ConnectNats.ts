@@ -37,7 +37,7 @@ import {
   importSecretKeyFromPlainText,
 } from '../libs/cryptoMessages';
 import { ICurrentRoom } from '../../store/slices/interfaces/session';
-import { formatNatsError, getChatDonors, isUserRecorder, isValidHttpUrl } from '../utils';
+import { formatNatsError, getChatDonors, isUserRecorder, isValidHttpUrl, sleep } from '../utils';
 import {
   addSelfInsertedE2EESecretKey,
   addUserNotification,
@@ -60,6 +60,12 @@ const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000,
   MAX_MISSED_PONGS = 12,
   // retry quickly so short drops recover before they become user visible
   RECONNECT_TIME_WAIT = 1000,
+  // 5s per-server handshake timeout instead of the 20s SDK default, so a
+  // stalled proxy/cloudflare connection fails over to the next WS URL quickly
+  INITIAL_CONNECT_TIMEOUT = 5000,
+  // full passes over the WS URL list before giving up; `waitOnFirstConnect`
+  // would loop forever and keep servers dropped during a failed pass out of play
+  MAX_INITIAL_CONNECT_ATTEMPTS = 3,
   // delay the UI/media disruption of a drop, so transient websocket failures
   // (proxies, cloudflare) do not pause media or flash the reconnecting toast
   DISCONNECT_GRACE_PERIOD = 3000;
@@ -266,6 +272,41 @@ export default class ConnectNats {
   }
 
   /**
+   * Creates the websocket connection. Each attempt tries every URL in
+   * `_natsWSUrls`; a failed pass is retried so transient proxy/cloudflare
+   * failures on the first attempt do not end the session.
+   */
+  private connectWithRetry = async (): Promise<NatsConnection> => {
+    let lastErr: unknown;
+    for (let attempt = 1; attempt <= MAX_INITIAL_CONNECT_ATTEMPTS; attempt++) {
+      try {
+        return await wsconnect({
+          name: `plugnmeet-client-${this._roomId}_${this._userId}`,
+          servers: this._natsWSUrls,
+          // only use the configured WS URLs; cluster-gossiped servers are NATS endpoints without websocket
+          ignoreClusterUpdates: true,
+          authenticator: tokenAuthenticator(() => this._token),
+          inboxPrefix: `_INBOX.${this._roomId}.${this._userId}`,
+          pingInterval: PING_INTERVAL,
+          noEcho: true,
+          reconnectTimeWait: RECONNECT_TIME_WAIT,
+          timeout: INITIAL_CONNECT_TIMEOUT,
+        });
+      } catch (err) {
+        lastErr = err;
+        if (attempt < MAX_INITIAL_CONNECT_ATTEMPTS) {
+          console.warn(
+            `NATS initial connect attempt ${attempt}/${MAX_INITIAL_CONNECT_ATTEMPTS} failed, retrying...`,
+            err,
+          );
+          await sleep(RECONNECT_TIME_WAIT);
+        }
+      }
+    }
+    throw lastErr;
+  };
+
+  /**
    * Opens the NATS connection and sets up JetStream, subscriptions and the
    * periodic tasks. When `isReconnect` is true (e.g. after the user has been
    * approved from the waiting room), the existing connection is fully closed
@@ -297,17 +338,7 @@ export default class ConnectNats {
     }
 
     try {
-      this._nc = await wsconnect({
-        name: `plugnmeet-client-${this._roomId}_${this._userId}`,
-        servers: this._natsWSUrls,
-        // only use the configured WS URLs; cluster-gossiped servers are NATS endpoints without websocket
-        ignoreClusterUpdates: true,
-        authenticator: tokenAuthenticator(() => this._token),
-        inboxPrefix: `_INBOX.${this._roomId}.${this._userId}`,
-        pingInterval: PING_INTERVAL,
-        noEcho: true,
-        reconnectTimeWait: RECONNECT_TIME_WAIT,
-      });
+      this._nc = await this.connectWithRetry();
       this.messageQueue.setNc(this._nc);
       console.info(`connected ${this._nc.getServer()}`);
     } catch (e) {
