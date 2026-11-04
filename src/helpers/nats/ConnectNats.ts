@@ -393,7 +393,9 @@ export default class ConnectNats {
     // Final resource cleanup
     destroyAudioManager();
 
-    const meta = this._currentRoomInfo?.metadata;
+    // read from the store: metadata may have been updated since the initial
+    // data (e.g. waiting room approval, logoutUrl changes)
+    const meta = store.getState().session.currentRoom.metadata;
     // If we're inside a breakout room, try to auto-return to the main room
     if (meta?.isBreakoutRoom && !backToMainRoom) {
       const returned = await autoReturnToMainRoom();
@@ -974,7 +976,15 @@ export default class ConnectNats {
       this._connectedInWaitingRoom = false;
       const ok = await this.openConn(true);
       if (!ok) {
-        this._mediaServerDataRequested = false;
+        return;
+      }
+    }
+
+    if (!this._mediaServerConn) {
+      const currentRoom = store.getState().session.currentRoom;
+      const e2ee = currentRoom.metadata?.roomFeatures?.endToEndEncryptionFeatures;
+      const mediaInitialized = await this.initializeMediaServer(e2ee, currentRoom.sid);
+      if (!mediaInitialized) {
         return;
       }
     }

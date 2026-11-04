@@ -1,4 +1,5 @@
 import { create, fromBinary, fromJson, fromJsonString } from '@bufbuild/protobuf';
+import { isE2EESupported } from 'livekit-client';
 import {
   ChatMessage,
   ChatMessageSchema,
@@ -419,16 +420,21 @@ export default class SubscriptionHandler {
     this.connectNats.isAdmin = data.localUser.isAdmin;
     const localUser = await this._handleParticipants.addLocalParticipantInfo(data.localUser);
     this.connectNats.userName = localUser.name;
+
+    // 6. We'll check the E2EE browser support before going any further.
     this.connectNats.setConnectedInWaitingRoom(!!localUser.metadata?.waitForApproval);
 
-    // 6. We'll initialize the media server class.
-    const mediaInitialized = await this.connectNats.initializeMediaServer(
-      this.connectNats.currentRoomInfo.metadata?.roomFeatures?.endToEndEncryptionFeatures,
-      data.room.roomSid,
-    );
-    if (!mediaInitialized) {
+    // fail fast on unsupported browsers on initial load
+    const e2ee =
+      store.getState().session.currentRoom.metadata?.roomFeatures?.endToEndEncryptionFeatures;
+    if (e2ee?.isEnabled && !isE2EESupported()) {
+      this.connectNats.setErrorStatus(
+        i18n.t('notifications.e2ee-unsupported-browser-title'),
+        i18n.t('notifications.e2ee-unsupported-browser-msg'),
+      );
       return;
     }
+
     this.connectNats.setRoomConnectionStatusState('ready');
   }
 
@@ -523,7 +529,7 @@ export default class SubscriptionHandler {
       }
       // Restore speech-to-text data if the feature is enabled.
       const transcriptionFeatures =
-        this.connectNats.currentRoomInfo?.metadata?.roomFeatures?.insightsFeatures
+        store.getState().session.currentRoom.metadata?.roomFeatures?.insightsFeatures
           ?.transcriptionFeatures;
       if (results[3].status === 'rejected') {
         console.error('Failed to load speech-to-text data from IndexedDB:', results[3].reason);

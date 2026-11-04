@@ -36,7 +36,9 @@ export default class HandleRoomData {
       roomId: info.roomId,
       sid: info.roomSid,
     };
-    store.dispatch(addCurrentRoom(this._room));
+    // dispatch a fresh object (not `this._room`) so Immer's auto-freeze never
+    // freezes our mutable instance while it lands in the store
+    store.dispatch(addCurrentRoom({ roomId: info.roomId, sid: info.roomSid }));
     await this.updateRoomMetadata(info.metadata);
     return this._room;
   };
@@ -48,6 +50,7 @@ export default class HandleRoomData {
       });
       if (
         typeof this._room.metadata === 'undefined' ||
+        !metadata.metadataId ||
         this._room.metadata.metadataId !== metadata.metadataId
       ) {
         this._room.metadata = metadata;
