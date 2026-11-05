@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import clsx from 'clsx';
@@ -9,8 +9,7 @@ import useCountdownTimerState from './hooks/useCountdownTimerState';
 import useCountdownTimerActions from './hooks/useCountdownTimerActions';
 import TimerBadgeContent from './timerBadgeContent';
 import { getTimerBadgeClasses } from './utils';
-import SetupPanel from './setupPanel';
-import LiveControlPanel from './liveControlPanel';
+import AdminPanel from './adminPanel';
 
 export interface ITimerBadgeState {
   isIdle: boolean;
@@ -34,7 +33,6 @@ const CountdownTimer = () => {
   } = useCountdownTimerState();
   const { isLoading, startTimer, pauseTimer, resumeTimer, extendTimer, stopTimer } =
     useCountdownTimerActions();
-  const [isSettingNewTimer, setIsSettingNewTimer] = useState(false);
   const screenWidth = useAppSelector((state) => state.bottomIconsActivity.screenWidth);
   const isMobile = screenWidth < 768;
   const nodeRef = useRef<HTMLDivElement>(null);
@@ -62,27 +60,18 @@ const CountdownTimer = () => {
         transition
         className="w-80 max-w-[calc(100vw-2rem)] p-3 rounded-md shadow-lg z-50 bg-white dark:bg-dark-primary border border-Gray-100 dark:border-Gray-700 focus:outline-hidden [--anchor-gap:8px] transition ease-out data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150"
       >
-        {isIdle || (isFinished && isSettingNewTimer) ? (
-          <SetupPanel
-            isLoading={isLoading}
-            onStart={(durationSeconds) => {
-              setIsSettingNewTimer(false);
-              void startTimer(durationSeconds);
-            }}
-          />
-        ) : (
-          <LiveControlPanel
-            formattedTime={formattedTime}
-            isPaused={isPaused}
-            isFinished={isFinished}
-            isLoading={isLoading}
-            onPause={pauseTimer}
-            onResume={resumeTimer}
-            onExtend={extendTimer}
-            onEndTimer={stopTimer}
-            onSetNewTimer={() => setIsSettingNewTimer(true)}
-          />
-        )}
+        <AdminPanel
+          isIdle={isIdle}
+          isPaused={isPaused}
+          isFinished={isFinished}
+          formattedTime={formattedTime}
+          isLoading={isLoading}
+          onStart={(durationSeconds) => void startTimer(durationSeconds)}
+          onPause={pauseTimer}
+          onResume={resumeTimer}
+          onExtend={extendTimer}
+          onEndTimer={stopTimer}
+        />
       </PopoverPanel>
     </Popover>
   ) : (
