@@ -2,8 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { PageTransitionDirection } from '../navigationQueue';
 
-const STAGE_SELECTOR = '.wb-canvas-stage';
-const SOURCE_CANVAS_SELECTOR = 'canvas.excalidraw__canvas.static';
+export const STAGE_SELECTOR = '.wb-canvas-stage';
+export const SOURCE_CANVAS_SELECTOR = 'canvas.excalidraw__canvas.static';
 const STAGE_CLASSES = [
   'wb-transition-holding',
   'wb-transition-next',
@@ -27,6 +27,37 @@ const afterNextPaint = () =>
   new Promise<void>((resolve) => {
     requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
   });
+
+/**
+ * Copies the page currently painted by Excalidraw into the overlay canvas.
+ * Returns false when the page cannot be frozen (Excalidraw internals renamed by
+ * an upgrade, or a not-yet-rendered canvas): the switch then runs without an
+ * overlay instead of leaving the stage hidden.
+ */
+export const captureStageSnapshot = (stage: HTMLElement, snapshot: HTMLCanvasElement): boolean => {
+  const source = stage.querySelector<HTMLCanvasElement>(SOURCE_CANVAS_SELECTOR);
+  if (!source || !source.width || !source.height) {
+    return false;
+  }
+
+  snapshot.width = source.width;
+  snapshot.height = source.height;
+  const context = snapshot.getContext('2d');
+  if (!context) {
+    return false;
+  }
+
+  // The canvas itself is transparent where nothing is drawn: match the
+  // whiteboard background so uncovered areas do not flash white.
+  const root = stage.querySelector<HTMLElement>('.excalidraw');
+  const background = root ? getComputedStyle(root).backgroundColor : '';
+  if (background && background !== 'transparent' && background !== 'rgba(0, 0, 0, 0)') {
+    context.fillStyle = background;
+    context.fillRect(0, 0, snapshot.width, snapshot.height);
+  }
+  context.drawImage(source, 0, 0);
+  return true;
+};
 
 /**
  * Keeps the previous page on screen while the next one is being prepared: the
@@ -108,26 +139,10 @@ const useWhiteboardPageTransition = () => {
         return;
       }
 
-      const source = stage.querySelector<HTMLCanvasElement>(SOURCE_CANVAS_SELECTOR);
-      if (!source || source.width === 0 || source.height === 0) {
+      // Without a copyable frame there is nothing to hold: run the switch plain.
+      if (!captureStageSnapshot(stage, snapshot)) {
         return;
       }
-
-      snapshot.width = source.width;
-      snapshot.height = source.height;
-      const context = snapshot.getContext('2d');
-      if (!context) {
-        return;
-      }
-      // The canvas itself is transparent where nothing is drawn: match the
-      // whiteboard background so uncovered areas do not flash white.
-      const root = stage.querySelector<HTMLElement>('.excalidraw');
-      const background = root ? getComputedStyle(root).backgroundColor : '';
-      if (background && background !== 'transparent' && background !== 'rgba(0, 0, 0, 0)') {
-        context.fillStyle = background;
-        context.fillRect(0, 0, snapshot.width, snapshot.height);
-      }
-      context.drawImage(source, 0, 0);
 
       holdingRef.current = true;
       setStageClass(STAGE_CLASSES[0]);
