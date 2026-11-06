@@ -66,10 +66,15 @@ const setupTool = () => {
   return { setActiveTool, persistence };
 };
 
-const setupViewport = () => {
+const setupViewport = (options: { width?: number } = {}) => {
   const updateScene = vi.fn();
-  const persistence = createViewportPersistence({ updateScene });
-  return { updateScene, persistence };
+  const getAppState = vi.fn(() => ({ width: options.width }) as unknown as AppState);
+  const persistence = createViewportPersistence(
+    // Only pass getAppState when a canvas width is under test, so the
+    // width-less payloads of the other cases stay untouched.
+    options.width === undefined ? { updateScene } : { updateScene, getAppState },
+  );
+  return { updateScene, getAppState, persistence };
 };
 
 beforeEach(() => {
@@ -272,6 +277,50 @@ describe('viewport persistence', () => {
     });
   });
 
+  it('records the canvas width the viewport belongs to', async () => {
+    const { persistence } = setupViewport({ width: 1440 });
+
+    persistence.onViewportChange('default', 1, -120, -80, 0.75);
+    await persistence.persistViewport();
+
+    expect(fakeIdb.read(STORE, viewportKey('default', 1))).toEqual({
+      scrollX: -120,
+      scrollY: -80,
+      zoom: 0.75,
+      width: 1440,
+    });
+  });
+
+  it('prefers the explicit width over the canvas width', async () => {
+    const { persistence } = setupViewport({ width: 1440 });
+
+    persistence.onViewportChange('default', 1, -120, -80, 0.4, 480);
+    await persistence.persistViewport();
+
+    expect(fakeIdb.read(STORE, viewportKey('default', 1))).toEqual({
+      scrollX: -120,
+      scrollY: -80,
+      zoom: 0.4,
+      width: 480,
+    });
+  });
+
+  it.each([0, -10, Number.NaN, Number.POSITIVE_INFINITY])(
+    'omits the invalid width %s instead of rejecting the viewport',
+    async (width) => {
+      const { persistence } = setupViewport();
+
+      persistence.onViewportChange('default', 1, 1, 2, 1, width);
+      await persistence.persistViewport();
+
+      expect(fakeIdb.read(STORE, viewportKey('default', 1))).toEqual({
+        scrollX: 1,
+        scrollY: 2,
+        zoom: 1,
+      });
+    },
+  );
+
   it('does not write when no viewport was recorded', async () => {
     const { persistence } = setupViewport();
 
@@ -320,6 +369,106 @@ describe('viewport persistence', () => {
 
     expect(updateScene).toHaveBeenCalledTimes(1);
   });
+
+  it('restores a viewport recorded on the same canvas width', async () => {
+    fakeIdb.put(STORE, viewportKey('default', 1), {
+      scrollX: 42,
+      scrollY: -7,
+      zoom: 0.6,
+      width: 1440,
+    });
+    const { updateScene, persistence } = setupViewport({ width: 1440 });
+
+    await expect(persistence.tryRestoreViewport('default', 1)).resolves.toBe(true);
+
+    expect(updateScene).toHaveBeenCalledWith({
+      appState: { scrollX: 42, scrollY: -7, zoom: { value: 0.6 } },
+    });
+    expect(fakeIdb.has(STORE, viewportKey('default', 1))).toBe(false);
+  });
+
+  it('restores a viewport whose canvas width only changed sub-pixel', async () => {
+    fakeIdb.put(STORE, viewportKey('default', 1), {
+      scrollX: 42,
+      scrollY: -7,
+      zoom: 0.6,
+      width: 1440,
+    });
+    const { updateScene, persistence } = setupViewport({ width: 1440.5 });
+
+    await expect(persistence.tryRestoreViewport('default', 1)).resolves.toBe(true);
+    expect(updateScene).toHaveBeenCalledTimes(1);
+  });
+
+  it('restores a viewport stored without a width', async () => {
+    fakeIdb.put(STORE, viewportKey('default', 1), { scrollX: 1, scrollY: 2, zoom: 1 });
+    const { updateScene, persistence } = setupViewport({ width: 1440 });
+
+    await expect(persistence.tryRestoreViewport('default', 1)).resolves.toBe(true);
+    expect(updateScene).toHaveBeenCalledTimes(1);
+  });
+
+  it('drops a viewport recorded on a different canvas width so the caller recomputes the zoom', async () => {
+    // visited while the window was small: its zoom no longer fits a wide canvas
+    fakeIdb.put(STORE, viewportKey('default', 1), {
+      scrollX: -120,
+      scrollY: -80,
+      zoom: 0.4,
+      width: 480,
+    });
+    const { updateScene, persistence } = setupViewport({ width: 1440 });
+
+    await expect(persistence.tryRestoreViewport('default', 1)).resolves.toBe(false);
+
+    expect(updateScene).not.toHaveBeenCalled();
+    expect(fakeIdb.has(STORE, viewportKey('default', 1))).toBe(false);
+  });
+
+  it('does not re-persist a viewport dropped for its width when the page is left', async () => {
+    fakeIdb.put(STORE, viewportKey('default', 1), {
+      scrollX: 1,
+      scrollY: 2,
+      zoom: 0.4,
+      width: 480,
+    });
+    const { persistence } = setupViewport({ width: 1440 });
+
+    await expect(persistence.tryRestoreViewport('default', 1)).resolves.toBe(false);
+    await persistence.persistViewport();
+
+    expect(idbStore).not.toHaveBeenCalled();
+  });
+
+  it('keeps the recorded width when the restored viewport is persisted again', async () => {
+    fakeIdb.put(STORE, viewportKey('default', 1), {
+      scrollX: 5,
+      scrollY: 6,
+      zoom: 0.5,
+      width: 960,
+    });
+    const { persistence } = setupViewport({ width: 960 });
+
+    await persistence.tryRestoreViewport('default', 1);
+    await persistence.persistViewport();
+
+    expect(fakeIdb.read(STORE, viewportKey('default', 1))).toEqual({
+      scrollX: 5,
+      scrollY: 6,
+      zoom: 0.5,
+      width: 960,
+    });
+  });
+
+  it.each([0, -960, Number.NaN])(
+    'drops a stored viewport with the invalid width %s',
+    async (width) => {
+      fakeIdb.put(STORE, viewportKey('default', 1), { scrollX: 1, scrollY: 2, zoom: 1, width });
+      const { updateScene, persistence } = setupViewport({ width: 1440 });
+
+      await expect(persistence.tryRestoreViewport('default', 1)).resolves.toBe(false);
+      expect(updateScene).not.toHaveBeenCalled();
+    },
+  );
 
   it('returns false and leaves the scene alone when nothing is stored', async () => {
     const { updateScene, persistence } = setupViewport();

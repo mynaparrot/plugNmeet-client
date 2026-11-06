@@ -84,6 +84,8 @@ export interface ViewportSnapshot {
   scrollX: number;
   scrollY: number;
   zoom: number;
+  /** Canvas width the viewport was recorded on; a different width invalidates it. */
+  width?: number;
 }
 
 interface ScopedViewport extends ViewportSnapshot {
@@ -97,25 +99,57 @@ const viewportKey = (fileId: string, page: number) =>
 const isFiniteNumber = (value: unknown): value is number =>
   typeof value === 'number' && Number.isFinite(value);
 
+const isPositiveLength = (value: unknown): value is number => isFiniteNumber(value) && value > 0;
+
+/** Persisted shape; width is omitted when unknown so width-less entries stay unchanged. */
+const toSnapshot = (
+  scrollX: number,
+  scrollY: number,
+  zoom: number,
+  width?: number,
+): ViewportSnapshot =>
+  width === undefined ? { scrollX, scrollY, zoom } : { scrollX, scrollY, zoom, width };
+
 const parseViewport = (raw: unknown): ViewportSnapshot | null => {
   if (!raw || typeof raw !== 'object') {
     return null;
   }
-  const { scrollX, scrollY, zoom } = raw as Partial<ViewportSnapshot>;
+  const { scrollX, scrollY, zoom, width } = raw as Partial<ViewportSnapshot>;
   if (!isFiniteNumber(scrollX) || !isFiniteNumber(scrollY) || !isFiniteNumber(zoom) || zoom <= 0) {
     return null;
   }
-  return { scrollX, scrollY, zoom };
+  if (width !== undefined && !isPositiveLength(width)) {
+    return null;
+  }
+  return toSnapshot(scrollX, scrollY, zoom, width);
 };
 
-export const createViewportPersistence = (api: Pick<ExcalidrawImperativeAPI, 'updateScene'>) => {
+/** A zoom recorded on a canvas this much wider/narrower no longer fits. */
+const WIDTH_MISMATCH_TOLERANCE = 1;
+
+type ViewportPersistenceAPI = Pick<ExcalidrawImperativeAPI, 'updateScene'> &
+  Partial<Pick<ExcalidrawImperativeAPI, 'getAppState'>>;
+
+export const createViewportPersistence = (api: ViewportPersistenceAPI) => {
   let lastViewport: ScopedViewport | null = null;
   // The write of the page being left can still be in flight when the next page
   // restores, and IndexedDB reads are async: restores wait for it.
   let pendingWrite: Promise<void> | null = null;
 
+  const canvasWidth = (): number | undefined => {
+    const width = api.getAppState?.().width;
+    return isPositiveLength(width) ? width : undefined;
+  };
+
   return {
-    onViewportChange(fileId: string, page: number, scrollX: number, scrollY: number, zoom: number) {
+    onViewportChange(
+      fileId: string,
+      page: number,
+      scrollX: number,
+      scrollY: number,
+      zoom: number,
+      width?: number,
+    ) {
       if (
         !fileId ||
         !isFiniteNumber(page) ||
@@ -126,7 +160,11 @@ export const createViewportPersistence = (api: Pick<ExcalidrawImperativeAPI, 'up
       ) {
         return;
       }
-      lastViewport = { fileId, page, scrollX, scrollY, zoom };
+      lastViewport = {
+        fileId,
+        page,
+        ...toSnapshot(scrollX, scrollY, zoom, isPositiveLength(width) ? width : canvasWidth()),
+      };
     },
     async persistViewport(): Promise<void> {
       // Capture and consume the scope synchronously: a following page switch must
@@ -136,14 +174,14 @@ export const createViewportPersistence = (api: Pick<ExcalidrawImperativeAPI, 'up
       if (!snapshot) {
         return;
       }
-      const { fileId, page, scrollX, scrollY, zoom } = snapshot;
+      const { fileId, page, scrollX, scrollY, zoom, width } = snapshot;
       const write = (async () => {
         try {
-          await idbStore(DB_STORE_NAMES.WHITEBOARD, viewportKey(fileId, page), {
-            scrollX,
-            scrollY,
-            zoom,
-          });
+          await idbStore(
+            DB_STORE_NAMES.WHITEBOARD,
+            viewportKey(fileId, page),
+            toSnapshot(scrollX, scrollY, zoom, width),
+          );
         } catch {
           // storage unavailable
         }
@@ -176,6 +214,17 @@ export const createViewportPersistence = (api: Pick<ExcalidrawImperativeAPI, 'up
       if (!viewport) {
         // nothing stored for this scope: forget the previous scope so it is
         // never re-persisted under the wrong key after switching pages
+        lastViewport = null;
+        return false;
+      }
+      const currentWidth = canvasWidth();
+      if (
+        viewport.width !== undefined &&
+        currentWidth !== undefined &&
+        Math.abs(viewport.width - currentWidth) > WIDTH_MISMATCH_TOLERANCE
+      ) {
+        // Recorded on a differently sized canvas: its zoom no longer fits, so the
+        // caller recomputes it for the current width instead of restoring it.
         lastViewport = null;
         return false;
       }

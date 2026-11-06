@@ -13,8 +13,28 @@ export interface OfficePageLoad {
   elements: ExcalidrawElement[];
 }
 
+/** How the next page enters relative to the page that is on screen. */
+export type PageTransitionDirection = 'next' | 'prev' | 'fade';
+
 const sameTarget = (a: NavigationTarget, b: NavigationTarget) =>
   a.fileId === b.fileId && a.page === b.page;
+
+/** Direction of travel from the last settled page to the requested target. */
+export const resolvePageTransitionDirection = (
+  settled: NavigationTarget | null,
+  target: NavigationTarget,
+): PageTransitionDirection => {
+  if (!settled || settled.fileId !== target.fileId) {
+    return 'fade';
+  }
+  if (target.page > settled.page) {
+    return 'next';
+  }
+  if (target.page < settled.page) {
+    return 'prev';
+  }
+  return 'fade';
+};
 
 /**
  * The page metadata for `page` of `fileId`, or null when the store describes a

@@ -36,6 +36,7 @@ import useWhiteboardAppStateSync from './helpers/hooks/useWhiteboardAppStateSync
 import useOfficePageSyncer from './helpers/hooks/useOfficePageSyncer';
 import useWhiteboardFileDrop from './helpers/hooks/useWhiteboardFileDrop';
 import useWhiteboardSessionPersistence from './helpers/hooks/useWhiteboardSessionPersistence';
+import useWhiteboardPageTransition from './helpers/hooks/useWhiteboardPageTransition';
 import {
   A4_BOUNDARY_GUIDE_ID,
   ensureAllImagesDataIsLoaded,
@@ -57,6 +58,7 @@ import { getWhiteboardController } from './collab';
 import type { WhiteboardPresence } from './collab/types';
 import {
   LatestNavigationQueue,
+  resolvePageTransitionDirection,
   runNavigationTransition,
   type NavigationTarget,
   type OfficePageLoad,
@@ -175,6 +177,16 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     excalidrawAPI,
     isPresenter: !!isPresenter,
   });
+  const {
+    snapshotCanvasRef,
+    transitionClass,
+    captureBeforeReset,
+    revealPreparedPage,
+    cancelTransition,
+  } = useWhiteboardPageTransition();
+
+  // Last page/file that is fully painted; it gives every switch its direction.
+  const settledTargetRef = useRef<NavigationTarget | null>(null);
 
   /** Paints the yjs CRDT scene; `reconcileElements` restores Excalidraw's z-order. */
   const applySceneToExcalidraw = useCallback(
@@ -400,6 +412,8 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
    */
   const releaseTransitionLock = useCallback(() => {
     isSwitching.current = false;
+    // A failed or aborted switch must never leave the snapshot over the canvas.
+    revealPreparedPage();
     if (!excalidrawAPI || !isControllerAtTarget()) {
       return;
     }
@@ -410,7 +424,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       excalidrawAPI.getFiles(),
       { force: true },
     );
-  }, [excalidrawAPI, syncCanvasToCrdt, isControllerAtTarget]);
+  }, [excalidrawAPI, syncCanvasToCrdt, isControllerAtTarget, revealPreparedPage]);
 
   /** One page/file switch; a superseded transition leaves no trace anywhere. */
   const runNavigation = useCallback(
@@ -419,9 +433,13 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         return false;
       }
 
-      return runNavigationTransition(target, isCurrent, {
+      const direction = resolvePageTransitionDirection(settledTargetRef.current, target);
+
+      const completed = await runNavigationTransition(target, isCurrent, {
         isPresenter: !!isPresenter,
         reset: () => {
+          // Freeze the page that is on screen before the canvas is cleared.
+          captureBeforeReset(dropContainerRef.current, direction);
           isSwitching.current = true;
           resetWhiteboardState(excalidrawAPI);
         },
@@ -464,6 +482,15 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         // Broadcast the full authoritative scene so followers converge.
         broadcast: () => controller.broadcastFullState(),
       });
+
+      if (!completed) {
+        return false;
+      }
+
+      // The new page is painted: only now may the snapshot animate away.
+      settledTargetRef.current = target;
+      revealPreparedPage();
+      return true;
     },
     [
       excalidrawAPI,
@@ -474,6 +501,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       addBoundaryToElements,
       restoreOrScrollToBoundary,
       applySceneToExcalidraw,
+      captureBeforeReset,
+      revealPreparedPage,
+      dropContainerRef,
     ],
   );
 
@@ -543,6 +573,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       if (isPresenter) {
         controller.broadcastFullState();
       }
+      settledTargetRef.current = target;
     },
     [
       excalidrawAPI,
@@ -560,8 +591,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     return () => {
       controller.clearLocalPresence();
       cleanProcessedImageElementsMap();
+      cancelTransition();
     };
-  }, [controller]);
+  }, [controller, cancelTransition]);
 
   // on mount: point the CRDT at the active page/file and apply the scene.
   useEffect(() => {
@@ -762,7 +794,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           )}
         </>
       )}
-      <div dir="ltr" className="h-full w-full">
+      <div
+        dir="ltr"
+        className={`wb-canvas-stage relative h-full w-full overflow-hidden ${transitionClass}`}
+      >
         <Excalidraw
           onInitialize={onInitializeSetExcalidrawAPI}
           onChange={handleCanvasChange}
@@ -859,6 +894,11 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           <WhiteboardAI canEdit={canEdit} />
           {screenWidth > 767 && <Footer>{renderFooter}</Footer>}
         </Excalidraw>
+        <canvas
+          ref={snapshotCanvasRef}
+          aria-hidden="true"
+          className="wb-page-snapshot pointer-events-none"
+        />
       </div>
     </div>
   );

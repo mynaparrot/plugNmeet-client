@@ -233,12 +233,157 @@
       }
     }
   }
+
+  /* Snapshot buffered page transition: the previous page stays visible on the
+     overlay until the next one is painted, then both cross-fade/slide. */
+  .wb-canvas-stage {
+    .wb-page-snapshot {
+      display: none;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      /* above the canvases (1-2), below Excalidraw's UI layer (4) */
+      z-index: 3;
+      pointer-events: none;
+      will-change: transform, opacity;
+    }
+
+    &.wb-transition-holding .wb-page-snapshot {
+      display: block;
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+
+    /* the live page is invisible while it is reset/hydrated/scrolled underneath */
+    &.wb-transition-holding {
+      .excalidraw .excalidraw__canvas-wrapper,
+      .excalidraw .excalidraw__canvas.static {
+        opacity: 0;
+      }
+    }
+
+    &.wb-transition-next {
+      .wb-page-snapshot {
+        display: block;
+        animation: wb-snapshot-out-next 240ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+      .excalidraw .excalidraw__canvas-wrapper {
+        animation: wb-canvas-fade-in 240ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+      .excalidraw .excalidraw__canvas.static {
+        animation: wb-canvas-in-next 240ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+    }
+
+    &.wb-transition-prev {
+      .wb-page-snapshot {
+        display: block;
+        animation: wb-snapshot-out-prev 240ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+      .excalidraw .excalidraw__canvas-wrapper {
+        animation: wb-canvas-fade-in 240ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+      .excalidraw .excalidraw__canvas.static {
+        animation: wb-canvas-in-prev 240ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+    }
+
+    &.wb-transition-fade {
+      .wb-page-snapshot {
+        display: block;
+        animation: wb-snapshot-out-fade 220ms ease-out forwards;
+      }
+      .excalidraw .excalidraw__canvas-wrapper,
+      .excalidraw .excalidraw__canvas.static {
+        animation: wb-canvas-fade-in 220ms ease-out forwards;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .wb-page-snapshot {
+        display: none !important;
+        animation: none !important;
+      }
+      &.wb-transition-holding,
+      &.wb-transition-next,
+      &.wb-transition-prev,
+      &.wb-transition-fade {
+        .excalidraw .excalidraw__canvas-wrapper,
+        .excalidraw .excalidraw__canvas.static {
+          opacity: 1 !important;
+          animation: none !important;
+          transform: none !important;
+        }
+      }
+    }
+  }
 }
-.excalidraw
-  .ToolIcon.fillable
-  .ToolIcon_type_radio:checked
-  + .ToolIcon__icon:hover
-  svg {
+
+@keyframes wb-snapshot-out-next {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(-48px, 0, 0) scale(0.985);
+  }
+}
+
+@keyframes wb-snapshot-out-prev {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(48px, 0, 0) scale(0.985);
+  }
+}
+
+@keyframes wb-snapshot-out-fade {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.99);
+  }
+}
+
+@keyframes wb-canvas-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes wb-canvas-in-next {
+  from {
+    opacity: 0;
+    transform: translate3d(48px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes wb-canvas-in-prev {
+  from {
+    opacity: 0;
+    transform: translate3d(-48px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+.excalidraw .ToolIcon.fillable .ToolIcon_type_radio:checked + .ToolIcon__icon:hover svg {
   color: #5b57d1 !important;
 }
 

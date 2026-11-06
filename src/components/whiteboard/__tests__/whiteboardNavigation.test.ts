@@ -9,6 +9,7 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   findOfficePageFile,
   LatestNavigationQueue,
+  resolvePageTransitionDirection,
   runNavigationTransition,
   type NavigationTarget,
   type NavigationTransitionSteps,
@@ -513,6 +514,17 @@ describe('initial navigation ownership', () => {
 
     expect(seen).toEqual([true]);
     expect(queue.canRelease()).toBe(true);
+  });
+});
+
+describe('page transition direction', () => {
+  it('follows page order inside one file and fades across files', () => {
+    expect(resolvePageTransitionDirection(target(2), target(3))).toBe('next');
+    expect(resolvePageTransitionDirection(target(2), target(1))).toBe('prev');
+    expect(resolvePageTransitionDirection(target(2), target(2))).toBe('fade');
+    expect(resolvePageTransitionDirection(target(2, 'file1'), target(1, 'file2'))).toBe('fade');
+    // Nothing settled yet (bootstrap): never assume a direction.
+    expect(resolvePageTransitionDirection(null, target(3))).toBe('fade');
   });
 });
 
