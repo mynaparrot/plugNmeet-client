@@ -295,7 +295,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   }, [isPresenter, roomId]);
 
   const resetWhiteboardState = useCallback((excalidrawAPI: ExcalidrawImperativeAPI) => {
-    excalidrawAPI.updateScene({ elements: [] });
+    excalidrawAPI.updateScene({
+      elements: [],
+      captureUpdate: CaptureUpdateAction.NEVER,
+    });
     excalidrawAPI.history.clear();
 
     // Re-arm the broadcast guard for the next page/file.
@@ -464,6 +467,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           const primed = load ? primeExcalidrawImageCache(excalidrawAPI, load.images) : true;
           excalidrawAPI.updateScene({
             elements: addBoundaryToElements(scene, pageInfo),
+            captureUpdate: CaptureUpdateAction.NEVER,
           });
           if (!primed) {
             // Nothing was primed and the scene was empty on `addFiles`: re-running it
@@ -564,6 +568,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       if (isPresenter) {
         excalidrawAPI.updateScene({
           elements: addBoundaryToElements(elements, pageInfo),
+          captureUpdate: CaptureUpdateAction.NEVER,
         });
       }
       await restoreOrScrollToBoundary(excalidrawAPI, pageInfo, target);
