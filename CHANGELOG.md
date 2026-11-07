@@ -1,5 +1,40 @@
 # Changelog
 
+## [2.6.0](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.5...v2.6.0) (2026-11-07)
+
+
+### Features
+
+* **countdown-timer:** host-controlled meeting countdown timer ([#1152](https://github.com/mynaparrot/plugNmeet-client/issues/1152)) ([0be5ba5](https://github.com/mynaparrot/plugNmeet-client/commit/0be5ba56f9bb76157fe38b9a714df6a496cc656a))
+* **pip:** Add activity indicators to chat PiP ([89ab4f2](https://github.com/mynaparrot/plugNmeet-client/commit/89ab4f27dc157fafc2d33e358a55107824d8dad4))
+* **pip:** Add activity indicators to webcam PiP ([c583313](https://github.com/mynaparrot/plugNmeet-client/commit/c58331367ec2bbfe7e357d8a6a5c9c0bcd376ab6))
+* **pip:** added simple switcher between webcam and chat ([12a19bb](https://github.com/mynaparrot/plugNmeet-client/commit/12a19bbfcf6ce56b5300533fd2117441e0a5af31))
+* **pip:** added single user talking indicator ([eaf8936](https://github.com/mynaparrot/plugNmeet-client/commit/eaf893651fd722c362974d0a2dd983b08744a706))
+* **polls:** add text-answer polls UI, AI answer review, chat cards, and TXT export ([#1154](https://github.com/mynaparrot/plugNmeet-client/issues/1154)) ([172100c](https://github.com/mynaparrot/plugNmeet-client/commit/172100c189a4d8a2c297e8bc07a5d069deefb071))
+* strip sensitive room metadata for waiting users and defer media init until join ([29115c6](https://github.com/mynaparrot/plugNmeet-client/commit/29115c6ab8505cc1adbc7cd1686ada0eb99ff501))
+* **whiteboard:** add snapshot-buffered page transition animation and invalidate stale viewport zoom on resize ([85c94b9](https://github.com/mynaparrot/plugNmeet-client/commit/85c94b90cca6edd3155c9f47671a908e7fd98d7f))
+
+
+### Bug Fixes
+
+* added `allowMobileScroll` to allow click from mobile ([21fa7ae](https://github.com/mynaparrot/plugNmeet-client/commit/21fa7ae0d4804b2abed4cf247e924620a28607fc))
+* added test ([fc4e30b](https://github.com/mynaparrot/plugNmeet-client/commit/fc4e30b2bbba631664c40feb7933daba3baa8e2b))
+* css of the button ([b9658ae](https://github.com/mynaparrot/plugNmeet-client/commit/b9658ae13af0246450600854b356fea1de6ad392))
+* **external-media-player:** ensure reliable playback state and time synchronization ([8952d07](https://github.com/mynaparrot/plugNmeet-client/commit/8952d07a4bb3994ae40cf4bb64d2e44b9146c5e9))
+* harden path validation, nil safety, and input sanitization ([6791dde](https://github.com/mynaparrot/plugNmeet-client/commit/6791dde3ac5da1ddaf4e7e516dd0baeaec1b6e91))
+* improve pre-join media and mobile timer UX ([2676fcc](https://github.com/mynaparrot/plugNmeet-client/commit/2676fcc68ea60a04070d9ae13840cf84e0c1c69d))
+* keep room title centered and reset timer draft ([606bc48](https://github.com/mynaparrot/plugNmeet-client/commit/606bc48163ceba52b3590d1c7c3f2799fdb2e70d))
+* make poll AI check-in instructions meeting-agnostic ([f1a61ee](https://github.com/mynaparrot/plugNmeet-client/commit/f1a61ee4cf7660856ade475beefad77b128b6955))
+* **nats:** add 3s grace period before pausing media or showing reconnect toast ([f0bdf22](https://github.com/mynaparrot/plugNmeet-client/commit/f0bdf22ed38c203622aa5d409b6efbcb631aa912))
+* **nats:** add initial connect retries ([96b75db](https://github.com/mynaparrot/plugNmeet-client/commit/96b75dbc815790e5b2eb16b16d13d0b786b76674))
+* **nats:** scope client inboxPrefix and ACL by roomId and userId ([ba3c8eb](https://github.com/mynaparrot/plugNmeet-client/commit/ba3c8eb95b721a54725f5039a5507fcac7f0c374))
+* **nats:** set `ignoreClusterUpdates` true to ensure it use supplied servers only ([f11c2c8](https://github.com/mynaparrot/plugNmeet-client/commit/f11c2c8246d49299e7dc16ad7a0a9ca596829538))
+* **nats:** two-phase waiting-room permissions and hard-kick of removed users ([#1156](https://github.com/mynaparrot/plugNmeet-client/issues/1156)) ([e010780](https://github.com/mynaparrot/plugNmeet-client/commit/e010780fdf77120cebe0d14601362aa7a275c089))
+* **pip:** added `preferInitialWindowPlacement: true` to the Document PiP open request so the browser uses the configured initial size when reopening ([0187ef6](https://github.com/mynaparrot/plugNmeet-client/commit/0187ef6f36545720522f106ba80942d5bd2b14b6))
+* replaced with `screenWidth` ([7f700d2](https://github.com/mynaparrot/plugNmeet-client/commit/7f700d20650ec0e3798ab73ed3c01b38ba5e9d99))
+* **whiteboard:** disable undo office file image ([f1d3bee](https://github.com/mynaparrot/plugNmeet-client/commit/f1d3bee1e3e52fb84d1da6f5fce74678c7c2269a))
+* **whiteboard:** sanitize library before use ([80f1994](https://github.com/mynaparrot/plugNmeet-client/commit/80f1994aeee65923a3dc2aac0f09aa1a468f4c19))
+
 ## [2.5.5](https://github.com/mynaparrot/plugNmeet-client/compare/v2.5.4...v2.5.5) (2026-10-30)
 
 
