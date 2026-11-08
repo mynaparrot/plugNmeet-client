@@ -35,6 +35,7 @@ import { CorsWorker } from '../../../helpers/libs/corsWorker';
 import i18n from '../../../helpers/i18n';
 import { store } from '../../../store';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
+import { getPnmApiError, UNKNOWN_ERROR_MSG_KEY } from '../../../helpers/api/apiError';
 import { getConfigValue } from '../../../helpers/utils';
 
 export interface ExportParams {
@@ -174,6 +175,17 @@ class ExportPdfService {
         'application/protobuf',
         'arraybuffer',
       );
+      const apiError = getPnmApiError(mergeResponse);
+      if (apiError) {
+        toast.update(finalizingToastId, {
+          render: i18n.t(apiError.msg || UNKNOWN_ERROR_MSG_KEY),
+          type: 'error',
+          isLoading: false,
+          autoClose: 5000,
+        });
+        return;
+      }
+
       const res = fromBinary(UploadedFileResSchema, new Uint8Array(mergeResponse));
 
       if (res.status && res.filePath && res.fileName) {

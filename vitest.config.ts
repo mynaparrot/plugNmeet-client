@@ -9,6 +9,9 @@ import { defineConfig } from 'vitest/config';
  */
 export default defineConfig({
   root: import.meta.dirname,
+  // vite.config defines this at build time; tests importing app modules need it.
+  // Keep it true so stores skip the (browser-only) devtools compose step.
+  define: { IS_PRODUCTION: 'true' },
   test: {
     environment: 'node',
     include: ['src/**/__tests__/**/*.test.ts'],

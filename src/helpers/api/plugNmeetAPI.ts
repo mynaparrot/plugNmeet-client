@@ -1,14 +1,11 @@
 import axios, { AxiosError, ResponseType } from 'axios';
-import {
-  CommonResponseSchema,
-  NatsMsgClientToServerEvents,
-  NatsMsgClientToServerSchema,
-} from 'plugnmeet-protocol-js';
-import { create, toBinary } from '@bufbuild/protobuf';
+import { NatsMsgClientToServerEvents, NatsMsgClientToServerSchema } from 'plugnmeet-protocol-js';
+import { create } from '@bufbuild/protobuf';
 
 import { getAccessToken, getConfigValue } from '../utils';
 import { store } from '../../store';
 import { getNatsConn } from '../nats';
+import { toPnmApiError, wrapPnmApiErrorBytes } from './apiError';
 
 const API = axios.create({
   baseURL:
@@ -61,41 +58,23 @@ const sendAPIRequest = async (
     return res.data;
   } catch (e: any) {
     const err = e as AxiosError;
-    console.error(err.message);
+    const httpStatus = err.response?.status ?? 0;
 
     // if status = 401 then we'll try to renew token
     // so that next try will not be failing because of the expired token
-    if (err.status === 401) {
-      console.info(`Got status: ${err.status}, trying to renew token.`);
+    if (httpStatus === 401) {
+      console.info(`Got status: ${httpStatus}, trying to renew token.`);
       requestToRenewPnmToken();
     }
-    const output = {
-      status: false,
-      msg: err.code + ': ' + err.message,
-    };
 
-    // @ts-ignore
-    if (err.response?.headers?.get('Content-Type') === 'application/json') {
-      // @ts-expect-error we'll check if the value is undefined
-      if (typeof err.response?.data?.msg !== 'undefined') {
-        // @ts-expect-error we checked if the value is undefined
-        output.msg = err.response?.data?.msg.replace(
-          'go-jose/go-jose/jwt',
-          err.response.statusText,
-        );
-      }
-    } else {
-      if (err.response?.data instanceof ArrayBuffer && err.response?.data.byteLength) {
-        return err.response?.data;
-      }
-    }
+    // failures always carry a CommonResponse; transport details stay internal
+    const apiError = toPnmApiError(httpStatus, err.response?.data);
+    console.error(`API request failed: ${path} (${httpStatus || 'no response'})`, apiError.msg);
 
-    if (!json_encode) {
-      const res = create(CommonResponseSchema, output);
-      return toBinary(CommonResponseSchema, res);
-    } else {
-      return output;
+    if (response_type === 'arraybuffer') {
+      return wrapPnmApiErrorBytes(apiError);
     }
+    return apiError;
   }
 };
 

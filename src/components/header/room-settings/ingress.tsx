@@ -10,6 +10,7 @@ import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { store, useAppSelector } from '../../../store';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
+import { getPnmApiError } from '../../../helpers/api/apiError';
 import { LoadingIcon } from '../../../assets/Icons/Loading';
 import Dropdown, { ISelectOption } from '../../../helpers/ui/dropdown';
 import FormattedInputField from '../../../helpers/ui/formattedInputField';
@@ -44,6 +45,15 @@ const Ingress = () => {
       'application/protobuf',
       'arraybuffer',
     );
+    const apiError = getPnmApiError(r);
+    if (apiError) {
+      toast(t(apiError.msg), {
+        type: 'error',
+      });
+      setIsLoading(false);
+      return;
+    }
+
     const res = fromBinary(CreateIngressResSchema, new Uint8Array(r));
     if (!res.status) {
       toast(t(res.msg), {

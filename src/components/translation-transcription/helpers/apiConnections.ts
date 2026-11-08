@@ -17,6 +17,7 @@ import {
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
+import { getPnmApiError } from '../../../helpers/api/apiError';
 
 export interface AzureTokenInfo {
   token: string;
@@ -75,6 +76,10 @@ export const getUserTaskStatus = async () => {
     'application/protobuf',
     'arraybuffer',
   );
+  const apiError = getPnmApiError(r);
+  if (apiError) {
+    return create(InsightsGetUserStatusResSchema, { status: false, msg: apiError.msg });
+  }
   return fromBinary(InsightsGetUserStatusResSchema, new Uint8Array(r));
 };
 
@@ -89,6 +94,10 @@ export const getSupportedLanguages = async (serviceType: InsightsServiceType) =>
     'application/protobuf',
     'arraybuffer',
   );
+  const apiError = getPnmApiError(r);
+  if (apiError) {
+    return create(InsightsGetSupportedLanguagesResSchema, { status: false, msg: apiError.msg });
+  }
   return fromBinary(InsightsGetSupportedLanguagesResSchema, new Uint8Array(r));
 };
 
@@ -111,6 +120,10 @@ export const executeChatTranslation = async (body: InsightsTranslateTextReq) => 
     'application/protobuf',
     'arraybuffer',
   );
+  const apiError = getPnmApiError(r);
+  if (apiError) {
+    return create(InsightsTranslateTextResSchema, { status: false, msg: apiError.msg });
+  }
   return fromBinary(InsightsTranslateTextResSchema, new Uint8Array(r));
 };
 

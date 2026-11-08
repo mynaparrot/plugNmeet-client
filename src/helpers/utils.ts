@@ -295,25 +295,44 @@ export const getAccessToken = () => {
   return getCookie(tokenCookieName);
 };
 
-export const formatNatsError = (err: any) => {
-  let msg = i18n.t('notifications.nats-error-request-failed').toString();
+/**
+ * The server answers NATS auth callout failures with an i18n key, sometimes
+ * wrapped by the SDK or the nats server. Returns the key carried by the message,
+ * so callers can translate it instead of showing raw server text.
+ */
+export const findTranslationKey = (
+  message: string,
+  hasTranslation: (key: string) => boolean,
+): string | undefined => {
+  const candidates = message.match(/[a-z][a-z0-9-]*(?:\.[a-z0-9-]+)+/gi) ?? [];
+  return candidates.find((candidate) => hasTranslation(candidate));
+};
 
-  if (err instanceof errors.NoRespondersError) {
-    msg = i18n.t('notifications.nats-error-no-response', {
-      error: `${err.name}: ${err.message}`,
-    });
-  } else if (err instanceof errors.TimeoutError) {
-    msg = i18n.t('notifications.nats-error-timeout', {
-      error: `${err.name}: ${err.message}`,
-    });
-  } else if (err instanceof Error) {
-    msg = err.name + ': ' + msg;
-    if (err.message !== '') {
-      msg = err.name + ': ' + err.message;
+export const formatNatsError = (err: any) => {
+  // auth callout failures carry an i18n key; raw server text is never shown
+  if (err instanceof Error) {
+    const translationKey = findTranslationKey(err.message, (key) => i18n.exists(key));
+    if (translationKey) {
+      return i18n.t(translationKey).toString();
     }
   }
 
-  return msg;
+  if (err instanceof errors.NoRespondersError) {
+    return i18n
+      .t('notifications.nats-error-no-response', {
+        error: `${err.name}: ${err.message}`,
+      })
+      .toString();
+  }
+  if (err instanceof errors.TimeoutError) {
+    return i18n
+      .t('notifications.nats-error-timeout', {
+        error: `${err.name}: ${err.message}`,
+      })
+      .toString();
+  }
+
+  return i18n.t('notifications.nats-error-request-failed').toString();
 };
 
 /**
