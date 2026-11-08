@@ -11,6 +11,7 @@ import {
 } from 'plugnmeet-protocol-js';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
+import { getPnmApiError } from '../../../helpers/api/apiError';
 import { store } from '../../../store';
 import { uploadResumableFile } from '../../../helpers/fileUpload';
 import {
@@ -115,6 +116,10 @@ export const registerRoomWhiteboardFiles = async (roomId: string) => {
     'application/protobuf',
     'arraybuffer',
   );
+  if (getPnmApiError(r)) {
+    return;
+  }
+
   const res = fromBinary(GetRoomUploadedFilesResSchema, new Uint8Array(r));
   if (!res.status || !res.files) {
     return;

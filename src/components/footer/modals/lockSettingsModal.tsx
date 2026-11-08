@@ -61,7 +61,7 @@ const LockSettingsModal = () => {
       } else {
         dispatch(
           addUserNotification({
-            message: res.msg,
+            message: t(res.msg),
             typeOption: 'error',
           }),
         );

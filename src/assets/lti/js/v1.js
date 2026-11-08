@@ -4,6 +4,49 @@
   let currentPage = 1;
   const limitPerPage = 10;
 
+  // Server messages carry i18n keys; English is always the fallback for keys a
+  // locale does not ship, and values without a matching key pass through.
+  let translations = {};
+  let fallbackTranslations = {};
+  const loadLocale = async (assets, code) => {
+    try {
+      const res = await fetch(`${assets}/locales/${code}/translation.json`);
+      if (res.ok) return await res.json();
+    } catch (e) {
+      // fall through to the next candidate
+    }
+    return null;
+  };
+  const loadTranslations = async () => {
+    const assets = (window.plugNmeetConfig && window.plugNmeetConfig.staticAssetsPath) || '/assets';
+    fallbackTranslations = (await loadLocale(assets, 'en')) || {};
+
+    const raw = navigator.language || 'en';
+    const [baseLang, region] = raw.split('-');
+    const codes = [raw];
+    if (region) codes.push(`${baseLang}-${region.toUpperCase()}`);
+    codes.push(baseLang);
+
+    for (const code of [...new Set(codes)]) {
+      if (code === 'en') break;
+      const data = await loadLocale(assets, code);
+      if (data) {
+        translations = data;
+        break;
+      }
+    }
+  };
+
+  const lookup = (obj, key) =>
+    key.split('.').reduce((o, part) => (o && typeof o === 'object' ? o[part] : undefined), obj);
+  const t = (key) => {
+    if (typeof key !== 'string' || !key.includes('.')) return key;
+    const value = lookup(translations, key);
+    if (typeof value === 'string') return value;
+    const fallback = lookup(fallbackTranslations, key);
+    return typeof fallback === 'string' ? fallback : key;
+  };
+
   const dom = {
     joinBtn: document.querySelector('.join'),
     endBtn: document.querySelector('.end'),
@@ -16,6 +59,8 @@
   };
 
   const init = async () => {
+    await loadTranslations();
+
     if (IS_ADMIN) {
       await isSessionActive();
       setInterval(isSessionActive, 1000 * 60 * 5);
@@ -64,7 +109,7 @@
           dom.endBtn.style.display = '';
         }
       } else {
-        showError(res.msg);
+        showError(t(res.msg));
       }
     } catch (error) {
       showError('Failed to join session.');
@@ -77,7 +122,7 @@
       if (res.status) {
         dom.endBtn.style.display = 'none';
       } else {
-        showError(res.msg);
+        showError(t(res.msg));
       }
     } catch (error) {
       showError('Failed to end session.');
@@ -113,7 +158,7 @@
         }
         displayRecordings(recordings_list);
       } else {
-        showMessage(res.msg);
+        showMessage(t(res.msg));
       }
     } catch (error) {
       showMessage('Failed to fetch recordings.');
@@ -129,7 +174,7 @@
         const url = `${window.plugNmeetConfig.serverUrl}/download/recording/${res.token}`;
         window.open(url, '_blank');
       } else {
-        showError(res.msg);
+        showError(t(res.msg));
       }
     } catch (error) {
       showError('Failed to download recording.');
@@ -145,7 +190,7 @@
         if (res.status) {
           document.getElementById(recordId).remove();
         } else {
-          showError(res.msg);
+          showError(t(res.msg));
         }
       } catch (error) {
         showError('Failed to delete recording.');

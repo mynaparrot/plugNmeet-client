@@ -9,6 +9,7 @@ import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 
 import { useAppSelector } from '../../../store';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
+import { getPnmApiError } from '../../../helpers/api/apiError';
 import { LoadingIcon } from '../../../assets/Icons/Loading';
 import { FileIconSVG } from '../../../assets/Icons/FileIconSVG';
 
@@ -41,6 +42,11 @@ const UploadedFileList = ({
         'application/protobuf',
         'arraybuffer',
       );
+      if (getPnmApiError(r)) {
+        setIsFetching(false);
+        return;
+      }
+
       const res = fromBinary(GetRoomUploadedFilesResSchema, new Uint8Array(r));
       if (res.status && res.files) {
         setUploadedFiles(res.files);

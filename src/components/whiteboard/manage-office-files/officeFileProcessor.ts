@@ -10,6 +10,7 @@ import {
   WhiteboardFileConversionRes,
 } from '../../../store/slices/interfaces/whiteboard';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
+import { getPnmApiError, UNKNOWN_ERROR_MSG_KEY } from '../../../helpers/api/apiError';
 import i18n from '../../../helpers/i18n';
 import { createAndRegisterOfficeFile } from '../helpers/handleFiles';
 import { getNatsConn } from '../../../helpers/nats';
@@ -80,6 +81,19 @@ class OfficeFileProcessor {
     this.activeCallbacks = null;
   }
 
+  private conversionFailed(toastId: string | number, msg: string) {
+    this.fileStatus = 'error';
+    this.activeCallbacks?.onError(msg);
+
+    toast.update(toastId, {
+      render: msg,
+      type: 'error',
+      isLoading: false,
+      closeButton: true,
+    });
+    this.cleanup();
+  }
+
   private upload(
     file: File,
     excalidrawAPI: ExcalidrawImperativeAPI,
@@ -129,24 +143,30 @@ class OfficeFileProcessor {
       filePath: filePath,
     };
 
-    const res: WhiteboardFileConversionRes = await sendAPIRequest('whiteboard/convert', body);
-    if (!res.status || res.fileId === '' || res.totalPages == 0) {
-      let msg = i18n.t(res.msg);
-      if (res.fileId === '' || res.totalPages == 0) {
-        msg = i18n.t('whiteboard.file-conversion-failed');
-      }
+    const r = await sendAPIRequest('whiteboard/convert', body);
+    const apiError = getPnmApiError(r);
+    const res = r as WhiteboardFileConversionRes;
 
-      this.fileStatus = 'error';
-      if (this.activeCallbacks) {
-        this.activeCallbacks.onError(msg);
-      }
+    if (apiError) {
+      this.conversionFailed(id, i18n.t(apiError.msg || UNKNOWN_ERROR_MSG_KEY));
+      return;
+    }
+
+    // The server keeps converting in the background when the request takes too
+    // long, so the file is announced later instead of returning the pages here.
+    if (res.status && (!res.fileId || !res.totalPages)) {
       toast.update(id, {
-        render: i18n.t(msg),
-        type: 'error',
+        render: i18n.t(res.msg || 'whiteboard.converting'),
+        type: 'info',
         isLoading: false,
-        closeButton: true,
+        autoClose: 5000,
       });
       this.cleanup();
+      return;
+    }
+
+    if (!res.status || !res.fileId || !res.totalPages) {
+      this.conversionFailed(id, i18n.t('whiteboard.file-conversion-failed'));
       return;
     }
 

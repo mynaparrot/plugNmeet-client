@@ -10,6 +10,7 @@ import useResumableFilesUpload from '../../../../helpers/hooks/useResumableFiles
 import { store, useAppSelector } from '../../../../store';
 import { getConfigValue } from '../../../../helpers/utils';
 import sendAPIRequest from '../../../../helpers/api/plugNmeetAPI';
+import { getPnmApiError } from '../../../../helpers/api/apiError';
 import { backgroundImageUrls, loadBackgroundImageUrls } from './backgroundHelper';
 import { BackgroundConfig } from '../../../../helpers/libs/TwilioTrackProcessor';
 
@@ -61,6 +62,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
           'arraybuffer',
         );
         if (cancelled) return;
+        if (getPnmApiError(r)) return;
 
         const res = fromBinary(GetRoomUploadedFilesResSchema, new Uint8Array(r));
         if (!res.status || !res.files) return;

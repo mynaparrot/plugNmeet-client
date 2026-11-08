@@ -13,6 +13,7 @@ import Resumable from 'resumablejs';
 import i18n from './i18n';
 import { store } from '../store';
 import sendAPIRequest from './api/plugNmeetAPI';
+import { getPnmApiError, UNKNOWN_ERROR_MSG_KEY } from './api/apiError';
 import { addUserNotification } from '../store/slices/roomSettingsSlice';
 import { ISession } from '../store/slices/interfaces/session';
 import { getConfigValue, sleep } from './utils';
@@ -40,10 +41,21 @@ export const uploadBase64EncodedFile = async (
     'arraybuffer',
   );
 
+  const apiError = getPnmApiError(r);
+  if (apiError) {
+    toast.update(id, {
+      render: i18n.t(apiError.msg || UNKNOWN_ERROR_MSG_KEY),
+      type: 'error',
+      isLoading: false,
+      autoClose: 3000,
+    });
+    return undefined;
+  }
+
   const res = fromBinary(UploadBase64EncodedDataResSchema, new Uint8Array(r));
   if (!res.status) {
     toast.update(id, {
-      render: res.msg,
+      render: i18n.t(res.msg || UNKNOWN_ERROR_MSG_KEY),
       type: 'error',
       isLoading: false,
       autoClose: 3000,
@@ -175,6 +187,19 @@ class ResumableUploader {
       'application/protobuf',
       'arraybuffer',
     );
+    const apiError = getPnmApiError(r);
+    if (apiError) {
+      const errorMessage = i18n.t(apiError.msg || UNKNOWN_ERROR_MSG_KEY);
+      toast.update(this.mergeToastId, {
+        render: errorMessage,
+        type: 'error',
+        isLoading: false,
+        autoClose: 3000,
+      });
+      this.args.onError?.(errorMessage);
+      return;
+    }
+
     const res = fromBinary(UploadedFileResSchema, new Uint8Array(r));
 
     if (res.status && res.filePath && res.fileName) {
@@ -201,7 +226,7 @@ class ResumableUploader {
     this.cleanUp();
     try {
       const res = JSON.parse(message);
-      const msg = i18n.t(res.msg);
+      const msg = i18n.t(res.msg || UNKNOWN_ERROR_MSG_KEY);
       store.dispatch(addUserNotification({ message: msg, typeOption: 'error' }));
       this.args.onError?.(msg);
     } catch (e) {

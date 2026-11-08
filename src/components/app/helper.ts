@@ -9,6 +9,7 @@ import {
 } from 'plugnmeet-protocol-js';
 
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
+import { getPnmApiError } from '../../helpers/api/apiError';
 import { IErrorPageProps } from '../extra-pages/Error';
 import i18n from '../../helpers/i18n';
 import { getAccessToken } from '../../helpers/utils';
@@ -78,6 +79,16 @@ export const verifyToken = once(
       'application/protobuf',
       'arraybuffer',
     );
+    const apiError = getPnmApiError(r);
+    if (apiError) {
+      setLoading(false);
+      setError({
+        title: i18n.t('app.verification-failed-title'),
+        text: i18n.t(apiError.msg),
+      });
+      return;
+    }
+
     const res = fromBinary(VerifyTokenResSchema, new Uint8Array(r));
 
     if (
