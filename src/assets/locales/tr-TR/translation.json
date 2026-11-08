@@ -1135,6 +1135,8 @@
       "room-id-required": "The room ID is missing.",
       "room-id-mismatch": "The requested room does not match your session.",
       "room-not-found": "The room could not be found.",
+      "no-room-found": "No room found.",
+      "no-active-room-found": "No active room found",
       "room-not-active": "This room is not active.",
       "unexpected": "Something went wrong. Please try again.",
       "end-failed": "The room could not be ended. Please try again.",
