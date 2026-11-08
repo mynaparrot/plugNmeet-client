@@ -41,6 +41,8 @@
     "auth-header-missing": "인증에 실패했습니다(헤더 없음). 다시 회의에 참여해 주십시오.",
     "token-expired": "세션이 만료되었습니다. 계속하려면 다시 회의에 참여하십시오.",
     "invalid-token": "세션을 확인할 수 없습니다(잘못된 토큰). 다시 회의에 참여해 주십시오.",
+    "token-valid": "Token is valid.",
+    "user-not-active": "You are not an active participant of this meeting. Please join again.",
     "waiting-for-approval": "관리자에게 알림이 전송되었으며 곧 입장할 수 있습니다. 기다려 주셔서 감사합니다!",
     "room-disconnected-title": "연결 끊김",
     "room-disconnected-default": "예상치 못한 오류로 인해 연결이 끊어졌습니다: {{reason}}. 다시 참여해 주십시오.",
@@ -120,7 +122,11 @@
     "audio-only-mode-weak-connection": "연결 상태가 심각하게 불안정합니다. 오디오를 유지하기 위해 영상이 일시정지되었습니다.",
     "connection-recovered-restore-video": "연결이 다시 안정적으로 보입니다. 비디오 복원을 시도해 보세요.",
     "media-restored-camera-unavailable": "들어오는 미디어는 복원되었지만, 카메라는 활성화되지 않았습니다.",
-    "presentation-resumed": "발표가 재개되었습니다."
+    "presentation-resumed": "발표가 재개되었습니다.",
+    "invalid-request": "Your request could not be validated. Please try to join the meeting again.",
+    "success": "Success",
+    "rtmp-already-running": "RTMP streaming is already in progress.",
+    "rtmp-not-running": "RTMP streaming is not in progress."
   },
   "room-metadata": {
     "session-recording": "이 회의는 녹화되고 있습니다.",
@@ -589,6 +595,7 @@
     "show-toolbar": "툴바 표시",
     "hide-toolbar": "툴바 숨기기",
     "file-conversion-failed": "파일 변환 실패",
+    "error-occurred": "Something went wrong. Please try again.",
     "export-pdf-title": "PDF로 내보내기",
     "export-pdf-button": "수출",
     "export-pdf-button-count": "내보내기 ({{count}})",
@@ -1100,6 +1107,74 @@
       "label": "Switch picture-in-picture view",
       "chat": "Show chat",
       "webcam": "Show webcams"
+    }
+  },
+  "file": {
+    "errors": {
+      "invalid-request": "Your file request could not be validated.",
+      "missing-file": "No file was received.",
+      "too-large": "The file is larger than the maximum allowed size.",
+      "type-not-allowed": "This file type is not allowed.",
+      "chunks-not-found": "The uploaded file parts could not be found. Please upload the file again.",
+      "upload-failed": "The file could not be uploaded. Please try again.",
+      "merge-failed": "The file could not be finalized. Please try again.",
+      "file-path-required": "The file path is missing.",
+      "invalid-path": "The file path is not valid.",
+      "not-found": "The file could not be found.",
+      "only-presenter": "Only the presenter can perform this task.",
+      "unexpected": "Something went wrong. Please try again."
+    },
+    "notifications": {
+      "conversion-started": "The file is being converted. It will be available in the whiteboard file list once it is ready."
+    }
+  },
+  "room": {
+    "errors": {
+      "only-admin": "Only admin can perform this task.",
+      "invalid-request": "Your request could not be validated.",
+      "room-id-required": "The room ID is missing.",
+      "room-id-mismatch": "The requested room does not match your session.",
+      "room-not-found": "The room could not be found.",
+      "room-not-active": "This room is not active.",
+      "unexpected": "Something went wrong. Please try again.",
+      "end-failed": "The room could not be ended. Please try again.",
+      "feature-not-allowed": "This feature is not enabled for this room.",
+      "sip-dial-in-already-enabled": "SIP dial-in is already enabled for this room.",
+      "ingress-already-created": "A live stream is already running for this room.",
+      "invalid-url": "Only http and https URLs are allowed.",
+      "user-not-found": "The user could not be found.",
+      "room-id-not-allowed": "This room ID is not allowed.",
+      "preassigned-limit": "Too many pre-assigned breakout rooms.",
+      "preassigned-user": "A user is pre-assigned to multiple breakout rooms."
+    }
+  },
+  "user": {
+    "errors": {
+      "only-admin": "Only admin can perform this task.",
+      "invalid-request": "Your request could not be validated.",
+      "user-info-required": "User information is required.",
+      "room-id-mismatch": "The requested room does not match your session.",
+      "room-sid-mismatch": "The room session does not match your session.",
+      "room-not-running": "This meeting is not running.",
+      "cannot-remove-self": "You can't remove yourself.",
+      "user-not-online": "This user is not online.",
+      "user-not-found": "The user could not be found.",
+      "unexpected": "Something went wrong. Please try again.",
+      "reserved-name": "This name is reserved and can't be used.",
+      "reserved-user-id": "This user ID is reserved and can't be used.",
+      "invalid-user-id": "The user ID may only contain letters, numbers, '-' and '_'.",
+      "room-info-not-found": "The room information could not be found.",
+      "room-ended": "This meeting has ended."
+    }
+  },
+  "recording": {
+    "errors": {
+      "invalid-request": "Your recording request could not be validated.",
+      "task-in-progress": "Another recording request is already in progress. Please wait a moment and try again.",
+      "room-sid-required": "The room information is missing, so the recording task cannot be started.",
+      "rtmp-url-required": "An RTMP URL is required to start RTMP streaming.",
+      "invalid-rtmp-url": "Only rtmp and rtmps URLs are allowed.",
+      "operation-failed": "The recording request could not be completed. Please try again."
     }
   }
 }
