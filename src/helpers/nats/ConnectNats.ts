@@ -68,7 +68,7 @@ const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000,
   MAX_INITIAL_CONNECT_ATTEMPTS = 3,
   // delay the UI/media disruption of a drop, so transient websocket failures
   // (proxies, cloudflare) do not pause media or flash the reconnecting toast
-  DISCONNECT_GRACE_PERIOD = 3000;
+  DISCONNECT_GRACE_PERIOD = 5000;
 export type PrivateDataDeliveryType = 'CHAT' | 'DATA_MSG' | 'WHITEBOARD_MSG';
 
 export default class ConnectNats {
