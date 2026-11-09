@@ -1,4 +1,5 @@
 import { DB_STORE_NAMES, idbGet, idbGetAllKeys, idbStore } from '../../../helpers/libs/idb';
+import { pageKey } from './utils';
 
 /**
  * Export-cache helpers.
@@ -8,13 +9,13 @@ import { DB_STORE_NAMES, idbGet, idbGetAllKeys, idbStore } from '../../../helper
  * (presenter) and peer Yjs deltas.
  */
 export const saveWhiteboardPageSnapshot = (fileId: string, page: number, update: Uint8Array) =>
-  idbStore(DB_STORE_NAMES.WHITEBOARD, `${fileId}_${page}`, update);
+  idbStore(DB_STORE_NAMES.WHITEBOARD, pageKey(fileId, page), update);
 
 export const loadWhiteboardPageSnapshot = async (
   fileId: string,
   page: number,
 ): Promise<Uint8Array | undefined> => {
-  const value = await idbGet<Uint8Array>(DB_STORE_NAMES.WHITEBOARD, `${fileId}_${page}`);
+  const value = await idbGet<Uint8Array>(DB_STORE_NAMES.WHITEBOARD, pageKey(fileId, page));
   return value instanceof Uint8Array ? value : undefined;
 };
 

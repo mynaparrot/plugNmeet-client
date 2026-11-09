@@ -3,6 +3,9 @@ import type { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 
 export const WHITEBOARD_ELEMENTS_MAP = 'elements';
 
+/** Session-data / IndexedDB key of a whiteboard page. */
+export const pageKey = (fileId: string, page: number) => `${fileId}_${page}`;
+
 /**
  * Decode a persisted yjs state snapshot (as written by
  * `saveWhiteboardPageSnapshot`) back into the Excalidraw elements stored in

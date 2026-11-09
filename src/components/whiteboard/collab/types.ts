@@ -2,9 +2,8 @@ import type * as Y from 'yjs';
 import { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 
 /**
- * Immutable snapshot of the active CRDT whiteboard session. Consumed via
- * `useSyncExternalStore`; a fresh object reference must be produced on every
- * `emitChange()` so React knows the state changed.
+ * Immutable snapshot of the active CRDT whiteboard session. A fresh object
+ * reference is produced on every `emitChange()` so callers can detect changes.
  */
 export type WhiteboardYjsSnapshot = {
   doc: Y.Doc;
