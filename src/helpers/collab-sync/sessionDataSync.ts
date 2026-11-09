@@ -14,6 +14,12 @@ export const SAVE_MAX_WAIT_MS = 3_000;
 /** Max age of a checkpoint before a fresh one is uploaded. */
 export const CHECKPOINT_MAX_AGE_MS = 60_000;
 
+/** How long a SESSION_DATA fetch waits for its response. */
+export const SERVER_FIRST_SYNC_TIMEOUT_MS = 1500;
+
+/** How long a SESSION_DATA save waits for its SESSION_DATA_SAVE_RESPONSE ack. */
+export const SAVE_ACK_TIMEOUT_MS = 3000;
+
 /** A diff larger than this (gzipped bytes) triggers a checkpoint instead. */
 export const CHECKPOINT_DIFF_BYTES = 256 * 1024;
 
@@ -22,6 +28,18 @@ export const CHECKPOINT_DIFF_RATIO = 0.25;
 
 /** Hard cap on the gzipped wire payload; above this we skip the upload. */
 export const SESSION_DATA_MAX_WIRE_BYTES = 900 * 1024;
+
+/** Backoff for retrying an unconfirmed save. */
+export const SAVE_RETRY_BASE_MS = 2000;
+export const SAVE_RETRY_MAX_MS = 30000;
+
+/** Backoff for retrying a canonical snapshot fetch that has not arrived. */
+export const CANONICAL_RETRY_BASE_MS = 2000;
+export const CANONICAL_RETRY_MAX_MS = 30000;
+
+/** Exponential backoff delay for `attempt`, capped at `max`. */
+export const backoffDelay = (base: number, max: number, attempt: number): number =>
+  Math.min(max, base * 2 ** attempt);
 
 /**
  * Whether two Yjs state vectors represent the exact same document state. Used

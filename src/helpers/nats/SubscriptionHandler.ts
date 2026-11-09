@@ -27,7 +27,7 @@ import HandleChat from './HandleChat';
 import HandleSystemData from './HandleSystemData';
 
 import { store } from '../../store';
-import { decompress } from '../libs/sessionDataSync';
+import { decompress } from '../collab-sync/sessionDataSync';
 import { setAllUserNotifications } from '../../store/slices/roomSettingsSlice';
 import { DB_STORE_NAMES, idbGet, idbGetAll, initIDB } from '../libs/idb';
 import { UserNotification } from '../../store/slices/interfaces/roomSettings';
@@ -382,6 +382,8 @@ export default class SubscriptionHandler {
     const header = fromJsonString(SessionDataHeaderSchema, p.msg);
     if (header.dataType === SessionDataType.WHITEBOARD) {
       getWhiteboardController().handleSessionDataSaveResponse(header);
+    } else if (header.dataType === SessionDataType.NOTEPAD) {
+      getNotepadController().handleSessionDataSaveResponse(header);
     }
   }
 

@@ -1,23 +1,20 @@
 import * as Y from 'yjs';
-import { create, toJsonString } from '@bufbuild/protobuf';
-import {
-  BreakoutRoom,
-  NatsMsgClientToServerEvents,
-  NatsMsgClientToServerSchema,
-  SessionDataHeaderSchema,
-  SessionDataType,
-  WhiteboardShare,
-} from 'plugnmeet-protocol-js';
+import { BreakoutRoom, SessionDataType, WhiteboardShare } from 'plugnmeet-protocol-js';
 
 import { getNatsConn } from '../../../helpers/nats';
-import { compress, SESSION_DATA_MAX_WIRE_BYTES } from '../../../helpers/libs/sessionDataSync';
+import {
+  compress,
+  SESSION_DATA_MAX_WIRE_BYTES,
+} from '../../../helpers/collab-sync/sessionDataSync';
+import { sendSessionDataSave } from '../../../helpers/collab-sync/sessionDataClient';
 import {
   deriveRoomKey,
   encryptDataToUint8ArrayWithKey,
 } from '../../../helpers/libs/cryptoMessages';
 import { getWhiteboardController } from '../../whiteboard/collab';
+import { pageKey } from '../../whiteboard/collab/utils';
 import { loadWhiteboardPageSnapshot } from '../../whiteboard/collab/whiteboardPersistence';
-import { getNotepadController } from '../../shared-notepad/NotepadController';
+import { getNotepadController, NOTEPAD_SNAPSHOT_KEY } from '../../shared-notepad/NotepadController';
 import { store } from '../../../store';
 
 /**
@@ -33,17 +30,11 @@ import { store } from '../../../store';
  * `SESSION_DATA_FETCH_RESPONSE`) consumes:
  *   - a gzip'd full `Y.encodeStateAsUpdate(doc)` (i.e. a canonical checkpoint),
  *   - keyed by the same canonical key the child fetches:
- *       whiteboard: `${fileId}_${page}`   (see WhiteboardController.pageKey)
- *       notepad:    BREAKOUT_SEED_NOTEPAD_KEY  ('snapshot')
+ *       whiteboard: `${fileId}_${page}`   (see whiteboard utils `pageKey`)
+ *       notepad:    NOTEPAD_SNAPSHOT_KEY  ('snapshot')
  *   - optionally AES-GCM encrypted with the child's derived key when E2EE is on,
  *   - addressed to the child room via `targetRoomId` (child's full room id).
  */
-
-/** Canonical notepad session-data key (mirrors NotepadController.NOTEPAD_SNAPSHOT_KEY). */
-export const BREAKOUT_SEED_NOTEPAD_KEY = 'snapshot';
-
-/** Whiteboard canonical checkpoint key: `${fileId}_${page}`. */
-const whiteboardPageKey = (fileId: string, page: number): string => `${fileId}_${page}`;
 
 /** Valid whiteboard share = fileId + at least one page. */
 export const hasWhiteboardShare = (share?: WhiteboardShare | null): boolean =>
@@ -112,7 +103,7 @@ async function getWhiteboardPageUpdate(fileId: string, page: number): Promise<Ui
     return Y.encodeStateAsUpdate(snapshot.doc);
   }
 
-  const key = whiteboardPageKey(fileId, page);
+  const key = pageKey(fileId, page);
   const ok = await controller.fetchSessionData(key);
   if (!ok) {
     // A false result means the fetch timed out (or there is no NATS connection)
@@ -125,35 +116,6 @@ async function getWhiteboardPageUpdate(fileId: string, page: number): Promise<Ui
 }
 
 type NatsConn = NonNullable<ReturnType<typeof getNatsConn>>;
-
-/**
- * Publish a single session-data entry to a child room. Mirrors the publish half
- * of `WhiteboardController.uploadSessionData`/`NotepadController.uploadSessionData`
- * but bypasses the controllers' PARENT singleton-key encryption: `value` is
- * already encrypted (with the explicit child key) by the caller when E2EE is on.
- */
-function publishSessionData(
-  conn: NatsConn,
-  dataType: SessionDataType,
-  key: string,
-  value: Uint8Array,
-  targetRoomId: string,
-): void {
-  conn.sendMessageToCoreWorker(
-    create(NatsMsgClientToServerSchema, {
-      event: NatsMsgClientToServerEvents.SESSION_DATA_SAVE,
-      msg: toJsonString(
-        SessionDataHeaderSchema,
-        create(SessionDataHeaderSchema, {
-          dataType,
-          key,
-          targetRoomId,
-        }),
-      ),
-      binMsg: value,
-    }),
-  );
-}
 
 /** Seed one child room; resolves true when all intended uploads succeeded. */
 async function seedOneRoom(
@@ -199,13 +161,12 @@ async function seedOneRoom(
       }
       try {
         const value = childKey ? await encryptDataToUint8ArrayWithKey(wire, childKey) : wire;
-        publishSessionData(
-          conn,
-          SessionDataType.WHITEBOARD,
-          whiteboardPageKey(share.fileId, page),
+        sendSessionDataSave(conn, {
+          dataType: SessionDataType.WHITEBOARD,
+          key: pageKey(share.fileId, page),
           value,
           targetRoomId,
-        );
+        });
       } catch (e) {
         console.error(
           '[breakoutRoomSeeding] failed to seed whiteboard page',
@@ -234,13 +195,12 @@ async function seedOneRoom(
         roomOk = false;
       } else {
         const value = childKey ? await encryptDataToUint8ArrayWithKey(wire, childKey) : wire;
-        publishSessionData(
-          conn,
-          SessionDataType.NOTEPAD,
-          BREAKOUT_SEED_NOTEPAD_KEY,
+        sendSessionDataSave(conn, {
+          dataType: SessionDataType.NOTEPAD,
+          key: NOTEPAD_SNAPSHOT_KEY,
           value,
           targetRoomId,
-        );
+        });
       }
     } catch (e) {
       console.error('[breakoutRoomSeeding] failed to seed notepad', e);

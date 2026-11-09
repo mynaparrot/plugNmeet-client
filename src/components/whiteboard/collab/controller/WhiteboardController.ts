@@ -1,20 +1,14 @@
 import * as Y from 'yjs';
-import { Awareness, applyAwarenessUpdate, encodeAwarenessUpdate } from 'y-protocols/awareness';
-import { create, toJsonString } from '@bufbuild/protobuf';
 import {
   AnalyticsEvents,
   AnalyticsEventType,
   DataMsgBodyType,
-  NatsMsgClientToServerEvents,
-  NatsMsgClientToServerSchema,
-  SessionDataHeaderSchema,
   SessionDataType,
   SessionDataHeader,
 } from 'plugnmeet-protocol-js';
 import type { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
-import type { Collaborator, SocketId } from '@excalidraw/excalidraw/types';
 
-import { getNatsConn } from '../../../helpers/nats';
+import { getNatsConn } from '../../../../helpers/nats';
 import {
   SESSION_DATA_MAX_WIRE_BYTES,
   SAVE_MAX_WAIT_MS,
@@ -24,59 +18,55 @@ import {
   canonicalKeyOf,
   compress,
   decompress,
-} from '../../../helpers/libs/sessionDataSync';
+  backoffDelay,
+  SAVE_RETRY_BASE_MS,
+  SAVE_RETRY_MAX_MS,
+  CANONICAL_RETRY_BASE_MS,
+  CANONICAL_RETRY_MAX_MS,
+} from '../../../../helpers/collab-sync/sessionDataSync';
+import { SessionDataClient } from '../../../../helpers/collab-sync/sessionDataClient';
 import {
   listWhiteboardPages,
   loadWhiteboardPageSnapshot,
   saveWhiteboardPageSnapshot,
-} from './whiteboardPersistence';
-import { DB_STORE_NAMES, idbStore } from '../../../helpers/libs/idb';
-import { isIncomingNewer, WHITEBOARD_ELEMENTS_MAP } from './utils';
-import { store } from '../../../store';
-import {
-  participantsSelector,
-  selectWhiteboardParticipants,
-} from '../../../store/slices/participantSlice';
-import { base64ToUint8, isUserRecorder, uint8ToBase64 } from '../../../helpers/utils';
-import type { IParticipant } from '../../../store/slices/interfaces/participant';
+} from '../whiteboardPersistence';
+import { DB_STORE_NAMES, idbStore } from '../../../../helpers/libs/idb';
+import { isIncomingNewer, pageKey as buildPageKey, WHITEBOARD_ELEMENTS_MAP } from '../utils';
+import { store } from '../../../../store';
+import { participantsSelector } from '../../../../store/slices/participantSlice';
+import { base64ToUint8, isUserRecorder, uint8ToBase64 } from '../../../../helpers/utils';
+import type { IParticipant } from '../../../../store/slices/interfaces/participant';
 import type {
   WhiteboardControllerConfig,
   WhiteboardPresence,
   WhiteboardScope,
   WhiteboardYjsSnapshot,
-} from './types';
-import { WhiteboardDataAsDonorData } from '../../../store/slices/interfaces/whiteboard';
+} from '../types';
+import { WhiteboardDataAsDonorData } from '../../../../store/slices/interfaces/whiteboard';
 import {
   addWhiteboardDataSentFromDonor,
   setWhiteboardCurrentPage,
   updateCurrentWhiteboardOfficeFileId,
-} from '../../../store/slices/whiteboard';
+} from '../../../../store/slices/whiteboard';
+import {
+  ANTI_ENTROPY_INTERVAL_MS,
+  ANTI_ENTROPY_JITTER_MS,
+  SequentialSyncRequest,
+} from '../../../../helpers/collab-sync/sequentialSyncRequest';
+import {
+  INITIAL_REQUEST_RETRY_MS,
+  INITIAL_REQUEST_TIMEOUT_MS,
+  MAX_MISSING_UPDATE_RESYNCS,
+  MAX_SYNC_REQUEST_TARGETS,
+  MISSING_UPDATE_RESYNC_THROTTLE_MS,
+  SAVE_FLUSH_RETRY_DELAY_MS,
+  SAVE_FLUSH_TIMEOUT_MS,
+  STALE_PEER_NUDGE_THROTTLE_MS,
+  WHITEBOARD_REMOTE_ORIGIN,
+} from './constants';
+import { WhiteboardPresenceManager } from './WhiteboardPresenceManager';
 
-export const WHITEBOARD_REMOTE_ORIGIN = 'whiteboard-remote';
-const SYNC_RETRY_DELAY_MS = 2000;
-const MAX_SYNC_REQUEST_ATTEMPTS = 3;
-export const INITIAL_REQUEST_RETRY_MS = 500;
-const INITIAL_REQUEST_TIMEOUT_MS = 4000;
-const SERVER_FIRST_SYNC_TIMEOUT_MS = 1500;
-const MISSING_UPDATE_RESYNC_THROTTLE_MS = 2000;
-/** Per-peer throttle for pointing a peer that is stuck on a stale scope at the live one. */
-const STALE_PEER_NUDGE_THROTTLE_MS = 2000;
-// Stop firing targeted resyncs for a gap that never heals; anti-entropy still
-// covers it at one peer per tick.
-const MAX_MISSING_UPDATE_RESYNCS = 5;
-const ANTI_ENTROPY_INTERVAL_MS = 25000;
-const ANTI_ENTROPY_JITTER_MS = 5000;
-const CANONICAL_RETRY_BASE_MS = 2000;
-const CANONICAL_RETRY_MAX_MS = 30000;
-/** How long a SESSION_DATA save waits for its SESSION_DATA_SAVE_RESPONSE ack. */
-export const SAVE_ACK_TIMEOUT_MS = 3000;
-/** Backoff for retrying an unconfirmed save (page still active or upload stashed). */
-const SAVE_RETRY_BASE_MS = 2000;
-const SAVE_RETRY_MAX_MS = 30000;
-/** Total time a page/file switch may spend flushing the active page. */
-const SAVE_FLUSH_TIMEOUT_MS = 5000;
-/** Pause between flush attempts so an instantly failing save cannot spin. */
-const SAVE_FLUSH_RETRY_DELAY_MS = 500;
+export { WHITEBOARD_REMOTE_ORIGIN };
 
 /** Content of a page the presenter left before the server confirmed the save. */
 interface PendingPageUpload {
@@ -87,30 +77,51 @@ interface PendingPageUpload {
   unconfirmed: boolean;
 }
 
+/** Computed answer to a sync request; `null` means "do not respond". */
+interface SyncRequestPayload {
+  update: Uint8Array;
+  message: string;
+}
+
 export class WhiteboardController {
   private doc: Y.Doc | null = null;
   private elementsMap: Y.Map<string> | null = null;
 
-  // separate from the page-scoped CRDT doc so cursor presence survives whiteboard page/file switches.
-  private presenceDoc: Y.Doc | null = null;
-  private awareness: Awareness | null = null;
+  private readonly presence = new WhiteboardPresenceManager(
+    () => this.config,
+    (type, binMessage) => this.sendWhiteboardData(type, binMessage),
+  );
 
   private roomSid = '';
   private fileId = '';
   private page = 0;
   private generation = 0;
   private config: WhiteboardControllerConfig | null = null;
-  private pendingSyncRequestIds = new Set<string>();
-  private syncRequestAttempts = 0;
-  private backupResponseTimers = new Map<string, ReturnType<typeof setTimeout>>();
-  private syncRetryTimer: ReturnType<typeof setTimeout> | null = null;
+  /** Peer handshake: every target in turn, each answer filling only what is missing. */
+  private readonly syncRequest = new SequentialSyncRequest({
+    getTargets: () => this.getSyncRequestTargets(),
+    send: (toUserId, requestId) => {
+      const doc = this.doc;
+      if (!doc) return;
+      this.sendWhiteboardData(
+        DataMsgBodyType.WHITEBOARD_SYNC_REQUEST,
+        Y.encodeStateVector(doc),
+        requestId,
+        this.buildScopeMessage(),
+        toUserId,
+      );
+    },
+  });
   private antiEntropyTimer: ReturnType<typeof setTimeout> | null = null;
   private lastMissingUpdateResyncAt = 0;
   private missingUpdateResyncs = 0;
   private stalePeerNudgeAt = new Map<string, number>();
+  /** Request ids of the bootstrap handshake (kept apart from the regular sync run). */
+  private initialRequestIds = new Set<string>();
   private initialRequestResolver: ((data: { fileId: string; page: number } | null) => void) | null =
     null;
   private initialRequestTimer: ReturnType<typeof setTimeout> | null = null;
+  private initialRequestRetryTimer: ReturnType<typeof setTimeout> | null = null;
   // Scope Redux held when the initial bootstrap was requested: a donor whose
   // answer arrives after the presenter moved on must not override that scope.
   private initialRequestScope: { fileId: string; page: number } | null = null;
@@ -122,23 +133,8 @@ export class WhiteboardController {
   // across page switches so rejoining a page resumes diffing from its last
   // checkpoint baseline instead of re-uploading a full state.
   private syncStates = new Map<string, SessionDataSyncState>();
-  private sessionDataWaiters = new Map<
-    string,
-    {
-      resolve: (arrived: boolean) => void;
-      timer: ReturnType<typeof setTimeout>;
-    }
-  >();
-  // In-flight fetch per key, so concurrent callers share one request/response.
-  private sessionDataFetches = new Map<string, Promise<boolean>>();
-  // Waiter per SESSION_DATA_SAVE requestId, resolved by SESSION_DATA_SAVE_RESPONSE.
-  private saveAckWaiters = new Map<
-    string,
-    {
-      resolve: (ok: boolean) => void;
-      timer: ReturnType<typeof setTimeout>;
-    }
-  >();
+  // Server SESSION_DATA request/ack plumbing (saves + fetches).
+  private readonly sessionData = new SessionDataClient(SessionDataType.WHITEBOARD);
   // All server saves run one at a time through this chain, so a new plan can
   // never overtake an in-flight upload (which would reorder writes per key).
   private saveChain: Promise<unknown> = Promise.resolve();
@@ -157,7 +153,6 @@ export class WhiteboardController {
   // (at which point the self-heal path persists a fresh checkpoint and
   // re-broadcasts the now-complete state).
   private readonly unconfirmedCanonicalKeys = new Set<string>();
-  private listeners = new Set<() => void>();
   private snapshot: WhiteboardYjsSnapshot | null = null;
 
   /**
@@ -166,7 +161,7 @@ export class WhiteboardController {
    */
   private syncChain: Promise<void> = Promise.resolve();
 
-  private pageKey = (fileId: string, page: number) => `${fileId}_${page}`;
+  private pageKey = (fileId: string, page: number) => buildPageKey(fileId, page);
 
   private isCurrentUserPresenter = (): boolean =>
     !!store.getState().session.currentUser?.metadata?.isPresenter;
@@ -293,16 +288,9 @@ export class WhiteboardController {
     }
   };
 
-  subscribe = (cb: () => void) => {
-    this.listeners.add(cb);
-    return () => {
-      this.listeners.delete(cb);
-    };
-  };
-
   getSnapshot = (): WhiteboardYjsSnapshot | null => this.snapshot;
 
-  /** Build a fresh snapshot object (new reference) and notify subscribers. */
+  /** Build a fresh snapshot object (new reference) for change detection. */
   private emitChange = () => {
     if (this.doc && this.elementsMap) {
       this.snapshot = {
@@ -316,12 +304,11 @@ export class WhiteboardController {
     } else {
       this.snapshot = null;
     }
-    this.listeners.forEach((cb) => cb());
   };
 
   configure = (config: WhiteboardControllerConfig) => {
     this.config = config;
-    this.ensurePresence();
+    this.presence.ensurePresence();
   };
 
   /**
@@ -445,8 +432,9 @@ export class WhiteboardController {
       return;
     }
 
-    this.syncRequestAttempts = 0;
-    this.sendSyncRequest();
+    // A page switch restarts the handshake from the best-ranked peer.
+    this.syncRequest.cancel();
+    this.syncRequest.start();
   };
 
   /** Flush the pending save, destroy the doc and reset all session fields. */
@@ -461,26 +449,17 @@ export class WhiteboardController {
     await this.teardown();
     // No further ack can arrive: settle everything still waiting. Pending page
     // uploads (which outlive a page) die with the controller.
-    for (const waiter of this.saveAckWaiters.values()) {
-      clearTimeout(waiter.timer);
-      waiter.resolve(false);
-    }
-    this.saveAckWaiters.clear();
+    this.sessionData.settlePendingSaves();
     for (const t of this.pendingUploadTimers.values()) {
       clearTimeout(t);
     }
     this.pendingUploadTimers.clear();
     this.pendingPageUploads.clear();
     this.resetSaveRetry();
-    this.destroyPresence();
+    this.presence.destroyPresence();
     this.config = null;
   };
 
-  /**
-   * Flush the pending save, destroy the doc (detaching our handler first) and
-   * clear all timers/state. `Y.Doc` auto-removes its `update` listeners on
-   * destroy, but we still detach explicitly to avoid leaks.
-   */
   private clearSaveTimers = () => {
     if (this.saveTimer) {
       clearTimeout(this.saveTimer);
@@ -497,6 +476,11 @@ export class WhiteboardController {
     return s;
   };
 
+  /**
+   * Flush the pending save, destroy the doc (detaching our handler first) and
+   * clear all timers/state. `Y.Doc` auto-removes its `update` listeners on
+   * destroy, but we still detach explicitly to avoid leaks.
+   */
   private teardownDoc = async () => {
     const hadPendingSave = this.saveTimer !== null;
     this.clearSaveTimers();
@@ -513,9 +497,9 @@ export class WhiteboardController {
     // flushLocalSnapshot is a no-op for other roles).
     await this.flushLocalSnapshot();
 
-    if (this.syncRetryTimer) {
-      clearTimeout(this.syncRetryTimer);
-      this.syncRetryTimer = null;
+    if (this.initialRequestRetryTimer) {
+      clearTimeout(this.initialRequestRetryTimer);
+      this.initialRequestRetryTimer = null;
     }
     if (this.antiEntropyTimer) {
       clearTimeout(this.antiEntropyTimer);
@@ -528,18 +512,8 @@ export class WhiteboardController {
     this.lastMissingUpdateResyncAt = 0;
     this.missingUpdateResyncs = 0;
     this.stalePeerNudgeAt.clear();
-    for (const t of this.backupResponseTimers.values()) {
-      clearTimeout(t);
-    }
-    this.backupResponseTimers.clear();
-    this.pendingSyncRequestIds.clear();
-    this.syncRequestAttempts = 0;
-    for (const waiter of this.sessionDataWaiters.values()) {
-      clearTimeout(waiter.timer);
-      // Teardown means these fetches will never get their response.
-      waiter.resolve(false);
-    }
-    this.sessionDataWaiters.clear();
+    this.syncRequest.cancel();
+    this.sessionData.cancelPendingFetches();
 
     if (this.doc) {
       this.doc.off('update', this.handleDocUpdate);
@@ -657,7 +631,7 @@ export class WhiteboardController {
 
   private scheduleSaveRetry = () => {
     if (this.saveRetryTimer || !this.doc || !this.isCurrentUserPresenter()) return;
-    const delay = Math.min(SAVE_RETRY_MAX_MS, SAVE_RETRY_BASE_MS * 2 ** this.saveRetryAttempt);
+    const delay = backoffDelay(SAVE_RETRY_BASE_MS, SAVE_RETRY_MAX_MS, this.saveRetryAttempt);
     this.saveRetryTimer = setTimeout(() => {
       this.saveRetryTimer = null;
       this.saveRetryAttempt++;
@@ -718,7 +692,7 @@ export class WhiteboardController {
     if (existing) {
       clearTimeout(existing);
     }
-    const delay = Math.min(SAVE_RETRY_MAX_MS, SAVE_RETRY_BASE_MS * 2 ** attempt);
+    const delay = backoffDelay(SAVE_RETRY_BASE_MS, SAVE_RETRY_MAX_MS, attempt);
     const timer = setTimeout(() => {
       this.pendingUploadTimers.delete(key);
       void this.retryPendingUpload(key, attempt);
@@ -830,58 +804,22 @@ export class WhiteboardController {
   };
 
   /**
-   * Send a SESSION_DATA save and resolve `true` only once the server acks it
-   * (SESSION_DATA_SAVE_RESPONSE echoes our requestId). No NATS connection,
-   * encryption failure and a missed ack all resolve `false`.
+   * Send a SESSION_DATA save (waiters, ack timeout and wire format live in the
+   * session-data client). Without an active whiteboard file there is nothing to
+   * save, so nothing is sent.
    */
   uploadSessionData = async (
     update: Uint8Array,
     key: string,
     targetRoomId?: string,
   ): Promise<boolean> => {
-    const conn = getNatsConn();
-    if (!conn || !this.fileId) return false;
-    let value = update;
-    if (conn.enableE2EE) {
-      const enc = await conn.encryptData(update);
-      if (typeof enc === 'undefined') return false;
-      value = enc;
-    }
-    const requestId = crypto.randomUUID();
-    const acked = new Promise<boolean>((resolve) => {
-      const timer = setTimeout(() => {
-        this.saveAckWaiters.delete(requestId);
-        resolve(false);
-      }, SAVE_ACK_TIMEOUT_MS);
-      this.saveAckWaiters.set(requestId, { resolve, timer });
-    });
-    conn.sendMessageToCoreWorker(
-      create(NatsMsgClientToServerSchema, {
-        event: NatsMsgClientToServerEvents.SESSION_DATA_SAVE,
-        msg: toJsonString(
-          SessionDataHeaderSchema,
-          create(SessionDataHeaderSchema, {
-            dataType: SessionDataType.WHITEBOARD,
-            key,
-            requestId,
-            ...(targetRoomId ? { targetRoomId } : {}),
-          }),
-        ),
-        binMsg: value,
-      }),
-    );
-    return acked;
+    if (!this.fileId) return false;
+    return this.sessionData.upload(update, key, targetRoomId);
   };
 
   /** Resolve the save waiters for a SESSION_DATA_SAVE_RESPONSE (header only). */
   handleSessionDataSaveResponse = (header: SessionDataHeader) => {
-    const requestId = header.requestId;
-    if (!requestId) return;
-    const waiter = this.saveAckWaiters.get(requestId);
-    if (!waiter) return;
-    clearTimeout(waiter.timer);
-    this.saveAckWaiters.delete(requestId);
-    waiter.resolve(header.success === true);
+    this.sessionData.handleSaveResponse(header);
   };
 
   /**
@@ -892,48 +830,7 @@ export class WhiteboardController {
    * resolving the waiter, so awaiting the canonical key guarantees the base
    * snapshot is in the doc before the rolling diff is requested/applied.
    */
-  fetchSessionData = (key: string): Promise<boolean> => {
-    // Single-flight per key: a concurrent caller must not overwrite the first
-    // caller's waiter (whose timeout would then delete the newer one).
-    const inFlight = this.sessionDataFetches.get(key);
-    if (inFlight) {
-      return inFlight;
-    }
-
-    const promise = new Promise<boolean>((resolve) => {
-      const conn = getNatsConn();
-      if (!conn) {
-        resolve(false);
-        return;
-      }
-      const timer = setTimeout(() => {
-        this.sessionDataWaiters.delete(key);
-        resolve(false);
-      }, SERVER_FIRST_SYNC_TIMEOUT_MS);
-      this.sessionDataWaiters.set(key, { resolve, timer });
-
-      conn.sendMessageToSystemWorker(
-        create(NatsMsgClientToServerSchema, {
-          event: NatsMsgClientToServerEvents.SESSION_DATA_FETCH_REQUEST,
-          msg: toJsonString(
-            SessionDataHeaderSchema,
-            create(SessionDataHeaderSchema, {
-              dataType: SessionDataType.WHITEBOARD,
-              key,
-            }),
-          ),
-        }),
-      );
-    }).finally(() => {
-      // Only drop our own entry: a newer fetch may already have registered.
-      if (this.sessionDataFetches.get(key) === promise) {
-        this.sessionDataFetches.delete(key);
-      }
-    });
-
-    this.sessionDataFetches.set(key, promise);
-    return promise;
-  };
+  fetchSessionData = (key: string): Promise<boolean> => this.sessionData.fetch(key);
 
   handleSessionDataResponse = (header: SessionDataHeader, value: Uint8Array) => {
     if (header.dataType !== SessionDataType.WHITEBOARD) return;
@@ -946,16 +843,7 @@ export class WhiteboardController {
     // literal (possibly diff) key.
     const isActive = !!doc && canonicalKeyOf(key) === this.pageKey(this.fileId, this.page);
 
-    const resolveWaiter = () => {
-      const waiter = this.sessionDataWaiters.get(key);
-      if (waiter) {
-        clearTimeout(waiter.timer);
-        this.sessionDataWaiters.delete(key);
-        // A response arrived (even if empty — the server confirmed the key is
-        // absent). Empty-but-present counts as "confirmed", so resolve(true).
-        waiter.resolve(true);
-      }
-    };
+    const resolveWaiter = () => this.sessionData.resolveFetchWaiter(key);
 
     if (value && value.length > 0) {
       // apply the active page live as a raw Yjs update (never decode+rebuild)
@@ -1016,7 +904,7 @@ export class WhiteboardController {
     if (existing) {
       clearTimeout(existing);
     }
-    const delay = Math.min(CANONICAL_RETRY_MAX_MS, CANONICAL_RETRY_BASE_MS * 2 ** attempt);
+    const delay = backoffDelay(CANONICAL_RETRY_BASE_MS, CANONICAL_RETRY_MAX_MS, attempt);
     const timer = setTimeout(() => {
       this.canonicalRetryTimers.delete(key);
       void this.retryCanonical(key, attempt);
@@ -1200,7 +1088,7 @@ export class WhiteboardController {
         void this.handleSyncResponse(binMessage, fromUserId, id, message);
         break;
       case DataMsgBodyType.POINTER_UPDATE:
-        this.applyRemoteAwareness(binMessage);
+        this.presence.applyRemoteAwareness(binMessage);
         break;
       default:
         break;
@@ -1236,10 +1124,9 @@ export class WhiteboardController {
       this.missingUpdateResyncs = 0; // everything integrated again
       return;
     }
-    // Initial handshake in flight: sendSyncRequest() would clear
-    // pendingSyncRequestIds and reject its response, so let the handshake
-    // deliver the missing history instead.
-    if (this.initialRequestResolver) {
+    // A handshake is already running: it owns the healing attempt, so keep the
+    // throttle budget for a gap that outlives it.
+    if (this.initialRequestResolver || this.syncRequest.active) {
       return;
     }
     const now = Date.now();
@@ -1254,14 +1141,13 @@ export class WhiteboardController {
     console.warn(
       '[WhiteboardController] remote update is missing earlier updates; requesting a resync',
     );
-    this.syncRequestAttempts = 0;
-    this.sendSyncRequest();
+    this.syncRequest.start();
   };
 
   /**
-   * Anti-entropy: every ~25s (±5s) hand our state vector to a single peer so
-   * a dropped update heals without user action. One peer per tick keeps the
-   * cost flat in large rooms.
+   * Anti-entropy: every ~25s (±5s) hand our state vector to one randomly chosen
+   * peer so a dropped update heals without user action. One peer per tick keeps
+   * the cost flat in large rooms, and the random pick spreads it.
    */
   private scheduleAntiEntropy = () => {
     if (this.antiEntropyTimer) {
@@ -1284,57 +1170,11 @@ export class WhiteboardController {
       return;
     }
     // Never compete with the initial handshake or an in-flight sync.
-    if (this.pendingSyncRequestIds.size > 0 || this.initialRequestResolver) {
+    if (this.syncRequest.active || this.initialRequestResolver) {
       return;
     }
 
-    this.syncRequestAttempts = 0;
-    this.sendSyncRequest(1);
-  };
-
-  private sendSyncRequest = (maxTargets?: number) => {
-    const { doc, config } = this;
-    if (!doc || !config) {
-      return;
-    }
-
-    if (this.syncRetryTimer) {
-      clearTimeout(this.syncRetryTimer);
-      this.syncRetryTimer = null;
-    }
-
-    const targets = this.getSyncRequestTargets();
-    if (targets.length === 0) {
-      this.pendingSyncRequestIds.clear();
-      return;
-    }
-
-    this.syncRequestAttempts += 1;
-    if (this.syncRequestAttempts > MAX_SYNC_REQUEST_ATTEMPTS) {
-      this.pendingSyncRequestIds.clear();
-      return;
-    }
-
-    this.pendingSyncRequestIds.clear();
-    const recipients = maxTargets === undefined ? targets : targets.slice(0, maxTargets);
-    const stateVector = Y.encodeStateVector(doc);
-    for (const toUserId of recipients) {
-      const requestId = crypto.randomUUID();
-      this.pendingSyncRequestIds.add(requestId);
-      this.sendWhiteboardData(
-        DataMsgBodyType.WHITEBOARD_SYNC_REQUEST,
-        stateVector,
-        requestId,
-        this.buildScopeMessage(),
-        toUserId,
-      );
-    }
-
-    this.syncRetryTimer = setTimeout(() => {
-      if (this.pendingSyncRequestIds.size > 0 && this.doc) {
-        this.sendSyncRequest();
-      }
-    }, SYNC_RETRY_DELAY_MS);
+    this.syncRequest.start(1, true);
   };
 
   private getSyncRequestTargets = (): string[] => {
@@ -1366,14 +1206,14 @@ export class WhiteboardController {
         }
         return a.joinedAt - b.joinedAt;
       })
-      .slice(0, 3)
+      .slice(0, MAX_SYNC_REQUEST_TARGETS)
       .map((p) => p.userId);
   };
 
   resync = () => {
     if (this.doc) {
-      this.syncRequestAttempts = 0;
-      this.sendSyncRequest();
+      this.syncRequest.cancel();
+      this.syncRequest.start();
     }
   };
 
@@ -1403,21 +1243,25 @@ export class WhiteboardController {
 
       this.initialRequestResolver = resolve;
       this.initialRequestScope = this.storeScope();
-      this.pendingSyncRequestIds.clear();
+      this.initialRequestIds.clear();
 
+      const emptyStateVector = Y.encodeStateVector(new Y.Doc());
+      // One target per tick, cycling the ranked list (presenter first).
+      let targetIndex = 0;
       const sendInitialRequest = () => {
-        const emptyStateVector = Y.encodeStateVector(new Y.Doc());
-        for (const toUserId of this.getSyncRequestTargets()) {
-          const requestId = crypto.randomUUID();
-          this.pendingSyncRequestIds.add(requestId);
-          this.sendWhiteboardData(
-            DataMsgBodyType.WHITEBOARD_SYNC_REQUEST,
-            emptyStateVector,
-            requestId,
-            undefined,
-            toUserId,
-          );
+        const targets = this.getSyncRequestTargets();
+        if (targets.length === 0) {
+          return;
         }
+        const requestId = crypto.randomUUID();
+        this.initialRequestIds.add(requestId);
+        this.sendWhiteboardData(
+          DataMsgBodyType.WHITEBOARD_SYNC_REQUEST,
+          emptyStateVector,
+          requestId,
+          undefined,
+          targets[targetIndex++ % targets.length],
+        );
       };
 
       /*
@@ -1427,8 +1271,8 @@ export class WhiteboardController {
        * still resolves the bootstrap.
        */
       const scheduleRetry = () => {
-        this.syncRetryTimer = setTimeout(() => {
-          this.syncRetryTimer = null;
+        this.initialRequestRetryTimer = setTimeout(() => {
+          this.initialRequestRetryTimer = null;
           if (!this.initialRequestResolver || this.isInitialBootstrapStale()) {
             return;
           }
@@ -1477,14 +1321,12 @@ export class WhiteboardController {
       this.initialRequestTimer = null;
     }
 
-    this.pendingSyncRequestIds.clear();
+    this.initialRequestIds.clear();
 
-    if (this.syncRetryTimer) {
-      clearTimeout(this.syncRetryTimer);
-      this.syncRetryTimer = null;
+    if (this.initialRequestRetryTimer) {
+      clearTimeout(this.initialRequestRetryTimer);
+      this.initialRequestRetryTimer = null;
     }
-
-    this.syncRequestAttempts = 0;
   };
 
   broadcastFullState = () => {
@@ -1537,74 +1379,29 @@ export class WhiteboardController {
       return;
     }
 
-    let responseMessage = this.buildScopeMessage();
-    let responseUpdate: Uint8Array;
-    let sendFullInitialData = false;
-
     const senderScope = this.parseScope(message);
 
-    if (
-      doc &&
-      this.isCurrentUserPresenter() &&
-      senderScope?.fileId &&
-      typeof senderScope.page === 'number' &&
-      !this.matchesActiveScope(senderScope)
-    ) {
+    if (this.isStaleScopeRequest(doc, senderScope)) {
       // The requester is on a page/file the room has left; redirect it to the
       // live scope instead of serving a stale snapshot (works on empty pages).
-      this.nudgeStalePeer(fromUserId, senderScope);
+      this.nudgeStalePeer(fromUserId, senderScope!);
       return;
     }
 
-    if (!senderScope || !senderScope.fileId || typeof senderScope.page !== 'number') {
-      sendFullInitialData = true;
+    const isInitialRequest =
+      !senderScope || !senderScope.fileId || typeof senderScope.page !== 'number';
 
-      const { currentOfficeFilePages } = store.getState().whiteboard;
-      const appState = config.excalidrawAPI.getAppState();
+    let payload: SyncRequestPayload | null = null;
 
-      const initialData: WhiteboardDataAsDonorData = {
-        currentPageNumber: this.page,
-        currentWhiteboardOfficeFileId: this.fileId,
-        currentOfficeFilePages,
-        appState: {
-          height: appState.height,
-          width: appState.width,
-          scrollX: appState.scrollX,
-          scrollY: appState.scrollY,
-          zoomValue: appState.zoom.value,
-          theme: appState.theme,
-          viewBackgroundColor: appState.viewBackgroundColor,
-          zenModeEnabled: appState.zenModeEnabled,
-          gridSize: appState.gridSize,
-        },
-      };
-
-      responseMessage = this.buildScopeMessage({
-        initial_data: JSON.stringify(initialData),
-        gzip: true,
-      });
-    }
-
-    if (sendFullInitialData) {
+    if (isInitialRequest) {
+      const initialMessage = this.buildInitialRequestScopeMessage(config);
       // A blank page is still authoritative for its presenter: answering with an
       // empty update plus the scope metadata is what tells a newly joined peer
       // where the room is, instead of leaving it without a response.
-      if (doc && elementsMap && (elementsMap.size > 0 || this.isActiveScopeAuthoritative())) {
-        // Full-state payloads are gzip-compressed, flagged via scope.gzip.
-        responseUpdate = compress(Y.encodeStateAsUpdate(doc));
-      } else {
-        const stored = await loadWhiteboardPageSnapshot(this.fileId, this.page);
+      payload = this.buildActiveStatePayload(doc, elementsMap, initialMessage);
 
-        if (!stored?.length) {
-          return;
-        }
-
-        if (!this.doc || !this.config) {
-          return;
-        }
-
-        // Full-state payloads are gzip-compressed, flagged via scope.gzip.
-        responseUpdate = compress(stored);
+      if (!payload) {
+        payload = await this.loadStoredPagePayload(this.fileId, this.page, initialMessage);
       }
     } else if (
       doc &&
@@ -1612,55 +1409,102 @@ export class WhiteboardController {
       this.matchesActiveScope(senderScope) &&
       (elementsMap.size > 0 || this.isActiveScopeAuthoritative())
     ) {
-      responseUpdate = Y.encodeStateAsUpdate(doc, binMessage);
-
-      responseMessage = this.buildScopeMessage({
-        stateVector: uint8ToBase64(Y.encodeStateVector(doc)),
-      });
-    } else if (senderScope && senderScope.fileId && typeof senderScope.page === 'number') {
-      const stored = await loadWhiteboardPageSnapshot(senderScope.fileId, senderScope.page);
-
-      if (!stored?.length) {
-        return;
-      }
-
-      if (!this.doc || !this.config) {
-        return;
-      }
-
-      // Full-state payloads are gzip-compressed, flagged via scope.gzip.
-      responseUpdate = compress(stored);
-      responseMessage = JSON.stringify({
-        fileId: senderScope.fileId,
-        page: senderScope.page,
-        gzip: true,
-      });
+      payload = this.buildDiffPayload(doc, binMessage);
+    } else if (senderScope?.fileId && typeof senderScope.page === 'number') {
+      payload = await this.loadStoredPagePayload(
+        senderScope.fileId,
+        senderScope.page,
+        JSON.stringify({ fileId: senderScope.fileId, page: senderScope.page, gzip: true }),
+      );
     }
 
-    const respond = () => {
-      const timer = this.backupResponseTimers.get(id);
-      if (timer) {
-        clearTimeout(timer);
-        this.backupResponseTimers.delete(id);
-      }
-      // Compression is decided per-path above (full-state responses only).
-      this.sendWhiteboardData(
-        DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE,
-        responseUpdate,
-        id,
-        responseMessage,
-        fromUserId,
-      );
-    };
-
-    if (config.isPrimaryResponder?.() ?? config.canWrite()) {
-      respond();
+    if (!payload) {
       return;
     }
 
-    const delay = 250 + Math.floor(Math.random() * 550);
-    const timer = setTimeout(respond, delay);
-    this.backupResponseTimers.set(id, timer);
+    // Reply at once, directly to the requester.
+    this.sendWhiteboardData(
+      DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE,
+      payload.update,
+      id,
+      payload.message,
+      fromUserId,
+    );
+  };
+
+  /** True when a requester sits on a page/file the room has already left. */
+  private isStaleScopeRequest = (doc: Y.Doc | null, senderScope: WhiteboardScope | null): boolean =>
+    !!doc &&
+    this.isCurrentUserPresenter() &&
+    !!senderScope?.fileId &&
+    typeof senderScope.page === 'number' &&
+    !this.matchesActiveScope(senderScope);
+
+  /** Scope metadata telling a newly joined peer where the room currently is. */
+  private buildInitialRequestScopeMessage = (config: WhiteboardControllerConfig) => {
+    const { currentOfficeFilePages } = store.getState().whiteboard;
+    const appState = config.excalidrawAPI.getAppState();
+
+    const initialData: WhiteboardDataAsDonorData = {
+      currentPageNumber: this.page,
+      currentWhiteboardOfficeFileId: this.fileId,
+      currentOfficeFilePages,
+      appState: {
+        height: appState.height,
+        width: appState.width,
+        scrollX: appState.scrollX,
+        scrollY: appState.scrollY,
+        zoomValue: appState.zoom.value,
+        theme: appState.theme,
+        viewBackgroundColor: appState.viewBackgroundColor,
+        zenModeEnabled: appState.zenModeEnabled,
+        gridSize: appState.gridSize,
+      },
+    };
+
+    return this.buildScopeMessage({
+      initial_data: JSON.stringify(initialData),
+      gzip: true,
+    });
+  };
+
+  /** Full state of a doc that is non-empty or authoritative for its presenter. */
+  private buildActiveStatePayload = (
+    doc: Y.Doc | null,
+    elementsMap: Y.Map<string> | null,
+    message: string,
+  ): SyncRequestPayload | null => {
+    if (!doc || !elementsMap || (elementsMap.size === 0 && !this.isActiveScopeAuthoritative())) {
+      return null;
+    }
+    // Full-state payloads are gzip-compressed, flagged via scope.gzip.
+    return { update: compress(Y.encodeStateAsUpdate(doc)), message };
+  };
+
+  /** Only the updates the requester misses, plus our state vector for its reverse sync. */
+  private buildDiffPayload = (doc: Y.Doc, binMessage: Uint8Array): SyncRequestPayload => ({
+    update: Y.encodeStateAsUpdate(doc, binMessage),
+    message: this.buildScopeMessage({ stateVector: uint8ToBase64(Y.encodeStateVector(doc)) }),
+  });
+
+  /** Serve a page we do not hold in memory from its stored snapshot. */
+  private loadStoredPagePayload = async (
+    fileId: string,
+    page: number,
+    message: string,
+  ): Promise<SyncRequestPayload | null> => {
+    const stored = await loadWhiteboardPageSnapshot(fileId, page);
+
+    if (!stored?.length) {
+      return null;
+    }
+
+    if (!this.doc || !this.config) {
+      return null;
+    }
+
+    // Full-state payloads are gzip-compressed, flagged via scope.gzip.
+    return { update: compress(stored), message };
   };
 
   /**
@@ -1682,7 +1526,14 @@ export class WhiteboardController {
   ) => {
     const scope = this.parseScope(message);
 
-    if (!scope || !id || !this.pendingSyncRequestIds.has(id)) {
+    if (!scope || !id) {
+      return;
+    }
+
+    // A regular answer belongs to the running sync run, a bootstrap answer to
+    // the initial handshake; both stay valid until they are used.
+    const isRegular = this.syncRequest.isPending(id);
+    if (!isRegular && !this.initialRequestIds.has(id)) {
       return;
     }
 
@@ -1696,38 +1547,19 @@ export class WhiteboardController {
       return;
     }
 
-    const timer = this.backupResponseTimers.get(id);
-    if (timer) {
-      clearTimeout(timer);
-      this.backupResponseTimers.delete(id);
-    }
-
-    this.pendingSyncRequestIds.delete(id);
+    // Earlier ids of the bootstrap stay pending: a late answer still resolves it.
+    this.initialRequestIds.delete(id);
 
     let donorFileId = this.fileId;
     let donorPage = this.page;
 
     if (hasInitialData) {
-      let initialData: WhiteboardDataAsDonorData;
-      try {
-        initialData = JSON.parse(scope.initial_data!) as WhiteboardDataAsDonorData;
-      } catch (error) {
-        console.error('[WhiteboardController] failed to parse initial whiteboard data', error);
+      const initialScope = this.applyInitialDonorScope(scope);
+      if (!initialScope) {
         return;
       }
-
-      // A newer presenter-authorized scope arrived while this bootstrap was in
-      // flight: bootstrapping the donor would drag everyone back to the old
-      // page. Hand the newest scope to the caller instead.
-      if (this.isInitialBootstrapStale()) {
-        this.resolveInitialRequest(this.storeScope());
-        return;
-      }
-
-      donorFileId = initialData.currentWhiteboardOfficeFileId;
-      donorPage = initialData.currentPageNumber;
-
-      store.dispatch(addWhiteboardDataSentFromDonor(initialData));
+      donorFileId = initialScope.fileId;
+      donorPage = initialScope.page;
 
       // The donor setup shares the serialized doc lifecycle with page/file
       // switches, and is dropped when a newer authorized scope won the race
@@ -1752,184 +1584,116 @@ export class WhiteboardController {
       }
     }
 
-    if (binMessage.length > 0) {
-      let payload = binMessage;
-      // Full-state responses arrive gzip-compressed (scope.gzip); diffs stay raw.
-      if (scope.gzip) {
-        try {
-          payload = decompress(binMessage);
-        } catch (e) {
-          console.error('[WhiteboardController] failed to decompress sync response', e);
-          return;
-        }
+    if (!this.applySyncResponsePayload(binMessage, scope)) {
+      if (isRegular) {
+        this.syncRequest.fail(id); // unusable answer: move on to the next peer
       }
-      this.applyRemoteUpdate(payload);
+      return;
     }
 
-    /*
-     * Send back updates that the responder did not have when it generated its
-     * state vector.
-     */
-    if (scope.stateVector && this.config && this.doc) {
-      try {
-        const stateVector = base64ToUint8(scope.stateVector);
-        const extra = Y.encodeStateAsUpdate(this.doc, stateVector);
+    this.sendReverseSync(scope.stateVector, fromUserId);
 
-        if (extra.length > 0) {
-          // Reverse-sync diff stays raw.
-          this.sendWhiteboardData(
-            DataMsgBodyType.SCENE_UPDATE,
-            extra,
-            undefined,
-            this.buildScopeMessage(),
-            fromUserId,
-          );
-        }
-      } catch (error) {
-        console.error('[WhiteboardController] failed to process responder state vector', error);
-      }
+    // Applied first: the next request's state vector already includes this answer.
+    if (isRegular) {
+      this.syncRequest.complete(id);
     }
 
     if (hasInitialData) {
       this.resolveInitialRequest({ fileId: donorFileId, page: donorPage });
-      return;
+      // The bootstrap already created the doc, so the caller's doSync() will not
+      // start a run: ask the peers for anything the donor's snapshot was missing.
+      this.syncRequest.start();
+    }
+  };
+
+  /** Validate `scope.initial_data` and stage the donor scope; null drops the response. */
+  private applyInitialDonorScope = (
+    scope: WhiteboardScope,
+  ): { fileId: string; page: number } | null => {
+    let initialData: WhiteboardDataAsDonorData;
+    try {
+      initialData = JSON.parse(scope.initial_data!) as WhiteboardDataAsDonorData;
+    } catch (error) {
+      console.error('[WhiteboardController] failed to parse initial whiteboard data', error);
+      return null;
     }
 
-    if (this.pendingSyncRequestIds.size === 0) {
-      if (this.syncRetryTimer) {
-        clearTimeout(this.syncRetryTimer);
-        this.syncRetryTimer = null;
+    // A newer presenter-authorized scope arrived while this bootstrap was in
+    // flight: bootstrapping the donor would drag everyone back to the old
+    // page. Hand the newest scope to the caller instead.
+    if (this.isInitialBootstrapStale()) {
+      this.resolveInitialRequest(this.storeScope());
+      return null;
+    }
+
+    const fileId = initialData.currentWhiteboardOfficeFileId;
+    const page = initialData.currentPageNumber;
+
+    store.dispatch(addWhiteboardDataSentFromDonor(initialData));
+
+    return { fileId, page };
+  };
+
+  /** Apply the response payload; false drops the response. */
+  private applySyncResponsePayload = (binMessage: Uint8Array, scope: WhiteboardScope): boolean => {
+    if (binMessage.length === 0) {
+      return true;
+    }
+
+    let payload = binMessage;
+    // Full-state responses arrive gzip-compressed (scope.gzip); diffs stay raw.
+    if (scope.gzip) {
+      try {
+        payload = decompress(binMessage);
+      } catch (e) {
+        console.error('[WhiteboardController] failed to decompress sync response', e);
+        return false;
       }
-
-      this.syncRequestAttempts = 0;
     }
+
+    this.applyRemoteUpdate(payload);
+
+    return true;
   };
 
-  /**
-   * Creates (or reuses) the room-scoped presence doc + Awareness instance.
-   * Idempotent: presence survives page/file switches and is only torn down in
-   * `destroy()`.
+  /*
+   * Send back updates that the responder did not have when it generated its
+   * state vector.
    */
-  private ensurePresence = () => {
-    if (this.presenceDoc) {
+  private sendReverseSync = (stateVector: string | undefined, fromUserId: string) => {
+    if (!stateVector || !this.config || !this.doc) {
       return;
     }
-    const presenceDoc = new Y.Doc();
-    const awareness = new Awareness(presenceDoc);
-    awareness.on('change', this.handleAwarenessChange);
-    this.presenceDoc = presenceDoc;
-    this.awareness = awareness;
+
+    try {
+      const decoded = base64ToUint8(stateVector);
+      const extra = Y.encodeStateAsUpdate(this.doc, decoded);
+
+      if (extra.length > 0) {
+        // Reverse-sync diff stays raw.
+        this.sendWhiteboardData(
+          DataMsgBodyType.SCENE_UPDATE,
+          extra,
+          undefined,
+          this.buildScopeMessage(),
+          fromUserId,
+        );
+      }
+    } catch (error) {
+      console.error('[WhiteboardController] failed to process responder state vector', error);
+    }
   };
 
-  private destroyPresence = () => {
-    if (this.awareness) {
-      this.awareness.off('change', this.handleAwarenessChange);
-      this.awareness.destroy();
-      this.awareness = null;
-    }
-    if (this.presenceDoc) {
-      this.presenceDoc.destroy();
-      this.presenceDoc = null;
-    }
-  };
-
-  /**
-   * Publishes this client's presence to the room (only when the current user
-   * can write to the whiteboard).
-   */
   setLocalPresence = (presence: WhiteboardPresence) => {
-    if (this.config?.canWrite() && this.awareness) {
-      this.awareness.setLocalState(presence);
-    }
+    this.presence.setLocalPresence(presence);
   };
 
   clearLocalPresence = () => {
-    if (this.awareness) {
-      this.awareness.setLocalState(null);
-    }
+    this.presence.clearLocalPresence();
   };
 
   refreshCollaborators = () => {
-    this.syncCollaborators();
-  };
-
-  /**
-   * Awareness change handler. Always refreshes the rendered collaborators
-   * first, then only echoes *our own* local changes back into the room (remote
-   * updates must never be re-broadcast).
-   */
-  private handleAwarenessChange = (
-    { added, updated, removed }: { added: number[]; updated: number[]; removed: number[] },
-    origin: unknown,
-  ) => {
-    this.syncCollaborators();
-
-    if (origin === WHITEBOARD_REMOTE_ORIGIN) {
-      return;
-    }
-
-    const changed = [...added, ...updated, ...removed];
-    if (changed.length === 0) {
-      return;
-    }
-    const { awareness, config } = this;
-    if (!awareness || !config || !config.canWrite()) {
-      return;
-    }
-    this.sendWhiteboardData(
-      DataMsgBodyType.POINTER_UPDATE,
-      encodeAwarenessUpdate(awareness, changed),
-    );
-  };
-
-  /**
-   * Rebuilds the `Map<SocketId, Collaborator>` rendered on the canvas from the
-   * awareness states. Skips our own client id, states without a truthy `id`,
-   * and any user that is no longer present / unlocked in the room.
-   */
-  private syncCollaborators = () => {
-    const { config, awareness } = this;
-    if (!config || !config.excalidrawAPI || !awareness) {
-      return;
-    }
-
-    const activeIds = new Set(
-      selectWhiteboardParticipants(store.getState())
-        .filter((p) => p.isPresent || !p.isWhiteboardLocked)
-        .map((p) => p.userId),
-    );
-
-    const collaborators = new Map<SocketId, Collaborator>();
-    awareness.getStates().forEach((state, clientId) => {
-      if (clientId === awareness.clientID) {
-        return;
-      }
-      if (!state.id) {
-        return;
-      }
-      const id = String(state.id);
-      if (!activeIds.has(id)) {
-        return;
-      }
-      collaborators.set(id as SocketId, state as unknown as Collaborator);
-    });
-
-    config.excalidrawAPI.updateScene({ collaborators });
-  };
-
-  /**
-   * Applies a remote awareness update received over NATS. The remote origin is
-   * supplied so the `change` listener does not re-broadcast it.
-   */
-  private applyRemoteAwareness = (update: Uint8Array) => {
-    if (!this.awareness) {
-      return;
-    }
-    try {
-      applyAwarenessUpdate(this.awareness, update, WHITEBOARD_REMOTE_ORIGIN);
-    } catch (e) {
-      console.error('[WhiteboardController] failed to apply remote awareness', e);
-    }
+    this.presence.refreshCollaborators();
   };
 }
 
