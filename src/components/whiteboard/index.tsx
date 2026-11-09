@@ -255,17 +255,8 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         applySceneToExcalidraw({ init: false });
       },
       canWrite: () => canEdit,
-      isPrimaryResponder: () => !!isPresenter,
     });
-  }, [
-    excalidrawAPI,
-    controller,
-    roomSid,
-    canEdit,
-    isPresenter,
-    applySceneToExcalidraw,
-    isControllerAtTarget,
-  ]);
+  }, [excalidrawAPI, controller, roomSid, canEdit, applySceneToExcalidraw, isControllerAtTarget]);
 
   // Resync the active CRDT doc after reconnects and when the tab becomes
   // visible again (state-vector handshake with the room).

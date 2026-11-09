@@ -18,6 +18,8 @@ const setup = (targets: string[] | (() => string[])) => {
   return { sync, sent, getTargets };
 };
 
+const targetsOf = (sent: Send[]) => sent.map((s) => s.to);
+
 beforeEach(() => {
   vi.useFakeTimers();
 });
@@ -27,70 +29,137 @@ afterEach(() => {
 });
 
 describe('SequentialSyncRequest', () => {
-  it('asks one target at a time, spacing them by the target timeout', () => {
+  it('asks all targets in order, one at a time', () => {
     const { sync, sent } = setup(['a', 'b', 'c']);
     sync.start();
 
-    expect(sent.map((s) => s.to)).toEqual(['a']);
+    expect(targetsOf(sent)).toEqual(['a']);
     expect(sync.active).toBe(true);
 
     vi.advanceTimersByTime(SYNC_TARGET_TIMEOUT_MS - 1);
-    expect(sent.map((s) => s.to)).toEqual(['a']);
+    expect(targetsOf(sent)).toEqual(['a']);
 
     vi.advanceTimersByTime(1);
-    expect(sent.map((s) => s.to)).toEqual(['a', 'b']);
+    expect(targetsOf(sent)).toEqual(['a', 'b']);
 
     vi.advanceTimersByTime(SYNC_TARGET_TIMEOUT_MS);
-    expect(sent.map((s) => s.to)).toEqual(['a', 'b', 'c']);
+    expect(targetsOf(sent)).toEqual(['a', 'b', 'c']);
 
-    // Every send gets its own id, and all of them stay pending.
+    // Every send gets its own id and stays pending while unanswered.
     expect(new Set(sent.map((s) => s.id)).size).toBe(3);
     for (const { id } of sent) {
       expect(sync.isPending(id)).toBe(true);
     }
   });
 
-  it('accepts a late answer from an earlier target and stops the run', () => {
-    const { sync, sent } = setup(['a', 'b']);
+  it('an answer advances immediately and the run continues', () => {
+    const { sync, sent } = setup(['a', 'b', 'c']);
     sync.start();
-    vi.advanceTimersByTime(SYNC_TARGET_TIMEOUT_MS);
-    expect(sent).toHaveLength(2);
 
     expect(sync.complete(sent[0].id)).toBe(true);
+    expect(targetsOf(sent)).toEqual(['a', 'b']);
+    expect(sync.active).toBe(true);
+
+    vi.advanceTimersByTime(SYNC_TARGET_TIMEOUT_MS);
+    expect(targetsOf(sent)).toEqual(['a', 'b', 'c']);
+  });
+
+  it('ends the run once every target has answered', () => {
+    const { sync, sent } = setup(['a', 'b']);
+    sync.start();
+
+    sync.complete(sent[0].id);
+    expect(targetsOf(sent)).toEqual(['a', 'b']);
+
+    sync.complete(sent[1].id);
     expect(sync.active).toBe(false);
+    expect(sent).toHaveLength(2);
 
     vi.advanceTimersByTime(SYNC_ROUND_RETRY_MS * 4);
     expect(sent).toHaveLength(2);
-    expect(sync.isPending(sent[0].id)).toBe(false);
   });
 
-  it('ignores an unknown id', () => {
+  it('retries a timed-out target next round but not the answered ones', () => {
+    const { sync, sent } = setup(['a', 'b']);
+    sync.start();
+    vi.advanceTimersByTime(SYNC_TARGET_TIMEOUT_MS); // a silent -> ask b
+    expect(targetsOf(sent)).toEqual(['a', 'b']);
+
+    sync.complete(sent[1].id); // b answered, a still unanswered
+    expect(sync.active).toBe(true);
+
+    vi.advanceTimersByTime(SYNC_ROUND_RETRY_MS);
+    expect(targetsOf(sent)).toEqual(['a', 'b', 'a']);
+
+    vi.advanceTimersByTime(SYNC_ROUND_RETRY_MS * 2);
+    expect(targetsOf(sent).filter((to) => to === 'b')).toHaveLength(1);
+  });
+
+  it('accepts a late answer from an earlier target without disturbing the wait', () => {
+    const { sync, sent } = setup(['a', 'b']);
+    sync.start();
+    vi.advanceTimersByTime(SYNC_TARGET_TIMEOUT_MS);
+    expect(targetsOf(sent)).toEqual(['a', 'b']);
+
+    expect(sync.complete(sent[0].id)).toBe(true);
+    // b is still being waited on: no new request, no end of the run.
+    expect(sent).toHaveLength(2);
+    expect(sync.isPending(sent[0].id)).toBe(false);
+    expect(sync.active).toBe(true);
+
+    // b answers too -> everything is covered, the run is done and a is not re-asked.
+    sync.complete(sent[1].id);
+    expect(sync.active).toBe(false);
+    vi.advanceTimersByTime(SYNC_TARGET_TIMEOUT_MS + SYNC_ROUND_RETRY_MS);
+    expect(sent).toHaveLength(2);
+  });
+
+  it('fail(current) advances at once and leaves the target unanswered', () => {
+    const { sync, sent } = setup(['a', 'b']);
+    sync.start();
+    sync.fail(sent[0].id);
+
+    expect(targetsOf(sent)).toEqual(['a', 'b']);
+    // The failed target's id is gone, so a late answer no longer counts.
+    expect(sync.isPending(sent[0].id)).toBe(false);
+
+    // a never answered, so it is asked again next round.
+    vi.advanceTimersByTime(SYNC_TARGET_TIMEOUT_MS + SYNC_ROUND_RETRY_MS);
+    expect(targetsOf(sent)).toEqual(['a', 'b', 'a']);
+  });
+
+  it('ignores unknown ids', () => {
     const { sync, sent } = setup(['a']);
     sync.start();
 
     expect(sync.isPending('nope')).toBe(false);
     expect(sync.complete('nope')).toBe(false);
+    sync.fail('nope');
     expect(sync.active).toBe(true);
+    expect(sent).toHaveLength(1);
 
-    vi.advanceTimersByTime(SYNC_TARGET_TIMEOUT_MS);
+    // Outside a run both are no-ops.
+    sync.cancel();
+    sync.fail(sent[0].id);
+    expect(sync.active).toBe(false);
     expect(sent).toHaveLength(1);
   });
 
-  it('retries a fresh round after the round delay and gives up after MAX_SYNC_ROUNDS', () => {
+  it('gives up after MAX_SYNC_ROUNDS', () => {
     const { sync, sent, getTargets } = setup(['a']);
     sync.start();
     expect(sent).toHaveLength(1);
 
-    // Each following round re-asks the target after the round delay.
     for (let round = 2; round <= MAX_SYNC_ROUNDS; round++) {
       vi.advanceTimersByTime(SYNC_TARGET_TIMEOUT_MS);
       vi.advanceTimersByTime(SYNC_ROUND_RETRY_MS);
       expect(sent).toHaveLength(round);
     }
-    expect(sent.map((s) => s.to)).toEqual(['a', 'a', 'a']);
+    expect(targetsOf(sent)).toEqual(['a', 'a', 'a']);
     expect(getTargets).toHaveBeenCalledTimes(MAX_SYNC_ROUNDS);
     expect(sync.active).toBe(true);
 
+    // One round too many: the run is dropped instead of asking again.
     vi.advanceTimersByTime(SYNC_TARGET_TIMEOUT_MS);
     vi.advanceTimersByTime(SYNC_ROUND_RETRY_MS);
     expect(sync.active).toBe(false);
@@ -100,19 +169,48 @@ describe('SequentialSyncRequest', () => {
     }
   });
 
-  it('start() is single-flight and keeps earlier ids pending', () => {
+  it('drops peers that left between rounds', () => {
+    let targets = ['a', 'b'];
+    const { sync, sent } = setup(() => targets);
+    sync.start();
+    vi.advanceTimersByTime(SYNC_TARGET_TIMEOUT_MS);
+    expect(targetsOf(sent)).toEqual(['a', 'b']);
+
+    targets = ['b'];
+    vi.advanceTimersByTime(SYNC_TARGET_TIMEOUT_MS + SYNC_ROUND_RETRY_MS);
+    // A departed peer is not asked again; no new peer joins either.
+    expect(targetsOf(sent)).toEqual(['a', 'b', 'b']);
+
+    targets = ['b', 'c'];
+    vi.advanceTimersByTime(SYNC_TARGET_TIMEOUT_MS + SYNC_ROUND_RETRY_MS);
+    expect(targetsOf(sent)).toEqual(['a', 'b', 'b', 'b']);
+  });
+
+  it('start(maxTargets) caps the run to the best targets', () => {
+    const { sync, sent } = setup(['a', 'b', 'c']);
+    sync.start(1);
+
+    expect(targetsOf(sent)).toEqual(['a']);
+    // Only the capped target is retried, never 'b'/'c'.
+    vi.advanceTimersByTime(SYNC_TARGET_TIMEOUT_MS + SYNC_ROUND_RETRY_MS);
+    expect(targetsOf(sent)).toEqual(['a', 'a']);
+  });
+
+  it('start() is single-flight', () => {
     const { sync, sent } = setup(['a', 'b']);
     sync.start();
     sync.start();
-
     expect(sent).toHaveLength(1);
-    expect(sync.complete(sent[0].id)).toBe(true);
 
-    // A new run after completion starts over.
-    sync.start();
+    sync.complete(sent[0].id);
+    sync.start(); // active: no-op
     expect(sent).toHaveLength(2);
-    expect(sync.isPending(sent[0].id)).toBe(false);
-    expect(sync.isPending(sent[1].id)).toBe(true);
+
+    sync.cancel();
+    sync.start();
+    expect(sent).toHaveLength(3);
+    expect(sync.isPending(sent[1].id)).toBe(false);
+    expect(sync.isPending(sent[2].id)).toBe(true);
   });
 
   it('ends the run when there are no targets', () => {
@@ -126,7 +224,7 @@ describe('SequentialSyncRequest', () => {
     expect(sent).toHaveLength(0);
   });
 
-  it('cancel() clears timers and pending ids', () => {
+  it('cancel() clears timers and known ids', () => {
     const { sync, sent } = setup(['a', 'b']);
     sync.start();
     sync.cancel();
@@ -136,37 +234,5 @@ describe('SequentialSyncRequest', () => {
 
     vi.advanceTimersByTime(SYNC_ROUND_RETRY_MS * 4);
     expect(sent).toHaveLength(1);
-
-    // next() outside a run is a no-op.
-    sync.next();
-    expect(sent).toHaveLength(1);
-  });
-
-  it('next() skips to the following target immediately', () => {
-    const { sync, sent } = setup(['a', 'b']);
-    sync.start();
-    sync.next();
-
-    expect(sent.map((s) => s.to)).toEqual(['a', 'b']);
-    // The skipped target's id stays pending, so its answer is still accepted.
-    expect(sync.isPending(sent[0].id)).toBe(true);
-
-    sync.next();
-    // Round exhausted, so the round retry delay applies before the next round.
-    vi.advanceTimersByTime(SYNC_ROUND_RETRY_MS - 1);
-    expect(sent).toHaveLength(2);
-    vi.advanceTimersByTime(1);
-    expect(sent.map((s) => s.to)).toEqual(['a', 'b', 'a']);
-  });
-
-  it('re-reads targets at every round start', () => {
-    let targets = ['a'];
-    const { sync, sent } = setup(() => targets);
-    sync.start();
-
-    targets = ['b'];
-    vi.advanceTimersByTime(SYNC_TARGET_TIMEOUT_MS);
-    vi.advanceTimersByTime(SYNC_ROUND_RETRY_MS);
-    expect(sent.map((s) => s.to)).toEqual(['a', 'b']);
   });
 });

@@ -506,19 +506,40 @@ describe('peer sync requests', () => {
     expect(answer.message).toContain('stateVector');
   });
 
-  it('accepts a late answer from an earlier peer and stops asking', async () => {
-    const controller = await ready([{ userId: 'a1' }, { userId: 'a2' }, { userId: 'a3' }]);
+  it('accepts a late answer from an earlier peer and never asks it again', async () => {
+    const controller = await ready([{ userId: 'a1' }, { userId: 'a2' }]);
 
     controller.resync();
     await vi.advanceTimersByTimeAsync(SYNC_TARGET_TIMEOUT_MS);
     expect(requests().map((p) => p.to)).toEqual(['a1', 'a2']);
 
+    // a1 answers late: applied, a2's wait is undisturbed and a1 is done.
     controller.handleNotepadMessage(syncAnswer(requests()[0].id, 'from-a1'));
     await vi.advanceTimersByTimeAsync(0);
     expect(textOf(controller.getSnapshot().doc)).toBe('from-a1');
+    expect(requests().map((p) => p.to)).toEqual(['a1', 'a2']);
 
-    await vi.advanceTimersByTimeAsync(SYNC_TARGET_TIMEOUT_MS * 10);
+    // Both peers answered: the run is over, nobody is asked again.
+    controller.handleNotepadMessage(syncAnswer(requests()[1].id, 'from-a2'));
+    await vi.advanceTimersByTimeAsync(SYNC_TARGET_TIMEOUT_MS * 6);
     expect(requests()).toHaveLength(2);
+  });
+
+  it('an answer advances the run and the next request carries the updated state vector', async () => {
+    const controller = await ready([{ userId: 'a1' }, { userId: 'a2' }]);
+
+    controller.resync();
+    const first = requests()[0];
+    // Empty doc: an empty state vector.
+    expect(Y.decodeStateVector(first.binMessage!).size).toBe(0);
+
+    controller.handleNotepadMessage(syncAnswer(first.id, 'from-a1'));
+    await vi.advanceTimersByTimeAsync(0);
+
+    // The next peer is asked at once, with a state vector that includes the answer.
+    const second = requests()[1];
+    expect(second.to).toBe('a2');
+    expect(Y.decodeStateVector(second.binMessage!).size).toBe(1);
   });
 
   it('asks the next peer when an answer is unusable', async () => {

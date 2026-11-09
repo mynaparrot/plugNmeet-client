@@ -29,7 +29,6 @@ export type WhiteboardControllerConfig = {
   roomSid: string;
   onRemoteUpdate: () => void;
   canWrite: () => boolean;
-  isPrimaryResponder?: () => boolean;
 };
 
 /**

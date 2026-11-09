@@ -75,6 +75,11 @@ vi.mock('../collab/whiteboardPersistence', () => ({
 import { store } from '../../../store';
 import { WhiteboardController } from '../collab/controller/WhiteboardController';
 import { INITIAL_REQUEST_RETRY_MS } from '../collab/controller/constants';
+import {
+  SYNC_ROUND_RETRY_MS,
+  SYNC_TARGET_TIMEOUT_MS,
+  SequentialSyncRequest,
+} from '../../../helpers/libs/sequentialSyncRequest';
 import { loadWhiteboardPageSnapshot } from '../collab/whiteboardPersistence';
 import {
   SAVE_ACK_TIMEOUT_MS,
@@ -85,7 +90,8 @@ import {
 
 type Peer = { userId: string; isPresenter?: boolean; isOnline?: boolean };
 type Internals = {
-  pendingSyncRequestIds: Set<string>;
+  syncRequest: SequentialSyncRequest;
+  initialRequestIds: Set<string>;
   initialRequestResolver: unknown;
   missingUpdateResyncs: number;
 };
@@ -138,14 +144,16 @@ const makeController = () => {
     roomSid: 'room-sid',
     onRemoteUpdate: () => undefined,
     canWrite: () => true,
-    isPrimaryResponder: () => false,
   });
   return controller;
 };
 
 const internalsOf = (controller: WhiteboardController) => controller as unknown as Internals;
 
-type SendCall = [DataMsgBodyType, { id?: string; message?: string; to?: string }];
+type SendCall = [
+  DataMsgBodyType,
+  { id?: string; message?: string; to?: string; binMessage?: Uint8Array },
+];
 
 const sends = (type: DataMsgBodyType) =>
   (conn.sendWhiteboardData.mock.calls as unknown as SendCall[]).filter((call) => call[0] === type);
@@ -341,10 +349,46 @@ describe('unconfirmed canonical recovery', () => {
   });
 });
 
+/** Answer the sync request `id` with a minimal (empty-state) Yjs update. */
+const answerSyncRequest = (
+  controller: WhiteboardController,
+  id: string,
+  from = 'peer1',
+  message = JSON.stringify({ fileId: 'file1', page: 1 }),
+) =>
+  controller.handleMessage(
+    DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE,
+    new Uint8Array([0, 0]),
+    from,
+    id,
+    message,
+  );
+
+/** Answer every target of the running sync run so it finishes and frees the next gap. */
+const endSyncRun = async (controller: WhiteboardController) => {
+  const answered = new Set<string>();
+  for (let i = 0; i < 12 && internalsOf(controller).syncRequest.active; i++) {
+    const pending = [...syncRequestSends()]
+      .reverse()
+      .find((call) => !answered.has(call[1].id as string));
+    if (!pending) {
+      // Nothing new was sent in this round: let the round retry deliver it.
+      await vi.advanceTimersByTimeAsync(SYNC_ROUND_RETRY_MS);
+      continue;
+    }
+    const id = pending[1].id as string;
+    answered.add(id);
+    answerSyncRequest(controller, id, pending[1].to as string);
+    await vi.advanceTimersByTimeAsync(0);
+  }
+};
+
 describe('missing-update detection', () => {
   it('requests a resync when an update arrives with missing dependencies, throttled', async () => {
     const controller = setup([{ userId: 'peer1', isPresenter: true }, { userId: 'peer2' }]);
     await controller.sync('file1', 1, { hydrate: false });
+    await endSyncRun(controller);
+    expect(internalsOf(controller).syncRequest.active).toBe(false);
 
     const doc = controller.getSnapshot()!.doc;
     const updates = sourceUpdates(3, 'e');
@@ -353,7 +397,8 @@ describe('missing-update detection', () => {
     controller.applyRemoteUpdate(updates[1]); // missing the first struct
 
     expect(doc.store.pendingStructs).not.toBeNull();
-    expect(syncRequestSends().map((call) => call[1].to)).toEqual(['peer1', 'peer2']);
+    // Sequential: the resync starts with the best-ranked peer only.
+    expect(syncRequestSends().map((call) => call[1].to)).toEqual(['peer1']);
 
     // Second gap inside the throttle window: no extra request.
     conn.sendWhiteboardData.mockClear();
@@ -362,14 +407,16 @@ describe('missing-update detection', () => {
 
     // A different peer's gap after the window fires again.
     await vi.advanceTimersByTimeAsync(2100);
+    await endSyncRun(controller);
     conn.sendWhiteboardData.mockClear();
     controller.applyRemoteUpdate(sourceUpdates(2, 'other')[1]);
-    expect(syncRequestSends().length).toBeGreaterThan(0);
+    expect(syncRequestSends().map((call) => call[1].to)).toEqual(['peer1']);
   });
 
   it('stays silent while the initial handshake is pending and keeps its throttle budget', async () => {
     const controller = setup([{ userId: 'peer1', isPresenter: true }]);
     await controller.sync('file1', 1, { hydrate: false });
+    await endSyncRun(controller);
 
     const internals = internalsOf(controller);
     internals.initialRequestResolver = () => undefined;
@@ -380,42 +427,160 @@ describe('missing-update detection', () => {
     expect(syncRequestSends()).toHaveLength(0);
     expect(internals.missingUpdateResyncs).toBe(0); // throttle/counter not consumed
 
-    // Handshake over: the same gap now triggers a request instead of being throttled.
+    // Handshake over: a gap now starts a request instead of being throttled.
     internals.initialRequestResolver = null;
     conn.sendWhiteboardData.mockClear();
     controller.applyRemoteUpdate(sourceUpdates(2, 'q')[1]);
-    expect(syncRequestSends().length).toBeGreaterThan(0);
+    expect(syncRequestSends().map((call) => call[1].to)).toEqual(['peer1']);
+  });
+
+  it('keeps the throttle budget while a sync run is already in flight', async () => {
+    const controller = setup([{ userId: 'peer1', isPresenter: true }, { userId: 'peer2' }]);
+    await controller.sync('file1', 1, { hydrate: false });
+    const internals = internalsOf(controller);
+    expect(internals.syncRequest.active).toBe(true);
+
+    conn.sendWhiteboardData.mockClear();
+    controller.applyRemoteUpdate(sourceUpdates(3, 'r')[1]);
+    expect(syncRequestSends()).toHaveLength(0);
+    expect(internals.missingUpdateResyncs).toBe(0);
+  });
+});
+
+describe('sequential sync requests', () => {
+  it('asks one target at a time and moves to the next after the timeout', async () => {
+    const controller = setup([{ userId: 'peer1', isPresenter: true }, { userId: 'peer2' }]);
+    await controller.sync('file1', 1, { hydrate: false });
+
+    expect(syncRequestSends().map((call) => call[1].to)).toEqual(['peer1']);
+
+    // The first peer stays silent: the next one is asked after 1s, not before.
+    await vi.advanceTimersByTimeAsync(SYNC_TARGET_TIMEOUT_MS - 1);
+    expect(syncRequestSends()).toHaveLength(1);
+    await vi.advanceTimersByTimeAsync(1);
+    expect(syncRequestSends().map((call) => call[1].to)).toEqual(['peer1', 'peer2']);
+  });
+
+  it('an answer advances to the next peer at once and the run goes on', async () => {
+    const controller = setup([{ userId: 'peer1', isPresenter: true }, { userId: 'peer2' }]);
+    await controller.sync('file1', 1, { hydrate: false });
+    const first = syncRequestSends()[0][1];
+
+    answerSyncRequest(controller, first.id as string, 'peer1');
+    await vi.advanceTimersByTimeAsync(0);
+
+    // peer1 is covered: peer2 is asked without waiting for its timeout.
+    expect(syncRequestSends().map((call) => call[1].to)).toEqual(['peer1', 'peer2']);
+    expect(internalsOf(controller).syncRequest.active).toBe(true);
+
+    const second = syncRequestSends()[1][1];
+    answerSyncRequest(controller, second.id as string, 'peer2');
+    await vi.advanceTimersByTimeAsync(0);
+    expect(internalsOf(controller).syncRequest.active).toBe(false);
+
+    conn.sendWhiteboardData.mockClear();
+    await vi.advanceTimersByTimeAsync(SYNC_TARGET_TIMEOUT_MS * 3);
+    expect(syncRequestSends()).toHaveLength(0);
+  });
+
+  it('sends the state vector current at send time: the next request includes the answer', async () => {
+    const controller = setup([{ userId: 'peer1', isPresenter: true }, { userId: 'peer2' }]);
+    await controller.sync('file1', 1, { hydrate: false });
+
+    const first = syncRequestSends()[0][1];
+    // Empty doc: an empty state vector.
+    expect(Y.decodeStateVector(first.binMessage!).size).toBe(0);
+
+    controller.handleMessage(
+      DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE,
+      sourceUpdates(1, 'late')[0],
+      'peer1',
+      first.id,
+      JSON.stringify({ fileId: 'file1', page: 1 }),
+    );
+    await vi.advanceTimersByTimeAsync(0);
+
+    const second = syncRequestSends()[1][1];
+    expect(second.to).toBe('peer2');
+    expect(Y.decodeStateVector(second.binMessage!).size).toBe(1);
+  });
+
+  it('accepts a late answer from an earlier target and never re-asks it', async () => {
+    const controller = setup([{ userId: 'peer1', isPresenter: true }, { userId: 'peer2' }]);
+    await controller.sync('file1', 1, { hydrate: false });
+    const firstId = syncRequestSends()[0][1].id as string;
+
+    await vi.advanceTimersByTimeAsync(SYNC_TARGET_TIMEOUT_MS);
+    expect(syncRequestSends()).toHaveLength(2);
+    const internals = internalsOf(controller);
+    expect(internals.syncRequest.isPending(firstId)).toBe(true);
+
+    controller.handleMessage(
+      DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE,
+      sourceUpdates(1, 'late')[0],
+      'peer1',
+      firstId,
+      JSON.stringify({ fileId: 'file1', page: 1 }),
+    );
+    await vi.advanceTimersByTimeAsync(0);
+
+    expect(controller.getSnapshot()!.elementsMap.has('late0')).toBe(true);
+    // The wait on peer2 is undisturbed, peer1 is not asked again.
+    expect(internals.syncRequest.isPending(firstId)).toBe(false);
+    expect(syncRequestSends().map((call) => call[1].to)).toEqual(['peer1', 'peer2']);
+    expect(internals.syncRequest.active).toBe(true);
+
+    // peer2 answers too: everyone is covered and no round retry follows.
+    answerSyncRequest(controller, syncRequestSends()[1][1].id as string, 'peer2');
+    await vi.advanceTimersByTimeAsync(0);
+    expect(internals.syncRequest.active).toBe(false);
+
+    conn.sendWhiteboardData.mockClear();
+    await vi.advanceTimersByTimeAsync(SYNC_ROUND_RETRY_MS * 2);
+    expect(syncRequestSends()).toHaveLength(0);
+  });
+
+  it('sync() restarts the run: the old request ids are dropped', async () => {
+    const controller = setup([{ userId: 'peer1', isPresenter: true }, { userId: 'peer2' }]);
+    await controller.sync('file1', 1, { hydrate: false });
+    const oldId = syncRequestSends()[0][1].id as string;
+    await vi.advanceTimersByTimeAsync(SYNC_TARGET_TIMEOUT_MS);
+    expect(syncRequestSends()).toHaveLength(2);
+
+    conn.sendWhiteboardData.mockClear();
+    await controller.sync('file1', 2, { hydrate: false });
+    const internals = internalsOf(controller);
+    const newId = syncRequestSends()[0][1].id as string;
+    expect(newId).not.toBe(oldId);
+    expect(internals.syncRequest.isPending(oldId)).toBe(false);
+    expect(internals.syncRequest.isPending(newId)).toBe(true);
+
+    // An answer to the cancelled run no longer counts.
+    answerSyncRequest(controller, oldId);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(internals.syncRequest.isPending(newId)).toBe(true);
+    expect(internals.syncRequest.active).toBe(true);
   });
 });
 
 describe('periodic anti-entropy', () => {
-  const answerHandshake = (controller: WhiteboardController) => {
-    for (const call of syncRequestSends()) {
-      controller.handleMessage(
-        DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE,
-        new Uint8Array([0, 0]),
-        'peer1',
-        call[1].id as string,
-        JSON.stringify({ fileId: 'file1', page: 1 }),
-      );
-    }
-  };
-
   it('skips while a sync is in flight / page hidden, then asks only one peer', async () => {
     const controller = setup([{ userId: 'peer1', isPresenter: true }, { userId: 'peer2' }]);
     await controller.sync('file1', 1, { hydrate: false });
-    answerHandshake(controller);
+    await endSyncRun(controller);
     await vi.advanceTimersByTimeAsync(1);
-    expect(internalsOf(controller).pendingSyncRequestIds.size).toBe(0);
+    expect(internalsOf(controller).syncRequest.active).toBe(false);
 
     // In flight: nothing new is sent.
-    internalsOf(controller).pendingSyncRequestIds.add('in-flight');
+    const inFlight = vi
+      .spyOn(internalsOf(controller).syncRequest, 'active', 'get')
+      .mockReturnValue(true);
     conn.sendWhiteboardData.mockClear();
     await vi.advanceTimersByTimeAsync(31_000);
     expect(syncRequestSends()).toHaveLength(0);
+    inFlight.mockRestore();
 
     // Hidden tab: nothing is sent.
-    internalsOf(controller).pendingSyncRequestIds.clear();
     documentStub.visibilityState = 'hidden';
     conn.sendWhiteboardData.mockClear();
     await vi.advanceTimersByTimeAsync(31_000);
@@ -709,6 +874,9 @@ describe('initial bootstrap ownership', () => {
     },
   });
 
+  /** Requests of the initial handshake: sent without a scope message. */
+  const bootstrapSends = () => syncRequestSends().filter((call) => call[1].message === undefined);
+
   const deliverInitialData = (
     controller: WhiteboardController,
     requestId: string,
@@ -730,7 +898,7 @@ describe('initial bootstrap ownership', () => {
   it('ignores a donor bootstrap that answers after a newer presenter scope', async () => {
     const controller = setup([{ userId: 'me' }, { userId: 'peer1', isPresenter: true }]);
     const initial = controller.requestInitialData();
-    const requestId = Array.from(internalsOf(controller).pendingSyncRequestIds)[0];
+    const requestId = Array.from(internalsOf(controller).initialRequestIds)[0];
 
     // Presenter moved to page 2 while the bootstrap request was in flight.
     const storeState = state.current as { whiteboard: { currentPage: number } };
@@ -747,7 +915,7 @@ describe('initial bootstrap ownership', () => {
   it('retries the bootstrap request after 500ms and resolves from the retry answer', async () => {
     const controller = setup([{ userId: 'me' }, { userId: 'peer1', isPresenter: true }]);
     const initial = controller.requestInitialData();
-    const firstId = Array.from(internalsOf(controller).pendingSyncRequestIds)[0];
+    const firstId = Array.from(internalsOf(controller).initialRequestIds)[0];
     expect(syncRequestSends()).toHaveLength(1);
 
     // The presenter is still hydrating: the first request stays unanswered.
@@ -755,7 +923,7 @@ describe('initial bootstrap ownership', () => {
     expect(syncRequestSends()).toHaveLength(1);
 
     await vi.advanceTimersByTimeAsync(100);
-    const retryId = Array.from(internalsOf(controller).pendingSyncRequestIds).find(
+    const retryId = Array.from(internalsOf(controller).initialRequestIds).find(
       (id) => id !== firstId,
     );
     expect(syncRequestSends()).toHaveLength(2);
@@ -766,33 +934,68 @@ describe('initial bootstrap ownership', () => {
     await vi.advanceTimersByTimeAsync(0);
 
     await expect(initial).resolves.toEqual({ fileId: 'donor-file', page: 3 });
-    expect(internalsOf(controller).pendingSyncRequestIds.size).toBe(0);
+    expect(internalsOf(controller).initialRequestIds.size).toBe(0);
 
-    // Request timeout and retry loop are gone with the resolved bootstrap.
-    await vi.advanceTimersByTimeAsync(INITIAL_REQUEST_RETRY_MS * 10);
-    expect(syncRequestSends()).toHaveLength(2);
+    // Request timeout and retry loop are gone with the resolved bootstrap; the
+    // regular run now fills whatever the donor's snapshot was missing.
+    await vi.advanceTimersByTimeAsync(INITIAL_REQUEST_RETRY_MS * 3);
+    expect(bootstrapSends()).toHaveLength(2);
+    expect(syncRequestSends().filter((call) => call[1].message !== undefined)).toHaveLength(1);
   });
 
   it('still accepts a late answer to an earlier request id after a retry', async () => {
     const controller = setup([{ userId: 'me' }, { userId: 'peer1', isPresenter: true }]);
     const initial = controller.requestInitialData();
-    const firstId = Array.from(internalsOf(controller).pendingSyncRequestIds)[0];
+    const firstId = Array.from(internalsOf(controller).initialRequestIds)[0];
 
     await vi.advanceTimersByTimeAsync(INITIAL_REQUEST_RETRY_MS);
     expect(syncRequestSends()).toHaveLength(2);
-    expect(internalsOf(controller).pendingSyncRequestIds.has(firstId)).toBe(true);
+    expect(internalsOf(controller).initialRequestIds.has(firstId)).toBe(true);
 
     deliverInitialData(controller, firstId, 2);
     await vi.advanceTimersByTimeAsync(0);
 
     await expect(initial).resolves.toEqual({ fileId: 'donor-file', page: 2 });
-    expect(internalsOf(controller).pendingSyncRequestIds.size).toBe(0);
+    expect(internalsOf(controller).initialRequestIds.size).toBe(0);
+  });
+
+  it('asks one peer per 500ms tick, cycling the ranked targets', async () => {
+    const controller = setup([
+      { userId: 'me' },
+      { userId: 'peer1', isPresenter: true },
+      { userId: 'peer2' },
+    ]);
+    const initial = controller.requestInitialData();
+    expect(syncRequestSends().map((call) => call[1].to)).toEqual(['peer1']);
+
+    await vi.advanceTimersByTimeAsync(INITIAL_REQUEST_RETRY_MS);
+    expect(syncRequestSends().map((call) => call[1].to)).toEqual(['peer1', 'peer2']);
+
+    // The list wraps around instead of going silent.
+    await vi.advanceTimersByTimeAsync(INITIAL_REQUEST_RETRY_MS);
+    expect(syncRequestSends().map((call) => call[1].to)).toEqual(['peer1', 'peer2', 'peer1']);
+
+    // All earlier ids stay pending: a late answer to the first one resolves it.
+    const firstId = syncRequestSends()[0][1].id as string;
+    expect(internalsOf(controller).initialRequestIds.has(firstId)).toBe(true);
+    deliverInitialData(controller, firstId, 2);
+    await vi.advanceTimersByTimeAsync(0);
+
+    await expect(initial).resolves.toEqual({ fileId: 'donor-file', page: 2 });
+    expect(internalsOf(controller).initialRequestIds.size).toBe(0);
+
+    // The retry loop is gone with the resolved bootstrap; a regular run replaces it.
+    await vi.advanceTimersByTimeAsync(INITIAL_REQUEST_RETRY_MS * 4);
+    expect(bootstrapSends()).toHaveLength(3);
+    expect(
+      syncRequestSends().filter((call) => call[1].message !== undefined).length,
+    ).toBeGreaterThan(0);
   });
 
   it('still bootstraps from the donor when nothing newer was authorized', async () => {
     const controller = setup([{ userId: 'me' }, { userId: 'peer1', isPresenter: true }]);
     const initial = controller.requestInitialData();
-    const requestId = Array.from(internalsOf(controller).pendingSyncRequestIds)[0];
+    const requestId = Array.from(internalsOf(controller).initialRequestIds)[0];
 
     deliverInitialData(controller, requestId, 3);
     await vi.advanceTimersByTimeAsync(0);
@@ -802,6 +1005,23 @@ describe('initial bootstrap ownership', () => {
       expect.objectContaining({ type: 'donor' }),
     );
     expect(controller.getSnapshot()?.page).toBe(3);
+  });
+
+  it('starts a regular sync run once the donor data is applied', async () => {
+    const controller = setup([{ userId: 'me' }, { userId: 'peer1', isPresenter: true }]);
+    const initial = controller.requestInitialData();
+    const requestId = Array.from(internalsOf(controller).initialRequestIds)[0];
+
+    deliverInitialData(controller, requestId, 3);
+    await vi.advanceTimersByTimeAsync(0);
+    await expect(initial).resolves.toEqual({ fileId: 'donor-file', page: 3 });
+
+    // The bootstrap created the doc, so doSync() would not have started a run.
+    const regular = syncRequestSends().filter((call) => call[1].message !== undefined);
+    expect(regular).toHaveLength(1);
+    expect(regular[0][1].to).toBe('peer1');
+    expect(JSON.parse(regular[0][1].message!)).toEqual({ fileId: 'donor-file', page: 3 });
+    expect(internalsOf(controller).syncRequest.active).toBe(true);
   });
 
   it('drops the donor setup when a newer scope wins while it waits for the doc lifecycle', async () => {
@@ -819,7 +1039,7 @@ describe('initial bootstrap ownership', () => {
     // A page/file switch already occupies the serialized doc lifecycle.
     const switching = controller.sync('file1', 1);
     const initial = controller.requestInitialData();
-    const requestId = Array.from(internalsOf(controller).pendingSyncRequestIds)[0];
+    const requestId = Array.from(internalsOf(controller).initialRequestIds)[0];
     deliverInitialData(controller, requestId, 3);
     await vi.advanceTimersByTimeAsync(0); // the donor setup waits in the chain
 
@@ -1083,10 +1303,13 @@ describe('presenter scope self-healing', () => {
         'req-live',
         scope('file1', 1),
       );
-      await vi.advanceTimersByTimeAsync(1000);
+      // No jitter/backup delay: the answer leaves in the same tick, addressed
+      // directly to the requester.
+      await vi.advanceTimersByTimeAsync(0);
 
       const responses = sends(DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE);
       expect(responses).toHaveLength(1);
+      expect(responses[0][1].to).toBe('peer1');
       expect(JSON.parse(responses[0][1].message!)).toMatchObject({ fileId: 'file1', page: 1 });
       expect(pageChangeSends()).toHaveLength(0);
     });

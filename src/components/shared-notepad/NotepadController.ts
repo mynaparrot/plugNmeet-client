@@ -618,15 +618,16 @@ export class NotepadController {
       } catch (e) {
         console.error('[NotepadController] failed to decompress sync response', e);
         // This target's answer is unusable, so ask the next one right away.
-        this.syncRequest.next();
+        this.syncRequest.fail(payload.id);
         return;
       }
     }
 
-    this.syncRequest.complete(payload.id);
     if (update) {
       Y.applyUpdate(this.doc, update, REMOTE_ORIGIN);
     }
+    // Applied first: the next request's state vector already includes this answer.
+    this.syncRequest.complete(payload.id);
 
     let stateVector: Uint8Array | null = null;
     try {

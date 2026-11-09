@@ -48,21 +48,18 @@ import {
   setWhiteboardCurrentPage,
   updateCurrentWhiteboardOfficeFileId,
 } from '../../../../store/slices/whiteboard';
+import { SequentialSyncRequest } from '../../../../helpers/libs/sequentialSyncRequest';
 import {
   ANTI_ENTROPY_INTERVAL_MS,
   ANTI_ENTROPY_JITTER_MS,
-  BACKUP_RESPONDER_JITTER_MS,
-  BACKUP_RESPONDER_MIN_DELAY_MS,
   INITIAL_REQUEST_RETRY_MS,
   INITIAL_REQUEST_TIMEOUT_MS,
   MAX_MISSING_UPDATE_RESYNCS,
-  MAX_SYNC_REQUEST_ATTEMPTS,
   MAX_SYNC_REQUEST_TARGETS,
   MISSING_UPDATE_RESYNC_THROTTLE_MS,
   SAVE_FLUSH_RETRY_DELAY_MS,
   SAVE_FLUSH_TIMEOUT_MS,
   STALE_PEER_NUDGE_THROTTLE_MS,
-  SYNC_RETRY_DELAY_MS,
   WHITEBOARD_REMOTE_ORIGIN,
 } from './constants';
 import { WhiteboardPresenceManager } from './WhiteboardPresenceManager';
@@ -98,17 +95,31 @@ export class WhiteboardController {
   private page = 0;
   private generation = 0;
   private config: WhiteboardControllerConfig | null = null;
-  private pendingSyncRequestIds = new Set<string>();
-  private syncRequestAttempts = 0;
-  private backupResponseTimers = new Map<string, ReturnType<typeof setTimeout>>();
-  private syncRetryTimer: ReturnType<typeof setTimeout> | null = null;
+  /** Peer handshake: every target in turn, each answer filling only what is missing. */
+  private readonly syncRequest = new SequentialSyncRequest({
+    getTargets: () => this.getSyncRequestTargets(),
+    send: (toUserId, requestId) => {
+      const doc = this.doc;
+      if (!doc) return;
+      this.sendWhiteboardData(
+        DataMsgBodyType.WHITEBOARD_SYNC_REQUEST,
+        Y.encodeStateVector(doc),
+        requestId,
+        this.buildScopeMessage(),
+        toUserId,
+      );
+    },
+  });
   private antiEntropyTimer: ReturnType<typeof setTimeout> | null = null;
   private lastMissingUpdateResyncAt = 0;
   private missingUpdateResyncs = 0;
   private stalePeerNudgeAt = new Map<string, number>();
+  /** Request ids of the bootstrap handshake (kept apart from the regular sync run). */
+  private initialRequestIds = new Set<string>();
   private initialRequestResolver: ((data: { fileId: string; page: number } | null) => void) | null =
     null;
   private initialRequestTimer: ReturnType<typeof setTimeout> | null = null;
+  private initialRequestRetryTimer: ReturnType<typeof setTimeout> | null = null;
   // Scope Redux held when the initial bootstrap was requested: a donor whose
   // answer arrives after the presenter moved on must not override that scope.
   private initialRequestScope: { fileId: string; page: number } | null = null;
@@ -419,8 +430,9 @@ export class WhiteboardController {
       return;
     }
 
-    this.syncRequestAttempts = 0;
-    this.sendSyncRequest();
+    // A page switch restarts the handshake from the best-ranked peer.
+    this.syncRequest.cancel();
+    this.syncRequest.start();
   };
 
   /** Flush the pending save, destroy the doc and reset all session fields. */
@@ -453,12 +465,6 @@ export class WhiteboardController {
     }
   };
 
-  /** Forget the in-flight sync requests and their attempt budget. */
-  private resetSyncRequests = () => {
-    this.pendingSyncRequestIds.clear();
-    this.syncRequestAttempts = 0;
-  };
-
   private getSyncState = (key: string): SessionDataSyncState => {
     let s = this.syncStates.get(key);
     if (!s) {
@@ -489,9 +495,9 @@ export class WhiteboardController {
     // flushLocalSnapshot is a no-op for other roles).
     await this.flushLocalSnapshot();
 
-    if (this.syncRetryTimer) {
-      clearTimeout(this.syncRetryTimer);
-      this.syncRetryTimer = null;
+    if (this.initialRequestRetryTimer) {
+      clearTimeout(this.initialRequestRetryTimer);
+      this.initialRequestRetryTimer = null;
     }
     if (this.antiEntropyTimer) {
       clearTimeout(this.antiEntropyTimer);
@@ -504,11 +510,7 @@ export class WhiteboardController {
     this.lastMissingUpdateResyncAt = 0;
     this.missingUpdateResyncs = 0;
     this.stalePeerNudgeAt.clear();
-    for (const t of this.backupResponseTimers.values()) {
-      clearTimeout(t);
-    }
-    this.backupResponseTimers.clear();
-    this.resetSyncRequests();
+    this.syncRequest.cancel();
     this.sessionData.cancelPendingFetches();
 
     if (this.doc) {
@@ -1120,10 +1122,9 @@ export class WhiteboardController {
       this.missingUpdateResyncs = 0; // everything integrated again
       return;
     }
-    // Initial handshake in flight: sendSyncRequest() would clear
-    // pendingSyncRequestIds and reject its response, so let the handshake
-    // deliver the missing history instead.
-    if (this.initialRequestResolver) {
+    // A handshake is already running: it owns the healing attempt, so keep the
+    // throttle budget for a gap that outlives it.
+    if (this.initialRequestResolver || this.syncRequest.active) {
       return;
     }
     const now = Date.now();
@@ -1138,8 +1139,7 @@ export class WhiteboardController {
     console.warn(
       '[WhiteboardController] remote update is missing earlier updates; requesting a resync',
     );
-    this.syncRequestAttempts = 0;
-    this.sendSyncRequest();
+    this.syncRequest.start();
   };
 
   /**
@@ -1168,57 +1168,11 @@ export class WhiteboardController {
       return;
     }
     // Never compete with the initial handshake or an in-flight sync.
-    if (this.pendingSyncRequestIds.size > 0 || this.initialRequestResolver) {
+    if (this.syncRequest.active || this.initialRequestResolver) {
       return;
     }
 
-    this.syncRequestAttempts = 0;
-    this.sendSyncRequest(1);
-  };
-
-  private sendSyncRequest = (maxTargets?: number) => {
-    const { doc, config } = this;
-    if (!doc || !config) {
-      return;
-    }
-
-    if (this.syncRetryTimer) {
-      clearTimeout(this.syncRetryTimer);
-      this.syncRetryTimer = null;
-    }
-
-    const targets = this.getSyncRequestTargets();
-    if (targets.length === 0) {
-      this.pendingSyncRequestIds.clear();
-      return;
-    }
-
-    this.syncRequestAttempts += 1;
-    if (this.syncRequestAttempts > MAX_SYNC_REQUEST_ATTEMPTS) {
-      this.pendingSyncRequestIds.clear();
-      return;
-    }
-
-    this.pendingSyncRequestIds.clear();
-    const recipients = maxTargets === undefined ? targets : targets.slice(0, maxTargets);
-    const stateVector = Y.encodeStateVector(doc);
-    for (const toUserId of recipients) {
-      const requestId = crypto.randomUUID();
-      this.pendingSyncRequestIds.add(requestId);
-      this.sendWhiteboardData(
-        DataMsgBodyType.WHITEBOARD_SYNC_REQUEST,
-        stateVector,
-        requestId,
-        this.buildScopeMessage(),
-        toUserId,
-      );
-    }
-
-    this.syncRetryTimer = setTimeout(() => {
-      if (this.pendingSyncRequestIds.size > 0 && this.doc) {
-        this.sendSyncRequest();
-      }
-    }, SYNC_RETRY_DELAY_MS);
+    this.syncRequest.start(1);
   };
 
   private getSyncRequestTargets = (): string[] => {
@@ -1256,8 +1210,8 @@ export class WhiteboardController {
 
   resync = () => {
     if (this.doc) {
-      this.syncRequestAttempts = 0;
-      this.sendSyncRequest();
+      this.syncRequest.cancel();
+      this.syncRequest.start();
     }
   };
 
@@ -1287,21 +1241,25 @@ export class WhiteboardController {
 
       this.initialRequestResolver = resolve;
       this.initialRequestScope = this.storeScope();
-      this.pendingSyncRequestIds.clear();
+      this.initialRequestIds.clear();
 
+      const emptyStateVector = Y.encodeStateVector(new Y.Doc());
+      // One target per tick, cycling the ranked list (presenter first).
+      let targetIndex = 0;
       const sendInitialRequest = () => {
-        const emptyStateVector = Y.encodeStateVector(new Y.Doc());
-        for (const toUserId of this.getSyncRequestTargets()) {
-          const requestId = crypto.randomUUID();
-          this.pendingSyncRequestIds.add(requestId);
-          this.sendWhiteboardData(
-            DataMsgBodyType.WHITEBOARD_SYNC_REQUEST,
-            emptyStateVector,
-            requestId,
-            undefined,
-            toUserId,
-          );
+        const targets = this.getSyncRequestTargets();
+        if (targets.length === 0) {
+          return;
         }
+        const requestId = crypto.randomUUID();
+        this.initialRequestIds.add(requestId);
+        this.sendWhiteboardData(
+          DataMsgBodyType.WHITEBOARD_SYNC_REQUEST,
+          emptyStateVector,
+          requestId,
+          undefined,
+          targets[targetIndex++ % targets.length],
+        );
       };
 
       /*
@@ -1311,8 +1269,8 @@ export class WhiteboardController {
        * still resolves the bootstrap.
        */
       const scheduleRetry = () => {
-        this.syncRetryTimer = setTimeout(() => {
-          this.syncRetryTimer = null;
+        this.initialRequestRetryTimer = setTimeout(() => {
+          this.initialRequestRetryTimer = null;
           if (!this.initialRequestResolver || this.isInitialBootstrapStale()) {
             return;
           }
@@ -1361,14 +1319,12 @@ export class WhiteboardController {
       this.initialRequestTimer = null;
     }
 
-    this.pendingSyncRequestIds.clear();
+    this.initialRequestIds.clear();
 
-    if (this.syncRetryTimer) {
-      clearTimeout(this.syncRetryTimer);
-      this.syncRetryTimer = null;
+    if (this.initialRequestRetryTimer) {
+      clearTimeout(this.initialRequestRetryTimer);
+      this.initialRequestRetryTimer = null;
     }
-
-    this.syncRequestAttempts = 0;
   };
 
   broadcastFullState = () => {
@@ -1464,7 +1420,14 @@ export class WhiteboardController {
       return;
     }
 
-    this.respondToSyncRequest(payload, fromUserId, id, config);
+    // Reply at once, directly to the requester.
+    this.sendWhiteboardData(
+      DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE,
+      payload.update,
+      id,
+      payload.message,
+      fromUserId,
+    );
   };
 
   /** True when a requester sits on a page/file the room has already left. */
@@ -1542,44 +1505,6 @@ export class WhiteboardController {
     return { update: compress(stored), message };
   };
 
-  /** Primary responders answer at once, everyone else after a jittered delay. */
-  private respondToSyncRequest = (
-    payload: SyncRequestPayload,
-    fromUserId: string,
-    id: string,
-    config: WhiteboardControllerConfig,
-  ) => {
-    const respond = () => {
-      this.clearBackupResponse(id);
-      // Compression is decided by the payload builders (full-state responses only).
-      this.sendWhiteboardData(
-        DataMsgBodyType.WHITEBOARD_SYNC_RESPONSE,
-        payload.update,
-        id,
-        payload.message,
-        fromUserId,
-      );
-    };
-
-    if (config.isPrimaryResponder?.() ?? config.canWrite()) {
-      respond();
-      return;
-    }
-
-    const delay =
-      BACKUP_RESPONDER_MIN_DELAY_MS + Math.floor(Math.random() * BACKUP_RESPONDER_JITTER_MS);
-    const timer = setTimeout(respond, delay);
-    this.backupResponseTimers.set(id, timer);
-  };
-
-  private clearBackupResponse = (id: string) => {
-    const timer = this.backupResponseTimers.get(id);
-    if (timer) {
-      clearTimeout(timer);
-      this.backupResponseTimers.delete(id);
-    }
-  };
-
   /**
    * Handles a valid synchronization response.
    *
@@ -1599,7 +1524,14 @@ export class WhiteboardController {
   ) => {
     const scope = this.parseScope(message);
 
-    if (!scope || !id || !this.pendingSyncRequestIds.has(id)) {
+    if (!scope || !id) {
+      return;
+    }
+
+    // A regular answer belongs to the running sync run, a bootstrap answer to
+    // the initial handshake; both stay valid until they are used.
+    const isRegular = this.syncRequest.isPending(id);
+    if (!isRegular && !this.initialRequestIds.has(id)) {
       return;
     }
 
@@ -1613,9 +1545,8 @@ export class WhiteboardController {
       return;
     }
 
-    this.clearBackupResponse(id);
-
-    this.pendingSyncRequestIds.delete(id);
+    // Earlier ids of the bootstrap stay pending: a late answer still resolves it.
+    this.initialRequestIds.delete(id);
 
     let donorFileId = this.fileId;
     let donorPage = this.page;
@@ -1652,17 +1583,25 @@ export class WhiteboardController {
     }
 
     if (!this.applySyncResponsePayload(binMessage, scope)) {
+      if (isRegular) {
+        this.syncRequest.fail(id); // unusable answer: move on to the next peer
+      }
       return;
     }
 
     this.sendReverseSync(scope.stateVector, fromUserId);
 
-    if (hasInitialData) {
-      this.resolveInitialRequest({ fileId: donorFileId, page: donorPage });
-      return;
+    // Applied first: the next request's state vector already includes this answer.
+    if (isRegular) {
+      this.syncRequest.complete(id);
     }
 
-    this.stopSyncRetryIfIdle();
+    if (hasInitialData) {
+      this.resolveInitialRequest({ fileId: donorFileId, page: donorPage });
+      // The bootstrap already created the doc, so the caller's doSync() will not
+      // start a run: ask the peers for anything the donor's snapshot was missing.
+      this.syncRequest.start();
+    }
   };
 
   /** Validate `scope.initial_data` and stage the donor scope; null drops the response. */
@@ -1741,20 +1680,6 @@ export class WhiteboardController {
     } catch (error) {
       console.error('[WhiteboardController] failed to process responder state vector', error);
     }
-  };
-
-  /** Once no sync request is pending, stop the retry timer and reset attempts. */
-  private stopSyncRetryIfIdle = () => {
-    if (this.pendingSyncRequestIds.size !== 0) {
-      return;
-    }
-
-    if (this.syncRetryTimer) {
-      clearTimeout(this.syncRetryTimer);
-      this.syncRetryTimer = null;
-    }
-
-    this.syncRequestAttempts = 0;
   };
 
   setLocalPresence = (presence: WhiteboardPresence) => {
