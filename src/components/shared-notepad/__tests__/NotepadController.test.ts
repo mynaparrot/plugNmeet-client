@@ -1,7 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as Y from 'yjs';
-import { NatsMsgClientToServerEvents, SessionDataType } from 'plugnmeet-protocol-js';
-import type { SessionDataHeader } from 'plugnmeet-protocol-js';
+import {
+  DataMsgBodyType,
+  NatsMsgClientToServerEvents,
+  SessionDataType,
+} from 'plugnmeet-protocol-js';
+import type { DataChannelMessage, SessionDataHeader } from 'plugnmeet-protocol-js';
 
 /*
  * NotepadController session-data tests: the real controller/yjs run; only NATS
@@ -37,6 +41,7 @@ vi.mock('../../../store/slices/participantSlice', () => ({
 vi.mock('../../../helpers/utils', () => ({
   uint8ToBase64: (value: Uint8Array) => Buffer.from(value).toString('base64'),
   base64ToUint8: (value: string) => new Uint8Array(Buffer.from(value, 'base64')),
+  isUserRecorder: (userId: string) => userId === 'RECORDER_BOT' || userId === 'RTMP_BOT',
 }));
 
 import { NOTEPAD_SNAPSHOT_KEY, NotepadController } from '../NotepadController';
@@ -47,14 +52,16 @@ import {
   SAVE_RETRY_BASE_MS,
   SERVER_FIRST_SYNC_TIMEOUT_MS,
   SessionDataSyncState,
+  compress,
   decompress,
   diffKeyOf,
 } from '../../../helpers/libs/sessionDataSync';
+import { SYNC_TARGET_TIMEOUT_MS } from '../../../helpers/libs/sequentialSyncRequest';
 
 const FRAGMENT = 'document-store';
 const DIFF_KEY = diffKeyOf(NOTEPAD_SNAPSHOT_KEY);
 
-type Peer = { userId: string; presenter?: boolean };
+type Peer = { userId: string; presenter?: boolean; admin?: boolean };
 
 const setStore = ({
   presenter = true,
@@ -86,7 +93,7 @@ const setStore = ({
         userId: p.userId,
         isOnline: true,
         joinedAt: 2 + i,
-        metadata: { isPresenter: !!p.presenter },
+        metadata: { isPresenter: !!p.presenter, isAdmin: !!p.admin },
       })),
     ],
   };
@@ -414,5 +421,141 @@ describe('teardown', () => {
     await destroying;
 
     expect(internals(controller).snapshotRetryTimer).toBeNull();
+  });
+});
+
+describe('peer sync requests', () => {
+  type DataCall = [
+    DataMsgBodyType,
+    { id: string; to?: string; binMessage?: Uint8Array; message?: string },
+  ];
+
+  const dataCalls = () => conn.publishData.mock.calls as unknown as DataCall[];
+  const requests = () =>
+    dataCalls()
+      .filter(([type]) => type === DataMsgBodyType.NOTEPAD_SYNC_REQUEST)
+      .map(([, payload]) => payload);
+  const responses = () =>
+    dataCalls()
+      .filter(([type]) => type === DataMsgBodyType.NOTEPAD_SYNC_RESPONSE)
+      .map(([, payload]) => payload);
+
+  /** A peer answer carrying `text`, gzip'd like the real protocol payload. */
+  const syncAnswer = (id: string, text: string) => {
+    const source = new Y.Doc();
+    source.getXmlFragment(FRAGMENT).insert(0, [new Y.XmlText(text)]);
+    const stateVector = Buffer.from(Y.encodeStateVector(source)).toString('base64');
+    return {
+      type: DataMsgBodyType.NOTEPAD_SYNC_RESPONSE,
+      fromUserId: 'peer',
+      id,
+      binMessage: compress(Y.encodeStateAsUpdate(source)),
+      message: JSON.stringify({ stateVector }),
+    } as unknown as DataChannelMessage;
+  };
+
+  /** Controller with a live doc, empty publish log and the given peers. */
+  const ready = async (peers?: Peer[]) => {
+    const controller = makeController();
+    await setupConfirmed(controller);
+    if (peers) {
+      setStore({ peers });
+    }
+    conn.publishData.mockClear();
+    return controller;
+  };
+
+  it('asks one peer at a time: presenter first, recorder last', async () => {
+    const controller = await ready([
+      { userId: 'RECORDER_BOT' },
+      { userId: 'u1' },
+      { userId: 'pres', presenter: true },
+    ]);
+
+    controller.resync();
+    expect(requests().map((p) => p.to)).toEqual(['pres']);
+
+    await vi.advanceTimersByTimeAsync(SYNC_TARGET_TIMEOUT_MS - 1);
+    expect(requests().map((p) => p.to)).toEqual(['pres']);
+
+    await vi.advanceTimersByTimeAsync(1);
+    expect(requests().map((p) => p.to)).toEqual(['pres', 'u1']);
+
+    await vi.advanceTimersByTimeAsync(SYNC_TARGET_TIMEOUT_MS);
+    expect(requests().map((p) => p.to)).toEqual(['pres', 'u1', 'RECORDER_BOT']);
+
+    // Every request carries its own id.
+    expect(new Set(requests().map((p) => p.id)).size).toBe(3);
+  });
+
+  it('answers a sync request straight back to the requester', async () => {
+    const controller = await ready();
+
+    controller.handleNotepadMessage({
+      type: DataMsgBodyType.NOTEPAD_SYNC_REQUEST,
+      fromUserId: 'peer',
+      id: 'req-1',
+      binMessage: Y.encodeStateVector(new Y.Doc()),
+    } as unknown as DataChannelMessage);
+
+    // No timers advanced: the answer must not be delayed or broadcast.
+    const [answer] = responses();
+    expect(answer.id).toBe('req-1');
+    expect(answer.to).toBe('peer');
+    expect(answer.binMessage!.length).toBeGreaterThan(0);
+    expect(answer.message).toContain('stateVector');
+  });
+
+  it('accepts a late answer from an earlier peer and stops asking', async () => {
+    const controller = await ready([{ userId: 'a1' }, { userId: 'a2' }, { userId: 'a3' }]);
+
+    controller.resync();
+    await vi.advanceTimersByTimeAsync(SYNC_TARGET_TIMEOUT_MS);
+    expect(requests().map((p) => p.to)).toEqual(['a1', 'a2']);
+
+    controller.handleNotepadMessage(syncAnswer(requests()[0].id, 'from-a1'));
+    await vi.advanceTimersByTimeAsync(0);
+    expect(textOf(controller.getSnapshot().doc)).toBe('from-a1');
+
+    await vi.advanceTimersByTimeAsync(SYNC_TARGET_TIMEOUT_MS * 10);
+    expect(requests()).toHaveLength(2);
+  });
+
+  it('asks the next peer when an answer is unusable', async () => {
+    const controller = await ready([{ userId: 'a1' }, { userId: 'a2' }]);
+
+    controller.resync();
+    controller.handleNotepadMessage({
+      type: DataMsgBodyType.NOTEPAD_SYNC_RESPONSE,
+      fromUserId: 'a1',
+      id: requests()[0].id,
+      binMessage: new Uint8Array([1, 2, 3]),
+    } as unknown as DataChannelMessage);
+
+    expect(requests().map((p) => p.to)).toEqual(['a1', 'a2']);
+  });
+
+  it('ignores a resync while a run is active', async () => {
+    const controller = await ready([{ userId: 'a1' }, { userId: 'a2' }]);
+
+    controller.resync();
+    controller.resync();
+
+    expect(requests()).toHaveLength(1);
+  });
+
+  it('teardown cancels the run', async () => {
+    const controller = await ready([{ userId: 'a1' }, { userId: 'a2' }]);
+
+    controller.resync();
+    expect(requests()).toHaveLength(1);
+
+    const destroying = controller.destroy();
+    active = null;
+    await vi.advanceTimersByTimeAsync(0);
+    await destroying;
+
+    await vi.advanceTimersByTimeAsync(SYNC_TARGET_TIMEOUT_MS * 10);
+    expect(requests()).toHaveLength(1);
   });
 });

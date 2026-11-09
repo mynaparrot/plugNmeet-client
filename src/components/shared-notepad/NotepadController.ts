@@ -24,13 +24,14 @@ import {
   decompress,
 } from '../../helpers/libs/sessionDataSync';
 import { SessionDataClient } from '../../helpers/libs/sessionDataClient';
+import { SequentialSyncRequest } from '../../helpers/libs/sequentialSyncRequest';
 import { store } from '../../store';
 import { participantsSelector } from '../../store/slices/participantSlice';
-import { base64ToUint8, uint8ToBase64 } from '../../helpers/utils';
+import { base64ToUint8, isUserRecorder, uint8ToBase64 } from '../../helpers/utils';
 
 const REMOTE_ORIGIN = 'nats-remote';
 const FRAGMENT_NAME = 'document-store';
-const SYNC_RETRY_DELAY = 2000;
+const MAX_SYNC_TARGETS = 3;
 export const NOTEPAD_SNAPSHOT_KEY = 'snapshot';
 
 export type NotepadSnapshot = {
@@ -45,9 +46,20 @@ export class NotepadController {
   private awareness: Awareness | null = null;
   private fragment: Y.XmlFragment | null = null;
   private generation = 0;
-  private pendingSyncRequestId: string | null = null;
-  private backupResponseTimers = new Map<string, ReturnType<typeof setTimeout>>();
-  private syncRetryTimer: ReturnType<typeof setTimeout> | null = null;
+  private readonly syncRequest = new SequentialSyncRequest({
+    getTargets: () => this.getSyncRequestTargets(),
+    send: (toUserId, requestId) => {
+      const doc = this.doc;
+      if (!doc) return;
+      this.send(
+        DataMsgBodyType.NOTEPAD_SYNC_REQUEST,
+        Y.encodeStateVector(doc),
+        requestId,
+        undefined,
+        toUserId,
+      );
+    },
+  });
   private settingUp = false;
   private boundConn = false;
   private boundVisibility = false;
@@ -215,7 +227,7 @@ export class NotepadController {
 
       this.updateSnapshot();
       this.bindLifecycle();
-      this.sendSyncRequest();
+      this.syncRequest.start();
     } finally {
       this.settingUp = false;
     }
@@ -232,15 +244,7 @@ export class NotepadController {
   }
 
   private async clearCurrentSession() {
-    if (this.syncRetryTimer) {
-      clearTimeout(this.syncRetryTimer);
-      this.syncRetryTimer = null;
-    }
-    for (const t of this.backupResponseTimers.values()) {
-      clearTimeout(t);
-    }
-    this.backupResponseTimers.clear();
-    this.pendingSyncRequestId = null;
+    this.syncRequest.cancel();
     this.resetSaveRetry();
 
     const hadPendingSave = this.saveTimer !== null;
@@ -552,35 +556,7 @@ export class NotepadController {
     Y.applyUpdate(this.doc, update, REMOTE_ORIGIN);
   }
 
-  private sendSyncRequest() {
-    if (!this.doc) {
-      return;
-    }
-    if (this.syncRetryTimer) {
-      clearTimeout(this.syncRetryTimer);
-      this.syncRetryTimer = null;
-    }
-
-    const targets = this.getSyncRequestTargets();
-    if (targets.length === 0) {
-      this.pendingSyncRequestId = null;
-      return;
-    }
-
-    const requestId = crypto.randomUUID();
-    this.pendingSyncRequestId = requestId;
-    const stateVector = Y.encodeStateVector(this.doc);
-    for (const toUserId of targets) {
-      this.send(DataMsgBodyType.NOTEPAD_SYNC_REQUEST, stateVector, requestId, undefined, toUserId);
-    }
-
-    this.syncRetryTimer = setTimeout(() => {
-      if (this.pendingSyncRequestId === requestId && this.doc) {
-        this.sendSyncRequest();
-      }
-    }, SYNC_RETRY_DELAY);
-  }
-
+  /** Best-first sync targets: presenter, then admin, then regular users; recorders last. */
   private getSyncRequestTargets(): string[] {
     const state = store.getState();
     const currentUserId = state.session.currentUser?.userId;
@@ -588,87 +564,67 @@ export class NotepadController {
       return [];
     }
 
+    const rank = (p: {
+      metadata?: { isPresenter?: boolean; isAdmin?: boolean };
+      userId: string;
+    }) => {
+      if (isUserRecorder(p.userId)) return 3;
+      if (p.metadata?.isPresenter) return 0;
+      if (p.metadata?.isAdmin) return 1;
+      return 2;
+    };
+
     return participantsSelector
       .selectAll(state)
       .filter((p) => p.userId !== currentUserId && p.isOnline && !p.metadata?.waitForApproval)
-      .sort((a, b) => {
-        const adminDiff = (b.metadata?.isAdmin ? 1 : 0) - (a.metadata?.isAdmin ? 1 : 0);
-        if (adminDiff !== 0) {
-          return adminDiff;
-        }
-        return a.joinedAt - b.joinedAt;
-      })
-      .slice(0, 3)
+      .sort((a, b) => rank(a) - rank(b) || a.joinedAt - b.joinedAt)
+      .slice(0, MAX_SYNC_TARGETS)
       .map((p) => p.userId);
   }
 
   resync() {
     if (this.doc) {
-      this.sendSyncRequest();
+      this.syncRequest.start();
     }
   }
 
   private handleSyncRequest(payload: DataChannelMessage) {
-    if (!this.doc || !payload.binMessage) {
+    if (!this.doc || !payload.binMessage || !payload.fromUserId) {
       return;
     }
     const missing = Y.encodeStateAsUpdate(this.doc, payload.binMessage);
     const stateVector = uint8ToBase64(Y.encodeStateVector(this.doc));
-    const requestId = payload.id;
 
-    const respond = () => {
-      const timer = this.backupResponseTimers.get(requestId);
-      if (timer) {
-        clearTimeout(timer);
-        this.backupResponseTimers.delete(requestId);
-      }
-      // NOTEPAD_SYNC_RESPONSE payloads are always compressed
-      this.send(
-        DataMsgBodyType.NOTEPAD_SYNC_RESPONSE,
-        compress(missing),
-        requestId,
-        JSON.stringify({ stateVector }),
-      );
-    };
-
-    const isPresenter = store.getState().session.currentUser?.metadata?.isPresenter === true;
-
-    if (isPresenter) {
-      respond();
-      return;
-    }
-
-    const delay = 250 + Math.floor(Math.random() * 550);
-    const timer = setTimeout(respond, delay);
-    this.backupResponseTimers.set(requestId, timer);
+    // NOTEPAD_SYNC_RESPONSE payloads are always compressed
+    this.send(
+      DataMsgBodyType.NOTEPAD_SYNC_RESPONSE,
+      compress(missing),
+      payload.id,
+      JSON.stringify({ stateVector }),
+      payload.fromUserId,
+    );
   }
 
   private handleSyncResponse(payload: DataChannelMessage) {
-    const timer = this.backupResponseTimers.get(payload.id);
-    if (timer) {
-      clearTimeout(timer);
-      this.backupResponseTimers.delete(payload.id);
-    }
-
-    if (payload.id !== this.pendingSyncRequestId || !this.doc) {
+    if (!this.doc || !this.syncRequest.isPending(payload.id)) {
       return;
     }
 
-    if (this.syncRetryTimer) {
-      clearTimeout(this.syncRetryTimer);
-      this.syncRetryTimer = null;
-    }
-    this.pendingSyncRequestId = null;
-
     // NOTEPAD_SYNC_RESPONSE is always compressed
+    let update: Uint8Array | null = null;
     if (payload.binMessage && payload.binMessage.length > 0) {
-      let update: Uint8Array;
       try {
         update = decompress(payload.binMessage);
       } catch (e) {
         console.error('[NotepadController] failed to decompress sync response', e);
+        // This target's answer is unusable, so ask the next one right away.
+        this.syncRequest.next();
         return;
       }
+    }
+
+    this.syncRequest.complete(payload.id);
+    if (update) {
       Y.applyUpdate(this.doc, update, REMOTE_ORIGIN);
     }
 
