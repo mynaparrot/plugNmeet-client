@@ -196,6 +196,23 @@ describe('SequentialSyncRequest', () => {
     expect(targetsOf(sent)).toEqual(['a', 'a']);
   });
 
+  it('start(maxTargets, true) shuffles before the cap, so a random peer is picked', () => {
+    // Two draws: the permutation depends on the shuffle, not on the ranking.
+    const random = vi.spyOn(Math, 'random').mockReturnValueOnce(0.5).mockReturnValueOnce(0);
+    try {
+      const ranked = ['a', 'b', 'c'];
+      const { sync, sent } = setup(ranked);
+      sync.start(1, true);
+
+      expect(targetsOf(sent)).toHaveLength(1);
+      expect(targetsOf(sent)[0]).not.toBe('a');
+      // The caller's ranked list is shuffled on a copy and stays intact.
+      expect(ranked).toEqual(['a', 'b', 'c']);
+    } finally {
+      random.mockRestore();
+    }
+  });
+
   it('start() is single-flight', () => {
     const { sync, sent } = setup(['a', 'b']);
     sync.start();

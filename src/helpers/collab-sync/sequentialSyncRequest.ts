@@ -11,6 +11,16 @@ interface Options {
   send: (toUserId: string, requestId: string) => void;
 }
 
+/** Fisher–Yates shuffle on a copy, so the caller's ranked list stays intact. */
+const shuffled = (items: string[]): string[] => {
+  const out = [...items];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+};
+
 /**
  * Asks every ranked peer in turn, one at a time. Each request carries the state
  * vector taken at send time, so an answer only returns what is still missing and
@@ -34,13 +44,17 @@ export class SequentialSyncRequest {
     return this.round > 0;
   }
 
-  /** Start a run over the current targets; no-op while one is in progress. */
-  start(maxTargets?: number) {
+  /**
+   * Start a run over the current targets; no-op while one is in progress.
+   * `shuffle` drops the ranking first, so a capped run picks a random peer.
+   */
+  start(maxTargets?: number, shuffle = false) {
     if (this.active) {
       return;
     }
     this.reset();
-    const targets = this.opts.getTargets();
+    const ranked = this.opts.getTargets();
+    const targets = shuffle ? shuffled(ranked) : ranked;
     this.runTargets = maxTargets === undefined ? targets : targets.slice(0, maxTargets);
     if (this.runTargets.length === 0) {
       return;

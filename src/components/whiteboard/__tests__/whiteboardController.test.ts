@@ -79,14 +79,14 @@ import {
   SYNC_ROUND_RETRY_MS,
   SYNC_TARGET_TIMEOUT_MS,
   SequentialSyncRequest,
-} from '../../../helpers/libs/sequentialSyncRequest';
+} from '../../../helpers/collab-sync/sequentialSyncRequest';
 import { loadWhiteboardPageSnapshot } from '../collab/whiteboardPersistence';
 import {
   SAVE_ACK_TIMEOUT_MS,
   SAVE_MAX_WAIT_MS,
   SessionDataSyncState,
   decompress,
-} from '../../../helpers/libs/sessionDataSync';
+} from '../../../helpers/collab-sync/sessionDataSync';
 
 type Peer = { userId: string; isPresenter?: boolean; isOnline?: boolean };
 type Internals = {
@@ -586,7 +586,7 @@ describe('periodic anti-entropy', () => {
     await vi.advanceTimersByTimeAsync(31_000);
     expect(syncRequestSends()).toHaveLength(0);
 
-    // Visible + idle: a single state-vector request to the presenter-first peer.
+    // Visible + idle: a single state-vector request to a random ranked peer.
     documentStub.visibilityState = 'visible';
     conn.sendWhiteboardData.mockClear();
     for (let i = 0; i < 320 && syncRequestSends().length === 0; i++) {
@@ -594,7 +594,7 @@ describe('periodic anti-entropy', () => {
     }
     const requests = syncRequestSends();
     expect(requests).toHaveLength(1);
-    expect(requests[0][1].to).toBe('peer1');
+    expect(['peer1', 'peer2']).toContain(requests[0][1].to);
   });
 });
 

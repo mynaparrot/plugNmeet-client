@@ -23,8 +23,8 @@ import {
   SAVE_RETRY_MAX_MS,
   CANONICAL_RETRY_BASE_MS,
   CANONICAL_RETRY_MAX_MS,
-} from '../../../../helpers/libs/sessionDataSync';
-import { SessionDataClient } from '../../../../helpers/libs/sessionDataClient';
+} from '../../../../helpers/collab-sync/sessionDataSync';
+import { SessionDataClient } from '../../../../helpers/collab-sync/sessionDataClient';
 import {
   listWhiteboardPages,
   loadWhiteboardPageSnapshot,
@@ -52,7 +52,7 @@ import {
   ANTI_ENTROPY_INTERVAL_MS,
   ANTI_ENTROPY_JITTER_MS,
   SequentialSyncRequest,
-} from '../../../../helpers/libs/sequentialSyncRequest';
+} from '../../../../helpers/collab-sync/sequentialSyncRequest';
 import {
   INITIAL_REQUEST_RETRY_MS,
   INITIAL_REQUEST_TIMEOUT_MS,
@@ -1145,9 +1145,9 @@ export class WhiteboardController {
   };
 
   /**
-   * Anti-entropy: every ~25s (±5s) hand our state vector to a single peer so
-   * a dropped update heals without user action. One peer per tick keeps the
-   * cost flat in large rooms.
+   * Anti-entropy: every ~25s (±5s) hand our state vector to one randomly chosen
+   * peer so a dropped update heals without user action. One peer per tick keeps
+   * the cost flat in large rooms, and the random pick spreads it.
    */
   private scheduleAntiEntropy = () => {
     if (this.antiEntropyTimer) {
@@ -1174,7 +1174,7 @@ export class WhiteboardController {
       return;
     }
 
-    this.syncRequest.start(1);
+    this.syncRequest.start(1, true);
   };
 
   private getSyncRequestTargets = (): string[] => {

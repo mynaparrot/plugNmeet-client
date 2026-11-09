@@ -27,7 +27,7 @@ import HandleChat from './HandleChat';
 import HandleSystemData from './HandleSystemData';
 
 import { store } from '../../store';
-import { decompress } from '../libs/sessionDataSync';
+import { decompress } from '../collab-sync/sessionDataSync';
 import { setAllUserNotifications } from '../../store/slices/roomSettingsSlice';
 import { DB_STORE_NAMES, idbGet, idbGetAll, initIDB } from '../libs/idb';
 import { UserNotification } from '../../store/slices/interfaces/roomSettings';

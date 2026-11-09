@@ -22,13 +22,13 @@ import {
   canonicalKeyOf,
   compress,
   decompress,
-} from '../../helpers/libs/sessionDataSync';
-import { SessionDataClient } from '../../helpers/libs/sessionDataClient';
+} from '../../helpers/collab-sync/sessionDataSync';
+import { SessionDataClient } from '../../helpers/collab-sync/sessionDataClient';
 import {
   ANTI_ENTROPY_INTERVAL_MS,
   ANTI_ENTROPY_JITTER_MS,
   SequentialSyncRequest,
-} from '../../helpers/libs/sequentialSyncRequest';
+} from '../../helpers/collab-sync/sequentialSyncRequest';
 import { store } from '../../store';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import { base64ToUint8, isUserRecorder, uint8ToBase64 } from '../../helpers/utils';
@@ -603,8 +603,8 @@ export class NotepadController {
   };
 
   /**
-   * Anti-entropy: every ~25s (±5s) ask a single peer for what we are missing, so
-   * a dropped update heals without user action.
+   * Anti-entropy: every ~25s (±5s) ask one randomly chosen peer for what we are
+   * missing, so a dropped update heals without user action.
    */
   private scheduleAntiEntropy = () => {
     this.clearAntiEntropy();
@@ -628,7 +628,7 @@ export class NotepadController {
       return;
     }
 
-    this.syncRequest.start(1);
+    this.syncRequest.start(1, true);
   };
 
   private handleSyncRequest(payload: DataChannelMessage) {

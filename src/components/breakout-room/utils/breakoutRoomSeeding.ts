@@ -2,8 +2,11 @@ import * as Y from 'yjs';
 import { BreakoutRoom, SessionDataType, WhiteboardShare } from 'plugnmeet-protocol-js';
 
 import { getNatsConn } from '../../../helpers/nats';
-import { compress, SESSION_DATA_MAX_WIRE_BYTES } from '../../../helpers/libs/sessionDataSync';
-import { sendSessionDataSave } from '../../../helpers/libs/sessionDataClient';
+import {
+  compress,
+  SESSION_DATA_MAX_WIRE_BYTES,
+} from '../../../helpers/collab-sync/sessionDataSync';
+import { sendSessionDataSave } from '../../../helpers/collab-sync/sessionDataClient';
 import {
   deriveRoomKey,
   encryptDataToUint8ArrayWithKey,

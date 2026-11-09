@@ -55,12 +55,12 @@ import {
   compress,
   decompress,
   diffKeyOf,
-} from '../../../helpers/libs/sessionDataSync';
-import type { SequentialSyncRequest } from '../../../helpers/libs/sequentialSyncRequest';
+} from '../../../helpers/collab-sync/sessionDataSync';
+import type { SequentialSyncRequest } from '../../../helpers/collab-sync/sequentialSyncRequest';
 import {
   ANTI_ENTROPY_INTERVAL_MS,
   SYNC_TARGET_TIMEOUT_MS,
-} from '../../../helpers/libs/sequentialSyncRequest';
+} from '../../../helpers/collab-sync/sequentialSyncRequest';
 
 const FRAGMENT = 'document-store';
 const DIFF_KEY = diffKeyOf(NOTEPAD_SNAPSHOT_KEY);
@@ -625,15 +625,18 @@ describe('anti-entropy', () => {
     await destroying;
   };
 
-  it('asks the best target once the interval elapses', async () => {
+  it('asks one randomly chosen ranked target once the interval elapses', async () => {
     const controller = await ready([{ userId: 'u1' }, { userId: 'pres', presenter: true }]);
     expect(internals(controller).antiEntropyTimer).not.toBeNull();
+    const start = vi.spyOn(internals(controller).syncRequest, 'start');
 
     await vi.advanceTimersByTimeAsync(ANTI_ENTROPY_INTERVAL_MS - 1);
     expect(requests()).toHaveLength(0);
 
     await vi.advanceTimersByTimeAsync(1);
-    expect(requests().map((p) => p.to)).toEqual(['pres']);
+    expect(start).toHaveBeenCalledWith(1, true);
+    expect(requests()).toHaveLength(1);
+    expect(['pres', 'u1']).toContain(requests()[0].to);
   });
 
   it('skips a tick while the tab is hidden and resumes when visible', async () => {
