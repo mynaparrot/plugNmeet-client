@@ -18,7 +18,13 @@ import {
   canonicalKeyOf,
   compress,
   decompress,
+  backoffDelay,
+  SAVE_RETRY_BASE_MS,
+  SAVE_RETRY_MAX_MS,
+  CANONICAL_RETRY_BASE_MS,
+  CANONICAL_RETRY_MAX_MS,
 } from '../../../../helpers/libs/sessionDataSync';
+import { SessionDataClient } from '../../../../helpers/libs/sessionDataClient';
 import {
   listWhiteboardPages,
   loadWhiteboardPageSnapshot,
@@ -42,14 +48,11 @@ import {
   setWhiteboardCurrentPage,
   updateCurrentWhiteboardOfficeFileId,
 } from '../../../../store/slices/whiteboard';
-import { backoffDelay } from './helpers';
 import {
   ANTI_ENTROPY_INTERVAL_MS,
   ANTI_ENTROPY_JITTER_MS,
   BACKUP_RESPONDER_JITTER_MS,
   BACKUP_RESPONDER_MIN_DELAY_MS,
-  CANONICAL_RETRY_BASE_MS,
-  CANONICAL_RETRY_MAX_MS,
   INITIAL_REQUEST_RETRY_MS,
   INITIAL_REQUEST_TIMEOUT_MS,
   MAX_MISSING_UPDATE_RESYNCS,
@@ -58,14 +61,11 @@ import {
   MISSING_UPDATE_RESYNC_THROTTLE_MS,
   SAVE_FLUSH_RETRY_DELAY_MS,
   SAVE_FLUSH_TIMEOUT_MS,
-  SAVE_RETRY_BASE_MS,
-  SAVE_RETRY_MAX_MS,
   STALE_PEER_NUDGE_THROTTLE_MS,
   SYNC_RETRY_DELAY_MS,
   WHITEBOARD_REMOTE_ORIGIN,
 } from './constants';
 import { WhiteboardPresenceManager } from './WhiteboardPresenceManager';
-import { WhiteboardSessionStore } from './WhiteboardSessionStore';
 
 export { WHITEBOARD_REMOTE_ORIGIN };
 
@@ -121,7 +121,7 @@ export class WhiteboardController {
   // checkpoint baseline instead of re-uploading a full state.
   private syncStates = new Map<string, SessionDataSyncState>();
   // Server SESSION_DATA request/ack plumbing (saves + fetches).
-  private readonly sessionStore = new WhiteboardSessionStore(() => this.fileId);
+  private readonly sessionData = new SessionDataClient(SessionDataType.WHITEBOARD);
   // All server saves run one at a time through this chain, so a new plan can
   // never overtake an in-flight upload (which would reorder writes per key).
   private saveChain: Promise<unknown> = Promise.resolve();
@@ -435,7 +435,7 @@ export class WhiteboardController {
     await this.teardown();
     // No further ack can arrive: settle everything still waiting. Pending page
     // uploads (which outlive a page) die with the controller.
-    this.sessionStore.settlePendingSaves();
+    this.sessionData.settlePendingSaves();
     for (const t of this.pendingUploadTimers.values()) {
       clearTimeout(t);
     }
@@ -509,7 +509,7 @@ export class WhiteboardController {
     }
     this.backupResponseTimers.clear();
     this.resetSyncRequests();
-    this.sessionStore.cancelPendingFetches();
+    this.sessionData.cancelPendingFetches();
 
     if (this.doc) {
       this.doc.off('update', this.handleDocUpdate);
@@ -799,13 +799,23 @@ export class WhiteboardController {
     );
   };
 
-  /** Send a SESSION_DATA save (waiters, ack timeout and wire format live in the store). */
-  uploadSessionData = (update: Uint8Array, key: string, targetRoomId?: string): Promise<boolean> =>
-    this.sessionStore.upload(update, key, targetRoomId);
+  /**
+   * Send a SESSION_DATA save (waiters, ack timeout and wire format live in the
+   * session-data client). Without an active whiteboard file there is nothing to
+   * save, so nothing is sent.
+   */
+  uploadSessionData = async (
+    update: Uint8Array,
+    key: string,
+    targetRoomId?: string,
+  ): Promise<boolean> => {
+    if (!this.fileId) return false;
+    return this.sessionData.upload(update, key, targetRoomId);
+  };
 
   /** Resolve the save waiters for a SESSION_DATA_SAVE_RESPONSE (header only). */
   handleSessionDataSaveResponse = (header: SessionDataHeader) => {
-    this.sessionStore.handleSaveResponse(header);
+    this.sessionData.handleSaveResponse(header);
   };
 
   /**
@@ -816,7 +826,7 @@ export class WhiteboardController {
    * resolving the waiter, so awaiting the canonical key guarantees the base
    * snapshot is in the doc before the rolling diff is requested/applied.
    */
-  fetchSessionData = (key: string): Promise<boolean> => this.sessionStore.fetch(key);
+  fetchSessionData = (key: string): Promise<boolean> => this.sessionData.fetch(key);
 
   handleSessionDataResponse = (header: SessionDataHeader, value: Uint8Array) => {
     if (header.dataType !== SessionDataType.WHITEBOARD) return;
@@ -829,7 +839,7 @@ export class WhiteboardController {
     // literal (possibly diff) key.
     const isActive = !!doc && canonicalKeyOf(key) === this.pageKey(this.fileId, this.page);
 
-    const resolveWaiter = () => this.sessionStore.resolveFetchWaiter(key);
+    const resolveWaiter = () => this.sessionData.resolveFetchWaiter(key);
 
     if (value && value.length > 0) {
       // apply the active page live as a raw Yjs update (never decode+rebuild)

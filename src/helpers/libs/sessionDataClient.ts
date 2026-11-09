@@ -2,20 +2,68 @@ import { create, toJsonString } from '@bufbuild/protobuf';
 import {
   NatsMsgClientToServerEvents,
   NatsMsgClientToServerSchema,
+  SessionDataHeader,
   SessionDataHeaderSchema,
   SessionDataType,
-  SessionDataHeader,
 } from 'plugnmeet-protocol-js';
 
-import { getNatsConn } from '../../../../helpers/nats';
-import { SAVE_ACK_TIMEOUT_MS, SERVER_FIRST_SYNC_TIMEOUT_MS } from './constants';
+import { getNatsConn } from '../nats';
+import type ConnectNats from '../nats/ConnectNats';
+import { SAVE_ACK_TIMEOUT_MS, SERVER_FIRST_SYNC_TIMEOUT_MS } from './sessionDataSync';
+
+export interface SessionDataSaveRequest {
+  dataType: SessionDataType;
+  key: string;
+  value: Uint8Array;
+  requestId?: string;
+  targetRoomId?: string;
+}
 
 /**
- * SESSION_DATA transport bookkeeping of the whiteboard controller: request/ack
- * waiters for saves and fetches. Save policy and doc application stay in the
- * controller, which owns this store.
+ * Send a SESSION_DATA_SAVE message. `requestId` and `targetRoomId` are only
+ * emitted when set, so the wire format stays identical for callers that omit
+ * them (fire-and-forget saves).
  */
-export class WhiteboardSessionStore {
+export const sendSessionDataSave = (
+  conn: ConnectNats,
+  { dataType, key, value, requestId, targetRoomId }: SessionDataSaveRequest,
+) => {
+  conn.sendMessageToCoreWorker(
+    create(NatsMsgClientToServerSchema, {
+      event: NatsMsgClientToServerEvents.SESSION_DATA_SAVE,
+      msg: toJsonString(
+        SessionDataHeaderSchema,
+        create(SessionDataHeaderSchema, {
+          dataType,
+          key,
+          ...(requestId ? { requestId } : {}),
+          ...(targetRoomId ? { targetRoomId } : {}),
+        }),
+      ),
+      binMsg: value,
+    }),
+  );
+};
+
+/** Ask the server for the stored value of `key`. */
+export const sendSessionDataFetch = (conn: ConnectNats, dataType: SessionDataType, key: string) => {
+  conn.sendMessageToSystemWorker(
+    create(NatsMsgClientToServerSchema, {
+      event: NatsMsgClientToServerEvents.SESSION_DATA_FETCH_REQUEST,
+      msg: toJsonString(
+        SessionDataHeaderSchema,
+        create(SessionDataHeaderSchema, { dataType, key }),
+      ),
+    }),
+  );
+};
+
+/**
+ * SESSION_DATA transport bookkeeping for one data type: request/ack waiters for
+ * saves and fetches. Save policy and doc application stay in the owning
+ * controller.
+ */
+export class SessionDataClient {
   private sessionDataWaiters = new Map<
     string,
     {
@@ -34,7 +82,7 @@ export class WhiteboardSessionStore {
     }
   >();
 
-  constructor(private readonly getFileId: () => string) {}
+  constructor(private readonly dataType: SessionDataType) {}
 
   /**
    * Send a SESSION_DATA save and resolve `true` only once the server acks it
@@ -43,7 +91,7 @@ export class WhiteboardSessionStore {
    */
   upload = async (update: Uint8Array, key: string, targetRoomId?: string): Promise<boolean> => {
     const conn = getNatsConn();
-    if (!conn || !this.getFileId()) return false;
+    if (!conn) return false;
     let value = update;
     if (conn.enableE2EE) {
       const enc = await conn.encryptData(update);
@@ -58,21 +106,7 @@ export class WhiteboardSessionStore {
       }, SAVE_ACK_TIMEOUT_MS);
       this.saveAckWaiters.set(requestId, { resolve, timer });
     });
-    conn.sendMessageToCoreWorker(
-      create(NatsMsgClientToServerSchema, {
-        event: NatsMsgClientToServerEvents.SESSION_DATA_SAVE,
-        msg: toJsonString(
-          SessionDataHeaderSchema,
-          create(SessionDataHeaderSchema, {
-            dataType: SessionDataType.WHITEBOARD,
-            key,
-            requestId,
-            ...(targetRoomId ? { targetRoomId } : {}),
-          }),
-        ),
-        binMsg: value,
-      }),
-    );
+    sendSessionDataSave(conn, { dataType: this.dataType, key, value, requestId, targetRoomId });
     return acked;
   };
 
@@ -90,9 +124,8 @@ export class WhiteboardSessionStore {
   /**
    * Fetch a session-data value from the server. Resolves `true` once a response
    * arrives — including an EMPTY response, which legitimately confirms the key
-   * is absent (e.g. a fresh page). Resolves `false` on timeout or when there is
-   * no NATS connection. The controller resolves the waiter only after it has
-   * handled the response.
+   * is absent. Resolves `false` on timeout or when there is no NATS connection.
+   * The caller resolves the waiter only after it has handled the response.
    */
   fetch = (key: string): Promise<boolean> => {
     // Single-flight per key: a concurrent caller must not overwrite the first
@@ -114,18 +147,7 @@ export class WhiteboardSessionStore {
       }, SERVER_FIRST_SYNC_TIMEOUT_MS);
       this.sessionDataWaiters.set(key, { resolve, timer });
 
-      conn.sendMessageToSystemWorker(
-        create(NatsMsgClientToServerSchema, {
-          event: NatsMsgClientToServerEvents.SESSION_DATA_FETCH_REQUEST,
-          msg: toJsonString(
-            SessionDataHeaderSchema,
-            create(SessionDataHeaderSchema, {
-              dataType: SessionDataType.WHITEBOARD,
-              key,
-            }),
-          ),
-        }),
-      );
+      sendSessionDataFetch(conn, this.dataType, key);
     }).finally(() => {
       // Only drop our own entry: a newer fetch may already have registered.
       if (this.sessionDataFetches.get(key) === promise) {

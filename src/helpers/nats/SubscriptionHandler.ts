@@ -382,6 +382,8 @@ export default class SubscriptionHandler {
     const header = fromJsonString(SessionDataHeaderSchema, p.msg);
     if (header.dataType === SessionDataType.WHITEBOARD) {
       getWhiteboardController().handleSessionDataSaveResponse(header);
+    } else if (header.dataType === SessionDataType.NOTEPAD) {
+      getNotepadController().handleSessionDataSaveResponse(header);
     }
   }
 

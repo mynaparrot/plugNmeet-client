@@ -1,12 +1,8 @@
 import * as Y from 'yjs';
 import { Awareness, applyAwarenessUpdate, encodeAwarenessUpdate } from 'y-protocols/awareness';
-import { create, toJsonString } from '@bufbuild/protobuf';
 import {
   DataChannelMessage,
   DataMsgBodyType,
-  NatsMsgClientToServerEvents,
-  NatsMsgClientToServerSchema,
-  SessionDataHeaderSchema,
   SessionDataType,
   SessionDataHeader,
 } from 'plugnmeet-protocol-js';
@@ -15,12 +11,19 @@ import { getNatsConn } from '../../helpers/nats';
 import {
   SESSION_DATA_MAX_WIRE_BYTES,
   SAVE_MAX_WAIT_MS,
+  SAVE_RETRY_BASE_MS,
+  SAVE_RETRY_MAX_MS,
+  CANONICAL_RETRY_BASE_MS,
+  CANONICAL_RETRY_MAX_MS,
   SessionDataSyncState,
+  backoffDelay,
   diffKeyOf,
+  isDiffKey,
   canonicalKeyOf,
   compress,
   decompress,
 } from '../../helpers/libs/sessionDataSync';
+import { SessionDataClient } from '../../helpers/libs/sessionDataClient';
 import { store } from '../../store';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import { base64ToUint8, uint8ToBase64 } from '../../helpers/utils';
@@ -28,8 +31,7 @@ import { base64ToUint8, uint8ToBase64 } from '../../helpers/utils';
 const REMOTE_ORIGIN = 'nats-remote';
 const FRAGMENT_NAME = 'document-store';
 const SYNC_RETRY_DELAY = 2000;
-const SERVER_FIRST_SYNC_TIMEOUT_MS = 1500;
-const NOTEPAD_SNAPSHOT_KEY = 'snapshot';
+export const NOTEPAD_SNAPSHOT_KEY = 'snapshot';
 
 export type NotepadSnapshot = {
   doc: Y.Doc | null;
@@ -50,13 +52,18 @@ export class NotepadController {
   private boundConn = false;
   private boundVisibility = false;
   private saveTimer: ReturnType<typeof setTimeout> | null = null;
+  private saveChain: Promise<unknown> = Promise.resolve();
+  private saveRetryTimer: ReturnType<typeof setTimeout> | null = null;
+  private saveRetryAttempt = 0;
+  private readonly sessionData = new SessionDataClient(SessionDataType.NOTEPAD);
   // Per-document checkpoint + rolling-diff save decision state. The notepad has
   // a single document key, so a single state instance suffices. The baseline
   // resets to `null` on first save after hydration/rejoin naturally.
   private syncState = new SessionDataSyncState();
-  private pendingServerSync = false;
-  private serverFirstResolve: (() => void) | null = null;
-  private serverFirstTimer: ReturnType<typeof setTimeout> | null = null;
+  // Only false when a canonical fetch was attempted and did not arrive, so the
+  // server state is unknown and saves must not overwrite the canonical key.
+  private snapshotConfirmed = true;
+  private snapshotRetryTimer: ReturnType<typeof setTimeout> | null = null;
   private listeners = new Set<() => void>();
   private snapshot: NotepadSnapshot = {
     doc: null,
@@ -109,30 +116,6 @@ export class NotepadController {
       );
   };
 
-  private waitForServerFirst = () =>
-    new Promise<void>((resolve) => {
-      this.serverFirstResolve = resolve;
-      this.serverFirstTimer = setTimeout(() => {
-        this.serverFirstTimer = null;
-        this.serverFirstResolve = null;
-        this.pendingServerSync = false;
-        resolve();
-      }, SERVER_FIRST_SYNC_TIMEOUT_MS);
-    });
-
-  private resolveServerFirst = () => {
-    if (this.serverFirstTimer) {
-      clearTimeout(this.serverFirstTimer);
-      this.serverFirstTimer = null;
-    }
-    this.pendingServerSync = false;
-    if (this.serverFirstResolve) {
-      const resolve = this.serverFirstResolve;
-      this.serverFirstResolve = null;
-      resolve();
-    }
-  };
-
   subscribe = (cb: () => void) => {
     this.listeners.add(cb);
     return () => {
@@ -175,6 +158,8 @@ export class NotepadController {
     this.settingUp = true;
     try {
       await this.clearCurrentSession();
+      // Default: nothing to hydrate means the canonical key is authoritative.
+      this.snapshotConfirmed = true;
 
       const doc = new Y.Doc();
       const awareness = new Awareness(doc);
@@ -211,13 +196,21 @@ export class NotepadController {
         // snapshot is already in the doc before the diff is requested and applied.
         // (The server processes the two requests concurrently in a worker pool, so
         // parallel fetches can deliver the diff first.)
-        this.pendingServerSync = true;
-        this.fetchSessionData(NOTEPAD_SNAPSHOT_KEY);
-        await this.waitForServerFirst();
-
-        this.pendingServerSync = true;
-        this.fetchSessionData(diffKeyOf(NOTEPAD_SNAPSHOT_KEY));
-        await this.waitForServerFirst();
+        let loaded = await this.sessionData.fetch(NOTEPAD_SNAPSHOT_KEY);
+        if (!loaded) {
+          // One retry — transient loss is plausible under the concurrent worker pool.
+          loaded = await this.sessionData.fetch(NOTEPAD_SNAPSHOT_KEY);
+        }
+        await this.sessionData.fetch(diffKeyOf(NOTEPAD_SNAPSHOT_KEY));
+        if (!loaded) {
+          // A timed-out canonical fetch leaves the server state unknown, so saves
+          // must stay off the canonical key until a response confirms it.
+          this.snapshotConfirmed = false;
+          console.warn(
+            '[NotepadController] canonical snapshot did not arrive; saving to the diff key only (no checkpoint) until it arrives',
+          );
+          this.scheduleSnapshotRetry();
+        }
       }
 
       this.updateSnapshot();
@@ -248,25 +241,22 @@ export class NotepadController {
     }
     this.backupResponseTimers.clear();
     this.pendingSyncRequestId = null;
-    this.pendingServerSync = false;
-    if (this.serverFirstTimer) {
-      clearTimeout(this.serverFirstTimer);
-      this.serverFirstTimer = null;
-    }
-    this.serverFirstResolve = null;
+    this.resetSaveRetry();
 
     const hadPendingSave = this.saveTimer !== null;
-    if (this.saveTimer) {
-      clearTimeout(this.saveTimer);
-      this.saveTimer = null;
-    }
+    this.clearSaveTimers();
 
     // Flush any pending save as a forced checkpoint before tearing down the doc
-    // so the server keeps a consistent full state. Oversize uploads are skipped
-    // inside saveNow and do not block teardown.
+    // so the server keeps a consistent full state. Single attempt, no retry:
+    // teardown must not wait for backoff. Oversize uploads are skipped inside
+    // saveNow and do not block teardown.
     if (hadPendingSave) {
       await this.saveNow(true);
     }
+
+    this.sessionData.cancelPendingFetches();
+    this.clearSnapshotRetry();
+    this.snapshotConfirmed = false;
 
     if (this.awareness) {
       this.awareness.destroy();
@@ -305,47 +295,105 @@ export class NotepadController {
     }
   };
 
-  private saveNow = async (forceCheckpoint = false) => {
+  /** Run `task` once every previously queued save has settled. */
+  private enqueueSave = <T>(task: () => Promise<T>): Promise<T> => {
+    const run = this.saveChain.then(task, task);
+    this.saveChain = run.then(
+      () => undefined,
+      () => undefined,
+    );
+    return run;
+  };
+
+  /**
+   * Save the notepad to the server. Resolves `true` when the server holds
+   * everything the doc contained at plan time — which also covers "nothing to
+   * save" (empty diff, no access). `false` means the content is still
+   * local-only.
+   */
+  private saveNow = (forceCheckpoint = false): Promise<boolean> => {
     this.clearSaveTimers();
-    if (!this.doc) {
+    const doc = this.doc;
+    if (!doc || !this.canAccessSessionData()) {
+      return Promise.resolve(true);
+    }
+    // Planning happens inside the chain: the previous save is acked by then, so
+    // this plan already covers every edit that coalesced while it was in flight.
+    return this.enqueueSave(async () => {
+      if (this.doc !== doc) {
+        return true; // teardown already flushed this content
+      }
+      try {
+        let update: Uint8Array;
+        let key: string;
+        let checkpointSV: Uint8Array | undefined;
+        if (!this.snapshotConfirmed) {
+          // Never overwrite a canonical we have not seen: ship the full state to
+          // the ~d key instead (hydration applies canonical then ~d, and Yjs
+          // merges). The checkpoint baseline stays untouched.
+          update = Y.encodeStateAsUpdate(doc);
+          key = diffKeyOf(NOTEPAD_SNAPSHOT_KEY);
+        } else {
+          const plan = this.syncState.planSave(doc, NOTEPAD_SNAPSHOT_KEY, { forceCheckpoint });
+          if (plan.skipReason === 'empty-diff') {
+            return true; // nothing changed since the last checkpoint
+          }
+          update = plan.update;
+          key = plan.key;
+          checkpointSV = plan.kind === 'checkpoint' ? plan.stateVector : undefined;
+        }
+        const wire = compress(update);
+        if (wire.length > SESSION_DATA_MAX_WIRE_BYTES) {
+          // Oversize: the NATS max_payload would reject it. Skip the send but keep
+          // degradation safe (server keeps last good checkpoint; live peers remain
+          // authoritative). We deliberately do NOT noteCheckpointUploaded so the
+          // next flush retries the checkpoint rather than baselining diffs
+          // against an upload the server never received. Notepad persists nothing
+          // to IndexedDB, so there is no local cache to refresh either.
+          console.warn(
+            `[NotepadController] SESSION_DATA payload for ${key} is too large (${wire.length} bytes); skipping upload`,
+          );
+          return false;
+        }
+        // Notepad persists nothing to IndexedDB (server is the source of truth),
+        // so neither checkpoints nor diffs are written locally.
+        const ok = await this.uploadSessionData(wire, key);
+        if (ok && checkpointSV) {
+          this.syncState.noteCheckpointUploaded(checkpointSV, wire.length);
+        }
+        return ok;
+      } catch (e) {
+        console.error('[NotepadController] failed to save notepad', e);
+        return false;
+      }
+    });
+  };
+
+  /** Save and, when still unconfirmed, re-arm a backoff retry instead of waiting for the next edit. */
+  private saveWithRetry = async (forceCheckpoint = false) => {
+    if (await this.saveNow(forceCheckpoint)) {
+      this.resetSaveRetry();
       return;
     }
-    if (!this.canAccessSessionData()) {
-      return;
+    this.scheduleSaveRetry();
+  };
+
+  private resetSaveRetry = () => {
+    this.saveRetryAttempt = 0;
+    if (this.saveRetryTimer) {
+      clearTimeout(this.saveRetryTimer);
+      this.saveRetryTimer = null;
     }
-    try {
-      const plan = this.syncState.planSave(this.doc, NOTEPAD_SNAPSHOT_KEY, {
-        forceCheckpoint,
-      });
-      if (plan.skipReason === 'empty-diff') {
-        // Nothing changed since the last checkpoint; skip the upload entirely.
-        return;
-      }
-      const wire = compress(plan.update);
-      if (wire.length > SESSION_DATA_MAX_WIRE_BYTES) {
-        // Oversize: the NATS max_payload would reject it. Skip the send but keep
-        // degradation safe (server keeps last good checkpoint; live peers remain
-        // authoritative). We deliberately do NOT noteCheckpointUploaded so the
-        // next flush retries the checkpoint rather than baselining diffs
-        // against an upload the server never received. Notepad persists nothing
-        // to IndexedDB, so there is no local cache to refresh either.
-        console.warn(
-          `[NotepadController] SESSION_DATA payload for ${plan.key} is too large (${wire.length} bytes); skipping upload`,
-        );
-        return;
-      }
-      // Notepad persists nothing to IndexedDB (server is the source of truth),
-      // so neither checkpoints nor diffs are written locally.
-      // Server is the source of truth for sync.
-      await this.uploadSessionData(wire, plan.key);
-      // Notepad saves carry no requestId/ack, so the plan-time SV is the best
-      // baseline available.
-      if (plan.kind === 'checkpoint' && plan.stateVector) {
-        this.syncState.noteCheckpointUploaded(plan.stateVector, wire.length);
-      }
-    } catch (e) {
-      console.error('[NotepadController] failed to save snapshot', e);
-    }
+  };
+
+  private scheduleSaveRetry = () => {
+    if (this.saveRetryTimer || !this.doc || !this.canAccessSessionData()) return;
+    const delay = backoffDelay(SAVE_RETRY_BASE_MS, SAVE_RETRY_MAX_MS, this.saveRetryAttempt);
+    this.saveRetryTimer = setTimeout(() => {
+      this.saveRetryTimer = null;
+      this.saveRetryAttempt++;
+      void this.saveWithRetry();
+    }, delay);
   };
 
   /**
@@ -358,51 +406,20 @@ export class NotepadController {
     if (this.saveTimer) return; // a flush is already scheduled
     this.saveTimer = setTimeout(() => {
       this.saveTimer = null;
-      void this.saveNow();
+      void this.saveWithRetry();
     }, SAVE_MAX_WAIT_MS);
   };
 
-  uploadSessionData = async (update: Uint8Array, key: string, targetRoomId?: string) => {
-    const conn = getNatsConn();
-    if (!conn) return;
-    let value = update;
-    if (conn.enableE2EE) {
-      const enc = await conn.encryptData(update);
-      if (typeof enc === 'undefined') return;
-      value = enc;
-    }
-    conn.sendMessageToCoreWorker(
-      create(NatsMsgClientToServerSchema, {
-        event: NatsMsgClientToServerEvents.SESSION_DATA_SAVE,
-        msg: toJsonString(
-          SessionDataHeaderSchema,
-          create(SessionDataHeaderSchema, {
-            dataType: SessionDataType.NOTEPAD,
-            key,
-            ...(targetRoomId ? { targetRoomId } : {}),
-          }),
-        ),
-        binMsg: value,
-      }),
-    );
+  uploadSessionData = (update: Uint8Array, key: string, targetRoomId?: string): Promise<boolean> =>
+    this.sessionData.upload(update, key, targetRoomId);
+
+  /** Resolve the save waiters for a SESSION_DATA_SAVE_RESPONSE (header only). */
+  handleSessionDataSaveResponse = (header: SessionDataHeader) => {
+    this.sessionData.handleSaveResponse(header);
   };
 
-  fetchSessionData = (key: string = NOTEPAD_SNAPSHOT_KEY) => {
-    const conn = getNatsConn();
-    if (!conn) return;
-    conn.sendMessageToSystemWorker(
-      create(NatsMsgClientToServerSchema, {
-        event: NatsMsgClientToServerEvents.SESSION_DATA_FETCH_REQUEST,
-        msg: toJsonString(
-          SessionDataHeaderSchema,
-          create(SessionDataHeaderSchema, {
-            dataType: SessionDataType.NOTEPAD,
-            key,
-          }),
-        ),
-      }),
-    );
-  };
+  fetchSessionData = (key: string = NOTEPAD_SNAPSHOT_KEY): Promise<boolean> =>
+    this.sessionData.fetch(key);
 
   handleSessionDataResponse = (header: SessionDataHeader, value: Uint8Array) => {
     if (header.dataType !== SessionDataType.NOTEPAD) return;
@@ -422,10 +439,62 @@ export class NotepadController {
       }
     }
 
-    // Resolve the server-first wait when this is the response we were waiting
-    // for. Empty responses still resolve it (server had no data).
-    if (this.pendingServerSync) {
-      this.resolveServerFirst();
+    // Any response for the canonical key confirms the server state — an empty
+    // one means the server holds no snapshot yet (same rule as the whiteboard).
+    if (!isDiffKey(key)) {
+      this.confirmSnapshot();
+    }
+
+    this.sessionData.resolveFetchWaiter(key);
+  };
+
+  /** Mark the canonical snapshot as confirmed and stop retrying it. */
+  private confirmSnapshot = () => {
+    this.snapshotConfirmed = true;
+    this.clearSnapshotRetry();
+  };
+
+  private clearSnapshotRetry = () => {
+    if (this.snapshotRetryTimer) {
+      clearTimeout(this.snapshotRetryTimer);
+      this.snapshotRetryTimer = null;
+    }
+  };
+
+  /**
+   * An unconfirmed canonical keeps saves off the canonical key. Retry with
+   * backoff while the same doc is alive and still unconfirmed.
+   */
+  private scheduleSnapshotRetry = (attempt = 0) => {
+    this.clearSnapshotRetry();
+    const delay = backoffDelay(CANONICAL_RETRY_BASE_MS, CANONICAL_RETRY_MAX_MS, attempt);
+    this.snapshotRetryTimer = setTimeout(() => {
+      this.snapshotRetryTimer = null;
+      void this.retrySnapshot(attempt);
+    }, delay);
+  };
+
+  private retrySnapshot = async (attempt: number) => {
+    const doc = this.doc;
+    if (!doc || this.snapshotConfirmed) {
+      return;
+    }
+
+    const arrived = await this.sessionData.fetch(NOTEPAD_SNAPSHOT_KEY);
+    if (this.doc !== doc) {
+      return; // doc torn down or replaced while the fetch was in flight
+    }
+
+    if (arrived) {
+      // A response confirms the key; the doc now holds the server state, so
+      // upload a checkpoint instead of waiting for the next edit.
+      this.confirmSnapshot();
+      void this.saveWithRetry(true);
+      return;
+    }
+
+    if (!this.snapshotConfirmed) {
+      this.scheduleSnapshotRetry(attempt + 1);
     }
   };
 

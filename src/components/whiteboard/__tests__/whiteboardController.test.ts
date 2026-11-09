@@ -74,9 +74,10 @@ vi.mock('../collab/whiteboardPersistence', () => ({
 
 import { store } from '../../../store';
 import { WhiteboardController } from '../collab/controller/WhiteboardController';
-import { INITIAL_REQUEST_RETRY_MS, SAVE_ACK_TIMEOUT_MS } from '../collab/controller/constants';
+import { INITIAL_REQUEST_RETRY_MS } from '../collab/controller/constants';
 import { loadWhiteboardPageSnapshot } from '../collab/whiteboardPersistence';
 import {
+  SAVE_ACK_TIMEOUT_MS,
   SAVE_MAX_WAIT_MS,
   SessionDataSyncState,
   decompress,
@@ -215,7 +216,7 @@ const pendingUploadsOf = (controller: WhiteboardController) =>
   (controller as unknown as { pendingPageUploads: Map<string, unknown> }).pendingPageUploads;
 
 const ackWaitersOf = (controller: WhiteboardController) =>
-  (controller as unknown as { sessionStore: { saveAckWaiters: Map<string, unknown> } }).sessionStore
+  (controller as unknown as { sessionData: { saveAckWaiters: Map<string, unknown> } }).sessionData
     .saveAckWaiters;
 
 const checkpointedKeys = (controller: WhiteboardController) =>
