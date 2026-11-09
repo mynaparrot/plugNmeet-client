@@ -93,8 +93,8 @@ export class WhiteboardPresenceManager {
 
   /**
    * Rebuilds the rendered `Map<SocketId, Collaborator>` from the awareness states.
-   * Skips our own client id, states without a truthy `id`, and users that are no
-   * longer present / unlocked in the room.
+   * Skips our own client id, states without a truthy `id`, and users who may not
+   * draw: not presenting and locked out of the whiteboard.
    */
   private syncCollaborators = () => {
     const config = this.getConfig();
@@ -103,7 +103,8 @@ export class WhiteboardPresenceManager {
       return;
     }
 
-    const activeIds = new Set(
+    // `isPresent` is derived from the participant's isPresenter flag.
+    const drawableIds = new Set(
       selectWhiteboardParticipants(store.getState())
         .filter((p) => p.isPresent || !p.isWhiteboardLocked)
         .map((p) => p.userId),
@@ -118,7 +119,7 @@ export class WhiteboardPresenceManager {
         return;
       }
       const id = String(state.id);
-      if (!activeIds.has(id)) {
+      if (!drawableIds.has(id)) {
         return;
       }
       collaborators.set(id as SocketId, state as unknown as Collaborator);
@@ -135,7 +136,7 @@ export class WhiteboardPresenceManager {
     try {
       applyAwarenessUpdate(this.awareness, update, WHITEBOARD_REMOTE_ORIGIN);
     } catch (e) {
-      console.error('[WhiteboardController] failed to apply remote awareness', e);
+      console.error('[WhiteboardPresenceManager] failed to apply remote awareness', e);
     }
   };
 }

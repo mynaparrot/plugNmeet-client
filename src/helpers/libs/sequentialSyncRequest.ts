@@ -1,6 +1,9 @@
 export const SYNC_TARGET_TIMEOUT_MS = 1000;
 export const SYNC_ROUND_RETRY_MS = 2000;
 export const MAX_SYNC_ROUNDS = 3;
+/** Anti-entropy: periodic background resync interval and its ± jitter. */
+export const ANTI_ENTROPY_INTERVAL_MS = 25000;
+export const ANTI_ENTROPY_JITTER_MS = 5000;
 
 interface Options {
   /** Ordered best-first peer ids; the caller caps the list. */

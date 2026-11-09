@@ -13,8 +13,6 @@ export const STALE_PEER_NUDGE_THROTTLE_MS = 2000;
 // Stop firing targeted resyncs for a gap that never heals; anti-entropy still
 // covers it at one peer per tick.
 export const MAX_MISSING_UPDATE_RESYNCS = 5;
-export const ANTI_ENTROPY_INTERVAL_MS = 25000;
-export const ANTI_ENTROPY_JITTER_MS = 5000;
 /** Total time a page/file switch may spend flushing the active page. */
 export const SAVE_FLUSH_TIMEOUT_MS = 5000;
 /** Pause between flush attempts so an instantly failing save cannot spin. */

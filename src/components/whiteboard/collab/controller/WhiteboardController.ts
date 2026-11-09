@@ -48,10 +48,12 @@ import {
   setWhiteboardCurrentPage,
   updateCurrentWhiteboardOfficeFileId,
 } from '../../../../store/slices/whiteboard';
-import { SequentialSyncRequest } from '../../../../helpers/libs/sequentialSyncRequest';
 import {
   ANTI_ENTROPY_INTERVAL_MS,
   ANTI_ENTROPY_JITTER_MS,
+  SequentialSyncRequest,
+} from '../../../../helpers/libs/sequentialSyncRequest';
+import {
   INITIAL_REQUEST_RETRY_MS,
   INITIAL_REQUEST_TIMEOUT_MS,
   MAX_MISSING_UPDATE_RESYNCS,

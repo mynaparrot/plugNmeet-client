@@ -56,7 +56,11 @@ import {
   decompress,
   diffKeyOf,
 } from '../../../helpers/libs/sessionDataSync';
-import { SYNC_TARGET_TIMEOUT_MS } from '../../../helpers/libs/sequentialSyncRequest';
+import type { SequentialSyncRequest } from '../../../helpers/libs/sequentialSyncRequest';
+import {
+  ANTI_ENTROPY_INTERVAL_MS,
+  SYNC_TARGET_TIMEOUT_MS,
+} from '../../../helpers/libs/sequentialSyncRequest';
 
 const FRAGMENT = 'document-store';
 const DIFF_KEY = diffKeyOf(NOTEPAD_SNAPSHOT_KEY);
@@ -105,6 +109,8 @@ interface Internals {
   saveTimer: ReturnType<typeof setTimeout> | null;
   saveRetryTimer: ReturnType<typeof setTimeout> | null;
   snapshotRetryTimer: ReturnType<typeof setTimeout> | null;
+  antiEntropyTimer: ReturnType<typeof setTimeout> | null;
+  syncRequest: SequentialSyncRequest;
   syncState: SessionDataSyncState;
   sessionData: {
     sessionDataWaiters: Map<string, unknown>;
@@ -210,6 +216,7 @@ afterEach(async () => {
     }
     await done;
   }
+  vi.restoreAllMocks();
   vi.useRealTimers();
 });
 
@@ -577,6 +584,108 @@ describe('peer sync requests', () => {
     await destroying;
 
     await vi.advanceTimersByTimeAsync(SYNC_TARGET_TIMEOUT_MS * 10);
+    expect(requests()).toHaveLength(1);
+  });
+});
+
+describe('anti-entropy', () => {
+  const requests = () =>
+    (conn.publishData.mock.calls as unknown as [DataMsgBodyType, { id: string; to?: string }][])
+      .filter(([type]) => type === DataMsgBodyType.NOTEPAD_SYNC_REQUEST)
+      .map(([, payload]) => payload);
+
+  const setVisibility = (state: 'visible' | 'hidden') => {
+    (globalThis as unknown as { document: { visibilityState: string } }).document.visibilityState =
+      state;
+  };
+
+  /** Setup done with the jitter pinned to 0, so ticks land exactly on the interval. */
+  const ready = async (peers: Peer[]) => {
+    vi.spyOn(Math, 'random').mockReturnValue(0.5); // restored in afterEach
+    const controller = makeController();
+    await setupConfirmed(controller);
+    setStore({ peers });
+    conn.publishData.mockClear();
+    return controller;
+  };
+
+  /** Ends the run waiting on `id` with a no-op update. */
+  const answerTo = (controller: NotepadController, id: string) =>
+    controller.handleNotepadMessage({
+      type: DataMsgBodyType.NOTEPAD_SYNC_RESPONSE,
+      fromUserId: 'pres',
+      id,
+      binMessage: compress(Y.encodeStateAsUpdate(new Y.Doc())),
+    } as unknown as DataChannelMessage);
+
+  const destroy = async (controller: NotepadController) => {
+    const destroying = controller.destroy();
+    active = null;
+    await vi.advanceTimersByTimeAsync(0);
+    await destroying;
+  };
+
+  it('asks the best target once the interval elapses', async () => {
+    const controller = await ready([{ userId: 'u1' }, { userId: 'pres', presenter: true }]);
+    expect(internals(controller).antiEntropyTimer).not.toBeNull();
+
+    await vi.advanceTimersByTimeAsync(ANTI_ENTROPY_INTERVAL_MS - 1);
+    expect(requests()).toHaveLength(0);
+
+    await vi.advanceTimersByTimeAsync(1);
+    expect(requests().map((p) => p.to)).toEqual(['pres']);
+  });
+
+  it('skips a tick while the tab is hidden and resumes when visible', async () => {
+    const controller = await ready([{ userId: 'pres', presenter: true }]);
+
+    setVisibility('hidden');
+    await vi.advanceTimersByTimeAsync(ANTI_ENTROPY_INTERVAL_MS);
+    expect(requests()).toHaveLength(0);
+
+    // The timer re-armed while hidden, so the next tick fires once visible.
+    setVisibility('visible');
+    await vi.advanceTimersByTimeAsync(ANTI_ENTROPY_INTERVAL_MS);
+    expect(requests()).toHaveLength(1);
+    answerTo(controller, requests()[0].id);
+  });
+
+  it('skips a tick while a sync run is active', async () => {
+    const controller = await ready([{ userId: 'pres', presenter: true }]);
+    const syncRequest = internals(controller).syncRequest;
+    const start = vi.spyOn(syncRequest, 'start');
+    Object.defineProperty(syncRequest, 'active', { configurable: true, get: () => true });
+
+    await vi.advanceTimersByTimeAsync(ANTI_ENTROPY_INTERVAL_MS);
+    expect(start).not.toHaveBeenCalled();
+    expect(requests()).toHaveLength(0);
+  });
+
+  it('re-arms after every tick', async () => {
+    const controller = await ready([{ userId: 'pres', presenter: true }]);
+
+    await vi.advanceTimersByTimeAsync(ANTI_ENTROPY_INTERVAL_MS);
+    expect(requests()).toHaveLength(1);
+    answerTo(controller, requests()[0].id);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(internals(controller).antiEntropyTimer).not.toBeNull();
+
+    await vi.advanceTimersByTimeAsync(ANTI_ENTROPY_INTERVAL_MS - 1);
+    expect(requests()).toHaveLength(1);
+    await vi.advanceTimersByTimeAsync(1);
+    expect(requests()).toHaveLength(2);
+  });
+
+  it('teardown stops the timer', async () => {
+    const controller = await ready([{ userId: 'pres', presenter: true }]);
+
+    await vi.advanceTimersByTimeAsync(ANTI_ENTROPY_INTERVAL_MS);
+    expect(requests()).toHaveLength(1);
+
+    await destroy(controller);
+    expect(internals(controller).antiEntropyTimer).toBeNull();
+
+    await vi.advanceTimersByTimeAsync(ANTI_ENTROPY_INTERVAL_MS * 3);
     expect(requests()).toHaveLength(1);
   });
 });

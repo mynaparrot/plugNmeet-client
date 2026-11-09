@@ -24,7 +24,11 @@ import {
   decompress,
 } from '../../helpers/libs/sessionDataSync';
 import { SessionDataClient } from '../../helpers/libs/sessionDataClient';
-import { SequentialSyncRequest } from '../../helpers/libs/sequentialSyncRequest';
+import {
+  ANTI_ENTROPY_INTERVAL_MS,
+  ANTI_ENTROPY_JITTER_MS,
+  SequentialSyncRequest,
+} from '../../helpers/libs/sequentialSyncRequest';
 import { store } from '../../store';
 import { participantsSelector } from '../../store/slices/participantSlice';
 import { base64ToUint8, isUserRecorder, uint8ToBase64 } from '../../helpers/utils';
@@ -63,6 +67,7 @@ export class NotepadController {
   private settingUp = false;
   private boundConn = false;
   private boundVisibility = false;
+  private antiEntropyTimer: ReturnType<typeof setTimeout> | null = null;
   private saveTimer: ReturnType<typeof setTimeout> | null = null;
   private saveChain: Promise<unknown> = Promise.resolve();
   private saveRetryTimer: ReturnType<typeof setTimeout> | null = null;
@@ -228,6 +233,7 @@ export class NotepadController {
       this.updateSnapshot();
       this.bindLifecycle();
       this.syncRequest.start();
+      this.scheduleAntiEntropy();
     } finally {
       this.settingUp = false;
     }
@@ -245,6 +251,7 @@ export class NotepadController {
 
   private async clearCurrentSession() {
     this.syncRequest.cancel();
+    this.clearAntiEntropy();
     this.resetSaveRetry();
 
     const hadPendingSave = this.saveTimer !== null;
@@ -587,6 +594,42 @@ export class NotepadController {
       this.syncRequest.start();
     }
   }
+
+  private clearAntiEntropy = () => {
+    if (this.antiEntropyTimer) {
+      clearTimeout(this.antiEntropyTimer);
+      this.antiEntropyTimer = null;
+    }
+  };
+
+  /**
+   * Anti-entropy: every ~25s (±5s) ask a single peer for what we are missing, so
+   * a dropped update heals without user action.
+   */
+  private scheduleAntiEntropy = () => {
+    this.clearAntiEntropy();
+    const jitter = Math.round((Math.random() * 2 - 1) * ANTI_ENTROPY_JITTER_MS);
+    this.antiEntropyTimer = setTimeout(() => {
+      this.antiEntropyTimer = null;
+      this.runAntiEntropyTick();
+    }, ANTI_ENTROPY_INTERVAL_MS + jitter);
+  };
+
+  private runAntiEntropyTick = () => {
+    if (!this.doc) {
+      return; // torn down: the timer stays off
+    }
+    this.scheduleAntiEntropy();
+
+    if (typeof document !== 'undefined' && document.visibilityState !== 'visible') {
+      return;
+    }
+    if (this.syncRequest.active) {
+      return;
+    }
+
+    this.syncRequest.start(1);
+  };
 
   private handleSyncRequest(payload: DataChannelMessage) {
     if (!this.doc || !payload.binMessage || !payload.fromUserId) {
