@@ -11,6 +11,7 @@ interface Message {
   payload: any;
   useJetStream?: boolean;
   retries?: number;
+  onDone?: () => void;
 }
 
 // A Map where the key is the full, unique NATS subject.
@@ -49,7 +50,12 @@ export default class MessageQueue {
     this._nc = value;
   };
 
-  public addToQueue = (message: Message) => {
+  /**
+   * Queues the message and resolves once it has been published or discarded.
+   * While the connection is down the message waits for the next connect, so the
+   * promise resolves right away instead of keeping the caller waiting.
+   */
+  public addToQueue = (message: Message): Promise<void> => {
     const { subject } = message;
 
     if (!this.queues.has(subject)) {
@@ -58,7 +64,15 @@ export default class MessageQueue {
     const subjectQueue = this.queues.get(subject)!;
     subjectQueue.push(message);
 
+    if (!this._isConnected) {
+      return Promise.resolve();
+    }
+
+    const published = new Promise<void>((resolve) => {
+      message.onDone = resolve;
+    });
     this.processSubjectQueue(subject).then();
+    return published;
   };
 
   private async processSubjectQueue(subject: string) {
@@ -85,6 +99,7 @@ export default class MessageQueue {
 
       // Message sent successfully.
       subjectQueue.shift();
+      request.onDone?.();
       this.processingSubjects.delete(subject);
       this._heldNotificationsCount = 0;
       if (subjectQueue.length > 0) {
@@ -117,6 +132,7 @@ export default class MessageQueue {
           );
 
           subjectQueue.shift(); // Discard
+          request.onDone?.();
           this.processingSubjects.delete(subject);
           if (subjectQueue.length > 0) {
             this.processSubjectQueue(subject).then();
@@ -156,6 +172,7 @@ export default class MessageQueue {
         );
 
         subjectQueue.shift(); // Discard
+        request.onDone?.();
         this.processingSubjects.delete(subject);
         if (subjectQueue.length > 0) {
           this.processSubjectQueue(subject).then();

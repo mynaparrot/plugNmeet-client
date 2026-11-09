@@ -162,21 +162,17 @@ const MainArea = () => {
     <div id="main-area" className={mainAreaClasses}>
       <div className="inner flex justify-between flex-1">
         <div className={middleAreaClasses}>
-          {isNatsServerConnected && (
-            <>
-              <div className="absolute top-2 start-1/2 ltr:-translate-x-1/2 rtl:translate-x-1/2 z-[9999] pointer-events-none w-full [will-change:transform] [backface-visibility:hidden]">
-                <ActiveSpeakers activeSidePanel={activeSidePanel} />
-              </div>
-              <MainView
-                isRecorder={isRecorder}
-                isActiveWhiteboard={isActiveWhiteboard}
-                isActiveExternalMediaPlayer={!!isActiveExternalMediaPlayer}
-                isActiveDisplayExternalLink={!!isActiveDisplayExternalLink}
-                hasScreenShareSubscribers={hasScreenShareSubscribers}
-                hasVideoSubscribers={hasVideoSubscribers}
-              />
-            </>
-          )}
+          <div className="absolute top-2 start-1/2 ltr:-translate-x-1/2 rtl:translate-x-1/2 z-[9999] pointer-events-none w-full [will-change:transform] [backface-visibility:hidden]">
+            <ActiveSpeakers activeSidePanel={activeSidePanel} />
+          </div>
+          <MainView
+            isRecorder={isRecorder}
+            isActiveWhiteboard={isActiveWhiteboard}
+            isActiveExternalMediaPlayer={!!isActiveExternalMediaPlayer}
+            isActiveDisplayExternalLink={!!isActiveDisplayExternalLink}
+            hasScreenShareSubscribers={hasScreenShareSubscribers}
+            hasVideoSubscribers={hasVideoSubscribers}
+          />
         </div>
         <SidePanel
           isActive={activeSidePanel === 'PARTICIPANTS'}

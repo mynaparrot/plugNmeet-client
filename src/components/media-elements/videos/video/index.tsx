@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import clsx from 'clsx';
 import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
 
 import VideoElm from './videoElm';
@@ -8,6 +9,9 @@ import MicStatus from './micStatus';
 import ConnectionStatus from './connectionStatus';
 import { sleep, generateAvatarInitial } from '../../../../helpers/utils';
 import Participant from './participant';
+import { useAppSelector } from '../../../../store';
+import { participantsSelector } from '../../../../store/slices/participantSlice';
+import ReconnectingIndicator from '../../../../helpers/ui/reconnectingIndicator';
 
 export interface IVideoComponentProps {
   userId: string;
@@ -30,6 +34,10 @@ const VideoComponent = ({
 }: IVideoComponentProps) => {
   const { t } = useTranslation();
   const videoRef = useRef<HTMLVideoElement>(null);
+  const isOnline = useAppSelector(
+    (state) => participantsSelector.selectById(state, userId)?.isOnline,
+  );
+  const isReconnecting = !isLocal && isOnline === false;
 
   const fullScreen = async () => {
     if (!document.fullscreenElement) {
@@ -54,7 +62,12 @@ const VideoComponent = ({
   return (
     <div className="video-camera-item-inner w-full h-full relative">
       <Participant userId={userId} name={name} isLocal={isLocal} />
-      <div className="camera-modules">
+      <div
+        className={clsx(
+          'camera-modules transition-opacity duration-200',
+          isReconnecting ? 'opacity-50 delay-[3000ms]' : 'opacity-100',
+        )}
+      >
         <div className="camera-video-player">
           <MicStatus userId={userId} />
           {showVideo ? (
@@ -97,6 +110,11 @@ const VideoComponent = ({
           </div>
         </div>
       </div>
+      {isReconnecting && (
+        <div className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center text-white">
+          <ReconnectingIndicator showLabel />
+        </div>
+      )}
     </div>
   );
 };

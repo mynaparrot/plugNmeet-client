@@ -1,4 +1,4 @@
-import { createInstance, type i18n as I18nInstance } from 'i18next';
+import { createInstance, type i18n as I18nInstance, type TOptions } from 'i18next';
 import en from '../../../../assets/locales/en/translation.json';
 
 /**
@@ -16,8 +16,5 @@ export const createTestI18n = async (): Promise<I18nInstance> => {
   return instance;
 };
 
-export const exportHubT = (
-  instance: I18nInstance,
-  key: string,
-  options?: Record<string, unknown>,
-): string => instance.t(`export-hub.${key}`, options);
+export const exportHubT = (instance: I18nInstance, key: string, options?: TOptions): string =>
+  instance.t(`export-hub.${key}`, options ?? {});

@@ -44,7 +44,7 @@ const BackToMainBtn = () => {
       // ensure we've diconnected from current room
       const conn = getNatsConn();
       const toUrl = buildAccessTokenUrl(data.token);
-      conn.endSession('notifications.switching-room', true).then(() => {
+      conn.leaveRoom('notifications.switching-room', true).then(() => {
         // Switch to the selected breakout room in the current tab.
         window.location.replace(toUrl);
       });

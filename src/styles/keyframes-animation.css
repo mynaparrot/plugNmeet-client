@@ -146,3 +146,14 @@
 .panel-in {
   animation: panel-in 200ms ease-out;
 }
+@keyframes reconnecting-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.reconnecting-fade-in {
+  animation: reconnecting-fade-in 200ms ease-in 3s both;
+}

@@ -265,22 +265,13 @@ export default class HandleParticipants {
 
   /**
    * Handles participant cleanup, either marking as disconnected or fully removing.
+   * Media is left alone while the server keeps the user in its grace period;
+   * LiveKit removes the subscribers once the participant really leaves.
    * @param userId The userId of the participant to clean up.
    * @param isCompleteRemove If true, performs full removal (like offline); otherwise, marks as disconnected.
    */
   private _handleParticipantCleanup = (userId: string, isCompleteRemove: boolean) => {
-    const mediaConn = getMediaServerConn();
-    // Always remove media subscribers for this user
-    mediaConn.removeAudioSubscriber(userId);
-    mediaConn.removeVideoSubscriber(userId);
-    mediaConn.removeScreenShareTrack(userId);
-
-    if (isCompleteRemove) {
-      // Full removal: remove from store and active speakers
-      store.dispatch(removeParticipant(userId));
-      store.dispatch(removeOneSpeaker(userId));
-    } else {
-      // Partial cleanup: mark as disconnected
+    if (!isCompleteRemove) {
       store.dispatch(
         updateParticipant({
           id: userId,
@@ -289,12 +280,20 @@ export default class HandleParticipants {
           },
         }),
       );
+      return;
     }
+
+    const mediaConn = getMediaServerConn();
+    mediaConn.removeAudioSubscriber(userId);
+    mediaConn.removeVideoSubscriber(userId);
+    mediaConn.removeScreenShareTrack(userId);
+    store.dispatch(removeParticipant(userId));
+    store.dispatch(removeOneSpeaker(userId));
   };
 
   /**
    * when user disconnected temporary e.g. network related issue,
-   * we'll mainly pause media files
+   * we'll only mark the user offline, keeping its media during the grace period
    * @param data string
    */
   public handleParticipantDisconnected = (data: string) => {

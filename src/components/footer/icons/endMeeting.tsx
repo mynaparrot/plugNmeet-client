@@ -46,7 +46,7 @@ const EndMeetingButton = () => {
       return;
     }
     setIsBusy(true);
-    await conn.endSession('notifications.user-logged-out');
+    await conn.leaveRoom('notifications.user-logged-out');
     setIsBusy(false);
     setIsOpen(false);
   }, [isBusy, conn]);

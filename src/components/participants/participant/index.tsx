@@ -15,7 +15,9 @@ import ConnectionQualityIcon from './icons/connectionQuality';
 
 import { ICurrentUser } from '../../../store/slices/interfaces/session';
 import { IVisibleParticipantInfo } from '../../../store/slices/interfaces/participant';
-import { store } from '../../../store';
+import { store, useAppSelector } from '../../../store';
+import { participantsSelector } from '../../../store/slices/participantSlice';
+import ReconnectingIndicator from '../../../helpers/ui/reconnectingIndicator';
 
 interface IParticipantComponentProps {
   participant: IVisibleParticipantInfo;
@@ -38,48 +40,62 @@ const ParticipantComponent = ({
     }
   };
   const currentUserIsAdmin = !!store.getState().session.currentUser?.metadata?.isAdmin;
+  const isOnline = useAppSelector(
+    (state) => participantsSelector.selectById(state, participant.userId)?.isOnline,
+  );
+  const isReconnecting = isRemoteParticipant && isOnline === false;
 
   return (
-    <div
-      className={clsx(
-        'flex items-center justify-between relative w-full gap-2 rounded-lg px-1 -mx-1 transition-colors duration-200',
-        isHighlighted && 'bg-Green-100 dark:bg-Green-900',
-      )}
-    >
-      <div className="left flex items-center gap-1.5 3xl:gap-[10px]">
-        <Avatar participant={participant} />
-        <ParticipantName
-          name={participant.name}
-          isCurrentUser={currentUser?.userId === participant.userId}
-        />
-      </div>
-      <div className="right flex-auto flex items-center justify-end ms-2">
-        <div className="icon-group flex items-center justify-center gap-1">
-          <ConnectionQualityIcon userId={participant.userId} />
-          <RaiseHandIcon userId={participant.userId} />
-          <VisibilityIcon userId={participant.userId} />
-          <PresenterIcon userId={participant.userId} />
-          <WebcamIcon userId={participant.userId} />
-          <ScreenShareIcon userId={participant.userId} />
-          <MicIcon userId={participant.userId} isRemoteParticipant={isRemoteParticipant} />
-          {currentUser?.userId !== participant.userId && (
-            <MenuIcon
-              userId={participant.userId}
+    <div className="w-full">
+      <div
+        className={clsx(
+          'flex items-center justify-between relative w-full gap-2 rounded-lg px-1 -mx-1 transition-colors duration-200',
+          isHighlighted && 'bg-Green-100 dark:bg-Green-900',
+        )}
+      >
+        <div className="left flex items-center gap-1.5 3xl:gap-[10px]">
+          <div
+            className={clsx(
+              'flex items-center gap-1.5 3xl:gap-[10px] transition-opacity duration-200',
+              isReconnecting ? 'opacity-50 delay-[3000ms]' : 'opacity-100',
+            )}
+          >
+            <Avatar participant={participant} />
+            <ParticipantName
               name={participant.name}
-              isAdmin={participant.isAdmin}
-              currentUserIsAdmin={currentUserIsAdmin}
-              openRemoveParticipantAlert={onOpenRemoveParticipantAlert}
+              isCurrentUser={currentUser?.userId === participant.userId}
             />
-          )}
+          </div>
+          {isReconnecting && <ReconnectingIndicator />}
         </div>
+        <div className="right flex-auto flex items-center justify-end ms-2">
+          <div className="icon-group flex items-center justify-center gap-1">
+            <ConnectionQualityIcon userId={participant.userId} />
+            <RaiseHandIcon userId={participant.userId} />
+            <VisibilityIcon userId={participant.userId} />
+            <PresenterIcon userId={participant.userId} />
+            <WebcamIcon userId={participant.userId} />
+            <ScreenShareIcon userId={participant.userId} />
+            <MicIcon userId={participant.userId} isRemoteParticipant={isRemoteParticipant} />
+            {currentUser?.userId !== participant.userId && (
+              <MenuIcon
+                userId={participant.userId}
+                name={participant.name}
+                isAdmin={participant.isAdmin}
+                currentUserIsAdmin={currentUserIsAdmin}
+                openRemoveParticipantAlert={onOpenRemoveParticipantAlert}
+              />
+            )}
+          </div>
+        </div>
+        {currentUser?.metadata?.isAdmin && (
+          <WaitingApproval
+            userId={participant.userId}
+            name={participant.name}
+            openRemoveParticipantAlert={onOpenRemoveParticipantAlert}
+          />
+        )}
       </div>
-      {currentUser?.metadata?.isAdmin && (
-        <WaitingApproval
-          userId={participant.userId}
-          name={participant.name}
-          openRemoveParticipantAlert={onOpenRemoveParticipantAlert}
-        />
-      )}
     </div>
   );
 };

@@ -66,9 +66,12 @@ const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000,
   // full passes over the WS URL list before giving up; `waitOnFirstConnect`
   // would loop forever and keep servers dropped during a failed pass out of play
   MAX_INITIAL_CONNECT_ATTEMPTS = 3,
-  // delay the UI/media disruption of a drop, so transient websocket failures
-  // (proxies, cloudflare) do not pause media or flash the reconnecting toast
-  DISCONNECT_GRACE_PERIOD = 5000;
+  // warn about a drop early, but keep media/UI untouched for the full grace
+  // period the server uses before it marks the user offline
+  DISCONNECT_TOAST_DELAY = 4000,
+  DISCONNECT_GRACE_PERIOD = 15000,
+  // never block leaving on a slow/dropped connection
+  LEAVE_ROOM_TIMEOUT = 3000;
 export type PrivateDataDeliveryType = 'CHAT' | 'DATA_MSG' | 'WHITEBOARD_MSG';
 
 export default class ConnectNats {
@@ -102,6 +105,7 @@ export default class ConnectNats {
   private pingInterval: any;
   private statusCheckerInterval: any;
   private disconnectGraceTimer: any;
+  private disconnectToastTimer: any;
   private reconciliationInterval: any;
   private missedPongs = 0;
   private pongMissedToastId: any;
@@ -318,13 +322,10 @@ export default class ConnectNats {
       this.messageQueue.setIsConnected(false);
 
       // stop the old connection's status checker and clear its reconnect UI
-      this.clearDisconnectGraceTimer();
+      this.clearDisconnectGraceTimers();
       clearInterval(this.statusCheckerInterval);
       this.statusCheckerInterval = undefined;
-      if (this.toastIdConnecting) {
-        toast.dismiss(this.toastIdConnecting);
-        this.toastIdConnecting = undefined;
-      }
+      this.dismissReconnectingToast();
       this.isRoomReconnecting = false;
 
       // fully close the old connection (including its subscriptions and status
@@ -369,7 +370,7 @@ export default class ConnectNats {
       this.startPingToServer();
 
       // request for initial data
-      this.sendMessageToSystemWorker(
+      await this.sendMessageToSystemWorker(
         create(NatsMsgClientToServerSchema, {
           event: NatsMsgClientToServerEvents.REQ_INITIAL_DATA,
         }),
@@ -377,6 +378,23 @@ export default class ConnectNats {
     }
 
     return true;
+  };
+
+  /**
+   * Tells the server that we are leaving on purpose, so it can mark us offline
+   * right away instead of waiting for the disconnect grace period.
+   */
+  public leaveRoom = async (msg: string, backToMainRoom?: boolean) => {
+    clearInterval(this.pingInterval); // a late PING must not mark us online again
+    await Promise.race([
+      this.sendMessageToSystemWorker(
+        create(NatsMsgClientToServerSchema, {
+          event: NatsMsgClientToServerEvents.REQ_LEAVE_ROOM,
+        }),
+      ),
+      sleep(LEAVE_ROOM_TIMEOUT),
+    ]);
+    await this.endSession(msg, backToMainRoom);
   };
 
   public endSession = async (msg: string, backToMainRoom?: boolean) => {
@@ -399,11 +417,8 @@ export default class ConnectNats {
     clearInterval(this.reconciliationInterval);
     clearInterval(this.statusCheckerInterval);
     this.statusCheckerInterval = undefined;
-    this.clearDisconnectGraceTimer();
-    if (this.toastIdConnecting) {
-      toast.dismiss(this.toastIdConnecting);
-      this.toastIdConnecting = undefined;
-    }
+    this.clearDisconnectGraceTimers();
+    this.dismissReconnectingToast();
     this.subscriptionHandler.handleParticipants.clearParticipantCounterInterval();
 
     // Concurrently run all cleanup tasks.
@@ -469,41 +484,61 @@ export default class ConnectNats {
   }
 
   /**
-   * Cancels a pending disconnect grace period (the connection is back or the
+   * Cancels the pending disconnect timers (the connection is back or the
    * session is being torn down).
    */
-  private clearDisconnectGraceTimer() {
-    if (this.disconnectGraceTimer) {
-      clearTimeout(this.disconnectGraceTimer);
-      this.disconnectGraceTimer = undefined;
+  private clearDisconnectGraceTimers() {
+    clearTimeout(this.disconnectGraceTimer);
+    this.disconnectGraceTimer = undefined;
+    clearTimeout(this.disconnectToastTimer);
+    this.disconnectToastTimer = undefined;
+  }
+
+  private dismissReconnectingToast() {
+    if (this.toastIdConnecting) {
+      toast.dismiss(this.toastIdConnecting);
+      this.toastIdConnecting = undefined;
     }
   }
 
-  /**
-   * Defers the user visible disconnect state (media pause + reconnecting toast)
-   * by `DISCONNECT_GRACE_PERIOD`, so short lived drops go unnoticed.
-   */
-  private startDisconnectGracePeriod(nc: NatsConnection) {
-    if (this.disconnectGraceTimer) {
+  private showReconnectingToast() {
+    if (this.toastIdConnecting) {
       return;
     }
+    this.toastIdConnecting = toast.loading(i18n.t('notifications.room-disconnected-reconnecting'), {
+      type: 'warning',
+      closeButton: false,
+      autoClose: false,
+    });
+  }
+
+  /**
+   * Warns about a drop after `DISCONNECT_TOAST_DELAY`, but keeps media and the
+   * rest of the UI untouched until `DISCONNECT_GRACE_PERIOD` has passed, so
+   * short lived drops go unnoticed.
+   */
+  private startDisconnectGracePeriod(nc: NatsConnection) {
+    if (this.disconnectGraceTimer || this.disconnectToastTimer) {
+      return;
+    }
+    // the connection was replaced or is being recreated after approval
+    const isStale = () => this._isReconnectingForApproval || this._nc !== nc;
+
+    this.disconnectToastTimer = setTimeout(() => {
+      this.disconnectToastTimer = undefined;
+      if (isStale()) {
+        return;
+      }
+      this.showReconnectingToast();
+    }, DISCONNECT_TOAST_DELAY);
+
     this.disconnectGraceTimer = setTimeout(() => {
       this.disconnectGraceTimer = undefined;
-      // the connection was replaced or is being recreated after approval
-      if (this._isReconnectingForApproval || this._nc !== nc) {
+      if (isStale()) {
         return;
       }
       store.dispatch(updateIsNatsServerConnected(false));
-      if (!this.toastIdConnecting) {
-        this.toastIdConnecting = toast.loading(
-          i18n.t('notifications.room-disconnected-reconnecting'),
-          {
-            type: 'warning',
-            closeButton: false,
-            autoClose: false,
-          },
-        );
-      }
+      this.showReconnectingToast();
     }, DISCONNECT_GRACE_PERIOD);
   }
 
@@ -520,7 +555,7 @@ export default class ConnectNats {
           if (nc.isClosed() || this._nc !== nc) {
             clearInterval(this.statusCheckerInterval);
             this.statusCheckerInterval = undefined;
-            this.clearDisconnectGraceTimer();
+            this.clearDisconnectGraceTimers();
             // the connection is being replaced intentionally (e.g. reconnect
             // after approval), so it must not end the session
             if (this._nc !== nc || this._isReconnectingForApproval) {
@@ -546,7 +581,7 @@ export default class ConnectNats {
       switch (s.type) {
         case 'close':
           // the connection is gone for good, so nothing is left to wait for
-          this.clearDisconnectGraceTimer();
+          this.clearDisconnectGraceTimers();
           store.dispatch(updateIsNatsServerConnected(false));
           this.messageQueue.setIsConnected(false);
           break;
@@ -563,20 +598,14 @@ export default class ConnectNats {
           if (!this.isRoomReconnecting) {
             this.isRoomReconnecting = true;
             startStatusChecker();
-            // the toast/UI update is owned by the grace timer; only schedule it
-            // here when no drop event scheduled one (and none already fired)
-            if (!this.disconnectGraceTimer && !this.toastIdConnecting) {
-              this.startDisconnectGracePeriod(nc);
-            }
+            // the toast/UI update is owned by the grace timers
+            this.startDisconnectGracePeriod(nc);
           }
           break;
         case 'reconnect':
         case 'forceReconnect':
-          this.clearDisconnectGraceTimer();
-          if (this.toastIdConnecting) {
-            toast.dismiss(this.toastIdConnecting);
-            this.toastIdConnecting = undefined;
-          }
+          this.clearDisconnectGraceTimers();
+          this.dismissReconnectingToast();
           store.dispatch(updateIsNatsServerConnected(true));
           this.messageQueue.setIsConnected(true);
 
@@ -602,7 +631,7 @@ export default class ConnectNats {
    */
   public sendMessageToSystemWorker = (data: NatsMsgClientToServer) => {
     const subject = this._subjects.systemJsWorker + '.' + this._roomId + '.' + this._userId;
-    this.messageQueue.addToQueue({
+    return this.messageQueue.addToQueue({
       subject,
       payload: toBinary(NatsMsgClientToServerSchema, data),
       useJetStream: true,
@@ -637,7 +666,7 @@ export default class ConnectNats {
       }),
     );
 
-    this.sendMessageToSystemWorker(
+    void this.sendMessageToSystemWorker(
       create(NatsMsgClientToServerSchema, {
         event: NatsMsgClientToServerEvents.REQ_PRIVATE_DATA_DELIVERY,
         msg,
@@ -696,7 +725,7 @@ export default class ConnectNats {
       this.sendPrivateData(payload, 'CHAT', chatMessage.toUserId!, false);
     } else {
       const subject = `${this._subjects.chat}.${this._roomId}`;
-      this.messageQueue.addToQueue({
+      void this.messageQueue.addToQueue({
         subject,
         payload,
       });
@@ -991,7 +1020,7 @@ export default class ConnectNats {
       return;
     }
     this.tokenRenewInterval = setInterval(() => {
-      this.sendMessageToSystemWorker(
+      void this.sendMessageToSystemWorker(
         create(NatsMsgClientToServerSchema, {
           event: NatsMsgClientToServerEvents.REQ_RENEW_PNM_TOKEN,
           msg: this._token,
@@ -1075,7 +1104,7 @@ export default class ConnectNats {
       }
     }
 
-    this.sendMessageToSystemWorker(
+    void this.sendMessageToSystemWorker(
       create(NatsMsgClientToServerSchema, {
         event: NatsMsgClientToServerEvents.REQ_MEDIA_SERVER_DATA,
       }),

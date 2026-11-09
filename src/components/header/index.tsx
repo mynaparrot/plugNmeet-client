@@ -41,7 +41,7 @@ const Header = () => {
   const handleLogout = useCallback(() => {
     const confirm = async () => {
       const conn = getNatsConn();
-      await conn.endSession('notifications.user-logged-out');
+      await conn.leaveRoom('notifications.user-logged-out');
     };
     setModalText(t('header.menus.alert.logout'));
     setOnConfirm(() => confirm);
