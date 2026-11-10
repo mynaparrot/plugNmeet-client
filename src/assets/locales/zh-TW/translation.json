@@ -1097,7 +1097,7 @@
     "poll-results-unavailable": "此投票沒有可用的票數。"
   },
   "pip": {
-    "label": "子母畫面",
+    "label": "Picture-in-Picture (PiP)",
     "speaking": "{{name}} 正在發言",
     "status": {
       "chat": "未讀聊天訊息",
