@@ -1097,7 +1097,7 @@
     "poll-results-unavailable": "이 투표의 득표 수는 제공되지 않습니다."
   },
   "pip": {
-    "label": "화면 속 화면",
+    "label": "Picture-in-Picture (PiP)",
     "speaking": "{{name}}님이 말하는 중입니다",
     "status": {
       "chat": "읽지 않은 채팅 메시지",
