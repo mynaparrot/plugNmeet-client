@@ -501,8 +501,12 @@
 .portrait-device.is-mobile .middle-fullscreen-wrapper .notepad-wrapper {
   @apply m-0 p-2;
 }
+/* Fill the area above the footer: the JSX `h-[calc(100%-50px)]` only makes
+   sense with its `mt-9` offset, which is dropped here. The webcam strip is
+   already reserved by `.verticalsWebcamsActivated` padding, so the whiteboard
+   should not keep an extra bottom gap. */
 .portrait-device.is-mobile .middle-fullscreen-wrapper .excalidraw-wrapper {
-  @apply m-0 p-2;
+  @apply m-0 p-2 h-full;
 }
 
 .landscape-device.is-tablet
