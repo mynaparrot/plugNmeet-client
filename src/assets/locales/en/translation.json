@@ -1097,7 +1097,7 @@
     "poll-results-unavailable": "Vote counts are not available for this poll."
   },
   "pip": {
-    "label": "Picture-in-Picture",
+    "label": "Picture-in-Picture (PiP)",
     "speaking": "{{name}} is speaking",
     "status": {
       "chat": "Unread chat messages",
