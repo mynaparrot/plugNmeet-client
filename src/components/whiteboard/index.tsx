@@ -686,25 +686,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     return false;
   }, [t]);
 
-  const renderTopRightUI = useCallback(
-    () => (
-      <>
-        {screenWidth > 767 && isPresenter && excalidrawAPI && (
-          <div className="menu relative z-10">
-            <button
-              type="button"
-              onClick={() => setIsOpenManageFilesUI(true)}
-              className="wb-manage-upload-file ml-1 focus-ring"
-            >
-              <i className="pnm-attachment text-[13px]" />
-              {t('whiteboard.manage-files')}
-            </button>
-          </div>
-        )}
-      </>
-    ),
-    [isPresenter, excalidrawAPI, t, screenWidth],
-  );
+  const isMobileUI = screenWidth <= 767;
 
   const renderFooter = useMemo(
     () => (
@@ -714,9 +696,37 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         isFollowing={isFollowing}
         setIsFollowing={setIsFollowing}
         showSwitchingWarning={showSwitchingWarning}
+        compact={isMobileUI}
       />
     ),
-    [excalidrawAPI, isPresenter, isFollowing, showSwitchingWarning],
+    [excalidrawAPI, isPresenter, isFollowing, showSwitchingWarning, isMobileUI],
+  );
+
+  const renderTopRightUI = useCallback(
+    () => (
+      <>
+        {isPresenter && excalidrawAPI && (
+          <>
+            {isMobileUI ? (
+              // Keep the page navigation reachable without opening the main menu.
+              <div className="wb-top-right-page-navigation relative z-10">{renderFooter}</div>
+            ) : (
+              <div className="menu relative z-10">
+                <button
+                  type="button"
+                  onClick={() => setIsOpenManageFilesUI(true)}
+                  className="wb-manage-upload-file ml-1 focus-ring"
+                >
+                  <i className="pnm-attachment text-[13px]" />
+                  {t('whiteboard.manage-files')}
+                </button>
+              </div>
+            )}
+          </>
+        )}
+      </>
+    ),
+    [isPresenter, excalidrawAPI, isMobileUI, t, renderFooter],
   );
 
   const onInitializeSetExcalidrawAPI = useCallback(
@@ -885,10 +895,10 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
               </button>
             )}
             <MainMenu.DefaultItems.Help />
-            {screenWidth <= 767 && renderFooter}
+            {isMobileUI && !isPresenter && renderFooter}
           </MainMenu>
           <WhiteboardAI canEdit={canEdit} />
-          {screenWidth > 767 && <Footer>{renderFooter}</Footer>}
+          {!isMobileUI && <Footer>{renderFooter}</Footer>}
         </Excalidraw>
         <canvas
           ref={snapshotCanvasRef}

@@ -23,6 +23,8 @@ interface IFooterUIProps {
   isFollowing?: boolean;
   setIsFollowing?: (value: boolean) => void;
   showSwitchingWarning: () => boolean;
+  /** Numeric-only page selector and tighter spacing for narrow top-right UI. */
+  compact?: boolean;
 }
 
 const FooterUI = ({
@@ -31,6 +33,7 @@ const FooterUI = ({
   isFollowing,
   setIsFollowing,
   showSwitchingWarning,
+  compact,
 }: IFooterUIProps) => {
   const totalPages = useAppSelector((state) => state.whiteboard.totalPages);
   const currentPage = useAppSelector((state) => state.whiteboard.currentPage);
@@ -139,7 +142,9 @@ const FooterUI = ({
 
   const renderForAdmin = () => {
     return (
-      <div className="flex wb-page-navigation ml-2">
+      <div
+        className={`flex wb-page-navigation ml-2 ${compact ? 'wb-page-navigation--compact' : ''}`}
+      >
         <button
           type="button"
           className="pre focus-ring"
@@ -155,10 +160,11 @@ const FooterUI = ({
           className="pagesOpts appearance-none cursor-pointer block h-8 py-1 px-3 border border-gray-300 dark:border-gray-100 border-t-0 border-b-0 bg-transparent shadow-xs focus:outline-hidden sm:text-sm"
           onChange={(e) => setCurrentPage(Number(e.currentTarget.value))}
           value={currentPage}
+          aria-label={t('whiteboard.page', { count: currentPage })}
         >
           {Array.from({ length: totalPages }, (_, i) => (
             <option key={i} value={i + 1}>
-              {t('whiteboard.page', { count: i + 1 })}
+              {compact ? i + 1 : t('whiteboard.page', { count: i + 1 })}
             </option>
           ))}
         </select>
