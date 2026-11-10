@@ -1097,7 +1097,7 @@
     "poll-results-unavailable": "Stemmetall er ikke tilgjengelig for denne avstemningen."
   },
   "pip": {
-    "label": "Bilde-i-bilde",
+    "label": "Picture-in-Picture (PiP)",
     "speaking": "{{name}} snakker",
     "status": {
       "chat": "Uleste meldinger i chatten",
