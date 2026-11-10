@@ -1097,7 +1097,7 @@
     "poll-results-unavailable": "この投票の得票数は利用できません。"
   },
   "pip": {
-    "label": "ピクチャーインピクチャー",
+    "label": "Picture-in-Picture (PiP)",
     "speaking": "{{name}} が発言中",
     "status": {
       "chat": "未読のチャットメッセージ",
