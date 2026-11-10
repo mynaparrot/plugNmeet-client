@@ -14,12 +14,13 @@
   "participant-menu": "گزینه‌های شرکت‌کننده",
   "participant-volume": "تنظیم صدای شرکت‌کننده",
   "participant-webcam-on": "دوربین روشن است",
-  "pip": "تصویر در تصویر",
+  "reconnecting": "Reconnecting...",
   "please-wait": "لطفاً منتظر بمانید...",
   "are-you-sure-to-close": "آیا مطمئن هستید که می‌خواهید ببندید؟",
   "you-are-about-to-close": "شما در حال بستن هستید",
   "notifications": {
     "title": "اعلان‌ها",
+    "alert-title": "Alert",
     "room-not-active": "این اتاق فعال نیست.",
     "recording-already-running": "ضبط از قبل در حال انجام است.",
     "recording-not-running": "ضبط در حال انجام نیست.",
@@ -41,6 +42,8 @@
     "auth-header-missing": "احراز هویت ناموفق بود (هدر یافت نشد). لطفاً دوباره برای پیوستن به جلسه تلاش کنید",
     "token-expired": "نشست شما منقضی شده است. لطفاً برای ادامه دوباره به جلسه بپیوندید.",
     "invalid-token": "نشست شما تأیید نشد (توکن نامعتبر). لطفاً دوباره برای پیوستن به جلسه تلاش کنید.",
+    "token-valid": "Token is valid.",
+    "user-not-active": "You are not an active participant of this meeting. Please join again.",
     "waiting-for-approval": "به مدیر جلسه اطلاع داده شد و به‌زودی به شما اجازه ورود می‌دهد. از شکیبایی شما سپاسگزاریم!",
     "room-disconnected-title": "اتصال قطع شد",
     "room-disconnected-default": "به دلیل خطای غیرمنتظره ارتباط شما قطع شد: {{reason}}. لطفاً دوباره بپیوندید.",
@@ -120,7 +123,11 @@
     "audio-only-mode-weak-connection": "اتصال شما به شدت ناپایدار است. ویدئو متوقف شده تا صدا کار کند.",
     "connection-recovered-restore-video": "اتصال شما دوباره پایدار به نظر می رسد. می توانید ویدئو را بازیابی کنید.",
     "media-restored-camera-unavailable": "رسانه ورودی بازیابی شد، اما دوربین شما فعال نشد.",
-    "presentation-resumed": "ارائه از سر گرفته شده است."
+    "presentation-resumed": "ارائه از سر گرفته شده است.",
+    "invalid-request": "Your request could not be validated. Please try to join the meeting again.",
+    "success": "Success",
+    "rtmp-already-running": "RTMP streaming is already in progress.",
+    "rtmp-not-running": "RTMP streaming is not in progress."
   },
   "room-metadata": {
     "session-recording": "این جلسه در حال ضبط است.",
@@ -137,6 +144,7 @@
     "menus": {
       "settings": "تنظیمات",
       "keyboard-shortcuts": "میانبرهای صفحه‌کلید",
+      "export": "Export Session Data",
       "menu": "منو",
       "toggle-theme": "تغییر حالت تاریک/روشن",
       "logout": "ترک جلسه",
@@ -266,6 +274,21 @@
     "breakout-room-tab": "اتاق‌های فرعی",
     "me": "(من)",
     "search-participant": "جستجوی شرکت‌کننده",
+    "picker": {
+      "open": "Pick a Random Participant",
+      "title": "Pick a Random Participant",
+      "hint": "Pick a participant to draw a random name.",
+      "pick-participant": "Pick a participant",
+      "selected": "Selected",
+      "pick-again": "Pick Again",
+      "notify-selected": "Notify selected participant",
+      "no-eligible": "No eligible participants to pick from.",
+      "participant-left": "The selected participant is no longer available. Please pick again.",
+      "notify-failed": "Could not notify the selected participant. Please try again.",
+      "announce-failed": "The participant was notified, but the room announcement could not be sent.",
+      "alert": "You have been selected as the random participant.",
+      "announcement": "Randomly selected participant: {{name}}"
+    },
     "public-chat": "گفتگوی عمومی",
     "private-chat": "گفتگوی خصوصی",
     "select-chat-conversation-title": "یک مکالمه را انتخاب کنید",
@@ -322,6 +345,8 @@
     "file-upload-success": "فایل با موفقیت بارگذاری شد",
     "file-upload-default-error": "در بارگذاری فایل خطایی رخ داد.",
     "chat-box-placeholder": "پیام بنویسید، تصویر جای‌گذاری کنید یا فایل را اینجا رها کنید (خط جدید: Shift + Enter)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "لطفاً صبر کنید، در حال ارسال...",
     "reply": "پاسخ بده",
     "edit-message": "ویرایش پیام",
@@ -342,6 +367,8 @@
     "new-messages": "پیام های جدید",
     "scroll-to-bottom": "به پایین صفحه بروید",
     "sync-chat": "همگام سازی چت با همتایان",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "بارگذاری پیام های قبلی",
     "system-name": "سیستم"
   },
@@ -405,6 +432,8 @@
       "room-lock-settings": "تنظیمات قفل جلسه",
       "enable-shared-notepad": "فعال کردن دفترچه یادداشت مشترک",
       "disable-shared-notepad": "غیرفعال کردن دفترچه یادداشت مشترک",
+      "enable-countdown-timer": "Enable Countdown Timer",
+      "disable-countdown-timer": "Disable Countdown Timer",
       "mute-microphone": "بی‌صدا کردن میکروفون",
       "unmute-microphone": "باصدا کردن میکروفون",
       "leave-microphone": "خاموش کردن میکروفون",
@@ -567,6 +596,7 @@
     "show-toolbar": "نمایش نوار ابزار",
     "hide-toolbar": "پنهان کردن نوار ابزار",
     "file-conversion-failed": "تبدیل فایل ناموفق بود",
+    "error-occurred": "Something went wrong. Please try again.",
     "export-pdf-title": "خروجی PDF",
     "export-pdf-button": "خروجی گرفتن",
     "export-pdf-button-count": "خروجی گرفتن ({{count}})",
@@ -575,6 +605,7 @@
     "previous-page": "صفحه قبل",
     "next-page": "صفحه بعد",
     "take-over-presenter": "به دست گرفتن نقش ارائه‌دهنده",
+    "save-pending-warning": "Whiteboard page couldn't be saved yet. It will keep retrying in the background.",
     "export-pdf-selected-pages": "صفحات انتخاب‌شده",
     "export-pdf-selected-pages-count": "انتخاب‌شده ({{count}})",
     "export-pdf-select-pages-label": "صفحات موردنظر برای خروجی را انتخاب کنید:",
@@ -616,6 +647,34 @@
     "reject-and-block-user": "رد و مسدود کردن",
     "user-waiting": "{{name}} در انتظار پذیرش است.",
     "no-pending-user": "کسی در انتظار پیوستن نیست."
+  },
+  "countdown-timer": {
+    "title": "Countdown Timer",
+    "aria-label": "Countdown timer",
+    "set-timer": "Set timer",
+    "minutes": "Minutes",
+    "seconds": "Seconds",
+    "presets": "Quick presets",
+    "preset-min": "{{count}}m",
+    "start": "Start",
+    "pause": "Pause",
+    "resume": "Resume",
+    "extend": "+1 min",
+    "set-new-timer": "Set new timer",
+    "end-timer": "End timer",
+    "running": "Running",
+    "paused": "Paused",
+    "ended": "Time's up",
+    "ended-notification": "The countdown timer has ended.",
+    "errors": {
+      "only-admin": "Only admin can perform this task.",
+      "not-allowed": "The countdown timer is not enabled for this room.",
+      "not-active": "The countdown timer is not active.",
+      "invalid-duration": "Please enter a valid duration (up to 24 hours).",
+      "not-running": "The countdown timer is not running.",
+      "not-paused": "The countdown timer is not paused.",
+      "generic": "Could not update the countdown timer. Please try again."
+    }
   },
   "polls": {
     "title": "نظرسنجی‌ها",
@@ -672,6 +731,13 @@
     "quiz-mode-desc": "گزینه(های) درست را با استفاده از کادر انتخاب کنار هر گزینه علامت بزنید. شرکت کنندگان فقط پس از بسته شدن نظرسنجی پاسخ صحیح را می بینند.",
     "anonymous-voting-desc": "انتخاب های رأی دهندگان پنهان می ماند — حتی مدیران هم نمی توانند ببینند چه کسی رأی داده است.",
     "duration-desc": "نظرسنجی به طور خودکار وقتی زمان تمام می شود بسته می شود.",
+    "text-answer": "Text answer",
+    "text-answer-placeholder": "Type your answer here...",
+    "your-answer": "Your answer",
+    "ai-check-answers": "Check with AI",
+    "ai-recheck-answers": "Recheck with AI",
+    "ai-check-title": "AI Answer Review",
+    "ai-share-chat": "Share in Chat",
     "notifications": {
       "created-successfully": "این نظرسنجی ایجاد شده است.",
       "response-added": "رأی شما ارسال شده است.",
@@ -679,7 +745,8 @@
       "end-poll-success": "نظرسنجی به پایان رسیده است.",
       "reopen-poll-success": "نظرسنجی دوباره بازگشایی شده است.",
       "ai-generated": "آماده پیش نویس هوش مصنوعی — بازبینی و ایجاد.",
-      "poll-reopened": "یک نظرسنجی دوباره باز شده است."
+      "poll-reopened": "یک نظرسنجی دوباره باز شده است.",
+      "ai-shared-chat": "AI review has been shared in the chat."
     },
     "errors": {
       "generic": "یه مشکلی پیش اومده. لطفا دوباره تلاش کن.",
@@ -701,7 +768,9 @@
       "user-and-poll-id-required": "هر دو شناسه کاربری و شناسه نظرسنجی الزامی هستند.",
       "ai-disabled": "تولید نظرسنجی با هوش مصنوعی غیرفعال است.",
       "ai-invalid-response": "پاسخ هوش مصنوعی قابل استفاده نبود. لطفا دوباره تلاش کنید.",
-      "ai-request-timeout": "درخواست هوش مصنوعی نظرسنجی به پایان رسید"
+      "ai-request-timeout": "درخواست هوش مصنوعی نظرسنجی به پایان رسید",
+      "text-answer-required": "Please enter your answer before submitting.",
+      "text-answer-too-long": "Your answer cannot exceed 500 characters."
     }
   },
   "breakout-room": {
@@ -976,5 +1045,139 @@
     "enable-auto-close-chat-panel": "فعال کردن بستن خودکار پنل گفتگو",
     "duration-after-last-message": "مدت زمان پس از آخرین پیام (به دقیقه)",
     "duration-after-last-message-help": "پنل گفتگو پس از این مدت عدم فعالیت به‌طور خودکار بسته می‌شود."
+  },
+  "export-hub": {
+    "title": "Export Live Session Data",
+    "description": "Export a snapshot of data available to you in the live session right now. This is not a historical session archive or a full analytics report.",
+    "export-button": "Export",
+    "chat-title": "Public chat messages (TXT)",
+    "chat-help": "Messages available to this client right now: {{total}}. Only user messages are exported; private, system and deleted messages are omitted. The export may not be the complete room history.",
+    "chat-e2ee-warning": "This meeting is end-to-end encrypted: the exported file will contain plain text.",
+    "chat-empty": "No public chat messages are available to export.",
+    "participants-title": "Current participants (CSV)",
+    "participants-help": "Participants in the current roster: {{total}}. Columns: name, user ID, role, joined at, online.",
+    "participants-empty": "There are no participants to export.",
+    "polls-title": "Poll results (TXT)",
+    "polls-help": "Polls in this session with their question, options, status and current vote counts, captured when you export. Respondent names are never included.",
+    "polls-empty": "There are no polls to export yet.",
+    "export-failed": "The export could not be completed. Please try again.",
+    "exported-at": "Exported at: {{timestamp}}",
+    "chat-export-title": "plugNmeet public chat export",
+    "chat-export-note": "Only messages currently available to this client are included; private, system and deleted messages are omitted.",
+    "chat-export-empty": "(no public chat messages)",
+    "chat-export-empty-message": "(empty message)",
+    "chat-export-unknown-sender": "Unknown",
+    "chat-export-unknown-time": "unknown time",
+    "participants-csv-name": "Name",
+    "participants-csv-role": "Role",
+    "participants-csv-joined-at": "Joined at",
+    "participants-csv-online": "Online",
+    "participants-csv-user-id": "User ID",
+    "participants-role-admin": "admin",
+    "participants-role-presenter": "presenter",
+    "participants-role-participant": "participant",
+    "participants-online-yes": "yes",
+    "participants-online-no": "no",
+    "polls-export-title": "plugNmeet poll results export",
+    "polls-export-note": "Snapshot of the polls available to this client at export time; respondent names are never included.",
+    "polls-export-none": "(no polls)",
+    "poll-heading": "Poll {{number}} [{{tags}}]",
+    "poll-status-open": "open",
+    "poll-status-closed": "closed",
+    "poll-type-multiple": "multiple choice",
+    "poll-type-single": "single choice",
+    "poll-type-text": "text answer",
+    "poll-tag-quiz": "quiz",
+    "poll-tag-anonymous": "anonymous",
+    "poll-question": "Q: {{question}}",
+    "poll-option-unavailable": "n/a",
+    "poll-correct-answer": "(correct answer)",
+    "poll-total-responses": "Responses: {{count}}",
+    "poll-total-votes": "Total votes: {{votes}} from {{count}} respondents",
+    "poll-results-unavailable": "Vote counts are not available for this poll."
+  },
+  "pip": {
+    "label": "Picture-in-Picture (PiP)",
+    "speaking": "{{name}} is speaking",
+    "status": {
+      "chat": "Unread chat messages",
+      "raised-hand": "Raised hands",
+      "notification": "Unread notifications"
+    },
+    "switcher": {
+      "label": "Switch picture-in-picture view",
+      "chat": "Show chat",
+      "webcam": "Show webcams"
+    }
+  },
+  "file": {
+    "errors": {
+      "invalid-request": "Your file request could not be validated.",
+      "missing-file": "No file was received.",
+      "too-large": "The file is larger than the maximum allowed size.",
+      "type-not-allowed": "This file type is not allowed.",
+      "chunks-not-found": "The uploaded file parts could not be found. Please upload the file again.",
+      "upload-failed": "The file could not be uploaded. Please try again.",
+      "merge-failed": "The file could not be finalized. Please try again.",
+      "file-path-required": "The file path is missing.",
+      "invalid-path": "The file path is not valid.",
+      "not-found": "The file could not be found.",
+      "only-presenter": "Only the presenter can perform this task.",
+      "unexpected": "Something went wrong. Please try again."
+    },
+    "notifications": {
+      "conversion-started": "The file is being converted. It will be available in the whiteboard file list once it is ready."
+    }
+  },
+  "room": {
+    "errors": {
+      "only-admin": "Only admin can perform this task.",
+      "invalid-request": "Your request could not be validated.",
+      "room-id-required": "The room ID is missing.",
+      "room-id-mismatch": "The requested room does not match your session.",
+      "room-not-found": "The room could not be found.",
+      "no-room-found": "No room found.",
+      "no-active-room-found": "No active room found",
+      "room-not-active": "This room is not active.",
+      "unexpected": "Something went wrong. Please try again.",
+      "end-failed": "The room could not be ended. Please try again.",
+      "feature-not-allowed": "This feature is not enabled for this room.",
+      "sip-dial-in-already-enabled": "SIP dial-in is already enabled for this room.",
+      "ingress-already-created": "A live stream is already running for this room.",
+      "invalid-url": "Only http and https URLs are allowed.",
+      "user-not-found": "The user could not be found.",
+      "room-id-not-allowed": "This room ID is not allowed.",
+      "preassigned-limit": "Too many pre-assigned breakout rooms.",
+      "preassigned-user": "A user is pre-assigned to multiple breakout rooms."
+    }
+  },
+  "user": {
+    "errors": {
+      "only-admin": "Only admin can perform this task.",
+      "invalid-request": "Your request could not be validated.",
+      "user-info-required": "User information is required.",
+      "room-id-mismatch": "The requested room does not match your session.",
+      "room-sid-mismatch": "The room session does not match your session.",
+      "room-not-running": "This meeting is not running.",
+      "cannot-remove-self": "You can't remove yourself.",
+      "user-not-online": "This user is not online.",
+      "user-not-found": "The user could not be found.",
+      "unexpected": "Something went wrong. Please try again.",
+      "reserved-name": "This name is reserved and can't be used.",
+      "reserved-user-id": "This user ID is reserved and can't be used.",
+      "invalid-user-id": "The user ID may only contain letters, numbers, '-' and '_'.",
+      "room-info-not-found": "The room information could not be found.",
+      "room-ended": "This meeting has ended."
+    }
+  },
+  "recording": {
+    "errors": {
+      "invalid-request": "Your recording request could not be validated.",
+      "task-in-progress": "Another recording request is already in progress. Please wait a moment and try again.",
+      "room-sid-required": "The room information is missing, so the recording task cannot be started.",
+      "rtmp-url-required": "An RTMP URL is required to start RTMP streaming.",
+      "invalid-rtmp-url": "Only rtmp and rtmps URLs are allowed.",
+      "operation-failed": "The recording request could not be completed. Please try again."
+    }
   }
 }
