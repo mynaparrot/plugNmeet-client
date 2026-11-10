@@ -14,12 +14,13 @@
   "participant-menu": "Επιλογές συμμετεχόντων",
   "participant-volume": "Προσαρμογή της έντασης ήχου των συμμετεχόντων",
   "participant-webcam-on": "Η κάμερα είναι ενεργοποιημένη",
-  "pip": "Εικόνα σε εικόνα",
+  "reconnecting": "Reconnecting...",
   "please-wait": "Παρακαλώ περιμένετε...",
   "are-you-sure-to-close": "Είστε βέβαιοι ότι θέλετε να κλείσετε;",
   "you-are-about-to-close": "Πρόκειται να κλείσετε",
   "notifications": {
     "title": "Ειδοποιήσεις",
+    "alert-title": "Alert",
     "room-not-active": "Αυτή η αίθουσα δεν είναι ενεργή.",
     "recording-already-running": "Η εγγραφή βρίσκεται ήδη σε εξέλιξη.",
     "recording-not-running": "Η εγγραφή δεν βρίσκεται σε εξέλιξη.",
@@ -41,6 +42,8 @@
     "auth-header-missing": "Ο έλεγχος ταυτότητας απέτυχε (λείπει η κεφαλίδα). Παρακαλούμε δοκιμάστε να συνδεθείτε ξανά στη σύσκεψη.",
     "token-expired": "Η σύσκεψή σας έχει λήξει. Παρακαλούμε συνδεθείτε ξανά για να συνεχίσετε.",
     "invalid-token": "Δεν ήταν δυνατή η επικύρωση της σύσκεψής σας (μη έγκυρο διακριτικό). Παρακαλούμε δοκιμάστε να συνδεθείτε ξανά.",
+    "token-valid": "Token is valid.",
+    "user-not-active": "You are not an active participant of this meeting. Please join again.",
     "waiting-for-approval": "Ένας συντονιστής έχει ειδοποιηθεί και θα σας επιτρέψει την είσοδο σύντομα. Σας ευχαριστούμε για την υπομονή σας!",
     "room-disconnected-title": "Αποσυνδέθηκε",
     "room-disconnected-default": "Αποσυνδεθήκατε λόγω ενός απροσδόκητου σφάλματος: {{reason}}. Παρακαλούμε προσπαθήστε να συνδεθείτε ξανά.",
@@ -120,7 +123,11 @@
     "audio-only-mode-weak-connection": "Η σύνδεσή σας είναι εξαιρετικά ασταθής. Το βίντεο έχει τεθεί σε παύση για να συνεχίσει να λειτουργεί ο ήχος.",
     "connection-recovered-restore-video": "Η σύνδεσή σας φαίνεται και πάλι σταθερή. Μπορείτε να δοκιμάσετε να επαναφέρετε το βίντεο.",
     "media-restored-camera-unavailable": "Έγινε επαναφορά των εισερχόμενων μέσων, αλλά δεν ήταν δυνατή η ενεργοποίηση της κάμερας.",
-    "presentation-resumed": "Η παρουσίαση συνεχίστηκε."
+    "presentation-resumed": "Η παρουσίαση συνεχίστηκε.",
+    "invalid-request": "Your request could not be validated. Please try to join the meeting again.",
+    "success": "Success",
+    "rtmp-already-running": "RTMP streaming is already in progress.",
+    "rtmp-not-running": "RTMP streaming is not in progress."
   },
   "room-metadata": {
     "session-recording": "Αυτή η σύσκεψη καταγράφεται.",
@@ -137,6 +144,7 @@
     "menus": {
       "settings": "Ρυθμίσεις",
       "keyboard-shortcuts": "Συντομεύσεις πληκτρολογίου",
+      "export": "Export Session Data",
       "menu": "Μενού",
       "toggle-theme": "Εναλλαγή θέματος",
       "logout": "Αποχώρηση από τη σύσκεψη",
@@ -266,6 +274,21 @@
     "breakout-room-tab": "Αίθουσες επιμέρους συσκέψεων",
     "me": "(εσείς)",
     "search-participant": "Αναζήτηση Συμμετέχοντα",
+    "picker": {
+      "open": "Pick a Random Participant",
+      "title": "Pick a Random Participant",
+      "hint": "Pick a participant to draw a random name.",
+      "pick-participant": "Pick a participant",
+      "selected": "Selected",
+      "pick-again": "Pick Again",
+      "notify-selected": "Notify selected participant",
+      "no-eligible": "No eligible participants to pick from.",
+      "participant-left": "The selected participant is no longer available. Please pick again.",
+      "notify-failed": "Could not notify the selected participant. Please try again.",
+      "announce-failed": "The participant was notified, but the room announcement could not be sent.",
+      "alert": "You have been selected as the random participant.",
+      "announcement": "Randomly selected participant: {{name}}"
+    },
     "public-chat": "Δημόσια συνομιλία",
     "private-chat": "Ιδιωτική συνομιλία",
     "select-chat-conversation-title": "Επιλέξτε μια συνομιλία",
@@ -322,6 +345,8 @@
     "file-upload-success": "Το αρχείο μεταφορτώθηκε με επιτυχία",
     "file-upload-default-error": "Παρουσιάστηκε σφάλμα κατά τη μεταφόρτωση του αρχείου.",
     "chat-box-placeholder": "Στείλτε ένα μήνυμα, επικολλήστε μια εικόνα ή αποθέστε ένα αρχείο εδώ (Νέα γραμμή: Shift + Enter)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "Παρακαλώ περιμένετε, αποστολή...",
     "reply": "απάντηση",
     "edit-message": "Επεξεργασία μηνύματος",
@@ -342,6 +367,8 @@
     "new-messages": "Νέα μηνύματα",
     "scroll-to-bottom": "Κύλιση προς τα κάτω",
     "sync-chat": "Συγχρονισμός συνομιλίας με συνομηλίκους",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "Φόρτωση προηγούμενων μηνυμάτων",
     "system-name": "Σύστημα"
   },
@@ -405,6 +432,8 @@
       "room-lock-settings": "Ρυθμίσεις κλειδώματος σύσκεψης",
       "enable-shared-notepad": "Ενεργοποίηση κοινόχρηστου σημειωματάριου",
       "disable-shared-notepad": "Απενεργοποίηση κοινόχρηστου σημειωματάριου",
+      "enable-countdown-timer": "Enable Countdown Timer",
+      "disable-countdown-timer": "Disable Countdown Timer",
       "mute-microphone": "Σίγαση μικροφώνου",
       "unmute-microphone": "Κατάργηση σίγασης μικροφώνου",
       "leave-microphone": "Απενεργοποίηση μικροφώνου",
@@ -567,6 +596,7 @@
     "show-toolbar": "Εμφάνιση γραμμής εργαλείων",
     "hide-toolbar": "Απόκρυψη γραμμής εργαλείων",
     "file-conversion-failed": "Η μετατροπή αρχείων απέτυχε",
+    "error-occurred": "Something went wrong. Please try again.",
     "export-pdf-title": "Εξαγωγή σε PDF",
     "export-pdf-button": "Εξαγωγή",
     "export-pdf-button-count": "Εξαγωγή ({{count}})",
@@ -575,6 +605,7 @@
     "previous-page": "Προηγούμενη σελίδα",
     "next-page": "Επόμενη σελίδα",
     "take-over-presenter": "Ανάληψη παρουσιαστή",
+    "save-pending-warning": "Whiteboard page couldn't be saved yet. It will keep retrying in the background.",
     "export-pdf-selected-pages": "Επιλεγμένες σελίδες",
     "export-pdf-selected-pages-count": "Επιλεγμένο ({{count}})",
     "export-pdf-select-pages-label": "Επιλέξτε σελίδες για εξαγωγή:",
@@ -616,6 +647,34 @@
     "reject-and-block-user": "Απόρριψη & Αποκλεισμός",
     "user-waiting": "Ο χρήστης {{name}} περιμένει να γίνει δεκτός.",
     "no-pending-user": "Δεν υπάρχει κανείς που να περιμένει να συνδεθεί."
+  },
+  "countdown-timer": {
+    "title": "Countdown Timer",
+    "aria-label": "Countdown timer",
+    "set-timer": "Set timer",
+    "minutes": "Minutes",
+    "seconds": "Seconds",
+    "presets": "Quick presets",
+    "preset-min": "{{count}}m",
+    "start": "Start",
+    "pause": "Pause",
+    "resume": "Resume",
+    "extend": "+1 min",
+    "set-new-timer": "Set new timer",
+    "end-timer": "End timer",
+    "running": "Running",
+    "paused": "Paused",
+    "ended": "Time's up",
+    "ended-notification": "The countdown timer has ended.",
+    "errors": {
+      "only-admin": "Only admin can perform this task.",
+      "not-allowed": "The countdown timer is not enabled for this room.",
+      "not-active": "The countdown timer is not active.",
+      "invalid-duration": "Please enter a valid duration (up to 24 hours).",
+      "not-running": "The countdown timer is not running.",
+      "not-paused": "The countdown timer is not paused.",
+      "generic": "Could not update the countdown timer. Please try again."
+    }
   },
   "polls": {
     "title": "Δημοσκοπήσεις",
@@ -672,6 +731,13 @@
     "quiz-mode-desc": "Σημειώστε τις σωστές επιλογές χρησιμοποιώντας το πλαίσιο ελέγχου δίπλα σε κάθε επιλογή. Οι συμμετέχοντες βλέπουν τη σωστή απάντηση μόνο μετά το κλείσιμο της δημοσκόπησης.",
     "anonymous-voting-desc": "Οι επιλογές των ψηφοφόρων παραμένουν κρυφές — ακόμη και οι διαχειριστές δεν μπορούν να δουν ποιος ψήφισε.",
     "duration-desc": "Η δημοσκόπηση κλείνει αυτόματα όταν τελειώσει ο χρόνος.",
+    "text-answer": "Text answer",
+    "text-answer-placeholder": "Type your answer here...",
+    "your-answer": "Your answer",
+    "ai-check-answers": "Check with AI",
+    "ai-recheck-answers": "Recheck with AI",
+    "ai-check-title": "AI Answer Review",
+    "ai-share-chat": "Share in Chat",
     "notifications": {
       "created-successfully": "Η δημοσκόπηση έχει δημιουργηθεί.",
       "response-added": "Η ψήφος σας έχει υποβληθεί.",
@@ -679,7 +745,8 @@
       "end-poll-success": "Η δημοσκόπηση ολοκληρώθηκε.",
       "reopen-poll-success": "Η δημοσκόπηση άνοιξε ξανά.",
       "ai-generated": "Έτοιμο το προσχέδιο AI — ελέγξτε και δημιουργήστε.",
-      "poll-reopened": "Μια δημοσκόπηση άνοιξε ξανά."
+      "poll-reopened": "Μια δημοσκόπηση άνοιξε ξανά.",
+      "ai-shared-chat": "AI review has been shared in the chat."
     },
     "errors": {
       "generic": "Κάτι πήγε στραβά. Παρακαλώ προσπαθήστε ξανά.",
@@ -701,7 +768,9 @@
       "user-and-poll-id-required": "Απαιτούνται τόσο το αναγνωριστικό χρήστη όσο και το αναγνωριστικό δημοσκόπησης.",
       "ai-disabled": "Η δημιουργία δημοσκοπήσεων AI είναι απενεργοποιημένη.",
       "ai-invalid-response": "Δεν ήταν δυνατή η χρήση της απόκρισης AI. Δοκιμάστε ξανά.",
-      "ai-request-timeout": "Το αίτημα Poll AI έληξε"
+      "ai-request-timeout": "Το αίτημα Poll AI έληξε",
+      "text-answer-required": "Please enter your answer before submitting.",
+      "text-answer-too-long": "Your answer cannot exceed 500 characters."
     }
   },
   "breakout-room": {
@@ -976,5 +1045,139 @@
     "enable-auto-close-chat-panel": "Ενεργοποίηση αυτόματου κλεισίματος του πίνακα συνομιλίας",
     "duration-after-last-message": "Διάρκεια μετά το τελευταίο μήνυμα (σε λεπτά)",
     "duration-after-last-message-help": "Ο πίνακας συνομιλίας θα κλείσει αυτόματα μετά από αυτήν τη διάρκεια αδράνειας."
+  },
+  "export-hub": {
+    "title": "Export Live Session Data",
+    "description": "Export a snapshot of data available to you in the live session right now. This is not a historical session archive or a full analytics report.",
+    "export-button": "Export",
+    "chat-title": "Public chat messages (TXT)",
+    "chat-help": "Messages available to this client right now: {{total}}. Only user messages are exported; private, system and deleted messages are omitted. The export may not be the complete room history.",
+    "chat-e2ee-warning": "This meeting is end-to-end encrypted: the exported file will contain plain text.",
+    "chat-empty": "No public chat messages are available to export.",
+    "participants-title": "Current participants (CSV)",
+    "participants-help": "Participants in the current roster: {{total}}. Columns: name, user ID, role, joined at, online.",
+    "participants-empty": "There are no participants to export.",
+    "polls-title": "Poll results (TXT)",
+    "polls-help": "Polls in this session with their question, options, status and current vote counts, captured when you export. Respondent names are never included.",
+    "polls-empty": "There are no polls to export yet.",
+    "export-failed": "The export could not be completed. Please try again.",
+    "exported-at": "Exported at: {{timestamp}}",
+    "chat-export-title": "plugNmeet public chat export",
+    "chat-export-note": "Only messages currently available to this client are included; private, system and deleted messages are omitted.",
+    "chat-export-empty": "(no public chat messages)",
+    "chat-export-empty-message": "(empty message)",
+    "chat-export-unknown-sender": "Unknown",
+    "chat-export-unknown-time": "unknown time",
+    "participants-csv-name": "Name",
+    "participants-csv-role": "Role",
+    "participants-csv-joined-at": "Joined at",
+    "participants-csv-online": "Online",
+    "participants-csv-user-id": "User ID",
+    "participants-role-admin": "admin",
+    "participants-role-presenter": "presenter",
+    "participants-role-participant": "participant",
+    "participants-online-yes": "yes",
+    "participants-online-no": "no",
+    "polls-export-title": "plugNmeet poll results export",
+    "polls-export-note": "Snapshot of the polls available to this client at export time; respondent names are never included.",
+    "polls-export-none": "(no polls)",
+    "poll-heading": "Poll {{number}} [{{tags}}]",
+    "poll-status-open": "open",
+    "poll-status-closed": "closed",
+    "poll-type-multiple": "multiple choice",
+    "poll-type-single": "single choice",
+    "poll-type-text": "text answer",
+    "poll-tag-quiz": "quiz",
+    "poll-tag-anonymous": "anonymous",
+    "poll-question": "Q: {{question}}",
+    "poll-option-unavailable": "n/a",
+    "poll-correct-answer": "(correct answer)",
+    "poll-total-responses": "Responses: {{count}}",
+    "poll-total-votes": "Total votes: {{votes}} from {{count}} respondents",
+    "poll-results-unavailable": "Vote counts are not available for this poll."
+  },
+  "pip": {
+    "label": "Picture-in-Picture (PiP)",
+    "speaking": "{{name}} is speaking",
+    "status": {
+      "chat": "Unread chat messages",
+      "raised-hand": "Raised hands",
+      "notification": "Unread notifications"
+    },
+    "switcher": {
+      "label": "Switch picture-in-picture view",
+      "chat": "Show chat",
+      "webcam": "Show webcams"
+    }
+  },
+  "file": {
+    "errors": {
+      "invalid-request": "Your file request could not be validated.",
+      "missing-file": "No file was received.",
+      "too-large": "The file is larger than the maximum allowed size.",
+      "type-not-allowed": "This file type is not allowed.",
+      "chunks-not-found": "The uploaded file parts could not be found. Please upload the file again.",
+      "upload-failed": "The file could not be uploaded. Please try again.",
+      "merge-failed": "The file could not be finalized. Please try again.",
+      "file-path-required": "The file path is missing.",
+      "invalid-path": "The file path is not valid.",
+      "not-found": "The file could not be found.",
+      "only-presenter": "Only the presenter can perform this task.",
+      "unexpected": "Something went wrong. Please try again."
+    },
+    "notifications": {
+      "conversion-started": "The file is being converted. It will be available in the whiteboard file list once it is ready."
+    }
+  },
+  "room": {
+    "errors": {
+      "only-admin": "Only admin can perform this task.",
+      "invalid-request": "Your request could not be validated.",
+      "room-id-required": "The room ID is missing.",
+      "room-id-mismatch": "The requested room does not match your session.",
+      "room-not-found": "The room could not be found.",
+      "no-room-found": "No room found.",
+      "no-active-room-found": "No active room found",
+      "room-not-active": "This room is not active.",
+      "unexpected": "Something went wrong. Please try again.",
+      "end-failed": "The room could not be ended. Please try again.",
+      "feature-not-allowed": "This feature is not enabled for this room.",
+      "sip-dial-in-already-enabled": "SIP dial-in is already enabled for this room.",
+      "ingress-already-created": "A live stream is already running for this room.",
+      "invalid-url": "Only http and https URLs are allowed.",
+      "user-not-found": "The user could not be found.",
+      "room-id-not-allowed": "This room ID is not allowed.",
+      "preassigned-limit": "Too many pre-assigned breakout rooms.",
+      "preassigned-user": "A user is pre-assigned to multiple breakout rooms."
+    }
+  },
+  "user": {
+    "errors": {
+      "only-admin": "Only admin can perform this task.",
+      "invalid-request": "Your request could not be validated.",
+      "user-info-required": "User information is required.",
+      "room-id-mismatch": "The requested room does not match your session.",
+      "room-sid-mismatch": "The room session does not match your session.",
+      "room-not-running": "This meeting is not running.",
+      "cannot-remove-self": "You can't remove yourself.",
+      "user-not-online": "This user is not online.",
+      "user-not-found": "The user could not be found.",
+      "unexpected": "Something went wrong. Please try again.",
+      "reserved-name": "This name is reserved and can't be used.",
+      "reserved-user-id": "This user ID is reserved and can't be used.",
+      "invalid-user-id": "The user ID may only contain letters, numbers, '-' and '_'.",
+      "room-info-not-found": "The room information could not be found.",
+      "room-ended": "This meeting has ended."
+    }
+  },
+  "recording": {
+    "errors": {
+      "invalid-request": "Your recording request could not be validated.",
+      "task-in-progress": "Another recording request is already in progress. Please wait a moment and try again.",
+      "room-sid-required": "The room information is missing, so the recording task cannot be started.",
+      "rtmp-url-required": "An RTMP URL is required to start RTMP streaming.",
+      "invalid-rtmp-url": "Only rtmp and rtmps URLs are allowed.",
+      "operation-failed": "The recording request could not be completed. Please try again."
+    }
   }
 }
