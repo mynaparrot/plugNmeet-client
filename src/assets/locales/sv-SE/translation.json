@@ -1097,7 +1097,7 @@
     "poll-results-unavailable": "Röstsiffror är inte tillgängliga för den här omröstningen."
   },
   "pip": {
-    "label": "Bild-i-bild",
+    "label": "Picture-in-Picture (PiP)",
     "speaking": "{{name}} talar",
     "status": {
       "chat": "Olästa chattmeddelanden",
