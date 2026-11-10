@@ -1097,7 +1097,7 @@
     "poll-results-unavailable": "No hay recuento de votos disponible para esta encuesta."
   },
   "pip": {
-    "label": "Imagen en imagen",
+    "label": "Picture-in-Picture (PiP)",
     "speaking": "{{name}} está hablando",
     "status": {
       "chat": "Mensajes de chat no leídos",
