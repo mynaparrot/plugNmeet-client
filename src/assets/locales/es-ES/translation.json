@@ -14,12 +14,13 @@
   "participant-menu": "Opciones de participante",
   "participant-volume": "Ajustar el volumen de participantes",
   "participant-webcam-on": "La cámara está encendida",
-  "pip": "Imagen en imagen",
+  "reconnecting": "Reconectando...",
   "please-wait": "Por favor, espere...",
   "are-you-sure-to-close": "¿Está seguro de que desea cerrar?",
   "you-are-about-to-close": "Está a punto de cerrar",
   "notifications": {
     "title": "Notificaciones",
+    "alert-title": "Alerta",
     "room-not-active": "Esta sala no está activa.",
     "recording-already-running": "La grabación ya está en curso.",
     "recording-not-running": "No hay ninguna grabación en curso.",
@@ -41,6 +42,8 @@
     "auth-header-missing": "Fallo de autenticación (falta la cabecera). Por favor, intente unirse a la reunión de nuevo.",
     "token-expired": "Su sesión ha caducado. Por favor, únase de nuevo a la reunión para continuar.",
     "invalid-token": "No se ha podido validar su sesión (token no válido). Por favor, intente unirse de nuevo a la reunión.",
+    "token-valid": "El token es válido.",
+    "user-not-active": "No es un participante activo de esta reunión. Por favor, vuelva a unirse.",
     "waiting-for-approval": "Se ha notificado a un moderador y le permitirá entrar en breve. ¡Gracias por su paciencia!",
     "room-disconnected-title": "Desconectado",
     "room-disconnected-default": "Se ha desconectado debido a un error inesperado: {{reason}}. Por favor, intente volver a unirse.",
@@ -120,7 +123,11 @@
     "audio-only-mode-weak-connection": "Su conexión es críticamente inestable. El video se ha pausado para que el audio siga funcionando.",
     "connection-recovered-restore-video": "Su conexión parece estable de nuevo. Puede intentar restaurar el video.",
     "media-restored-camera-unavailable": "Se restableció el contenido multimedia entrante, pero no se pudo activar su cámara.",
-    "presentation-resumed": "La presentación se ha reanudado."
+    "presentation-resumed": "La presentación se ha reanudado.",
+    "invalid-request": "No se pudo validar su solicitud. Por favor, intente unirse de nuevo a la reunión.",
+    "success": "Éxito",
+    "rtmp-already-running": "La transmisión RTMP ya está en curso.",
+    "rtmp-not-running": "La transmisión RTMP no está en curso."
   },
   "room-metadata": {
     "session-recording": "Esta reunión está siendo grabada.",
@@ -137,6 +144,7 @@
     "menus": {
       "settings": "Ajustes",
       "keyboard-shortcuts": "Atajos de teclado",
+      "export": "Exportar datos de la sesión",
       "menu": "Menú",
       "toggle-theme": "Interruptor de tema",
       "logout": "Salir de la reunión",
@@ -266,6 +274,21 @@
     "breakout-room-tab": "Salas de grupos",
     "me": "(yo)",
     "search-participant": "Búsqueda de participante",
+    "picker": {
+      "open": "Elegir un participante al azar",
+      "title": "Elegir un participante al azar",
+      "hint": "Elija un participante para sortear un nombre al azar.",
+      "pick-participant": "Elegir un participante",
+      "selected": "Seleccionado",
+      "pick-again": "Elegir de nuevo",
+      "notify-selected": "Notificar al participante seleccionado",
+      "no-eligible": "No hay participantes disponibles para elegir.",
+      "participant-left": "El participante seleccionado ya no está disponible. Por favor, elija de nuevo.",
+      "notify-failed": "No se pudo notificar al participante seleccionado. Por favor, inténtelo de nuevo.",
+      "announce-failed": "Se notificó al participante, pero no se pudo enviar el anuncio a la sala.",
+      "alert": "Ha sido seleccionado como participante al azar.",
+      "announcement": "Participante seleccionado al azar: {{name}}"
+    },
     "public-chat": "Chat público",
     "private-chat": "Chat privado",
     "select-chat-conversation-title": "Seleccione una conversación",
@@ -322,6 +345,8 @@
     "file-upload-success": "Archivo subido correctamente.",
     "file-upload-default-error": "Se ha producido un error al subir el archivo.",
     "chat-box-placeholder": "Envíe un mensaje, pegue una imagen o suelte un archivo aquí (Nueva línea: Mayús + Intro)",
+    "message-placeholder": "Escriba un mensaje",
+    "send": "Enviar",
     "sending-message": "Por favor espere, enviando...",
     "reply": "Respuesta",
     "edit-message": "Editar mensaje",
@@ -342,6 +367,8 @@
     "new-messages": "Nuevos mensajes",
     "scroll-to-bottom": "Ir al final",
     "sync-chat": "Sincronizar chat con contactos",
+    "public-chat-pip": "Mostrar el chat público en imagen en imagen",
+    "no-chat-messages": "Todavía no hay mensajes",
     "load-earlier-messages": "Cargar mensajes anteriores",
     "system-name": "Sistema"
   },
@@ -405,6 +432,8 @@
       "room-lock-settings": "Ajustes de bloqueo de la reunión",
       "enable-shared-notepad": "Activar bloc de notas compartido",
       "disable-shared-notepad": "Desactivar bloc de notas compartido",
+      "enable-countdown-timer": "Activar temporizador de cuenta atrás",
+      "disable-countdown-timer": "Desactivar temporizador de cuenta atrás",
       "mute-microphone": "Silenciar micrófono",
       "unmute-microphone": "Reactivar micrófono",
       "leave-microphone": "Desactivar micrófono",
@@ -567,6 +596,7 @@
     "show-toolbar": "Mostrar barra de herramientas",
     "hide-toolbar": "Ocultar barra de herramientas",
     "file-conversion-failed": "Falló la conversión de archivo",
+    "error-occurred": "Se ha producido un error. Por favor, inténtelo de nuevo.",
     "export-pdf-title": "Exportar a PDF",
     "export-pdf-button": "Exportar",
     "export-pdf-button-count": "Exportar ({{count}})",
@@ -575,6 +605,7 @@
     "previous-page": "Página anterior",
     "next-page": "Página siguiente",
     "take-over-presenter": "Asumir el papel de presentador",
+    "save-pending-warning": "La página de la pizarra aún no se ha podido guardar. Se seguirá intentando en segundo plano.",
     "export-pdf-selected-pages": "Páginas seleccionadas",
     "export-pdf-selected-pages-count": "Seleccionados ({{count}})",
     "export-pdf-select-pages-label": "Seleccionar páginas para exportar:",
@@ -616,6 +647,34 @@
     "reject-and-block-user": "Rechazar y bloquear",
     "user-waiting": "{{name}} está esperando para ser admitido.",
     "no-pending-user": "No hay nadie esperando para unirse."
+  },
+  "countdown-timer": {
+    "title": "Temporizador de cuenta atrás",
+    "aria-label": "Temporizador de cuenta atrás",
+    "set-timer": "Establecer temporizador",
+    "minutes": "Minutos",
+    "seconds": "Segundos",
+    "presets": "Preajustes rápidos",
+    "preset-min": "{{count}} min",
+    "start": "Iniciar",
+    "pause": "Pausar",
+    "resume": "Reanudar",
+    "extend": "+1 min",
+    "set-new-timer": "Establecer nuevo temporizador",
+    "end-timer": "Finalizar temporizador",
+    "running": "En curso",
+    "paused": "En pausa",
+    "ended": "Tiempo finalizado",
+    "ended-notification": "El temporizador de cuenta atrás ha finalizado.",
+    "errors": {
+      "only-admin": "Solo el administrador puede realizar esta acción.",
+      "not-allowed": "El temporizador de cuenta atrás no está habilitado en esta sala.",
+      "not-active": "El temporizador de cuenta atrás no está activo.",
+      "invalid-duration": "Introduzca una duración válida (de hasta 24 horas).",
+      "not-running": "El temporizador de cuenta atrás no está en curso.",
+      "not-paused": "El temporizador de cuenta atrás no está en pausa.",
+      "generic": "No se pudo actualizar el temporizador de cuenta atrás. Por favor, inténtelo de nuevo."
+    }
   },
   "polls": {
     "title": "Encuestas",
@@ -672,6 +731,13 @@
     "quiz-mode-desc": "Marca la(s) opción(es) correcta(s) usando la casilla de verificación junto a cada opción. Los participantes solo ven la respuesta correcta después de que la encuesta cierre.",
     "anonymous-voting-desc": "El voto es completamente anónimo — ni siquiera los administradores pueden ver quién votó.",
     "duration-desc": "La encuesta se cierra automáticamente cuando se acaba el tiempo.",
+    "text-answer": "Respuesta de texto",
+    "text-answer-placeholder": "Escriba su respuesta aquí...",
+    "your-answer": "Su respuesta",
+    "ai-check-answers": "Revisar con IA",
+    "ai-recheck-answers": "Volver a revisar con IA",
+    "ai-check-title": "Revisión de respuestas con IA",
+    "ai-share-chat": "Compartir en el chat",
     "notifications": {
       "created-successfully": "La encuesta ya ha sido creada.",
       "response-added": "Su voto ha sido enviado.",
@@ -679,7 +745,8 @@
       "end-poll-success": "La encuesta ha terminado.",
       "reopen-poll-success": "La votación ha sido reabierta.",
       "ai-generated": "Borrador de IA listo: revisar y crear.",
-      "poll-reopened": "Se ha reabierto una votación."
+      "poll-reopened": "Se ha reabierto una votación.",
+      "ai-shared-chat": "La revisión de la IA se ha compartido en el chat."
     },
     "errors": {
       "generic": "Algo salió mal. Por favor, inténtelo de nuevo.",
@@ -701,7 +768,9 @@
       "user-and-poll-id-required": "Se requieren tanto el ID del usuario como el de la encuesta.",
       "ai-disabled": "La generación de encuestas por IA está desactivada.",
       "ai-invalid-response": "La respuesta de la IA no pudo usarse. Por favor, inténtelo de nuevo.",
-      "ai-request-timeout": "La solicitud de encuesta por IA ha expirado"
+      "ai-request-timeout": "La solicitud de encuesta por IA ha expirado",
+      "text-answer-required": "Por favor, escriba su respuesta antes de enviarla.",
+      "text-answer-too-long": "Su respuesta no puede superar los 500 caracteres."
     }
   },
   "breakout-room": {
@@ -976,5 +1045,139 @@
     "enable-auto-close-chat-panel": "Activar el cierre automático del panel de chat",
     "duration-after-last-message": "Duración desde el último mensaje (en minutos)",
     "duration-after-last-message-help": "El panel de chat se cerrará automáticamente tras este periodo de inactividad."
+  },
+  "export-hub": {
+    "title": "Exportar datos de la sesión en vivo",
+    "description": "Exporte una instantánea de los datos disponibles para usted en la sesión en vivo en este momento. No es un archivo histórico de la sesión ni un informe analítico completo.",
+    "export-button": "Exportar",
+    "chat-title": "Mensajes del chat público (TXT)",
+    "chat-help": "Mensajes disponibles para este cliente en este momento: {{total}}. Solo se exportan los mensajes de usuarios; se omiten los mensajes privados, del sistema y los eliminados. La exportación puede no incluir todo el historial de la sala.",
+    "chat-e2ee-warning": "Esta reunión está cifrada de extremo a extremo: el archivo exportado contendrá texto sin cifrar.",
+    "chat-empty": "No hay mensajes del chat público disponibles para exportar.",
+    "participants-title": "Participantes actuales (CSV)",
+    "participants-help": "Participantes en la lista actual: {{total}}. Columnas: nombre, ID de usuario, rol, fecha de incorporación y en línea.",
+    "participants-empty": "No hay participantes que exportar.",
+    "polls-title": "Resultados de encuestas (TXT)",
+    "polls-help": "Encuestas de esta sesión con su pregunta, opciones, estado y recuento de votos actual, en el momento de exportar. Los nombres de los encuestados nunca se incluyen.",
+    "polls-empty": "Todavía no hay encuestas que exportar.",
+    "export-failed": "No se pudo completar la exportación. Por favor, inténtelo de nuevo.",
+    "exported-at": "Exportado el: {{timestamp}}",
+    "chat-export-title": "Exportación del chat público de plugNmeet",
+    "chat-export-note": "Solo se incluyen los mensajes disponibles actualmente para este cliente; se omiten los mensajes privados, del sistema y los eliminados.",
+    "chat-export-empty": "(no hay mensajes en el chat público)",
+    "chat-export-empty-message": "(mensaje vacío)",
+    "chat-export-unknown-sender": "Desconocido",
+    "chat-export-unknown-time": "hora desconocida",
+    "participants-csv-name": "Nombre",
+    "participants-csv-role": "Rol",
+    "participants-csv-joined-at": "Fecha de incorporación",
+    "participants-csv-online": "En línea",
+    "participants-csv-user-id": "ID de usuario",
+    "participants-role-admin": "administrador",
+    "participants-role-presenter": "presentador",
+    "participants-role-participant": "participante",
+    "participants-online-yes": "sí",
+    "participants-online-no": "no",
+    "polls-export-title": "Exportación de resultados de encuestas de plugNmeet",
+    "polls-export-note": "Instantánea de las encuestas disponibles para este cliente en el momento de la exportación; los nombres de los encuestados nunca se incluyen.",
+    "polls-export-none": "(no hay encuestas)",
+    "poll-heading": "Encuesta {{number}} [{{tags}}]",
+    "poll-status-open": "abierta",
+    "poll-status-closed": "cerrada",
+    "poll-type-multiple": "selección múltiple",
+    "poll-type-single": "selección única",
+    "poll-type-text": "respuesta de texto",
+    "poll-tag-quiz": "cuestionario",
+    "poll-tag-anonymous": "anónima",
+    "poll-question": "P: {{question}}",
+    "poll-option-unavailable": "n/d",
+    "poll-correct-answer": "(respuesta correcta)",
+    "poll-total-responses": "Respuestas: {{count}}",
+    "poll-total-votes": "Votos totales: {{votes}} de {{count}} encuestados",
+    "poll-results-unavailable": "No hay recuento de votos disponible para esta encuesta."
+  },
+  "pip": {
+    "label": "Imagen en imagen",
+    "speaking": "{{name}} está hablando",
+    "status": {
+      "chat": "Mensajes de chat no leídos",
+      "raised-hand": "Manos levantadas",
+      "notification": "Notificaciones no leídas"
+    },
+    "switcher": {
+      "label": "Cambiar la vista de imagen en imagen",
+      "chat": "Mostrar chat",
+      "webcam": "Mostrar cámaras"
+    }
+  },
+  "file": {
+    "errors": {
+      "invalid-request": "No se pudo validar su solicitud de archivo.",
+      "missing-file": "No se recibió ningún archivo.",
+      "too-large": "El archivo supera el tamaño máximo permitido.",
+      "type-not-allowed": "No se permite este tipo de archivo.",
+      "chunks-not-found": "No se encontraron las partes del archivo subido. Por favor, vuelva a subir el archivo.",
+      "upload-failed": "No se pudo subir el archivo. Por favor, inténtelo de nuevo.",
+      "merge-failed": "No se pudo finalizar el archivo. Por favor, inténtelo de nuevo.",
+      "file-path-required": "Falta la ruta del archivo.",
+      "invalid-path": "La ruta del archivo no es válida.",
+      "not-found": "No se pudo encontrar el archivo.",
+      "only-presenter": "Solo el presentador puede realizar esta acción.",
+      "unexpected": "Se ha producido un error. Por favor, inténtelo de nuevo."
+    },
+    "notifications": {
+      "conversion-started": "El archivo se está convirtiendo. Estará disponible en la lista de archivos de la pizarra cuando esté listo."
+    }
+  },
+  "room": {
+    "errors": {
+      "only-admin": "Solo el administrador puede realizar esta acción.",
+      "invalid-request": "No se pudo validar su solicitud.",
+      "room-id-required": "Falta el ID de la sala.",
+      "room-id-mismatch": "La sala solicitada no coincide con su sesión.",
+      "room-not-found": "No se pudo encontrar la sala.",
+      "no-room-found": "No se ha encontrado ninguna sala.",
+      "no-active-room-found": "No se ha encontrado ninguna sala activa.",
+      "room-not-active": "Esta sala no está activa.",
+      "unexpected": "Se ha producido un error. Por favor, inténtelo de nuevo.",
+      "end-failed": "No se pudo finalizar la sala. Por favor, inténtelo de nuevo.",
+      "feature-not-allowed": "Esta función no está habilitada en esta sala.",
+      "sip-dial-in-already-enabled": "El acceso telefónico SIP ya está habilitado en esta sala.",
+      "ingress-already-created": "Ya hay una transmisión en directo en curso en esta sala.",
+      "invalid-url": "Solo se permiten URL http y https.",
+      "user-not-found": "No se pudo encontrar al usuario.",
+      "room-id-not-allowed": "Este ID de sala no está permitido.",
+      "preassigned-limit": "Hay demasiadas salas de grupos preasignadas.",
+      "preassigned-user": "Un usuario está preasignado a varias salas de grupos."
+    }
+  },
+  "user": {
+    "errors": {
+      "only-admin": "Solo el administrador puede realizar esta acción.",
+      "invalid-request": "No se pudo validar su solicitud.",
+      "user-info-required": "Se requiere la información del usuario.",
+      "room-id-mismatch": "La sala solicitada no coincide con su sesión.",
+      "room-sid-mismatch": "La sala no coincide con su sesión.",
+      "room-not-running": "Esta reunión no está en curso.",
+      "cannot-remove-self": "No puede eliminarse a sí mismo.",
+      "user-not-online": "Este usuario no está en línea.",
+      "user-not-found": "No se pudo encontrar al usuario.",
+      "unexpected": "Se ha producido un error. Por favor, inténtelo de nuevo.",
+      "reserved-name": "Este nombre está reservado y no se puede usar.",
+      "reserved-user-id": "Este ID de usuario está reservado y no se puede usar.",
+      "invalid-user-id": "El ID de usuario solo puede contener letras, números, '-' y '_'.",
+      "room-info-not-found": "No se pudo encontrar la información de la sala.",
+      "room-ended": "Esta reunión ha finalizado."
+    }
+  },
+  "recording": {
+    "errors": {
+      "invalid-request": "No se pudo validar su solicitud de grabación.",
+      "task-in-progress": "Ya hay otra solicitud de grabación en curso. Por favor, espere un momento e inténtelo de nuevo.",
+      "room-sid-required": "Falta la información de la sala, por lo que no se puede iniciar la grabación.",
+      "rtmp-url-required": "Se requiere una URL RTMP para iniciar la transmisión RTMP.",
+      "invalid-rtmp-url": "Solo se permiten URL rtmp y rtmps.",
+      "operation-failed": "No se pudo completar la solicitud de grabación. Por favor, inténtelo de nuevo."
+    }
   }
 }
