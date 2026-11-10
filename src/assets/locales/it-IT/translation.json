@@ -272,7 +272,7 @@
     "participants-tab": "Partecipanti",
     "polls-tab": "Sondaggi",
     "breakout-room-tab": "Sale per sottogruppi",
-    "me": "(io)",
+    "me": "(Lei)",
     "search-participant": "Cerchi partecipante",
     "picker": {
       "open": "Scelga un partecipante a caso",
@@ -444,7 +444,7 @@
       "manage-breakout-room": "Gestisci sale per sottogruppi",
       "start-display-external-link": "Condivida link esterno",
       "stop-display-external-link": "Interrompa condivisione link",
-      "speech-to-text-settings": "Trascrizione e traduzione",
+      "speech-to-text-settings": "Trascrizione e Traduzione",
       "ai-settings": "Strumenti IA",
       "enable-polls": "Abiliti sondaggi",
       "disable-polls": "Disabiliti sondaggi"
