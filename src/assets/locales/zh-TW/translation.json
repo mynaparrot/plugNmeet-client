@@ -204,7 +204,7 @@
       "leave-audio": "關閉麥克風",
       "start-webcam": "開啟攝影機",
       "leave-webcam": "關閉攝影機",
-      "show-hide-user-list": "顯示/隱藏參與者清單",
+      "show-hide-user-list": "顯示/隱藏與會者列表",
       "show-hide-chat": "顯示/隱藏聊天",
       "show-hide-lock-settings": "顯示/隱藏鎖定設定",
       "show-hide-settings": "顯示/隱藏設定",
@@ -269,7 +269,7 @@
     "participants": "參與者 ({{total}})",
     "approve": "核准",
     "reject": "拒絕",
-    "participants-tab": "參與者",
+    "participants-tab": "與會者",
     "polls-tab": "投票",
     "breakout-room-tab": "分組討論室",
     "me": "（您）",
@@ -321,7 +321,7 @@
         "lock-send-file": "停用檔案分享",
         "lock-reaction": "停用傳送反應",
         "unlock-reaction": "允許傳送反應",
-        "remove-participant": "移除參與者",
+        "remove-participant": "移除與會者",
         "private-chat": "傳送私人訊息"
       },
       "notice": {
@@ -335,7 +335,7 @@
         "presenter-changed": "主講人已變更。",
         "you-are-presenter": "您現在是主講人。",
         "want-to-block": "您要封鎖此使用者嗎？",
-        "user-approved": "您已核准 {{name}} 加入。"
+        "user-approved": "您已批准 {{name}} 加入。"
       }
     }
   },
@@ -385,7 +385,7 @@
       "start-microphone-sharing": "開啟麥克風",
       "microphone-locked": "麥克風已鎖定",
       "leave-microphone": "關閉麥克風",
-      "hide-users-list": "隱藏參與者清單",
+      "hide-users-list": "隱藏與會者列表",
       "show-users-list": "顯示參與者清單",
       "hide-chat-panel": "隱藏聊天",
       "show-chat-panel": "顯示聊天",
