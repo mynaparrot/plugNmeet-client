@@ -263,7 +263,10 @@
     "require-ssl-des": "يلزم اتصال آمن (SSL) لاستخدام هذه الخدمة.",
     "insert-secret-key": "أدخل مفتاح الأمان",
     "insert-secret-help": "في هذا الاجتماع الآمن يجب على الجميع استخدام مفتاح الأمان نفسه. إذا لم يتطابق المفتاح فلن تتمكن من الاتصال. يرجى الحصول على مفتاح الأمان الصحيح من منظّم الاجتماع.",
-    "save": "حفظ"
+    "save": "حفظ",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "المشاركون ({{total}})",
