@@ -263,7 +263,10 @@
     "require-ssl-des": "Требуется безопасное соединение (SSL).",
     "insert-secret-key": "Введите ключ безопасности",
     "insert-secret-help": "Для этой безопасной встречи все должны использовать один и тот же ключ безопасности. Если он не совпадает, вы не сможете подключиться. Пожалуйста, получите правильный ключ безопасности у организатора конференции.",
-    "save": "Сохранить"
+    "save": "Сохранить",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "Участники ({{total}})",
