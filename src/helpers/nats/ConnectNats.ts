@@ -983,6 +983,15 @@ export default class ConnectNats {
   };
 
   private notifyReconnect = () => {
+    // core NATS loses messages published while we were disconnected, so the
+    // participant list may be stale; refresh it now and restart the poll
+    // instead of waiting up to USERS_SYNC_INTERVAL for the next tick
+    if (this.reconciliationInterval) {
+      clearInterval(this.reconciliationInterval);
+      this.reconciliationInterval = undefined;
+      this.startUsersSync();
+      this.requestOnlineUsersList();
+    }
     this.reconnectCallbacks.forEach((cb) => cb());
   };
 
@@ -1070,13 +1079,15 @@ export default class ConnectNats {
     if (this.reconciliationInterval) {
       return;
     }
-    this.reconciliationInterval = setInterval(() => {
-      this.sendMessageToCoreWorker(
-        create(NatsMsgClientToServerSchema, {
-          event: NatsMsgClientToServerEvents.REQ_ONLINE_USERS_LIST,
-        }),
-      );
-    }, USERS_SYNC_INTERVAL);
+    this.reconciliationInterval = setInterval(this.requestOnlineUsersList, USERS_SYNC_INTERVAL);
+  };
+
+  private requestOnlineUsersList = () => {
+    this.sendMessageToCoreWorker(
+      create(NatsMsgClientToServerSchema, {
+        event: NatsMsgClientToServerEvents.REQ_ONLINE_USERS_LIST,
+      }),
+    );
   };
 
   /**

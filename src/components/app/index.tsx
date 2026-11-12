@@ -9,6 +9,7 @@ import MainAreaWithPip from '../main-area';
 import Landing from '../landing';
 import InsertE2EEKey from '../extra-pages/InsertE2EEKey';
 import DummyAudio from './dummyAudio';
+import ErrorBoundary from './ErrorBoundary';
 
 import { store, useAppDispatch } from '../../store';
 import { addServerVersion, addToken } from '../../store/slices/sessionSlice';
@@ -146,17 +147,20 @@ const App = () => {
     }
 
     return (
-      <main
-        className="plugNmeet-app overflow-hidden h-full flex flex-col"
-        aria-label="Main content"
-      >
-        <Header />
-        <MainAreaWithPip />
-        <Footer />
-        <AudioNotification />
-        <DummyAudio />
-        <ReactionsOverlay />
-      </main>
+      // Kept below App's connection effects so remounting never re-creates the session.
+      <ErrorBoundary autoRemount>
+        <main
+          className="plugNmeet-app overflow-hidden h-full flex flex-col"
+          aria-label="Main content"
+        >
+          <Header />
+          <MainAreaWithPip />
+          <Footer />
+          <AudioNotification />
+          <DummyAudio />
+          <ReactionsOverlay />
+        </main>
+      </ErrorBoundary>
     );
   };
 

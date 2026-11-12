@@ -1,32 +1,34 @@
 import { Dispatch } from 'react';
-import { once } from 'es-toolkit';
 
 import { IConnectLivekit } from './types';
 import { IErrorPageProps } from '../../components/extra-pages/Error';
 import ConnectLivekit from './ConnectLivekit';
 import { roomConnectionStatus } from '../../components/app/helper';
 
-let currentConnect: IConnectLivekit;
+let currentConnect: IConnectLivekit | undefined;
 
-export const createLivekitConnection = once(
-  (
-    errorState: Dispatch<IErrorPageProps>,
-    roomConnectionStatusState: Dispatch<roomConnectionStatus>,
-    localUserId: string,
-    enabledE2EE: boolean,
-    encryptionKey?: string,
-  ) => {
-    currentConnect = new ConnectLivekit(
-      errorState,
-      roomConnectionStatusState,
-      localUserId,
-      enabledE2EE,
-      encryptionKey,
-    );
-
+export const createLivekitConnection = (
+  errorState: Dispatch<IErrorPageProps>,
+  roomConnectionStatusState: Dispatch<roomConnectionStatus>,
+  localUserId: string,
+  enabledE2EE: boolean,
+  encryptionKey?: string,
+): IConnectLivekit => {
+  if (currentConnect) {
     return currentConnect;
-  },
-);
+  }
+
+  // If construction throws, currentConnect stays undefined so a retry is possible.
+  currentConnect = new ConnectLivekit(
+    errorState,
+    roomConnectionStatusState,
+    localUserId,
+    enabledE2EE,
+    encryptionKey,
+  );
+
+  return currentConnect;
+};
 
 export const getMediaServerConn = () => {
   if (typeof currentConnect === 'undefined') {

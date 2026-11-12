@@ -15,6 +15,7 @@ import {
   RoomOptions,
   supportsAV1,
   supportsVP9,
+  Track,
   VideoCodec,
   VideoPresets,
 } from 'livekit-client';
@@ -56,9 +57,24 @@ import ConnectionQualityMonitor, {
 } from './ConnectionQualityMonitor';
 import AdaptiveMediaController from './AdaptiveMediaController';
 import TurnFallbackController from './turn/TurnFallbackController';
-import { updateOverallConnectionQuality } from '../../store/slices/sessionSlice';
+import {
+  updateOverallConnectionQuality,
+  updateScreenSharing,
+} from '../../store/slices/sessionSlice';
+import {
+  updateIsActiveMicrophone,
+  updateIsActiveScreenshare,
+  updateIsActiveWebcam,
+  updateIsMicMuted,
+  updateIsWebcamMuted,
+} from '../../store/slices/bottomIconsActivitySlice';
+import {
+  updateSelectedAudioDevice,
+  updateSelectedVideoDevice,
+} from '../../store/slices/roomSettingsSlice';
 import {
   initializeNativePublisher,
+  isHybridMode,
   nativeBridge,
   startNativeHeartbeat,
   teardownNativePublisher,
@@ -84,6 +100,7 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
   private toastIdConnecting: number | string | undefined = undefined;
   private reconnectingToastTimer: ReturnType<typeof setTimeout> | undefined = undefined;
   private wasNormalDisconnected: boolean = false;
+  private syncingLocalMediaState: boolean = false;
   private serverInfo: MediaServerConnInfo | undefined = undefined;
   private readonly turnFallback: TurnFallbackController = new TurnFallbackController(
     () => this._room,
@@ -267,12 +284,32 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
     }
   };
 
-  private onRoomConnectedOrReconnected = () => {
+  private onRoomConnected = () => {
     this.clearReconnectingToast();
     this.turnFallback.onConnectionEstablished();
     // a fresh transport starts from a clean displayed status (Excellent)
     // instead of inheriting the previous transport's status
     this.connectionQualityMonitor.resetMeasurementBaseline({ resetScore: true });
+  };
+
+  private onRoomReconnected = () => {
+    this.onRoomConnected();
+    void this.syncLocalMediaState();
+    this.reconcileRemoteMediaState();
+  };
+
+  /**
+   * A full reconnect makes the SDK recreate the remote participant/publication
+   * objects, leaving the subscriber maps pointing at dead objects. Drop those and
+   * register the current ones again. Re-registration is idempotent, and on a
+   * resume reconnect the objects are reused so nothing is dropped and this
+   * returns early.
+   */
+  private reconcileRemoteMediaState = () => {
+    if (!this._room) return;
+    if (this.participantMediaManager.reconcileWithRoom(this._room)) {
+      this.registerAllExistingTracks();
+    }
   };
 
   private async configureRoom() {
@@ -341,8 +378,8 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
         );
       }, RECONNECTING_TOAST_DELAY_MS);
     });
-    room.on(RoomEvent.Connected, this.onRoomConnectedOrReconnected);
-    room.on(RoomEvent.Reconnected, this.onRoomConnectedOrReconnected);
+    room.on(RoomEvent.Connected, this.onRoomConnected);
+    room.on(RoomEvent.Reconnected, this.onRoomReconnected);
     room.on(RoomEvent.Disconnected, this.onDisconnected);
     room.on(RoomEvent.MediaDevicesError, this.mediaDevicesError);
 
@@ -560,6 +597,174 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
       isUploadAudioStuck: stats.isUploadAudioStuck,
     });
   };
+
+  /**
+   * After a reconnect the local publications can differ from the Redux media
+   * state (dropped/ended tracks), which would leave the UI stale and the
+   * user unable to re-enable mic/webcam/screenshare. Align Redux with the
+   * real local publications.
+   */
+  private syncLocalMediaState = async () => {
+    // hybrid: the native host owns publishing, so its own state is authoritative
+    if (this.syncingLocalMediaState || isHybridMode() || !this._room) return;
+    this.syncingLocalMediaState = true;
+    try {
+      await this.syncMicState();
+      await this.syncWebcamState();
+      await this.syncScreenshareState();
+    } catch (e) {
+      console.error('Failed to sync local media state after reconnect:', e);
+    } finally {
+      this.syncingLocalMediaState = false;
+    }
+  };
+
+  private resetMicState() {
+    const { bottomIconsActivity, roomSettings } = store.getState();
+    if (bottomIconsActivity.isActiveMicrophone) {
+      store.dispatch(updateIsActiveMicrophone(false));
+    }
+    if (bottomIconsActivity.isMicMuted) {
+      store.dispatch(updateIsMicMuted(false));
+    }
+    if (roomSettings.selectedAudioDevice !== '') {
+      store.dispatch(updateSelectedAudioDevice(''));
+    }
+  }
+
+  private setMicState(isActive: boolean, isMuted: boolean) {
+    const state = store.getState().bottomIconsActivity;
+    if (state.isActiveMicrophone !== isActive) {
+      store.dispatch(updateIsActiveMicrophone(isActive));
+    }
+    if (state.isMicMuted !== isMuted) {
+      store.dispatch(updateIsMicMuted(isMuted));
+    }
+  }
+
+  private async syncMicState() {
+    const publication = this._room.localParticipant.getTrackPublication(Track.Source.Microphone);
+    const track = publication?.track;
+
+    if (!publication || !track) {
+      this.resetMicState();
+      return;
+    }
+
+    if (publication.isMuted) {
+      // with stopMicTrackOnMute the track is intentionally stopped while muted
+      this.setMicState(true, true);
+      return;
+    }
+
+    if (track.mediaStreamTrack.readyState === 'ended') {
+      try {
+        await track.restartTrack();
+      } catch (e) {
+        console.error('Failed to restart microphone track after reconnect:', e);
+        await this._room.localParticipant.unpublishTrack(track, true);
+        this.resetMicState();
+        return;
+      }
+    }
+
+    this.setMicState(true, false);
+  }
+
+  private resetWebcamState() {
+    const { bottomIconsActivity, roomSettings } = store.getState();
+    if (bottomIconsActivity.isActiveWebcam) {
+      store.dispatch(updateIsActiveWebcam(false));
+    }
+    if (bottomIconsActivity.isWebcamMuted) {
+      store.dispatch(updateIsWebcamMuted(false));
+    }
+    if (roomSettings.selectedVideoDevice !== '') {
+      store.dispatch(updateSelectedVideoDevice(''));
+    }
+  }
+
+  private setWebcamState(isActive: boolean, isMuted: boolean) {
+    const state = store.getState().bottomIconsActivity;
+    if (state.isActiveWebcam !== isActive) {
+      store.dispatch(updateIsActiveWebcam(isActive));
+    }
+    if (state.isWebcamMuted !== isMuted) {
+      store.dispatch(updateIsWebcamMuted(isMuted));
+    }
+  }
+
+  private async syncWebcamState() {
+    const publication = this._room.localParticipant.getTrackPublication(Track.Source.Camera);
+    const track = publication?.track;
+
+    if (!publication || !track) {
+      this.resetWebcamState();
+      return;
+    }
+
+    if (publication.isMuted) {
+      // LiveKit also stops camera tracks on mute, so don't check readyState here
+      this.setWebcamState(true, true);
+      return;
+    }
+
+    if (track.mediaStreamTrack.readyState === 'ended') {
+      try {
+        // the SDK re-applies an attached virtual background processor on restart
+        await track.restartTrack();
+      } catch (e) {
+        console.error('Failed to restart webcam track after reconnect:', e);
+        await this._room.localParticipant.unpublishTrack(track, true);
+        this.resetWebcamState();
+        return;
+      }
+    }
+
+    this.setWebcamState(true, false);
+  }
+
+  private resetScreenshareState() {
+    const state = store.getState();
+    if (state.bottomIconsActivity.isActiveScreenshare) {
+      store.dispatch(updateIsActiveScreenshare(false));
+    }
+    if (state.session.screenSharing.isActive) {
+      store.dispatch(updateScreenSharing({ isActive: false, sharedBy: '' }));
+    }
+  }
+
+  private async syncScreenshareState() {
+    const localParticipant = this._room.localParticipant;
+    const publication = localParticipant.getTrackPublication(Track.Source.ScreenShare);
+    const isActive = store.getState().bottomIconsActivity.isActiveScreenshare;
+
+    if (!publication || !publication.track) {
+      if (isActive) {
+        this.resetScreenshareState();
+      }
+      return;
+    }
+
+    if (publication.track.mediaStreamTrack.readyState === 'ended') {
+      // mirrors useScreenshare's endScreenShare (no React hook needed here)
+      for (const pub of localParticipant.trackPublications.values()) {
+        if (
+          (pub.source === Track.Source.ScreenShare ||
+            pub.source === Track.Source.ScreenShareAudio) &&
+          pub.track
+        ) {
+          await localParticipant.unpublishTrack(pub.track, true);
+        }
+      }
+      this.resetScreenshareState();
+      return;
+    }
+
+    if (!isActive) {
+      store.dispatch(updateIsActiveScreenshare(true));
+    }
+  }
 
   public addScreenShareTrack: typeof ParticipantMediaManager.prototype.addScreenShareTrack = (
     userId,

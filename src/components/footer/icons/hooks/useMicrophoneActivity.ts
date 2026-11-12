@@ -6,6 +6,7 @@ import {
   AnalyticsStatusSchema,
 } from 'plugnmeet-protocol-js';
 import {
+  ConnectionState,
   createAudioAnalyser,
   LocalAudioTrack,
   LocalTrackPublication,
@@ -83,6 +84,11 @@ export const useMicrophoneActivity = (currentRoom: Room | undefined, isMicMuted:
       cleanupAnalyserRef.current = undefined;
     }
     await sleep(200);
+    // a new track session started while sleeping (e.g. republish after a full reconnect);
+    // keep its state instead of resetting it.
+    if (cleanupAnalyserRef.current) {
+      return;
+    }
     setShowMutedTooltip(false);
     tooltipDismissedRef.current = false;
     isMutedRef.current = false;
@@ -94,20 +100,29 @@ export const useMicrophoneActivity = (currentRoom: Room | undefined, isMicMuted:
         return;
       }
       await teardownAnalyser();
+      // republish during a full reconnect is not a user stop; LocalTrackPublished re-runs
+      // setupAnalyser, so skip the Redux resets unless we are actually connected.
+      if (currentRoom?.state !== ConnectionState.Connected) {
+        return;
+      }
       // reset everything just to be sure
       dispatch(updateIsActiveMicrophone(false));
       dispatch(updateIsMicMuted(false));
       dispatch(updateSelectedAudioDevice(''));
     },
-    [teardownAnalyser, dispatch],
+    [currentRoom, teardownAnalyser, dispatch],
   );
 
-  const setupAnalyser = useCallback((publication: LocalTrackPublication) => {
-    if (publication.source !== Track.Source.Microphone) {
+  const setupAnalyser = useCallback((publication?: LocalTrackPublication) => {
+    if (!publication || publication.source !== Track.Source.Microphone) {
       return;
     }
     // Reset dismissed state for the new track session.
     tooltipDismissedRef.current = false;
+
+    // Re-seed mute state: TrackMuted does not re-fire for a republished track after a
+    // full reconnect, so without this the muted reminder would never re-arm.
+    isMutedRef.current = publication.isMuted ?? store.getState().bottomIconsActivity.isMicMuted;
 
     const track = publication.track as LocalAudioTrack;
     const { calculateVolume, cleanup } = createAudioAnalyser(track, {
@@ -159,9 +174,7 @@ export const useMicrophoneActivity = (currentRoom: Room | undefined, isMicMuted:
       if (publication.source !== Track.Source.Microphone) {
         return;
       }
-      if (isMutedRef.current) {
-        dispatch(updateIsMicMuted(false));
-      }
+      dispatch(updateIsMicMuted(false));
 
       // send analytics
       const val = AnalyticsStatusSchema.values[AnalyticsStatus.UNMUTED];

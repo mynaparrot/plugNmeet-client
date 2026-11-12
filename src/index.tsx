@@ -10,12 +10,21 @@ import './helpers/i18n';
 
 import { store } from './store';
 import App from './components/app';
+import ErrorBoundary from './components/app/ErrorBoundary';
 import Loading from './components/extra-pages/Loading';
 
 const ToastWrapper = () => {
   const { i18n } = useTranslation();
   return <ToastContainer rtl={i18n.dir() === 'rtl'} key={i18n.language} />;
 };
+
+window.addEventListener('error', (event) => {
+  console.error('[global] uncaught error:', event.error ?? event.message);
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('[global] unhandled rejection:', event.reason);
+});
 
 const container = document.getElementById('plugNmeet-app');
 
@@ -24,9 +33,11 @@ if (container) {
   root.render(
     <StrictMode>
       <ReduxProvider store={store}>
-        <Suspense fallback={<Loading text="" />}>
-          <App />
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<Loading text="" />}>
+            <App />
+          </Suspense>
+        </ErrorBoundary>
         <ToastWrapper />
       </ReduxProvider>
     </StrictMode>,

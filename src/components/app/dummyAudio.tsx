@@ -18,32 +18,52 @@ const isIOSBrowser = () => {
 };
 
 const createEmptyAudioTrack = () => {
-  const audioContext = new AudioContext();
-  const oscillator = audioContext.createOscillator();
-  const destination = audioContext.createMediaStreamDestination();
+  try {
+    const audioContext = new AudioContext();
+    const oscillator = audioContext.createOscillator();
+    const destination = audioContext.createMediaStreamDestination();
 
-  oscillator.connect(destination);
-  oscillator.start();
+    oscillator.connect(destination);
+    oscillator.start();
 
-  const track = destination.stream.getAudioTracks()[0];
+    const track = destination.stream.getAudioTracks()[0];
 
-  // Disable it so it does not mix with other audio streams.
-  track.enabled = false;
+    const closeContext = () => {
+      void audioContext.close().catch((error) => {
+        console.error('dummy audio context close failed', error);
+      });
+    };
 
-  const cleanup = () => {
-    oscillator.stop();
-    oscillator.disconnect();
-    track.stop();
+    if (!track) {
+      oscillator.stop();
+      oscillator.disconnect();
+      closeContext();
+      return undefined;
+    }
 
-    void audioContext.close().catch((error) => {
-      console.error('dummy audio context close failed', error);
-    });
-  };
+    // Disable it so it does not mix with other audio streams.
+    track.enabled = false;
 
-  return {
-    track,
-    cleanup,
-  };
+    const cleanup = () => {
+      try {
+        oscillator.stop();
+        oscillator.disconnect();
+        track.stop();
+      } catch (error) {
+        console.error('dummy audio cleanup failed', error);
+      }
+
+      closeContext();
+    };
+
+    return {
+      track,
+      cleanup,
+    };
+  } catch (error) {
+    console.error('dummy audio track creation failed', error);
+    return undefined;
+  }
 };
 
 /**
@@ -73,7 +93,12 @@ const DummyAudio = () => {
     dummyAudioEl.setAttribute('playsinline', 'true');
     dummyAudioEl.setAttribute('webkit-playsinline', 'true');
 
-    const { track, cleanup } = createEmptyAudioTrack();
+    const emptyAudio = createEmptyAudioTrack();
+    if (!emptyAudio) {
+      return;
+    }
+
+    const { track, cleanup } = emptyAudio;
     const stream = new MediaStream([track]);
 
     dummyAudioEl.srcObject = stream;

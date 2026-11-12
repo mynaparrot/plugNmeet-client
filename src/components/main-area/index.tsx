@@ -14,7 +14,6 @@ import { APP_LAYOUT_CLASSES, MAIN_AREA_DIMENSIONS } from '../../helpers/dimensio
 import { useSidePanelResize } from './hooks/useSidePanelResize';
 import { triggerRefreshWhiteboard } from '../../store/slices/whiteboard';
 import { updateIsSidePanelOpened } from '../../store/slices/roomSettingsSlice';
-import { getMediaServerConn } from '../../helpers/livekit/utils';
 
 import ActiveSpeakers from '../active-speakers';
 import MainView from './mainView';
@@ -29,7 +28,6 @@ import PublicChatPip from '../pip/publicChatPip';
 const MainArea = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const mediaServerConn = getMediaServerConn();
 
   const { isRecorder, roomFeatures } = useMemo(() => {
     const session = store.getState().session;
@@ -44,9 +42,6 @@ const MainArea = () => {
     const meta = state.session.currentRoom?.metadata;
     return !!meta?.roomFeatures?.breakoutRoomFeatures?.isActive && !meta?.isBreakoutRoom;
   });
-
-  const isNatsServerConnected = useAppSelector((state) => state.roomSettings.isNatsServerConnected);
-  const natsPrevioulyState = useRef<boolean>(isNatsServerConnected);
 
   const extendedViewPreference = useRef<boolean>(false);
 
@@ -80,29 +75,6 @@ const MainArea = () => {
       Notification.requestPermission().then();
     }
   }, [dispatch, isRecorder, roomFeatures]);
-
-  useEffect(() => {
-    if (!mediaServerConn) {
-      return;
-    }
-
-    const publications = Array.from(
-      mediaServerConn.room.localParticipant.trackPublications.values(),
-    );
-
-    if (!isNatsServerConnected) {
-      // NATS has disconnected. Pause all upstream tracks.
-      const pausePromises = publications.map((pub) => pub.pauseUpstream());
-      Promise.all(pausePromises).then();
-    } else if (isNatsServerConnected && !natsPrevioulyState.current) {
-      // NATS has reconnected (was previously false, now true). Resume tracks.
-      const resumePromises = publications.map((pub) => pub.resumeUpstream());
-      Promise.all(resumePromises).then();
-    }
-
-    // Update the ref to prepare for the next change.
-    natsPrevioulyState.current = isNatsServerConnected;
-  }, [isNatsServerConnected, mediaServerConn]);
 
   const customCSS = useMainAreaCustomCSS({
     hasScreenShareSubscribers,

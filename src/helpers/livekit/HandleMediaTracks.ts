@@ -315,7 +315,9 @@ export default class HandleMediaTracks {
           lastSpokeAt: activity.lastSpokeAt,
         }),
       );
-    }).then();
+    }).catch((error) => {
+      console.error('Failed to add audio stream for speaker:', error);
+    });
   }
 
   /**

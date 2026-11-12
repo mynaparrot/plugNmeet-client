@@ -4,6 +4,7 @@ import {
   Participant,
   RemoteParticipant,
   RemoteTrackPublication,
+  Room,
 } from 'livekit-client';
 import { EventEmitter } from 'eventemitter3';
 
@@ -55,6 +56,62 @@ export default class ParticipantMediaManager {
     return this._screenShareTracksMap;
   }
 
+  /**
+   * A FULL reconnect makes the SDK recreate its RemoteParticipant/publication
+   * objects, so the references kept here go stale (a resume reuses the same
+   * objects, which makes this a cheap no-op). Stale entries are dropped through
+   * the normal removal paths so the UI state they drive stays consistent; the
+   * caller re-registers the current objects afterwards.
+   * Returns true when at least one entry was dropped.
+   */
+  public reconcileWithRoom(room: Room): boolean {
+    const participantsByUserId = new Map<string, Participant[]>();
+    const addParticipant = (participant: Participant) => {
+      const userId = toPlugNmeetUserIdPrimary(participant.identity);
+      const list = participantsByUserId.get(userId);
+      if (list) {
+        list.push(participant);
+      } else {
+        participantsByUserId.set(userId, [participant]);
+      }
+    };
+    addParticipant(room.localParticipant);
+    room.remoteParticipants.forEach(addParticipant);
+
+    const isCurrent = (userId: string, participant: Participant) =>
+      participantsByUserId.get(userId)?.includes(participant) ?? false;
+
+    let dropped = false;
+
+    for (const [userId, participant] of this._audioSubscribersMap) {
+      if (!isCurrent(userId, participant)) {
+        this.removeAudioSubscriber(userId);
+        dropped = true;
+      }
+    }
+
+    for (const [userId, participant] of this._videoSubscribersMap) {
+      if (!isCurrent(userId, participant)) {
+        this.removeVideoSubscriber(userId);
+        dropped = true;
+      }
+    }
+
+    for (const [userId, publications] of this._screenShareTracksMap) {
+      const participants = participantsByUserId.get(userId) ?? [];
+      const isStale = publications.some(
+        (publication) =>
+          !participants.some((p) => p.trackPublications.get(publication.trackSid) === publication),
+      );
+      if (isStale) {
+        this.removeScreenShareTrack(userId);
+        dropped = true;
+      }
+    }
+
+    return dropped;
+  }
+
   public addScreenShareTrack = (
     userId: string,
     track: LocalTrackPublication | RemoteTrackPublication,
@@ -64,13 +121,10 @@ export default class ParticipantMediaManager {
       return;
     }
 
-    const tracks: Array<LocalTrackPublication | RemoteTrackPublication> = [];
-    if (this._screenShareTracksMap.has(userId)) {
-      const oldTracks = this._screenShareTracksMap.get(userId);
-      if (oldTracks && oldTracks.length) {
-        tracks.push(...oldTracks);
-      }
-    }
+    // replace by sid so a re-registration (e.g. after a reconnect) cannot duplicate
+    const tracks: Array<LocalTrackPublication | RemoteTrackPublication> = (
+      this._screenShareTracksMap.get(userId) ?? []
+    ).filter((t) => t.trackSid !== track.trackSid);
     tracks.push(track);
     this._screenShareTracksMap.set(userId, tracks);
     this.syncScreenShareTracks(userId);

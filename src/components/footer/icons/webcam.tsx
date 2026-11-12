@@ -102,7 +102,9 @@ const WebcamIcon = () => {
     if (isWebcamLocked) {
       const hasCameraTrack = currentRoom.localParticipant.getTrackPublication(Track.Source.Camera);
       if (hasCameraTrack && hasCameraTrack.track) {
-        closeWebcamOnLock(hasCameraTrack.track).then();
+        closeWebcamOnLock(hasCameraTrack.track).catch((error) => {
+          console.error('Failed to close webcam on lock:', error);
+        });
       }
     }
   }, [isWebcamLocked, currentRoom, dispatch]);
@@ -118,7 +120,9 @@ const WebcamIcon = () => {
     };
 
     if (virtualBackground.type === 'none') {
-      changeDevice(selectedVideoDevice).then();
+      changeDevice(selectedVideoDevice).catch((error) => {
+        console.error('Failed to switch video device:', error);
+      });
     } else {
       // virtual background stream will be handled by its own hook
     }

@@ -29,20 +29,22 @@ interface IPipContext {
   releasePip: (content: PipContent) => void;
 }
 
-const PipContext = createContext<IPipContext | null>(null);
+const defaultPipContext: IPipContext = {
+  pipWindow: null,
+  content: null,
+  isSupported: false,
+  openPip: () => {},
+  releasePip: () => {},
+};
+
+const PipContext = createContext<IPipContext>(defaultPipContext);
 
 const isDocumentPipSupported = () =>
   typeof window !== 'undefined' &&
   typeof (window as DocumentPictureInPictureWindow).documentPictureInPicture?.requestWindow ===
     'function';
 
-export const usePip = (): IPipContext => {
-  const ctx = useContext(PipContext);
-  if (!ctx) {
-    throw new Error('usePip must be used inside PipProvider');
-  }
-  return ctx;
-};
+export const usePip = (): IPipContext => useContext(PipContext);
 
 /**
  * Owns the single Document Picture-in-Picture window of the tab. A tab can only
