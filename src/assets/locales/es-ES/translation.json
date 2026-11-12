@@ -302,14 +302,14 @@
         "ask-to-unmute-mic": "Pedir reactivar micrófono",
         "unmute-mic": "Reactivar micrófono",
         "mute-mic": "Silenciar micrófono",
-        "ask-to-share-webcam": "Pedir activar la cámara",
-        "ask-to-stop-webcam": "Pedir desactivar la cámara",
+        "ask-to-share-webcam": "Solicitar activar la cámara",
+        "ask-to-stop-webcam": "Solicitar desactivar la cámara",
         "share-webcam": "Activar cámara",
         "stop-webcam": "Desactivar cámara",
         "unlock-microphone": "Permitir micrófono",
         "lock-microphone": "Desactivar micrófono",
         "unlock-webcam": "Permitir cámara",
-        "lock-webcam": "Desactivar cámara",
+        "lock-webcam": "Deshabilitar cámara",
         "unlock-screen-sharing": "Permitir compartir pantalla",
         "lock-screen-sharing": "Desactivar compartir pantalla",
         "unlock-whiteboard": "Permitir pizarra",
@@ -324,7 +324,7 @@
         "lock-send-file": "Desactivar compartir archivos",
         "lock-reaction": "Desactivar el envío de reacciones",
         "unlock-reaction": "Permitir el envío de reacciones",
-        "remove-participant": "Eliminar participante",
+        "remove-participant": "Retirar al participante",
         "private-chat": "Enviar mensaje privado"
       },
       "notice": {
@@ -335,8 +335,8 @@
         "you-have-asked": "Le ha pedido a {{name}}: {{task}}",
         "you-have-muted-to": "Ha silenciado el micrófono de {{name}}.",
         "applied-new-setting": "Se han aplicado nuevos ajustes de bloqueo.",
-        "presenter-changed": "Se ha cambiado el presentador.",
-        "you-are-presenter": "Ahora es el presentador.",
+        "presenter-changed": "El presentador ha sido cambiado.",
+        "you-are-presenter": "Ahora usted es el presentador.",
         "want-to-block": "¿Quiere bloquear a este usuario?",
         "user-approved": "Ha aprobado la entrada de {{name}}."
       }
