@@ -263,7 +263,10 @@
     "require-ssl-des": "এই পরিষেবাটি ব্যবহার করার জন্য একটি নিরাপদ (SSL) সংযোগ প্রয়োজন।",
     "insert-secret-key": "নিরাপত্তা কী প্রবেশ করান",
     "insert-secret-help": "এই নিরাপদ মিটিংয়ের জন্য, প্রত্যেককে একই নিরাপত্তা কী ব্যবহার করতে হবে। যদি এটি মেলে না, আপনি সংযোগ করতে পারবেন না। অনুগ্রহ করে মিটিং সংগঠকের কাছ থেকে সঠিক নিরাপত্তা কী সংগ্রহ করুন।",
-    "save": "সংরক্ষণ করুন"
+    "save": "সংরক্ষণ করুন",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "অংশগ্রহণকারী ({{total}})",
