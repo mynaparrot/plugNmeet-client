@@ -263,7 +263,10 @@
     "require-ssl-des": "Для використання цієї служби потрібне безпечне (SSL) з'єднання.",
     "insert-secret-key": "Введення ключа безпеки",
     "insert-secret-help": "Для цієї безпечної наради всі користувачі мають використовувати однаковий ключ безпеки. Якщо він не збігається, ви не зможете підключитися. Будь ласка, отримайте правильний ключ безпеки від організатора зустрічі.",
-    "save": "Зберегти"
+    "save": "Зберегти",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "Учасники ({{total}})",
