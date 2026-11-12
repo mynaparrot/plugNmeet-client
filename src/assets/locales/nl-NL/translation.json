@@ -263,7 +263,10 @@
     "require-ssl-des": "Om gebruik te kunnen maken van deze service is een beveiligde (SSL) verbinding vereist.",
     "insert-secret-key": "Voer de beveiligingssleutel in",
     "insert-secret-help": "Voor deze beveiligde vergadering moet iedereen dezelfde beveiligingssleutel gebruiken. Als het niet overeenkomt, kunt u geen verbinding maken. Vraag de juiste beveiligingssleutel aan bij de organisator van de vergadering.",
-    "save": "Opslaan"
+    "save": "Opslaan",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "Deelnemers ({{total}})",
