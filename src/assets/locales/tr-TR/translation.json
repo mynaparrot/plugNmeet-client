@@ -263,7 +263,10 @@
     "require-ssl-des": "Bu hizmeti kullanmak için güvenli bir (SSL) bağlantı gereklidir.",
     "insert-secret-key": "Güvenlik Anahtarını Girin",
     "insert-secret-help": "Bu güvenli toplantı için herkesin aynı Güvenlik Anahtarını kullanması gerekir. Eşleşmezse bağlanamazsınız. Lütfen toplantı organizatöründen doğru Güvenlik Anahtarını alın.",
-    "save": "Kaydet"
+    "save": "Kaydet",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "Katılımcılar ({{total}})",
