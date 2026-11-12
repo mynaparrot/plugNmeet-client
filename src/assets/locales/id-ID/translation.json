@@ -263,7 +263,10 @@
     "require-ssl-des": "Koneksi aman (SSL) diperlukan untuk menggunakan layanan ini.",
     "insert-secret-key": "Masukkan Kunci Keamanan",
     "insert-secret-help": "Untuk rapat aman ini, semua orang harus menggunakan Kunci Keamanan yang sama. Jika tidak cocok, Anda tidak akan dapat terhubung. Harap dapatkan Kunci Keamanan yang benar dari penyelenggara rapat.",
-    "save": "Simpan"
+    "save": "Simpan",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "Peserta ({{total}})",
