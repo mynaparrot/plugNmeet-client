@@ -263,7 +263,10 @@
     "require-ssl-des": "A szolgáltatás használatához biztonságos (SSL) kapcsolat szükséges.",
     "insert-secret-key": "Adja meg a biztonsági kulcsot",
     "insert-secret-help": "Ehhez a biztonságos értekezlethez mindenkinek ugyanazt a biztonsági kulcsot kell használnia. Ha nem egyezik, akkor nem fog tudni csatlakozni. Kérjük, szerezze be a megfelelő biztonsági kulcsot az értekezlet szervezőjétől.",
-    "save": "Megment"
+    "save": "Megment",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "Résztvevők ({{total}})",
