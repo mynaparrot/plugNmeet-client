@@ -263,7 +263,10 @@
     "require-ssl-des": "K používání této služby je vyžadováno zabezpečené připojení (SSL).",
     "insert-secret-key": "Zadejte bezpečnostní klíč",
     "insert-secret-help": "Pro tuto zabezpečenou schůzku musí všichni používat stejný bezpečnostní klíč. Pokud se neshoduje, nebudete se moci připojit. Získejte prosím správný bezpečnostní klíč od organizátora schůzky.",
-    "save": "Uložit"
+    "save": "Uložit",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "Účastníci ({{total}})",
