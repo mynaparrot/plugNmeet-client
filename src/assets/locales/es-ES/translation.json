@@ -409,7 +409,7 @@
       "cloud-recording": "Grabación en la nube: Pantalla completa",
       "cloud-recording-des": "Graba la vista completa de la reunión, incluyendo todo el contenido y actividad en pantalla, en una sola grabación en la nube.",
       "cloud-media-only-recording": "Grabación en la nube: Solo multimedia",
-      "cloud-media-only-recording-des": "Graba únicamente los medios de la reunión —audio, vídeo y pantalla compartida— en una sola grabación.",
+      "cloud-media-only-recording-des": "Graba únicamente los medios de la reunión —audio, video y pantalla compartida— en una sola grabación.",
       "cloud-recording-group": "Grabación en la nube",
       "local-recording-group": "Grabación local · Este dispositivo",
       "stop-rtmp-broadcasting": "Detener transmisión en vivo",
@@ -428,14 +428,14 @@
       "demote-presenter": "Quitar como presentador",
       "you-are-muted": "Nadie puede oírle. Su micrófono está silenciado.",
       "menu": "Más opciones",
-      "paused-by-connection-tooltip": "Pausado automáticamente por conexión débil — haga clic para volver a activar"
+      "paused-by-connection-tooltip": "Se pausó automáticamente debido a una conexión débil — haga clic para reactivarlo"
     },
     "menus": {
       "mute-all-users": "Silenciar a todos",
       "room-lock-settings": "Ajustes de bloqueo de la reunión",
       "enable-shared-notepad": "Activar bloc de notas compartido",
       "disable-shared-notepad": "Desactivar bloc de notas compartido",
-      "enable-countdown-timer": "Activar temporizador de cuenta atrás",
+      "enable-countdown-timer": "Activar temporizador de cuenta regresiva",
       "disable-countdown-timer": "Desactivar temporizador de cuenta atrás",
       "mute-microphone": "Silenciar micrófono",
       "unmute-microphone": "Reactivar micrófono",
