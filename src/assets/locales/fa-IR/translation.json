@@ -263,7 +263,10 @@
     "require-ssl-des": "برای استفاده از این سرویس، اتصال امن (SSL) لازم است.",
     "insert-secret-key": "کلید امنیتی را وارد کنید",
     "insert-secret-help": "در این جلسه امن، همه باید از کلید امنیتی یکسانی استفاده کنند. در صورت عدم تطابق، امکان اتصال نخواهید داشت. لطفاً کلید امنیتی صحیح را از برگزارکننده جلسه دریافت کنید.",
-    "save": "ذخیره"
+    "save": "ذخیره",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "شرکت‌کنندگان ({{total}})",
