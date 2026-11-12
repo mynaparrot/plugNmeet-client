@@ -263,7 +263,10 @@
     "require-ssl-des": "נדרש חיבור מאובטח (SSL) כדי להשתמש בשירות זה.",
     "insert-secret-key": "הזן מפתח אבטחה",
     "insert-secret-help": "עבור פגישה מאובטחת זו, כולם חייבים להשתמש באותו מפתח אבטחה. אם הוא לא תואם, לא תוכל להתחבר. קבל את מפתח האבטחה הנכון ממארגן הפגישה.",
-    "save": "שמר"
+    "save": "שמר",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "משתתפים ({{total}})",
