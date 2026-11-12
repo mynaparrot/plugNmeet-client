@@ -263,7 +263,10 @@
     "require-ssl-des": "É necessária uma ligação segura (SSL) para utilizar este serviço.",
     "insert-secret-key": "Introduza a chave de segurança",
     "insert-secret-help": "Para esta reunião segura, todos devem usar a mesma chave de segurança. Se não corresponder, não conseguirá ligar-se. Por favor, obtenha a chave de segurança correta junto do organizador da reunião.",
-    "save": "Guardar"
+    "save": "Guardar",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "Participantes ({{total}})",
