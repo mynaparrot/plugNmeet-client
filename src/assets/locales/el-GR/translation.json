@@ -263,7 +263,10 @@
     "require-ssl-des": "Απαιτείται ασφαλής σύνδεση (SSL) για τη χρήση αυτής της υπηρεσίας.",
     "insert-secret-key": "Εισαγωγή κλειδιού ασφαλείας",
     "insert-secret-help": "Για αυτήν την ασφαλή σύσκεψη, όλοι πρέπει να χρησιμοποιούν το ίδιο κλειδί ασφαλείας. Εάν δεν ταιριάζει, δεν θα μπορείτε να συνδεθείτε. Παρακαλούμε λάβετε το σωστό κλειδί ασφαλείας από τον διοργανωτή της σύσκεψης.",
-    "save": "Αποθήκευση"
+    "save": "Αποθήκευση",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "Συμμετέχοντες ({{total}})",
