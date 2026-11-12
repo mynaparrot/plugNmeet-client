@@ -263,7 +263,10 @@
     "require-ssl-des": "Pentru a utiliza acest serviciu este necesară o conexiune securizată (SSL).",
     "insert-secret-key": "Introduceți cheia de securitate",
     "insert-secret-help": "Pentru această întâlnire securizată, toată lumea trebuie să utilizeze aceeași cheie de securitate. Dacă nu se potrivește, nu vă veți putea conecta. Vă rugăm să obțineți cheia de securitate corectă de la organizatorul întâlnirii.",
-    "save": "Salva"
+    "save": "Salva",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "Participanții ({{total}})",
