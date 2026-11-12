@@ -263,7 +263,10 @@
     "require-ssl-des": "A secure (SSL) connection is required to use this service.",
     "insert-secret-key": "Enter Security Key",
     "insert-secret-help": "For this secure meeting, everyone must use the same Security Key. If it doesn't match, you won't be able to connect. Please get the correct Security Key from the meeting organizer.",
-    "save": "Save"
+    "save": "Save",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "Participants ({{total}})",
