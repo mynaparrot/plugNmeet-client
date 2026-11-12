@@ -263,7 +263,10 @@
     "require-ssl-des": "Tämän palvelun käyttäminen edellyttää suojattua (SSL) yhteyttä.",
     "insert-secret-key": "Syötä suojausavain",
     "insert-secret-help": "Tässä suojatussa kokouksessa kaikkien on käytettävä samaa suojausavainta. Jos se ei täsmää, et voi muodostaa yhteyttä. Hanki oikea suojausavain kokouksen järjestäjältä.",
-    "save": "Säästää"
+    "save": "Säästää",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "Osallistujat ({{total}})",
