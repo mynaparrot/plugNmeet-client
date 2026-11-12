@@ -176,21 +176,21 @@
       "medium": "Media",
       "low": "Baja",
       "enable-dark-theme": "Activar tema oscuro",
-      "video-object-fit": "Ajuste de vídeo",
-      "video-object-fit-cover": "Pantalla completa",
+      "video-object-fit": "Ajuste de video",
+      "video-object-fit-cover": "Llenar la pantalla",
       "video-object-fit-contain": "Ajustar a la pantalla",
-      "column-camera-width": "Ancho de la columna de vídeo",
+      "column-camera-width": "Ancho de la columna de video",
       "column-camera-width-default": "Predeterminado",
       "column-camera-width-medium": "Mediano",
       "column-camera-width-small": "Pequeño",
-      "column-camera-position": "Posición de la columna de vídeo",
+      "column-camera-position": "Posición de la columna de video",
       "column-camera-position-left": "Izquierda",
       "column-camera-position-top": "Arriba",
       "column-camera-position-bottom": "Abajo",
       "focus-active-speaker-webcam": "Enfocar al participante activo",
       "max-num-webcam": "Máximo de cámaras web visibles",
       "video-quality-help": "Una menor calidad consume menos datos al ver vídeos.",
-      "screen-share-quality-help": "Se usa cuando comparte la pantalla. Una calidad menor ahorra ancho de banda.",
+      "screen-share-quality-help": "Se usa cuando comparte la pantalla. Menos ahorra ancho de banda.",
       "show-screen-share-help": "Desactive para ocultar las pantallas compartidas y ahorrar datos.",
       "show-webcams-help": "Desactive para ocultar las cámaras web y ahorrar datos.",
       "max-num-webcam-help": "Limita cuántas cámaras web se pueden ver a la vez."
@@ -206,7 +206,7 @@
       "leave-webcam": "Desactivar cámara",
       "show-hide-user-list": "Mostrar/Ocultar lista de participantes",
       "show-hide-chat": "Ocultar/Mostrar chat",
-      "show-hide-lock-settings": "Mostrar/Ocultar bloqueos de la reunión",
+      "show-hide-lock-settings": "Mostrar/Ocultar bloqueos de reuniones",
       "show-hide-settings": "Ocultar/Mostrar ajustes",
       "show-hide-whiteboard": "Ocultar/Mostrar pizarra",
       "show-hide-hand": "Levantar/Bajar la mano"
@@ -226,20 +226,20 @@
         "score": "Una puntuación de 0 a 100 que representa la estabilidad de su conexión.",
         "upload": "La calidad del vídeo y audio que envía a los demás.",
         "download": "La calidad del vídeo y el audio que recibe de otros.",
-        "packet-loss": "El porcentaje de datos que se perdió mientras viajaba por internet. Cuanto menos, mejor.",
-        "rtt": "El tiempo que tardan sus datos en llegar y volver al servidor. Cuanto menos, mejor."
+        "packet-loss": "El porcentaje de datos que se perdieron durante la transmisión por internet. Cuanto menos, mejor.",
+        "rtt": "El tiempo que tardan sus datos en llegar al servidor y regresar. Cuanto menos, mejor."
       },
       "qualities": {
         "excellent": "Excelente",
         "good": "Buena",
         "poor": "Pobre",
-        "lost": "Perdida"
+        "lost": "Perdido"
       },
-      "video-paused-banner": "Conexión débil — vídeo pausado para que el audio sea claro.",
-      "video-stays-paused-banner": "Conexión débil — vídeo pausado hasta que lo vuelva a activar.",
-      "video-quality-reduced-banner": "Conexión débil — calidad de vídeo reducida para mantener el audio claro.",
+      "video-paused-banner": "Conexión débil — video pausado para que el audio sea claro.",
+      "video-stays-paused-banner": "Conexión débil — video pausado hasta que lo vuelva a activar.",
+      "video-quality-reduced-banner": "Conexión débil — calidad de video reducida para mantener el audio claro.",
       "restore-quality": "Restaurar la calidad",
-      "re-enable-video": "Reactivar el vídeo",
+      "re-enable-video": "Reactivar el video",
       "resume-presentation": "Reanudar presentación"
     }
   },
