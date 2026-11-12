@@ -263,7 +263,10 @@
     "require-ssl-des": "Cần có kết nối an toàn (SSL) để sử dụng dịch vụ này.",
     "insert-secret-key": "Nhập khóa bảo mật",
     "insert-secret-help": "Đối với cuộc họp an toàn này, mọi người phải sử dụng cùng một Khóa bảo mật. Nếu nó không khớp, bạn sẽ không thể kết nối. Vui lòng lấy Khóa bảo mật chính xác từ người tổ chức cuộc họp.",
-    "save": "Cứu"
+    "save": "Cứu",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "Đối tượng tham gia ({{total}})",
