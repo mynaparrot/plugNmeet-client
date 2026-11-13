@@ -14,12 +14,13 @@
   "participant-menu": "Osallistujavaihtoehdot",
   "participant-volume": "Säädä osallistujien määrää",
   "participant-webcam-on": "Kamera on päällä",
-  "pip": "Kuva kuvassa",
+  "reconnecting": "Reconnecting...",
   "please-wait": "Ole hyvä ja odota...",
   "are-you-sure-to-close": "Oletko varma, että haluat sulkea?",
   "you-are-about-to-close": "Olet sulkemassa",
   "notifications": {
     "title": "Ilmoitukset",
+    "alert-title": "Alert",
     "room-not-active": "Tämä huone ei ole aktiivinen.",
     "recording-already-running": "Tallennus on jo käynnissä.",
     "recording-not-running": "Tallennus ei ole käynnissä.",
@@ -41,6 +42,8 @@
     "auth-header-missing": "Tunnistautuminen epäonnistui (otsikko puuttuu). Yritäthän liittyä kokoukseen uudelleen",
     "token-expired": "Istuntosi on päättynyt. Liity kokoukseen uudelleen jatkaaksesi.",
     "invalid-token": "Istuntoasi ei voitu validoida (virheellinen token). Yritä osallistua kokoukseen uudelleen.",
+    "token-valid": "Token is valid.",
+    "user-not-active": "You are not an active participant of this meeting. Please join again.",
     "waiting-for-approval": "Moderaattorille on ilmoitettu asiasta ja hän päästää sinut pian sisään. Kiitos kärsivällisyydestäsi!",
     "room-disconnected-title": "Hajanainen",
     "room-disconnected-default": "Yhteys katkesi odottamattoman virheen vuoksi: {{reason}}. Yritäthän liittyä takaisin.",
@@ -120,7 +123,11 @@
     "audio-only-mode-weak-connection": "Yhteytesi on kriittisen epävakaa. Video on keskeytetty, jotta ääni pysyy toiminnassa.",
     "connection-recovered-restore-video": "Yhteytesi näyttää taas vakaalta. Voit kokeilla videon palauttamista.",
     "media-restored-camera-unavailable": "Saapuva media palautettiin, mutta kameraa ei voitu ottaa käyttöön.",
-    "presentation-resumed": "Esitys on jatkunut."
+    "presentation-resumed": "Esitys on jatkunut.",
+    "invalid-request": "Your request could not be validated. Please try to join the meeting again.",
+    "success": "Success",
+    "rtmp-already-running": "RTMP streaming is already in progress.",
+    "rtmp-not-running": "RTMP streaming is not in progress."
   },
   "room-metadata": {
     "session-recording": "Tämä kokous tallennetaan.",
@@ -137,6 +144,7 @@
     "menus": {
       "settings": "Asetukset",
       "keyboard-shortcuts": "Pikanäppäimet",
+      "export": "Export Session Data",
       "menu": "Ruokalista",
       "toggle-theme": "Kytkentäteema",
       "logout": "Poistu kokouksesta",
@@ -255,7 +263,10 @@
     "require-ssl-des": "Tämän palvelun käyttäminen edellyttää suojattua (SSL) yhteyttä.",
     "insert-secret-key": "Syötä suojausavain",
     "insert-secret-help": "Tässä suojatussa kokouksessa kaikkien on käytettävä samaa suojausavainta. Jos se ei täsmää, et voi muodostaa yhteyttä. Hanki oikea suojausavain kokouksen järjestäjältä.",
-    "save": "Säästää"
+    "save": "Säästää",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "Osallistujat ({{total}})",
@@ -266,6 +277,21 @@
     "breakout-room-tab": "Pienryhmähuoneet",
     "me": "(minä)",
     "search-participant": "Osallistujan etsintä",
+    "picker": {
+      "open": "Pick a Random Participant",
+      "title": "Pick a Random Participant",
+      "hint": "Pick a participant to draw a random name.",
+      "pick-participant": "Pick a participant",
+      "selected": "Selected",
+      "pick-again": "Pick Again",
+      "notify-selected": "Notify selected participant",
+      "no-eligible": "No eligible participants to pick from.",
+      "participant-left": "The selected participant is no longer available. Please pick again.",
+      "notify-failed": "Could not notify the selected participant. Please try again.",
+      "announce-failed": "The participant was notified, but the room announcement could not be sent.",
+      "alert": "You have been selected as the random participant.",
+      "announcement": "Randomly selected participant: {{name}}"
+    },
     "public-chat": "Julkinen chat",
     "private-chat": "Yksityinen chat",
     "select-chat-conversation-title": "Valitse keskustelu",
@@ -322,6 +348,8 @@
     "file-upload-success": "Tiedoston lataus onnistui",
     "file-upload-default-error": "Tiedoston lataamisessa tapahtui virhe.",
     "chat-box-placeholder": "Lähetä viesti, liitä kuva tai pudota tiedosto tähän (Uusi rivi: Vaihto + Enter)",
+    "message-placeholder": "Type a message",
+    "send": "Send",
     "sending-message": "Odottakaa, lähettäen...",
     "reply": "Vastaa",
     "edit-message": "Muokkausviesti",
@@ -342,6 +370,8 @@
     "new-messages": "Uudet viestit",
     "scroll-to-bottom": "Selaa alas",
     "sync-chat": "Synkronoi chat vertaisten kanssa",
+    "public-chat-pip": "Show public chat in Picture-in-Picture",
+    "no-chat-messages": "No messages yet",
     "load-earlier-messages": "Lataa aikaisempia viestejä",
     "system-name": "Järjestelmä"
   },
@@ -405,6 +435,8 @@
       "room-lock-settings": "Kokouksen lukituksen asetukset",
       "enable-shared-notepad": "Ota jaettu muistio käyttöön",
       "disable-shared-notepad": "Poista jaettu muistio käytöstä",
+      "enable-countdown-timer": "Enable Countdown Timer",
+      "disable-countdown-timer": "Disable Countdown Timer",
       "mute-microphone": "Mykistä mikrofoni",
       "unmute-microphone": "Poista mikrofonin mykistys",
       "leave-microphone": "Sammuta mikrofoni",
@@ -567,6 +599,7 @@
     "show-toolbar": "Näytä työkalupalkki",
     "hide-toolbar": "Piilotyökalupalkki",
     "file-conversion-failed": "Tiedostomuunnos epäonnistui",
+    "error-occurred": "Something went wrong. Please try again.",
     "export-pdf-title": "Vienti PDF:ksi",
     "export-pdf-button": "Vienti",
     "export-pdf-button-count": "Vienti ({{count}})",
@@ -575,6 +608,7 @@
     "previous-page": "Edellinen sivu",
     "next-page": "Seuraava sivu",
     "take-over-presenter": "Ota juontajan tehtävä",
+    "save-pending-warning": "Whiteboard page couldn't be saved yet. It will keep retrying in the background.",
     "export-pdf-selected-pages": "Valikoituja sivuja",
     "export-pdf-selected-pages-count": "Valitut ({{count}})",
     "export-pdf-select-pages-label": "Valitse vientisivut:",
@@ -616,6 +650,34 @@
     "reject-and-block-user": "Estä ja estä",
     "user-waiting": "{{name}} odottaa pääsyä.",
     "no-pending-user": "Kukaan ei odota liittymistä."
+  },
+  "countdown-timer": {
+    "title": "Countdown Timer",
+    "aria-label": "Countdown timer",
+    "set-timer": "Set timer",
+    "minutes": "Minutes",
+    "seconds": "Seconds",
+    "presets": "Quick presets",
+    "preset-min": "{{count}}m",
+    "start": "Start",
+    "pause": "Pause",
+    "resume": "Resume",
+    "extend": "+1 min",
+    "set-new-timer": "Set new timer",
+    "end-timer": "End timer",
+    "running": "Running",
+    "paused": "Paused",
+    "ended": "Time's up",
+    "ended-notification": "The countdown timer has ended.",
+    "errors": {
+      "only-admin": "Only admin can perform this task.",
+      "not-allowed": "The countdown timer is not enabled for this room.",
+      "not-active": "The countdown timer is not active.",
+      "invalid-duration": "Please enter a valid duration (up to 24 hours).",
+      "not-running": "The countdown timer is not running.",
+      "not-paused": "The countdown timer is not paused.",
+      "generic": "Could not update the countdown timer. Please try again."
+    }
   },
   "polls": {
     "title": "Gallupit",
@@ -672,6 +734,13 @@
     "quiz-mode-desc": "Merkitse oikeat vaihtoehdot valintaruudulla kunkin vaihtoehdon vieressä. Osallistujat näkevät oikean vastauksen vasta äänestyksen sulkeuduttua.",
     "anonymous-voting-desc": "Äänestäjien valinnat pysyvät piilossa — edes ylläpitäjät eivät näe, kuka äänesti.",
     "duration-desc": "Äänestys sulkeutuu automaattisesti, kun aika loppuu.",
+    "text-answer": "Text answer",
+    "text-answer-placeholder": "Type your answer here...",
+    "your-answer": "Your answer",
+    "ai-check-answers": "Check with AI",
+    "ai-recheck-answers": "Recheck with AI",
+    "ai-check-title": "AI Answer Review",
+    "ai-share-chat": "Share in Chat",
     "notifications": {
       "created-successfully": "Kysely on luotu.",
       "response-added": "Äänesi on toimitettu.",
@@ -679,7 +748,8 @@
       "end-poll-success": "Äänestys on päättynyt.",
       "reopen-poll-success": "Äänestyspaikka on avattu uudelleen.",
       "ai-generated": "Tekoälyluonnos valmiina — tarkista ja luo.",
-      "poll-reopened": "Äänestys on avattu uudelleen."
+      "poll-reopened": "Äänestys on avattu uudelleen.",
+      "ai-shared-chat": "AI review has been shared in the chat."
     },
     "errors": {
       "generic": "Jokin meni pieleen. Yritä uudelleen.",
@@ -701,7 +771,9 @@
       "user-and-poll-id-required": "Sekä käyttäjätunnus että äänestystunnus vaaditaan.",
       "ai-disabled": "Tekoälykyselyjen generointi on pois päältä.",
       "ai-invalid-response": "Tekoälyvastausta ei voitu käyttää. Yritä uudelleen.",
-      "ai-request-timeout": "Kyselyn tekoälypyyntö aikakatkaistu"
+      "ai-request-timeout": "Kyselyn tekoälypyyntö aikakatkaistu",
+      "text-answer-required": "Please enter your answer before submitting.",
+      "text-answer-too-long": "Your answer cannot exceed 500 characters."
     }
   },
   "breakout-room": {
@@ -976,5 +1048,139 @@
     "enable-auto-close-chat-panel": "Ota automaattinen chat-paneelin sulkeminen käyttöön",
     "duration-after-last-message": "Kesto viimeisen viestin jälkeen (minuuteissa)",
     "duration-after-last-message-help": "Chat-paneeli sulkeutuu automaattisesti tämän tauon jälkeen."
+  },
+  "export-hub": {
+    "title": "Export Live Session Data",
+    "description": "Export a snapshot of data available to you in the live session right now. This is not a historical session archive or a full analytics report.",
+    "export-button": "Export",
+    "chat-title": "Public chat messages (TXT)",
+    "chat-help": "Messages available to this client right now: {{total}}. Only user messages are exported; private, system and deleted messages are omitted. The export may not be the complete room history.",
+    "chat-e2ee-warning": "This meeting is end-to-end encrypted: the exported file will contain plain text.",
+    "chat-empty": "No public chat messages are available to export.",
+    "participants-title": "Current participants (CSV)",
+    "participants-help": "Participants in the current roster: {{total}}. Columns: name, user ID, role, joined at, online.",
+    "participants-empty": "There are no participants to export.",
+    "polls-title": "Poll results (TXT)",
+    "polls-help": "Polls in this session with their question, options, status and current vote counts, captured when you export. Respondent names are never included.",
+    "polls-empty": "There are no polls to export yet.",
+    "export-failed": "The export could not be completed. Please try again.",
+    "exported-at": "Exported at: {{timestamp}}",
+    "chat-export-title": "plugNmeet public chat export",
+    "chat-export-note": "Only messages currently available to this client are included; private, system and deleted messages are omitted.",
+    "chat-export-empty": "(no public chat messages)",
+    "chat-export-empty-message": "(empty message)",
+    "chat-export-unknown-sender": "Unknown",
+    "chat-export-unknown-time": "unknown time",
+    "participants-csv-name": "Name",
+    "participants-csv-role": "Role",
+    "participants-csv-joined-at": "Joined at",
+    "participants-csv-online": "Online",
+    "participants-csv-user-id": "User ID",
+    "participants-role-admin": "admin",
+    "participants-role-presenter": "presenter",
+    "participants-role-participant": "participant",
+    "participants-online-yes": "yes",
+    "participants-online-no": "no",
+    "polls-export-title": "plugNmeet poll results export",
+    "polls-export-note": "Snapshot of the polls available to this client at export time; respondent names are never included.",
+    "polls-export-none": "(no polls)",
+    "poll-heading": "Poll {{number}} [{{tags}}]",
+    "poll-status-open": "open",
+    "poll-status-closed": "closed",
+    "poll-type-multiple": "multiple choice",
+    "poll-type-single": "single choice",
+    "poll-type-text": "text answer",
+    "poll-tag-quiz": "quiz",
+    "poll-tag-anonymous": "anonymous",
+    "poll-question": "Q: {{question}}",
+    "poll-option-unavailable": "n/a",
+    "poll-correct-answer": "(correct answer)",
+    "poll-total-responses": "Responses: {{count}}",
+    "poll-total-votes": "Total votes: {{votes}} from {{count}} respondents",
+    "poll-results-unavailable": "Vote counts are not available for this poll."
+  },
+  "pip": {
+    "label": "Picture-in-Picture (PiP)",
+    "speaking": "{{name}} is speaking",
+    "status": {
+      "chat": "Unread chat messages",
+      "raised-hand": "Raised hands",
+      "notification": "Unread notifications"
+    },
+    "switcher": {
+      "label": "Switch picture-in-picture view",
+      "chat": "Show chat",
+      "webcam": "Show webcams"
+    }
+  },
+  "file": {
+    "errors": {
+      "invalid-request": "Your file request could not be validated.",
+      "missing-file": "No file was received.",
+      "too-large": "The file is larger than the maximum allowed size.",
+      "type-not-allowed": "This file type is not allowed.",
+      "chunks-not-found": "The uploaded file parts could not be found. Please upload the file again.",
+      "upload-failed": "The file could not be uploaded. Please try again.",
+      "merge-failed": "The file could not be finalized. Please try again.",
+      "file-path-required": "The file path is missing.",
+      "invalid-path": "The file path is not valid.",
+      "not-found": "The file could not be found.",
+      "only-presenter": "Only the presenter can perform this task.",
+      "unexpected": "Something went wrong. Please try again."
+    },
+    "notifications": {
+      "conversion-started": "The file is being converted. It will be available in the whiteboard file list once it is ready."
+    }
+  },
+  "room": {
+    "errors": {
+      "only-admin": "Only admin can perform this task.",
+      "invalid-request": "Your request could not be validated.",
+      "room-id-required": "The room ID is missing.",
+      "room-id-mismatch": "The requested room does not match your session.",
+      "room-not-found": "The room could not be found.",
+      "no-room-found": "No room found.",
+      "no-active-room-found": "No active room found",
+      "room-not-active": "This room is not active.",
+      "unexpected": "Something went wrong. Please try again.",
+      "end-failed": "The room could not be ended. Please try again.",
+      "feature-not-allowed": "This feature is not enabled for this room.",
+      "sip-dial-in-already-enabled": "SIP dial-in is already enabled for this room.",
+      "ingress-already-created": "A live stream is already running for this room.",
+      "invalid-url": "Only http and https URLs are allowed.",
+      "user-not-found": "The user could not be found.",
+      "room-id-not-allowed": "This room ID is not allowed.",
+      "preassigned-limit": "Too many pre-assigned breakout rooms.",
+      "preassigned-user": "A user is pre-assigned to multiple breakout rooms."
+    }
+  },
+  "user": {
+    "errors": {
+      "only-admin": "Only admin can perform this task.",
+      "invalid-request": "Your request could not be validated.",
+      "user-info-required": "User information is required.",
+      "room-id-mismatch": "The requested room does not match your session.",
+      "room-sid-mismatch": "The room session does not match your session.",
+      "room-not-running": "This meeting is not running.",
+      "cannot-remove-self": "You can't remove yourself.",
+      "user-not-online": "This user is not online.",
+      "user-not-found": "The user could not be found.",
+      "unexpected": "Something went wrong. Please try again.",
+      "reserved-name": "This name is reserved and can't be used.",
+      "reserved-user-id": "This user ID is reserved and can't be used.",
+      "invalid-user-id": "The user ID may only contain letters, numbers, '-' and '_'.",
+      "room-info-not-found": "The room information could not be found.",
+      "room-ended": "This meeting has ended."
+    }
+  },
+  "recording": {
+    "errors": {
+      "invalid-request": "Your recording request could not be validated.",
+      "task-in-progress": "Another recording request is already in progress. Please wait a moment and try again.",
+      "room-sid-required": "The room information is missing, so the recording task cannot be started.",
+      "rtmp-url-required": "An RTMP URL is required to start RTMP streaming.",
+      "invalid-rtmp-url": "Only rtmp and rtmps URLs are allowed.",
+      "operation-failed": "The recording request could not be completed. Please try again."
+    }
   }
 }

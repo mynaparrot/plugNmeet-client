@@ -263,7 +263,10 @@
     "require-ssl-des": "En säker (SSL) anslutning krävs för att använda den här tjänsten.",
     "insert-secret-key": "Ange säkerhetsnyckel",
     "insert-secret-help": "För det här säkra mötet måste alla använda samma säkerhetsnyckel. Om det inte matchar kommer du inte att kunna ansluta. Skaffa rätt säkerhetsnyckel från mötesorganisatören.",
-    "save": "Spara"
+    "save": "Spara",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "Deltagare ({{total}})",

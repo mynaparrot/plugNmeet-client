@@ -263,7 +263,10 @@
     "require-ssl-des": "Une connexion sécurisée (SSL) est requise pour utiliser ce service.",
     "insert-secret-key": "Saisir la clé de sécurité",
     "insert-secret-help": "Pour cette réunion sécurisée, tous les participants doivent utiliser la même clé de sécurité. Si elle ne correspond pas, vous ne pourrez pas vous connecter. Veuillez obtenir la clé de sécurité correcte auprès de l’organisateur de la réunion.",
-    "save": "Enregistrer"
+    "save": "Enregistrer",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "Participants ({{total}})",

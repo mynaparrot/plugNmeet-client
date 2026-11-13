@@ -263,7 +263,10 @@
     "require-ssl-des": "使用此服務需要安全（SSL）連線。",
     "insert-secret-key": "輸入安全金鑰",
     "insert-secret-help": "對於此安全會議，所有人都必須使用相同的安全金鑰。如果不符，您將無法連線。請從會議組織者處取得正確的安全金鑰。",
-    "save": "儲存"
+    "save": "儲存",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "參與者 ({{total}})",
