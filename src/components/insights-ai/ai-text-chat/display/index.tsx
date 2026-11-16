@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import Draggable from 'react-draggable';
 
 import { updateIsActiveInsightsAiTextChat } from '../../../../store/slices/bottomIconsActivitySlice';
+import { aiAgentSelector } from '../../../../store/slices/aiAgentSlice';
 import { useAppDispatch, useAppSelector } from '../../../../store';
 import { AIMessage } from '../../../chat/messages/message/messageTypes';
 import { AiUserMessage } from '../aiUserMessage';
@@ -11,6 +12,12 @@ import TextBoxArea from './textBoxArea';
 import { useAiTextChat } from '../useAiTextChat';
 import { PopupCloseSVGIcon } from '../../../../assets/Icons/PopupCloseSVGIcon';
 import { ScrollToBottomIconSVG } from '../../../../assets/Icons/ScrollToBottom';
+import { getAIAgentDisplayName, isAIAgentRunning } from '../../ai-agent/ui/statusModel';
+import {
+  selectInsightsAIAgentFeatures,
+  selectIsAIAgentChatEnabled,
+  selectIsInsightsAiTextChatEnabled,
+} from '../../featureGate';
 
 const InsightsAiTextChat = () => {
   const { t } = useTranslation();
@@ -20,12 +27,18 @@ const InsightsAiTextChat = () => {
   const [showScrollDownBtn, setShowScrollDownBtn] = useState(false);
 
   const isActive = useAppSelector((state) => state.bottomIconsActivity.isActiveInsightsAiTextChat);
-  const isEnabled = useAppSelector(
-    (state) =>
-      state.session.currentRoom?.metadata?.roomFeatures?.insightsFeatures?.aiFeatures
-        ?.aiTextChatFeatures?.isEnabled,
-  );
+  const isEnabled = useAppSelector(selectIsInsightsAiTextChatEnabled);
+  const agentFeatures = useAppSelector(selectInsightsAIAgentFeatures);
+  const agent = useAppSelector(aiAgentSelector);
   const { finalMessages, interimMessage, isAwaitingResponse, send } = useAiTextChat();
+
+  const isAgentChat = useAppSelector(selectIsAIAgentChatEnabled);
+  const aiName = isAgentChat
+    ? getAIAgentDisplayName(agent, agentFeatures?.agentDisplayName)
+    : t('insights.ai-text-chat.name');
+  // With auto-join the agent starts by itself, so a "not started" notice is noise
+  const showNotStartedNotice =
+    isAgentChat && !isAIAgentRunning(agent) && !agentFeatures?.autoJoinOnFirstParticipant;
 
   const parsedFinalMessages = useMemo(() => {
     return finalMessages.map((msg) => {
@@ -149,6 +162,12 @@ const InsightsAiTextChat = () => {
               </div>
 
               <div className="h-full pt-[45px] flex flex-col">
+                {showNotStartedNotice && (
+                  <div className="mx-3 3xl:mx-5 mt-2 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/30 px-3 py-2 text-xs text-amber-800 dark:text-amber-200">
+                    {t('ai-agent.errors.session-not-started')}
+                  </div>
+                )}
+
                 <div
                   ref={scrollRef}
                   className="message-list-wrapper relative overflow-auto scrollBar px-3 3xl:px-5 pt-2 xl:pt-3 flex-grow mb-1"
@@ -164,7 +183,7 @@ const InsightsAiTextChat = () => {
                         <div key={msg.id} className="wrapper flex gap-2 3xl:gap-3 my-2.5">
                           {msg.role === 'model' ? (
                             <AIMessage
-                              name={t('insights.ai-text-chat.name')}
+                              name={aiName}
                               message={msg.parsedMessage}
                               isStreaming={isStreaming}
                               sentAt={msg.createdAt}

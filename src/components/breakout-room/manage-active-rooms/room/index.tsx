@@ -10,6 +10,7 @@ import BreakoutRoomDuration from './duration';
 import JoinBtn from './joinBtn';
 import ExtendDuration from './extendDuration';
 import { BreakoutRoomMessage } from '../..';
+import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
 
 interface RoomItemProps {
   room: BreakoutRoom;
@@ -18,6 +19,8 @@ interface RoomItemProps {
 
 const RoomItem = ({ room, setMessage }: RoomItemProps) => {
   const { t } = useTranslation();
+  // AI Agent rooms can carry a per-room custom instruction set for the assistant.
+  const aiContext = room.enableAiAgent ? (room.aiAgentContext ?? '').trim() : '';
 
   return (
     <Disclosure as="div">
@@ -28,7 +31,15 @@ const RoomItem = ({ room, setMessage }: RoomItemProps) => {
               open ? 'border-b border-gray-300 dark:border-gray-800' : ''
             }`}
           >
-            <span className="text-sm text-Gray-800 dark:text-white">{room.title}</span>
+            <span className="flex items-center gap-2 min-w-0">
+              <span className="text-sm text-Gray-800 dark:text-white truncate">{room.title}</span>
+              {room.enableAiAgent && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-Blue/10 text-Blue dark:bg-Blue/20 dark:text-Blue2-50 border border-Blue/20 shrink-0">
+                  <AiIconSVG classes="w-3.5 h-3.5 shrink-0" />
+                  {t('breakout-room.ai-session-badge', 'AI Agent')}
+                </span>
+              )}
+            </span>
             <div className="right flex items-center gap-2">
               <div className="wrap text-sm font-semibold text-Gray-950 dark:text-white">
                 {room.started ? (
@@ -77,6 +88,14 @@ const RoomItem = ({ room, setMessage }: RoomItemProps) => {
                       <EndBtn breakoutRoomId={room.id} setMessage={setMessage} />
                     </div>
                   </div>
+                  {aiContext && (
+                    <div className="flex items-start gap-2 mb-4 px-3 py-2 rounded-lg bg-Blue/5 dark:bg-Blue/10 border border-Blue/20">
+                      <AiIconSVG classes="w-3.5 h-3.5 shrink-0 mt-0.5 text-Blue" />
+                      <p className="text-xs italic break-words whitespace-pre-wrap text-Gray-700 dark:text-Gray-300">
+                        {aiContext}
+                      </p>
+                    </div>
+                  )}
                   <BreakoutRoomUsers
                     users={room.users}
                     breakoutRoomId={room.id}

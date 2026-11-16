@@ -10,9 +10,20 @@ interface IDndRoomBoxProps {
   users: Array<UserType>;
   customTitles?: Record<number, string>;
   setCustomTitles?: React.Dispatch<React.SetStateAction<Record<number, string>>>;
+  enableAiAgent?: boolean;
+  roomAiContexts?: Record<number, string>;
+  onChangeRoomAiContext?: (roomId: number, value: string) => void;
 }
 
-const DndRoomBox = ({ roomList, users, customTitles, setCustomTitles }: IDndRoomBoxProps) => (
+const DndRoomBox = ({
+  roomList,
+  users,
+  customTitles,
+  setCustomTitles,
+  enableAiAgent,
+  roomAiContexts,
+  onChangeRoomAiContext,
+}: IDndRoomBoxProps) => (
   <DndProvider backend={HTML5Backend}>
     <div className="draggable-room-area overflow-hidden clear-both flex flex-wrap">
       {roomList.map((room) => (
@@ -23,6 +34,9 @@ const DndRoomBox = ({ roomList, users, customTitles, setCustomTitles }: IDndRoom
             users={users.filter((user) => user.roomId === room.id)}
             customTitles={customTitles}
             setCustomTitles={setCustomTitles}
+            enableAiAgent={enableAiAgent}
+            roomAiContext={roomAiContexts?.[room.id]}
+            onChangeRoomAiContext={onChangeRoomAiContext}
           />
         </div>
       ))}

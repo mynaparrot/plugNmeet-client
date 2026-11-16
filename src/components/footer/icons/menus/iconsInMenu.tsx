@@ -16,6 +16,8 @@ import { BreakoutRoomIconSVG } from '../../../../assets/Icons/BreakoutRoomIconSV
 import { SpeechIconSVG } from '../../../../assets/Icons/SpeechIconSVG';
 import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
 import { ShareScreenIconSVG } from '../../../../assets/Icons/ShareScreenIconSVG';
+import { selectIsInsightsAiTextChatEnabled } from '../../../insights-ai/featureGate';
+import { canAccessBreakoutRooms } from '../../../breakout-room/utils/breakoutRoom';
 import useScreenshare from '../hooks/useScreenshare';
 import MenuItemHelper from './menuItemHelper';
 
@@ -67,10 +69,12 @@ const IconsInMenu = () => {
   const isActiveBreakoutRoomsPanel = useAppSelector(
     (state) => state.bottomIconsActivity.activeSidePanel === 'BREAKOUT_ROOMS',
   );
-  const isBreakoutRoomsPanelVisible = useAppSelector((state) => {
-    const meta = state.session.currentRoom?.metadata;
-    return !!meta?.roomFeatures?.breakoutRoomFeatures?.isActive && !meta?.isBreakoutRoom;
-  });
+  const isBreakoutRoomsPanelVisible = useAppSelector((state) =>
+    canAccessBreakoutRooms(
+      state.session.currentRoom?.metadata,
+      !!state.session.currentUser?.metadata?.isAdmin,
+    ),
+  );
   const toggleBreakoutRoomsPanel = useCallback(() => {
     dispatch(setActiveSidePanel('BREAKOUT_ROOMS'));
   }, [dispatch]);
@@ -87,11 +91,7 @@ const IconsInMenu = () => {
     dispatch(updateDisplaySpeechSettingOptionsModal(!isActiveDisplaySpeechSettingOptionsModal));
   }, [dispatch, isActiveDisplaySpeechSettingOptionsModal]);
 
-  const isEnabledAiTextChat = useAppSelector(
-    (state) =>
-      !!state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures?.aiFeatures
-        ?.aiTextChatFeatures?.isEnabled,
-  );
+  const isEnabledAiTextChat = useAppSelector(selectIsInsightsAiTextChatEnabled);
   const isActiveAiTextChat = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveInsightsAiTextChat,
   );

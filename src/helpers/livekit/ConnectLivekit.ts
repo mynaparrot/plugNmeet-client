@@ -58,6 +58,7 @@ import ConnectionQualityMonitor, {
 import AdaptiveMediaController from './AdaptiveMediaController';
 import TurnFallbackController from './turn/TurnFallbackController';
 import {
+  updateCanPlaybackAudio,
   updateOverallConnectionQuality,
   updateScreenSharing,
 } from '../../store/slices/sessionSlice';
@@ -290,6 +291,7 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
     // a fresh transport starts from a clean displayed status (Excellent)
     // instead of inheriting the previous transport's status
     this.connectionQualityMonitor.resetMeasurementBaseline({ resetScore: true });
+    store.dispatch(updateCanPlaybackAudio(this._room.canPlaybackAudio));
   };
 
   private onRoomReconnected = () => {
@@ -382,6 +384,9 @@ export default class ConnectLivekit extends EventEmitter implements IConnectLive
     room.on(RoomEvent.Reconnected, this.onRoomReconnected);
     room.on(RoomEvent.Disconnected, this.onDisconnected);
     room.on(RoomEvent.MediaDevicesError, this.mediaDevicesError);
+    room.on(RoomEvent.AudioPlaybackStatusChanged, () => {
+      store.dispatch(updateCanPlaybackAudio(room.canPlaybackAudio));
+    });
 
     room.on(RoomEvent.LocalTrackPublished, this.handleMediaTracks.localTrackPublished);
     room.on(RoomEvent.LocalTrackUnpublished, this.handleMediaTracks.localTrackUnpublished);

@@ -25,6 +25,7 @@ import HandleDataMessage from './HandleDataMessage';
 import HandleWhiteboard from './HandleWhiteboard';
 import HandleChat from './HandleChat';
 import HandleSystemData from './HandleSystemData';
+import HandleAIAgent from './HandleAIAgent';
 
 import { store } from '../../store';
 import { decompress } from '../collab-sync/sessionDataSync';
@@ -52,6 +53,7 @@ export default class SubscriptionHandler {
   private readonly _handleChat: HandleChat;
   private readonly _handleDataMsg: HandleDataMessage;
   private readonly _handleWhiteboard: HandleWhiteboard;
+  private readonly _handleAIAgent: HandleAIAgent;
 
   private _afterUserReadyCalled = false;
 
@@ -64,6 +66,7 @@ export default class SubscriptionHandler {
     this._handleParticipants = new HandleParticipants(this.connectNats);
     this._handleDataMsg = new HandleDataMessage(this.connectNats);
     this._handleWhiteboard = new HandleWhiteboard();
+    this._handleAIAgent = new HandleAIAgent();
   }
 
   get handleParticipants(): HandleParticipants {
@@ -336,6 +339,11 @@ export default class SubscriptionHandler {
     [NatsMsgServerToClientEvents.SESSION_DATA_SAVE_RESPONSE]: (p) => {
       this.handleSessionDataSaveResponse(p);
     },
+
+    // AI agent
+    [NatsMsgServerToClientEvents.AI_AGENT_STATE]: (p) => this._handleAIAgent.handleState(p.msg),
+    [NatsMsgServerToClientEvents.AI_AGENT_TOOL_CALL]: (p) =>
+      this._handleAIAgent.handleToolCall(p.msg),
   };
 
   /**

@@ -2,15 +2,27 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
+import { store } from '../../../store';
 import { DB_STORE_NAMES, idbGetAll, idbStore } from '../../../helpers/libs/idb';
-import { executeInsightsChatAI } from './helpers/insightsChatAI';
+import { isAIAgentRunning } from '../ai-agent/ui/statusModel';
+import { isAIAgentChatEnabled } from '../featureGate';
+import {
+  executeInsightsChatAI,
+  subscribeToInsightsAIAgentMessages,
+} from './helpers/insightsChatAI';
+import type { IInsightsAITextChatMessage } from './types';
 
-export interface IInsightsAITextChatMessage {
-  id: string;
-  role: 'user' | 'model';
-  createdAt: string;
-  parts: string[];
-}
+const mergeMessages = (
+  current: IInsightsAITextChatMessage[],
+  incoming: IInsightsAITextChatMessage[],
+): IInsightsAITextChatMessage[] => {
+  const knownIds = new Set(current.map((msg) => msg.id));
+  const merged = [...current, ...incoming.filter((msg) => !knownIds.has(msg.id))];
+  if (merged.length === current.length) {
+    return current;
+  }
+  return merged.sort((a, b) => Number(a.createdAt) - Number(b.createdAt));
+};
 
 export const useAiTextChat = () => {
   const { t } = useTranslation();
@@ -25,8 +37,7 @@ export const useAiTextChat = () => {
     idbGetAll<IInsightsAITextChatMessage>(DB_STORE_NAMES.INSIGHTS_AI_TEXT_CHATS)
       .then((msgs) => {
         if (cancelled || msgs.length === 0) return;
-        const sorted = [...msgs].sort((a, b) => Number(a.createdAt) - Number(b.createdAt));
-        setFinalMessages((prev) => (prev.length === 0 ? sorted : prev));
+        setFinalMessages((prev) => mergeMessages(prev, msgs));
       })
       .catch((e) => console.error('Failed to load insights AI chat history:', e));
     return () => {
@@ -34,9 +45,24 @@ export const useAiTextChat = () => {
     };
   }, []);
 
+  // The AI Agent writes to the chat box on its own, outside any pending request
+  useEffect(
+    () =>
+      subscribeToInsightsAIAgentMessages((message) => {
+        setFinalMessages((prev) => mergeMessages(prev, [message]));
+      }),
+    [],
+  );
+
   const send = useCallback(
     async (text: string) => {
       if (!text.trim()) return;
+
+      const { session, aiAgent } = store.getState();
+      if (isAIAgentChatEnabled(session.currentRoom?.metadata) && !isAIAgentRunning(aiAgent.agent)) {
+        toast(t('ai-agent.errors.session-not-started'), { type: 'error' });
+        return;
+      }
 
       // Same shape as the old `addAiTextChatUserMessage` reducer.
       const userMsg: IInsightsAITextChatMessage = {
@@ -66,6 +92,7 @@ export const useAiTextChat = () => {
         });
 
         setInterimMessage(null);
+        // The AI Agent answers with `send_chat_message`, so an empty ack is expected
         if (parts.length > 0) {
           const modelMsg: IInsightsAITextChatMessage = {
             id: msgId,

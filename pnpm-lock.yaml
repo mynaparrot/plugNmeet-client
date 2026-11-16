@@ -23,6 +23,9 @@ importers:
       '@excalidraw/excalidraw':
         specifier: 0.18.0-3c916c5
         version: 0.18.0-3c916c5(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(immer@11.2.9)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@excalidraw/mermaid-to-excalidraw':
+        specifier: 3.6.0
+        version: 3.6.0
       '@headlessui/react':
         specifier: 2.2.10
         version: 2.2.10(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -84,8 +87,8 @@ importers:
         specifier: 0.12.0
         version: 0.12.0
       plugnmeet-protocol-js:
-        specifier: 1.6.4-5
-        version: 1.6.4-5(@bufbuild/protobuf@2.17.0)
+        specifier: link:../protocol/js
+        version: link:../protocol/js
       react:
         specifier: 19.3.1
         version: 19.3.1
@@ -2957,12 +2960,6 @@ packages:
 
   player.style@0.3.5:
     resolution: {integrity: sha512-hknPiLjNtJP5zM0vCVXsl3Pef+uQnecYg8X/1vjd/Y3TdAgs/zxhck02SFTxRSckaObKemP5tUT8wTH7ByUmnw==}
-
-  plugnmeet-protocol-js@1.6.4-5:
-    resolution: {integrity: sha512-2nIZoBECa413PFS8DjpMH9l16tAJEcbstmYf/Iq4GsYP5CU+XFnUgWDVfuW36sGqvVTtZMnlrMEaSrAwWtYuMg==}
-    engines: {node: '>=22.7'}
-    peerDependencies:
-      '@bufbuild/protobuf': ^2.13.0
 
   png-chunk-text@1.0.0:
     resolution: {integrity: sha512-DEROKU3SkkLGWNMzru3xPVgxyd48UGuMSZvioErCure6yhOc/pRH2ZV+SEn7nmaf7WNf3NdIpH+UTrRdKyq9Lw==}
@@ -6095,10 +6092,6 @@ snapshots:
       media-chrome: 4.19.4(react@19.3.1)
     transitivePeerDependencies:
       - react
-
-  plugnmeet-protocol-js@1.6.4-5(@bufbuild/protobuf@2.17.0):
-    dependencies:
-      '@bufbuild/protobuf': 2.17.0
 
   png-chunk-text@1.0.0: {}
 

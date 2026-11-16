@@ -1,15 +1,12 @@
 import React, { Suspense, useMemo } from 'react';
 
 import { useAppSelector } from '../../../store';
+import { selectIsInsightsAiTextChatEnabled } from '../../insights-ai/featureGate';
 
 const InsightsAiTextChat = React.lazy(() => import('../../insights-ai/ai-text-chat/display'));
 
 export const useInsightsAiTextChat = () => {
-  const isEnabled = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures?.aiFeatures
-        ?.aiTextChatFeatures?.isEnabled,
-  );
+  const isEnabled = useAppSelector(selectIsInsightsAiTextChatEnabled);
 
   return useMemo(() => {
     if (isEnabled) {

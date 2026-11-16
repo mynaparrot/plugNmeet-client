@@ -6,17 +6,20 @@ import Dropdown, { ISelectOption } from '../../../helpers/ui/dropdown';
 interface RoomNumberSelectorProps {
   totalRooms: number;
   setTotalRooms: (num: number) => void;
+  // optional lower cap, e.g. the 1-on-1 AI agent session limit
+  maxRooms?: number;
 }
 
-const RoomNumberSelector = ({ totalRooms, setTotalRooms }: RoomNumberSelectorProps) => {
+const RoomNumberSelector = ({ totalRooms, setTotalRooms, maxRooms }: RoomNumberSelectorProps) => {
   const { t } = useTranslation();
-  const maxRooms = useAppSelector(
+  const allowedRooms = useAppSelector(
     (state) =>
       state.session.currentRoom.metadata?.roomFeatures?.breakoutRoomFeatures?.allowedNumberRooms ??
       6,
   );
+  const roomLimit = maxRooms && maxRooms > 0 ? Math.min(allowedRooms, maxRooms) : allowedRooms;
 
-  const options: ISelectOption[] = Array.from({ length: maxRooms }, (_, i) => ({
+  const options: ISelectOption[] = Array.from({ length: roomLimit }, (_, i) => ({
     value: i + 1,
     text: String(i + 1),
   }));

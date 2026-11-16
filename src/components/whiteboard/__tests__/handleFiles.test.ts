@@ -50,9 +50,13 @@ vi.mock('../export-pdf/utils', () => ({
   resolvePageOrientation: (orientation: string) => orientation,
 }));
 
+import type { ExcalidrawImageElement } from '@excalidraw/excalidraw/element/types';
 import {
   cleanProcessedImageElementsMap,
+  ensureImageDataIsLoaded,
   fetchAndCacheImage,
+  getImageData,
+  inlineImageData,
   preloadHtmlImage,
   primeExcalidrawImageCache,
 } from '../helpers/handleFiles';
@@ -301,6 +305,65 @@ describe('primeExcalidrawImageCache', () => {
     expect(
       primeExcalidrawImageCache(excalidrawAPI, [pngFile('file-4', 'data:image/png;base64,X')]),
     ).toBe(false);
+  });
+});
+
+describe('inline data URL images', () => {
+  const svgDataURL = 'data:image/svg+xml;base64,PHN2Zy8+';
+  const imageElement = (id: string, fileId: string) =>
+    ({ id, type: 'image', fileId }) as unknown as ExcalidrawImageElement;
+
+  it('registers inline picture bytes without any fetch or upload', async () => {
+    vi.stubGlobal('Image', FakeImage);
+    const addFiles = vi.fn();
+    const excalidrawAPI = {
+      getFiles: () => ({}),
+      addFiles,
+      selection: { app: { imageCache: new Map() } },
+    } as unknown as ExcalidrawImperativeAPI;
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+
+    await ensureImageDataIsLoaded(excalidrawAPI, imageElement('inline-1', 'file-inline-1'), {
+      fileUrl: svgDataURL,
+      isOfficeFile: false,
+    });
+
+    expect(addFiles).toHaveBeenCalledWith([
+      expect.objectContaining({
+        id: 'file-inline-1',
+        mimeType: 'image/svg+xml',
+        dataURL: svgDataURL,
+      }),
+    ]);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('returns inline data straight from getImageData', async () => {
+    idbGet.mockReset();
+
+    const image = await getImageData(imageElement('inline-2', 'file-inline-2'), {
+      fileUrl: svgDataURL,
+      isOfficeFile: false,
+    });
+
+    expect(image).toMatchObject({ id: 'file-inline-2', mimeType: 'image/svg+xml' });
+    expect(idbGet).not.toHaveBeenCalled();
+  });
+
+  it('only claims inline image data URLs', () => {
+    expect(inlineImageData('file-inline-3', 'data:text/plain;base64,QQ==')).toBeNull();
+    expect(inlineImageData('file-inline-3', 'data:image/svg+xml;base64,')).toBeNull();
+    // Server-hosted pictures keep going through the normal upload/fetch path.
+    expect(inlineImageData('file-inline-3', 'https://example.test/a.svg')).toBeNull();
+    expect(inlineImageData('file-inline-3', 'data:image/svg+xml;utf8,%3Csvg%2F%3E')).toMatchObject({
+      id: 'file-inline-3',
+      mimeType: 'image/svg+xml',
+    });
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 });
 

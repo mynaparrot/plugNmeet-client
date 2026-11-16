@@ -28,6 +28,7 @@ const initialState: ISession = {
   userDeviceType: UserDeviceType.DESKTOP,
   isCloud: false,
   clientType: ClientType.WEB,
+  canPlaybackAudio: true,
   currentRoom: {
     sid: '',
     roomId: '',
@@ -175,6 +176,9 @@ const sessionSlice = createSlice({
     updateOverallConnectionQuality: (state, action: PayloadAction<PnmConnectionQuality>) => {
       state.overallConnectionQuality = action.payload;
     },
+    updateCanPlaybackAudio: (state, action: PayloadAction<boolean>) => {
+      state.canPlaybackAudio = action.payload;
+    },
   },
 });
 
@@ -194,6 +198,7 @@ export const {
   updateIsCloud,
   updateClientType,
   updateOverallConnectionQuality,
+  updateCanPlaybackAudio,
 } = sessionSlice.actions;
 
 export default sessionSlice.reducer;

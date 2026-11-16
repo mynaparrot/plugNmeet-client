@@ -554,6 +554,26 @@
                     is_allow: true,
                   },
                 },
+                ai_agent_features: {
+                  is_allow: true,
+                  agent_display_name: 'AI Practice Assistant',
+                  topic: 'General Practice & Product Demo',
+                  system_prompt:
+                    'You are an interactive practice assistant and product guide inside a plugNmeet room. Keep spoken responses concise (1-3 sentences), use the whiteboard and shared notepad to illustrate concepts when helpful, and create quick polls or quizzes to check understanding.',
+                  auto_join_on_first_participant: false,
+                  allow_whiteboard_write: true,
+                  allow_vision_capture: true,
+                  allow_polls: true,
+                  allow_chat_message: true,
+                  allow_notepad_write: true,
+                  strict_topic_enforcement: false,
+                  max_session_seconds: 1800,
+                  mcpServers: {
+                    'plugnmeet-docs': {
+                      url: 'https://docs-mcp.plugnmeet.org/mcp',
+                    },
+                  },
+                },
               },
               end_to_end_encryption_features: {
                 is_enabled: false,

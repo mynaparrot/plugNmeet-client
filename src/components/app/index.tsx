@@ -14,6 +14,7 @@ import ErrorBoundary from './ErrorBoundary';
 import { store, useAppDispatch } from '../../store';
 import { addServerVersion, addToken } from '../../store/slices/sessionSlice';
 import AudioNotification from './audioNotification';
+import AudioPlayModal from './audioPlayModal';
 import ReactionsOverlay from '../reactions';
 import useKeyboardShortcuts from '../../helpers/hooks/useKeyboardShortcuts';
 import useClientCustomization from '../../helpers/hooks/useClientCustomization';
@@ -159,6 +160,7 @@ const App = () => {
           <AudioNotification />
           <DummyAudio />
           <ReactionsOverlay />
+          {roomConnectionStatus === 'room-ready' && <AudioPlayModal />}
         </main>
       </ErrorBoundary>
     );

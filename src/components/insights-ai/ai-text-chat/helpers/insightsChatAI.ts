@@ -8,6 +8,10 @@ import {
 
 import sendAPIRequest from '../../../../helpers/api/plugNmeetAPI';
 import i18n from '../../../../helpers/i18n';
+import { DB_STORE_NAMES, idbStore } from '../../../../helpers/libs/idb';
+import { store } from '../../../../store';
+import { updateIsActiveInsightsAiTextChat } from '../../../../store/slices/bottomIconsActivitySlice';
+import type { IInsightsAITextChatMessage } from '../types';
 
 const STREAM_TIMEOUT_MS = 60_000;
 
@@ -97,4 +101,45 @@ export const handleInsightsChatAIStreamResult = (data: InsightsAITextChatStreamR
   }
 
   return true;
+};
+
+type InsightsAIAgentMessageListener = (message: IInsightsAITextChatMessage) => void;
+
+const agentMessageListeners = new Set<InsightsAIAgentMessageListener>();
+
+/** Messages the AI Agent pushes on its own are not tied to a pending stream. */
+export const subscribeToInsightsAIAgentMessages = (
+  listener: InsightsAIAgentMessageListener,
+): (() => void) => {
+  agentMessageListeners.add(listener);
+  return () => {
+    agentMessageListeners.delete(listener);
+  };
+};
+
+/**
+ * Stores an AI Agent message before notifying the panel, so it survives a
+ * closed or not-yet-mounted chat panel, and opens the panel to show it.
+ */
+export const handleInsightsAIAgentMessage = (data: InsightsAITextChatStreamResult): void => {
+  if (!data.text.trim()) {
+    return;
+  }
+
+  const message: IInsightsAITextChatMessage = {
+    id: data.id || crypto.randomUUID(),
+    role: 'model',
+    createdAt: data.createdAt || Date.now().toString(),
+    parts: [data.text],
+  };
+
+  void idbStore(DB_STORE_NAMES.INSIGHTS_AI_TEXT_CHATS, message.id, message).catch((e) =>
+    console.error('Failed to store AI Agent chat message:', e),
+  );
+
+  agentMessageListeners.forEach((listener) => listener(message));
+
+  if (!store.getState().bottomIconsActivity.isActiveInsightsAiTextChat) {
+    store.dispatch(updateIsActiveInsightsAiTextChat(true));
+  }
 };

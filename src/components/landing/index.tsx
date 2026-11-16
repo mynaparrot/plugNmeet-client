@@ -16,10 +16,13 @@ import { useMediaDevices } from './hooks/useMediaDevices';
 import { MicrophoneOff } from '../../assets/Icons/MicrophoneOff';
 import { CameraOff } from '../../assets/Icons/CameraOff';
 import { LoadingIcon } from '../../assets/Icons/Loading';
+import { getConfigValue } from '../../helpers/utils';
+import { consumeSkipLandingOnce } from './skipLandingOnce';
 
 import MicrophoneIcon from './microphone';
 import WebcamIcon from './webcam';
 import WebcamPreview from '../footer/modals/webcam/webcamPreview';
+import Loading from '../extra-pages/Loading';
 import { isHybridMode } from '../../helpers/nativeBridge';
 import useLogo from '../../helpers/hooks/useLogo';
 
@@ -51,6 +54,13 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
 
   const hybrid = isHybridMode();
   const logo = useLogo();
+  // Read once at mount: either the deployment disabled the landing page, or we just
+  // switched rooms (breakout room / back to the main room) and must not show it again.
+  const [skipLanding] = useState(
+    () =>
+      getConfigValue<boolean>('disableLandingPage', false, 'DISABLE_LANDING_PAGE') ||
+      consumeSkipLandingOnce(),
+  );
 
   const isStartup = useAppSelector((state) => state.session.isStartup);
   const waitForApproval = useAppSelector(
@@ -97,6 +107,17 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
         break;
     }
   }, [roomConnectionStatus, t, dispatch, setIsAppReady]);
+
+  // Connect straight away instead of waiting for the user to approve devices when
+  // the landing page is skipped (disabled by the deployment or a room switch).
+  // waitForApproval === true must keep the waiting room view instead.
+  useEffect(() => {
+    if (waitForApproval !== false || isReadyToConn || !skipLanding) {
+      return;
+    }
+    setShowLoadingMsg(t('landing.connecting-media-server'));
+    setIsReadyToConn(true);
+  }, [t, waitForApproval, isReadyToConn, skipLanding]);
 
   useEffect(() => {
     if (waitForApproval) {
@@ -167,6 +188,13 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
       : lockMicrophone
         ? t('landing.enable-cam-btn')
         : t('landing.enable-mic-btn');
+
+  // Never flash the device setup card when the landing page is skipped: render the
+  // plain loading page from the very first paint. The waiting room view (approval)
+  // must still be shown.
+  if (skipLanding && !waitForApproval) {
+    return <Loading text={showLoadingMsg ?? t('landing.connecting-media-server')} />;
+  }
 
   return (
     isStartup && (

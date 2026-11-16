@@ -7,6 +7,7 @@ import type {
 } from '@excalidraw/excalidraw/element/types';
 
 import { getConfigValue } from '../../../helpers/utils';
+import { A4_BOUNDARY_GUIDE_ID } from './constants';
 import { ensureImageDataIsLoaded, ImageCustomData } from './handleFiles';
 import { sanitizeLibraryBlob } from './librarySanitizer';
 import {
@@ -20,7 +21,7 @@ import { getPageSize, resolvePageOrientation } from '../export-pdf/utils';
 
 // A simple in-memory cache for preloaded library items.
 const libraryCache = new Map<string, Blob>();
-export const A4_BOUNDARY_GUIDE_ID = 'a4-boundary-guide-id';
+export { A4_BOUNDARY_GUIDE_ID };
 
 const defaultPreloadedLibraryItems = [
   'https://libraries.excalidraw.com/libraries/BjoernKW/UML-ER-library.excalidrawlib',

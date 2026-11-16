@@ -11,6 +11,7 @@ import VolumeControl from './volumeControl';
 import DurationView from './durationView';
 import DarkThemeSwitcher from './darkThemeSwitcher';
 import CountdownTimer from '../countdown-timer';
+import AIAgentStatusBar from '../insights-ai/ai-agent/ui/AIAgentStatusBar';
 import HeaderLogo from './headerLogo';
 import { getNatsConn } from '../../helpers/nats';
 import { HeaderMenuIcon } from '../../assets/Icons/HeaderMenuIcon';
@@ -61,6 +62,9 @@ const Header = () => {
             <DarkThemeSwitcher />
             <div className="max-md:absolute max-md:top-full max-md:start-3 max-md:mt-1.5 md:relative">
               <CountdownTimer />
+            </div>
+            <div className="max-md:absolute max-md:top-full max-md:end-3 max-md:mt-1.5 md:relative">
+              <AIAgentStatusBar />
             </div>
           </div>
           <div className="middle flex-initial min-w-0 flex items-center justify-center z-10 order-2 py-0.5 mx-2 gap-2">

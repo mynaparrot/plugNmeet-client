@@ -44,7 +44,17 @@ export interface WhiteboardPresence {
     x: number;
     y: number;
     tool: string;
+    /** False renders only the laser trail of that tool, without cursor and name. */
+    renderCursor?: boolean;
+    laserColor?: string;
   };
+  // A laser trail only extends while the button is down.
   button?: 'up' | 'down';
   selectedElementIds?: Record<string, boolean>;
+  color?: { background: string; stroke: string };
+  /** Marks a pointer that belongs to a non-participant, e.g. the AI agent. */
+  isExternal?: boolean;
 }
+
+/** Scene-space rectangle in Excalidraw coordinates. */
+export type WhiteboardBounds = { x: number; y: number; width: number; height: number };

@@ -15,6 +15,7 @@ import { buildAccessTokenUrl, parseParentRoomId } from '../utils/breakoutRoom';
 import { CloseIconSVG } from '../../../assets/Icons/CloseIconSVG';
 import { LoadingIcon } from '../../../assets/Icons/Loading';
 import { getNatsConn } from '../../../helpers/nats';
+import { AiIconSVG } from '../../../assets/Icons/AiIconSVG';
 
 const RoomsPanel = () => {
   const { t } = useTranslation();
@@ -117,20 +118,43 @@ const RoomsPanel = () => {
           )}
           {rooms.map((room) => {
             // proto3 JSON omits empty repeated fields — guard rooms with no users key.
-            const joinedCount = (room.users ?? []).filter((u) => u.joined).length;
+            const roomUsers = room.users ?? [];
+            const joinedCount = roomUsers.filter((u) => u.joined).length;
             const current = isCurrentRoom(room.id);
+            // AI Agent rooms are 1-on-1: a single assigned user is the student.
+            const assignedStudent =
+              room.enableAiAgent && roomUsers.length === 1 ? roomUsers[0].name : '';
+            const aiContext = room.enableAiAgent ? (room.aiAgentContext ?? '').trim() : '';
             return (
               <div
                 key={room.id}
                 className="flex items-center justify-between gap-3 py-2 border-b border-Gray-200 dark:border-Gray-800"
               >
                 <div className="min-w-0">
-                  <p className="text-sm 3xl:text-base text-Gray-950 dark:text-white font-medium truncate">
-                    {room.title}
+                  <div className="flex items-center gap-2 min-w-0">
+                    <p className="text-sm 3xl:text-base text-Gray-950 dark:text-white font-medium truncate">
+                      {room.title}
+                    </p>
+                    {room.enableAiAgent && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-Blue/10 text-Blue dark:bg-Blue/20 dark:text-Blue2-50 border border-Blue/20 shrink-0">
+                        <AiIconSVG classes="w-3.5 h-3.5 shrink-0" />
+                        {t('breakout-room.ai-session-badge', 'AI Agent')}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs opacity-70 dark:opacity-80 truncate">
+                    {assignedStudent
+                      ? `${assignedStudent} · ${t('breakout-room.joined-count', { count: joinedCount })}`
+                      : t('breakout-room.joined-count', { count: joinedCount })}
                   </p>
-                  <p className="text-xs opacity-70 dark:opacity-80">
-                    {t('breakout-room.joined-count', { count: joinedCount })}
-                  </p>
+                  {aiContext && (
+                    <p
+                      className="text-[11px] text-Gray-600 dark:text-Gray-300 truncate"
+                      title={aiContext}
+                    >
+                      {aiContext}
+                    </p>
+                  )}
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   {current && (

@@ -19,7 +19,10 @@ import {
 import i18n from '../i18n';
 import { pollsApi } from '../../store/services/pollsApi';
 import { cleanHtmlForChat, getConfigValue, randomString } from '../utils';
-import { handleInsightsChatAIStreamResult } from '../../components/insights-ai/ai-text-chat/helpers/insightsChatAI';
+import {
+  handleInsightsAIAgentMessage,
+  handleInsightsChatAIStreamResult,
+} from '../../components/insights-ai/ai-text-chat/helpers/insightsChatAI';
 import { handleNotepadAIStreamResult } from '../../components/shared-notepad/helpers/notepadAI';
 import { handleWhiteboardAIStreamResult } from '../../components/whiteboard/ai/whiteboardAI';
 import { handlePollAIStreamResult } from '../../components/polls/create/pollAI';
@@ -278,6 +281,10 @@ export default class HandleSystemData {
     }
     if (data.requestFrom === InsightsAIRequestSource.INSIGHTS_AI_REQUEST_SOURCE_POLL) {
       handlePollAIStreamResult(data);
+      return;
+    }
+    if (data.requestFrom === InsightsAIRequestSource.INSIGHTS_AI_REQUEST_SOURCE_AI_AGENT) {
+      handleInsightsAIAgentMessage(data);
       return;
     }
     handleInsightsChatAIStreamResult(data);

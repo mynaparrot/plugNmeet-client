@@ -1,0 +1,497 @@
+import type { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
+import type { ExcalidrawElementSkeleton } from '@excalidraw/excalidraw/element/transform';
+import type { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
+
+import { store } from '../../../../store';
+import { aiAgentSelector } from '../../../../store/slices/aiAgentSlice';
+import { getWhiteboardController, type WhiteboardController } from '../../../whiteboard/collab';
+import { getWhiteboardExcalidrawAPI } from '../../../whiteboard/helpers/liveScene';
+import { pushAgentAction } from './agentHistory';
+import { ensureWhiteboardSurface, whiteboardEnabled } from './boardSession';
+import { getBoardFrame, toBBox, unionBBox, type BBox } from './layoutEngine';
+import { beginAgentWhiteboardTool, endAgentWhiteboardTool } from './useVisionSync';
+
+/** Palette names the tool schemas allow, mapped to Excalidraw colours. */
+export const STROKE_COLORS: Record<string, string> = {
+  black: '#1e1e1e',
+  blue: '#1971c2',
+  red: '#e03131',
+  green: '#2f9e44',
+  orange: '#f08c00',
+  violet: '#6741d9',
+};
+
+export const FILL_COLORS: Record<string, string> = {
+  transparent: 'transparent',
+  white: '#ffffff',
+  yellow: '#ffec99',
+  green: '#b2f2bb',
+  blue: '#a5d8ff',
+  red: '#ffc9c9',
+};
+
+export const resolveStrokeColor = (name?: unknown): string =>
+  STROKE_COLORS[String(name ?? 'black')] ?? STROKE_COLORS.black;
+
+/**
+ * Colour for a mark or correction that sits on top of, or beside, a
+ * participant's element. A mark in the participant's own colour is invisible
+ * as feedback, so a missing or `black` choice becomes red and an exact match
+ * becomes blue: the result is always different from the participant's colour.
+ */
+export const resolveContrastingStrokeColor = (
+  requestedColorName: unknown,
+  participantStrokeHex?: string | null,
+): string => {
+  const participant = participantStrokeHex?.trim().toLowerCase();
+  if (!participant) {
+    return resolveStrokeColor(requestedColorName);
+  }
+
+  const requested = String(requestedColorName ?? '')
+    .trim()
+    .toLowerCase();
+  const color =
+    !requested || requested === 'black' ? STROKE_COLORS.red : resolveStrokeColor(requested);
+  if (color !== participant) {
+    return color;
+  }
+  // Even blue can be the participant's colour, so fall back to red.
+  return participant === STROKE_COLORS.blue ? STROKE_COLORS.red : STROKE_COLORS.blue;
+};
+
+export const resolveFillColor = (name?: unknown): string =>
+  FILL_COLORS[String(name ?? 'transparent')] ?? 'transparent';
+
+const randomSuffix = () => Math.random().toString(36).slice(2, 10);
+
+/** Ids of agent-made elements are prefixed, so authorship survives any reload. */
+export const agentElementId = (): string => `ai_${randomSuffix()}`;
+
+const currentSessionId = (): string => aiAgentSelector(store.getState())?.sessionId ?? '';
+
+/**
+ * Authorship tag written into `customData` of every agent element. Everything
+ * that belongs to one action shares a `batchId`, so the layout engine can treat
+ * the whole action (a diagram, a table, a group) as a single block.
+ */
+export const agentCustomData = (toolName: string, batchId = agentElementId()) => ({
+  ai_agent: {
+    sessionId: currentSessionId(),
+    toolName,
+    batchId,
+    createdAt: Date.now(),
+  },
+});
+
+export const asCustomData = (value: Record<string, unknown>) => value as never;
+
+type CustomData = Record<string, unknown> | undefined;
+
+const customDataOf = (element: { customData?: unknown }): CustomData =>
+  element.customData as CustomData;
+
+const hasAgentTag = (data: unknown): boolean =>
+  !!(data as { ai_agent?: unknown } | undefined)?.ai_agent;
+
+/** The batch an element already belongs to, when it carries one. */
+const agentBatchId = (data: unknown): string | null => {
+  const batchId = (data as { ai_agent?: { batchId?: unknown } } | undefined)?.ai_agent?.batchId;
+  return typeof batchId === 'string' && batchId ? batchId : null;
+};
+
+/**
+ * Tags one element with the agent's `customData`, keeping whatever part of the
+ * tag is already there. An element that carries no batch joins `batchId`.
+ */
+const withAgentData = (
+  data: CustomData,
+  toolName: string,
+  batchId: string,
+): Record<string, unknown> => {
+  const current = (data as { ai_agent?: Record<string, unknown> } | undefined)?.ai_agent;
+  if (!data || !current) {
+    return { ...data, ...agentCustomData(toolName, batchId) };
+  }
+  if (agentBatchId(data)) {
+    return data;
+  }
+  return { ...data, ai_agent: { ...current, batchId } };
+};
+
+/**
+ * Builds real Excalidraw elements from shorthand skeletons. Loaded on demand so
+ * importing the tool registry never drags the editor bundle into the page.
+ *
+ * A skeleton `label` becomes a separate bound text element with a fresh id and
+ * no `customData`, so the batch tag is copied onto it here.
+ */
+export const toExcalidrawElements = async (
+  skeletons: unknown[],
+  toolName?: string,
+): Promise<ExcalidrawElement[]> => {
+  const { convertToExcalidrawElements } = await import('@excalidraw/excalidraw');
+  const elements = convertToExcalidrawElements(skeletons as ExcalidrawElementSkeleton[], {
+    regenerateIds: false,
+  }) as unknown as ExcalidrawElement[];
+
+  const batchData = skeletons
+    .map((skeleton) => customDataOf(skeleton as { customData?: unknown }))
+    .find(hasAgentTag);
+  const fallback: CustomData = batchData ?? (toolName ? agentCustomData(toolName) : undefined);
+  if (!fallback) {
+    return elements;
+  }
+
+  const byId = new Map(elements.map((element) => [element.id, element]));
+  const tagged: ExcalidrawElement[] = [];
+  for (const element of elements) {
+    const existing = customDataOf(element);
+    if (hasAgentTag(existing)) {
+      tagged.push(element);
+      continue;
+    }
+    const containerId = (element as { containerId?: string | null }).containerId;
+    const container = containerId ? byId.get(containerId) : undefined;
+    const containerData = container && customDataOf(container);
+    const source = hasAgentTag(containerData) ? containerData! : fallback;
+    tagged.push({
+      ...element,
+      customData: asCustomData({ ...existing, ...source }),
+    } as ExcalidrawElement);
+  }
+  return tagged;
+};
+
+/**
+ * Fractional z-index after everything already on the page. Excalidraw compares
+ * indices lexicographically, so appending a fraction keeps the order valid.
+ */
+export const nextSceneIndex = (elements: readonly ExcalidrawElement[]): string => {
+  const indices = elements
+    .map((element) => (element as { index?: string }).index)
+    .filter((index): index is string => typeof index === 'string' && index.length > 0);
+  if (indices.length === 0) {
+    return 'a0';
+  }
+  return `${indices.sort()[indices.length - 1]}V`;
+};
+
+export type FreeDrawInput = {
+  id: string;
+  x: number;
+  y: number;
+  /** Points relative to (x, y). */
+  points: [number, number][];
+  strokeColor: string;
+  strokeWidth: number;
+  index: string;
+  customData: never;
+};
+
+/**
+ * Excalidraw has no freedraw skeleton, so a freedraw element is built field by
+ * field from the sampled stroke.
+ */
+export const buildFreeDrawElement = (input: FreeDrawInput): ExcalidrawElement => {
+  const xs = input.points.map(([x]) => x);
+  const ys = input.points.map(([, y]) => y);
+  const width = Math.round(Math.max(...xs) - Math.min(...xs));
+  const height = Math.round(Math.max(...ys) - Math.min(...ys));
+  const seed = Math.floor(Math.random() * 2 ** 31);
+
+  return {
+    id: input.id,
+    type: 'freedraw',
+    x: Math.round(input.x),
+    y: Math.round(input.y),
+    width: Math.max(1, width),
+    height: Math.max(1, height),
+    angle: 0,
+    strokeColor: input.strokeColor,
+    backgroundColor: 'transparent',
+    fillStyle: 'solid',
+    strokeWidth: input.strokeWidth,
+    strokeStyle: 'solid',
+    roughness: 1,
+    opacity: 100,
+    groupIds: [],
+    frameId: null,
+    roundness: null,
+    seed,
+    version: 1,
+    versionNonce: seed,
+    isDeleted: false,
+    boundElements: null,
+    updated: Date.now(),
+    link: null,
+    locked: false,
+    index: input.index,
+    pressures: [],
+    // Uniform width: simulated pressure thickens and thins a sampled stroke,
+    // which reads as a wobbly line instead of a drawn one.
+    simulatePressure: false,
+    lastCommittedPoint: null,
+    points: input.points,
+    customData: input.customData,
+  } as unknown as ExcalidrawElement;
+};
+
+// oxfmt-ignore
+const LATEX_SYMBOLS: Record<string, string> = { alpha: 'α', beta: 'β', gamma: 'γ', delta: 'δ', epsilon: 'ε', varepsilon: 'ε', zeta: 'ζ', eta: 'η', theta: 'θ', iota: 'ι', kappa: 'κ', lambda: 'λ', mu: 'μ', nu: 'ν', xi: 'ξ', pi: 'π', rho: 'ρ', sigma: 'σ', tau: 'τ', phi: 'φ', varphi: 'φ', chi: 'χ', psi: 'ψ', omega: 'ω', Gamma: 'Γ', Delta: 'Δ', Theta: 'Θ', Lambda: 'Λ', Pi: 'Π', Sigma: '∑', Phi: 'Φ', Psi: 'Ψ', Omega: 'Ω', int: '∫', sum: '∑', prod: '∏', sqrt: '√', infty: '∞', partial: '∂', nabla: '∇', pm: '±', mp: '∓', times: '×', cdot: '·', div: '÷', neq: '≠', ne: '≠', leq: '≤', le: '≤', geq: '≥', ge: '≥', approx: '≈', equiv: '≡', sim: '∼', propto: '∝', in: '∈', notin: '∉', subset: '⊂', subseteq: '⊆', cup: '∪', cap: '∩', forall: '∀', exists: '∃', rightarrow: '→', to: '→', leftarrow: '←', Rightarrow: '⇒', Leftrightarrow: '⇔', iff: '⇔', det: 'det', sin: 'sin', cos: 'cos', tan: 'tan', log: 'log', ln: 'ln', lim: 'lim', max: 'max', min: 'min', left: '', right: '' };
+
+// oxfmt-ignore
+const SUPERSCRIPTS: Record<string, string> = { '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹', '+': '⁺', '-': '⁻', '=': '⁼', '(': '⁽', ')': '⁾', b: 'ᵇ', n: 'ⁿ', i: 'ⁱ', x: 'ˣ', y: 'ʸ' };
+
+// oxfmt-ignore
+const SUBSCRIPTS: Record<string, string> = { '0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉', '+': '₊', '-': '₋', '=': '₌', '(': '₍', ')': '₎', a: 'ₐ', e: 'ₑ', h: 'ₕ', i: 'ᵢ', j: 'ⱼ', k: 'ₖ', l: 'ₗ', m: 'ₘ', n: 'ₙ', o: 'ₒ', p: 'ₚ', r: 'ᵣ', s: 'ₛ', t: 'ₜ', u: 'ᵤ', v: 'ᵥ', x: 'ₓ' };
+
+/** Repeated until stable, so nested `\frac{...}{...}` and friends resolve. */
+const replaceUntilStable = (
+  text: string,
+  pattern: RegExp,
+  replacer: (match: string, ...groups: string[]) => string,
+): string => {
+  let out = text;
+  for (let pass = 0; pass < 4; pass++) {
+    const next = out.replace(pattern, replacer);
+    if (next === out) {
+      break;
+    }
+    out = next;
+  }
+  return out;
+};
+
+/** `$50`, `$1,20` and `$50 and $60` stay currency; only real formulas are unwrapped. */
+const looksLikeMath = (inner: string): boolean => {
+  const value = inner.trim();
+  if (!value || /^[\d.,]/.test(value)) {
+    return false;
+  }
+  return /[a-zA-Z\\]/.test(value);
+};
+
+/** Any real math marker: a delimiter, a script, or a LaTeX command. */
+const MATH_INDICATORS = /[$\\^]|_[{\d]|\\[a-zA-Z]/;
+
+/**
+ * A bare `_x` that reads as a subscript: either a single-letter variable
+ * (`x_1`, `a_n`) or the base of an operator (`\int_a`, `\sum_i`, `lim_x`).
+ * A preceding `user` or `step` fails the lookbehind, so identifiers such as
+ * `user_id` or `step_1` are left exactly as written.
+ */
+const BARE_SUBSCRIPT = /(?<![A-Za-z0-9_])((?:lim|[A-Za-z∫∑∏]))_([0-9a-zA-Z])(?![A-Za-z0-9_])/g;
+
+const subscriptOrSuperscript = (
+  text: string,
+  marker: '^' | '_',
+  table: Record<string, string>,
+  hasMathIndicators: boolean,
+): string => {
+  const map = (inner: string): string | null => {
+    const chars = [...inner.trim()];
+    const mapped = chars.map((char) => table[char]);
+    return chars.length > 0 && mapped.every((char) => char !== undefined) ? mapped.join('') : null;
+  };
+
+  // Single characters first, and never the parentheses of an already formatted
+  // `^(...)`: formatting runs more than once, so it has to stay idempotent.
+  // `^2`/`^n` are always powers, while a bare `_x` only becomes a subscript in
+  // a formula and next to a symbol or a lone variable. Otherwise `snake_case`
+  // names would be mangled (`user_id` -> `userᵢd`, `room_1` -> `room₁`).
+  const single =
+    marker === '^'
+      ? text.replace(
+          new RegExp(`\\^([A-Za-z0-9+\\-=])(?![A-Za-z0-9_])`, 'g'),
+          (match: string, char: string) => table[char] ?? match,
+        )
+      : hasMathIndicators
+        ? text.replace(BARE_SUBSCRIPT, (match: string, base: string, char: string) => {
+            const mapped = table[char];
+            return mapped === undefined ? match : `${base}${mapped}`;
+          })
+        : text;
+
+  const braced = new RegExp(`\\${marker}\\s*\\{([^{}]*)\\}`, 'g');
+  return single.replace(braced, (_match, inner: string) => {
+    const value = String(inner).trim();
+    return map(value) ?? `${marker}(${value})`;
+  });
+};
+
+/**
+ * Excalidraw renders text, not LaTeX: `$$...$$`, `\int`, `\pi` and friends are
+ * turned into the Unicode the canvas can actually draw.
+ */
+export const formatWhiteboardText = (raw: string): string => {
+  if (!raw || !/[$\\^_]/.test(raw)) {
+    return raw;
+  }
+
+  let text = raw;
+  const delimiters = [/\$\$([\s\S]*?)\$\$/g, /\\\[([\s\S]*?)\\\]/g, /\\\(([\s\S]*?)\\\)/g];
+  for (const pattern of delimiters) {
+    text = text.replace(pattern, (_match, inner: string) => String(inner).trim());
+  }
+  text = text.replace(/\$([^$\n]+)\$/g, (match, inner: string) =>
+    looksLikeMath(String(inner)) ? String(inner).trim() : match,
+  );
+
+  text = replaceUntilStable(
+    text,
+    /\\frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}/g,
+    (_match, numerator: string, denominator: string) =>
+      `(${numerator.trim()})/(${denominator.trim()})`,
+  );
+  text = replaceUntilStable(
+    text,
+    /\\sqrt\s*(?:\[([^\]]*)\])?\s*\{([^{}]*)\}/g,
+    (_match, _index: string, radicand: string) => `√(${radicand.trim()})`,
+  );
+  text = replaceUntilStable(
+    text,
+    /\\(?:text|mathrm|mathbf|mathit)\s*\{([^{}]*)\}/g,
+    (_match, inner: string) => String(inner),
+  );
+
+  text = text
+    .replace(/\\(?:quad|qquad)\b/g, ' ')
+    .replace(/\\[,;:! ]/g, ' ')
+    .replace(/\\[a-zA-Z]+/g, (match) => LATEX_SYMBOLS[match.slice(1)] ?? match);
+
+  // Decided on the raw input: a formula carries at least one math marker, so a
+  // lone `_` in prose or in an identifier is not a subscript.
+  const hasMathIndicators = MATH_INDICATORS.test(raw);
+  text = subscriptOrSuperscript(text, '^', SUPERSCRIPTS, hasMathIndicators);
+  text = subscriptOrSuperscript(text, '_', SUBSCRIPTS, hasMathIndicators);
+  return text;
+};
+
+/** Rough text box size: no canvas measuring is available outside the editor. */
+export const measureText = (text: string, fontSize: number): { width: number; height: number } => {
+  const lines = text.split('\n');
+  const longest = lines.reduce((max, line) => Math.max(max, line.length), 0);
+  return {
+    width: Math.max(40, Math.round(longest * fontSize * 0.55)),
+    height: Math.max(fontSize, Math.round(lines.length * fontSize * 1.3)),
+  };
+};
+
+export type BoardContext = {
+  api: ExcalidrawImperativeAPI | null;
+  controller: WhiteboardController;
+  elements: readonly ExcalidrawElement[];
+  frame: BBox;
+};
+
+export type BoardLookup = { board: BoardContext } | { error: string };
+
+/**
+ * The live board, or the reason it cannot be drawn on. Never throws: every
+ * failure has to come back to the model as a readable tool result.
+ */
+export const requireBoard = (): BoardLookup => {
+  if (!whiteboardEnabled()) {
+    return { error: 'The whiteboard is not enabled in this room.' };
+  }
+
+  const controller = getWhiteboardController();
+  if (!controller.getSnapshot()) {
+    // The editor may already be mounted: without the CRDT document there is
+    // nothing to write into, and every element would be dropped silently.
+    return { error: 'The whiteboard is not open on this device right now.' };
+  }
+
+  const api = getWhiteboardExcalidrawAPI();
+  const elements = api
+    ? api.getSceneElements()
+    : controller.getElements().filter((element) => !element.isDeleted);
+
+  return { board: { api, controller, elements, frame: getBoardFrame(elements) } };
+};
+
+/** Opens the whiteboard on this client, then hands back the live board. */
+export const ensureBoardOpen = async (): Promise<BoardLookup> => {
+  const error = await ensureWhiteboardSurface();
+  return error ? { error } : requireBoard();
+};
+
+export type CommitOptions = {
+  toolName: string;
+  /** False for intermediate steps of an animated drawing. */
+  record?: boolean;
+  /** Defaults to `record !== false`: intermediate steps never move the viewport. */
+  scrollToContent?: boolean;
+};
+
+/**
+ * Writes agent elements into the page and, unless disabled, records them so
+ * `whiteboard_manage_board` can undo exactly this action.
+ */
+export const commitAgentElements = (
+  board: BoardContext,
+  elements: readonly ExcalidrawElement[],
+  options: CommitOptions,
+): boolean => {
+  if (elements.length === 0) {
+    return false;
+  }
+
+  // Everything committed in one call is one batch: the elements share a
+  // `batchId`, so later placements see them as a single block instead of
+  // dropping content into the hollow spaces between them.
+  const batchId =
+    elements.map((element) => agentBatchId(customDataOf(element))).find(Boolean) ??
+    agentElementId();
+
+  // Every element that reaches the CRDT must carry the tag, including bound
+  // label text elements Excalidraw generated on its own.
+  const tagged = elements.map((element) => {
+    const data = customDataOf(element);
+    const merged = withAgentData(data, options.toolName, batchId);
+    if (merged === data) {
+      return element;
+    }
+    return { ...element, customData: asCustomData(merged) } as ExcalidrawElement;
+  });
+
+  const existing = new Map(board.elements.map((element) => [element.id, element]));
+  const replaced = tagged
+    .filter((element) => existing.has(element.id))
+    .map((element) => ({ before: existing.get(element.id)!, after: element }));
+
+  beginAgentWhiteboardTool();
+  let ok = false;
+  try {
+    ok = board.controller.applyExternalElements(tagged);
+  } finally {
+    endAgentWhiteboardTool();
+  }
+
+  if (ok && options.record !== false) {
+    pushAgentAction({
+      toolName: options.toolName,
+      createdAt: Date.now(),
+      added: [...tagged],
+      replaced,
+    });
+  }
+
+  // The audience has to see what was just written, including peers that are
+  // following this client from another scroll position.
+  if (ok && (options.scrollToContent ?? options.record !== false)) {
+    board.controller.revealElementsInViewport(tagged);
+  }
+  return ok;
+};
+
+export type DrawnResult = { ok: true; elementIds: string[]; bbox: BBox };
+
+export const drawnResult = (elements: readonly ExcalidrawElement[]): DrawnResult => ({
+  ok: true,
+  elementIds: elements.map((element) => element.id),
+  bbox: unionBBox(elements.map(toBBox)),
+});
+
+export const invalid = (error: string): { ok: false; error: string } => ({ ok: false, error });

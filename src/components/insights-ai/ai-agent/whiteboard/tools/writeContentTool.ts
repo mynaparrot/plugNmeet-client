@@ -1,0 +1,488 @@
+import type { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
+
+import {
+  agentCustomData,
+  agentElementId,
+  asCustomData,
+  commitAgentElements,
+  drawnResult,
+  ensureBoardOpen,
+  formatWhiteboardText,
+  invalid,
+  measureText,
+  resolveContrastingStrokeColor,
+  resolveFillColor,
+  resolveStrokeColor,
+  toExcalidrawElements,
+  type BoardContext,
+} from '../agentElements';
+import {
+  ANCHORED_LAYOUTS,
+  FRAME_PADDING,
+  anchoredElementId,
+  maxA4ContentWidth,
+  readLayout,
+  resolvePlacement,
+  sceneBoxes,
+  toBBox,
+} from '../layoutEngine';
+import { isAgentElement } from '../sceneGraph';
+
+const TOOL_NAME = 'whiteboard_write_content';
+
+type Block = {
+  text: string;
+  emphasis: 'none' | 'bold' | 'highlight' | 'underline';
+  columns?: string[];
+};
+
+const DEFAULT_FONT_SIZE: Record<string, number> = {
+  heading: 32,
+  body: 20,
+  vocabulary_card: 22,
+  sticky_note: 20,
+  comparison_table: 18,
+};
+
+const STYLES = ['heading', 'body', 'vocabulary_card', 'sticky_note', 'comparison_table'] as const;
+const EMPHASIS = ['none', 'bold', 'highlight', 'underline'] as const;
+
+/** Table geometry: Excalidraw wraps the cell text inside these bounds. */
+const MAX_TABLE_COLUMNS = 5;
+const MIN_COLUMN_WIDTH = 140;
+const MAX_COLUMN_WIDTH = 320;
+const CELL_PADDING_X = 32;
+const CELL_PADDING_Y = 24;
+const MIN_ROW_HEIGHT = 44;
+/** Vertical gap between two blocks. */
+const BLOCK_SPACING = 12;
+/** Inner padding of a sticky note or vocabulary card, on every side. */
+const CARD_PADDING = 18;
+
+const asString = (value: unknown): string => (typeof value === 'string' ? value.trim() : '');
+
+const readBlocks = (raw: unknown): Block[] | null => {
+  if (!Array.isArray(raw) || raw.length === 0) {
+    return null;
+  }
+  const blocks: Block[] = [];
+  for (const entry of raw) {
+    if (!entry || typeof entry !== 'object') {
+      continue;
+    }
+    const record = entry as Record<string, unknown>;
+    const text = formatWhiteboardText(asString(record.text));
+    if (!text) {
+      continue;
+    }
+    const emphasis = (EMPHASIS as readonly string[]).includes(String(record.emphasis))
+      ? (record.emphasis as Block['emphasis'])
+      : 'none';
+    const columns = Array.isArray(record.columns)
+      ? record.columns
+          .map((column) => formatWhiteboardText(asString(column)))
+          .slice(0, MAX_TABLE_COLUMNS)
+          .filter(Boolean)
+      : undefined;
+    blocks.push({ text, emphasis, ...(columns && columns.length > 0 ? { columns } : {}) });
+  }
+  return blocks.length > 0 ? blocks : null;
+};
+
+const findAnchor = (board: BoardContext, id: string): ExcalidrawElement | undefined =>
+  board.elements.find((element) => element.id === id);
+
+/** A grid row: any block carrying cells, plus single-cell rows of a table. */
+const isTableRow = (block: Block, style: string): boolean => {
+  const count = block.columns?.length ?? 0;
+  return style === 'comparison_table' ? count >= 1 : count >= 2;
+};
+
+const cellsOf = (block: Block): string[] =>
+  block.columns && block.columns.length > 0 ? block.columns : [block.text];
+
+const blockHeight = (block: Block, fontSize: number): number => {
+  const extra = block.emphasis === 'highlight' ? 12 : block.emphasis === 'underline' ? 10 : 0;
+  return measureText(block.text, fontSize).height + extra;
+};
+
+const textWidth = (block: Block, fontSize: number): number =>
+  Math.max(80, measureText(block.text, fontSize).width);
+
+const isCardStyle = (style: string): boolean =>
+  style === 'sticky_note' || style === 'vocabulary_card';
+
+const bodyFontSizeOf = (block: Block, fontSize: number): number =>
+  block.emphasis === 'bold' ? Math.round(fontSize * 1.15) : fontSize;
+
+type CardSize = { width: number; height: number };
+
+/** A card is its text plus the padding on both sides, in both directions. */
+const cardSize = (block: Block, fontSize: number): CardSize => {
+  const metrics = measureText(block.text, bodyFontSizeOf(block, fontSize));
+  return {
+    width: metrics.width + CARD_PADDING * 2,
+    height: metrics.height + CARD_PADDING * 2,
+  };
+};
+
+type CardSlot = CardSize & { x: number; y: number };
+
+/**
+ * Cards read left to right and wrap onto a new row when the next one would
+ * cross the available width, instead of forming one tall column.
+ */
+const flowCards = (
+  sizes: readonly CardSize[],
+  availableWidth: number,
+): { slots: CardSlot[]; width: number; height: number } => {
+  const limit = Math.max(availableWidth, ...sizes.map((size) => size.width));
+  const slots: CardSlot[] = [];
+  let x = 0;
+  let y = 0;
+  let rowHeight = 0;
+  let width = 0;
+
+  for (const size of sizes) {
+    if (x > 0 && x + size.width > limit) {
+      y += rowHeight + BLOCK_SPACING;
+      x = 0;
+      rowHeight = 0;
+    }
+    slots.push({ x, y, width: size.width, height: size.height });
+    x += size.width + BLOCK_SPACING;
+    width = Math.max(width, x - BLOCK_SPACING);
+    rowHeight = Math.max(rowHeight, size.height);
+  }
+
+  return { slots, width, height: y + rowHeight };
+};
+
+type TableLayout = { columnWidths: number[]; rowHeights: number[]; width: number };
+
+/**
+ * Column widths and row heights are measured once for the whole table, so the
+ * grid lines up row by row instead of cell by cell.
+ */
+const buildTableLayout = (
+  rows: Block[],
+  fontSize: number,
+  maxWidth = Number.POSITIVE_INFINITY,
+): TableLayout => {
+  if (rows.length === 0) {
+    return { columnWidths: [], rowHeights: [], width: 0 };
+  }
+
+  const columnCount = Math.min(
+    MAX_TABLE_COLUMNS,
+    Math.max(...rows.map((row) => row.columns?.length ?? 1)),
+  );
+
+  const columnWidths = Array.from({ length: columnCount }, (_, column) => {
+    const measured = Math.max(
+      ...rows.map((row) => {
+        const cell = row.columns?.[column];
+        return cell ? measureText(cell, fontSize).width : 0;
+      }),
+    );
+    return Math.max(MIN_COLUMN_WIDTH, Math.min(MAX_COLUMN_WIDTH, measured + CELL_PADDING_X));
+  });
+
+  const rowHeights = rows.map((row) => {
+    const tallest = Math.max(...cellsOf(row).map((cell) => measureText(cell, fontSize).height));
+    return Math.max(MIN_ROW_HEIGHT, tallest + CELL_PADDING_Y);
+  });
+
+  const total = columnWidths.reduce((sum, width) => sum + width, 0);
+  // A 5-column table can be wider than the A4 page: shrink every column by the
+  // same factor so the grid still fits inside the guide.
+  if (total > maxWidth) {
+    const factor = maxWidth / total;
+    const fitted = columnWidths.map((width) => Math.max(1, Math.floor(width * factor)));
+    return { columnWidths: fitted, rowHeights, width: fitted.reduce((sum, w) => sum + w, 0) };
+  }
+
+  return { columnWidths, rowHeights, width: total };
+};
+
+/**
+ * One row of the grid: every cell is a bordered rectangle with a bound label, so
+ * Excalidraw centres and wraps the text inside the cell.
+ */
+const renderTableRow = (
+  block: Block,
+  x: number,
+  y: number,
+  rowIndex: number,
+  table: TableLayout,
+  fontSize: number,
+  strokeColor: string,
+  data: unknown,
+): unknown[] => {
+  const cells = cellsOf(block);
+  const height = table.rowHeights[rowIndex] ?? MIN_ROW_HEIGHT;
+  const isHeaderRow = rowIndex === 0 || block.emphasis === 'bold';
+  const backgroundColor = resolveFillColor(isHeaderRow ? 'blue' : 'white');
+
+  let cellX = x;
+  return table.columnWidths.map((width, column) => {
+    const skeleton = {
+      id: agentElementId(),
+      type: 'rectangle',
+      x: cellX,
+      y,
+      width,
+      height,
+      strokeColor,
+      backgroundColor,
+      fillStyle: 'solid',
+      strokeWidth: 1,
+      label: { text: cells[column] ?? '', fontSize, fontFamily: 1 },
+      customData: data,
+    };
+    cellX += width;
+    return skeleton;
+  });
+};
+
+/**
+ * One positioned block: its skeletons (converted in one batch) and its height.
+ * `data` is the batch tag of the whole tool call, so every block of one write
+ * shares a `batchId` and the page sees the write as a single block.
+ */
+const renderBlock = (
+  block: Block,
+  x: number,
+  y: number,
+  style: string,
+  fontSize: number,
+  strokeColor: string,
+  data: unknown,
+): { skeletons: unknown[]; height: number } => {
+  const skeletons: unknown[] = [];
+
+  const bodyFontSize = bodyFontSizeOf(block, fontSize);
+  const metrics = measureText(block.text, bodyFontSize);
+
+  if (isCardStyle(style)) {
+    const card = cardSize(block, fontSize);
+    skeletons.push({
+      id: agentElementId(),
+      type: 'rectangle',
+      x,
+      y,
+      width: card.width,
+      height: card.height,
+      strokeColor,
+      backgroundColor: resolveFillColor(style === 'sticky_note' ? 'yellow' : 'white'),
+      fillStyle: 'solid',
+      strokeWidth: 1,
+      roundness: { type: 3 },
+      label: { text: block.text, fontSize, fontFamily: 1 },
+      customData: data,
+    });
+    return { skeletons, height: card.height };
+  }
+
+  if (block.emphasis === 'highlight') {
+    skeletons.push({
+      id: agentElementId(),
+      type: 'rectangle',
+      x: x - 6,
+      y: y - 4,
+      width: metrics.width + 12,
+      height: metrics.height + 8,
+      strokeColor: 'transparent',
+      backgroundColor: resolveFillColor('yellow'),
+      fillStyle: 'solid',
+      strokeWidth: 1,
+      customData: data,
+    });
+  }
+
+  skeletons.push({
+    id: agentElementId(),
+    type: 'text',
+    x,
+    y,
+    width: metrics.width,
+    height: metrics.height,
+    text: block.text,
+    fontSize: bodyFontSize,
+    fontFamily: 1,
+    strokeColor,
+    textAlign: 'left',
+    verticalAlign: 'top',
+    customData: data,
+  });
+
+  if (block.emphasis === 'underline') {
+    skeletons.push({
+      id: agentElementId(),
+      type: 'line',
+      x,
+      y: y + metrics.height + 4,
+      width: metrics.width,
+      height: 0,
+      strokeColor,
+      strokeWidth: 1,
+      customData: data,
+    });
+  }
+
+  return { skeletons, height: blockHeight(block, fontSize) };
+};
+
+/**
+ * `whiteboard_write_content`: structured teaching content with automatic
+ * layout, so the model never has to compute pixel coordinates.
+ */
+export const executeWhiteboardWriteContentTool = async (
+  args: Record<string, unknown>,
+): Promise<Record<string, unknown>> => {
+  const blocks = readBlocks(args.blocks);
+  if (!blocks) {
+    return invalid('blocks must be a non-empty array of { text } objects.');
+  }
+
+  const style = (STYLES as readonly string[]).includes(String(args.style))
+    ? String(args.style)
+    : 'body';
+  const layout = readLayout(args.layout);
+
+  const requestedFont = Number(args.font_size);
+  const fontSize =
+    Number.isFinite(requestedFont) && requestedFont >= 12 && requestedFont <= 48
+      ? Math.round(requestedFont)
+      : (DEFAULT_FONT_SIZE[style] ?? DEFAULT_FONT_SIZE.body);
+
+  const lookup = await ensureBoardOpen();
+  if ('error' in lookup) {
+    return invalid(lookup.error);
+  }
+  const context = lookup.board;
+
+  const anchorId = asString(args.anchor_element_id);
+  const anchorElement = anchorId ? findAnchor(context, anchorId) : undefined;
+  const anchor = anchorElement ? toBBox(anchorElement) : null;
+  if (ANCHORED_LAYOUTS.includes(layout) && !anchorElement) {
+    return invalid(`anchor_element_id "${anchorId}" was not found on this page.`);
+  }
+
+  // A correction written beside the participant's work has to read as feedback,
+  // never as their own writing in their own colour.
+  const participantAnchor =
+    ANCHORED_LAYOUTS.includes(layout) && anchorElement && !isAgentElement(anchorElement)
+      ? anchorElement
+      : null;
+  const strokeColor = participantAnchor
+    ? resolveContrastingStrokeColor(args.color, participantAnchor.strokeColor)
+    : resolveStrokeColor(args.color);
+
+  const table = buildTableLayout(
+    blocks.filter((block) => isTableRow(block, style)),
+    fontSize,
+    maxA4ContentWidth(context.frame),
+  );
+
+  const cardSizes = isCardStyle(style) ? blocks.map((block) => cardSize(block, fontSize)) : [];
+  // Anchored placement is measured against the anchor element itself, so the
+  // batch it belongs to may stay split; free space sees batches as one block.
+  const existingBoxes = sceneBoxes(context.elements, anchoredElementId(layout, anchorId));
+  const frameRight = Math.round(context.frame.x + context.frame.width - FRAME_PADDING);
+
+  // Cards wrap inside the free width they land in, which is only known once the
+  // origin is placed. Probing with the largest single card finds that column
+  // first (e.g. the gap right of a left-hand column) instead of measuring the
+  // whole row against the full A4 width and being pushed below the content.
+  const probeOrigin =
+    cardSizes.length > 0
+      ? resolvePlacement(
+          existingBoxes,
+          context.frame,
+          {
+            width: Math.max(...cardSizes.map((size) => size.width)),
+            height: Math.max(...cardSizes.map((size) => size.height)),
+          },
+          layout,
+          anchor ?? undefined,
+        )
+      : null;
+  let cardFlow = probeOrigin ? flowCards(cardSizes, frameRight - probeOrigin.x) : null;
+
+  let rowIndex = 0;
+  const heights = blocks.map((block) =>
+    isTableRow(block, style)
+      ? (table.rowHeights[rowIndex++] ?? MIN_ROW_HEIGHT)
+      : blockHeight(block, fontSize),
+  );
+
+  const contentWidth =
+    cardFlow?.width ??
+    Math.max(
+      ...blocks.map((block) =>
+        isTableRow(block, style) ? table.width : textWidth(block, fontSize),
+      ),
+    );
+  const contentHeight =
+    cardFlow?.height ??
+    heights.reduce((sum, height) => sum + height, 0) + (blocks.length - 1) * BLOCK_SPACING;
+
+  const origin = resolvePlacement(
+    existingBoxes,
+    context.frame,
+    { width: contentWidth, height: contentHeight },
+    layout,
+    anchor ?? undefined,
+  );
+
+  // The origin may land somewhere else than the probe: cards then wrap inside
+  // the width that is actually left, so none of them crosses the A4 right edge.
+  if (cardFlow && probeOrigin && origin.x !== probeOrigin.x) {
+    cardFlow = flowCards(cardSizes, frameRight - origin.x);
+  }
+
+  const data = asCustomData(agentCustomData(TOOL_NAME));
+  const skeletons: unknown[] = [];
+  let cursorY = origin.y;
+  rowIndex = 0;
+
+  for (const [index, block] of blocks.entries()) {
+    if (cardFlow) {
+      const slot = cardFlow.slots[index];
+      skeletons.push(
+        ...renderBlock(
+          block,
+          origin.x + slot.x,
+          origin.y + slot.y,
+          style,
+          fontSize,
+          strokeColor,
+          data,
+        ).skeletons,
+      );
+      continue;
+    }
+
+    if (isTableRow(block, style)) {
+      skeletons.push(
+        ...renderTableRow(block, origin.x, cursorY, rowIndex, table, fontSize, strokeColor, data),
+      );
+      cursorY += (table.rowHeights[rowIndex] ?? MIN_ROW_HEIGHT) + BLOCK_SPACING;
+      rowIndex++;
+      continue;
+    }
+
+    const rendered = renderBlock(block, origin.x, cursorY, style, fontSize, strokeColor, data);
+    skeletons.push(...rendered.skeletons);
+    cursorY += rendered.height + BLOCK_SPACING;
+  }
+
+  const elements: ExcalidrawElement[] = await toExcalidrawElements(skeletons, TOOL_NAME);
+
+  if (!commitAgentElements(context, elements, { toolName: TOOL_NAME })) {
+    return invalid('The whiteboard refused the write.');
+  }
+
+  return drawnResult(elements);
+};

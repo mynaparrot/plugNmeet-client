@@ -14,6 +14,7 @@ import breakoutRoomSlice from './slices/breakoutRoomSlice';
 import { breakoutRoomApi } from './services/breakoutRoomApi';
 import speechServicesSlice from './slices/speechServicesSlice';
 import reactionsSlice from './slices/reactionsSlice';
+import aiAgentSlice from './slices/aiAgentSlice';
 import { reactionsListener } from './middlewares/reactionsListener';
 
 declare const IS_PRODUCTION: boolean;
@@ -33,6 +34,7 @@ export const store = configureStore({
     [breakoutRoomApi.reducerPath]: breakoutRoomApi.reducer,
     speechServices: speechServicesSlice,
     reactions: reactionsSlice,
+    aiAgent: aiAgentSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(

@@ -1425,3 +1425,94 @@ describe('presenter scope self-healing', () => {
     });
   });
 });
+
+describe('viewport reveal', () => {
+  const viewport = (appState: Record<string, unknown>, updateScene = vi.fn()) => {
+    const api = { getAppState: () => appState, updateScene } as never;
+    const controller = new WhiteboardController();
+    controller.configure({
+      excalidrawAPI: api,
+      roomSid: 'room-sid',
+      onRemoteUpdate: () => undefined,
+      canWrite: () => true,
+    });
+    return { controller, updateScene };
+  };
+
+  const appState = (scrollY: number, zoom = 1) => ({
+    height: 600,
+    width: 800,
+    scrollX: 0,
+    scrollY,
+    zoom: { value: zoom },
+    theme: 'light',
+    viewBackgroundColor: '#ffffff',
+    zenModeEnabled: false,
+    gridSize: null,
+  });
+
+  const box = (y: number, height = 40) => ({ x: 100, y, width: 300, height });
+
+  const appStateSends = () => sends(DataMsgBodyType.WHITEBOARD_APP_STATE_CHANGE);
+
+  it('scrolls content below the viewport into view without touching the zoom', () => {
+    setStoreState([{ userId: 'me' }]);
+    // 40px margin at zoom 1: content ending at scene 900 needs scrollY -340.
+    const { controller, updateScene } = viewport(appState(0));
+
+    expect(controller.revealBBoxInViewport(box(860, 40))).toBe(true);
+
+    expect(updateScene).toHaveBeenCalledWith({ appState: { scrollX: 0, scrollY: -340 } });
+    const [type, body] = appStateSends()[0];
+    expect(type).toBe(DataMsgBodyType.WHITEBOARD_APP_STATE_CHANGE);
+    expect(JSON.parse(body.message!)).toMatchObject({
+      scrollX: 0,
+      scrollY: -340,
+      zoomValue: 1,
+      width: 800,
+      height: 600,
+    });
+  });
+
+  it('leaves the viewport alone when the content is already visible', () => {
+    setStoreState([{ userId: 'me' }]);
+    const { controller, updateScene } = viewport(appState(0));
+
+    expect(controller.revealElementsInViewport([box(200)] as never)).toBe(true);
+
+    expect(updateScene).not.toHaveBeenCalled();
+    // Followers still have to land here, so the state is never withheld.
+    expect(appStateSends()).toHaveLength(1);
+  });
+
+  it('scrolls horizontally only when the content left the page', () => {
+    setStoreState([{ userId: 'me' }]);
+    const { controller, updateScene } = viewport(appState(0));
+
+    controller.revealBBoxInViewport({ x: -200, y: 200, width: 100, height: 40 });
+
+    expect(updateScene).toHaveBeenCalledWith({ appState: { scrollX: 240, scrollY: 0 } });
+  });
+
+  it('does nothing without a mounted api or elements', () => {
+    setStoreState([{ userId: 'me' }]);
+    const controller = new WhiteboardController();
+
+    expect(controller.revealElementsInViewport([box(200)] as never)).toBe(false);
+    expect(controller.revealBBoxInViewport(box(200))).toBe(false);
+    expect(appStateSends()).toHaveLength(0);
+  });
+
+  it('broadcasts the current viewport on demand', () => {
+    setStoreState([{ userId: 'me' }]);
+    const { controller } = viewport(appState(-120, 0.8));
+
+    controller.broadcastCurrentAppState();
+
+    expect(JSON.parse(appStateSends()[0][1].message!)).toMatchObject({
+      scrollX: 0,
+      scrollY: -120,
+      zoomValue: 0.8,
+    });
+  });
+});

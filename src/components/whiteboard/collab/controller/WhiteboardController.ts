@@ -37,6 +37,7 @@ import { participantsSelector } from '../../../../store/slices/participantSlice'
 import { base64ToUint8, isUserRecorder, uint8ToBase64 } from '../../../../helpers/utils';
 import type { IParticipant } from '../../../../store/slices/interfaces/participant';
 import type {
+  WhiteboardBounds,
   WhiteboardControllerConfig,
   WhiteboardPresence,
   WhiteboardScope,
@@ -62,6 +63,7 @@ import {
   SAVE_FLUSH_RETRY_DELAY_MS,
   SAVE_FLUSH_TIMEOUT_MS,
   STALE_PEER_NUDGE_THROTTLE_MS,
+  VIEWPORT_REVEAL_MARGIN,
   WHITEBOARD_REMOTE_ORIGIN,
 } from './constants';
 import { WhiteboardPresenceManager } from './WhiteboardPresenceManager';
@@ -82,6 +84,13 @@ interface SyncRequestPayload {
   update: Uint8Array;
   message: string;
 }
+
+/**
+ * Elements written outside the editor UI are tagged in `customData`; they are
+ * never counted as participant work (vision loop) and never re-tagged.
+ */
+const isExternallyAuthored = (element: ExcalidrawElement) =>
+  !!(element.customData as { ai_agent?: unknown } | undefined)?.ai_agent;
 
 export class WhiteboardController {
   private doc: Y.Doc | null = null;
@@ -154,6 +163,10 @@ export class WhiteboardController {
   // re-broadcasts the now-complete state).
   private readonly unconfirmedCanonicalKeys = new Set<string>();
   private snapshot: WhiteboardYjsSnapshot | null = null;
+  // Depth of `applyExternalElements` calls in flight. While > 0 the write is
+  // not a participant edit: no vision notification and no `canWrite()` gate.
+  private externalWriteDepth = 0;
+  private readonly participantSceneListeners = new Set<() => void>();
 
   /**
    * Serializes concurrent `sync()` calls so page/file changes that fire in
@@ -309,6 +322,206 @@ export class WhiteboardController {
   configure = (config: WhiteboardControllerConfig) => {
     this.config = config;
     this.presence.ensurePresence();
+  };
+
+  /**
+   * Commit elements produced outside the editor UI (programmatic drawing).
+   *
+   * The call bypasses `canWrite()` on purpose: the UI permission model governs
+   * human input, while the caller decides who may write programmatically. The
+   * write is still a normal CRDT write, so it reaches every peer and is
+   * persisted even when this client is not the presenter.
+   */
+  applyExternalElements = (
+    elements: readonly ExcalidrawElement[],
+    appStatePatch?: Record<string, unknown>,
+  ): boolean => {
+    const { doc, elementsMap } = this;
+    if (!doc || !elementsMap || !this.fileId || elements.length === 0) {
+      return false;
+    }
+
+    const api = this.config?.excalidrawAPI;
+    if (appStatePatch && api) {
+      api.updateScene({ appState: appStatePatch as never });
+    }
+
+    this.externalWriteDepth++;
+    try {
+      this.mergeElements(elements);
+    } finally {
+      this.externalWriteDepth--;
+    }
+
+    if (api) {
+      // New ink lands on top, known ids are replaced (undo restores), and none
+      // of it may become a step in the human undo history.
+      const incoming = new Map(elements.map((element) => [element.id, element]));
+      const current = api.getSceneElements();
+      const next = current.map((element) => incoming.get(element.id) ?? element);
+      const known = new Set(current.map((element) => element.id));
+      for (const element of elements) {
+        if (!known.has(element.id)) {
+          next.push(element);
+        }
+      }
+      api.updateScene({ elements: next, captureUpdate: 'NEVER' });
+    }
+
+    if (!this.isCurrentUserPresenter()) {
+      void this.saveAsExternalWriter();
+    }
+    return true;
+  };
+
+  /**
+   * Pointer of a collaborator that is not a participant (the agent's laser).
+   * `null` retracts it.
+   */
+  setExternalCollaboratorPointer = (
+    id: string,
+    name: string,
+    pointer: { x: number; y: number; tool?: 'laser' | 'pointer'; button?: 'up' | 'down' } | null,
+    color?: string,
+  ) => {
+    this.presence.setExternalCollaboratorPointer(id, name, pointer, color);
+  };
+
+  /** Scrolls (and syncs peers to) the area those elements occupy, if it is off-screen. */
+  revealElementsInViewport = (elements: readonly ExcalidrawElement[]): boolean => {
+    if (elements.length === 0) {
+      return false;
+    }
+    const minX = Math.min(...elements.map((element) => element.x));
+    const minY = Math.min(...elements.map((element) => element.y));
+    const maxX = Math.max(...elements.map((element) => element.x + element.width));
+    const maxY = Math.max(...elements.map((element) => element.y + element.height));
+    return this.revealBBoxInViewport({ x: minX, y: minY, width: maxX - minX, height: maxY - minY });
+  };
+
+  /**
+   * Brings a scene rectangle into view without touching `zoom`: the whiteboard
+   * zoom is A4-width based, so only the scroll may move. Peers are always told
+   * about the new position, because followers may be looking elsewhere.
+   */
+  revealBBoxInViewport = (bounds: WhiteboardBounds): boolean => {
+    const api = this.config?.excalidrawAPI;
+    const appState = api?.getAppState();
+    const zoom = appState?.zoom.value;
+    if (!api || !appState || !zoom || !appState.width || !appState.height) {
+      return false;
+    }
+
+    const margin = VIEWPORT_REVEAL_MARGIN;
+    const { scrollX, scrollY } = this.scrollIntoView(bounds, appState, margin);
+    if (Math.round(appState.scrollX) !== scrollX || Math.round(appState.scrollY) !== scrollY) {
+      api.updateScene({ appState: { scrollX, scrollY } as never });
+    }
+    this.broadcastAppState(scrollX, scrollY);
+    return true;
+  };
+
+  /** Sends the current viewport so followers land where the board is looking. */
+  broadcastCurrentAppState = () => {
+    const appState = this.config?.excalidrawAPI?.getAppState();
+    if (!appState) {
+      return;
+    }
+    this.broadcastAppState(Math.round(appState.scrollX), Math.round(appState.scrollY));
+  };
+
+  private broadcastAppState = (scrollX: number, scrollY: number) => {
+    const appState = this.config?.excalidrawAPI?.getAppState();
+    const conn = getNatsConn();
+    if (!appState || !conn) {
+      return;
+    }
+    const message = JSON.stringify({
+      height: appState.height,
+      width: appState.width,
+      scrollX,
+      scrollY,
+      zoomValue: appState.zoom.value,
+      theme: appState.theme,
+      viewBackgroundColor: appState.viewBackgroundColor,
+      zenModeEnabled: appState.zenModeEnabled,
+      gridSize: appState.gridSize,
+    });
+    void conn.sendWhiteboardData(DataMsgBodyType.WHITEBOARD_APP_STATE_CHANGE, { message });
+  };
+
+  /**
+   * Minimal scroll that keeps `bounds` inside the viewport with `margin` to
+   * spare. Horizontal scroll only moves when the content really left the page,
+   * because `scrollX` carries the A4 alignment.
+   */
+  private scrollIntoView = (
+    bounds: WhiteboardBounds,
+    appState: {
+      scrollX: number;
+      scrollY: number;
+      width: number;
+      height: number;
+      zoom: { value: number };
+    },
+    margin: number,
+  ): { scrollX: number; scrollY: number } => {
+    const zoom = appState.zoom.value;
+    let scrollX = appState.scrollX;
+    let scrollY = appState.scrollY;
+
+    const top = (bounds.y + scrollY) * zoom;
+    const bottom = (bounds.y + bounds.height + scrollY) * zoom;
+    const left = (bounds.x + scrollX) * zoom;
+    const right = (bounds.x + bounds.width + scrollX) * zoom;
+    const maxX = appState.width - margin;
+    const maxY = appState.height - margin;
+
+    if (bottom > maxY) {
+      scrollY -= (bottom - maxY) / zoom;
+    } else if (top < margin) {
+      scrollY += (margin - top) / zoom;
+    }
+    if (right > maxX) {
+      scrollX -= (right - maxX) / zoom;
+    } else if (left < margin) {
+      scrollX += (margin - left) / zoom;
+    }
+
+    return { scrollX: Math.round(scrollX), scrollY: Math.round(scrollY) };
+  };
+
+  /**
+   * Fires when a human changes the scene. Elements written through
+   * `applyExternalElements` (and anything tagged in `customData.ai_agent`) are
+   * ignored, so an agent's own ink never looks like participant work.
+   */
+  onParticipantSceneChange = (listener: () => void): (() => void) => {
+    this.participantSceneListeners.add(listener);
+    return () => {
+      this.participantSceneListeners.delete(listener);
+    };
+  };
+
+  private notifyParticipantSceneChange = () => {
+    for (const listener of this.participantSceneListeners) {
+      try {
+        listener();
+      } catch (e) {
+        console.error('[WhiteboardController] participant scene listener failed', e);
+      }
+    }
+  };
+
+  private isExternalWrite = (): boolean => this.externalWriteDepth > 0;
+
+  /** Persist a programmatic write, which may come from a non-presenter client. */
+  private saveAsExternalWriter = async () => {
+    try {
+      await this._saveRemoteNow({ asExternalWriter: true });
+    } catch (e) {
+      console.error('[WhiteboardController] failed to save external write', e);
+    }
   };
 
   /**
@@ -543,7 +756,9 @@ export class WhiteboardController {
    * save" (empty diff, empty map, no longer presenter, page already switched).
    * `false` means the content is still local-only.
    */
-  private _saveRemoteNow = (options: { forceCheckpoint?: boolean } = {}): Promise<boolean> => {
+  private _saveRemoteNow = (
+    options: { forceCheckpoint?: boolean; asExternalWriter?: boolean } = {},
+  ): Promise<boolean> => {
     this.clearSaveTimers();
     this.flushAnnotations();
 
@@ -552,7 +767,9 @@ export class WhiteboardController {
     if (!this.config || !doc || !elementsMap || !this.fileId) {
       return Promise.resolve(true);
     }
-    if (!this.isCurrentUserPresenter() || elementsMap.size === 0) {
+    // Presenter-only normally; a programmatic write is persisted even from a
+    // non-presenter (the caller is authorized for it).
+    if ((!this.isCurrentUserPresenter() && !options.asExternalWriter) || elementsMap.size === 0) {
       return Promise.resolve(true);
     }
 
@@ -791,7 +1008,9 @@ export class WhiteboardController {
     this.pendingAnnotations++;
 
     const config = this.config;
-    if (!config || !config.canWrite()) {
+    // A programmatic write is not gated on the local permission flag, otherwise
+    // a non-editing delegate's ink would stay local.
+    if (!config || (!config.canWrite() && !this.isExternalWrite())) {
       return;
     }
     // Live edits stay raw (small and frequent — gzip overhead not worth it).
@@ -958,11 +1177,22 @@ export class WhiteboardController {
     if (!doc || !elementsMap) {
       return;
     }
+    // Only a genuinely new value counts as a change: re-applying the scene we
+    // just painted from the CRDT is a no-op and must not wake listeners.
+    let participantChanged = false;
     doc.transact(() => {
       for (const incoming of elements) {
-        this.updateElementIfNewer(elementsMap, incoming, isEditingElement);
+        if (!this.updateElementIfNewer(elementsMap, incoming, isEditingElement)) {
+          continue;
+        }
+        if (!this.isExternalWrite() && !isExternallyAuthored(incoming)) {
+          participantChanged = true;
+        }
       }
     });
+    if (participantChanged) {
+      this.notifyParticipantSceneChange();
+    }
   };
 
   /**
@@ -974,31 +1204,32 @@ export class WhiteboardController {
     elementsMap: Y.Map<string>,
     incoming: ExcalidrawElement,
     isEditingElement?: (id: string) => boolean,
-  ) => {
+  ): boolean => {
     const serialized = JSON.stringify(incoming);
     const stored = elementsMap.get(incoming.id);
     if (stored === serialized) {
-      return;
+      return false;
     }
 
     // Mirror Excalidraw: a locally edited/resized/new element always wins,
     // regardless of its version.
     if (isEditingElement?.(incoming.id)) {
       elementsMap.set(incoming.id, serialized);
-      return;
+      return true;
     }
 
     if (stored) {
       try {
         const current = JSON.parse(stored) as ExcalidrawElement;
         if (!isIncomingNewer(current, incoming)) {
-          return;
+          return false;
         }
       } catch {
         // Malformed stored value; replace it below.
       }
     }
     elementsMap.set(incoming.id, serialized);
+    return true;
   };
 
   /** Read all elements stored in the CRDT map (including tombstones). */

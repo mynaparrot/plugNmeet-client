@@ -736,6 +736,22 @@ export const uploadCanvasBinaryFile = (
   return uploadPromise;
 };
 
+/** Inline `data:` images carry their own bytes: no upload and no fetch needed. */
+const INLINE_IMAGE_DATA_URL = /^data:(image\/[a-z0-9.+-]+)[^,]*,\S/i;
+
+export const inlineImageData = (fileId: string, fileUrl: string): BinaryFileData | null => {
+  const match = INLINE_IMAGE_DATA_URL.exec(fileUrl);
+  if (!match) {
+    return null;
+  }
+  return {
+    id: fileId as BinaryFileData['id'],
+    dataURL: fileUrl as BinaryFileData['dataURL'],
+    mimeType: match[1].toLowerCase() as BinaryFileData['mimeType'],
+    created: Date.now(),
+  };
+};
+
 export const getImageData = async (
   elm: ExcalidrawImageElement,
   customData: ImageCustomData,
@@ -747,6 +763,13 @@ export const getImageData = async (
   const cached = imageDataCache.get(elm.fileId);
   if (cached) {
     return cached;
+  }
+
+  // AI-inserted SVG pictures and Mermaid image diagrams ship as a data URL.
+  const inline = inlineImageData(elm.fileId, customData.fileUrl);
+  if (inline) {
+    imageDataCache.set(elm.fileId, inline);
+    return inline;
   }
 
   const result = await fetchFileWithElm(
@@ -799,6 +822,22 @@ export const ensureImageDataIsLoaded = async (
     if (!primeExcalidrawImageCache(excalidrawAPI, [cached])) {
       // Priming failed: let Excalidraw decode right after the caller's `updateScene`.
       scheduleImageCacheFallback(excalidrawAPI);
+    }
+    return;
+  }
+
+  // Inline data URL (AI-inserted SVG picture, Mermaid image diagram): the bytes
+  // travel inside the element itself, so register them without a server round
+  // trip and both local and remote canvases can paint it immediately.
+  const inline = inlineImageData(elm.fileId, customData.fileUrl);
+  if (inline) {
+    imageDataCache.set(elm.fileId, inline);
+    await preloadHtmlImage(inline.dataURL);
+    if (!canvasHasFile(excalidrawAPI, inline.id)) {
+      excalidrawAPI.addFiles([inline]);
+      if (!primeExcalidrawImageCache(excalidrawAPI, [inline])) {
+        scheduleImageCacheFallback(excalidrawAPI);
+      }
     }
     return;
   }

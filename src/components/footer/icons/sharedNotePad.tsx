@@ -1,24 +1,30 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { create, toBinary } from '@bufbuild/protobuf';
-import { ChangeVisibilityRes, ChangeVisibilityResSchema } from 'plugnmeet-protocol-js';
+import { ChangeVisibilityResSchema } from 'plugnmeet-protocol-js';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { updateIsActiveSharedNotePad } from '../../../store/slices/bottomIconsActivitySlice';
 import { SharedNotepadIconSVG } from '../../../assets/Icons/SharedNotepadIconSVG';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
+import { participantsSelector } from '../../../store/slices/participantSlice';
+import { isAIAgentSessionRoom } from '../../insights-ai/featureGate';
 
 const SharedNotePadIcon = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { showTooltip, isRecorder, isPresenter, roomId } = useMemo(() => {
+  const isInitialMount = useRef(true);
+  /** The value a local click pushed, so only that echo is ignored. */
+  const isLocalAction = useRef<boolean | null>(null);
+  const { showTooltip, isRecorder, roomId, currentUserId, isAiAgentSession } = useMemo(() => {
     const session = store.getState().session;
     const currentUser = session.currentUser;
     return {
       showTooltip: session.userDeviceType === 'desktop',
       isRecorder: !!currentUser?.isRecorder,
-      isPresenter: !!currentUser?.metadata?.isPresenter,
       roomId: session.currentRoom.roomId,
+      currentUserId: currentUser?.userId,
+      isAiAgentSession: isAIAgentSessionRoom(session.currentRoom.metadata),
     };
   }, []);
 
@@ -31,8 +37,16 @@ const SharedNotePadIcon = () => {
   const isNotepadVisibleByPresenter = useAppSelector(
     (state) => !!state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures?.visible,
   );
+  const isPresenter = useAppSelector(
+    (state) => participantsSelector.selectById(state, currentUserId ?? '')?.metadata.isPresenter,
+  );
 
   const [shouldRenderIcon, setShouldRenderIcon] = useState<boolean>(false);
+
+  const canControlNotepad = useMemo(() => {
+    // only user who is admin and presenter can control whiteboard
+    return !isAiAgentSession && isPresenter && !isRecorder;
+  }, [isPresenter, isRecorder, isAiAgentSession]);
 
   useEffect(() => {
     if (isRecorder) {
@@ -43,30 +57,46 @@ const SharedNotePadIcon = () => {
     }
   }, [isRecorder, isNotepadVisibleByPresenter, isNotepadEnabled]);
 
+  // The presenter (or the AI agent switching to its whiteboard) decides whether
+  // the pad is open. Only the echo of our own click is ignored.
   useEffect(() => {
-    dispatch(updateIsActiveSharedNotePad(shouldRenderIcon));
-  }, [shouldRenderIcon, dispatch]);
-
-  useEffect(() => {
-    if (isPresenter) {
-      const sendRequest = async (body: ChangeVisibilityRes) => {
-        await sendAPIRequest(
-          'changeVisibility',
-          toBinary(ChangeVisibilityResSchema, body),
-          false,
-          'application/protobuf',
-        );
-      };
-
-      const body = create(ChangeVisibilityResSchema, {
-        roomId: roomId,
-        visibleNotepad: isActiveSharedNotePad,
-      });
-      sendRequest(body).then();
+    if (!isNotepadEnabled) {
+      return;
     }
-  }, [isActiveSharedNotePad, isPresenter, roomId]);
+    const locallyPushed = isLocalAction.current;
+    isLocalAction.current = null;
+    if (locallyPushed !== null && locallyPushed === isNotepadVisibleByPresenter) {
+      return;
+    }
+    dispatch(updateIsActiveSharedNotePad(isNotepadVisibleByPresenter));
+  }, [isNotepadEnabled, isNotepadVisibleByPresenter, dispatch]);
+
+  useEffect(() => {
+    if (!canControlNotepad) {
+      return;
+    }
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    if (isActiveSharedNotePad === isNotepadVisibleByPresenter) {
+      return;
+    }
+
+    const body = create(ChangeVisibilityResSchema, {
+      roomId: roomId,
+      visibleNotepad: isActiveSharedNotePad,
+    });
+    sendAPIRequest(
+      'changeVisibility',
+      toBinary(ChangeVisibilityResSchema, body),
+      false,
+      'application/protobuf',
+    ).then();
+  }, [isActiveSharedNotePad, isNotepadVisibleByPresenter, canControlNotepad, roomId]);
 
   const toggle = useCallback(async () => {
+    isLocalAction.current = !isActiveSharedNotePad;
     dispatch(updateIsActiveSharedNotePad(!isActiveSharedNotePad));
   }, [isActiveSharedNotePad, dispatch]);
 

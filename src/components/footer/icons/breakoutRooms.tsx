@@ -7,6 +7,7 @@ import { setActiveSidePanel } from '../../../store/slices/bottomIconsActivitySli
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 import { useGetMyBreakoutRoomsQuery } from '../../../store/services/breakoutRoomApi';
 import { BreakoutRoomIconSVG } from '../../../assets/Icons/BreakoutRoomIconSVG';
+import { canAccessBreakoutRooms } from '../../breakout-room/utils/breakoutRoom';
 
 // page-load time; invitations delivered in this session suppress the
 // mount-time reminder, persisted notifications from older sessions do not
@@ -22,14 +23,12 @@ const BreakoutRoomsIcon = () => {
     (state) => state.bottomIconsActivity.activeSidePanel === 'BREAKOUT_ROOMS',
   );
 
-  const isVisible = useAppSelector((state) => {
-    const meta = state.session.currentRoom?.metadata;
-    return !!meta?.roomFeatures?.breakoutRoomFeatures?.isActive && !meta?.isBreakoutRoom;
-  });
-
   const isAdmin = useAppSelector((state) => !!state.session.currentUser?.metadata?.isAdmin);
   const isBreakoutRoom = useAppSelector(
     (state) => !!state.session.currentRoom?.metadata?.isBreakoutRoom,
+  );
+  const isVisible = useAppSelector((state) =>
+    canAccessBreakoutRooms(state.session.currentRoom?.metadata, isAdmin),
   );
 
   // invites only matter to non-admins sitting in the main interface

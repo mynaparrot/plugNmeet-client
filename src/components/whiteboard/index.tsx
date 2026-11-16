@@ -48,6 +48,7 @@ import {
   ResolvedPageInfo,
   resolvePageInfoFromElements,
 } from './helpers/utils';
+import { setWhiteboardExcalidrawAPI } from './helpers/liveScene';
 import {
   cleanProcessedImageElementsMap,
   primeExcalidrawImageCache,
@@ -64,6 +65,7 @@ import {
   type OfficePageLoad,
 } from './helpers/navigationQueue';
 import { getNatsConn } from '../../helpers/nats';
+import { isAIAgentSessionRoom } from '../../helpers/aiAgentSession';
 import {
   A4_VIEWPORT_PADDING_LEFT,
   A4_VIEWPORT_PADDING_TOP,
@@ -112,6 +114,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const currentPage = useAppSelector((state) => state.whiteboard.currentPage);
   const currentWhiteboardOfficeFileId = useAppSelector(
     (state) => state.whiteboard.currentWhiteboardOfficeFileId,
+  );
+  const isAiAgentSession = useAppSelector((state) =>
+    isAIAgentSessionRoom(state.session.currentRoom.metadata),
   );
   // State and Refs
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
@@ -188,6 +193,30 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   // Last page/file that is fully painted; it gives every switch its direction.
   const settledTargetRef = useRef<NavigationTarget | null>(null);
 
+  /**
+   * The A4 guide is the source of truth for placement, so it is part of the
+   * local scene from the first paint whenever this client draws on the board
+   * (presenter, unlocked participant, or a room where the AI agent works).
+   */
+  const showA4Boundary = !!isPresenter || isAiAgentSession || canEdit;
+
+  const addBoundaryToElements = useCallback(
+    (elements: readonly ExcalidrawElement[], pageInfo: ResolvedPageInfo = DEFAULT_PAGE_INFO) => {
+      if (!showA4Boundary) {
+        return elements;
+      }
+      const boundary = prepareA4BoundaryGuide(
+        pageInfo.orientation,
+        pageInfo.pageWidth,
+        pageInfo.pageHeight,
+      );
+      const finalElements = elements.filter((e) => e.id !== A4_BOUNDARY_GUIDE_ID);
+      finalElements.push(...boundary);
+      return finalElements;
+    },
+    [showA4Boundary],
+  );
+
   /** Paints the yjs CRDT scene; `reconcileElements` restores Excalidraw's z-order. */
   const applySceneToExcalidraw = useCallback(
     ({ init = false }: { init?: boolean } = {}) => {
@@ -198,13 +227,25 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
       // 2. Read the current CRDT elements (including tombstones).
       const remoteElements = controller.getElements();
-      // 3. Exit if there are no elements to process.
+      // 3. An empty page still needs the local A4 guide, or placements would
+      // have no boundary to align to.
       if (!remoteElements.length) {
+        const local = excalidrawAPI.getSceneElementsIncludingDeleted();
+        if (!showA4Boundary || local.some((e) => e.id === A4_BOUNDARY_GUIDE_ID)) {
+          return;
+        }
+        excalidrawAPI.updateScene({
+          elements: addBoundaryToElements(local),
+          captureUpdate: CaptureUpdateAction.NEVER,
+        });
         return;
       }
 
-      // 4. Get the current local elements and app state from the canvas.
-      const localElements = excalidrawAPI.getSceneElementsIncludingDeleted();
+      // 4. Get the current local elements and app state from the canvas. The
+      // guide never takes part in reconciliation: it is local chrome.
+      const localElements = excalidrawAPI
+        .getSceneElementsIncludingDeleted()
+        .filter((element) => element.id !== A4_BOUNDARY_GUIDE_ID);
       const appState = excalidrawAPI.getAppState();
 
       // 5. The cast satisfies the `RemoteExcalidrawElement[]` parameter type.
@@ -223,14 +264,17 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
       // 8. Update the Excalidraw scene with the reconciled elements.
       excalidrawAPI.updateScene({
-        elements: reconciledElements,
+        elements: addBoundaryToElements(
+          reconciledElements,
+          resolvePageInfoFromElements(reconciledElements),
+        ),
         captureUpdate: init ? CaptureUpdateAction.IMMEDIATELY : CaptureUpdateAction.NEVER,
       });
 
       // 9. Clear the history to ensure a clean state after the remote update.
       excalidrawAPI.history.clear();
     },
-    [excalidrawAPI, controller],
+    [excalidrawAPI, controller, addBoundaryToElements, showA4Boundary],
   );
 
   // Wire the yjs controller to this room's NATS transport and role.
@@ -256,6 +300,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       },
       canWrite: () => canEdit,
     });
+    setWhiteboardExcalidrawAPI(excalidrawAPI);
+
+    return () => setWhiteboardExcalidrawAPI(null);
   }, [excalidrawAPI, controller, roomSid, canEdit, applySceneToExcalidraw, isControllerAtTarget]);
 
   // Resync the active CRDT doc after reconnects and when the tab becomes
@@ -335,23 +382,6 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       });
     },
     [tryRestoreViewport],
-  );
-
-  const addBoundaryToElements = useCallback(
-    (elements: readonly ExcalidrawElement[], pageInfo: ResolvedPageInfo = DEFAULT_PAGE_INFO) => {
-      if (!isPresenter) {
-        return elements;
-      }
-      const boundary = prepareA4BoundaryGuide(
-        pageInfo.orientation,
-        pageInfo.pageWidth,
-        pageInfo.pageHeight,
-      );
-      const finalElements = elements.filter((e) => e.id !== A4_BOUNDARY_GUIDE_ID);
-      finalElements.push(...boundary);
-      return finalElements;
-    },
-    [isPresenter],
   );
 
   /** Merges the canvas scene into the CRDT; pending images sync via the follow-up onChange. */

@@ -7,6 +7,7 @@ import Tabs, { ITabItem } from '../../helpers/ui/tabs';
 import { updateDisplayInsightsAISettingsModal } from '../../store/slices/bottomIconsActivitySlice';
 import AiTextChatSettings from './ai-text-chat/settings';
 import MeetingSummarization from './meeting-summarization/settings';
+import { isAIAgentSessionRoom } from './featureGate';
 
 const InsightsAiSettingsModal = () => {
   const dispatch = useAppDispatch();
@@ -40,9 +41,10 @@ const InsightsAiSettingsModal = () => {
 
     const aiFeatures = insightsFeatures?.aiFeatures;
 
-    // now display tabs
+    // The AI Agent owns the chat box only in its own session room.
+    const isAgentSessionRoom = isAIAgentSessionRoom(store.getState().session.currentRoom.metadata);
     const tabItems: ITabItem[] = [];
-    if (aiFeatures?.aiTextChatFeatures?.isAllow) {
+    if (aiFeatures?.aiTextChatFeatures?.isAllow && !isAgentSessionRoom) {
       tabItems.push({
         id: 1,
         title: t('insights.tab-ai-text-chat-title'),

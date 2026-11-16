@@ -34,9 +34,65 @@ import { participantsSelector } from '../../store/slices/participantSlice';
 import { base64ToUint8, isUserRecorder, uint8ToBase64 } from '../../helpers/utils';
 
 const REMOTE_ORIGIN = 'nats-remote';
+// Origin of programmatic writes coming from outside the editor (see
+// `applyExternalWrite`). Those writes are allowed to bypass `canWrite()`.
+const EXTERNAL_WRITE_ORIGIN = 'local-external-write';
 const FRAGMENT_NAME = 'document-store';
+// Lives in the same Y.Doc, so the authorship of every externally written block
+// syncs to all peers and survives a reload or a delegate switch.
+const EXTERNAL_BLOCKS_MAP = 'external-block-authors';
 const MAX_SYNC_TARGETS = 3;
 export const NOTEPAD_SNAPSHOT_KEY = 'snapshot';
+
+export type NotepadExternalWriteMode = 'replace' | 'append' | 'insert_section' | 'replace_block';
+
+export interface NotepadExternalWriteRequest {
+  mode: NotepadExternalWriteMode;
+  markdown: string;
+  heading?: string;
+  /** Required for `replace_block`: the block to rewrite in place. */
+  blockId?: string;
+}
+
+export interface NotepadExternalWriteResult {
+  ok: boolean;
+  length: number;
+  error?: string;
+}
+
+/** A block an external write produced, with its normalized plain text. */
+export interface NotepadExternalBlockRef {
+  id: string;
+  text: string;
+}
+
+export interface NotepadBlockSummary {
+  id: string;
+  type: string;
+  text: string;
+  markdown: string;
+  author: 'external' | 'participant';
+  /** The externally written text when the participant has since edited it. */
+  originalText?: string;
+}
+
+export interface NotepadContentSnapshot {
+  markdown: string;
+  blocks: NotepadBlockSummary[];
+  externalBlocks: NotepadBlockSummary[];
+  participantBlocks: NotepadBlockSummary[];
+}
+
+export type NotepadContentReader = () => NotepadContentSnapshot;
+
+/**
+ * Applies an external write to the live document. Registered by the editor,
+ * which owns the markdown -> block conversion and the ProseMirror schema.
+ * Returns the blocks it produced so their authorship can be recorded.
+ */
+export type NotepadExternalWriteApplier = (
+  request: NotepadExternalWriteRequest,
+) => NotepadExternalBlockRef[];
 
 export type NotepadSnapshot = {
   doc: Y.Doc | null;
@@ -82,6 +138,16 @@ export class NotepadController {
   private snapshotConfirmed = true;
   private snapshotRetryTimer: ReturnType<typeof setTimeout> | null = null;
   private listeners = new Set<() => void>();
+  private contentChangeListeners = new Set<() => void>();
+  private externalWriteApplier: NotepadExternalWriteApplier | null = null;
+  private externalBlocksMap: Y.Map<string> | null = null;
+  private contentReader: NotepadContentReader | null = null;
+  // true while an external write is being applied, so the update handler
+  // broadcasts it and the save path ignores the presenter/admin guard
+  private externalWriteActive = false;
+  // Set once the initial hydration has been applied, so the update handler does
+  // not report our own catch-up as participant activity.
+  private hydrationSettled = false;
   private snapshot: NotepadSnapshot = {
     doc: null,
     fragment: null,
@@ -168,6 +234,101 @@ export class NotepadController {
     await this.setup();
   }
 
+  /** Called by the editor when it mounts/unmounts. */
+  setExternalWriteApplier = (applier: NotepadExternalWriteApplier | null) => {
+    this.externalWriteApplier = applier;
+  };
+
+  /** Called by the editor when it mounts/unmounts. */
+  setContentReader = (reader: NotepadContentReader | null) => {
+    this.contentReader = reader;
+  };
+
+  /**
+   * Whether an external write can land right now: the CRDT doc is live and the
+   * lazily mounted editor has registered its applier.
+   */
+  isReadyForExternalWrite = (): boolean => Boolean(this.doc && this.externalWriteApplier);
+
+  /** Same, for callers that only need to read the content. */
+  isReadyForExternalRead = (): boolean => Boolean(this.doc && this.contentReader);
+
+  readContent = (): NotepadContentSnapshot | null =>
+    this.contentReader ? this.contentReader() : null;
+
+  /** The text an external writer put in this block, or null if it never wrote it. */
+  getExternalBlockText = (blockId: string): string | null =>
+    this.externalBlocksMap?.get(blockId) ?? null;
+
+  /** Whether an external writer produced this block (the participant may have edited it since). */
+  isExternalBlock = (blockId: string): boolean => Boolean(this.externalBlocksMap?.has(blockId));
+
+  /**
+   * Fires when the notepad changed from anywhere but an external write: a local
+   * edit or an update pushed by another peer.
+   */
+  onParticipantContentChange = (listener: () => void): (() => void) => {
+    this.contentChangeListeners.add(listener);
+    return () => {
+      this.contentChangeListeners.delete(listener);
+    };
+  };
+
+  private notifyParticipantContentChange = () => {
+    this.contentChangeListeners.forEach((cb) => cb());
+  };
+
+  /**
+   * Writes markdown into the document on behalf of an external caller. The
+   * whole edit happens in a single Y transaction and bypasses `canWrite()`,
+   * because the caller was allowed to write by the room (a locked notepad
+   * still stays locked for the participant's own input).
+   */
+  applyExternalWrite = (
+    mode: NotepadExternalWriteMode,
+    markdown: string,
+    heading?: string,
+    blockId?: string,
+  ): NotepadExternalWriteResult => {
+    if (!this.doc) {
+      return { ok: false, length: 0, error: 'The shared notepad is not active right now.' };
+    }
+    if (!this.externalWriteApplier) {
+      return { ok: false, length: 0, error: 'The shared notepad editor is not open right now.' };
+    }
+
+    const targetBlockId = blockId?.trim();
+    try {
+      this.externalWriteActive = true;
+      this.doc.transact(() => {
+        if (mode === 'replace') {
+          this.externalBlocksMap?.clear();
+        }
+        const written =
+          this.externalWriteApplier?.({ mode, markdown, heading, blockId: targetBlockId }) ?? [];
+        // An in-place rewrite that touched nothing means the id is stale.
+        if (mode === 'replace_block' && written.length === 0) {
+          throw new Error(
+            `block_id "${targetBlockId ?? ''}" was not found in the shared notepad. Call notepad_read first.`,
+          );
+        }
+        for (const block of written) {
+          this.externalBlocksMap?.set(block.id, block.text);
+        }
+      }, EXTERNAL_WRITE_ORIGIN);
+    } catch (e) {
+      console.error('[NotepadController] external write failed', e);
+      return { ok: false, length: 0, error: (e as Error).message || 'write failed' };
+    } finally {
+      this.externalWriteActive = false;
+    }
+
+    // An external write must survive a reload even when the local user is
+    // neither presenter nor admin, so persistence is forced here.
+    void this.saveNow(true, true);
+    return { ok: true, length: markdown.length };
+  };
+
   private async setup() {
     if (this.settingUp) {
       return;
@@ -185,11 +346,22 @@ export class NotepadController {
       this.doc = doc;
       this.awareness = awareness;
       this.fragment = fragment;
+      this.externalBlocksMap = doc.getMap<string>(EXTERNAL_BLOCKS_MAP);
       this.generation++;
 
       doc.on('update', (update: Uint8Array, origin: unknown) => {
         this.scheduleSave();
-        if (origin === REMOTE_ORIGIN || !this.canWrite()) {
+        if (
+          this.hydrationSettled &&
+          origin !== EXTERNAL_WRITE_ORIGIN &&
+          !this.externalWriteActive
+        ) {
+          this.notifyParticipantContentChange();
+        }
+        if (origin === REMOTE_ORIGIN) {
+          return;
+        }
+        if (!this.canWrite() && !this.externalWriteActive) {
           return;
         }
         this.send(DataMsgBodyType.NOTEPAD_UPDATE, update);
@@ -234,6 +406,7 @@ export class NotepadController {
       this.bindLifecycle();
       this.syncRequest.start();
       this.scheduleAntiEntropy();
+      this.hydrationSettled = true;
     } finally {
       this.settingUp = false;
     }
@@ -278,6 +451,8 @@ export class NotepadController {
       this.doc = null;
     }
     this.fragment = null;
+    this.externalBlocksMap = null;
+    this.hydrationSettled = false;
     this.updateSnapshot();
   }
 
@@ -322,10 +497,10 @@ export class NotepadController {
    * save" (empty diff, no access). `false` means the content is still
    * local-only.
    */
-  private saveNow = (forceCheckpoint = false): Promise<boolean> => {
+  private saveNow = (forceCheckpoint = false, ignoreAccessGuard = false): Promise<boolean> => {
     this.clearSaveTimers();
     const doc = this.doc;
-    if (!doc || !this.canAccessSessionData()) {
+    if (!doc || !(ignoreAccessGuard || this.canAccessSessionData())) {
       return Promise.resolve(true);
     }
     // Planning happens inside the chain: the previous save is acked by then, so

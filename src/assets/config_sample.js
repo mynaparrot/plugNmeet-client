@@ -76,6 +76,10 @@ window.plugNmeetConfig = {
   // Disables the dark mode theme and the user's ability to toggle it.
   disableDarkMode: false,
 
+  // Skips the landing page (device setup) and connects directly to the room.
+  // Note: If the waiting room feature is enabled, this setting will be ignored.
+  disableLandingPage: false,
+
   // Design customization in JS Object or JSON format.
   /*designCustomization: {
     primary_color: "#004D90",

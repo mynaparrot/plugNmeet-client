@@ -1,0 +1,56 @@
+name: Build and release client as ai_agent
+on:
+  push:
+    branches:
+      - ai_agent
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: setup node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 'lts/*'
+      - uses: pnpm/action-setup@v6
+        name: Install pnpm
+        with:
+          version: 'latest'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Check lint
+        run: pnpm run lint
+      - name: Unit tests
+        run: pnpm run test
+      - name: Build and package client_ai_agent.zip
+        run: |
+          # update package version
+          pnpm version prerelease --preid=ai-agent --no-commit-hooks --no-git-tag-version
+
+          # push changes; [skip ci] prevents the workflow from looping
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "chore: bump ai-agent version [skip ci]" --no-verify
+          git push
+
+          # now create zip file
+          pnpm run build
+          node -p "require('./package.json').version" > dist/version.txt
+          mkdir -p tmp/client tmp/upload
+          rsync -ar LICENSE dist tmp/client/
+          cd tmp
+          zip -X -r upload/client_ai_agent.zip client
+      - name: Upload client_ai_agent.zip by ftp
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.PNM_FTP_HOST }}
+          username: ${{ secrets.PNM_FTP_USER }}
+          password: ${{ secrets.PNM_FTP_PASSWORD }}
+          local-dir: './tmp/upload/'
+          state-name: '.client-ai-agent-sync-state.json'

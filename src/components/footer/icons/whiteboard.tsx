@@ -9,6 +9,7 @@ import { updateIsActiveWhiteboard } from '../../../store/slices/bottomIconsActiv
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { WhiteBoardIconSVG } from '../../../assets/Icons/WhiteBoardIconSVG';
 import { participantsSelector } from '../../../store/slices/participantSlice';
+import { isAIAgentSessionRoom } from '../../insights-ai/featureGate';
 
 const WhiteboardIcon = () => {
   const { t } = useTranslation();
@@ -16,17 +17,19 @@ const WhiteboardIcon = () => {
   const isInitialMount = useRef(true);
   const isLocalAction = useRef(false);
 
-  const { showTooltip, allowedWhiteboard, currentUserId, isAdmin, isRecorder } = useMemo(() => {
-    const session = store.getState().session;
-    const currentUser = session.currentUser;
-    return {
-      showTooltip: session.userDeviceType === 'desktop',
-      allowedWhiteboard: session.currentRoom.metadata?.roomFeatures?.whiteboardFeatures?.isAllow,
-      currentUserId: currentUser?.userId,
-      isAdmin: currentUser?.metadata?.isAdmin,
-      isRecorder: currentUser?.isRecorder,
-    };
-  }, []);
+  const { showTooltip, allowedWhiteboard, currentUserId, isAdmin, isRecorder, isAiAgentSession } =
+    useMemo(() => {
+      const session = store.getState().session;
+      const currentUser = session.currentUser;
+      return {
+        showTooltip: session.userDeviceType === 'desktop',
+        allowedWhiteboard: session.currentRoom.metadata?.roomFeatures?.whiteboardFeatures?.isAllow,
+        currentUserId: currentUser?.userId,
+        isAdmin: currentUser?.metadata?.isAdmin,
+        isRecorder: currentUser?.isRecorder,
+        isAiAgentSession: isAIAgentSessionRoom(session.currentRoom.metadata),
+      };
+    }, []);
 
   const isActiveWhiteboard = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveWhiteboard,
@@ -40,8 +43,8 @@ const WhiteboardIcon = () => {
 
   const canControlWhiteboard = useMemo(() => {
     // only user who is admin and presenter can control whiteboard
-    return isAdmin && isPresenter && !isRecorder;
-  }, [isAdmin, isPresenter, isRecorder]);
+    return !isAiAgentSession && isAdmin && isPresenter && !isRecorder;
+  }, [isAdmin, isPresenter, isRecorder, isAiAgentSession]);
 
   useEffect(() => {
     if (!allowedWhiteboard) {

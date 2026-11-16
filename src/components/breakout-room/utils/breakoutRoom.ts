@@ -5,14 +5,21 @@ import { store } from '../../../store';
 import { breakoutRoomApi } from '../../../store/services/breakoutRoomApi';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 import { setReturningToMainRoom } from '../../../store/slices/breakoutRoomSlice';
+import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import i18n from '../../../helpers/i18n';
+import { setSkipLandingOnce } from '../../landing/skipLandingOnce';
 
 /**
  * Build the app URL for a fresh access token, reusing the current page's path
  * and query params. plugNmeet boots entirely from `?access_token=...`, so
  * redirecting the current tab to this URL switches rooms in-place.
+ *
+ * Every caller is a room switch (join/move to a breakout room or back to the
+ * main room), so the freshly loaded page must not ask the user to go through
+ * the landing page again.
  */
 export const buildAccessTokenUrl = (token: string): string => {
+  setSkipLandingOnce();
   const searchParams = new URLSearchParams(window.location.search);
   searchParams.set('access_token', token);
   return (
@@ -23,6 +30,22 @@ export const buildAccessTokenUrl = (token: string): string => {
     '?' +
     searchParams.toString()
   );
+};
+
+/**
+ * Whether the breakout rooms UI (footer icon and side panel) is available in
+ * the current room. Everyone sees it once rooms are running; admins also get it
+ * immediately in per-user AI agent rooms, where rooms are auto-created.
+ */
+export const canAccessBreakoutRooms = (metadata?: IRoomMetadata, isAdmin = false): boolean => {
+  if (!metadata || metadata.isBreakoutRoom) {
+    return false;
+  }
+  const features = metadata.roomFeatures;
+  if (features?.breakoutRoomFeatures?.isActive) {
+    return true;
+  }
+  return isAdmin && !!features?.insightsFeatures?.aiAgentFeatures?.autoCreatePerUserSession;
 };
 
 /**

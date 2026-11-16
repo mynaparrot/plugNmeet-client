@@ -28,7 +28,8 @@ import './notepad.css';
 import { useTranslation } from 'react-i18next';
 import { useAppSelector } from '../../store';
 import { participantsSelector } from '../../store/slices/participantSlice';
-import type { NotepadSnapshot } from './NotepadController';
+import { getNotepadController, type NotepadSnapshot } from './NotepadController';
+import { createExternalWriteApplier, createNotepadContentReader } from './helpers/externalWrite';
 import NotepadAIToolbarButton from './helpers/NotepadAIToolbarButton';
 import NotepadAIMenu from './helpers/NotepadAIMenu';
 import NotepadAIDisabledNotice from './helpers/NotepadAIDisabledNotice';
@@ -127,6 +128,21 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
       },
       [snapshot.fragment, snapshot.awareness, snapshot.generation, dictionary, user, onlineUsers],
     );
+
+    // The controller performs the Y transaction and the persistence; only this
+    // editor can turn markdown into blocks or report them by author, so it
+    // lends both conversions.
+    useEffect(() => {
+      const controller = getNotepadController();
+      controller.setExternalWriteApplier(createExternalWriteApplier(editor));
+      controller.setContentReader(
+        createNotepadContentReader(editor, (id) => controller.getExternalBlockText(id)),
+      );
+      return () => {
+        controller.setExternalWriteApplier(null);
+        controller.setContentReader(null);
+      };
+    }, [editor]);
 
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 

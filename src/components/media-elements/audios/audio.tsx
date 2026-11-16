@@ -4,6 +4,8 @@ import { throttle } from 'es-toolkit';
 
 import { useAppSelector } from '../../../store';
 import { participantsSelector } from '../../../store/slices/participantSlice';
+import { aiAgentSelector, isAIAgentLocalMutedSelector } from '../../../store/slices/aiAgentSlice';
+import { isAIAgentUserId } from '../../insights-ai/ai-agent/constants';
 
 interface IAudioElmProps {
   audioTrack: RemoteAudioTrack;
@@ -17,6 +19,12 @@ const AudioElm = ({ audioTrack, userId, isLocalUser }: IAudioElmProps) => {
   const audioVolume = useAppSelector(
     (state) => participantsSelector.selectById(state, userId)?.audioVolume,
   );
+  // the AI agent is muted only for the participant who asked for it
+  const agentUserId = useAppSelector((state) => aiAgentSelector(state)?.agentUserId);
+  const isAIAgentMutedLocally = useAppSelector(
+    (state) => isAIAgentLocalMutedSelector(state) && isAIAgentUserId(userId, agentUserId),
+  );
+  const isSilenced = isLocalUser || isAIAgentMutedLocally;
 
   const throttledSetVolume = useMemo(
     () =>
@@ -30,30 +38,25 @@ const AudioElm = ({ audioTrack, userId, isLocalUser }: IAudioElmProps) => {
 
   useEffect(() => {
     const el = ref.current;
-    if (el) {
-      audioTrack.attach(el);
-      if (isLocalUser) {
-        audioTrack.setVolume(0);
-      } else if (typeof audioVolume !== 'undefined') {
-        audioTrack.setVolume(audioVolume);
-      }
+    if (!el) {
+      return;
     }
+    // the loudness is applied by the effect below, so a mute change never
+    // re-attaches the track
+    audioTrack.attach(el);
 
     return () => {
-      if (el) {
-        audioTrack.detach(el);
-      }
+      audioTrack.detach(el);
     };
-    //eslint-disable-next-line
-  }, [audioTrack, isLocalUser]);
+  }, [audioTrack]);
 
   useEffect(() => {
-    if (isLocalUser) {
+    if (isSilenced) {
       audioTrack.setVolume(0);
     } else if (typeof audioVolume !== 'undefined') {
       throttledSetVolume(audioVolume);
     }
-  }, [audioVolume, throttledSetVolume, isLocalUser, audioTrack]);
+  }, [audioVolume, throttledSetVolume, isSilenced, audioTrack]);
 
   useEffect(() => {
     const el = ref.current;

@@ -21,6 +21,7 @@ import PollsComponent from '../polls';
 import ChatComponent from '../chat';
 import ParticipantsComponent from '../participants';
 import RoomsPanel from '../breakout-room/roomsPanel';
+import { canAccessBreakoutRooms } from '../breakout-room/utils/breakoutRoom';
 import SidePanel from './sidePanel';
 import { PipProvider } from '../pip/pipProvider';
 import PublicChatPip from '../pip/publicChatPip';
@@ -38,10 +39,12 @@ const MainArea = () => {
     };
   }, []);
 
-  const showBreakoutRoomsPanel = useAppSelector((state) => {
-    const meta = state.session.currentRoom?.metadata;
-    return !!meta?.roomFeatures?.breakoutRoomFeatures?.isActive && !meta?.isBreakoutRoom;
-  });
+  const showBreakoutRoomsPanel = useAppSelector((state) =>
+    canAccessBreakoutRooms(
+      state.session.currentRoom?.metadata,
+      !!state.session.currentUser?.metadata?.isAdmin,
+    ),
+  );
 
   const extendedViewPreference = useRef<boolean>(false);
 

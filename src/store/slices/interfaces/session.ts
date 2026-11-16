@@ -23,6 +23,8 @@ export interface ISession {
   isCloud: boolean;
   clientType?: ClientType; // session client type from VerifyTokenRes; default WEB
   overallConnectionQuality?: PnmConnectionQuality;
+  // false when the browser blocked audio autoplay until the user interacts
+  canPlaybackAudio: boolean;
 }
 
 export interface ICurrentUser {

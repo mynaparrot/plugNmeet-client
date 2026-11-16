@@ -44,6 +44,14 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
     (state) => !!state.session.currentRoom.metadata?.roomFeatures?.pollsFeatures?.isAllow,
   );
 
+  // 1-on-1 AI rooms are only offered when the parent room hosts the AI agent.
+  const aiAgentFeatures = useMemo(
+    () =>
+      store.getState().session.currentRoom.metadata?.roomFeatures?.insightsFeatures
+        ?.aiAgentFeatures,
+    [],
+  );
+
   // Whiteboard share state (selectors + default-checked + resync + builder).
   const {
     currentWhiteboardOfficeFileId,
@@ -85,8 +93,16 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
     initialAllowReturnToMainRoom,
   );
   const [allowSelfSelect, setAllowSelfSelect] = useState<boolean>(initialAllowSelfSelect);
+  const [enableAiAgent, setEnableAiAgent] = useState<boolean>(false);
+  const [globalAiContext, setGlobalAiContext] = useState<string>('');
+  const [roomAiContexts, setRoomAiContexts] = useState<Record<number, string>>({});
   const [customTitles, setCustomTitles] = useState<Record<number, string>>(initialCustomTitles);
   const [users, setUsers] = useState<Array<UserType>>(initialUsers);
+
+  const isAiAgentAllowed = !!aiAgentFeatures?.isAllow;
+  // 1-on-1 AI rooms run as many concurrent agent sessions as the parent allows.
+  const maxAiAgentSessions = aiAgentFeatures?.maxConcurrentSessions ?? 0;
+  const aiAgentMaxRooms = enableAiAgent && maxAiAgentSessions > 0 ? maxAiAgentSessions : undefined;
 
   // we'll clean during unmount
   useEffect(() => {
@@ -116,6 +132,25 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
       prevUsers.map((user) => (user.roomId > totalRooms ? { ...user, roomId: 0 } : user)),
     );
   }, [totalRooms, preTotalRooms]);
+
+  // the AI agent session limit can be lower than the room count picked already
+  useEffect(() => {
+    if (aiAgentMaxRooms && totalRooms > aiAgentMaxRooms) {
+      setTotalRooms(aiAgentMaxRooms);
+    }
+  }, [aiAgentMaxRooms, totalRooms]);
+
+  const toggleEnableAiAgent = (checked: boolean) => {
+    setEnableAiAgent(checked);
+    if (checked) {
+      // 1-on-1 rooms need an explicit user per room
+      setAllowSelfSelect(false);
+    }
+  };
+
+  const onChangeRoomAiContext = useCallback((roomId: number, value: string) => {
+    setRoomAiContexts((prev) => ({ ...prev, [roomId]: value }));
+  }, []);
 
   const roomList = useMemo(() => {
     const generatedRooms: Array<RoomType> = [
@@ -165,11 +200,25 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
   };
 
   const handleStartBreakoutRooms = useCallback(() => {
+    if (enableAiAgent) {
+      const usersPerRoom = new Map<number, number>();
+      users.forEach((u) => {
+        if (u.roomId > 0) {
+          usersPerRoom.set(u.roomId, (usersPerRoom.get(u.roomId) ?? 0) + 1);
+        }
+      });
+      if ([...usersPerRoom.values()].some((count) => count > 1)) {
+        setMessage({ text: t('breakout-room.ai-agent-one-user'), type: 'error' });
+        return;
+      }
+    }
+
     const tmp: Array<BreakoutRoom> = [];
     roomList.forEach((r) => {
       if (r.id !== 0) {
         const u = users.filter((u) => u.roomId === r.id);
         if (u.length || allowSelfSelect) {
+          const roomAiContext = enableAiAgent ? roomAiContexts[r.id]?.trim() : '';
           const room = create(BreakoutRoomSchema, {
             id: `${r.id}`,
             title: customTitles[r.id]?.trim() || r.name,
@@ -177,6 +226,7 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
             duration: String(roomDuration),
             started: false,
             created: String(Date.now()),
+            ...(roomAiContext ? { aiAgentContext: roomAiContext } : {}),
           });
           tmp.push(room);
         }
@@ -202,6 +252,10 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
       shareNotepad: shareNotepad && !contentShareDisabled,
       allowReturnToMainRoom: allowReturnToMainRoom,
       allowSelfSelect: allowSelfSelect,
+      enableAiAgent: enableAiAgent,
+      ...(enableAiAgent && globalAiContext.trim()
+        ? { aiAgentContext: globalAiContext.trim() }
+        : {}),
       ...(whiteboardShare ? { whiteboardShare } : {}),
       ...(sharePolls && sharePollIds.length > 0 ? { pollShare: { pollIds: sharePollIds } } : {}),
     });
@@ -219,6 +273,9 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
     sharePollIds,
     allowReturnToMainRoom,
     allowSelfSelect,
+    enableAiAgent,
+    globalAiContext,
+    roomAiContexts,
     customTitles,
     contentShareDisabled,
     whiteboardPagesSelected,
@@ -230,7 +287,11 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
   return (
     <div className="break-out-room-main-area">
       <div className="row flex flex-wrap justify-start items-end">
-        <RoomNumberSelector totalRooms={totalRooms} setTotalRooms={setTotalRooms} />
+        <RoomNumberSelector
+          totalRooms={totalRooms}
+          setTotalRooms={setTotalRooms}
+          maxRooms={aiAgentMaxRooms}
+        />
         <div className="room-durations w-full sm:w-56 mb-4">
           <label
             className="block text-sm font-medium text-Gray-800 dark:text-white mb-2"
@@ -296,25 +357,79 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
         </div>
       </div>
 
+      {isAiAgentAllowed && (
+        <div className="item flex items-start mt-4 mb-4">
+          <div className="input">
+            <input
+              id="enable-ai-agent"
+              name="enable-ai-agent"
+              type="checkbox"
+              className="border cursor-pointer border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus focus-ring mt-1 dark:bg-dark-secondary dark:border-dark-text"
+              checked={enableAiAgent}
+              onChange={(e) => toggleEnableAiAgent(e.currentTarget.checked)}
+            />
+          </div>
+          <div className="text-base w-full ps-2 sm:ps-4">
+            <label
+              htmlFor="enable-ai-agent"
+              className="text-sm 3xl:text-base font-medium text-Gray-950 dark:text-dark-text cursor-pointer"
+            >
+              {t('breakout-room.enable-ai-agent')}
+              <p className="text-xs md:text-sm opacity-70 dark:opacity-80">
+                {t('breakout-room.enable-ai-agent-desc')}
+              </p>
+            </label>
+          </div>
+        </div>
+      )}
+
+      {isAiAgentAllowed && enableAiAgent && (
+        <div className="ai-agent-global-context w-full sm:max-w-122 mb-4">
+          <label
+            className="block text-sm font-medium text-Gray-800 dark:text-white mb-1"
+            htmlFor="breakout-room-ai-context"
+          >
+            {t('breakout-room.global-ai-context')}
+          </label>
+          <textarea
+            dir="auto"
+            id="breakout-room-ai-context"
+            maxLength={2000}
+            className="h-20 rounded-[15px] text-Gray-800 dark:text-white border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-transparent shadow-input w-full px-3 py-2 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
+            placeholder={t('breakout-room.global-ai-context-placeholder')}
+            onChange={(e) => setGlobalAiContext(e.currentTarget.value)}
+            value={globalAiContext}
+          ></textarea>
+          <p className="text-xs md:text-sm opacity-70 dark:opacity-80 mt-1">
+            {t('breakout-room.global-ai-context-desc')}
+          </p>
+        </div>
+      )}
+
       <div className="item flex items-start mt-4 mb-4">
         <div className="input">
           <input
             id="allow-self-select"
             name="allow-self-select"
             type="checkbox"
-            className="border cursor-pointer border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus focus-ring mt-1 dark:bg-dark-secondary dark:border-dark-text"
+            className="border cursor-pointer border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus focus-ring mt-1 dark:bg-dark-secondary dark:border-dark-text disabled:opacity-50 disabled:cursor-not-allowed"
             checked={allowSelfSelect}
+            disabled={enableAiAgent}
             onChange={(e) => setAllowSelfSelect(e.currentTarget.checked)}
           />
         </div>
         <div className="text-base w-full ps-2 sm:ps-4">
           <label
             htmlFor="allow-self-select"
-            className="text-sm 3xl:text-base font-medium text-Gray-950 dark:text-dark-text cursor-pointer"
+            className={`text-sm 3xl:text-base font-medium text-Gray-950 dark:text-dark-text ${
+              enableAiAgent ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'
+            }`}
           >
             {t('breakout-room.allow-self-select')}
             <p className="text-xs md:text-sm opacity-70 dark:opacity-80">
-              {t('breakout-room.allow-self-select-desc')}
+              {enableAiAgent
+                ? t('breakout-room.ai-agent-self-select-disabled')
+                : t('breakout-room.allow-self-select-desc')}
             </p>
           </label>
         </div>
@@ -325,6 +440,9 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
         users={users}
         customTitles={customTitles}
         setCustomTitles={setCustomTitles}
+        enableAiAgent={enableAiAgent}
+        roomAiContexts={roomAiContexts}
+        onChangeRoomAiContext={onChangeRoomAiContext}
       />
 
       {isWhiteboardEnabled && (

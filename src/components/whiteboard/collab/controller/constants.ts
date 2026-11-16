@@ -17,3 +17,6 @@ export const MAX_MISSING_UPDATE_RESYNCS = 5;
 export const SAVE_FLUSH_TIMEOUT_MS = 5000;
 /** Pause between flush attempts so an instantly failing save cannot spin. */
 export const SAVE_FLUSH_RETRY_DELAY_MS = 500;
+
+/** Screen-pixel margin kept around content scrolled into view. */
+export const VIEWPORT_REVEAL_MARGIN = 40;

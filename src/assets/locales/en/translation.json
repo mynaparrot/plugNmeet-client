@@ -127,7 +127,10 @@
     "invalid-request": "Your request could not be validated. Please try to join the meeting again.",
     "success": "Success",
     "rtmp-already-running": "RTMP streaming is already in progress.",
-    "rtmp-not-running": "RTMP streaming is not in progress."
+    "rtmp-not-running": "RTMP streaming is not in progress.",
+    "audio-playback-title": "Enable audio",
+    "audio-playback-desc": "Your browser blocked audio playback. Click the button below to hear the meeting.",
+    "audio-playback-btn": "Enable audio"
   },
   "room-metadata": {
     "session-recording": "This meeting is being recorded.",
@@ -834,6 +837,16 @@
     "content-share-skipped-notepad": "Shared notes were skipped because the notepad was not open on your screen",
     "allow-self-select": "Allow participants to choose their room",
     "allow-self-select-desc": "Participants can join any breakout room themselves.",
+    "enable-ai-agent": "Enable 1-on-1 AI Agent",
+    "ai-session-badge": "AI Agent",
+    "enable-ai-agent-desc": "Every room gets one participant with their own AI assistant. Self-select is turned off.",
+    "ai-agent-self-select-disabled": "Self-select is not available for 1-on-1 AI rooms.",
+    "ai-agent-one-user": "With the 1-on-1 AI Agent enabled, each room can have only one participant.",
+    "global-ai-context": "Global AI Instructions / Context (optional)",
+    "global-ai-context-placeholder": "e.g. Use simple language and keep answers short.",
+    "global-ai-context-desc": "Added to the main AI prompt for all rooms. Max 2000 characters.",
+    "room-ai-context": "Custom AI instructions for this room/student (optional)",
+    "room-ai-context-placeholder": "e.g. Focus on fractions and ask one question at a time",
     "custom-title-placeholder": "Custom title (optional)",
     "rooms-panel-title": "Breakout Rooms",
     "joined-count": "{{count}} joined",
@@ -1181,6 +1194,48 @@
       "rtmp-url-required": "An RTMP URL is required to start RTMP streaming.",
       "invalid-rtmp-url": "Only rtmp and rtmps URLs are allowed.",
       "operation-failed": "The recording request could not be completed. Please try again."
+    }
+  },
+  "ai-agent": {
+    "controls": "AI Assistant controls",
+    "controls-short": "Controls",
+    "start": "Start AI Assistant",
+    "pause": "Pause",
+    "resume": "Resume",
+    "stop": "Stop",
+    "mute-locally": "Mute AI Assistant for me",
+    "unmute-locally": "Unmute AI Assistant for me",
+    "context-label": "Whisper instructions",
+    "context-placeholder": "e.g. summarise the last point, then ask the class one question",
+    "send-context": "Send to assistant",
+    "state": {
+      "unknown": "Connecting...",
+      "not-started": "Not started",
+      "connecting": "Connecting...",
+      "listening": "Listening",
+      "thinking": "Thinking",
+      "speaking": "Speaking",
+      "drawing": "Drawing on board",
+      "paused": "Paused",
+      "reconnecting": "Reconnecting...",
+      "stopped": "Stopped"
+    },
+    "errors": {
+      "only-admin": "Only admin can perform this task.",
+      "not-allowed": "The AI Assistant is not enabled for this room.",
+      "not-running": "The AI Assistant is not running.",
+      "session-not-started": "The AI Assistant session has not started yet. Please start the AI session first.",
+      "invalid-request": "Your request could not be validated.",
+      "e2ee-unsupported": "The AI Assistant is not available while self-managed End-to-End Encryption is active.",
+      "provider-missing": "No AI provider is configured for the AI Assistant.",
+      "prompt-required": "An instructions prompt is required to start the AI Assistant.",
+      "topic-required": "A topic is required to start the AI Assistant.",
+      "no-delegate": "No participant could be selected to run the AI Assistant's actions.",
+      "max-concurrent-sessions": "The AI session limit for this room has been reached. End an active session and try again.",
+      "direct-session-single-user": "A direct AI session supports only one participant.",
+      "breakout-one-user": "Each 1-on-1 AI room needs exactly one participant and self-select must be off.",
+      "user-not-allowed": "You are not allowed to join this AI session.",
+      "generic": "Something went wrong. Please try again."
     }
   }
 }

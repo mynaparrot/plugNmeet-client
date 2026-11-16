@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { useDrop } from 'react-dnd';
+import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
 import UserBox from './userBox';
@@ -13,13 +14,26 @@ interface IRoomBoxProps {
   users: Array<UserType>;
   customTitles?: Record<number, string>;
   setCustomTitles?: React.Dispatch<React.SetStateAction<Record<number, string>>>;
+  enableAiAgent?: boolean;
+  roomAiContext?: string;
+  onChangeRoomAiContext?: (roomId: number, value: string) => void;
 }
 
 interface DragItem {
   id: string;
 }
 
-const RoomBox = ({ roomId, name, users, customTitles, setCustomTitles }: IRoomBoxProps) => {
+const RoomBox = ({
+  roomId,
+  name,
+  users,
+  customTitles,
+  setCustomTitles,
+  enableAiAgent,
+  roomAiContext,
+  onChangeRoomAiContext,
+}: IRoomBoxProps) => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const ref = useRef<HTMLDivElement>(null);
 
@@ -73,6 +87,18 @@ const RoomBox = ({ roomId, name, users, customTitles, setCustomTitles }: IRoomBo
         />
       ) : (
         <p className={headerClasses}>{name}</p>
+      )}
+      {enableAiAgent && roomId !== 0 && (
+        <textarea
+          rows={2}
+          maxLength={2000}
+          dir="auto"
+          aria-label={t('breakout-room.room-ai-context')}
+          placeholder={t('breakout-room.room-ai-context-placeholder')}
+          value={roomAiContext ?? ''}
+          onChange={(e) => onChangeRoomAiContext?.(roomId, e.currentTarget.value)}
+          className="w-full text-[11px] leading-snug px-2 py-1 resize-none bg-transparent text-Gray-950 dark:text-white border-b-2 border-solid border-gray-100 dark:border-Gray-800 outline-hidden focus:border-[rgba(0,161,242,1)]"
+        />
       )}
       {users.map((user) => {
         return <UserBox key={user.id} name={user.name} id={user.id} />;

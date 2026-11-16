@@ -293,6 +293,97 @@ describe('WhiteboardPresenceManager', () => {
     expect(harness.updateScene).not.toHaveBeenCalled();
   });
 
+  describe('external collaborator pointer', () => {
+    const AGENT_ID = 'ai_agent_pointer';
+    const LASER_COLOR = '#e03131';
+
+    /** States a receiving peer ends up with, ignoring the viewer's own empty state. */
+    const publishedStates = (harness: Harness, count?: number): Record<string, unknown>[] => {
+      const viewer = new Awareness(newDoc());
+      const calls = harness.send.mock.calls as unknown as [DataMsgBodyType, Uint8Array][];
+      (count === undefined ? calls : calls.slice(0, count)).forEach(([, update]) =>
+        applyAwarenessUpdate(viewer, update, 'remote'),
+      );
+      return [...viewer.getStates().entries()]
+        .filter(([clientId]) => clientId !== viewer.clientID)
+        .map(([, state]) => state as Record<string, unknown>);
+    };
+
+    it('publishes the agent laser as an external, pressed pointer', () => {
+      const harness = setup([{ userId: 'me' }]);
+
+      harness.manager.setExternalCollaboratorPointer(
+        AGENT_ID,
+        'Tutor',
+        { x: 10, y: 20 },
+        LASER_COLOR,
+      );
+
+      expect(publishedStates(harness)[0]).toMatchObject({
+        id: AGENT_ID,
+        username: 'Tutor',
+        isExternal: true,
+        // Excalidraw only starts and extends a laser trail while pressed.
+        button: 'down',
+        pointer: {
+          x: 10,
+          y: 20,
+          tool: 'laser',
+          renderCursor: true,
+          laserColor: LASER_COLOR,
+        },
+        color: { background: LASER_COLOR, stroke: LASER_COLOR },
+      });
+    });
+
+    it('leaves the pointer tool unpressed', () => {
+      const harness = setup([{ userId: 'me' }]);
+
+      harness.manager.setExternalCollaboratorPointer(AGENT_ID, 'Tutor', {
+        x: 1,
+        y: 2,
+        tool: 'pointer',
+      });
+
+      expect(publishedStates(harness)[0]).toMatchObject({
+        button: 'up',
+        pointer: { tool: 'pointer', renderCursor: true },
+      });
+    });
+
+    it('renders the agent for peers that never see it as a participant', () => {
+      const sender = setup([{ userId: 'me' }]);
+      const receiver = setup([{ userId: 'me' }, { userId: 'peer1' }]);
+      receiver.manager.ensurePresence();
+
+      sender.manager.setExternalCollaboratorPointer(AGENT_ID, 'Tutor', { x: 5, y: 6 });
+      const updates = sender.send.mock.calls as unknown as [DataMsgBodyType, Uint8Array][];
+      updates.forEach(([, update]) => receiver.manager.applyRemoteAwareness(update));
+
+      expect(Array.from(collaboratorsOf(receiver).keys())).toEqual([AGENT_ID]);
+      // A remote update is rendered, never echoed back.
+      expect(receiver.send).not.toHaveBeenCalled();
+    });
+
+    it('ends the trail with a button-up before retracting the collaborator', () => {
+      const harness = setup([{ userId: 'me' }]);
+
+      harness.manager.setExternalCollaboratorPointer(AGENT_ID, 'Tutor', { x: 5, y: 6 });
+      harness.manager.setExternalCollaboratorPointer(AGENT_ID, 'Tutor', null);
+
+      expect(harness.send).toHaveBeenCalledTimes(3);
+      // The peer ends up with no collaborator at all.
+      expect(publishedStates(harness)).toHaveLength(0);
+
+      // The second message is the terminating state, the third the removal.
+      expect(publishedStates(harness, 2)[0]).toMatchObject({
+        button: 'up',
+        pointer: { x: 5, y: 6, tool: 'laser' },
+      });
+      expect(collaboratorsOf(harness).size).toBe(0);
+    });
+  });
+
   it('survives a malformed remote payload', () => {
     const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     const harness = setup([{ userId: 'peer1' }]);

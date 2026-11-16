@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { updateIsActiveInsightsAiTextChat } from '../../../store/slices/bottomIconsActivitySlice';
 import { AiIconSVG } from '../../../assets/Icons/AiIconSVG';
+import { selectIsInsightsAiTextChatEnabled } from '../../insights-ai/featureGate';
 
 const InsightsAiTextChatIcon = () => {
   const dispatch = useAppDispatch();
@@ -16,11 +17,7 @@ const InsightsAiTextChatIcon = () => {
     };
   }, []);
 
-  const isEnabled = useAppSelector(
-    (state) =>
-      state.session.currentRoom.metadata?.roomFeatures?.insightsFeatures?.aiFeatures
-        ?.aiTextChatFeatures?.isEnabled,
-  );
+  const isEnabled = useAppSelector(selectIsInsightsAiTextChatEnabled);
 
   const isActiveAiTextChat = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveInsightsAiTextChat,
