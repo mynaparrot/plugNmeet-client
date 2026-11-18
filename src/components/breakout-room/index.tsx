@@ -30,6 +30,7 @@ const BreakoutRoom = () => {
   // Per-user AI rooms never use the manual "create breakout rooms" form: the
   // server creates one 1-on-1 session per participant.
   const isAutoAgentic = isAutoPerUserAISessionRoom(metadata);
+  const isAiAgentAllowed = !!metadata?.roomFeatures?.insightsFeatures?.aiAgentFeatures?.isAllow;
 
   const [createBreakoutRoom, { isLoading, data, error, isSuccess }] =
     useCreateBreakoutRoomsMutation();
@@ -118,7 +119,7 @@ const BreakoutRoom = () => {
     <Modal
       show={true}
       onClose={() => dispatch(updateShowManageBreakoutRoomModal(false))}
-      title={t('breakout-room.modal-title')}
+      title={isAiAgentAllowed ? t('breakout-room.modal-ai-title') : t('breakout-room.modal-title')}
       customClass="breakoutRoomModal"
       maxWidth="max-w-4xl"
     >

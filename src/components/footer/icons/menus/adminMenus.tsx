@@ -80,6 +80,7 @@ const AdminMenus = () => {
   }, [dispatch]);
 
   const isAutoAgentic = isAutoPerUserAISessionRoom(metadata);
+  const isAiAgentAllowed = !!metadata?.roomFeatures?.insightsFeatures?.aiAgentFeatures?.isAllow;
 
   return (
     <>
@@ -190,7 +191,11 @@ const AdminMenus = () => {
         <MenuItemHelper
           onClick={openManageBreakoutRoomModal}
           icon={<BreakoutRoomIconSVG classes="w-6 h-auto" />}
-          text={t('footer.menus.manage-breakout-room')}
+          text={
+            isAiAgentAllowed
+              ? t('footer.menus.manage-breakout-ai-room')
+              : t('footer.menus.manage-breakout-room')
+          }
         />
       )}
     </>
