@@ -100,9 +100,9 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
   const [users, setUsers] = useState<Array<UserType>>(initialUsers);
 
   const isAiAgentAllowed = !!aiAgentFeatures?.isAllow;
-  // 1-on-1 AI rooms run as many concurrent agent sessions as the parent allows.
-  const maxAiAgentSessions = aiAgentFeatures?.maxConcurrentSessions ?? 0;
-  const aiAgentMaxRooms = enableAiAgent && maxAiAgentSessions > 0 ? maxAiAgentSessions : undefined;
+  // Manually created 1-on-1 AI rooms are regular breakout rooms: the number of
+  // rooms is governed by breakoutRoomFeatures.allowedNumberRooms, not by the
+  // auto-session limits (those only apply to per-user session modes).
 
   // we'll clean during unmount
   useEffect(() => {
@@ -133,18 +133,24 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
     );
   }, [totalRooms, preTotalRooms]);
 
-  // the AI agent session limit can be lower than the room count picked already
-  useEffect(() => {
-    if (aiAgentMaxRooms && totalRooms > aiAgentMaxRooms) {
-      setTotalRooms(aiAgentMaxRooms);
-    }
-  }, [aiAgentMaxRooms, totalRooms]);
-
   const toggleEnableAiAgent = (checked: boolean) => {
     setEnableAiAgent(checked);
     if (checked) {
       // 1-on-1 rooms need an explicit user per room
       setAllowSelfSelect(false);
+      // Keep at most one user per room: extra users go back to the main room.
+      const seenRooms = new Set<number>();
+      setUsers((prev) =>
+        prev.map((u) => {
+          if (u.roomId > 0) {
+            if (seenRooms.has(u.roomId)) {
+              return { ...u, roomId: 0 };
+            }
+            seenRooms.add(u.roomId);
+          }
+          return u;
+        }),
+      );
     }
   };
 
@@ -172,6 +178,14 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
     if (droppedUser.id === '') {
       return;
     }
+    // Defensive guard: AI rooms are 1-on-1, so never allow a second user in.
+    if (
+      enableAiAgent &&
+      droppedUser.roomId > 0 &&
+      users.some((u) => u.roomId === droppedUser.roomId && u.id !== droppedUser.id)
+    ) {
+      return;
+    }
     const newUsers = users.map((user) => {
       if (user.id === droppedUser.id) {
         user.roomId = droppedUser.roomId;
@@ -181,15 +195,27 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
 
     setUsers(newUsers);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [droppedUser]); // users is intentionally omitted
+  }, [droppedUser]); // users/enableAiAgent are intentionally omitted
 
   const randomSelection = () => {
     if (!users.length || !roomList.length) {
       return;
     }
     const tmp = [...users];
-    const tmpRooms = [...roomList];
-    tmpRooms.shift();
+    const tmpRooms = roomList.filter((r) => r.id !== 0);
+
+    if (enableAiAgent) {
+      // 1-on-1 AI rooms: at most one user per room, leftovers stay in the main room.
+      for (let i = tmpRooms.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [tmpRooms[i], tmpRooms[j]] = [tmpRooms[j], tmpRooms[i]];
+      }
+      tmp.forEach((u, idx) => {
+        u.roomId = idx < tmpRooms.length ? tmpRooms[idx].id : 0;
+      });
+      setUsers(tmp);
+      return;
+    }
 
     for (let i = 0; i < tmp.length; i++) {
       const r = Math.floor(Math.random() * tmpRooms.length);
@@ -287,11 +313,7 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
   return (
     <div className="break-out-room-main-area">
       <div className="row flex flex-wrap justify-start items-end">
-        <RoomNumberSelector
-          totalRooms={totalRooms}
-          setTotalRooms={setTotalRooms}
-          maxRooms={aiAgentMaxRooms}
-        />
+        <RoomNumberSelector totalRooms={totalRooms} setTotalRooms={setTotalRooms} />
         <div className="room-durations w-full sm:w-56 mb-4">
           <label
             className="block text-sm font-medium text-Gray-800 dark:text-white mb-2"

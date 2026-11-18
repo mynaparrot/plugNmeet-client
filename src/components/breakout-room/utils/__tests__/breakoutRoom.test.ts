@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { create } from '@bufbuild/protobuf';
-import { RoomMetadataSchema } from 'plugnmeet-protocol-js';
+import { AIAgentSessionMode, RoomMetadataSchema } from 'plugnmeet-protocol-js';
 
 // `../breakoutRoom` also contains the auto-return flow, which pulls in the
 // redux store, the RTK query api and i18n (all of which expect a browser).
@@ -23,11 +23,16 @@ vi.mock('../../../../helpers/i18n', () => ({
   default: { t: (key: string) => key },
 }));
 
-const { parseParentRoomId, canAccessBreakoutRooms } = await import('../breakoutRoom');
+const { parseParentRoomId, canAccessBreakoutRooms, isAgenticSessionsMode } =
+  await import('../breakoutRoom');
 
 const roomMetadata = (
   breakout: { isActive?: boolean; isAllow?: boolean },
-  autoCreatePerUserSession = false,
+  aiAgent: {
+    isAllow?: boolean;
+    sessionMode?: AIAgentSessionMode;
+    allowedParticipantIds?: string[];
+  } = {},
 ) =>
   create(RoomMetadataSchema, {
     isBreakoutRoom: false,
@@ -38,8 +43,12 @@ const roomMetadata = (
       },
       insightsFeatures: {
         aiAgentFeatures: {
-          isAllow: autoCreatePerUserSession,
-          autoCreatePerUserSession,
+          isAllow: !!aiAgent.isAllow,
+          sessionMode: aiAgent.sessionMode ?? AIAgentSessionMode.AI_AGENT_SESSION_MODE_NORMAL_ROOM,
+          autoSessionConfig: {
+            allowedParticipantIds: aiAgent.allowedParticipantIds ?? [],
+            maxConcurrentSessions: 0,
+          },
         },
       },
     },
@@ -80,25 +89,110 @@ describe('canAccessBreakoutRooms', () => {
     expect(canAccessBreakoutRooms(roomMetadata({ isAllow: true }), false)).toBe(false);
   });
 
-  it('is available to admins for per-user AI agent rooms', () => {
-    const meta = roomMetadata({ isAllow: true }, true);
+  it('is available to admins for open-per-user AI agent rooms', () => {
+    const meta = roomMetadata(
+      { isAllow: true },
+      { isAllow: true, sessionMode: AIAgentSessionMode.AI_AGENT_SESSION_MODE_OPEN_PER_USER },
+    );
     expect(canAccessBreakoutRooms(meta, true)).toBe(true);
     expect(canAccessBreakoutRooms(meta, false)).toBe(false);
   });
 
+  it('is available to admins for controlled AI agent rooms with more than one allowed user', () => {
+    const meta = roomMetadata(
+      { isAllow: true },
+      {
+        isAllow: true,
+        sessionMode: AIAgentSessionMode.AI_AGENT_SESSION_MODE_CONTROLLED_USERS,
+        allowedParticipantIds: ['student-1', 'student-2'],
+      },
+    );
+    expect(canAccessBreakoutRooms(meta, true)).toBe(true);
+    expect(canAccessBreakoutRooms(meta, false)).toBe(false);
+  });
+
+  it('is not treated as a per-user room for normal rooms or a single controlled user', () => {
+    expect(
+      canAccessBreakoutRooms(
+        roomMetadata(
+          { isAllow: true },
+          { isAllow: true, sessionMode: AIAgentSessionMode.AI_AGENT_SESSION_MODE_NORMAL_ROOM },
+        ),
+        true,
+      ),
+    ).toBe(false);
+    expect(
+      canAccessBreakoutRooms(
+        roomMetadata(
+          { isAllow: true },
+          {
+            isAllow: true,
+            sessionMode: AIAgentSessionMode.AI_AGENT_SESSION_MODE_CONTROLLED_USERS,
+            allowedParticipantIds: ['student-1'],
+          },
+        ),
+        true,
+      ),
+    ).toBe(false);
+  });
+
   it('is available to admins for auto-created per-user rooms even when rooms cannot be started manually', () => {
-    const meta = roomMetadata({}, true);
+    const meta = roomMetadata(
+      {},
+      { isAllow: true, sessionMode: AIAgentSessionMode.AI_AGENT_SESSION_MODE_OPEN_PER_USER },
+    );
     expect(canAccessBreakoutRooms(meta, true)).toBe(true);
     expect(canAccessBreakoutRooms(meta, false)).toBe(false);
   });
 
   it('is never available inside a breakout room', () => {
-    const meta = roomMetadata({ isActive: true, isAllow: true }, true);
+    const meta = roomMetadata(
+      { isActive: true, isAllow: true },
+      { isAllow: true, sessionMode: AIAgentSessionMode.AI_AGENT_SESSION_MODE_OPEN_PER_USER },
+    );
     meta.isBreakoutRoom = true;
     expect(canAccessBreakoutRooms(meta, true)).toBe(false);
   });
 
   it('is not available without metadata', () => {
     expect(canAccessBreakoutRooms(undefined, true)).toBe(false);
+  });
+});
+
+describe('isAgenticSessionsMode', () => {
+  const perUserMeta = () =>
+    roomMetadata(
+      {},
+      { isAllow: true, sessionMode: AIAgentSessionMode.AI_AGENT_SESSION_MODE_OPEN_PER_USER },
+    );
+  const normalMeta = () =>
+    roomMetadata(
+      {},
+      { isAllow: true, sessionMode: AIAgentSessionMode.AI_AGENT_SESSION_MODE_NORMAL_ROOM },
+    );
+
+  it('is true when the room itself runs per-user AI sessions', () => {
+    expect(isAgenticSessionsMode(perUserMeta(), [])).toBe(true);
+    expect(isAgenticSessionsMode(perUserMeta(), undefined)).toBe(true);
+  });
+
+  it('is true when every running room has the AI agent enabled', () => {
+    expect(
+      isAgenticSessionsMode(normalMeta(), [{ enableAiAgent: true }, { enableAiAgent: true }]),
+    ).toBe(true);
+  });
+
+  it('is false for mixed or empty room lists', () => {
+    expect(isAgenticSessionsMode(normalMeta(), [{ enableAiAgent: true }, {}])).toBe(false);
+    expect(
+      isAgenticSessionsMode(normalMeta(), [{ enableAiAgent: true }, { enableAiAgent: false }]),
+    ).toBe(false);
+    expect(isAgenticSessionsMode(normalMeta(), [])).toBe(false);
+    expect(isAgenticSessionsMode(normalMeta(), undefined)).toBe(false);
+  });
+
+  it('is false without metadata or rooms', () => {
+    expect(isAgenticSessionsMode(undefined, undefined)).toBe(false);
+    expect(isAgenticSessionsMode(undefined, [])).toBe(false);
   });
 });

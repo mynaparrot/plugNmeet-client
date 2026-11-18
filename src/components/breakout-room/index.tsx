@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '../../store';
 import { updateShowManageBreakoutRoomModal } from '../../store/slices/bottomIconsActivitySlice';
 import { useCreateBreakoutRoomsMutation } from '../../store/services/breakoutRoomApi';
 import { seedBreakoutContent, hasWhiteboardShare } from './utils/breakoutRoomSeeding';
+import { isAutoPerUserAISessionRoom } from '../../helpers/aiAgentSession';
 
 export interface BreakoutRoomMessage {
   text: string;
@@ -25,6 +26,10 @@ const BreakoutRoom = () => {
   const breakoutRoomIsActive = useAppSelector(
     (state) => !!state.session.currentRoom.metadata?.roomFeatures?.breakoutRoomFeatures?.isActive,
   );
+  const metadata = useAppSelector((state) => state.session.currentRoom?.metadata);
+  // Per-user AI rooms never use the manual "create breakout rooms" form: the
+  // server creates one 1-on-1 session per participant.
+  const isAutoAgentic = isAutoPerUserAISessionRoom(metadata);
 
   const [createBreakoutRoom, { isLoading, data, error, isSuccess }] =
     useCreateBreakoutRoomsMutation();
@@ -129,7 +134,7 @@ const BreakoutRoom = () => {
             {message.text}
           </div>
         )}
-        {breakoutRoomIsActive ? (
+        {breakoutRoomIsActive || isAutoAgentic ? (
           <ManageActiveRooms setMessage={setMessage} />
         ) : (
           <FormElems

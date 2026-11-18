@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import {
   AIAgentRuntimeState,
-  AIAgentSendContextReqSchema,
   AIAgentStartReqSchema,
   AIAgentStateMsgSchema,
   AIAgentStatusResSchema,
@@ -23,12 +22,12 @@ import {
   isAIAgentLiveState,
   pauseAIAgent,
   resumeAIAgent,
-  sendAIAgentContext,
   startAIAgent,
   stopAIAgent,
 } from '../api';
 import { wrapPnmApiErrorBytes } from '../../../../helpers/api/apiError';
 import {
+  formatAIAgentElapsed,
   formatAIAgentToolName,
   getAIAgentDisplayName,
   getAIAgentStatusLabel,
@@ -110,16 +109,6 @@ describe('ai agent api helpers', () => {
     expect(lastRequest()[1]).toHaveLength(0);
   });
 
-  it('encodes the whispered context and its source', async () => {
-    await sendAIAgentContext('summarise', 'moderator');
-    const body = fromBinary(AIAgentSendContextReqSchema, lastRequest()[1]);
-    expect(body.text).toBe('summarise');
-    expect(body.source).toBe('moderator');
-
-    await sendAIAgentContext('summarise');
-    expect(fromBinary(AIAgentSendContextReqSchema, lastRequest()[1]).source).toBeUndefined();
-  });
-
   it('decodes the agent state of the response', async () => {
     api.sendAPIRequest.mockResolvedValue(
       statusResBytes({
@@ -185,7 +174,7 @@ describe('ai agent status model', () => {
     expect(isAIAgentPaused(null)).toBe(false);
   });
 
-  it('maps every runtime state to an i18n label with a fallback', () => {
+  it('maps every runtime state to an i18n label', () => {
     const states = Object.values(AIAgentRuntimeState).filter(
       (value): value is AIAgentRuntimeState => typeof value === 'number',
     );
@@ -193,16 +182,15 @@ describe('ai agent status model', () => {
     for (const state of states) {
       const label = getAIAgentStatusLabel(state);
       expect(label.key.startsWith('ai-agent.state.')).toBe(true);
-      expect(label.fallback).not.toBe('');
     }
 
-    expect(getAIAgentStatusLabel(AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_DRAWING).fallback).toBe(
-      'Drawing on board',
+    expect(getAIAgentStatusLabel(AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_DRAWING).key).toBe(
+      'ai-agent.state.drawing',
     );
     expect(getAIAgentStatusLabel(AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_PAUSED).tone).toBe(
       'paused',
     );
-    expect(getAIAgentStatusLabel(undefined).fallback).toBe('Connecting...');
+    expect(getAIAgentStatusLabel(undefined).key).toBe('ai-agent.state.unknown');
   });
 
   it('prefers the live agent name, then the configured one', () => {
@@ -217,7 +205,39 @@ describe('ai agent status model', () => {
     expect(formatAIAgentToolName('  ')).toBe('');
     expect(formatAIAgentToolName(undefined)).toBe('');
   });
+});
 
+describe('formatAIAgentElapsed', () => {
+  const start = 1_700_000_000_000;
+
+  it('reads 00:00 without a usable start time', () => {
+    expect(formatAIAgentElapsed(undefined, start)).toBe('00:00');
+    expect(formatAIAgentElapsed(0, start)).toBe('00:00');
+    expect(formatAIAgentElapsed(-5, start)).toBe('00:00');
+    expect(formatAIAgentElapsed(start + 1000, start)).toBe('00:00');
+  });
+
+  it('counts whole seconds as MM:SS', () => {
+    expect(formatAIAgentElapsed(start, start)).toBe('00:00');
+    expect(formatAIAgentElapsed(start, start + 999)).toBe('00:00');
+    expect(formatAIAgentElapsed(start, start + 5_000)).toBe('00:05');
+    expect(formatAIAgentElapsed(start, start + 65_000)).toBe('01:05');
+    expect(formatAIAgentElapsed(start, start + 59 * 60_000 + 59_000)).toBe('59:59');
+  });
+
+  it('switches to HH:MM:SS after an hour', () => {
+    expect(formatAIAgentElapsed(start, start + 3_600_000)).toBe('01:00:00');
+    expect(formatAIAgentElapsed(start, start + 3_661_000)).toBe('01:01:01');
+    expect(formatAIAgentElapsed(start, start + 10 * 3_600_000 + 59_000)).toBe('10:00:59');
+  });
+
+  it('defaults the clock to now', () => {
+    expect(formatAIAgentElapsed(0)).toBe('00:00');
+    expect(formatAIAgentElapsed(Date.now() - 2_000)).toBe('00:02');
+  });
+});
+
+describe('ai agent status bar visibility', () => {
   it('shows the bar only inside an AI session room', () => {
     expect(
       shouldShowAIAgentStatusBar({ isSessionRoom: false, isModerator: true, agent: agentState() }),

@@ -1,16 +1,29 @@
+import type { AIAgentAutoSessionConfig, AIAgentSessionMode } from 'plugnmeet-protocol-js';
+
 import type { RootState } from '../../store';
 import type { IRoomMetadata } from '../../store/slices/interfaces/session';
-import { isAIAgentSessionRoom } from '../../helpers/aiAgentSession';
+import {
+  getAIAgentAllowedParticipantIds,
+  getAIAgentMaxConcurrentSessions,
+  isAIAgentAutoStart,
+  isAIAgentSessionRoom,
+  isAutoPerUserAISessionRoom,
+} from '../../helpers/aiAgentSession';
 
-export { isAIAgentSessionRoom };
+export {
+  getAIAgentAllowedParticipantIds,
+  getAIAgentMaxConcurrentSessions,
+  isAIAgentAutoStart,
+  isAIAgentSessionRoom,
+  isAutoPerUserAISessionRoom,
+};
 
 export interface IAIAgentFeatureFlags {
   isAllow?: boolean;
   allowChatMessage?: boolean;
   agentDisplayName?: string;
-  autoJoinOnFirstParticipant?: boolean;
-  autoCreatePerUserSession?: boolean;
-  allowedParticipantIds?: string[];
+  sessionMode?: AIAgentSessionMode;
+  autoSessionConfig?: AIAgentAutoSessionConfig;
 }
 
 const selectRoomMetadata = (state: RootState): IRoomMetadata | undefined =>

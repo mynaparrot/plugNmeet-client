@@ -2,7 +2,6 @@ import { create, fromBinary, MessageInitShape, toBinary } from '@bufbuild/protob
 import {
   AIAgentPauseReqSchema,
   AIAgentResumeReqSchema,
-  AIAgentSendContextReqSchema,
   AIAgentStartReqSchema,
   AIAgentStateMsg,
   AIAgentStatusReqSchema,
@@ -56,9 +55,6 @@ export const stopAIAgent = (reason?: string) =>
 export const pauseAIAgent = () => post('pause', encode(AIAgentPauseReqSchema, {}));
 
 export const resumeAIAgent = () => post('resume', encode(AIAgentResumeReqSchema, {}));
-
-export const sendAIAgentContext = (text: string, source?: string) =>
-  post('sendContext', encode(AIAgentSendContextReqSchema, source ? { text, source } : { text }));
 
 export const getAIAgentStatus = () => post('status', encode(AIAgentStatusReqSchema, {}));
 

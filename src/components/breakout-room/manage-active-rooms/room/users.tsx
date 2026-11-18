@@ -17,6 +17,7 @@ import {
   useReInviteMutation,
 } from '../../../../store/services/breakoutRoomApi';
 import { store } from '../../../../store';
+import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
 import { parseParentRoomId } from '../../utils/breakoutRoom';
 
 interface IBreakoutRoomUsersProps {
@@ -26,12 +27,17 @@ interface IBreakoutRoomUsersProps {
   // in no breakout room (breakout rooms only as move targets, no re-invite).
   variant?: 'room' | 'unassigned';
   breakoutRoomId?: string;
+  // 1-on-1 AI rooms list the agent as a virtual participant next to the learner.
+  enableAiAgent?: boolean;
+  aiAgentJoined?: boolean;
   setMessage: (message: BreakoutRoomMessage | null) => void;
 }
 const BreakoutRoomUsers = ({
   users,
   variant = 'room',
   breakoutRoomId,
+  enableAiAgent = false,
+  aiAgentJoined = false,
   setMessage,
 }: IBreakoutRoomUsersProps) => {
   const { t } = useTranslation();
@@ -45,14 +51,22 @@ const BreakoutRoomUsers = ({
   //     room, so there is no "current room" to exclude).
   const moveTargets = useMemo(() => {
     const targets: Array<{ id: string; title: string }> = [];
+    // 1-on-1 AI rooms only allow a single learner, so a room that already has its
+    // user assigned is not a valid move target. The main room (empty id) always
+    // stays available so an admin can send a user back.
+    const canAcceptUser = (r: { enableAiAgent?: boolean; users?: Array<unknown> }) =>
+      !r.enableAiAgent || (r.users?.length ?? 0) < 1;
+
     if (variant === 'unassigned') {
       for (const r of roomsData?.rooms ?? []) {
-        targets.push({ id: r.id, title: r.title });
+        if (canAcceptUser(r)) {
+          targets.push({ id: r.id, title: r.title });
+        }
       }
     } else {
       targets.push({ id: '', title: t('breakout-room.main-room') });
       for (const r of roomsData?.rooms ?? []) {
-        if (r.id !== breakoutRoomId) {
+        if (r.id !== breakoutRoomId && canAcceptUser(r)) {
           targets.push({ id: r.id, title: r.title });
         }
       }
@@ -159,6 +173,32 @@ const BreakoutRoomUsers = ({
                 {generateAvatarInitial(user.name)}
               </div>
               <span className="text-Gray-950 dark:text-white break-all">{user.name}</span>
+              {variant === 'room' && enableAiAgent && (
+                <div className="flex items-center gap-1.5">
+                  <div
+                    className={`thumb h-6 w-6 rounded-full text-xs font-medium text-white flex items-center justify-center shrink-0 ${
+                      aiAgentJoined ? 'bg-green-500' : 'bg-red-500'
+                    }`}
+                    title={
+                      aiAgentJoined
+                        ? t('breakout-room.agent-online')
+                        : t('breakout-room.agent-offline')
+                    }
+                  >
+                    <AiIconSVG classes="w-3.5 h-3.5" />
+                  </div>
+                  <span className="text-Gray-950 dark:text-white whitespace-nowrap">
+                    {t('breakout-room.ai-session-badge')}
+                    <span className="text-xs opacity-60 ms-1">
+                      (
+                      {aiAgentJoined
+                        ? t('breakout-room.agent-online')
+                        : t('breakout-room.agent-offline')}
+                      )
+                    </span>
+                  </span>
+                </div>
+              )}
               <div className="ms-auto flex items-center gap-2">
                 <Menu as="div">
                   {() => (

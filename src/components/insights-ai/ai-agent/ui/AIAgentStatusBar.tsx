@@ -14,8 +14,9 @@ import { Microphone } from '../../../../assets/Icons/Microphone';
 import { MicrophoneOff } from '../../../../assets/Icons/MicrophoneOff';
 import { applyAIAgentState } from '../agentState';
 import { getAIAgentStatus, isAIAgentLiveState } from '../api';
-import { isAIAgentSessionRoom } from '../../featureGate';
+import { getAIAgentAllowedParticipantIds, isAIAgentSessionRoom } from '../../featureGate';
 import AIAgentControlPanel from './AIAgentControlPanel';
+import { useAIAgentElapsedTime } from './useAIAgentElapsedTime';
 import {
   AIAgentStatusTone,
   formatAIAgentToolName,
@@ -56,12 +57,13 @@ const AIAgentStatusBar = () => {
   const isModerator = !!currentUser?.metadata?.isAdmin;
   const userId = currentUser?.userId;
   const canControl =
-    isModerator || (!!userId && !!features?.allowedParticipantIds?.includes(userId));
+    isModerator || (!!userId && getAIAgentAllowedParticipantIds(metadata).includes(userId));
   const configuredName = features?.agentDisplayName;
 
   const agent = useAppSelector(aiAgentSelector);
   const isLocalMuted = useAppSelector(isAIAgentLocalMutedSelector);
   const isRunning = isAIAgentRunning(agent);
+  const elapsedTime = useAIAgentElapsedTime(agent, isRunning);
 
   // Late joiners never saw the state the server published before they arrived.
   useEffect(() => {
@@ -86,14 +88,13 @@ const AIAgentStatusBar = () => {
 
   const status = isRunning
     ? getAIAgentStatusLabel(agent?.state)
-    : { key: 'ai-agent.state.not-started', fallback: 'Not started', tone: 'idle' as const };
-  const statusLabel = t(status.key, status.fallback);
+    : { key: 'ai-agent.state.not-started', tone: 'idle' as const };
+  const statusLabel = t(status.key);
+  const agentName = getAIAgentDisplayName(agent, configuredName);
   const toolLabel = formatAIAgentToolName(agent?.toolInProgress);
   // One fixed slot keeps the bar from jumping while a tool runs.
   const displayStatus = toolLabel ? toolLabel : statusLabel;
-  const muteLabel = isLocalMuted
-    ? t('ai-agent.unmute-locally', 'Unmute AI Assistant for me')
-    : t('ai-agent.mute-locally', 'Mute AI Assistant for me');
+  const muteLabel = isLocalMuted ? t('ai-agent.unmute-locally') : t('ai-agent.mute-locally');
 
   const bar = (
     <div className="ai-agent-status-bar flex items-center gap-1.5 h-8 ps-2.5 pe-1 rounded-[10px] bg-Gray-50 dark:bg-Gray-800 border border-Gray-200 dark:border-Gray-700 text-xs text-Gray-950 dark:text-white">
@@ -101,16 +102,32 @@ const AIAgentStatusBar = () => {
         aria-hidden="true"
         className={clsx('w-2 h-2 rounded-full shrink-0', TONE_DOT_CLASSES[status.tone])}
       />
-      <span className={clsx('w-24 truncate font-medium', DRAG_HANDLE_CLASSES)}>
-        {getAIAgentDisplayName(agent, configuredName)}
+      <span
+        title={agentName}
+        className={clsx('max-w-36 truncate font-medium', DRAG_HANDLE_CLASSES)}
+      >
+        {agentName}
+      </span>
+      <span aria-hidden="true" className="text-Gray-400 dark:text-Gray-500">
+        ·
       </span>
       <span
         aria-live="polite"
         title={displayStatus}
-        className={clsx('w-28 truncate text-Gray-600 dark:text-Gray-300', DRAG_HANDLE_CLASSES)}
+        className={clsx('max-w-36 truncate text-Gray-600 dark:text-Gray-300', DRAG_HANDLE_CLASSES)}
       >
         {displayStatus}
       </span>
+      {elapsedTime && (
+        <>
+          <span aria-hidden="true" className="text-Gray-400 dark:text-Gray-500">
+            ·
+          </span>
+          <span dir="ltr" className="tabular-nums font-medium text-Gray-700 dark:text-Gray-200">
+            {elapsedTime}
+          </span>
+        </>
+      )}
       <Tooltip text={muteLabel} position="bottom">
         <button
           type="button"
@@ -128,7 +145,13 @@ const AIAgentStatusBar = () => {
           {isLocalMuted ? <MicrophoneOff classes="h-4 w-4" /> : <Microphone classes="h-4 w-4" />}
         </button>
       </Tooltip>
-      {canControl && <AIAgentControlPanel isModerator={isModerator} canControl={canControl} />}
+      {canControl && (
+        <AIAgentControlPanel
+          isModerator={isModerator}
+          canControl={canControl}
+          elapsedTime={elapsedTime}
+        />
+      )}
     </div>
   );
 

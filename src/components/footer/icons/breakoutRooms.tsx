@@ -5,9 +5,15 @@ import clsx from 'clsx';
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { setActiveSidePanel } from '../../../store/slices/bottomIconsActivitySlice';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
-import { useGetMyBreakoutRoomsQuery } from '../../../store/services/breakoutRoomApi';
+import {
+  useGetBreakoutRoomsQuery,
+  useGetMyBreakoutRoomsQuery,
+} from '../../../store/services/breakoutRoomApi';
 import { BreakoutRoomIconSVG } from '../../../assets/Icons/BreakoutRoomIconSVG';
-import { canAccessBreakoutRooms } from '../../breakout-room/utils/breakoutRoom';
+import {
+  canAccessBreakoutRooms,
+  isAgenticSessionsMode,
+} from '../../breakout-room/utils/breakoutRoom';
 
 // page-load time; invitations delivered in this session suppress the
 // mount-time reminder, persisted notifications from older sessions do not
@@ -27,9 +33,14 @@ const BreakoutRoomsIcon = () => {
   const isBreakoutRoom = useAppSelector(
     (state) => !!state.session.currentRoom?.metadata?.isBreakoutRoom,
   );
-  const isVisible = useAppSelector((state) =>
-    canAccessBreakoutRooms(state.session.currentRoom?.metadata, isAdmin),
-  );
+  const metadata = useAppSelector((state) => state.session.currentRoom?.metadata);
+  // reactive through `metadata`; no extra selector needed
+  const isVisible = canAccessBreakoutRooms(metadata, isAdmin);
+
+  // AI-agent-only rooms present their rooms as 1-on-1 AI sessions instead of
+  // breakout rooms (different icon, labels and invitation text).
+  const { data: roomsData } = useGetBreakoutRoomsQuery(undefined, { skip: !isVisible });
+  const agenticMode = isAgenticSessionsMode(metadata, roomsData?.rooms);
 
   // invites only matter to non-admins sitting in the main interface
   const { data: myRoomRes, isSuccess } = useGetMyBreakoutRoomsQuery(undefined, {
@@ -58,7 +69,9 @@ const BreakoutRoomsIcon = () => {
     invitedRef.current = true;
     dispatch(
       addUserNotification({
-        message: t('breakout-room.invitation-msg'),
+        message: room.enableAiAgent
+          ? t('breakout-room.ai-session-invitation-msg')
+          : t('breakout-room.invitation-msg'),
         typeOption: 'info',
         notificationCat: 'breakout-room-invitation',
         autoClose: false,
@@ -92,9 +105,13 @@ const BreakoutRoomsIcon = () => {
     return null;
   }
 
-  const tooltipText = isActivePanel
-    ? t('footer.icons.hide-breakout-rooms-panel')
-    : t('footer.icons.show-breakout-rooms-panel');
+  const tooltipText = agenticMode
+    ? isActivePanel
+      ? t('footer.icons.hide-ai-sessions-panel')
+      : t('footer.icons.show-ai-sessions-panel')
+    : isActivePanel
+      ? t('footer.icons.hide-breakout-rooms-panel')
+      : t('footer.icons.show-breakout-rooms-panel');
 
   return (
     <button
@@ -105,6 +122,7 @@ const BreakoutRoomsIcon = () => {
     >
       <div className={innerDivClasses}>
         <span className="tooltip">{tooltipText}</span>
+        {/* Always the breakout-room glyph: the AI sparkle belongs to AI Text Chat. */}
         <BreakoutRoomIconSVG classes="h-5 w-auto" />
       </div>
     </button>

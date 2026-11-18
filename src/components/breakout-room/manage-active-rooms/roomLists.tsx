@@ -6,6 +6,8 @@ import { LoadingIcon } from '../../../assets/Icons/Loading';
 import { BreakoutRoomMessage } from '..';
 import RoomItem from './room';
 import BreakoutRoomUsers from './room/users';
+import { useAppSelector } from '../../../store';
+import { isAgenticSessionsMode } from '../utils/breakoutRoom';
 
 interface IRoomListsProps {
   setMessage: (message: BreakoutRoomMessage | null) => void;
@@ -31,6 +33,9 @@ const RoomLists = ({ setMessage }: IRoomListsProps) => {
   // The ?? [] guard is mandatory.
   const unassignedUsers = data?.unassignedUsers ?? [];
 
+  const metadata = useAppSelector((state) => state.session.currentRoom?.metadata);
+  const agenticMode = isAgenticSessionsMode(metadata, sortedRooms);
+
   return (
     <div className="breakout-room-list-wrapper min-h-[90px] relative">
       {isLoading && (
@@ -40,6 +45,11 @@ const RoomLists = ({ setMessage }: IRoomListsProps) => {
             fillColor={'#004D90'}
           />
         </div>
+      )}
+      {!isLoading && agenticMode && sortedRooms.length === 0 && (
+        <p className="text-sm text-Gray-600 dark:text-Gray-300">
+          {t('breakout-room.no-ai-sessions')}
+        </p>
       )}
       {unassignedUsers.length > 0 && (
         <div className="breakout-unassigned-users mb-4 rounded-xl border border-gray-300 dark:border-gray-800 bg-Gray-50 dark:bg-dark-primary p-4">

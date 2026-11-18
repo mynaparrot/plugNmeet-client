@@ -37,21 +37,32 @@ const RoomBox = ({
   const dispatch = useAppDispatch();
   const ref = useRef<HTMLDivElement>(null);
 
-  const [{ canDrop, isOver }, drop] = useDrop(() => ({
-    accept: ItemTypes.USER,
-    drop: (item: DragItem) => {
-      dispatch(
-        updateBreakoutRoomDroppedUser({
-          id: item.id,
-          roomId: roomId,
-        }),
-      );
-    },
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-      canDrop: monitor.canDrop(),
+  const [{ canDrop, isOver }, drop] = useDrop(
+    () => ({
+      accept: ItemTypes.USER,
+      canDrop: (item: DragItem) => {
+        // 1-on-1 AI rooms accept at most one user: a second user can only be
+        // dropped once the current one is moved back out.
+        if (!enableAiAgent || roomId === 0) {
+          return true;
+        }
+        return users.length === 0 || users.some((u) => u.id === item.id);
+      },
+      drop: (item: DragItem) => {
+        dispatch(
+          updateBreakoutRoomDroppedUser({
+            id: item.id,
+            roomId: roomId,
+          }),
+        );
+      },
+      collect: (monitor) => ({
+        isOver: monitor.isOver(),
+        canDrop: monitor.canDrop(),
+      }),
     }),
-  }));
+    [roomId, enableAiAgent, users.length],
+  );
   drop(ref);
 
   const isDropTarget = canDrop && isOver;

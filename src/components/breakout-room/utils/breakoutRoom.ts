@@ -7,6 +7,7 @@ import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 import { setReturningToMainRoom } from '../../../store/slices/breakoutRoomSlice';
 import { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import i18n from '../../../helpers/i18n';
+import { isAutoPerUserAISessionRoom } from '../../../helpers/aiAgentSession';
 import { setSkipLandingOnce } from '../../landing/skipLandingOnce';
 
 /**
@@ -45,7 +46,24 @@ export const canAccessBreakoutRooms = (metadata?: IRoomMetadata, isAdmin = false
   if (features?.breakoutRoomFeatures?.isActive) {
     return true;
   }
-  return isAdmin && !!features?.insightsFeatures?.aiAgentFeatures?.autoCreatePerUserSession;
+  return isAdmin && isAutoPerUserAISessionRoom(metadata);
+};
+
+/**
+ * Whether the breakout rooms in this room are actually agentic sessions (each
+ * one a 1-on-1 AI session) instead of regular breakout rooms.
+ *
+ * True when the room itself runs per-user AI sessions, or when every currently
+ * running room has the AI agent enabled.
+ */
+export const isAgenticSessionsMode = (
+  metadata?: IRoomMetadata,
+  rooms?: Array<{ enableAiAgent?: boolean }>,
+): boolean => {
+  if (isAutoPerUserAISessionRoom(metadata)) {
+    return true;
+  }
+  return !!rooms && rooms.length > 0 && rooms.every((r) => !!r.enableAiAgent);
 };
 
 /**

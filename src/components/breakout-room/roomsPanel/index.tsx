@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { JoinBreakoutRoomReqSchema } from 'plugnmeet-protocol-js';
 import { create } from '@bufbuild/protobuf';
+import clsx from 'clsx';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { setActiveSidePanel } from '../../../store/slices/bottomIconsActivitySlice';
@@ -11,7 +12,11 @@ import {
   useJoinRoomMutation,
 } from '../../../store/services/breakoutRoomApi';
 import { getMediaServerConnRoom } from '../../../helpers/livekit/utils';
-import { buildAccessTokenUrl, parseParentRoomId } from '../utils/breakoutRoom';
+import {
+  buildAccessTokenUrl,
+  isAgenticSessionsMode,
+  parseParentRoomId,
+} from '../utils/breakoutRoom';
 import { CloseIconSVG } from '../../../assets/Icons/CloseIconSVG';
 import { LoadingIcon } from '../../../assets/Icons/Loading';
 import { getNatsConn } from '../../../helpers/nats';
@@ -22,6 +27,7 @@ const RoomsPanel = () => {
   const dispatch = useAppDispatch();
 
   const isAdmin = useAppSelector((state) => !!state.session.currentUser?.metadata?.isAdmin);
+  const metadata = useAppSelector((state) => state.session.currentRoom?.metadata);
   const allowSelfSelect = useAppSelector(
     (state) =>
       !!state.session.currentRoom?.metadata?.roomFeatures?.breakoutRoomFeatures?.allowSelfSelect,
@@ -43,6 +49,8 @@ const RoomsPanel = () => {
     sorted.sort((a, b) => a.title.localeCompare(b.title));
     return sorted;
   }, [data]);
+
+  const agenticMode = isAgenticSessionsMode(metadata, rooms);
 
   useEffect(() => {
     if (joinResult.isSuccess && joinResult.data?.status && joinResult.data.token) {
@@ -89,8 +97,11 @@ const RoomsPanel = () => {
       </button>
       <div className="inner-wrapper relative z-20 w-full">
         <div className="top flex items-center h-10 3xl:h-14 px-3 3xl:px-5 border-b border-Gray-200 dark:border-Gray-800">
-          <p className="text-sm 3xl:text-base text-Gray-950 dark:text-white font-medium leading-tight">
-            {t('breakout-room.rooms-panel-title')}
+          <p className="flex items-center text-sm 3xl:text-base text-Gray-950 dark:text-white font-medium leading-tight">
+            {agenticMode && <AiIconSVG classes="w-4 h-4 shrink-0 text-Blue me-1.5" />}
+            {agenticMode
+              ? t('breakout-room.ai-sessions-panel-title')
+              : t('breakout-room.rooms-panel-title')}
           </p>
         </div>
         <div className="breakout-rooms-panel-wrapper min-h-[90px] relative p-3 3xl:p-5">
@@ -109,11 +120,13 @@ const RoomsPanel = () => {
           )}
           {!isLoading && !isError && rooms.length === 0 && (
             <p className="text-sm text-Gray-600 dark:text-Gray-300">
-              {t(
-                !isAdmin && !allowSelfSelect
-                  ? 'breakout-room.not-assigned'
-                  : 'breakout-room.no-rooms',
-              )}
+              {agenticMode
+                ? t('breakout-room.no-ai-sessions')
+                : t(
+                    !isAdmin && !allowSelfSelect
+                      ? 'breakout-room.not-assigned'
+                      : 'breakout-room.no-rooms',
+                  )}
             </p>
           )}
           {rooms.map((room) => {
@@ -121,9 +134,10 @@ const RoomsPanel = () => {
             const roomUsers = room.users ?? [];
             const joinedCount = roomUsers.filter((u) => u.joined).length;
             const current = isCurrentRoom(room.id);
-            // AI Agent rooms are 1-on-1: a single assigned user is the student.
-            const assignedStudent =
-              room.enableAiAgent && roomUsers.length === 1 ? roomUsers[0].name : '';
+            // AI Agent rooms are 1-on-1: a single assigned user is the learner.
+            const learner = roomUsers[0];
+            const learnerJoined = !!learner?.joined;
+            const agentOnline = !!room.aiAgentJoined;
             const aiContext = room.enableAiAgent ? (room.aiAgentContext ?? '').trim() : '';
             return (
               <div
@@ -135,18 +149,52 @@ const RoomsPanel = () => {
                     <p className="text-sm 3xl:text-base text-Gray-950 dark:text-white font-medium truncate">
                       {room.title}
                     </p>
-                    {room.enableAiAgent && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-Blue/10 text-Blue dark:bg-Blue/20 dark:text-Blue2-50 border border-Blue/20 shrink-0">
-                        <AiIconSVG classes="w-3.5 h-3.5 shrink-0" />
-                        {t('breakout-room.ai-session-badge', 'AI Agent')}
-                      </span>
-                    )}
                   </div>
-                  <p className="text-xs opacity-70 dark:opacity-80 truncate">
-                    {assignedStudent
-                      ? `${assignedStudent} · ${t('breakout-room.joined-count', { count: joinedCount })}`
-                      : t('breakout-room.joined-count', { count: joinedCount })}
-                  </p>
+                  {room.enableAiAgent ? (
+                    <div className="flex flex-wrap items-center gap-1.5 text-xs opacity-80 dark:opacity-90">
+                      <span
+                        className="inline-flex items-center gap-1.5 min-w-0"
+                        title={
+                          learnerJoined
+                            ? t('breakout-room.user-joined')
+                            : t('breakout-room.not-joined')
+                        }
+                      >
+                        <span
+                          className={clsx(
+                            'w-2 h-2 rounded-full shrink-0',
+                            learnerJoined ? 'bg-Green-700' : 'bg-Red-600',
+                          )}
+                        />
+                        <span className="truncate">
+                          {learner?.name || t('breakout-room.unassigned')}
+                        </span>
+                      </span>
+                      <span aria-hidden="true" className="opacity-50">
+                        ·
+                      </span>
+                      <span
+                        className="inline-flex items-center gap-1.5 shrink-0"
+                        title={
+                          agentOnline
+                            ? t('breakout-room.agent-online')
+                            : t('breakout-room.agent-offline')
+                        }
+                      >
+                        <span
+                          className={clsx(
+                            'w-2 h-2 rounded-full shrink-0',
+                            agentOnline ? 'bg-Green-700' : 'bg-Red-600',
+                          )}
+                        />
+                        <span>{t('breakout-room.ai-session-badge')}</span>
+                      </span>
+                    </div>
+                  ) : (
+                    <p className="text-xs opacity-70 dark:opacity-80 truncate">
+                      {t('breakout-room.joined-count', { count: joinedCount })}
+                    </p>
+                  )}
                   {aiContext && (
                     <p
                       className="text-[11px] text-Gray-600 dark:text-Gray-300 truncate"

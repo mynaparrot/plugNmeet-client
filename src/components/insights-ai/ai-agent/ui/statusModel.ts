@@ -6,54 +6,44 @@ export type AIAgentStatusTone = 'idle' | 'active' | 'busy' | 'paused';
 
 export interface IAIAgentStatusLabel {
   key: string;
-  fallback: string;
   tone: AIAgentStatusTone;
 }
 
 const STATE_LABELS: Record<AIAgentRuntimeState, IAIAgentStatusLabel> = {
   [AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_UNSPECIFIED]: {
     key: 'ai-agent.state.unknown',
-    fallback: 'Connecting...',
     tone: 'active',
   },
   [AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_CONNECTING]: {
     key: 'ai-agent.state.connecting',
-    fallback: 'Connecting...',
     tone: 'active',
   },
   [AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_LISTENING]: {
     key: 'ai-agent.state.listening',
-    fallback: 'Listening',
     tone: 'active',
   },
   [AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_THINKING]: {
     key: 'ai-agent.state.thinking',
-    fallback: 'Thinking',
     tone: 'busy',
   },
   [AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_SPEAKING]: {
     key: 'ai-agent.state.speaking',
-    fallback: 'Speaking',
     tone: 'active',
   },
   [AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_DRAWING]: {
     key: 'ai-agent.state.drawing',
-    fallback: 'Drawing on board',
     tone: 'busy',
   },
   [AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_PAUSED]: {
     key: 'ai-agent.state.paused',
-    fallback: 'Paused',
     tone: 'paused',
   },
   [AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_RECONNECTING]: {
     key: 'ai-agent.state.reconnecting',
-    fallback: 'Reconnecting...',
     tone: 'busy',
   },
   [AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_STOPPED]: {
     key: 'ai-agent.state.stopped',
-    fallback: 'Stopped',
     tone: 'idle',
   },
 };
@@ -78,6 +68,24 @@ export const getAIAgentDisplayName = (
 /** `draw_shapes` -> `draw shapes`; empty when no tool is running. */
 export const formatAIAgentToolName = (tool?: string): string =>
   (tool ?? '').trim().replace(/[_-]/g, ' ');
+
+/**
+ * Live "connected for" timer: `MM:SS`, switching to `HH:MM:SS` after an hour.
+ * Missing or future start times read as `00:00` instead of a negative value.
+ */
+export const formatAIAgentElapsed = (startedAtMs?: number, nowMs: number = Date.now()): string => {
+  if (!startedAtMs || startedAtMs <= 0 || nowMs < startedAtMs) {
+    return '00:00';
+  }
+  const totalSeconds = Math.floor((nowMs - startedAtMs) / 1000);
+  const pad = (value: number) => value.toString().padStart(2, '0');
+  if (totalSeconds >= 3600) {
+    return `${pad(Math.floor(totalSeconds / 3600))}:${pad(
+      Math.floor((totalSeconds % 3600) / 60),
+    )}:${pad(totalSeconds % 60)}`;
+  }
+  return `${pad(Math.floor(totalSeconds / 60))}:${pad(totalSeconds % 60)}`;
+};
 
 export interface IStatusBarVisibility {
   isSessionRoom: boolean;

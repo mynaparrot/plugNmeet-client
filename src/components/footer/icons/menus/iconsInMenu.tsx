@@ -17,7 +17,11 @@ import { SpeechIconSVG } from '../../../../assets/Icons/SpeechIconSVG';
 import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
 import { ShareScreenIconSVG } from '../../../../assets/Icons/ShareScreenIconSVG';
 import { selectIsInsightsAiTextChatEnabled } from '../../../insights-ai/featureGate';
-import { canAccessBreakoutRooms } from '../../../breakout-room/utils/breakoutRoom';
+import {
+  canAccessBreakoutRooms,
+  isAgenticSessionsMode,
+} from '../../../breakout-room/utils/breakoutRoom';
+import { useGetBreakoutRoomsQuery } from '../../../../store/services/breakoutRoomApi';
 import useScreenshare from '../hooks/useScreenshare';
 import MenuItemHelper from './menuItemHelper';
 
@@ -78,6 +82,12 @@ const IconsInMenu = () => {
   const toggleBreakoutRoomsPanel = useCallback(() => {
     dispatch(setActiveSidePanel('BREAKOUT_ROOMS'));
   }, [dispatch]);
+  // AI-agent-only rooms label the panel as AI sessions instead of breakout rooms.
+  const metadata = useAppSelector((state) => state.session.currentRoom?.metadata);
+  const { data: roomsData } = useGetBreakoutRoomsQuery(undefined, {
+    skip: !isBreakoutRoomsPanelVisible,
+  });
+  const isAutoAgentic = isAgenticSessionsMode(metadata, roomsData?.rooms);
 
   const isActiveDisplaySpeechSettingOptionsModal = useAppSelector(
     (state) => state.bottomIconsActivity.showSpeechSettingOptionsModal,
@@ -158,11 +168,16 @@ const IconsInMenu = () => {
       {isBreakoutRoomsPanelVisible && (
         <MenuItemHelper
           onClick={toggleBreakoutRoomsPanel}
+          // Always the breakout-room glyph: the AI sparkle is reserved for AI Text Chat.
           icon={<BreakoutRoomIconSVG classes="w-auto" />}
           text={
-            isActiveBreakoutRoomsPanel
-              ? t('footer.icons.hide-breakout-rooms-panel')
-              : t('footer.icons.show-breakout-rooms-panel')
+            isAutoAgentic
+              ? isActiveBreakoutRoomsPanel
+                ? t('footer.icons.hide-ai-sessions-panel')
+                : t('footer.icons.show-ai-sessions-panel')
+              : isActiveBreakoutRoomsPanel
+                ? t('footer.icons.hide-breakout-rooms-panel')
+                : t('footer.icons.show-breakout-rooms-panel')
           }
           isActive={isActiveBreakoutRoomsPanel}
           customClass="md:hidden"

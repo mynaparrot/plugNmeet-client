@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import clsx from 'clsx';
@@ -12,7 +12,6 @@ import {
   isAIAgentLiveState,
   pauseAIAgent,
   resumeAIAgent,
-  sendAIAgentContext,
   startAIAgent,
   stopAIAgent,
 } from '../api';
@@ -25,29 +24,34 @@ const buttonClass =
 interface IAIAgentControlPanelProps {
   isModerator: boolean;
   canControl: boolean;
+  /** Live connected timer from the status bar; null when nothing is running. */
+  elapsedTime: string | null;
 }
 
 /**
  * Start/pause/resume/stop controls. Moderators get every action; a student in
  * a 1-on-1 session may only pause and resume a running agent.
  */
-const AIAgentControlPanel = ({ isModerator, canControl }: IAIAgentControlPanelProps) => {
+const AIAgentControlPanel = ({
+  isModerator,
+  canControl,
+  elapsedTime,
+}: IAIAgentControlPanelProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const agent = useAppSelector(aiAgentSelector);
   const isRunning = isAIAgentRunning(agent);
   const isPaused = isAIAgentPaused(agent);
   const [isBusy, setIsBusy] = useState(false);
-  const [context, setContext] = useState('');
 
-  const run = async (task: () => Promise<AIAgentApiResult>, onSuccess?: () => void) => {
+  const run = async (task: () => Promise<AIAgentApiResult>) => {
     setIsBusy(true);
     try {
       const res = await task();
       if (!res.status) {
         dispatch(
           addUserNotification({
-            message: t(res.msg || 'ai-agent.errors.generic', 'Something went wrong. Try again.'),
+            message: t(res.msg || 'ai-agent.errors.generic'),
             typeOption: 'error',
           }),
         );
@@ -56,23 +60,10 @@ const AIAgentControlPanel = ({ isModerator, canControl }: IAIAgentControlPanelPr
       if (isAIAgentLiveState(res.state)) {
         applyAIAgentState(res.state);
       }
-      onSuccess?.();
       return true;
     } finally {
       setIsBusy(false);
     }
-  };
-
-  const sendContext = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const text = context.trim();
-    if (!text) {
-      return;
-    }
-    await run(
-      () => sendAIAgentContext(text, 'moderator'),
-      () => setContext(''),
-    );
   };
 
   const showStart = isModerator && !isRunning;
@@ -85,19 +76,29 @@ const AIAgentControlPanel = ({ isModerator, canControl }: IAIAgentControlPanelPr
   return (
     <Popover className="relative">
       <PopoverButton
-        aria-label={t('ai-agent.controls', 'AI Assistant controls')}
+        aria-label={t('ai-agent.controls')}
         className="h-6 px-1.5 flex items-center gap-0.5 rounded-md text-[11px] font-medium text-Gray-700 dark:text-dark-text hover:bg-Gray-100 dark:hover:bg-Gray-700 cursor-pointer focus-ring"
       >
-        {t('ai-agent.controls-short', 'Controls')}
+        {t('ai-agent.controls-short')}
         <DropdownIconSVG />
       </PopoverButton>
 
       <PopoverPanel
         anchor="bottom end"
         transition
-        className="z-9999 w-60 p-2.5 mt-1.5 rounded-lg bg-white dark:bg-dark-secondary2 border border-Gray-200 dark:border-Gray-700 shadow-lg transition data-[closed]:opacity-0 data-[closed]:scale-95"
+        className="z-9999 w-48 p-2.5 mt-1.5 rounded-lg bg-white dark:bg-dark-secondary2 border border-Gray-200 dark:border-Gray-700 shadow-lg transition data-[closed]:opacity-0 data-[closed]:scale-95"
       >
         <div className="flex flex-col gap-2">
+          {showPauseResume && elapsedTime && (
+            <div className="flex items-baseline justify-between gap-2 pb-2 border-b border-Gray-200 dark:border-Gray-700">
+              <span className="text-[11px] font-medium text-Gray-600 dark:text-Gray-300">
+                {t('ai-agent.connected-time')}
+              </span>
+              <span dir="ltr" className="text-xs font-semibold tabular-nums">
+                {elapsedTime}
+              </span>
+            </div>
+          )}
           {showStart && (
             <button
               type="button"
@@ -105,7 +106,7 @@ const AIAgentControlPanel = ({ isModerator, canControl }: IAIAgentControlPanelPr
               onClick={() => run(() => startAIAgent())}
               className={clsx(buttonClass, 'bg-Blue text-white hover:bg-Blue2-600')}
             >
-              {t('ai-agent.start', 'Start AI Assistant')}
+              {t('ai-agent.start')}
             </button>
           )}
           {showPauseResume && (
@@ -119,7 +120,7 @@ const AIAgentControlPanel = ({ isModerator, canControl }: IAIAgentControlPanelPr
                   'flex-1 border border-Gray-200 dark:border-Gray-700 text-Gray-950 dark:text-white hover:bg-Gray-50 dark:hover:bg-Gray-700',
                 )}
               >
-                {isPaused ? t('ai-agent.resume', 'Resume') : t('ai-agent.pause', 'Pause')}
+                {isPaused ? t('ai-agent.resume') : t('ai-agent.pause')}
               </button>
               {isModerator && (
                 <button
@@ -128,39 +129,10 @@ const AIAgentControlPanel = ({ isModerator, canControl }: IAIAgentControlPanelPr
                   onClick={() => run(() => stopAIAgent('host_stopped'))}
                   className={clsx(buttonClass, 'flex-1 bg-Red-600 text-white hover:bg-Red-700')}
                 >
-                  {t('ai-agent.stop', 'Stop')}
+                  {t('ai-agent.stop')}
                 </button>
               )}
             </div>
-          )}
-
-          {isModerator && showPauseResume && (
-            <form onSubmit={sendContext} className="flex flex-col gap-1.5">
-              <label
-                htmlFor="ai-agent-context"
-                className="text-[11px] font-medium text-Gray-700 dark:text-dark-text"
-              >
-                {t('ai-agent.context-label', 'Whisper instructions')}
-              </label>
-              <textarea
-                id="ai-agent-context"
-                rows={2}
-                value={context}
-                onChange={(e) => setContext(e.target.value)}
-                placeholder={t(
-                  'ai-agent.context-placeholder',
-                  'e.g. summarise the last point, then ask the class one question',
-                )}
-                className="w-full px-2 py-1 text-xs rounded-md bg-Gray-25 dark:bg-Gray-800 border border-Gray-200 dark:border-Gray-700 text-Gray-950 dark:text-white resize-none focus-ring"
-              />
-              <button
-                type="submit"
-                disabled={isBusy || !context.trim()}
-                className={clsx(buttonClass, 'bg-Blue text-white hover:bg-Blue2-600')}
-              >
-                {t('ai-agent.send-context', 'Send to assistant')}
-              </button>
-            </form>
           )}
         </div>
       </PopoverPanel>

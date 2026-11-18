@@ -1,11 +1,16 @@
 import { describe, expect, it } from 'vitest';
+import { AIAgentSessionMode } from 'plugnmeet-protocol-js';
 
 import type { RootState } from '../../../store';
 import type { IRoomMetadata } from '../../../store/slices/interfaces/session';
 import {
+  getAIAgentAllowedParticipantIds,
+  getAIAgentMaxConcurrentSessions,
   hasInsightsAiSettingsTabs,
+  isAIAgentAutoStart,
   isAIAgentChatEnabled,
   isAIAgentSessionRoom,
+  isAutoPerUserAISessionRoom,
   isInsightsAiTextChatEnabled,
   selectIsInsightsAiTextChatEnabled,
 } from '../featureGate';
@@ -23,9 +28,110 @@ const buildState = (insightsFeatures: unknown) =>
 
 const aiAgent = (overrides: Record<string, unknown> = {}) => ({
   isAllow: true,
-  allowedParticipantIds: [],
-  autoCreatePerUserSession: false,
+  sessionMode: AIAgentSessionMode.AI_AGENT_SESSION_MODE_NORMAL_ROOM,
   ...overrides,
+});
+
+/** Controlled-users mode: exactly the participants listed in autoSessionConfig. */
+const controlled = (
+  allowedParticipantIds: string[],
+  extra: Record<string, unknown> = {},
+  mode = AIAgentSessionMode.AI_AGENT_SESSION_MODE_CONTROLLED_USERS,
+) =>
+  aiAgent({
+    sessionMode: mode,
+    autoSessionConfig: { allowedParticipantIds, ...extra },
+  });
+
+const openPerUser = (maxConcurrentSessions = 4, autoStartAgent?: boolean) =>
+  aiAgent({
+    sessionMode: AIAgentSessionMode.AI_AGENT_SESSION_MODE_OPEN_PER_USER,
+    autoSessionConfig: { maxConcurrentSessions, autoStartAgent },
+  });
+
+describe('session mode helpers', () => {
+  it('reads the allowed participants in controlled-users mode only', () => {
+    expect(getAIAgentAllowedParticipantIds(undefined)).toEqual([]);
+    expect(getAIAgentAllowedParticipantIds(metadata({ aiAgentFeatures: aiAgent() }))).toEqual([]);
+    expect(
+      getAIAgentAllowedParticipantIds(metadata({ aiAgentFeatures: controlled(['u1', 'u2']) })),
+    ).toEqual(['u1', 'u2']);
+    expect(getAIAgentAllowedParticipantIds(metadata({ aiAgentFeatures: openPerUser() }))).toEqual(
+      [],
+    );
+    expect(
+      getAIAgentAllowedParticipantIds(
+        metadata({
+          aiAgentFeatures: aiAgent({
+            sessionMode: AIAgentSessionMode.AI_AGENT_SESSION_MODE_CONTROLLED_USERS,
+          }),
+        }),
+      ),
+    ).toEqual([]);
+  });
+
+  it('reads the concurrent session limit in open-per-user mode only', () => {
+    expect(getAIAgentMaxConcurrentSessions(undefined)).toBe(0);
+    expect(getAIAgentMaxConcurrentSessions(metadata({ aiAgentFeatures: openPerUser(6) }))).toBe(6);
+    expect(getAIAgentMaxConcurrentSessions(metadata({ aiAgentFeatures: controlled(['u1']) }))).toBe(
+      0,
+    );
+    expect(
+      getAIAgentMaxConcurrentSessions(
+        metadata({
+          aiAgentFeatures: aiAgent({
+            sessionMode: AIAgentSessionMode.AI_AGENT_SESSION_MODE_OPEN_PER_USER,
+          }),
+        }),
+      ),
+    ).toBe(0);
+  });
+
+  it('auto-starts in both automatic modes unless it is explicitly off', () => {
+    expect(isAIAgentAutoStart(undefined)).toBe(false);
+    expect(isAIAgentAutoStart(metadata({ aiAgentFeatures: aiAgent() }))).toBe(false);
+    expect(isAIAgentAutoStart(metadata({ aiAgentFeatures: controlled(['u1']) }))).toBe(true);
+    expect(isAIAgentAutoStart(metadata({ aiAgentFeatures: openPerUser(4) }))).toBe(true);
+    expect(
+      isAIAgentAutoStart(
+        metadata({ aiAgentFeatures: controlled(['u1'], { autoStartAgent: false }) }),
+      ),
+    ).toBe(false);
+    expect(isAIAgentAutoStart(metadata({ aiAgentFeatures: openPerUser(4, false) }))).toBe(false);
+  });
+
+  it('flags open-per-user and multi-user controlled rooms as per-user sessions', () => {
+    expect(isAutoPerUserAISessionRoom(undefined)).toBe(false);
+    expect(isAutoPerUserAISessionRoom(metadata({ aiAgentFeatures: aiAgent() }))).toBe(false);
+    expect(isAutoPerUserAISessionRoom(metadata({ aiAgentFeatures: openPerUser() }))).toBe(true);
+    expect(
+      isAutoPerUserAISessionRoom(metadata({ aiAgentFeatures: controlled(['u1', 'u2']) })),
+    ).toBe(true);
+    expect(isAutoPerUserAISessionRoom(metadata({ aiAgentFeatures: controlled(['u1']) }))).toBe(
+      false,
+    );
+    expect(
+      isAutoPerUserAISessionRoom(
+        metadata({
+          aiAgentFeatures: controlled(
+            ['u1', 'u2'],
+            {},
+            AIAgentSessionMode.AI_AGENT_SESSION_MODE_NORMAL_ROOM,
+          ),
+        }),
+      ),
+    ).toBe(false);
+    expect(
+      isAutoPerUserAISessionRoom(
+        metadata({ aiAgentFeatures: controlled(['u1', 'u2'], { autoStartAgent: false }) }),
+      ),
+    ).toBe(true);
+    expect(
+      isAutoPerUserAISessionRoom(
+        metadata({ aiAgentFeatures: { ...openPerUser(), isAllow: false } }),
+      ),
+    ).toBe(false);
+  });
 });
 
 describe('isAIAgentSessionRoom', () => {
@@ -38,28 +144,24 @@ describe('isAIAgentSessionRoom', () => {
   it('is off in a normal group room', () => {
     expect(isAIAgentSessionRoom(metadata({ aiAgentFeatures: aiAgent() }))).toBe(false);
     expect(
-      isAIAgentSessionRoom(
-        metadata({ aiAgentFeatures: aiAgent({ allowedParticipantIds: ['user_1', 'user_2'] }) }),
-      ),
+      isAIAgentSessionRoom(metadata({ aiAgentFeatures: controlled(['user_1', 'user_2']) })),
     ).toBe(false);
+    expect(isAIAgentSessionRoom(metadata({ aiAgentFeatures: openPerUser() }))).toBe(false);
   });
 
   it('is on in a parent lobby that assigned a single participant', () => {
-    expect(
-      isAIAgentSessionRoom(
-        metadata({ aiAgentFeatures: aiAgent({ allowedParticipantIds: ['u1'] }) }),
-      ),
-    ).toBe(true);
+    expect(isAIAgentSessionRoom(metadata({ aiAgentFeatures: controlled(['u1']) }))).toBe(true);
   });
 
-  it('is off while per-user sessions are auto-created', () => {
+  it('is off when the session mode is normal even with a single allowed user', () => {
     expect(
       isAIAgentSessionRoom(
         metadata({
-          aiAgentFeatures: aiAgent({
-            autoCreatePerUserSession: true,
-            allowedParticipantIds: ['u1'],
-          }),
+          aiAgentFeatures: controlled(
+            ['u1'],
+            {},
+            AIAgentSessionMode.AI_AGENT_SESSION_MODE_NORMAL_ROOM,
+          ),
         }),
       ),
     ).toBe(false);
@@ -70,6 +172,14 @@ describe('isAIAgentSessionRoom', () => {
       isAIAgentSessionRoom(metadata({ aiAgentFeatures: aiAgent() }, { isBreakoutRoom: true })),
     ).toBe(true);
   });
+
+  it('is off in a breakout room when the agent is disabled', () => {
+    expect(
+      isAIAgentSessionRoom(
+        metadata({ aiAgentFeatures: { ...aiAgent(), isAllow: false } }, { isBreakoutRoom: true }),
+      ),
+    ).toBe(false);
+  });
 });
 
 describe('isAIAgentChatEnabled', () => {
@@ -78,10 +188,7 @@ describe('isAIAgentChatEnabled', () => {
     expect(isAIAgentChatEnabled(metadata({ aiAgentFeatures: aiAgent() }))).toBe(false);
     expect(
       isAIAgentChatEnabled(
-        metadata(
-          { aiAgentFeatures: aiAgent({ allowedParticipantIds: ['u1'] }) },
-          { isBreakoutRoom: true },
-        ),
+        metadata({ aiAgentFeatures: controlled(['u1']) }, { isBreakoutRoom: true }),
       ),
     ).toBe(true);
   });

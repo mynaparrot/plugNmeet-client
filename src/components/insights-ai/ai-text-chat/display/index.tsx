@@ -14,6 +14,7 @@ import { PopupCloseSVGIcon } from '../../../../assets/Icons/PopupCloseSVGIcon';
 import { ScrollToBottomIconSVG } from '../../../../assets/Icons/ScrollToBottom';
 import { getAIAgentDisplayName, isAIAgentRunning } from '../../ai-agent/ui/statusModel';
 import {
+  isAIAgentAutoStart,
   selectInsightsAIAgentFeatures,
   selectIsAIAgentChatEnabled,
   selectIsInsightsAiTextChatEnabled,
@@ -28,6 +29,7 @@ const InsightsAiTextChat = () => {
 
   const isActive = useAppSelector((state) => state.bottomIconsActivity.isActiveInsightsAiTextChat);
   const isEnabled = useAppSelector(selectIsInsightsAiTextChatEnabled);
+  const metadata = useAppSelector((state) => state.session.currentRoom?.metadata);
   const agentFeatures = useAppSelector(selectInsightsAIAgentFeatures);
   const agent = useAppSelector(aiAgentSelector);
   const { finalMessages, interimMessage, isAwaitingResponse, send } = useAiTextChat();
@@ -36,9 +38,9 @@ const InsightsAiTextChat = () => {
   const aiName = isAgentChat
     ? getAIAgentDisplayName(agent, agentFeatures?.agentDisplayName)
     : t('insights.ai-text-chat.name');
-  // With auto-join the agent starts by itself, so a "not started" notice is noise
+  // With auto-start the agent launches by itself, so a "not started" notice is noise
   const showNotStartedNotice =
-    isAgentChat && !isAIAgentRunning(agent) && !agentFeatures?.autoJoinOnFirstParticipant;
+    isAgentChat && !isAIAgentRunning(agent) && !isAIAgentAutoStart(metadata);
 
   const parsedFinalMessages = useMemo(() => {
     return finalMessages.map((msg) => {

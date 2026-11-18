@@ -27,6 +27,7 @@ import { RoomLockIconSVG } from '../../../../assets/Icons/RoomLockIconSVG';
 import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
 import { TimerIconSVG } from '../../../../assets/Icons/TimerIconSVG';
 import { hasInsightsAiSettingsTabs } from '../../../insights-ai/featureGate';
+import { isAutoPerUserAISessionRoom } from '../../../../helpers/aiAgentSession';
 import MenuItemHelper from './menuItemHelper';
 
 const AdminMenus = () => {
@@ -37,14 +38,15 @@ const AdminMenus = () => {
     (state) => state.session.isActiveRtmpBroadcasting,
   );
 
-  const { metadata, roomFeatures, isBreakoutRoom } = useMemo(() => {
+  const { roomFeatures, isBreakoutRoom } = useMemo(() => {
     const currentRoom = store.getState().session.currentRoom;
     return {
-      metadata: currentRoom?.metadata,
       roomFeatures: currentRoom?.metadata?.roomFeatures,
       isBreakoutRoom: !!currentRoom?.metadata?.isBreakoutRoom,
     };
   }, []);
+  // Reactive on purpose: metadata can arrive/update after the first render.
+  const metadata = useAppSelector((state) => state.session.currentRoom?.metadata);
 
   const { toggleSharedNotepad, sharedNotepadStatus } = useSharedNotepad();
   const { toggleCountdownTimer, isActiveCountdownTimer } = useCountdownTimer();
@@ -76,6 +78,8 @@ const AdminMenus = () => {
   const openInsightsAISettingsModal = useCallback(() => {
     dispatch(updateDisplayInsightsAISettingsModal(true));
   }, [dispatch]);
+
+  const isAutoAgentic = isAutoPerUserAISessionRoom(metadata);
 
   return (
     <>
@@ -182,15 +186,13 @@ const AdminMenus = () => {
           text={t('footer.menus.manage-waiting-room')}
         />
       )}
-      {!isBreakoutRoom &&
-        (roomFeatures?.breakoutRoomFeatures?.isAllow ||
-          roomFeatures?.insightsFeatures?.aiAgentFeatures?.autoCreatePerUserSession) && (
-          <MenuItemHelper
-            onClick={openManageBreakoutRoomModal}
-            icon={<BreakoutRoomIconSVG classes="w-6 h-auto" />}
-            text={t('footer.menus.manage-breakout-room')}
-          />
-        )}
+      {!isBreakoutRoom && (roomFeatures?.breakoutRoomFeatures?.isAllow || isAutoAgentic) && (
+        <MenuItemHelper
+          onClick={openManageBreakoutRoomModal}
+          icon={<BreakoutRoomIconSVG classes="w-6 h-auto" />}
+          text={t('footer.menus.manage-breakout-room')}
+        />
+      )}
     </>
   );
 };
