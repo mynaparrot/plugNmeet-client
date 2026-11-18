@@ -34,7 +34,7 @@ const WhiteboardShareSection = ({
             id="share-whiteboard"
             name="share-whiteboard"
             type="checkbox"
-            className="border cursor-pointer border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus focus-ring mt-1 dark:bg-dark-secondary dark:border-dark-text"
+            className="border cursor-pointer border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-Blue focus:shadow-input-focus focus-ring mt-1 dark:bg-dark-secondary dark:border-dark-text"
             checked={shareWhiteboard}
             disabled={disabled || !hasWhiteboardFile}
             onChange={(e) => setShareWhiteboard(e.currentTarget.checked)}
@@ -89,7 +89,7 @@ const WhiteboardShareSection = ({
               >
                 <input
                   type="checkbox"
-                  className="border cursor-pointer border-Gray-300 bg-white shadow-input w-4 h-4 outline-hidden focus:border-[rgba(0,161,242,1)] dark:bg-dark-secondary dark:border-dark-text"
+                  className="border cursor-pointer border-Gray-300 bg-white shadow-input w-4 h-4 outline-hidden focus:border-Blue dark:bg-dark-secondary dark:border-dark-text"
                   checked={selectedWhiteboardPages.includes(page)}
                   onChange={() => toggleWhiteboardPage(page)}
                 />

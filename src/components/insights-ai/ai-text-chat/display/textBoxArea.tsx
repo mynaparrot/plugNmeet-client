@@ -65,10 +65,10 @@ const TextBoxArea = ({ onSend, isAwaitingResponse }: TextBoxAreaProps) => {
         disabled={isSendButtonDisabled}
         onClick={sendMsg}
         aria-label="Send message"
-        className={`focus-ring w-7 3xl:w-9 h-7 3xl:h-9 flex items-center justify-center rounded-full transition-all duration-300 hover:bg-[#00A1F2] hover:border-[#08C] ${
+        className={`focus-ring w-7 3xl:w-9 h-7 3xl:h-9 flex items-center justify-center rounded-full transition-all duration-300 hover:bg-Blue hover:border-Blue2-600 ${
           isSendButtonDisabled
-            ? 'bg-[#00A1F2]/30 border border-[#08C]/30 cursor-not-allowed'
-            : 'bg-[#00A1F2] border border-[#08C] cursor-pointer'
+            ? 'bg-Blue/30 border border-Blue2-600/30 cursor-not-allowed'
+            : 'bg-Blue border border-Blue2-600 cursor-pointer'
         }`}
       >
         <SendIconSVG />

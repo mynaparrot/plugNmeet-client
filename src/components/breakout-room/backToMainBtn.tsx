@@ -77,7 +77,7 @@ const BackToMainBtn = () => {
       disabled={isLoading}
       aria-label={t('breakout-room.back-to-main-room').toString()}
       title={t('breakout-room.back-to-main-room').toString()}
-      className="relative primary-button flex items-center gap-1 shrink-0 me-2 h-7 md:h-8 px-2 sm:px-3 text-xs sm:text-sm font-medium cursor-pointer bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+      className="relative primary-button flex items-center gap-1 shrink-0 me-2 h-7 md:h-8 px-2 sm:px-3 text-xs sm:text-sm font-medium cursor-pointer bg-Blue hover:bg-white border border-Blue2-600 rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
     >
       <ArrowLeft />
       <span className="hidden sm:inline whitespace-nowrap">

@@ -226,7 +226,7 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
             value={aiPrompt}
             onChange={(e) => setAiPrompt(e.currentTarget.value)}
             placeholder={t('polls.ai-prompt-placeholder')}
-            className="rounded-[15px] border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-transparent shadow-input w-full px-3 py-2 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-sm 3xl:text-base text-Gray-950 dark:text-white"
+            className="rounded-[15px] border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-transparent shadow-input w-full px-3 py-2 outline-hidden focus:border-Blue focus:shadow-input-focus text-sm 3xl:text-base text-Gray-950 dark:text-white"
             autoComplete="off"
           />
           <div className="flex justify-end">
@@ -400,7 +400,7 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
           {t('close')}
         </button>
         <button
-          className="primary-button w-full cursor-pointer h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+          className="primary-button w-full cursor-pointer h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-Blue2-600 rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
           type="submit"
           disabled={isLoading}
         >

@@ -278,7 +278,7 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
                       <button
                         type="button"
                         disabled={isReadyToConn === true}
-                        className="primary-button w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:bg-Gray-200 disabled:border-Gray-300 disabled:text-Gray-400 disabled:cursor-not-allowed dark:disabled:bg-dark-secondary dark:disabled:text-Gray-600"
+                        className="primary-button w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-Blue2-600 rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:bg-Gray-200 disabled:border-Gray-300 disabled:text-Gray-400 disabled:cursor-not-allowed dark:disabled:bg-dark-secondary dark:disabled:text-Gray-600"
                         onClick={() => openConn()}
                       >
                         {t('join')}
@@ -301,7 +301,7 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
                       <button
                         type="button"
                         disabled={isReadyToConn === true}
-                        className="primary-button w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:bg-Gray-200 disabled:border-Gray-300 disabled:text-Gray-400 disabled:cursor-not-allowed dark:disabled:bg-dark-secondary dark:disabled:text-Gray-600"
+                        className="primary-button w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-Blue2-600 rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:bg-Gray-200 disabled:border-Gray-300 disabled:text-Gray-400 disabled:cursor-not-allowed dark:disabled:bg-dark-secondary dark:disabled:text-Gray-600"
                         onClick={() => openConn()}
                       >
                         {t('join')}
@@ -312,7 +312,7 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
                         <button
                           type="button"
                           disabled={isReadyToConn === true}
-                          className="primary-button w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold hover:bg-white border rounded-[15px] transition-all duration-300 shadow-button-shadow relative border-[#0088CC] bg-Blue text-white hover:text-Gray-950 disabled:bg-Gray-200 disabled:border-Gray-300 disabled:text-Gray-400 disabled:cursor-not-allowed dark:disabled:bg-dark-secondary dark:disabled:text-Gray-600"
+                          className="primary-button w-full h-10 3xl:h-11 cursor-pointer text-sm 3xl:text-base font-semibold hover:bg-white border rounded-[15px] transition-all duration-300 shadow-button-shadow relative border-Blue2-600 bg-Blue text-white hover:text-Gray-950 disabled:bg-Gray-200 disabled:border-Gray-300 disabled:text-Gray-400 disabled:cursor-not-allowed dark:disabled:bg-dark-secondary dark:disabled:text-Gray-600"
                           onClick={() => void enableAvailableDevices()}
                         >
                           {enableDeviceButtonText}
