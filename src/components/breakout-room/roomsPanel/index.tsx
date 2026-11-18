@@ -128,7 +128,7 @@ const RoomsPanel = () => {
                   <p className="text-sm 3xl:text-base text-Gray-950 dark:text-white font-medium truncate">
                     {room.title}
                   </p>
-                  <p className="text-xs opacity-70 dark:opacity-80">
+                  <p className="text-xs opacity-70 dark:opacity-80 dark:text-white">
                     {t('breakout-room.joined-count', { count: joinedCount })}
                   </p>
                 </div>

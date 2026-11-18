@@ -33,7 +33,7 @@ const NotepadShareSection = ({
           className="text-sm 3xl:text-base font-medium text-Gray-950 dark:text-dark-text cursor-pointer"
         >
           {t('breakout-room.share-notepad-label')}
-          <p className="text-xs md:text-sm opacity-70 dark:opacity-80">
+          <p className="text-xs md:text-sm opacity-70 dark:opacity-80 dark:text-white">
             {disabled
               ? t('breakout-room.share-unavailable-e2ee')
               : t('breakout-room.share-notepad-description')}
