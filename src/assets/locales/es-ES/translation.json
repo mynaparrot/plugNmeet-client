@@ -1097,7 +1097,7 @@
     "poll-correct-answer": "(respuesta correcta)",
     "poll-total-responses": "Respuestas: {{count}}",
     "poll-total-votes": "Votos totales: {{votes}} de {{count}} encuestados",
-    "poll-results-unavailable": "No hay recuento de votos disponible para esta encuesta."
+    "poll-results-unavailable": "Los recuentos de votos no están disponibles para esta encuesta."
   },
   "pip": {
     "label": "Imagen en imagen (PiP)",
@@ -1118,7 +1118,7 @@
       "invalid-request": "No se pudo validar su solicitud de archivo.",
       "missing-file": "No se recibió ningún archivo.",
       "too-large": "El archivo supera el tamaño máximo permitido.",
-      "type-not-allowed": "No se permite este tipo de archivo.",
+      "type-not-allowed": "Este tipo de archivo no está permitido.",
       "chunks-not-found": "No se encontraron las partes del archivo subido. Por favor, vuelva a subir el archivo.",
       "upload-failed": "No se pudo subir el archivo. Por favor, inténtelo de nuevo.",
       "merge-failed": "No se pudo finalizar el archivo. Por favor, inténtelo de nuevo.",
