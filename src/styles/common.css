@@ -17,9 +17,10 @@ input.default-input {
 }
 
 input.polls-checkbox::before {
-  @apply absolute top-0 start-0 h-full w-full bg-center bg-no-repeat bg-contain opacity-0;
+  @apply absolute top-0 start-0 h-full w-full bg-white opacity-0;
   content: '';
-  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABLSURBVHgBzY3RCQAgCEStCRuhjRqhNmsUU1CIEK6/OjgU7p0SfSFm7uKme76BZVRxQqxfVo0zaP4SwhYOCzuEg9KEcFDC8FYq9FQL/ZxgpQrzp40AAAAASUVORK5CYII=);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6l2.5 2.5L10 3' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    center / contain no-repeat;
 }
 input.polls-checkbox:checked:before {
   @apply opacity-100!;
