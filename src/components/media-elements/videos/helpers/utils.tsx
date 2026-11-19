@@ -409,7 +409,7 @@ export const formatNextPreButton = (remaining: ReactElement<VideoParticipantProp
     nameChipElms.push(
       <span
         key="more-users-short"
-        className="inline-flex items-center justify-center order-2 px-2 h-8 md:h-10 rounded-full border-2 border-Gray-900 bg-[rgba(0,102,153,1)] overflow-hidden text-sm md:text-base"
+        className="inline-flex items-center justify-center order-2 px-2 h-8 md:h-10 rounded-full border-2 border-Gray-900 bg-Blue2-700 overflow-hidden text-sm md:text-base"
       >
         +{remainingCount}
       </span>,

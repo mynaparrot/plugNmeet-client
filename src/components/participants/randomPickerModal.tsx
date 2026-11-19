@@ -10,10 +10,10 @@ import { IVisibleParticipantInfo } from '../../store/slices/interfaces/participa
 import { announceSelection, eligibleParticipants, randomIndexBelow } from './utils';
 
 const PRIMARY_BUTTON_CLASSES =
-  'primary-button h-10 px-5 flex items-center justify-center whitespace-nowrap text-sm font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow cursor-pointer focus-ring disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-Blue disabled:hover:text-white';
+  'primary-button h-10 px-5 flex items-center justify-center whitespace-nowrap text-sm font-semibold bg-Blue hover:bg-white border border-Blue2-600 rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow cursor-pointer focus-ring disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-Blue disabled:hover:text-white';
 
 const SECONDARY_BUTTON_CLASSES =
-  'secondary-button h-10 px-5 flex items-center justify-center whitespace-nowrap cursor-pointer text-sm font-semibold bg-white hover:bg-Blue dark:hover:bg-Blue border border-[#0088CC] rounded-[15px] text-Gray-950 hover:text-white transition-all duration-300 shadow-button-shadow dark:bg-dark-secondary dark:text-white dark:shadow-none focus-ring disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-Gray-950 dark:disabled:hover:bg-dark-secondary dark:disabled:hover:text-white';
+  'secondary-button h-10 px-5 flex items-center justify-center whitespace-nowrap cursor-pointer text-sm font-semibold bg-white hover:bg-Blue dark:hover:bg-Blue border border-Blue2-600 rounded-[15px] text-Gray-950 hover:text-white transition-all duration-300 shadow-button-shadow dark:bg-dark-secondary dark:text-white dark:shadow-none focus-ring disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-Gray-950 dark:disabled:hover:bg-dark-secondary dark:disabled:hover:text-white';
 
 interface IRandomPickerModalProps {
   excludeUserId?: string;

@@ -78,7 +78,7 @@ const OptionsView = ({ options, setOptions, isQuiz }: OptionsProps) => {
                       aria-label={t('polls.correct-answer')}
                       checked={elm.isCorrect}
                       onChange={(e) => onCorrectChange(index, e.currentTarget.checked)}
-                      className="border cursor-pointer border-Gray-300 bg-white shadow-input w-4 h-4 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus dark:bg-dark-secondary dark:border-dark-text"
+                      className="border cursor-pointer border-Gray-300 bg-white shadow-input w-4 h-4 outline-hidden focus:border-Blue focus:shadow-input-focus dark:bg-dark-secondary dark:border-dark-text"
                     />
                   </label>
                 )}

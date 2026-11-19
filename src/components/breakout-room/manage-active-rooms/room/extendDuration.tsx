@@ -54,12 +54,12 @@ const ExtendDuration = ({ breakoutRoomId, setMessage }: IExtendTimeProps) => {
         value={duration}
         onChange={(e) => setDuration(Number(e.currentTarget.value))}
         placeholder={t('breakout-room.extend-duration').toString()}
-        className="max-w-[100px] text-gray-950 dark:text-white border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-dark-primary shadow-input block px-3 py-2 w-full h-9 rounded-[15px] outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
+        className="max-w-[100px] text-gray-950 dark:text-white border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-dark-primary shadow-input block px-3 py-2 w-full h-9 rounded-[15px] outline-hidden focus:border-Blue focus:shadow-input-focus"
       />
       <button
         onClick={handleExtendDuration}
         disabled={isLoading || duration <= 0}
-        className="primary-button h-8 px-3 text-sm font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+        className="primary-button h-8 px-3 text-sm font-semibold bg-Blue hover:bg-white border border-Blue2-600 rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
       >
         {t('breakout-room.extend-duration')}
       </button>

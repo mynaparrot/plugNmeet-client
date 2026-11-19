@@ -139,7 +139,7 @@ const RoomsPanel = () => {
                     </span>
                   )}
                   <button
-                    className="primary-button h-7 px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="primary-button h-7 px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-Blue2-600 rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={() => handleJoin(room.id)}
                     disabled={current || joinResult.isLoading}
                   >

@@ -18,7 +18,7 @@ export const AiUserMessage = memo(({ message, sentAt }: IAiUserMessageProps) => 
       </div>
       <div
         dir="auto"
-        className="message-content py-2 px-2.5 border border-Gray-200 dark:border-Gray-700 rounded-lg overflow-hidden rounded-ee-none text-sm text-Gray-950 dark:text-white break-words markdown-content bg-[#00A1F2]/10 dark:bg-[#00A1F2]/15 border-[#00A1F2]/40"
+        className="message-content py-2 px-2.5 border border-Gray-200 dark:border-Gray-700 rounded-lg overflow-hidden rounded-ee-none text-sm text-Gray-950 dark:text-white break-words markdown-content bg-Blue/10 dark:bg-Blue/15 border-Blue/40"
         dangerouslySetInnerHTML={{ __html: message }}
       />
     </div>
