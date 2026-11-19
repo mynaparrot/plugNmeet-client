@@ -2,6 +2,7 @@ import { create, fromBinary, MessageInitShape, toBinary } from '@bufbuild/protob
 import {
   AIAgentPauseReqSchema,
   AIAgentResumeReqSchema,
+  AIAgentSendContextReqSchema,
   AIAgentStartReqSchema,
   AIAgentStateMsg,
   AIAgentStatusReqSchema,
@@ -57,6 +58,10 @@ export const pauseAIAgent = () => post('pause', encode(AIAgentPauseReqSchema, {}
 export const resumeAIAgent = () => post('resume', encode(AIAgentResumeReqSchema, {}));
 
 export const getAIAgentStatus = () => post('status', encode(AIAgentStatusReqSchema, {}));
+
+/** Injects a client-side event into the live session, e.g. a countdown timer milestone. */
+export const sendAIAgentContext = (text: string, source?: string) =>
+  post('sendContext', encode(AIAgentSendContextReqSchema, source ? { text, source } : { text }));
 
 /** True when the response means "a live agent session exists". */
 export const isAIAgentLiveState = (state?: AIAgentStateMsg): state is AIAgentStateMsg =>

@@ -112,6 +112,21 @@ export const shouldNotifyTimerEnd = ({
   currentSeconds <= 0 &&
   notifiedEndTime !== endTime;
 
+/** True only on the running transition into the urgent window (<= URGENT_SECONDS), once per timer end time. */
+export const shouldNotifyTimerUrgent = ({
+  status,
+  endTime,
+  previousSeconds,
+  currentSeconds,
+  notifiedEndTime,
+}: ITimerEndCheckParams) =>
+  status === 'running' &&
+  endTime > 0 &&
+  previousSeconds > URGENT_SECONDS &&
+  currentSeconds > 0 &&
+  currentSeconds <= URGENT_SECONDS &&
+  notifiedEndTime !== endTime;
+
 /** Parses a number input, clamping into `[0, max]`; garbage becomes 0. */
 export const clampDurationInput = (value: string, max: number) => {
   const parsed = Number.parseInt(value, 10);

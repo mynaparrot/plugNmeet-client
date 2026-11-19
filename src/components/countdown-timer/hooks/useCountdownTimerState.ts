@@ -6,14 +6,18 @@ import {
   addUserNotification,
   updatePlayAudioNotification,
 } from '../../../store/slices/roomSettingsSlice';
+import { aiAgentSelector } from '../../../store/slices/aiAgentSlice';
+import { sendAIAgentContext } from '../../insights-ai/ai-agent/api';
+import { isAIAgentRunning } from '../../insights-ai/ai-agent/ui/statusModel';
 import {
   formatTime,
   getRemainingSeconds,
   getTimerFlags,
   shouldNotifyTimerEnd,
+  shouldNotifyTimerUrgent,
   TICK_INTERVAL_MS,
   type CountdownTimerStatus,
-} from './../utils';
+} from '../utils';
 
 const useCountdownTimerState = () => {
   const dispatch = useAppDispatch();
@@ -35,6 +39,7 @@ const useCountdownTimerState = () => {
   // -1 until the first measurement, so a late join never fakes a "reached zero" transition.
   const previousRemainingRef = useRef(-1);
   const notifiedEndTimeRef = useRef(0);
+  const notifiedUrgentEndTimeRef = useRef(0);
 
   useEffect(() => {
     const update = () =>
@@ -57,6 +62,27 @@ const useCountdownTimerState = () => {
     const previousSeconds = previousRemainingRef.current;
     previousRemainingRef.current = remainingSeconds;
 
+    // Only a live agent in this room can react to the timer, and the recorder
+    // must never drive one.
+    const isAgentLive = () => !isRecorder && isAIAgentRunning(aiAgentSelector(store.getState()));
+
+    const urgent = shouldNotifyTimerUrgent({
+      status,
+      endTime,
+      previousSeconds,
+      currentSeconds: remainingSeconds,
+      notifiedEndTime: notifiedUrgentEndTimeRef.current,
+    });
+    if (urgent) {
+      notifiedUrgentEndTimeRef.current = endTime;
+      if (isAgentLive()) {
+        void sendAIAgentContext(
+          `10 seconds remaining on the countdown timer (${remainingSeconds}s left). Give the participant a brief heads-up that time is almost up.`,
+          'countdown_timer',
+        );
+      }
+    }
+
     const ended = shouldNotifyTimerEnd({
       status,
       endTime,
@@ -76,7 +102,13 @@ const useCountdownTimerState = () => {
         typeOption: 'info',
       }),
     );
-  }, [status, endTime, remainingSeconds, dispatch, t]);
+    if (isAgentLive()) {
+      void sendAIAgentContext(
+        'The countdown timer has finished (00:00). Let the participant know that time is up. If they were working on an exercise on the whiteboard or in the shared notepad, inspect their work now (call whiteboard_capture_snapshot or notepad_read) and review it with them.',
+        'countdown_timer',
+      );
+    }
+  }, [status, endTime, remainingSeconds, dispatch, t, isRecorder]);
 
   return {
     isAdmin: !!isAdmin,

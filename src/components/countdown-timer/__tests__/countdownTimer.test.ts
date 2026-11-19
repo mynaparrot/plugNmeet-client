@@ -6,6 +6,7 @@ import {
   getRemainingSeconds,
   getTimerFlags,
   shouldNotifyTimerEnd,
+  shouldNotifyTimerUrgent,
   TICK_INTERVAL_MS,
   URGENT_SECONDS,
 } from '../utils';
@@ -170,6 +171,47 @@ describe('shouldNotifyTimerEnd', () => {
     expect(shouldNotifyTimerEnd({ ...base, endTime: nextEnd, notifiedEndTime: base.endTime })).toBe(
       true,
     );
+  });
+});
+
+describe('shouldNotifyTimerUrgent', () => {
+  const base = {
+    status: 'running' as const,
+    endTime: 1_700_000_000_000,
+    previousSeconds: URGENT_SECONDS + 1,
+    currentSeconds: URGENT_SECONDS,
+    notifiedEndTime: 0,
+  };
+
+  it('fires when crossing into the urgent window', () => {
+    expect(shouldNotifyTimerUrgent(base)).toBe(true);
+    expect(shouldNotifyTimerUrgent({ ...base, previousSeconds: URGENT_SECONDS + 5 })).toBe(true);
+  });
+
+  it('does not fire when the timer already started inside the window', () => {
+    expect(shouldNotifyTimerUrgent({ ...base, previousSeconds: URGENT_SECONDS })).toBe(false);
+    expect(shouldNotifyTimerUrgent({ ...base, previousSeconds: URGENT_SECONDS - 3 })).toBe(false);
+  });
+
+  it('does not fire on a late join that never saw the countdown', () => {
+    expect(shouldNotifyTimerUrgent({ ...base, previousSeconds: -1 })).toBe(false);
+  });
+
+  it('does not fire twice for the same timer end time', () => {
+    expect(shouldNotifyTimerUrgent({ ...base, notifiedEndTime: base.endTime })).toBe(false);
+  });
+
+  it('fires again for a new timer (different end time)', () => {
+    const nextEnd = base.endTime + 300_000;
+    expect(
+      shouldNotifyTimerUrgent({ ...base, endTime: nextEnd, notifiedEndTime: base.endTime }),
+    ).toBe(true);
+  });
+
+  it('does not fire when paused, idle or without an end time', () => {
+    expect(shouldNotifyTimerUrgent({ ...base, status: 'paused' })).toBe(false);
+    expect(shouldNotifyTimerUrgent({ ...base, status: 'idle' })).toBe(false);
+    expect(shouldNotifyTimerUrgent({ ...base, endTime: 0 })).toBe(false);
   });
 });
 

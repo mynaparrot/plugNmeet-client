@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
 import {
   AIAgentRuntimeState,
+  AIAgentSendContextReqSchema,
   AIAgentStartReqSchema,
   AIAgentStateMsgSchema,
   AIAgentStatusResSchema,
@@ -22,6 +23,7 @@ import {
   isAIAgentLiveState,
   pauseAIAgent,
   resumeAIAgent,
+  sendAIAgentContext,
   startAIAgent,
   stopAIAgent,
 } from '../api';
@@ -107,6 +109,16 @@ describe('ai agent api helpers', () => {
     await getAIAgentStatus();
     expect(lastRequest()[0]).toBe('aiAgent/status');
     expect(lastRequest()[1]).toHaveLength(0);
+  });
+
+  it('sends a proactive context with text and source', async () => {
+    await sendAIAgentContext('10 seconds remaining', 'countdown_timer');
+
+    const [path, body] = lastRequest();
+    expect(path).toBe('aiAgent/sendContext');
+    const req = fromBinary(AIAgentSendContextReqSchema, body);
+    expect(req.text).toBe('10 seconds remaining');
+    expect(req.source).toBe('countdown_timer');
   });
 
   it('decodes the agent state of the response', async () => {
