@@ -56,6 +56,8 @@ vi.mock('../../../helpers/utils', () => ({
   uint8ToBase64: (value: Uint8Array) => Buffer.from(value).toString('base64'),
   base64ToUint8: (value: string) => new Uint8Array(Buffer.from(value, 'base64')),
   isUserRecorder: (userId: string) => userId.startsWith('recorder'),
+  isInternalParticipant: (userId?: string) =>
+    !!userId && (userId.startsWith('recorder') || userId.startsWith('pnm_agent_')),
 }));
 
 vi.mock('../../../helpers/libs/idb', () => ({
@@ -853,6 +855,57 @@ describe('serialized doc lifecycle', () => {
 
     expect(order).toEqual(['first', 'second']);
     expect(doSync).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('external write readiness', () => {
+  it('needs the canvas to settle on the active scope before an external write', async () => {
+    const controller = setup([{ userId: 'me', isPresenter: true }]);
+    await controller.sync('file1', 1, { hydrate: false });
+
+    // The CRDT doc is live, but nothing has painted this scope yet.
+    expect(controller.isReadyForExternalWrite()).toBe(false);
+
+    controller.setCanvasSettled({ fileId: 'file1', page: 1 });
+    expect(controller.isReadyForExternalWrite()).toBe(true);
+
+    // A page switch invalidates it until the new page has settled.
+    controller.setCanvasSettled(null);
+    expect(controller.isReadyForExternalWrite()).toBe(false);
+  });
+
+  it('refuses an external write for a scope the canvas did not settle on', async () => {
+    const controller = setup([{ userId: 'me', isPresenter: true }]);
+    await controller.sync('file1', 1, { hydrate: false });
+
+    controller.setCanvasSettled({ fileId: 'file2', page: 1 });
+    expect(controller.isReadyForExternalWrite()).toBe(false);
+  });
+});
+
+describe('internal participants', () => {
+  it('bootstraps from the server when only the AI agent participant is a presenter', async () => {
+    const controller = setup([
+      { userId: 'me' },
+      { userId: 'pnm_agent_ai_agent-1', isPresenter: true },
+    ]);
+
+    // No real presenter can answer a peer sync, so the store scope is used and
+    // no request is sent to a participant that would only time out.
+    await expect(controller.requestInitialData()).resolves.toEqual({ fileId: 'file1', page: 1 });
+    expect(syncRequestSends()).toHaveLength(0);
+  });
+
+  it('never targets internal participants for a peer sync', async () => {
+    const controller = setup([
+      { userId: 'me' },
+      { userId: 'pnm_agent_ai_agent-1', isPresenter: true },
+      { userId: 'recorder-1' },
+      { userId: 'peer1' },
+    ]);
+    await controller.sync('file1', 1, { hydrate: false });
+
+    expect(syncRequestSends().map((call) => call[1].to)).toEqual(['peer1']);
   });
 });
 

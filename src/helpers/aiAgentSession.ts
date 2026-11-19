@@ -1,5 +1,6 @@
 import { AIAgentSessionMode } from 'plugnmeet-protocol-js';
 
+import type { RootState } from '../store';
 import type { IRoomMetadata } from '../store/slices/interfaces/session';
 
 /** The subset of the AI agent features these helpers read. */
@@ -75,3 +76,10 @@ export const isAutoPerUserAISessionRoom = (metadata?: IRoomMetadata): boolean =>
  */
 export const isAIAgentSessionRoom = (metadata?: IRoomMetadata): boolean =>
   !!metadata?.isBreakoutRoom && !!aiAgentOf(metadata)?.isAllow;
+
+/**
+ * The whiteboard and shared notepad turn into pure automation while an AI agent
+ * is around, in its own session room or in a per-user session of a normal room.
+ */
+export const isWorkspaceControlledByAIAgent = (state: RootState): boolean =>
+  isAIAgentSessionRoom(state.session.currentRoom?.metadata) || state.aiAgent?.agent != null;

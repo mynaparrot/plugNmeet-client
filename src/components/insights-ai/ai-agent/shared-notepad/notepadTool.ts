@@ -17,7 +17,10 @@ const WRITE_MODES: NotepadExternalWriteMode[] = [
 
 /** The notepad is opened by the server and mounted lazily, so both wait a bit. */
 const WAIT_STEP_MS = 50;
-const WAIT_TIMEOUT_MS = 3000;
+/** Long enough for the lazy BlockNote bundle plus hydration of a large pad. */
+const WAIT_TIMEOUT_MS = 8000;
+/** Fallback so the frame wait still resolves in a background tab. */
+const FRAME_FALLBACK_MS = 50;
 
 const NOT_ALLOWED = 'The shared notepad is not allowed in this room.';
 const NOT_OPENED = 'The shared notepad could not be opened in this room.';
@@ -37,6 +40,20 @@ const waitUntil = async (done: () => boolean): Promise<boolean> => {
     await new Promise((resolve) => setTimeout(resolve, WAIT_STEP_MS));
   }
   return true;
+};
+
+/** Lets the freshly mounted BlockNote view flush its first render. */
+const nextFrame = (): Promise<void> => {
+  if (typeof requestAnimationFrame !== 'function') {
+    return Promise.resolve();
+  }
+  return new Promise((resolve) => {
+    const timer = setTimeout(resolve, FRAME_FALLBACK_MS);
+    requestAnimationFrame(() => {
+      clearTimeout(timer);
+      resolve();
+    });
+  });
 };
 
 /** Activates the pad for this client and waits until it can be read or written. */
@@ -60,6 +77,9 @@ const openNotepad = async (
   if (!(await waitUntil(() => ready(controller)))) {
     return { controller, error: NOT_OPENED };
   }
+  // The editor registers its applier before its DOM view has painted; the write
+  // must not land on an empty view.
+  await nextFrame();
   return { controller };
 };
 

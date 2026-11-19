@@ -7,6 +7,7 @@ import { store, useAppDispatch, useAppSelector } from '../../../../../store';
 import { updateIsActiveSharedNotePad } from '../../../../../store/slices/bottomIconsActivitySlice';
 import { addUserNotification } from '../../../../../store/slices/roomSettingsSlice';
 import sendAPIRequest from '../../../../../helpers/api/plugNmeetAPI';
+import { isWorkspaceControlledByAIAgent } from '../../../../../helpers/aiAgentSession';
 
 const useSharedNotepad = () => {
   const dispatch = useAppDispatch();
@@ -23,6 +24,15 @@ const useSharedNotepad = () => {
   );
 
   const toggleSharedNotepad = useCallback(async () => {
+    if (isWorkspaceControlledByAIAgent(store.getState())) {
+      dispatch(
+        addUserNotification({
+          message: t('ai-agent.notifications.workspace-controlled-by-ai'),
+          typeOption: 'warning',
+        }),
+      );
+      return;
+    }
     const newStatus = !sharedNotepadStatus;
     const body = create(ChangeSharedNotepadStatusReqSchema, {
       roomId,

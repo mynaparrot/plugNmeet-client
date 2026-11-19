@@ -20,6 +20,7 @@ const ACTIONS = [
   'undo_last_agent_action',
   'unlock_board',
   'lock_board',
+  'close_board',
 ] as const;
 
 type Action = (typeof ACTIONS)[number];
@@ -149,15 +150,24 @@ export const executeWhiteboardManageBoardTool = async (
     return { ok: false, error: `action must be one of: ${ACTIONS.join(', ')}.` };
   }
 
-  // Navigation does not need a mounted board, the rest does.
+  // Navigation does not need a mounted board, but the caller must not run the
+  // next tool while the switch is still hydrating and painting.
   if (action === 'switch_page') {
-    return switchPage(args);
+    const result = switchPage(args);
+    if (result.ok) {
+      await ensureBoardOpen();
+    }
+    return result;
   }
   if (action === 'switch_office_file') {
-    return switchOfficeFile(args);
+    const result = switchOfficeFile(args);
+    if (result.ok) {
+      await ensureBoardOpen();
+    }
+    return result;
   }
-  // b-server applies and broadcasts these lock changes before delegating.
-  if (action === 'unlock_board' || action === 'lock_board') {
+  // b-server applies and broadcasts these visibility/lock changes before delegating.
+  if (action === 'unlock_board' || action === 'lock_board' || action === 'close_board') {
     return { ok: true, action };
   }
 

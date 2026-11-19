@@ -31,7 +31,13 @@ import {
 } from '../../helpers/collab-sync/sequentialSyncRequest';
 import { store } from '../../store';
 import { participantsSelector } from '../../store/slices/participantSlice';
-import { base64ToUint8, isUserRecorder, uint8ToBase64 } from '../../helpers/utils';
+import {
+  base64ToUint8,
+  isInternalParticipant,
+  isUserRecorder,
+  uint8ToBase64,
+} from '../../helpers/utils';
+import { isWorkspaceControlledByAIAgent } from '../../helpers/aiAgentSession';
 
 const REMOTE_ORIGIN = 'nats-remote';
 // Origin of programmatic writes coming from outside the editor (see
@@ -164,16 +170,15 @@ export class NotepadController {
     if (user.isRecorder) {
       return false;
     }
-    if (user.metadata?.isAdmin) {
+    // an admin normally bypasses the pad lock, but the agent owns the pad in its session
+    if (user.metadata?.isAdmin && !isWorkspaceControlledByAIAgent(state)) {
       return true;
     }
-    const lock = user.metadata?.lockSettings?.lockSharedNotepad;
-    if (typeof lock === 'boolean') {
-      return !lock;
+    const userLock = user.metadata?.lockSettings?.lockSharedNotepad;
+    if (typeof userLock === 'boolean') {
+      return !userLock;
     }
-    const defaultRoomLock =
-      state.session.currentRoom.metadata?.defaultLockSettings?.lockSharedNotepad;
-    return !(defaultRoomLock ?? true);
+    return !(state.session.currentRoom.metadata?.defaultLockSettings?.lockSharedNotepad ?? true);
   };
 
   private canAccessSessionData = (): boolean => {
@@ -181,7 +186,10 @@ export class NotepadController {
     return !!u && (u.metadata?.isPresenter === true || u.metadata?.isAdmin === true);
   };
 
-  /** Whether any online peer other than the current user is the presenter. */
+  /**
+   * Whether any online peer other than the current user is the presenter.
+   * Internal participants (bots, the agent's synthetic participant) never are.
+   */
   private hasPresenterOnline = (): boolean => {
     const state = store.getState();
     const currentUserId = state.session.currentUser?.userId;
@@ -195,7 +203,8 @@ export class NotepadController {
           p.userId !== currentUserId &&
           p.isOnline &&
           !p.metadata?.waitForApproval &&
-          p.metadata?.isPresenter,
+          p.metadata?.isPresenter &&
+          !isInternalParticipant(p.userId),
       );
   };
 
@@ -245,13 +254,15 @@ export class NotepadController {
   };
 
   /**
-   * Whether an external write can land right now: the CRDT doc is live and the
-   * lazily mounted editor has registered its applier.
+   * Whether an external write can land right now: the CRDT doc is live, its
+   * hydration settled and the lazily mounted editor registered its applier.
    */
-  isReadyForExternalWrite = (): boolean => Boolean(this.doc && this.externalWriteApplier);
+  isReadyForExternalWrite = (): boolean =>
+    Boolean(this.doc && this.hydrationSettled && this.externalWriteApplier);
 
   /** Same, for callers that only need to read the content. */
-  isReadyForExternalRead = (): boolean => Boolean(this.doc && this.contentReader);
+  isReadyForExternalRead = (): boolean =>
+    Boolean(this.doc && this.hydrationSettled && this.contentReader);
 
   readContent = (): NotepadContentSnapshot | null =>
     this.contentReader ? this.contentReader() : null;
@@ -758,7 +769,13 @@ export class NotepadController {
 
     return participantsSelector
       .selectAll(state)
-      .filter((p) => p.userId !== currentUserId && p.isOnline && !p.metadata?.waitForApproval)
+      .filter(
+        (p) =>
+          p.userId !== currentUserId &&
+          p.isOnline &&
+          !p.metadata?.waitForApproval &&
+          !isInternalParticipant(p.userId),
+      )
       .sort((a, b) => rank(a) - rank(b) || a.joinedAt - b.joinedAt)
       .slice(0, MAX_SYNC_TARGETS)
       .map((p) => p.userId);

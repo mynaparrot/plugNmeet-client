@@ -43,6 +43,9 @@ vi.mock('../../../helpers/utils', () => ({
   uint8ToBase64: (value: Uint8Array) => Buffer.from(value).toString('base64'),
   base64ToUint8: (value: string) => new Uint8Array(Buffer.from(value, 'base64')),
   isUserRecorder: (userId: string) => userId === 'RECORDER_BOT' || userId === 'RTMP_BOT',
+  isInternalParticipant: (userId?: string) =>
+    !!userId &&
+    (userId === 'RECORDER_BOT' || userId === 'RTMP_BOT' || userId.startsWith('pnm_agent_')),
 }));
 
 import { NotepadController, NOTEPAD_SNAPSHOT_KEY } from '../NotepadController';

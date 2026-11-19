@@ -16,7 +16,9 @@ import { BreakoutRoomIconSVG } from '../../../../assets/Icons/BreakoutRoomIconSV
 import { SpeechIconSVG } from '../../../../assets/Icons/SpeechIconSVG';
 import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
 import { ShareScreenIconSVG } from '../../../../assets/Icons/ShareScreenIconSVG';
+import { addUserNotification } from '../../../../store/slices/roomSettingsSlice';
 import { selectIsInsightsAiTextChatEnabled } from '../../../insights-ai/featureGate';
+import { isWorkspaceControlledByAIAgent } from '../../../../helpers/aiAgentSession';
 import {
   canAccessBreakoutRooms,
   isAgenticSessionsMode,
@@ -43,22 +45,82 @@ const IconsInMenu = () => {
     };
   }, []);
 
+  // While an AI agent runs, the workspace surfaces are automation only.
+  const isAiWorkspaceControlled = useAppSelector(isWorkspaceControlledByAIAgent);
+  const isPresenter = useAppSelector((state) => !!state.session.currentUser?.metadata?.isPresenter);
+  const notifyWorkspaceControlled = useCallback(() => {
+    dispatch(
+      addUserNotification({
+        message: t('ai-agent.notifications.workspace-controlled-by-ai'),
+        typeOption: 'warning',
+      }),
+    );
+  }, [dispatch, t]);
+
   const isActiveWhiteboard = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveWhiteboard,
+  );
+  const isWhiteboardVisibleByPresenter = useAppSelector(
+    (state) => !!state.session.currentRoom.metadata?.roomFeatures?.whiteboardFeatures?.visible,
   );
   const toggleWhiteboard = useCallback(() => {
     if (store.getState().bottomIconsActivity.isActiveScreenshare) {
       return;
     }
+    if (isAiWorkspaceControlled) {
+      notifyWorkspaceControlled();
+      return;
+    }
+    if (!isPresenter && isWhiteboardVisibleByPresenter && isActiveWhiteboard) {
+      dispatch(
+        addUserNotification({
+          message: t('footer.notice.whiteboard-in-progress'),
+          typeOption: 'warning',
+        }),
+      );
+      return;
+    }
     dispatch(updateIsActiveWhiteboard(!isActiveWhiteboard));
-  }, [dispatch, isActiveWhiteboard]);
+  }, [
+    dispatch,
+    isActiveWhiteboard,
+    isWhiteboardVisibleByPresenter,
+    isAiWorkspaceControlled,
+    isPresenter,
+    notifyWorkspaceControlled,
+    t,
+  ]);
 
   const isActiveSharedNotePad = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveSharedNotePad,
   );
+  const isNotepadVisibleByPresenter = useAppSelector(
+    (state) => !!state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures?.visible,
+  );
   const toggleSharedNotePad = useCallback(() => {
+    if (isAiWorkspaceControlled) {
+      notifyWorkspaceControlled();
+      return;
+    }
+    if (!isPresenter && isNotepadVisibleByPresenter && isActiveSharedNotePad) {
+      dispatch(
+        addUserNotification({
+          message: t('footer.notice.notepad-in-progress'),
+          typeOption: 'warning',
+        }),
+      );
+      return;
+    }
     dispatch(updateIsActiveSharedNotePad(!isActiveSharedNotePad));
-  }, [dispatch, isActiveSharedNotePad]);
+  }, [
+    dispatch,
+    isActiveSharedNotePad,
+    isNotepadVisibleByPresenter,
+    isAiWorkspaceControlled,
+    isPresenter,
+    notifyWorkspaceControlled,
+    t,
+  ]);
 
   const isActivePoll = useAppSelector(
     (state) => state.session.currentRoom.metadata?.roomFeatures?.pollsFeatures?.isActive,

@@ -1,28 +1,140 @@
+import type { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
+import type { ExcalidrawElementSkeleton } from '@excalidraw/excalidraw/element/transform';
+import type { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
+
 import { store } from '../../../../store';
 import {
   updateIsActiveSharedNotePad,
   updateIsActiveWhiteboard,
 } from '../../../../store/slices/bottomIconsActivitySlice';
 import { getWhiteboardController } from '../../../whiteboard/collab';
+import { WHITEBOARD_READY_PROBE_ID as READY_PROBE_ID } from '../../../whiteboard/helpers/constants';
+import { getWhiteboardExcalidrawAPI } from '../../../whiteboard/helpers/liveScene';
 
 /** The board mounts lazily, so a tool may have to wait for it to appear. */
-const OPEN_TIMEOUT_MS = 8000;
-const OPEN_POLL_MS = 60;
+const OPEN_TIMEOUT_MS = 10000;
+const OPEN_POLL_MS = 50;
+/** Background-tab fallback so a probe never hangs on a missing animation frame. */
+const FRAME_FALLBACK_MS = 50;
+
+/** Canvas instances that already passed the probe for a `(fileId, page)`. */
+let probed: { api: ExcalidrawImperativeAPI; fileId: string; page: number } | null = null;
 
 export const whiteboardEnabled = (): boolean =>
   !!store.getState().session.currentRoom.metadata?.roomFeatures?.whiteboardFeatures?.isAllow;
 
 /**
- * `<Excalidraw>` publishes its API before `WhiteboardController.sync()` builds
- * the CRDT document, so only the snapshot proves the board can be written to.
+ * Whether the mounted board can be written to: the CRDT doc settled on the
+ * page Redux points at and the live Excalidraw instance is wired.
  */
-export const boardMounted = (): boolean => !!getWhiteboardController().getSnapshot();
+export const boardMounted = (): boolean =>
+  !!getWhiteboardController().isReadyForExternalWrite() && !!getWhiteboardExcalidrawAPI();
 
-const waitForBoard = async (): Promise<void> => {
+/** One animation frame; headless environments have no paint to wait for. */
+const nextFrame = (): Promise<void> => {
+  if (typeof requestAnimationFrame !== 'function') {
+    return Promise.resolve();
+  }
+  return new Promise((resolve) => {
+    const timer = setTimeout(resolve, FRAME_FALLBACK_MS);
+    requestAnimationFrame(() => {
+      clearTimeout(timer);
+      resolve();
+    });
+  });
+};
+
+const withoutProbe = (api: ExcalidrawImperativeAPI) =>
+  api.getSceneElementsIncludingDeleted().filter((element) => element.id !== READY_PROBE_ID);
+
+const clearProbe = (api: ExcalidrawImperativeAPI) => {
+  api.updateScene({
+    elements: withoutProbe(api),
+    captureUpdate: 'NEVER',
+  });
+};
+
+const buildProbe = async (background: string): Promise<ExcalidrawElement | null> => {
+  const { convertToExcalidrawElements } = await import('@excalidraw/excalidraw');
+  const [element] = convertToExcalidrawElements(
+    [
+      {
+        type: 'rectangle',
+        id: READY_PROBE_ID,
+        x: 0,
+        y: 0,
+        width: 1,
+        height: 1,
+        angle: 0,
+        strokeColor: background,
+        backgroundColor: 'transparent',
+        fillStyle: 'solid',
+        strokeWidth: 1,
+        strokeStyle: 'solid',
+        roughness: 0,
+        opacity: 0,
+        roundness: null,
+        groupIds: [],
+        frameId: null,
+        isDeleted: false,
+        locked: false,
+      },
+    ] as unknown as ExcalidrawElementSkeleton[],
+    { regenerateIds: false },
+  ) as unknown as ExcalidrawElement[];
+  return element ?? null;
+};
+
+/**
+ * Proves the canvas is really paint-ready: a 1×1 invisible rectangle is written
+ * locally (never into the CRDT or the undo history), read back on the next
+ * frame and removed again. Only a scene that accepted the element and reports a
+ * measured viewport passes.
+ */
+export const verifyCanvasPaintReady = async (): Promise<boolean> => {
+  const api = getWhiteboardExcalidrawAPI();
+  const snapshot = getWhiteboardController().getSnapshot();
+  if (!api || !snapshot) {
+    return false;
+  }
+  if (probed?.api === api && probed.fileId === snapshot.fileId && probed.page === snapshot.page) {
+    return true;
+  }
+
+  const probe = await buildProbe(api.getAppState().viewBackgroundColor || '#ffffff');
+  if (!probe) {
+    return false;
+  }
+
+  api.updateScene({
+    elements: [...withoutProbe(api), probe],
+    captureUpdate: 'NEVER',
+  });
+  await nextFrame();
+
+  const scene = api.getSceneElements();
+  const appState = api.getAppState();
+  const accepted = scene.some((element) => element.id === READY_PROBE_ID);
+  const measured =
+    (appState.width ?? 0) > 0 && (appState.height ?? 0) > 0 && (appState.zoom?.value ?? 0) > 0;
+  clearProbe(api);
+
+  if (!accepted || !measured) {
+    return false;
+  }
+  probed = { api, fileId: snapshot.fileId, page: snapshot.page };
+  return true;
+};
+
+const waitForCanvas = async (): Promise<boolean> => {
   const deadline = Date.now() + OPEN_TIMEOUT_MS;
-  while (!boardMounted() && Date.now() < deadline) {
+  while (Date.now() < deadline) {
+    if (boardMounted() && (await verifyCanvasPaintReady())) {
+      return true;
+    }
     await new Promise((resolve) => setTimeout(resolve, OPEN_POLL_MS));
   }
+  return false;
 };
 
 /**
@@ -42,6 +154,11 @@ export const ensureWhiteboardSurface = async (): Promise<string | null> => {
     store.dispatch(updateIsActiveWhiteboard(true));
   }
 
-  await waitForBoard();
+  // A closed board can leave a stale snapshot behind: only a canvas that passed
+  // the paint probe may be written to.
+  const ready = await waitForCanvas();
+  if (!ready) {
+    return 'The whiteboard is not open on this device right now.';
+  }
   return null;
 };

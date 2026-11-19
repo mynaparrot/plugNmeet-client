@@ -7,7 +7,7 @@ import type {
 } from '@excalidraw/excalidraw/element/types';
 
 import { getConfigValue } from '../../../helpers/utils';
-import { A4_BOUNDARY_GUIDE_ID } from './constants';
+import { A4_BOUNDARY_GUIDE_ID, WHITEBOARD_READY_PROBE_ID } from './constants';
 import { ensureImageDataIsLoaded, ImageCustomData } from './handleFiles';
 import { sanitizeLibraryBlob } from './librarySanitizer';
 import {
@@ -294,7 +294,11 @@ export const isPendingImageElement = (
 export const getSceneAndVersionWithoutBoundary = (
   elements: readonly ExcalidrawElement[],
 ): { elms: readonly ExcalidrawElement[]; version: number } => {
-  const hasBoundary = elements.some((e) => e.id === A4_BOUNDARY_GUIDE_ID);
-  const elms = hasBoundary ? elements.filter((e) => e.id !== A4_BOUNDARY_GUIDE_ID) : elements;
+  const hasLocalOnly = elements.some(
+    (e) => e.id === A4_BOUNDARY_GUIDE_ID || e.id === WHITEBOARD_READY_PROBE_ID,
+  );
+  const elms = hasLocalOnly
+    ? elements.filter((e) => e.id !== A4_BOUNDARY_GUIDE_ID && e.id !== WHITEBOARD_READY_PROBE_ID)
+    : elements;
   return { elms, version: hashElementsVersion(elms) };
 };

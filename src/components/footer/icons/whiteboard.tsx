@@ -6,10 +6,11 @@ import { debounce } from 'es-toolkit';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { updateIsActiveWhiteboard } from '../../../store/slices/bottomIconsActivitySlice';
+import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { WhiteBoardIconSVG } from '../../../assets/Icons/WhiteBoardIconSVG';
 import { participantsSelector } from '../../../store/slices/participantSlice';
-import { isAIAgentSessionRoom } from '../../insights-ai/featureGate';
+import { isWorkspaceControlledByAIAgent } from '../../../helpers/aiAgentSession';
 
 const WhiteboardIcon = () => {
   const { t } = useTranslation();
@@ -17,19 +18,17 @@ const WhiteboardIcon = () => {
   const isInitialMount = useRef(true);
   const isLocalAction = useRef(false);
 
-  const { showTooltip, allowedWhiteboard, currentUserId, isAdmin, isRecorder, isAiAgentSession } =
-    useMemo(() => {
-      const session = store.getState().session;
-      const currentUser = session.currentUser;
-      return {
-        showTooltip: session.userDeviceType === 'desktop',
-        allowedWhiteboard: session.currentRoom.metadata?.roomFeatures?.whiteboardFeatures?.isAllow,
-        currentUserId: currentUser?.userId,
-        isAdmin: currentUser?.metadata?.isAdmin,
-        isRecorder: currentUser?.isRecorder,
-        isAiAgentSession: isAIAgentSessionRoom(session.currentRoom.metadata),
-      };
-    }, []);
+  const { showTooltip, allowedWhiteboard, currentUserId, isAdmin, isRecorder } = useMemo(() => {
+    const session = store.getState().session;
+    const currentUser = session.currentUser;
+    return {
+      showTooltip: session.userDeviceType === 'desktop',
+      allowedWhiteboard: session.currentRoom.metadata?.roomFeatures?.whiteboardFeatures?.isAllow,
+      currentUserId: currentUser?.userId,
+      isAdmin: currentUser?.metadata?.isAdmin,
+      isRecorder: currentUser?.isRecorder,
+    };
+  }, []);
 
   const isActiveWhiteboard = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveWhiteboard,
@@ -41,10 +40,14 @@ const WhiteboardIcon = () => {
     (state) => participantsSelector.selectById(state, currentUserId ?? '')?.metadata.isPresenter,
   );
 
+  const isAiWorkspaceControlled = useAppSelector(isWorkspaceControlledByAIAgent);
   const canControlWhiteboard = useMemo(() => {
     // only user who is admin and presenter can control whiteboard
-    return !isAiAgentSession && isAdmin && isPresenter && !isRecorder;
-  }, [isAdmin, isPresenter, isRecorder, isAiAgentSession]);
+    return !isAiWorkspaceControlled && isAdmin && isPresenter && !isRecorder;
+  }, [isAdmin, isPresenter, isRecorder, isAiWorkspaceControlled]);
+  // The AI agent automates the board; a board the presenter opened stays open.
+  const isPresenterBoardInProgress = !canControlWhiteboard && !!isVisible && !!isActiveWhiteboard;
+  const isLockedControl = isAiWorkspaceControlled || isPresenterBoardInProgress;
 
   useEffect(() => {
     if (!allowedWhiteboard) {
@@ -113,13 +116,35 @@ const WhiteboardIcon = () => {
     if (store.getState().bottomIconsActivity.isActiveScreenshare) {
       return;
     }
+    if (isAiWorkspaceControlled) {
+      dispatch(
+        addUserNotification({
+          message: t('ai-agent.notifications.workspace-controlled-by-ai'),
+          typeOption: 'warning',
+        }),
+      );
+      return;
+    }
+    if (isPresenterBoardInProgress) {
+      dispatch(
+        addUserNotification({
+          message: t('footer.notice.whiteboard-in-progress'),
+          typeOption: 'warning',
+        }),
+      );
+      return;
+    }
     isLocalAction.current = true;
     dispatch(updateIsActiveWhiteboard(!isActiveWhiteboard));
-  }, [dispatch, isActiveWhiteboard]);
+  }, [dispatch, isActiveWhiteboard, isAiWorkspaceControlled, isPresenterBoardInProgress, t]);
 
-  const tooltipText = isActiveWhiteboard
-    ? t('footer.icons.hide-whiteboard')
-    : t('footer.icons.show-whiteboard');
+  const tooltipText = isAiWorkspaceControlled
+    ? t('ai-agent.notifications.workspace-controlled-by-ai')
+    : isPresenterBoardInProgress
+      ? t('footer.notice.whiteboard-in-progress')
+      : isActiveWhiteboard
+        ? t('footer.icons.hide-whiteboard')
+        : t('footer.icons.show-whiteboard');
 
   return (
     allowedWhiteboard && (
@@ -135,6 +160,12 @@ const WhiteboardIcon = () => {
           } ${isActiveWhiteboard ? 'bg-gray-100 dark:bg-Gray-700' : 'bg-white dark:bg-Gray-800'}`}
         >
           <span className="tooltip">{tooltipText}</span>
+          {isLockedControl && (
+            <i
+              aria-hidden="true"
+              className="pnm-lock primaryColor absolute top-1 end-1 text-[10px]"
+            />
+          )}
           <WhiteBoardIconSVG />
         </div>
       </button>

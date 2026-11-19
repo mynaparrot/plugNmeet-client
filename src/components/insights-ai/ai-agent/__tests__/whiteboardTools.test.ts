@@ -31,6 +31,7 @@ const hoisted = vi.hoisted(() => {
     applyExternalElements: vi.fn((_elements: unknown[] = [], _appState?: unknown) => true),
     getElements: vi.fn((): unknown[] => []),
     getSnapshot: vi.fn(() => ({ fileId: 'default', page: 1 }) as unknown),
+    isReadyForExternalWrite: vi.fn(() => !!controller.getSnapshot()),
     setExternalCollaboratorPointer: vi.fn(),
     revealElementsInViewport: vi.fn((_elements: unknown[] = []) => true),
     revealBBoxInViewport: vi.fn((_bounds: unknown = null) => true),
@@ -278,8 +279,15 @@ beforeEach(() => {
   roomState.current = buildRoomState();
   board.scene = [];
   board.controller.getSnapshot.mockReturnValue({ fileId: 'default', page: 1 });
+  board.controller.isReadyForExternalWrite.mockImplementation(
+    () => !!board.controller.getSnapshot(),
+  );
   board.api = {
     getSceneElements: () => board.scene,
+    getSceneElementsIncludingDeleted: () => board.scene,
+    updateScene: ({ elements }: { elements: unknown[] }) => {
+      board.scene = elements;
+    },
     getAppState: () => ({
       scrollX: 0,
       scrollY: 0,
@@ -1023,12 +1031,65 @@ describe('ensureBoardOpen', () => {
     board.controller.getSnapshot.mockReturnValue(null);
 
     const pending = executeWhiteboardWriteContentTool({ blocks: [{ text: 'hello' }] });
-    await vi.advanceTimersByTimeAsync(9000);
+    await vi.advanceTimersByTimeAsync(11000);
     const result = await pending;
 
     expect(result.ok).toBe(false);
     expect(String(result.error)).toContain('not open');
     vi.useRealTimers();
+  });
+
+  it('never writes into the snapshot of a closed board, and fails when it stays closed', async () => {
+    vi.useFakeTimers();
+    // The board was open before: the controller still holds its CRDT snapshot,
+    // but the editor is unmounted, so no canvas can pass the paint probe.
+    board.api = null;
+    board.controller.isReadyForExternalWrite.mockReturnValue(false);
+    roomState.current = {
+      ...buildRoomState(),
+      bottomIconsActivity: { isActiveWhiteboard: true, isActiveSharedNotePad: false },
+    };
+
+    const pending = executeWhiteboardWriteContentTool({ blocks: [{ text: 'hello' }] });
+
+    // The tool keeps polling for a remount instead of writing to the detached doc.
+    await vi.advanceTimersByTimeAsync(5000);
+    expect(board.controller.applyExternalElements).not.toHaveBeenCalled();
+
+    await vi.advanceTimersByTimeAsync(6000);
+    const result = await pending;
+
+    expect(result.ok).toBe(false);
+    expect(String(result.error)).toContain('not open');
+    expect(board.controller.applyExternalElements).not.toHaveBeenCalled();
+    vi.useRealTimers();
+  });
+
+  it('paints an invisible probe and cleans it up before drawing', async () => {
+    const events: string[] = [];
+    const api = board.api as {
+      updateScene: (payload: { elements: FakeElement[] }) => void;
+    };
+    const writeScene = api.updateScene.bind(api);
+    api.updateScene = (payload) => {
+      events.push(
+        payload.elements.some((el) => el.id === '__pnm_wb_ready_probe__') ? 'probe' : 'cleanup',
+      );
+      writeScene(payload);
+    };
+    board.controller.applyExternalElements.mockImplementationOnce(() => {
+      events.push('commit');
+      return true;
+    });
+
+    const result = await executeWhiteboardWriteContentTool({ blocks: [{ text: 'hello' }] });
+
+    expect(result.ok).toBe(true);
+    expect(events.slice(0, 3)).toEqual(['probe', 'cleanup', 'commit']);
+    expect(board.scene.some((el) => (el as FakeElement).id === '__pnm_wb_ready_probe__')).toBe(
+      false,
+    );
+    expect(writtenElements().some((el) => el.id === '__pnm_wb_ready_probe__')).toBe(false);
   });
 });
 

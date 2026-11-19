@@ -34,7 +34,12 @@ import { DB_STORE_NAMES, idbStore } from '../../../../helpers/libs/idb';
 import { isIncomingNewer, pageKey as buildPageKey, WHITEBOARD_ELEMENTS_MAP } from '../utils';
 import { store } from '../../../../store';
 import { participantsSelector } from '../../../../store/slices/participantSlice';
-import { base64ToUint8, isUserRecorder, uint8ToBase64 } from '../../../../helpers/utils';
+import {
+  base64ToUint8,
+  isInternalParticipant,
+  isUserRecorder,
+  uint8ToBase64,
+} from '../../../../helpers/utils';
 import type { IParticipant } from '../../../../store/slices/interfaces/participant';
 import type {
   WhiteboardBounds,
@@ -106,6 +111,9 @@ export class WhiteboardController {
   private page = 0;
   private generation = 0;
   private config: WhiteboardControllerConfig | null = null;
+  // `(fileId, page)` the mounted canvas last finished painting, as reported by
+  // the `<Whiteboard>` component. Null while a navigation/reset is in flight.
+  private settledScope: { fileId: string; page: number } | null = null;
   /** Peer handshake: every target in turn, each answer filling only what is missing. */
   private readonly syncRequest = new SequentialSyncRequest({
     getTargets: () => this.getSyncRequestTargets(),
@@ -179,9 +187,13 @@ export class WhiteboardController {
   private isCurrentUserPresenter = (): boolean =>
     !!store.getState().session.currentUser?.metadata?.isPresenter;
 
-  /** Whether `userId` is an online, approved presenter. */
+  /**
+   * Whether `userId` is an online, approved presenter. Internal participants
+   * (bots, the agent's synthetic participant) can never answer a peer sync.
+   */
   private isUserPresenter = (userId?: string): boolean =>
     !!userId &&
+    !isInternalParticipant(userId) &&
     participantsSelector
       .selectAll(store.getState())
       .some(
@@ -206,7 +218,8 @@ export class WhiteboardController {
           p.userId !== currentUserId &&
           p.isOnline &&
           !p.metadata?.waitForApproval &&
-          p.metadata?.isPresenter,
+          p.metadata?.isPresenter &&
+          !isInternalParticipant(p.userId),
       );
   };
 
@@ -214,15 +227,15 @@ export class WhiteboardController {
     participant: IParticipant,
     defaultRoomLock: boolean | undefined,
   ): boolean => {
-    if (participant.metadata?.isPresenter) {
-      return true;
-    }
     if (isUserRecorder(participant.userId)) {
       return false;
     }
-    const lock = participant.metadata?.lockSettings?.lockWhiteboard;
-    if (typeof lock === 'boolean') {
-      return !lock;
+    if (participant.metadata?.isPresenter) {
+      return true;
+    }
+    const userLock = participant.metadata?.lockSettings?.lockWhiteboard;
+    if (typeof userLock === 'boolean') {
+      return !userLock;
     }
     return !(defaultRoomLock ?? true);
   };
@@ -256,6 +269,30 @@ export class WhiteboardController {
     }
     const authorized = this.storeScope();
     return this.fileId === authorized.fileId && this.page === authorized.page;
+  };
+
+  /** Reported by the mounted canvas; `null` while a switch or reset is in flight. */
+  setCanvasSettled = (scope: { fileId: string; page: number } | null) => {
+    this.settledScope = scope;
+  };
+
+  /**
+   * Whether an external writer may touch the canvas now: the CRDT doc holds the
+   * scope Redux points at, the live Excalidraw instance is wired, and the
+   * mounted canvas has finished painting that exact scope.
+   */
+  isReadyForExternalWrite = (): boolean => {
+    const settled = this.settledScope;
+    return (
+      !!this.doc &&
+      !!this.elementsMap &&
+      !!this.fileId &&
+      !!this.config?.excalidrawAPI &&
+      !!settled &&
+      settled.fileId === this.fileId &&
+      settled.page === this.page &&
+      this.isActiveScopeSettled()
+    );
   };
 
   /**
@@ -319,9 +356,12 @@ export class WhiteboardController {
     }
   };
 
-  configure = (config: WhiteboardControllerConfig) => {
+  /** `null` detaches the controller from an unmounted canvas. */
+  configure = (config: WhiteboardControllerConfig | null) => {
     this.config = config;
-    this.presence.ensurePresence();
+    if (config) {
+      this.presence.ensurePresence();
+    }
   };
 
   /**
@@ -671,6 +711,7 @@ export class WhiteboardController {
     this.resetSaveRetry();
     this.presence.destroyPresence();
     this.config = null;
+    this.settledScope = null;
   };
 
   private clearSaveTimers = () => {
@@ -737,6 +778,7 @@ export class WhiteboardController {
     this.roomSid = '';
     this.fileId = '';
     this.page = 0;
+    this.settledScope = null;
     this.pendingAnnotations = 0;
   };
 
@@ -1419,7 +1461,13 @@ export class WhiteboardController {
 
     return participantsSelector
       .selectAll(state)
-      .filter((p) => p.userId !== currentUserId && p.isOnline && !p.metadata?.waitForApproval)
+      .filter(
+        (p) =>
+          p.userId !== currentUserId &&
+          p.isOnline &&
+          !p.metadata?.waitForApproval &&
+          !isInternalParticipant(p.userId),
+      )
       .sort((a, b) => {
         const presenterDiff = (b.metadata?.isPresenter ? 1 : 0) - (a.metadata?.isPresenter ? 1 : 0);
         if (presenterDiff !== 0) {

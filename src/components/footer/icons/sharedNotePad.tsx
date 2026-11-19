@@ -5,10 +5,11 @@ import { ChangeVisibilityResSchema } from 'plugnmeet-protocol-js';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { updateIsActiveSharedNotePad } from '../../../store/slices/bottomIconsActivitySlice';
+import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 import { SharedNotepadIconSVG } from '../../../assets/Icons/SharedNotepadIconSVG';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { participantsSelector } from '../../../store/slices/participantSlice';
-import { isAIAgentSessionRoom } from '../../insights-ai/featureGate';
+import { isWorkspaceControlledByAIAgent } from '../../../helpers/aiAgentSession';
 
 const SharedNotePadIcon = () => {
   const { t } = useTranslation();
@@ -16,7 +17,7 @@ const SharedNotePadIcon = () => {
   const isInitialMount = useRef(true);
   /** The value a local click pushed, so only that echo is ignored. */
   const isLocalAction = useRef<boolean | null>(null);
-  const { showTooltip, isRecorder, roomId, currentUserId, isAiAgentSession } = useMemo(() => {
+  const { showTooltip, isRecorder, roomId, currentUserId } = useMemo(() => {
     const session = store.getState().session;
     const currentUser = session.currentUser;
     return {
@@ -24,7 +25,6 @@ const SharedNotePadIcon = () => {
       isRecorder: !!currentUser?.isRecorder,
       roomId: session.currentRoom.roomId,
       currentUserId: currentUser?.userId,
-      isAiAgentSession: isAIAgentSessionRoom(session.currentRoom.metadata),
     };
   }, []);
 
@@ -43,10 +43,14 @@ const SharedNotePadIcon = () => {
 
   const [shouldRenderIcon, setShouldRenderIcon] = useState<boolean>(false);
 
+  const isAiWorkspaceControlled = useAppSelector(isWorkspaceControlledByAIAgent);
   const canControlNotepad = useMemo(() => {
-    // only user who is admin and presenter can control whiteboard
-    return !isAiAgentSession && isPresenter && !isRecorder;
-  }, [isPresenter, isRecorder, isAiAgentSession]);
+    // only the presenter controls the pad, and never while an AI agent runs
+    return !isAiWorkspaceControlled && isPresenter && !isRecorder;
+  }, [isPresenter, isRecorder, isAiWorkspaceControlled]);
+  // A pad the presenter opened stays open for everyone.
+  const isPresenterPadInProgress =
+    !canControlNotepad && !!isNotepadVisibleByPresenter && !!isActiveSharedNotePad;
 
   useEffect(() => {
     if (isRecorder) {
@@ -96,13 +100,35 @@ const SharedNotePadIcon = () => {
   }, [isActiveSharedNotePad, isNotepadVisibleByPresenter, canControlNotepad, roomId]);
 
   const toggle = useCallback(async () => {
+    if (isAiWorkspaceControlled) {
+      dispatch(
+        addUserNotification({
+          message: t('ai-agent.notifications.workspace-controlled-by-ai'),
+          typeOption: 'warning',
+        }),
+      );
+      return;
+    }
+    if (isPresenterPadInProgress) {
+      dispatch(
+        addUserNotification({
+          message: t('footer.notice.notepad-in-progress'),
+          typeOption: 'warning',
+        }),
+      );
+      return;
+    }
     isLocalAction.current = !isActiveSharedNotePad;
     dispatch(updateIsActiveSharedNotePad(!isActiveSharedNotePad));
-  }, [isActiveSharedNotePad, dispatch]);
+  }, [isActiveSharedNotePad, isAiWorkspaceControlled, isPresenterPadInProgress, dispatch, t]);
 
-  const tooltipText = isActiveSharedNotePad
-    ? t('footer.icons.hide-shared-notepad')
-    : t('footer.icons.show-shared-notepad');
+  const tooltipText = isAiWorkspaceControlled
+    ? t('ai-agent.notifications.workspace-controlled-by-ai')
+    : isPresenterPadInProgress
+      ? t('footer.notice.notepad-in-progress')
+      : isActiveSharedNotePad
+        ? t('footer.icons.hide-shared-notepad')
+        : t('footer.icons.show-shared-notepad');
 
   return (
     shouldRenderIcon && (
@@ -122,6 +148,12 @@ const SharedNotePadIcon = () => {
           }`}
         >
           <span className="tooltip">{tooltipText}</span>
+          {(isAiWorkspaceControlled || isPresenterPadInProgress) && (
+            <i
+              aria-hidden="true"
+              className="pnm-lock primaryColor absolute top-1 end-1 text-[10px]"
+            />
+          )}
           <SharedNotepadIconSVG classes="h-5 w-auto" />
         </div>
       </button>

@@ -397,16 +397,14 @@ export const requireBoard = (): BoardLookup => {
   }
 
   const controller = getWhiteboardController();
-  if (!controller.getSnapshot()) {
-    // The editor may already be mounted: without the CRDT document there is
-    // nothing to write into, and every element would be dropped silently.
+  const api = getWhiteboardExcalidrawAPI();
+  if (!controller.getSnapshot() || !controller.isReadyForExternalWrite() || !api) {
+    // A closed board can leave its CRDT snapshot behind, but without a live
+    // editor writing into it only lands in a detached document.
     return { error: 'The whiteboard is not open on this device right now.' };
   }
 
-  const api = getWhiteboardExcalidrawAPI();
-  const elements = api
-    ? api.getSceneElements()
-    : controller.getElements().filter((element) => !element.isDeleted);
+  const elements = api.getSceneElements();
 
   return { board: { api, controller, elements, frame: getBoardFrame(elements) } };
 };

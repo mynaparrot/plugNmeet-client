@@ -191,7 +191,7 @@ describe('notepad_write', () => {
     controller.isReadyForExternalWrite.mockReturnValue(false);
 
     const pending = executeNotepadWriteTool({ mode: 'append', markdown: '# Notes' });
-    await vi.advanceTimersByTimeAsync(4000);
+    await vi.advanceTimersByTimeAsync(9000);
     const res = await pending;
 
     expect(res).toMatchObject({

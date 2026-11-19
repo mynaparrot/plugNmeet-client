@@ -42,6 +42,9 @@ vi.mock('../../../helpers/utils', () => ({
   uint8ToBase64: (value: Uint8Array) => Buffer.from(value).toString('base64'),
   base64ToUint8: (value: string) => new Uint8Array(Buffer.from(value, 'base64')),
   isUserRecorder: (userId: string) => userId === 'RECORDER_BOT' || userId === 'RTMP_BOT',
+  isInternalParticipant: (userId?: string) =>
+    !!userId &&
+    (userId === 'RECORDER_BOT' || userId === 'RTMP_BOT' || userId.startsWith('pnm_agent_')),
 }));
 
 import { NOTEPAD_SNAPSHOT_KEY, NotepadController } from '../NotepadController';
@@ -472,9 +475,10 @@ describe('peer sync requests', () => {
     return controller;
   };
 
-  it('asks one peer at a time: presenter first, recorder last', async () => {
+  it('asks one peer at a time: presenter first, internal participants skipped', async () => {
     const controller = await ready([
       { userId: 'RECORDER_BOT' },
+      { userId: 'pnm_agent_ai_agent-1', presenter: true },
       { userId: 'u1' },
       { userId: 'pres', presenter: true },
     ]);
@@ -489,10 +493,10 @@ describe('peer sync requests', () => {
     expect(requests().map((p) => p.to)).toEqual(['pres', 'u1']);
 
     await vi.advanceTimersByTimeAsync(SYNC_TARGET_TIMEOUT_MS);
-    expect(requests().map((p) => p.to)).toEqual(['pres', 'u1', 'RECORDER_BOT']);
+    expect(requests().map((p) => p.to)).toEqual(['pres', 'u1']);
 
     // Every request carries its own id.
-    expect(new Set(requests().map((p) => p.id)).size).toBe(3);
+    expect(new Set(requests().map((p) => p.id)).size).toBe(2);
   });
 
   it('answers a sync request straight back to the requester', async () => {

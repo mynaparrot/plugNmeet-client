@@ -4,6 +4,9 @@ import { useTranslation } from 'react-i18next';
 
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import { updateIsActiveSharedNotePad } from '../../store/slices/bottomIconsActivitySlice';
+import { addUserNotification } from '../../store/slices/roomSettingsSlice';
+import { isWorkspaceControlledByAIAgent } from '../../helpers/aiAgentSession';
+import usePrevious from '../whiteboard/helpers/hooks/usePrevious';
 import { getNotepadController } from './NotepadController';
 import NotepadEditor, { type NotepadEditorHandle } from './NotepadEditor';
 import { LoadingIcon } from '../../assets/Icons/Loading';
@@ -38,12 +41,35 @@ const SharedNotepad = () => {
   const defaultRoomLock = useAppSelector(
     (state) => state.session.currentRoom.metadata?.defaultLockSettings?.lockSharedNotepad,
   );
+  const isAiWorkspaceControlled = useAppSelector(isWorkspaceControlledByAIAgent);
+  const isPresenter = useAppSelector((state) => !!state.session.currentUser?.metadata?.isPresenter);
+  const isNotepadVisibleByPresenter = useAppSelector(
+    (state) => !!state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures?.visible,
+  );
   const editable = useMemo(() => {
     if (isRecorder) return false;
-    if (isAdmin) return true;
+    // an admin normally bypasses the pad lock, but the agent owns the pad in its session
+    if (isAdmin && !isAiWorkspaceControlled) return true;
     if (typeof lockSharedNotepad === 'boolean') return !lockSharedNotepad;
     return !(defaultRoomLock ?? true);
-  }, [isRecorder, isAdmin, lockSharedNotepad, defaultRoomLock]);
+  }, [isRecorder, isAdmin, isAiWorkspaceControlled, lockSharedNotepad, defaultRoomLock]);
+
+  // An agent unlocking the pad for the participant is worth announcing.
+  const wasEditable = usePrevious(editable);
+  useEffect(() => {
+    if (!isAiWorkspaceControlled || wasEditable !== false || editable !== true) {
+      return;
+    }
+    dispatch(
+      addUserNotification({
+        message: t('ai-agent.notifications.notepad-unlocked'),
+        typeOption: 'info',
+      }),
+    );
+  }, [isAiWorkspaceControlled, wasEditable, editable, dispatch, t]);
+
+  // While the agent (or a remote presenter) owns the pad, only they may close it.
+  const hideCloseButton = isAiWorkspaceControlled || (!isPresenter && isNotepadVisibleByPresenter);
 
   useEffect(() => {
     if (isActiveSharedNotePad) {
@@ -93,15 +119,17 @@ const SharedNotepad = () => {
                   >
                     <DownloadIconSVG />
                   </button>
-                  <button
-                    ref={closeBtnRef}
-                    type="button"
-                    aria-label={t('close').toString()}
-                    className="cursor-pointer relative z-30 focus-ring notepad-close-btn"
-                    onClick={minimizePad}
-                  >
-                    <PopupCloseSVGIcon classes="text-Gray-600 dark:text-white" />
-                  </button>
+                  {!hideCloseButton && (
+                    <button
+                      ref={closeBtnRef}
+                      type="button"
+                      aria-label={t('close').toString()}
+                      className="cursor-pointer relative z-30 focus-ring notepad-close-btn"
+                      onClick={minimizePad}
+                    >
+                      <PopupCloseSVGIcon classes="text-Gray-600 dark:text-white" />
+                    </button>
+                  )}
                 </div>
               </div>
               {snapshot.fragment && snapshot.awareness ? (

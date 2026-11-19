@@ -28,7 +28,9 @@ import FooterUI from './footerUI';
 import ExportPDFModal from './export-pdf';
 import WhiteboardAI from './ai';
 
-import { store, useAppSelector } from '../../store';
+import { store, useAppDispatch, useAppSelector } from '../../store';
+import { addUserNotification } from '../../store/slices/roomSettingsSlice';
+import { isWorkspaceControlledByAIAgent } from '../../helpers/aiAgentSession';
 import { broadcastAppStateChanges, broadcastCurrentFileId } from './helpers/handleRequests';
 import usePrevious from './helpers/hooks/usePrevious';
 import useWhiteboardSetup from './helpers/hooks/useWhiteboardSetup';
@@ -88,6 +90,7 @@ const CURSOR_SYNC_TIMEOUT = 33;
 
 const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   const { i18n, t } = useTranslation();
+  const dispatch = useAppDispatch();
   // static variables
   const { currentUser, isRecorder, roomId, roomSid } = useMemo(() => {
     const session = store.getState().session;
@@ -147,14 +150,29 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     return !!snapshot && snapshot.fileId === target.fileId && snapshot.page === target.page;
   }, [controller, navigation]);
 
+  const isAiWorkspaceControlled = useAppSelector(isWorkspaceControlledByAIAgent);
+
   // Determines if the current user has editing privileges.
   const canEdit = useMemo(() => {
-    if (isPresenter) return true;
-    // Recorders should not be able to edit.
     if (isRecorder) return false;
+    if (isPresenter) return true;
     if (typeof currentUserLock === 'boolean') return !currentUserLock;
     return !(defaultRoomLock ?? true);
-  }, [isPresenter, currentUserLock, defaultRoomLock, isRecorder]);
+  }, [isPresenter, isRecorder, currentUserLock, defaultRoomLock]);
+
+  // An agent unlocking the board for the participant is worth announcing.
+  const wasCanEdit = usePrevious(canEdit);
+  useEffect(() => {
+    if (!isAiWorkspaceControlled || wasCanEdit !== false || !canEdit) {
+      return;
+    }
+    dispatch(
+      addUserNotification({
+        message: t('ai-agent.notifications.whiteboard-unlocked'),
+        typeOption: 'info',
+      }),
+    );
+  }, [isAiWorkspaceControlled, wasCanEdit, canEdit, dispatch, t]);
 
   // Custom Hooks for modularity
   const { viewModeEnabled } = useWhiteboardSetup({
@@ -302,7 +320,13 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     });
     setWhiteboardExcalidrawAPI(excalidrawAPI);
 
-    return () => setWhiteboardExcalidrawAPI(null);
+    // A closed board must not leave a stale canvas API or painted scope behind:
+    // the controller is a singleton that outlives the component.
+    return () => {
+      setWhiteboardExcalidrawAPI(null);
+      controller.setCanvasSettled(null);
+      controller.configure(null);
+    };
   }, [excalidrawAPI, controller, roomSid, canEdit, applySceneToExcalidraw, isControllerAtTarget]);
 
   // Resync the active CRDT doc after reconnects and when the tab becomes
@@ -465,6 +489,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           // Freeze the page that is on screen before the canvas is cleared.
           captureBeforeReset(dropContainerRef.current, direction);
           isSwitching.current = true;
+          controller.setCanvasSettled(null);
           resetWhiteboardState(excalidrawAPI);
         },
         sync: (next) => controller.sync(next.fileId, next.page, { hydrate: !!isPresenter }),
@@ -514,6 +539,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
 
       // The new page is painted: only now may the snapshot animate away.
       settledTargetRef.current = target;
+      controller.setCanvasSettled(target);
       revealPreparedPage();
       return true;
     },
@@ -551,6 +577,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         return;
       }
       isSwitching.current = true;
+      controller.setCanvasSettled(null);
 
       // Read the live values: a page/file change may already have landed.
       const { currentWhiteboardOfficeFileId, currentPage } = store.getState().whiteboard;
@@ -600,6 +627,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         controller.broadcastFullState();
       }
       settledTargetRef.current = target;
+      controller.setCanvasSettled(target);
     },
     [
       excalidrawAPI,
@@ -628,7 +656,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     }
     const timer = setTimeout(() => {
       void navigation.startBootstrap(runInitialNavigation, releaseTransitionLock);
-    }, 300);
+    }, 50);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [excalidrawAPI]);

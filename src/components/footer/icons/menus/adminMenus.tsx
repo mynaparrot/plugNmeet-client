@@ -27,6 +27,7 @@ import { RoomLockIconSVG } from '../../../../assets/Icons/RoomLockIconSVG';
 import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
 import { TimerIconSVG } from '../../../../assets/Icons/TimerIconSVG';
 import { hasInsightsAiSettingsTabs } from '../../../insights-ai/featureGate';
+import { isWorkspaceControlledByAIAgent } from '../../../../helpers/aiAgentSession';
 import {
   isAIAgentSessionRoom,
   isAutoPerUserAISessionRoom,
@@ -85,6 +86,8 @@ const AdminMenus = () => {
   const isAutoAgentic = isAutoPerUserAISessionRoom(metadata);
   // A 1-on-1 AI session has no group controls to offer.
   const isAgentSession = isAIAgentSessionRoom(metadata);
+  // The agent owns the workspace surfaces, so they are not toggled from here.
+  const isAiWorkspaceControlled = useAppSelector(isWorkspaceControlledByAIAgent);
   const isAiAgentAllowed = !!metadata?.roomFeatures?.insightsFeatures?.aiAgentFeatures?.isAllow;
 
   return (
@@ -150,7 +153,7 @@ const AdminMenus = () => {
           isActive={isActiveDisplayExternalLink}
         />
       )}
-      {roomFeatures?.sharedNotePadFeatures?.isAllow && (
+      {!isAiWorkspaceControlled && roomFeatures?.sharedNotePadFeatures?.isAllow && (
         <MenuItemHelper
           onClick={toggleSharedNotepad}
           icon={<SharedNotepadIconSVG classes="" />}
