@@ -289,7 +289,7 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
             className="text-sm 3xl:text-base font-medium text-Gray-950 dark:text-dark-text cursor-pointer"
           >
             {t('breakout-room.allow-return-to-main-room')}
-            <p className="text-xs md:text-sm opacity-70 dark:opacity-80">
+            <p className="text-xs md:text-sm opacity-70 dark:opacity-80 dark:text-white">
               {t('breakout-room.allow-return-to-main-room-desc')}
             </p>
           </label>
@@ -313,7 +313,7 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
             className="text-sm 3xl:text-base font-medium text-Gray-950 dark:text-dark-text cursor-pointer"
           >
             {t('breakout-room.allow-self-select')}
-            <p className="text-xs md:text-sm opacity-70 dark:opacity-80">
+            <p className="text-xs md:text-sm opacity-70 dark:opacity-80 dark:text-white">
               {t('breakout-room.allow-self-select-desc')}
             </p>
           </label>

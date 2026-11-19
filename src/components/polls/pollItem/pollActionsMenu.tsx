@@ -58,7 +58,7 @@ const PollActionsMenu = ({
                 <button
                   onClick={() => endPoll(pollDataWithOption.pollId)}
                   disabled={isEndingPoll}
-                  className="h-7 cursor-pointer w-full flex items-center hover:bg-Red-600 text-sm gap-2 leading-none font-medium text-Red-700 hover:text-white px-2 3xl:px-3 rounded-lg transition-all duration-300 relative disabled:opacity-50 disabled:cursor-wait"
+                  className="h-7 cursor-pointer w-full flex items-center hover:bg-Red-600 text-sm gap-2 leading-none font-medium text-Red-700 dark:text-Red-200 hover:text-white dark:hover:text-white px-2 3xl:px-3 rounded-lg transition-all duration-300 relative disabled:opacity-50 disabled:cursor-wait"
                 >
                   {t('polls.end-poll')}
                 </button>

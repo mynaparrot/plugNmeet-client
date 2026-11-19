@@ -342,7 +342,7 @@ const MicrophoneIcon = () => {
         {showMutedTooltip && (
           <div className="micro-muted-tooltip tooltip-left absolute -start-3 rtl:microphone-rtl-left bottom-[48px] 3xl:bottom-[55px]">
             <div className="inner w-max bg-Gray-50 dark:bg-dark-secondary2 rounded-lg shadow-lg px-4 pe-6 py-4 flex items-center gap-2 relative">
-              <MicrophoneOff classes={'h-4 3xl:h-5 w-auto text-Red-600'} />
+              <MicrophoneOff classes={'h-4 3xl:h-5 w-auto text-Red-600 dark:text-Red-200'} />
               <p className="text-sm text-gray-900 dark:text-white">
                 {t('footer.icons.you-are-muted')}
               </p>

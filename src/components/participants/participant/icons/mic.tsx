@@ -117,14 +117,14 @@ const MicIcon = ({ userId, isRemoteParticipant }: MicIconProps) => {
   const render = useMemo(() => {
     if (audioTracks > 0) {
       if (isMuted) {
-        return <MicrophoneOff classes={'h-3 3xl:h-4 w-auto'} />;
+        return <MicrophoneOff classes={'h-3 3xl:h-4 w-auto dark:text-white'} />;
       }
       // if this user is a remote Participant, then we can control volume.
       if (isRemoteParticipant) {
         return renderVolumeControl();
       }
       // for local user don't need
-      return <Microphone classes={'h-3 3xl:h-4 w-auto'} />;
+      return <Microphone classes={'h-3 3xl:h-4 w-auto dark:text-white'} />;
     }
 
     return null;

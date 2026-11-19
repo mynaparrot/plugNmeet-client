@@ -208,7 +208,7 @@ const AiTextChatSettings = ({ setErrorMsg, closeModal }: AiTextChatSettingsProps
         {aiTextChatFeatures?.isEnabled && (
           <>
             <button
-              className="secondary-button focus-ring h-10 px-8 w-auto cursor-pointer text-sm 3xl:text-base font-semibold bg-white hover:bg-Red-600 border border-Gray-300 rounded-[15px] text-Gray-950 hover:text-white transition-all duration-300 shadow-button-shadow"
+              className="secondary-button focus-ring h-10 px-8 w-auto cursor-pointer text-sm 3xl:text-base font-semibold bg-white hover:bg-Red-600 dark:hover:bg-Red-600 border border-Gray-300 rounded-[15px] text-Gray-950 hover:text-white transition-all duration-300 shadow-button-shadow dark:bg-dark-secondary dark:text-white dark:shadow-none dark:border-Gray-800"
               onClick={() => stopService()}
             >
               {t('insights.stop-service')}
