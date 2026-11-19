@@ -61,7 +61,57 @@ const CARD_PADDING = 18;
 
 const asString = (value: unknown): string => (typeof value === 'string' ? value.trim() : '');
 
-const readBlocks = (raw: unknown): Block[] | null => {
+/** A `|---|---|` (or `--- | ---`) separator line under a Markdown table header. */
+const TABLE_SEPARATOR = /^\s*\|?(?:\s*:?-{2,}:?\s*\|)+\s*(?::?-{2,}:?\s*)?$/;
+
+/** `| Tense | Form |` (or `Tense | Form`) as trimmed cells, or null when it is not one. */
+const splitTableLine = (line: string): string[] | null => {
+  if (!line.includes('|')) {
+    return null;
+  }
+  const cells = line
+    .replace(/^\s*\|/, '')
+    .replace(/\|\s*$/, '')
+    .split('|')
+    .map((cell) => cell.trim());
+  return cells.length >= 2 ? cells : null;
+};
+
+/**
+ * A model sometimes hands a Markdown pipe table over as the text of one block.
+ * Every line then becomes a table row, unless the text also holds prose, which
+ * must never be dropped.
+ */
+const markdownTableRows = (text: string): string[][] | null => {
+  const rows: string[][] = [];
+  for (const line of text.split('\n')) {
+    if (!line.trim() || TABLE_SEPARATOR.test(line)) {
+      continue;
+    }
+    const cells = splitTableLine(line);
+    if (!cells) {
+      return null;
+    }
+    rows.push(cells.slice(0, MAX_TABLE_COLUMNS).map((cell) => formatWhiteboardText(cell)));
+  }
+  return rows.length > 0 ? rows : null;
+};
+
+/**
+ * Empty cells are kept on purpose: in a fill-in-the-blank table `["2 + 2 =", ""]`
+ * the blank cell is a real column that must not collapse into its neighbour.
+ */
+const readColumns = (value: unknown): string[] | undefined => {
+  if (!Array.isArray(value)) {
+    return undefined;
+  }
+  const columns = value
+    .map((column) => formatWhiteboardText(asString(column)))
+    .slice(0, MAX_TABLE_COLUMNS);
+  return columns.some((column) => column.length > 0) ? columns : undefined;
+};
+
+const readBlocks = (raw: unknown, tableStyle: boolean): Block[] | null => {
   if (!Array.isArray(raw) || raw.length === 0) {
     return null;
   }
@@ -70,21 +120,27 @@ const readBlocks = (raw: unknown): Block[] | null => {
     if (!entry || typeof entry !== 'object') {
       continue;
     }
-    const record = entry as Record<string, unknown>;
-    const text = formatWhiteboardText(asString(record.text));
-    if (!text) {
-      continue;
-    }
+    // A bare row may also be passed as its own array of cells: [ "Tense", "Form" ].
+    const record = (Array.isArray(entry) ? {} : entry) as Record<string, unknown>;
     const emphasis = (EMPHASIS as readonly string[]).includes(String(record.emphasis))
       ? (record.emphasis as Block['emphasis'])
       : 'none';
-    const columns = Array.isArray(record.columns)
-      ? record.columns
-          .map((column) => formatWhiteboardText(asString(column)))
-          .slice(0, MAX_TABLE_COLUMNS)
-          .filter(Boolean)
-      : undefined;
-    blocks.push({ text, emphasis, ...(columns && columns.length > 0 ? { columns } : {}) });
+    const columns = readColumns(record.columns) ?? readColumns(record.cells) ?? readColumns(entry);
+    const rawText = formatWhiteboardText(asString(record.text));
+
+    const rows = columns ? null : tableStyle ? markdownTableRows(rawText) : null;
+    if (rows) {
+      for (const cells of rows) {
+        blocks.push({ text: cells.join(' | '), emphasis, columns: cells });
+      }
+      continue;
+    }
+
+    const text = rawText || (columns ? columns.filter(Boolean).join(' | ') : '');
+    if (!text && !columns) {
+      continue;
+    }
+    blocks.push({ text, emphasis, ...(columns ? { columns } : {}) });
   }
   return blocks.length > 0 ? blocks : null;
 };
@@ -160,6 +216,19 @@ const flowCards = (
 
 type TableLayout = { columnWidths: number[]; rowHeights: number[]; width: number };
 
+/** Excalidraw wraps the cell label inside the column, so long cells need more lines. */
+const cellHeight = (cell: string, fontSize: number, columnWidth: number): number => {
+  const metrics = measureText(cell, fontSize);
+  const innerWidth = Math.max(40, columnWidth - CELL_PADDING_X);
+  const lines = cell
+    .split('\n')
+    .reduce(
+      (sum, line) => sum + Math.max(1, Math.ceil(measureText(line, fontSize).width / innerWidth)),
+      0,
+    );
+  return Math.max(metrics.height, Math.ceil(lines * fontSize * 1.35));
+};
+
 /**
  * Column widths and row heights are measured once for the whole table, so the
  * grid lines up row by row instead of cell by cell.
@@ -178,7 +247,7 @@ const buildTableLayout = (
     Math.max(...rows.map((row) => row.columns?.length ?? 1)),
   );
 
-  const columnWidths = Array.from({ length: columnCount }, (_, column) => {
+  const measuredWidths = Array.from({ length: columnCount }, (_, column) => {
     const measured = Math.max(
       ...rows.map((row) => {
         const cell = row.columns?.[column];
@@ -188,21 +257,26 @@ const buildTableLayout = (
     return Math.max(MIN_COLUMN_WIDTH, Math.min(MAX_COLUMN_WIDTH, measured + CELL_PADDING_X));
   });
 
+  const total = measuredWidths.reduce((sum, width) => sum + width, 0);
+  // A 5-column table can be wider than the A4 page: shrink every column by the
+  // same factor so the grid still fits inside the guide.
+  const factor = total > maxWidth ? maxWidth / total : 1;
+  const columnWidths = measuredWidths.map((width) =>
+    factor === 1 ? width : Math.max(1, Math.floor(width * factor)),
+  );
+
+  // Row heights use the final widths: a shrunk column wraps its text, and the
+  // row has to grow with it so no cell text spills out of its border.
   const rowHeights = rows.map((row) => {
-    const tallest = Math.max(...cellsOf(row).map((cell) => measureText(cell, fontSize).height));
+    const tallest = Math.max(
+      ...cellsOf(row).map((cell, column) =>
+        cellHeight(cell, fontSize, columnWidths[column] ?? MIN_COLUMN_WIDTH),
+      ),
+    );
     return Math.max(MIN_ROW_HEIGHT, tallest + CELL_PADDING_Y);
   });
 
-  const total = columnWidths.reduce((sum, width) => sum + width, 0);
-  // A 5-column table can be wider than the A4 page: shrink every column by the
-  // same factor so the grid still fits inside the guide.
-  if (total > maxWidth) {
-    const factor = maxWidth / total;
-    const fitted = columnWidths.map((width) => Math.max(1, Math.floor(width * factor)));
-    return { columnWidths: fitted, rowHeights, width: fitted.reduce((sum, w) => sum + w, 0) };
-  }
-
-  return { columnWidths, rowHeights, width: total };
+  return { columnWidths, rowHeights, width: columnWidths.reduce((sum, w) => sum + w, 0) };
 };
 
 /**
@@ -340,14 +414,17 @@ const renderBlock = (
 export const executeWhiteboardWriteContentTool = async (
   args: Record<string, unknown>,
 ): Promise<Record<string, unknown>> => {
-  const blocks = readBlocks(args.blocks);
-  if (!blocks) {
-    return invalid('blocks must be a non-empty array of { text } objects.');
-  }
-
   const style = (STYLES as readonly string[]).includes(String(args.style))
     ? String(args.style)
     : 'body';
+  const blocks =
+    readBlocks(args.blocks, style === 'comparison_table') ??
+    readBlocks(args.rows, style === 'comparison_table');
+  if (!blocks) {
+    return invalid(
+      'blocks must be a non-empty array of { text } or { columns } objects (or pass rows for a table).',
+    );
+  }
   const layout = readLayout(args.layout);
 
   const requestedFont = Number(args.font_size);
@@ -424,9 +501,18 @@ export const executeWhiteboardWriteContentTool = async (
         isTableRow(block, style) ? table.width : textWidth(block, fontSize),
       ),
     );
+  // Rows of one table share their border, so only the edges of the grid and any
+  // block that is not a table row get the usual gap.
+  const gapAfter = (index: number): number => {
+    const next = blocks[index + 1];
+    if (!next) {
+      return 0;
+    }
+    return isTableRow(blocks[index], style) && isTableRow(next, style) ? 0 : BLOCK_SPACING;
+  };
+
   const contentHeight =
-    cardFlow?.height ??
-    heights.reduce((sum, height) => sum + height, 0) + (blocks.length - 1) * BLOCK_SPACING;
+    cardFlow?.height ?? heights.reduce((sum, height, index) => sum + height + gapAfter(index), 0);
 
   const origin = resolvePlacement(
     existingBoxes,
@@ -468,14 +554,14 @@ export const executeWhiteboardWriteContentTool = async (
       skeletons.push(
         ...renderTableRow(block, origin.x, cursorY, rowIndex, table, fontSize, strokeColor, data),
       );
-      cursorY += (table.rowHeights[rowIndex] ?? MIN_ROW_HEIGHT) + BLOCK_SPACING;
+      cursorY += (table.rowHeights[rowIndex] ?? MIN_ROW_HEIGHT) + gapAfter(index);
       rowIndex++;
       continue;
     }
 
     const rendered = renderBlock(block, origin.x, cursorY, style, fontSize, strokeColor, data);
     skeletons.push(...rendered.skeletons);
-    cursorY += rendered.height + BLOCK_SPACING;
+    cursorY += rendered.height + gapAfter(index);
   }
 
   const elements: ExcalidrawElement[] = await toExcalidrawElements(skeletons, TOOL_NAME);

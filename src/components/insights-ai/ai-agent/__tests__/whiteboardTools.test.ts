@@ -834,6 +834,81 @@ describe('whiteboard_write_content', () => {
     expect(right).toBeLessThanOrEqual(frame.x + frame.width - FRAME_PADDING);
   });
 
+  const tableCells = (): FakeElement[] => writtenElements().filter((el) => el.type === 'rectangle');
+  const cellTexts = (): string[] =>
+    tableCells().map((el) => String((el.label as { text: string }).text));
+
+  it('renders a table from columns-only blocks without a text property', async () => {
+    const result = await executeWhiteboardWriteContentTool({
+      style: 'comparison_table',
+      blocks: [{ columns: ['Tense', 'Form'] }, { columns: ['go', 'went'] }],
+    });
+
+    expect(result.ok).toBe(true);
+    expect(cellTexts()).toEqual(['Tense', 'Form', 'go', 'went']);
+
+    // The same rows may arrive through cells, as bare arrays, or as top-level rows.
+    board.controller.applyExternalElements.mockClear();
+    await executeWhiteboardWriteContentTool({
+      style: 'comparison_table',
+      rows: [['Tense', 'Form'], { cells: ['go', 'went'] }],
+    });
+    expect(cellTexts()).toEqual(['Tense', 'Form', 'go', 'went']);
+  });
+
+  it('keeps a blank cell so a fill-in-the-blank row keeps its column', async () => {
+    await executeWhiteboardWriteContentTool({
+      style: 'comparison_table',
+      blocks: [{ columns: ['Question', 'Answer'] }, { columns: ['2 + 2 =', ''] }],
+    });
+
+    const cells = tableCells();
+    expect(cells).toHaveLength(4);
+    expect(String((cells[3].label as { text: string }).text)).toBe('');
+    // The blank cell is a real cell beside its neighbour, not a dropped column.
+    expect(Number(cells[3].x)).toBe(Number(cells[1].x));
+    expect(Number(cells[3].width)).toBe(Number(cells[1].width));
+    expect(Number(cells[3].height)).toBe(Number(cells[1].height));
+  });
+
+  it('turns a Markdown pipe table in text into real table rows', async () => {
+    await executeWhiteboardWriteContentTool({
+      style: 'comparison_table',
+      blocks: [{ text: '| Tense | Form |\n| --- | --- |\n| past | went |' }],
+    });
+
+    expect(cellTexts()).toEqual(['Tense', 'Form', 'past', 'went']);
+    // The `|---|---|` separator line is a rule, not a row of dashes.
+    expect(cellTexts()).not.toContain('---');
+  });
+
+  it('joins consecutive table rows flush and grows a row for wrapped text', async () => {
+    await executeWhiteboardWriteContentTool({
+      style: 'comparison_table',
+      blocks: [
+        { columns: ['Tense', 'Form'] },
+        { columns: ['present perfect continuous progressive form', 'has been going'] },
+      ],
+    });
+
+    const cells = tableCells();
+    // No 12px gap inside the grid: the borders of two rows touch.
+    expect(Number(cells[2].y)).toBe(Number(cells[0].y) + Number(cells[0].height));
+    // A long cell wraps inside its clamped column, so its row grows with it.
+    expect(Number(cells[2].height)).toBeGreaterThan(Number(cells[0].height));
+
+    // A block that is not a table row still starts below the grid with a gap.
+    board.controller.applyExternalElements.mockClear();
+    await executeWhiteboardWriteContentTool({
+      style: 'comparison_table',
+      blocks: [{ columns: ['a', 'b'] }, { text: 'note' }],
+    });
+    const written = writtenElements();
+    const cell = written.find((el) => el.type === 'rectangle');
+    const note = written.find((el) => el.type === 'text' && el.text === 'note');
+    expect(Number(note?.y)).toBeGreaterThan(Number(cell?.y) + Number(cell?.height));
+  });
+
   const cardElements = (): FakeElement[] => lastWritten().filter((el) => el.type === 'rectangle');
 
   it('lays vocabulary cards out horizontally instead of in a column', async () => {
