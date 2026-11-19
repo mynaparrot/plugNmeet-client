@@ -51,7 +51,10 @@ import { executeChatTranslation } from '../../components/translation-transcripti
 import { teardownNativePublisher } from '../nativeBridge';
 import { getNotepadController } from '../../components/shared-notepad/NotepadController';
 import { getWhiteboardController } from '../../components/whiteboard/collab';
-import { autoReturnToMainRoom } from '../../components/breakout-room/utils/breakoutRoom';
+import {
+  autoReturnToMainRoom,
+  canReturnToMainRoom,
+} from '../../components/breakout-room/utils/breakoutRoom';
 
 const RENEW_TOKEN_FREQUENT = 3 * 60 * 1000,
   PING_INTERVAL = 10 * 1000,
@@ -451,17 +454,25 @@ export default class ConnectNats {
     // read from the store: metadata may have been updated since the initial
     // data (e.g. waiting room approval, logoutUrl changes)
     const meta = store.getState().session.currentRoom.metadata;
-    // If we're inside a breakout room, try to auto-return to the main room
-    if (meta?.isBreakoutRoom && !backToMainRoom) {
+    // An admin always goes back to the main room they came from, even when
+    // observing a participant's 1-on-1 AI session room. A learner of such a room
+    // never returns: its end is the end of their session.
+    if (!backToMainRoom && canReturnToMainRoom(meta, this._isAdmin)) {
       const returned = await autoReturnToMainRoom();
       if (returned) {
         return;
       }
     }
 
-    // Handle post-session navigation after a delay
+    // Handle post-session navigation after a delay. Only a room that carries a
+    // logout url redirects there: a normal room, or the learner's 1-on-1 AI
+    // session room that inherited it from its parent. A breakout room never
+    // redirects an admin, who belongs to the main room.
     setTimeout(() => {
-      if (!meta?.isBreakoutRoom && meta?.logoutUrl && isValidHttpUrl(meta.logoutUrl)) {
+      if (meta?.isBreakoutRoom && this._isAdmin) {
+        return;
+      }
+      if (meta?.logoutUrl && isValidHttpUrl(meta.logoutUrl)) {
         window.location.replace(meta.logoutUrl);
       }
     }, 3000);

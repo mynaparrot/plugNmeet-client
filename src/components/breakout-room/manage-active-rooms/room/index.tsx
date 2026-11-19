@@ -11,6 +11,7 @@ import JoinBtn from './joinBtn';
 import ExtendDuration from './extendDuration';
 import { BreakoutRoomMessage } from '../..';
 import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
+import { useAppSelector } from '../../../../store';
 
 interface RoomItemProps {
   room: BreakoutRoom;
@@ -19,16 +20,27 @@ interface RoomItemProps {
 
 const RoomItem = ({ room, setMessage }: RoomItemProps) => {
   const { t } = useTranslation();
+  const currentUserId = useAppSelector((state) => state.session.currentUser?.userId);
   // AI Agent rooms can carry a per-room custom instruction set for the assistant.
   const aiContext = room.enableAiAgent ? (room.aiAgentContext ?? '').trim() : '';
   // 1-on-1 AI rooms have a single assigned user: the learner.
   const learner = room.enableAiAgent ? room.users?.[0] : undefined;
   const learnerJoined = !!learner?.joined;
+  // the admin may own one of these 1-on-1 AI session rooms
+  const assignedToMe =
+    !!currentUserId &&
+    !!room.enableAiAgent &&
+    (room.users ?? []).some((u) => u.id === currentUserId);
 
   return (
     <Disclosure as="div">
       {({ open }) => (
-        <div className="bg-Gray-50 dark:bg-dark-primary rounded-xl border border-gray-300 dark:border-gray-800 overflow-hidden w-full">
+        <div
+          className={clsx(
+            'bg-Gray-50 dark:bg-dark-primary rounded-xl border border-gray-300 dark:border-gray-800 overflow-hidden w-full',
+            assignedToMe && 'ring-1 ring-Blue/40 border-Blue/40',
+          )}
+        >
           <DisclosureButton
             className={`flex items-center justify-between gap-3 w-full ps-[14px] pe-2 bg-white dark:bg-dark-secondary3 h-9 rounded-xl shadow-button-shadow dark:shadow-none transition-all duration-300 cursor-pointer ${
               open ? 'border-b border-gray-300 dark:border-gray-800' : ''
@@ -36,6 +48,11 @@ const RoomItem = ({ room, setMessage }: RoomItemProps) => {
           >
             <span className="flex items-center gap-2 min-w-0">
               <span className="text-sm text-Gray-800 dark:text-white truncate">{room.title}</span>
+              {assignedToMe && (
+                <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-Blue/10 text-Blue dark:bg-Blue/20 dark:text-Blue2-50 border border-Blue/20">
+                  {t('breakout-room.assigned-to-you')}
+                </span>
+              )}
             </span>
             <div className="right flex items-center gap-2">
               {room.enableAiAgent && (

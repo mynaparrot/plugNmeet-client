@@ -27,6 +27,7 @@ const RoomsPanel = () => {
   const dispatch = useAppDispatch();
 
   const isAdmin = useAppSelector((state) => !!state.session.currentUser?.metadata?.isAdmin);
+  const currentUserId = useAppSelector((state) => state.session.currentUser?.userId);
   const metadata = useAppSelector((state) => state.session.currentRoom?.metadata);
   const allowSelfSelect = useAppSelector(
     (state) =>
@@ -139,16 +140,30 @@ const RoomsPanel = () => {
             const learnerJoined = !!learner?.joined;
             const agentOnline = !!room.aiAgentJoined;
             const aiContext = room.enableAiAgent ? (room.aiAgentContext ?? '').trim() : '';
+            // the admin can own one of the 1-on-1 AI session rooms too
+            const assignedToMe =
+              !!currentUserId &&
+              !!room.enableAiAgent &&
+              roomUsers.some((u) => u.id === currentUserId);
             return (
               <div
                 key={room.id}
-                className="flex items-center justify-between gap-3 py-2 border-b border-Gray-200 dark:border-Gray-800"
+                className={clsx(
+                  'flex items-center justify-between gap-3 py-2 border-b border-Gray-200 dark:border-Gray-800',
+                  assignedToMe &&
+                    '-mx-2 px-2 rounded-lg bg-Blue/5 dark:bg-Blue/10 ring-1 ring-inset ring-Blue/40',
+                )}
               >
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 min-w-0">
                     <p className="text-sm 3xl:text-base text-Gray-950 dark:text-white font-medium truncate">
                       {room.title}
                     </p>
+                    {assignedToMe && (
+                      <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-Blue/10 text-Blue dark:bg-Blue/20 dark:text-Blue2-50 border border-Blue/20">
+                        {t('breakout-room.assigned-to-you')}
+                      </span>
+                    )}
                   </div>
                   {room.enableAiAgent ? (
                     <div className="flex flex-wrap items-center gap-1.5 text-xs opacity-80 dark:opacity-90">

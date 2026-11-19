@@ -862,6 +862,7 @@
     "rooms-panel-title": "Breakout Rooms",
     "joined-count": "{{count}} joined",
     "current-room": "Current Room",
+    "assigned-to-you": "Assigned to you",
     "no-rooms": "No breakout rooms available.",
     "error-loading": "Failed to load breakout rooms.",
     "not-assigned": "You haven't been assigned to a breakout room yet.",
@@ -889,7 +890,8 @@
       "user-assigned-to-multiple-rooms": "User is assigned to multiple breakout rooms.",
       "duration-exceeds-parent": "Breakout room duration cannot exceed the parent room's duration.",
       "breakout-room-not-running": "Cannot increase the duration because the breakout room is not running.",
-      "breakout-room-unlimited-duration": "Cannot increase the duration because the breakout room has unlimited duration."
+      "breakout-room-unlimited-duration": "Cannot increase the duration because the breakout room has unlimited duration.",
+      "return-to-main-room-not-allowed": "Returning to the main room is not allowed for this session"
     }
   },
   "landing": {

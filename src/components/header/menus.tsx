@@ -8,6 +8,7 @@ import {
   updateShowRoomSettingsModal,
 } from '../../store/slices/roomSettingsSlice';
 import { getConnectionQualityColor } from '../../helpers/utils';
+import { canLeaveBreakoutRoom } from '../breakout-room/utils/breakoutRoom';
 import { ConnectionStatusPanel } from './connectionStatus';
 
 interface IHeaderMenusProps {
@@ -19,10 +20,11 @@ const HeaderMenus = ({ onOpenAlert, onOpenExportHub }: IHeaderMenusProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const isBreakoutRoom = useAppSelector(
-    (state) => !!state.session.currentRoom.metadata?.isBreakoutRoom,
-  );
+  const metadata = useAppSelector((state) => state.session.currentRoom.metadata);
+  const isBreakoutRoom = !!metadata?.isBreakoutRoom;
   const isAdmin = useAppSelector((state) => !!state.session.currentUser?.metadata?.isAdmin);
+  // a learner of a 1-on-1 AI session room has no way back, so they need a way out
+  const canLeaveBreakout = canLeaveBreakoutRoom(metadata, isAdmin);
   const [showConnectionStats, setShowConnectionStats] = useState(false);
   const overallQuality = useAppSelector((state) => state.session.overallConnectionQuality);
   const overallColor = useMemo(() => {
@@ -114,7 +116,7 @@ const HeaderMenus = ({ onOpenAlert, onOpenExportHub }: IHeaderMenusProps) => {
         </MenuItem>
       )}
 
-      {!isBreakoutRoom && (
+      {(!isBreakoutRoom || canLeaveBreakout) && (
         <MenuItem>
           <button
             type="button"

@@ -23,8 +23,13 @@ vi.mock('../../../../helpers/i18n', () => ({
   default: { t: (key: string) => key },
 }));
 
-const { parseParentRoomId, canAccessBreakoutRooms, isAgenticSessionsMode } =
-  await import('../breakoutRoom');
+const {
+  parseParentRoomId,
+  canAccessBreakoutRooms,
+  canLeaveBreakoutRoom,
+  canReturnToMainRoom,
+  isAgenticSessionsMode,
+} = await import('../breakoutRoom');
 
 const roomMetadata = (
   breakout: { isActive?: boolean; isAllow?: boolean },
@@ -51,6 +56,16 @@ const roomMetadata = (
           },
         },
       },
+    },
+  });
+
+// Breakout child metadata as the server writes it: only the per-user AI session
+// marker decides the learner's way back, never the room's own return flags.
+const breakoutMetadata = (isPerUserAiSession: boolean, allowReturnToMainRoom = true) =>
+  create(RoomMetadataSchema, {
+    isBreakoutRoom: true,
+    roomFeatures: {
+      breakoutRoomFeatures: { isPerUserAiSession, allowReturnToMainRoom },
     },
   });
 
@@ -98,7 +113,7 @@ describe('canAccessBreakoutRooms', () => {
     expect(canAccessBreakoutRooms(meta, false)).toBe(false);
   });
 
-  it('is available to admins for controlled AI agent rooms with more than one allowed user', () => {
+  it('is available to admins for controlled AI agent rooms with several allowed users', () => {
     const meta = roomMetadata(
       { isAllow: true },
       {
@@ -111,7 +126,21 @@ describe('canAccessBreakoutRooms', () => {
     expect(canAccessBreakoutRooms(meta, false)).toBe(false);
   });
 
-  it('is not treated as a per-user room for normal rooms or a single controlled user', () => {
+  it('is available to admins for controlled AI agent rooms with a single allowed user', () => {
+    // a 1-user controlled room still routes its learner to an agentic room
+    const meta = roomMetadata(
+      { isAllow: true },
+      {
+        isAllow: true,
+        sessionMode: AIAgentSessionMode.AI_AGENT_SESSION_MODE_CONTROLLED_USERS,
+        allowedParticipantIds: ['student-1'],
+      },
+    );
+    expect(canAccessBreakoutRooms(meta, true)).toBe(true);
+    expect(canAccessBreakoutRooms(meta, false)).toBe(false);
+  });
+
+  it('is not treated as a per-user room for normal rooms or a roster-less controlled room', () => {
     expect(
       canAccessBreakoutRooms(
         roomMetadata(
@@ -128,7 +157,7 @@ describe('canAccessBreakoutRooms', () => {
           {
             isAllow: true,
             sessionMode: AIAgentSessionMode.AI_AGENT_SESSION_MODE_CONTROLLED_USERS,
-            allowedParticipantIds: ['student-1'],
+            allowedParticipantIds: [],
           },
         ),
         true,
@@ -156,6 +185,57 @@ describe('canAccessBreakoutRooms', () => {
 
   it('is not available without metadata', () => {
     expect(canAccessBreakoutRooms(undefined, true)).toBe(false);
+  });
+});
+
+describe('canLeaveBreakoutRoom', () => {
+  it('is false outside a breakout room', () => {
+    expect(canLeaveBreakoutRoom(roomMetadata({}))).toBe(false);
+    expect(canLeaveBreakoutRoom(undefined)).toBe(false);
+  });
+
+  it('is false for admins, who keep their own end-room controls', () => {
+    expect(canLeaveBreakoutRoom(breakoutMetadata(true), true)).toBe(false);
+  });
+
+  it('is true for the learner of a 1-on-1 AI session room', () => {
+    expect(canLeaveBreakoutRoom(breakoutMetadata(true))).toBe(true);
+  });
+
+  it('is false for a learner who is returned to the main room when the room ends', () => {
+    expect(canLeaveBreakoutRoom(breakoutMetadata(false))).toBe(false);
+    // an AI breakout room of a normal session that forbids returning still
+    // returns its learner once it ends, so no leave control is needed
+    expect(canLeaveBreakoutRoom(breakoutMetadata(false, false))).toBe(false);
+  });
+});
+
+describe('canReturnToMainRoom', () => {
+  it('is false outside a breakout room', () => {
+    expect(canReturnToMainRoom(roomMetadata({}))).toBe(false);
+    expect(canReturnToMainRoom(undefined)).toBe(false);
+  });
+
+  it('is true for an admin, who always returns to their own main room', () => {
+    // an admin only observes a 1-on-1 AI session room and never ends up there
+    expect(canReturnToMainRoom(breakoutMetadata(true), true)).toBe(true);
+    expect(canReturnToMainRoom(breakoutMetadata(false), true)).toBe(true);
+  });
+
+  it('is false for the learner of a 1-on-1 AI session room', () => {
+    expect(canReturnToMainRoom(breakoutMetadata(true))).toBe(false);
+  });
+
+  it('is true for an AI breakout room of a normal session that forbids returning', () => {
+    // regression: a normal-session AI breakout room keeps allowReturnToMainRoom
+    // false for the host's sake, but it is not a 1-on-1 AI session room
+    const meta = breakoutMetadata(false, false);
+    expect(canReturnToMainRoom(meta)).toBe(true);
+    expect(canLeaveBreakoutRoom(meta)).toBe(false);
+  });
+
+  it('is true for every other breakout room', () => {
+    expect(canReturnToMainRoom(breakoutMetadata(false))).toBe(true);
   });
 });
 

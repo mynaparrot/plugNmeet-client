@@ -48,11 +48,12 @@ export const isAIAgentAutoStart = (metadata?: IRoomMetadata): boolean => {
 
 /**
  * A room where each participant gets their own AI session: everyone in
- * open-per-user mode, or a controlled room with more than one allowed user.
+ * open-per-user mode, or a controlled room with at least one allowed user. The
+ * 1-on-1 session rooms themselves route nobody, so they are never such a room.
  */
 export const isAutoPerUserAISessionRoom = (metadata?: IRoomMetadata): boolean => {
   const aiAgent = aiAgentOf(metadata);
-  if (!aiAgent?.isAllow) {
+  if (!aiAgent?.isAllow || metadata?.isBreakoutRoom) {
     return false;
   }
   if (aiAgent.sessionMode === AIAgentSessionMode.AI_AGENT_SESSION_MODE_OPEN_PER_USER) {
@@ -60,27 +61,17 @@ export const isAutoPerUserAISessionRoom = (metadata?: IRoomMetadata): boolean =>
   }
   return (
     aiAgent.sessionMode === AIAgentSessionMode.AI_AGENT_SESSION_MODE_CONTROLLED_USERS &&
-    (aiAgent.autoSessionConfig?.allowedParticipantIds?.length ?? 0) > 1
+    (aiAgent.autoSessionConfig?.allowedParticipantIds?.length ?? 0) > 0
   );
 };
 
 /**
- * A room where the AI agent runs its own 1-on-1 session: every breakout room,
- * or a parent room that assigned itself a single participant.
+ * A room where the AI agent runs its own 1-on-1 session: a breakout room that
+ * allows the agent. A parent room is always a lobby of its participants, because
+ * the agent only ever runs inside their own 1-on-1 room.
  *
  * Kept out of insights-ai so the whiteboard and notepad can read it without
  * depending on the insights AI UI.
  */
-export const isAIAgentSessionRoom = (metadata?: IRoomMetadata): boolean => {
-  const aiAgent = aiAgentOf(metadata);
-  if (!aiAgent?.isAllow) {
-    return false;
-  }
-  if (metadata?.isBreakoutRoom) {
-    return true;
-  }
-  return (
-    aiAgent.sessionMode === AIAgentSessionMode.AI_AGENT_SESSION_MODE_CONTROLLED_USERS &&
-    (aiAgent.autoSessionConfig?.allowedParticipantIds?.length ?? 0) === 1
-  );
-};
+export const isAIAgentSessionRoom = (metadata?: IRoomMetadata): boolean =>
+  !!metadata?.isBreakoutRoom && !!aiAgentOf(metadata)?.isAllow;

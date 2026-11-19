@@ -27,7 +27,10 @@ import { RoomLockIconSVG } from '../../../../assets/Icons/RoomLockIconSVG';
 import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
 import { TimerIconSVG } from '../../../../assets/Icons/TimerIconSVG';
 import { hasInsightsAiSettingsTabs } from '../../../insights-ai/featureGate';
-import { isAutoPerUserAISessionRoom } from '../../../../helpers/aiAgentSession';
+import {
+  isAIAgentSessionRoom,
+  isAutoPerUserAISessionRoom,
+} from '../../../../helpers/aiAgentSession';
 import MenuItemHelper from './menuItemHelper';
 
 const AdminMenus = () => {
@@ -80,6 +83,8 @@ const AdminMenus = () => {
   }, [dispatch]);
 
   const isAutoAgentic = isAutoPerUserAISessionRoom(metadata);
+  // A 1-on-1 AI session has no group controls to offer.
+  const isAgentSession = isAIAgentSessionRoom(metadata);
   const isAiAgentAllowed = !!metadata?.roomFeatures?.insightsFeatures?.aiAgentFeatures?.isAllow;
 
   return (
@@ -169,17 +174,21 @@ const AdminMenus = () => {
           isActive={isActiveCountdownTimer}
         />
       )}
-      <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ms-3 my-0.5"></div>
-      <MenuItemHelper
-        onClick={muteAllUsers}
-        icon={<i className="pnm-mic-mute" />}
-        text={t('footer.menus.mute-all-users')}
-      />
-      <MenuItemHelper
-        onClick={openLockSettingsModal}
-        icon={<RoomLockIconSVG />}
-        text={t('footer.menus.room-lock-settings')}
-      />
+      {!isAgentSession && (
+        <>
+          <div className="divider h-1 w-[110%] bg-Gray-50 dark:bg-Gray-700 -ms-3 my-0.5"></div>
+          <MenuItemHelper
+            onClick={muteAllUsers}
+            icon={<i className="pnm-mic-mute" />}
+            text={t('footer.menus.mute-all-users')}
+          />
+          <MenuItemHelper
+            onClick={openLockSettingsModal}
+            icon={<RoomLockIconSVG />}
+            text={t('footer.menus.room-lock-settings')}
+          />
+        </>
+      )}
       {roomFeatures?.waitingRoomFeatures?.isActive && (
         <MenuItemHelper
           onClick={openManageWaitingRoomModal}

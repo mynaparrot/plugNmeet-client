@@ -14,6 +14,7 @@ import {
   canAccessBreakoutRooms,
   isAgenticSessionsMode,
 } from '../../breakout-room/utils/breakoutRoom';
+import { isAutoPerUserAISessionRoom } from '../../../helpers/aiAgentSession';
 
 // page-load time; invitations delivered in this session suppress the
 // mount-time reminder, persisted notifications from older sessions do not
@@ -42,9 +43,10 @@ const BreakoutRoomsIcon = () => {
   const { data: roomsData } = useGetBreakoutRoomsQuery(undefined, { skip: !isVisible });
   const agenticMode = isAgenticSessionsMode(metadata, roomsData?.rooms);
 
-  // invites only matter to non-admins sitting in the main interface
+  // invites only matter to non-admins sitting in the main interface, except in
+  // per-user AI rooms where the admin can own a 1-on-1 session room as well
   const { data: myRoomRes, isSuccess } = useGetMyBreakoutRoomsQuery(undefined, {
-    skip: isAdmin || isBreakoutRoom,
+    skip: isBreakoutRoom || (isAdmin && !isAutoPerUserAISessionRoom(metadata)),
   });
   const invitedRef = useRef(false);
 

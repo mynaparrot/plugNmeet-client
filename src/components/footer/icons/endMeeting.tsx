@@ -12,6 +12,7 @@ import { getNatsConn } from '../../../helpers/nats';
 import Modal from '../../../helpers/ui/modal';
 import ConfirmationModal from '../../../helpers/ui/confirmationModal';
 import { EndMeetingIconSVG } from '../../../assets/Icons/EndMeetingIconSVG';
+import { canLeaveBreakoutRoom } from '../../breakout-room/utils/breakoutRoom';
 
 const EndMeetingButton = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -87,11 +88,12 @@ const EndMeetingButton = () => {
     setIsOpen(false);
   }, [isBusy, roomId, t]);
 
-  const isBreakoutRoom = useAppSelector(
-    (state) => !!state.session.currentRoom.metadata?.isBreakoutRoom,
-  );
+  const metadata = useAppSelector((state) => state.session.currentRoom.metadata);
+  const isBreakoutRoom = !!metadata?.isBreakoutRoom;
+  // a learner of a 1-on-1 AI session room has no way back, so they need a way out
+  const canLeaveBreakout = canLeaveBreakoutRoom(metadata, !!isAdmin);
 
-  if (isBreakoutRoom) {
+  if (isBreakoutRoom && !canLeaveBreakout) {
     return null;
   }
 

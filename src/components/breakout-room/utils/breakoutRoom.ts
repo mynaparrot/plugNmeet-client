@@ -92,6 +92,45 @@ export const parseParentRoomId = (parentRoomId?: string): string => {
 };
 
 /**
+ * Whether the current room is the participant's own 1-on-1 AI session room,
+ * created by the server for an auto per-user AI agent room.
+ *
+ * The server marks such a room in its own metadata, so this stays reliable
+ * even for a regular breakout room of a normal session that runs the AI agent
+ * without allowing a return to the main room.
+ */
+export const isPerUserAISessionRoom = (metadata?: IRoomMetadata): boolean =>
+  !!metadata?.isBreakoutRoom &&
+  metadata.roomFeatures?.breakoutRoomFeatures?.isPerUserAiSession === true;
+
+/**
+ * Whether the user is sent back to the main room when the current breakout room
+ * ends.
+ *
+ * An admin only observes other participants' rooms, so they always go back to
+ * the main room they came from, never to the room's logout url. A learner of a
+ * 1-on-1 AI session room started there, so its end is their session's end and
+ * they never return; every other breakout room returns its learner.
+ */
+export const canReturnToMainRoom = (metadata?: IRoomMetadata, isAdmin = false): boolean => {
+  if (!metadata?.isBreakoutRoom) {
+    return false;
+  }
+  return isAdmin || !isPerUserAISessionRoom(metadata);
+};
+
+/**
+ * Whether the participant needs a plain Leave action inside a breakout room.
+ *
+ * Only the learner of a 1-on-1 AI session room has no way back to the main room
+ * and therefore needs a way out. Anyone else waits for the breakout room to end
+ * and is returned automatically, so the leave controls stay hidden.
+ * Admins keep their own end-room controls instead.
+ */
+export const canLeaveBreakoutRoom = (metadata?: IRoomMetadata, isAdmin = false): boolean =>
+  !isAdmin && isPerUserAISessionRoom(metadata);
+
+/**
  * Auto-return the current user from a (ended) breakout room to the main room.
  *
  * Used by the NATS handlers when a breakout room ends while the user is still

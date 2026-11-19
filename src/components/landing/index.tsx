@@ -18,6 +18,7 @@ import { CameraOff } from '../../assets/Icons/CameraOff';
 import { LoadingIcon } from '../../assets/Icons/Loading';
 import { getConfigValue } from '../../helpers/utils';
 import { consumeSkipLandingOnce } from './skipLandingOnce';
+import { isAIAgentSessionRoom, isAutoPerUserAISessionRoom } from '../../helpers/aiAgentSession';
 
 import MicrophoneIcon from './microphone';
 import WebcamIcon from './webcam';
@@ -56,11 +57,16 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
   const logo = useLogo();
   // Read once at mount: either the deployment disabled the landing page, or we just
   // switched rooms (breakout room / back to the main room) and must not show it again.
-  const [skipLanding] = useState(
-    () =>
+  // AI agent session rooms skip it too, so participants land straight in the room.
+  const [skipLanding] = useState(() => {
+    const metadata = store.getState().session.currentRoom.metadata;
+    return (
       getConfigValue<boolean>('disableLandingPage', false, 'DISABLE_LANDING_PAGE') ||
-      consumeSkipLandingOnce(),
-  );
+      consumeSkipLandingOnce() ||
+      isAIAgentSessionRoom(metadata) ||
+      isAutoPerUserAISessionRoom(metadata)
+    );
+  });
 
   const isStartup = useAppSelector((state) => state.session.isStartup);
   const waitForApproval = useAppSelector(
@@ -214,19 +220,28 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
           </div>
           <div className="wrapper bg-Gray-50 dark:bg-dark-secondary  pt-4 sm:pt-8 3xl:pt-11 pb-4 sm:pb-10 3xl:pb-14 px-4 sm:px-8 3xl:px-12 flex flex-wrap">
             <div className="left relative z-20 bg-Gray-25 dark:bg-Gray-800 shadow-box1 border border-Gray-200 dark:border-Gray-700 p-2 w-full md:w-1/2 rounded-2xl mb-5 sm:mb-0">
-              <div
-                className={`camera rounded-lg overflow-hidden w-full h-56 sm:h-72 3xl:h-80 ${hybrid ? 'bg-transparent' : 'bg-Gray-950'}`}
-              >
-                {hybrid ? (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <img src={logo} alt="logo" className="max-w-[60%] max-h-[60%] object-contain" />
-                  </div>
-                ) : (
-                  selectedVideoDevice !== '' && (
-                    <WebcamPreview deviceId={selectedVideoDevice} resolution={selectedResolution} />
-                  )
-                )}
-              </div>
+              {(isWebcamAllowed || hybrid) && (
+                <div
+                  className={`camera rounded-lg overflow-hidden w-full h-56 sm:h-72 3xl:h-80 ${hybrid ? 'bg-transparent' : 'bg-Gray-950'}`}
+                >
+                  {hybrid ? (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <img
+                        src={logo}
+                        alt="logo"
+                        className="max-w-[60%] max-h-[60%] object-contain"
+                      />
+                    </div>
+                  ) : (
+                    selectedVideoDevice !== '' && (
+                      <WebcamPreview
+                        deviceId={selectedVideoDevice}
+                        resolution={selectedResolution}
+                      />
+                    )
+                  )}
+                </div>
+              )}
               <div className="micro-cam-wrap flex justify-center py-5 gap-5 empty:hidden">
                 {!hybrid && (
                   <>
@@ -244,20 +259,21 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
                         selectedAudioDevice={selectedAudioDevice}
                       />
                     )}
-                    {lockWebcam || !isWebcamAllowed ? (
-                      <div className="cam-wrap relative cursor-not-allowed shadow-IconBox border border-Red-200 rounded-2xl h-11 w-11 flex items-center justify-center transition-all duration-300 text-Gray-950">
-                        <CameraOff classes="h-6 w-6 text-red-200" />
-                        <i className="pnm-lock absolute -top-1 -end-1 z-10 text-red-500" />
-                      </div>
-                    ) : (
-                      <WebcamIcon
-                        videoDevices={videoDevices}
-                        setVideoDevices={setVideoDevices}
-                        disableWebcam={disableWebcam}
-                        setSelectedVideoDevice={setSelectedVideoDevice}
-                        selectedVideoDevice={selectedVideoDevice}
-                      />
-                    )}
+                    {isWebcamAllowed &&
+                      (lockWebcam ? (
+                        <div className="cam-wrap relative cursor-not-allowed shadow-IconBox border border-Red-200 rounded-2xl h-11 w-11 flex items-center justify-center transition-all duration-300 text-Gray-950">
+                          <CameraOff classes="h-6 w-6 text-red-200" />
+                          <i className="pnm-lock absolute -top-1 -end-1 z-10 text-red-500" />
+                        </div>
+                      ) : (
+                        <WebcamIcon
+                          videoDevices={videoDevices}
+                          setVideoDevices={setVideoDevices}
+                          disableWebcam={disableWebcam}
+                          setSelectedVideoDevice={setSelectedVideoDevice}
+                          selectedVideoDevice={selectedVideoDevice}
+                        />
+                      ))}
                   </>
                 )}
               </div>

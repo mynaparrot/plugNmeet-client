@@ -18,6 +18,7 @@ import { IVisibleParticipantInfo } from '../../../store/slices/interfaces/partic
 import { store, useAppSelector } from '../../../store';
 import { participantsSelector } from '../../../store/slices/participantSlice';
 import ReconnectingIndicator from '../../../helpers/ui/reconnectingIndicator';
+import { isAIAgentUserId } from '../../insights-ai/ai-agent/constants';
 
 interface IParticipantComponentProps {
   participant: IVisibleParticipantInfo;
@@ -44,6 +45,8 @@ const ParticipantComponent = ({
     (state) => participantsSelector.selectById(state, participant.userId)?.isOnline,
   );
   const isReconnecting = isRemoteParticipant && isOnline === false;
+  // The AI agent has no action menu: no private chat, no kick/lock/webcam requests.
+  const isAIAgent = isAIAgentUserId(participant.userId);
 
   return (
     <div className="w-full">
@@ -77,7 +80,7 @@ const ParticipantComponent = ({
             <WebcamIcon userId={participant.userId} />
             <ScreenShareIcon userId={participant.userId} />
             <MicIcon userId={participant.userId} isRemoteParticipant={isRemoteParticipant} />
-            {currentUser?.userId !== participant.userId && (
+            {currentUser?.userId !== participant.userId && !isAIAgent && (
               <MenuIcon
                 userId={participant.userId}
                 name={participant.name}

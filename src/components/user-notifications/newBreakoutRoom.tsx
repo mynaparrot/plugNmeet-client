@@ -24,9 +24,10 @@ const NewBreakoutRoom = ({ createdAt, onClosePopover }: NewBreakoutRoomProps) =>
   );
   const metadata = useAppSelector((state) => state.session.currentRoom?.metadata);
 
-  // invitations only matter to non-admins sitting in the main interface
+  // invitations only matter to non-admins sitting in the main interface, except
+  // in per-user AI rooms where the admin can own a 1-on-1 session room as well
   const { data: myRoomRes } = useGetMyBreakoutRoomsQuery(undefined, {
-    skip: isAdmin || isBreakoutRoom,
+    skip: isBreakoutRoom || (isAdmin && !isAutoPerUserAISessionRoom(metadata)),
   });
   // per-user AI rooms are presented as 1-on-1 AI sessions, not breakout rooms
   const isAiSession = !!myRoomRes?.room?.enableAiAgent || isAutoPerUserAISessionRoom(metadata);

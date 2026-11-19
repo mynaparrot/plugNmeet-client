@@ -100,16 +100,18 @@ describe('session mode helpers', () => {
     expect(isAIAgentAutoStart(metadata({ aiAgentFeatures: openPerUser(4, false) }))).toBe(false);
   });
 
-  it('flags open-per-user and multi-user controlled rooms as per-user sessions', () => {
+  it('flags open-per-user and every controlled room with allowed users as per-user', () => {
     expect(isAutoPerUserAISessionRoom(undefined)).toBe(false);
     expect(isAutoPerUserAISessionRoom(metadata({ aiAgentFeatures: aiAgent() }))).toBe(false);
     expect(isAutoPerUserAISessionRoom(metadata({ aiAgentFeatures: openPerUser() }))).toBe(true);
     expect(
       isAutoPerUserAISessionRoom(metadata({ aiAgentFeatures: controlled(['u1', 'u2']) })),
     ).toBe(true);
+    // a single allowed user is routed to their own room just like several
     expect(isAutoPerUserAISessionRoom(metadata({ aiAgentFeatures: controlled(['u1']) }))).toBe(
-      false,
+      true,
     );
+    expect(isAutoPerUserAISessionRoom(metadata({ aiAgentFeatures: controlled([]) }))).toBe(false);
     expect(
       isAutoPerUserAISessionRoom(
         metadata({
@@ -132,6 +134,19 @@ describe('session mode helpers', () => {
       ),
     ).toBe(false);
   });
+
+  it('never treats a 1-on-1 session room as a per-user lobby', () => {
+    expect(
+      isAutoPerUserAISessionRoom(
+        metadata({ aiAgentFeatures: controlled(['u1']) }, { isBreakoutRoom: true }),
+      ),
+    ).toBe(false);
+    expect(
+      isAutoPerUserAISessionRoom(
+        metadata({ aiAgentFeatures: openPerUser() }, { isBreakoutRoom: true }),
+      ),
+    ).toBe(false);
+  });
 });
 
 describe('isAIAgentSessionRoom', () => {
@@ -149,11 +164,8 @@ describe('isAIAgentSessionRoom', () => {
     expect(isAIAgentSessionRoom(metadata({ aiAgentFeatures: openPerUser() }))).toBe(false);
   });
 
-  it('is on in a parent lobby that assigned a single participant', () => {
-    expect(isAIAgentSessionRoom(metadata({ aiAgentFeatures: controlled(['u1']) }))).toBe(true);
-  });
-
-  it('is off when the session mode is normal even with a single allowed user', () => {
+  it('is off in a parent lobby, even when it lists a single participant', () => {
+    expect(isAIAgentSessionRoom(metadata({ aiAgentFeatures: controlled(['u1']) }))).toBe(false);
     expect(
       isAIAgentSessionRoom(
         metadata({
@@ -167,9 +179,14 @@ describe('isAIAgentSessionRoom', () => {
     ).toBe(false);
   });
 
-  it('is on in every breakout room', () => {
+  it('is on in every breakout room that allows the agent', () => {
     expect(
       isAIAgentSessionRoom(metadata({ aiAgentFeatures: aiAgent() }, { isBreakoutRoom: true })),
+    ).toBe(true);
+    expect(
+      isAIAgentSessionRoom(
+        metadata({ aiAgentFeatures: controlled(['u1']) }, { isBreakoutRoom: true }),
+      ),
     ).toBe(true);
   });
 
