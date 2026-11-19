@@ -392,7 +392,7 @@ export const formatNextPreButton = (remaining: ReactElement<VideoParticipantProp
   const nameChipElms = participantsToShow.map((p) => (
     <span
       key={getParticipantKey(p, 'short')}
-      className="inline-flex items-center justify-center order-1 px-2 h-8 md:h-10 rounded-full border-2 border-Gray-900 bg-[#003C59] overflow-hidden text-sm md:text-base"
+      className="inline-flex items-center justify-center order-1 px-2 h-8 md:h-10 rounded-full border-2 border-Gray-900 bg-video-name overflow-hidden text-sm md:text-base"
     >
       {shortName(p.props.participant.name)}
     </span>

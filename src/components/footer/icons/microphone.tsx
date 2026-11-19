@@ -313,7 +313,7 @@ const MicrophoneIcon = () => {
     'relative footer-icon cursor-pointer min-w-10 md:min-w-11 3xl:min-w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[20px] border-[3px] 3xl:border-4',
     {
       'border-Red-100!': isMicMuted && isActiveMicrophone,
-      'border-[rgba(124,206,247,0.25)]': isActiveMicrophone,
+      'border-focus-ring': isActiveMicrophone,
       'border-transparent': !isActiveMicrophone,
       'border-Red-100! dark:!border-Red-600 cursor-not-allowed': isLocked,
     },

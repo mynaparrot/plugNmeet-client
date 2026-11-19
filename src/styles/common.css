@@ -33,7 +33,7 @@ input.polls-checkbox:checked:before {
   }
 
   &::-webkit-scrollbar-track {
-    @apply bg-[rgba(0,0,0,0.15)];
+    @apply bg-overlay;
   }
 
   &::-webkit-scrollbar {
@@ -171,10 +171,10 @@ body[dir='rtl'] span.tooltip.tooltip-left::before {
   height: 10px;
   border-radius: 5px;
   border: 1px solid transparent;
-  @apply bg-[rgba(128,128,128,0.5)] dark:bg-secondary-color/90 h-[10px] rounded-[5px] border border-solid border-transparent;
+  @apply bg-scrollbar-thumb dark:bg-secondary-color/90 h-[10px] rounded-[5px] border border-solid border-transparent;
 }
 .range::-moz-range-track {
-  @apply bg-[rgba(128,128,128,0.5)] dark:bg-secondary-color/90 h-[10px] rounded-[5px] border border-solid border-transparent;
+  @apply bg-scrollbar-thumb dark:bg-secondary-color/90 h-[10px] rounded-[5px] border border-solid border-transparent;
 }
 .range::-webkit-slider-thumb {
   @apply appearance-none rounded-full bg-primary-color dark:bg-white h-[18px] w-[18px] -mt-[5px];
@@ -449,7 +449,7 @@ body[dir='rtl'] .rtl\:microphone-rtl-left::before {
     @apply font-mono text-[0.85em] bg-Gray-100 dark:bg-Gray-800 rounded px-1 py-0.5;
   }
   & pre {
-    @apply my-2 p-3 rounded-lg overflow-x-auto text-xs text-gray-100 bg-[#0d1117] leading-normal;
+    @apply my-2 p-3 rounded-lg overflow-x-auto text-xs text-gray-100 bg-code-block leading-normal;
   }
   /* reset the inline-code chip inside code blocks; must follow the `& code` rule */
   & pre code {
@@ -485,7 +485,7 @@ body[dir='rtl'] .rtl\:microphone-rtl-left::before {
    markdown-content, scoped to chat so AI styles stay untouched. */
 .message-content {
   & pre {
-    @apply my-2 p-3 rounded-lg overflow-x-auto text-xs text-gray-100 bg-[#0d1117] leading-normal font-mono whitespace-pre;
+    @apply my-2 p-3 rounded-lg overflow-x-auto text-xs text-gray-100 bg-code-block leading-normal font-mono whitespace-pre;
   }
   & pre code {
     @apply bg-transparent p-0 rounded-none text-inherit font-mono;

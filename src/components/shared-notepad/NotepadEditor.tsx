@@ -207,7 +207,7 @@ const NotepadEditor = forwardRef<NotepadEditorHandle, INotepadEditorProps>(
               needed to reach the formatting options, and unlike the floating
               toolbar it never has to chase the selection on touch devices. */}
           {editable && (
-            <div className="notepad-toolbar-bar order-first sticky top-0 z-20 flex shrink-0 items-center border-b border-Gray-200 bg-white px-2 py-1 dark:border-Gray-800 dark:bg-[#1f1f1f]">
+            <div className="notepad-toolbar-bar order-first sticky top-0 z-20 flex shrink-0 items-center border-b border-Gray-200 bg-white px-2 py-1 dark:border-Gray-800 dark:bg-dark-surface">
               <FormattingToolbar>
                 {getFormattingToolbarItems()}
                 <NotepadAIToolbarButton onClick={openAIMenu} />

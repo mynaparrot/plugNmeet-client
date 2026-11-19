@@ -126,7 +126,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
     <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1 md:h-[175px] overflow-auto scrollBar">
       <button
         type="button"
-        className={`wrap overflow-hidden rounded-2xl h-20 focus-ring ${selectedBg.type === 'none' ? 'border-4 border-[rgba(124,206,247,0.25)]' : 'border-4 border-transparent'}`}
+        className={`wrap overflow-hidden rounded-2xl h-20 focus-ring ${selectedBg.type === 'none' ? 'border-4 border-focus-ring' : 'border-4 border-transparent'}`}
         onClick={() => handleOnClick('none', '')}
         aria-label="No background"
       >
@@ -138,7 +138,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
       </button>
       <button
         type="button"
-        className={`wrap overflow-hidden rounded-2xl h-20 focus-ring ${selectedBg.type === 'blur' ? 'border-4 border-[rgba(124,206,247,0.25)]' : 'border-4 border-transparent'}`}
+        className={`wrap overflow-hidden rounded-2xl h-20 focus-ring ${selectedBg.type === 'blur' ? 'border-4 border-focus-ring' : 'border-4 border-transparent'}`}
         onClick={() => handleOnClick('blur', '')}
         aria-label="Blur background"
       >
@@ -152,7 +152,7 @@ const BackgroundItems = ({ onSelect }: IBackgroundItemsProps) => {
         return (
           <button
             type="button"
-            className={`wrap overflow-hidden rounded-2xl h-20 transition-all duration-200 focus-ring ${selectedBg.url === imageUrl ? 'border-4 border-[rgba(124,206,247,0.25)]' : 'border-4 border-transparent'}`}
+            className={`wrap overflow-hidden rounded-2xl h-20 transition-all duration-200 focus-ring ${selectedBg.url === imageUrl ? 'border-4 border-focus-ring' : 'border-4 border-transparent'}`}
             onClick={() => handleOnClick('image', imageUrl)}
             key={imageUrl}
           >

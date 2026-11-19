@@ -94,9 +94,7 @@ const ReactionsIcon = () => {
       className={clsx(
         'raise-hand relative footer-icon cursor-pointer w-10 md:w-11 3xl:w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 focus-ring',
         extraClasses,
-        isActiveRaisehand
-          ? 'border-[rgba(124,206,247,0.25)] dark:border-Gray-800'
-          : 'border-transparent',
+        isActiveRaisehand ? 'border-focus-ring dark:border-Gray-800' : 'border-transparent',
       )}
       onClick={toggleRaiseHand}
       aria-label={tooltipText.toString()}
@@ -140,9 +138,9 @@ const ReactionsIcon = () => {
               className={clsx(
                 'w-10 md:w-11 3xl:w-[52px] h-10 md:h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 cursor-pointer outline-none focus-ring',
                 open
-                  ? 'border-[rgba(124,206,247,0.25)] dark:border-Gray-800'
+                  ? 'border-focus-ring dark:border-Gray-800'
                   : isActiveRaisehand
-                    ? 'border-transparent max-md:border-[rgba(124,206,247,0.25)] max-md:dark:border-Gray-800'
+                    ? 'border-transparent max-md:border-focus-ring max-md:dark:border-Gray-800'
                     : 'border-transparent',
               )}
               aria-label={t('footer.icons.reactions').toString()}

@@ -28,6 +28,15 @@
   --color-Blue: #00a1f2;
   --color-Dark-blue: #069;
 
+  --color-focus-ring: rgba(124, 206, 247, 0.25);
+  --color-dark-surface: #1f1f1f;
+  --color-code-block: #0d1117;
+  --color-video-name: #003c59;
+  --color-whiteboard-muted: #b8b8b8;
+  --color-overlay: rgba(0, 0, 0, 0.15);
+  --color-scrollbar-thumb: rgba(128, 128, 128, 0.5);
+  --color-border-subtle: #333;
+
   --color-Gray-25: #fafcff;
   --color-Gray-50: #f0f6fc;
   --color-Gray-100: #e1edfa;

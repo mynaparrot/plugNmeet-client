@@ -281,7 +281,7 @@ const WebcamIcon = () => {
         ((isActiveWebcam && isMuted && !outgoingCameraPaused) ||
           (!isActiveWebcam && selectedVideoDevice !== '')),
       'border-amber-400': !isWebcamLocked && isActiveWebcam && isMuted && outgoingCameraPaused,
-      'border-[rgba(124,206,247,0.25)]': !isWebcamLocked && isActiveWebcam && !isMuted,
+      'border-focus-ring': !isWebcamLocked && isActiveWebcam && !isMuted,
       'border-transparent': !isWebcamLocked && !isActiveWebcam && selectedVideoDevice === '',
     },
   );

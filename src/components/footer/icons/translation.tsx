@@ -41,8 +41,7 @@ const Translation = () => {
   const wrapperClasses = clsx(
     'translationIcon hidden md:block relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4',
     {
-      'border-[rgba(124,206,247,0.25)] dark:border-Gray-800':
-        isActiveDisplaySpeechSettingOptionsModal,
+      'border-focus-ring dark:border-Gray-800': isActiveDisplaySpeechSettingOptionsModal,
       'border-transparent': !isActiveDisplaySpeechSettingOptionsModal,
       'focus-ring': true,
     },

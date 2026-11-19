@@ -37,12 +37,12 @@
       label[title] {
         .sidebar-trigger {
           &:hover {
-            @apply text-[#b8b8b8];
+            @apply text-whiteboard-muted;
           }
         }
       }
       .excalidraw-button.sidebar__close {
-        @apply text-[#b8b8b8];
+        @apply text-whiteboard-muted;
       }
       .help-icon {
         display: none;
@@ -93,7 +93,7 @@
             --button-hover-border,
             var(--button-border, var(--default-border-color))
           );
-          color: #b8b8b8;
+          color: var(--color-whiteboard-muted);
         }
       }
       .wb-page-navigation {
@@ -163,7 +163,7 @@
         button {
           &:not(:disabled):hover {
             background: var(--button-hover-bg);
-            color: #b8b8b8;
+            color: var(--color-whiteboard-muted);
             i {
               color: #fff;
             }
@@ -176,7 +176,7 @@
       button.main-menu-trigger {
         &:not(:disabled):hover {
           background: var(--button-hover-bg);
-          color: #b8b8b8;
+          color: var(--color-whiteboard-muted);
         }
       }
       .ToolIcon__icon {

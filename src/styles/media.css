@@ -251,7 +251,7 @@
   @apply flex items-center absolute start-6 text-xs top-0;
 }
 .select-camera-number select#select-camera-num {
-  @apply bg-transparent border border-solid border-[#333] me-[5px] outline-hidden;
+  @apply bg-transparent border border-solid border-border-subtle me-[5px] outline-hidden;
 }
 
 .video-camera-item {
