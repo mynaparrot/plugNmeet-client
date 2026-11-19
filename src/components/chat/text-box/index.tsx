@@ -272,8 +272,8 @@ const TextBoxArea = () => {
     <div className="flex flex-col gap-1.5 w-full">
       {showReplyBar && replyTarget && (
         <div className="flex items-center gap-2 rounded-xl border border-Gray-200 dark:border-Gray-700 bg-Gray-50 dark:bg-Gray-800 px-2.5 py-1.5">
-          <div className="flex-1 min-w-0 border-s-2 border-[#00A1F2] ps-2">
-            <p className="text-[11px] font-semibold text-[#00A1F2] truncate">
+          <div className="flex-1 min-w-0 border-s-2 border-Blue ps-2">
+            <p className="text-[11px] font-semibold text-Blue truncate">
               {t('right-panel.replying-to', { name: replyTarget.fromName })}
             </p>
             <p className="text-xs text-Gray-600 dark:text-dark-text truncate">
@@ -328,7 +328,7 @@ const TextBoxArea = () => {
           onClick={sendMsg}
           aria-label={showEditBar ? t('right-panel.save').toString() : undefined}
           title={showEditBar ? t('right-panel.save').toString() : undefined}
-          className={`w-7 3xl:w-9 h-7 3xl:h-9 flex items-center justify-center rounded-full transition-all duration-300 hover:bg-[#00A1F2] hover:border-[#08C] ${isEmpty(message) ? 'bg-[#00A1F2]/30 border border-[#08C]/30' : 'bg-[#00A1F2] border border-[#08C]'} ${!isMsgSendingLocked && !isEmpty(message) ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+          className={`w-7 3xl:w-9 h-7 3xl:h-9 flex items-center justify-center rounded-full transition-all duration-300 hover:bg-Blue hover:border-Blue2-600 ${isEmpty(message) ? 'bg-Blue/30 border border-Blue2-600/30' : 'bg-Blue border border-Blue2-600'} ${!isMsgSendingLocked && !isEmpty(message) ? 'cursor-pointer' : 'cursor-not-allowed'}`}
         >
           <SendIconSVG />
         </button>

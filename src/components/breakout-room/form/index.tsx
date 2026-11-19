@@ -322,7 +322,7 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
             {t('breakout-room.duration')}
           </label>
           <input
-            className="h-10 rounded-[15px] text-Gray-800 dark:text-white border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-transparent shadow-input w-full px-3 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
+            className="h-10 rounded-[15px] text-Gray-800 dark:text-white border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-transparent shadow-input w-full px-3 outline-hidden focus:border-Blue focus:shadow-input-focus"
             id="breakout-room-duration"
             type="number"
             value={roomDuration}
@@ -340,7 +340,7 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
           </label>
           <textarea
             dir="auto"
-            className="h-20 rounded-[15px] text-Gray-800 dark:text-white border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-transparent shadow-input w-full px-3 py-2 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
+            className="h-20 rounded-[15px] text-Gray-800 dark:text-white border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-transparent shadow-input w-full px-3 py-2 outline-hidden focus:border-Blue focus:shadow-input-focus"
             id="breakout-room-welcome"
             onChange={(e) => setWelcomeMsg(e.currentTarget.value)}
             value={welcomeMsg}
@@ -348,7 +348,7 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
         </div>
         <div className="random-room-select mb-4">
           <button
-            className="primary-button h-9 w-auto ms-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+            className="primary-button h-9 w-auto ms-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-Blue2-600 rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
             onClick={randomSelection}
           >
             {t('breakout-room.random-selection')}
@@ -361,7 +361,7 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
             id="allow-return-to-main-room"
             name="allow-return-to-main-room"
             type="checkbox"
-            className="border cursor-pointer border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus focus-ring mt-1 dark:bg-dark-secondary dark:border-dark-text"
+            className="border cursor-pointer border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-Blue focus:shadow-input-focus focus-ring mt-1 dark:bg-dark-secondary dark:border-dark-text"
             checked={allowReturnToMainRoom}
             onChange={(e) => setAllowReturnToMainRoom(e.currentTarget.checked)}
           />
@@ -372,7 +372,7 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
             className="text-sm 3xl:text-base font-medium text-Gray-950 dark:text-dark-text cursor-pointer"
           >
             {t('breakout-room.allow-return-to-main-room')}
-            <p className="text-xs md:text-sm opacity-70 dark:opacity-80">
+            <p className="text-xs md:text-sm opacity-70 dark:opacity-80 dark:text-white">
               {t('breakout-room.allow-return-to-main-room-desc')}
             </p>
           </label>
@@ -386,7 +386,7 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
               id="enable-ai-agent"
               name="enable-ai-agent"
               type="checkbox"
-              className="border cursor-pointer border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus focus-ring mt-1 dark:bg-dark-secondary dark:border-dark-text"
+              className="border cursor-pointer border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-Blue focus:shadow-input-focus focus-ring mt-1 dark:bg-dark-secondary dark:border-dark-text"
               checked={enableAiAgent}
               onChange={(e) => toggleEnableAiAgent(e.currentTarget.checked)}
             />
@@ -417,7 +417,7 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
             dir="auto"
             id="breakout-room-ai-context"
             maxLength={2000}
-            className="h-20 rounded-[15px] text-Gray-800 dark:text-white border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-transparent shadow-input w-full px-3 py-2 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus"
+            className="h-20 rounded-[15px] text-Gray-800 dark:text-white border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-transparent shadow-input w-full px-3 py-2 outline-hidden focus:border-Blue focus:shadow-input-focus"
             placeholder={t('breakout-room.global-ai-context-placeholder')}
             onChange={(e) => setGlobalAiContext(e.currentTarget.value)}
             value={globalAiContext}
@@ -434,7 +434,7 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
             id="allow-self-select"
             name="allow-self-select"
             type="checkbox"
-            className="border cursor-pointer border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus focus-ring mt-1 dark:bg-dark-secondary dark:border-dark-text disabled:opacity-50 disabled:cursor-not-allowed"
+            className="border cursor-pointer border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-Blue focus:shadow-input-focus focus-ring mt-1 dark:bg-dark-secondary dark:border-dark-text disabled:opacity-50 disabled:cursor-not-allowed"
             checked={allowSelfSelect}
             disabled={enableAiAgent}
             onChange={(e) => setAllowSelfSelect(e.currentTarget.checked)}
@@ -448,7 +448,7 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
             }`}
           >
             {t('breakout-room.allow-self-select')}
-            <p className="text-xs md:text-sm opacity-70 dark:opacity-80">
+            <p className="text-xs md:text-sm opacity-70 dark:opacity-80 dark:text-white">
               {enableAiAgent
                 ? t('breakout-room.ai-agent-self-select-disabled')
                 : t('breakout-room.allow-self-select-desc')}
@@ -500,7 +500,7 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
 
       <div className="flex justify-end mt-4">
         <button
-          className="primary-button h-9 w-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+          className="primary-button h-9 w-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-Blue2-600 rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
           onClick={handleStartBreakoutRooms}
           disabled={isLoading || (whiteboardPagesSelected && selectedWhiteboardPages.length === 0)}
         >

@@ -17,7 +17,7 @@ const Checkbox = ({ id, label, description, checked, onChange }: ICheckboxProps)
         type="checkbox"
         checked={checked}
         onChange={onChange}
-        className="border cursor-pointer border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus focus-ring mt-1 dark:bg-dark-secondary dark:border-dark-text"
+        className="border cursor-pointer border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-Blue focus:shadow-input-focus focus-ring mt-1 dark:bg-dark-secondary dark:border-dark-text"
       />
     </div>
     <div className="text-base w-full ps-2 sm:ps-4">
@@ -26,7 +26,9 @@ const Checkbox = ({ id, label, description, checked, onChange }: ICheckboxProps)
         className="text-sm 3xl:text-base font-medium text-Gray-950 dark:text-dark-text cursor-pointer"
       >
         {label}
-        <p className="text-xs md:text-sm opacity-70 dark:opacity-80">{description}</p>
+        <p className="text-xs md:text-sm opacity-70 dark:opacity-80 dark:text-white">
+          {description}
+        </p>
       </label>
     </div>
   </div>

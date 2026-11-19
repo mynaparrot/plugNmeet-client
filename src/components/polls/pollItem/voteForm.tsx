@@ -213,7 +213,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
           {canViewPercentage() && (
             <>
               <div
-                className="shape absolute top-0 start-0 h-full bg-[rgba(0,161,242,0.2)]"
+                className="shape absolute top-0 start-0 h-full bg-Blue/20"
                 style={{
                   width: `${o.responsesPercentage}%`,
                   backgroundColor: barColor,
@@ -283,7 +283,7 @@ const PollForm = ({ pollDataWithOption, isRunning }: PollFormProps) => {
                 onChange={(e) => setTextAnswer(e.currentTarget.value)}
                 placeholder={t('polls.text-answer-placeholder')}
                 autoComplete="off"
-                className="rounded-xl border border-Gray-300 dark:border-Gray-600 bg-white dark:bg-dark-secondary shadow-input w-full px-3 py-2 text-sm text-Gray-950 dark:text-white outline-hidden focus:border-[rgba(0,161,242,1)] my-2"
+                className="rounded-xl border border-Gray-300 dark:border-Gray-600 bg-white dark:bg-dark-secondary shadow-input w-full px-3 py-2 text-sm text-Gray-950 dark:text-white outline-hidden focus:border-Blue my-2"
               />
               <div className="text-xs text-Gray-500 dark:text-dark-text text-end">
                 {textAnswer.length}/{MAX_TEXT_ANSWER_LENGTH}

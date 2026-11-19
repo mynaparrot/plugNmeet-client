@@ -85,7 +85,7 @@ const RoomBox = ({
     <div ref={ref} className={roomBoxClasses}>
       {roomId !== 0 ? (
         <input
-          className="text-sm sm:text-base px-2 py-1 border-b-2 border-solid border-black dark:border-Gray-800 w-full bg-transparent text-Gray-950 dark:text-white outline-hidden focus:border-[rgba(0,161,242,1)]"
+          className="text-sm sm:text-base px-2 py-1 border-b-2 border-solid border-black dark:border-Gray-800 w-full bg-transparent text-Gray-950 dark:text-white outline-hidden focus:border-Blue"
           placeholder={name}
           value={customTitles?.[roomId] ?? ''}
           onChange={(e) => {
@@ -108,7 +108,7 @@ const RoomBox = ({
           placeholder={t('breakout-room.room-ai-context-placeholder')}
           value={roomAiContext ?? ''}
           onChange={(e) => onChangeRoomAiContext?.(roomId, e.currentTarget.value)}
-          className="w-full text-[11px] leading-snug px-2 py-1 resize-none bg-transparent text-Gray-950 dark:text-white border-b-2 border-solid border-gray-100 dark:border-Gray-800 outline-hidden focus:border-[rgba(0,161,242,1)]"
+          className="w-full text-[11px] leading-snug px-2 py-1 resize-none bg-transparent text-Gray-950 dark:text-white border-b-2 border-solid border-gray-100 dark:border-Gray-800 outline-hidden focus:border-Blue"
         />
       )}
       {users.map((user) => {

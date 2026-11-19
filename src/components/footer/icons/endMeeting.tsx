@@ -122,7 +122,7 @@ const EndMeetingButton = () => {
           {
             'text-white bg-Red-400 border border-Red-600 hover:bg-Red-600':
               selectedAction === 'end',
-            'primary-button bg-Blue hover:bg-white border border-[#0088CC] text-white hover:text-Gray-950':
+            'primary-button bg-Blue hover:bg-white border border-Blue2-600 text-white hover:text-Gray-950':
               selectedAction === 'leave',
           },
         )}

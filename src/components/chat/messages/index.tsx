@@ -31,9 +31,9 @@ const CHAT_WINDOW_SIZE = 100;
 
 const scrollAndHighlight = (target: HTMLElement) => {
   target.scrollIntoView({ block: 'center', behavior: 'smooth' });
-  target.classList.add('ring-2', 'ring-[#00A1F2]', 'rounded-lg');
+  target.classList.add('ring-2', 'ring-Blue', 'rounded-lg');
   setTimeout(() => {
-    target.classList.remove('ring-2', 'ring-[#00A1F2]', 'rounded-lg');
+    target.classList.remove('ring-2', 'ring-Blue', 'rounded-lg');
   }, 1200);
 };
 
@@ -278,7 +278,7 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
             <button
               type="button"
               onClick={handleLoadEarlier}
-              className="flex items-center gap-1.5 rounded-full bg-[#00A1F2] text-white shadow-lg px-3 py-1.5 text-xs font-medium cursor-pointer hover:bg-[#08C] focus-ring"
+              className="flex items-center gap-1.5 rounded-full bg-Blue text-white shadow-lg px-3 py-1.5 text-xs font-medium cursor-pointer hover:bg-Blue2-600 focus-ring"
             >
               {t('right-panel.load-earlier-messages')}
             </button>
@@ -288,11 +288,11 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
           <Fragment key={message.id}>
             {dividerId === message.id && (
               <li aria-hidden="true" className="flex items-center gap-2 py-1">
-                <span className="flex-1 border-t border-[#00A1F2]/50" />
-                <span className="text-[11px] font-medium text-[#00A1F2]">
+                <span className="flex-1 border-t border-Blue/50" />
+                <span className="text-[11px] font-medium text-Blue">
                   {t('right-panel.new-messages')}
                 </span>
-                <span className="flex-1 border-t border-[#00A1F2]/50" />
+                <span className="flex-1 border-t border-Blue/50" />
               </li>
             )}
             <li id={`chat-msg-${message.id}`} className="message-item py-2 transition-shadow">
@@ -312,11 +312,11 @@ const Messages = ({ messageKey, isRecorder }: IMessagesProps) => {
           aria-label={t('right-panel.scroll-to-bottom').toString()}
           title={t('right-panel.scroll-to-bottom').toString()}
           onClick={forceScrollToBottom}
-          className="absolute bottom-3 start-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-full bg-[#00A1F2] text-white shadow-lg px-3 py-1.5 text-xs font-medium cursor-pointer hover:bg-[#08C] focus-ring"
+          className="absolute bottom-3 start-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-full bg-Blue text-white shadow-lg px-3 py-1.5 text-xs font-medium cursor-pointer hover:bg-Blue2-600 focus-ring"
         >
           <ScrollToBottomIconSVG />
           {unreadCount > 0 && (
-            <span className="min-w-5 h-5 px-1 rounded-full bg-white text-[#00A1F2] text-[11px] font-semibold flex items-center justify-center">
+            <span className="min-w-5 h-5 px-1 rounded-full bg-white text-Blue text-[11px] font-semibold flex items-center justify-center">
               {unreadCount > 99 ? '99+' : unreadCount}
             </span>
           )}

@@ -287,7 +287,7 @@ const ExportPDFModal = ({ excalidrawAPI, onClose, isOpen }: ExportPDFModalProps)
           ) : (
             <>
               <button
-                className="secondary-button h-9 w-full flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 shadow-button-shadow cursor-pointer"
+                className="secondary-button h-9 w-full flex items-center justify-center rounded-xl text-sm font-medium 3xl:font-semibold text-Gray-950 bg-Gray-25 border border-Gray-300 transition-all duration-300 hover:bg-Gray-50 dark:hover:bg-dark-secondary2 shadow-button-shadow dark:bg-dark-secondary dark:text-white dark:shadow-none dark:border-Gray-800 cursor-pointer"
                 onClick={() => onClose()}
               >
                 {t('close')}

@@ -78,7 +78,7 @@ const OptionsView = ({ options, setOptions, isQuiz }: OptionsProps) => {
                       aria-label={t('polls.correct-answer')}
                       checked={elm.isCorrect}
                       onChange={(e) => onCorrectChange(index, e.currentTarget.checked)}
-                      className="border cursor-pointer border-Gray-300 bg-white shadow-input w-4 h-4 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus dark:bg-dark-secondary dark:border-dark-text"
+                      className="border cursor-pointer border-Gray-300 bg-white shadow-input w-4 h-4 outline-hidden focus:border-Blue focus:shadow-input-focus dark:bg-dark-secondary dark:border-dark-text"
                     />
                   </label>
                 )}
@@ -98,7 +98,7 @@ const OptionsView = ({ options, setOptions, isQuiz }: OptionsProps) => {
                 {canRemove && (
                   <button
                     type="button"
-                    className="h-10 md:h-11 w-10 md:w-11 border border-Red-200 bg-Red-50 dark:bg-dark-secondary text-Red-600 shadow-button-shadow dark:shadow-none rounded-[12px] md:rounded-[15px] flex items-center justify-center cursor-pointer"
+                    className="h-10 md:h-11 w-10 md:w-11 border border-Red-200 bg-Red-50 dark:bg-dark-secondary text-Red-600 dark:text-Red-200 shadow-button-shadow dark:shadow-none rounded-[12px] md:rounded-[15px] flex items-center justify-center cursor-pointer"
                     onClick={() => removeOption(elm.id)}
                   >
                     <TrashIconSVG />
@@ -110,7 +110,7 @@ const OptionsView = ({ options, setOptions, isQuiz }: OptionsProps) => {
         </div>
       </div>
       <button
-        className="w-full cursor-pointer h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Gray-50 hover:bg-Gray-100 rounded-[12px] md:rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-button-shadow"
+        className="w-full cursor-pointer h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Gray-50 hover:bg-Gray-100 dark:bg-dark-secondary dark:border dark:border-Gray-800 dark:text-white dark:hover:bg-dark-secondary2 rounded-[12px] md:rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-button-shadow dark:shadow-none"
         type="button"
         onClick={addOption}
       >

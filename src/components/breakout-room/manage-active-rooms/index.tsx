@@ -58,7 +58,7 @@ const ManageActiveRooms = ({ setMessage }: IManageActiveRoomsProps) => {
       {showEndAll && (
         <div className="btn pb-3 pt-4 flex items-end justify-end">
           <button
-            className="primary-button h-9 ms-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+            className="primary-button h-9 ms-auto px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-Blue2-600 rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
             onClick={onEndAllRooms}
             disabled={isLoading}
           >

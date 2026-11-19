@@ -53,7 +53,7 @@ const AudioPlayModal = () => {
         </p>
         <button
           type="button"
-          className="primary-button h-10 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:bg-Gray-200 disabled:border-Gray-300 disabled:text-Gray-400 disabled:cursor-not-allowed"
+          className="primary-button h-10 w-full cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-Blue2-600 rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:bg-Gray-200 disabled:border-Gray-300 disabled:text-Gray-400 disabled:cursor-not-allowed"
           onClick={() => void enableAudio()}
           disabled={isBusy}
         >

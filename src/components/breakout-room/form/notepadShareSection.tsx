@@ -21,7 +21,7 @@ const NotepadShareSection = ({
           id="share-notepad"
           name="share-notepad"
           type="checkbox"
-          className="border cursor-pointer border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus focus-ring mt-1 dark:bg-dark-secondary dark:border-dark-text"
+          className="border cursor-pointer border-Gray-300 bg-white shadow-input w-5 h-5 outline-hidden focus:border-Blue focus:shadow-input-focus focus-ring mt-1 dark:bg-dark-secondary dark:border-dark-text"
           checked={shareNotepad}
           disabled={disabled}
           onChange={(e) => setShareNotepad(e.currentTarget.checked)}
@@ -33,7 +33,7 @@ const NotepadShareSection = ({
           className="text-sm 3xl:text-base font-medium text-Gray-950 dark:text-dark-text cursor-pointer"
         >
           {t('breakout-room.share-notepad-label')}
-          <p className="text-xs md:text-sm opacity-70 dark:opacity-80">
+          <p className="text-xs md:text-sm opacity-70 dark:opacity-80 dark:text-white">
             {disabled
               ? t('breakout-room.share-unavailable-e2ee')
               : t('breakout-room.share-notepad-description')}

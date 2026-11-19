@@ -226,7 +226,7 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
             value={aiPrompt}
             onChange={(e) => setAiPrompt(e.currentTarget.value)}
             placeholder={t('polls.ai-prompt-placeholder')}
-            className="rounded-[15px] border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-transparent shadow-input w-full px-3 py-2 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-sm 3xl:text-base text-Gray-950 dark:text-white"
+            className="rounded-[15px] border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-transparent shadow-input w-full px-3 py-2 outline-hidden focus:border-Blue focus:shadow-input-focus text-sm 3xl:text-base text-Gray-950 dark:text-white"
             autoComplete="off"
           />
           <div className="flex justify-end">
@@ -353,14 +353,14 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
             enabled={isAnonymous}
             onChange={setIsAnonymous}
           />
-          <p className="text-xs md:text-sm opacity-70 dark:opacity-80 mt-1">
+          <p className="text-xs md:text-sm opacity-70 dark:opacity-80 dark:text-white mt-1">
             {t('polls.anonymous-voting-desc')}
           </p>
         </div>
         {!isTextAnswer && (
           <div>
             <SettingsSwitch label={t('polls.quiz-mode')} enabled={isQuiz} onChange={setIsQuiz} />
-            <p className="text-xs md:text-sm opacity-70 dark:opacity-80 mt-1">
+            <p className="text-xs md:text-sm opacity-70 dark:opacity-80 dark:text-white mt-1">
               {t('polls.quiz-mode-desc')}
             </p>
           </div>
@@ -373,7 +373,7 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
             onChange={(v) => setDuration(Number(v))}
             options={durationOptions}
           />
-          <p className="text-xs md:text-sm opacity-70 dark:opacity-80 mt-1">
+          <p className="text-xs md:text-sm opacity-70 dark:opacity-80 dark:text-white mt-1">
             {t('polls.duration-desc')}
           </p>
         </div>
@@ -393,14 +393,14 @@ const FormView = ({ setIsOpen }: FormViewProps) => {
       )}
       <div className="button-section flex items-center gap-2 md:gap-5 pt-4 border-t border-Gray-100 dark:border-Gray-800">
         <button
-          className="secondary-button w-full cursor-pointer h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Gray-25 hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-button-shadow"
+          className="secondary-button w-full cursor-pointer h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Gray-25 hover:bg-Blue dark:hover:bg-Blue hover:text-white border border-Gray-300 rounded-[15px] flex justify-center items-center gap-2 transition-all duration-300 shadow-button-shadow dark:bg-dark-secondary dark:text-white dark:shadow-none dark:border-Gray-800"
           type="button"
           onClick={() => setIsOpen(false)}
         >
           {t('close')}
         </button>
         <button
-          className="primary-button w-full cursor-pointer h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+          className="primary-button w-full cursor-pointer h-10 3xl:h-11 text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-Blue2-600 rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
           type="submit"
           disabled={isLoading}
         >

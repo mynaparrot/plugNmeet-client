@@ -76,7 +76,7 @@ class ErrorBoundary extends Component<IErrorBoundaryProps, IErrorBoundaryState> 
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="primary-button h-10 px-6 cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
+            className="primary-button h-10 px-6 cursor-pointer text-sm 3xl:text-base font-semibold bg-Blue hover:bg-white border border-Blue2-600 rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow"
           >
             {i18n.t('app.reload', { defaultValue: 'Reload' })}
           </button>

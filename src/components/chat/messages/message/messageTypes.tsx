@@ -18,7 +18,7 @@ export const SystemMessage = memo(({ message, sentAt }: { message: string; sentA
     <>
       <div
         aria-hidden="true"
-        className="thumb h-7 3xl:h-9 w-7 3xl:w-9 rounded-lg 3xl:rounded-xl bg-Gray-200 dark:bg-Gray-700 text-[#00A1F2] flex items-center justify-center overflow-hidden shrink-0"
+        className="thumb h-7 3xl:h-9 w-7 3xl:w-9 rounded-lg 3xl:rounded-xl bg-Gray-200 dark:bg-Gray-700 text-Blue flex items-center justify-center overflow-hidden shrink-0"
       >
         <span className="h-4 w-4 3xl:h-5 3xl:w-5">
           <NotifyIconSVG classes="w-full h-full" />
@@ -52,7 +52,7 @@ export const WelcomeMessage = memo(({ message }: { message: string }) => {
     <div className="content w-full welcome">
       <div
         dir="auto"
-        className="message-content markdown-content my-2 rounded-xl border border-[#00A1F2]/40 bg-[#00A1F2]/10 dark:bg-[#00A1F2]/15 px-3.5 py-3 text-sm text-Gray-950 dark:text-white break-words"
+        className="message-content markdown-content my-2 rounded-xl border border-Blue/40 bg-Blue/10 dark:bg-Blue/15 px-3.5 py-3 text-sm text-Gray-950 dark:text-white break-words"
       >
         <div
           dir="auto"
@@ -80,7 +80,7 @@ export const ReplyQuote = memo(
     }
     const inner = (
       <>
-        <p className="text-[11px] font-semibold text-[#00A1F2] truncate">{name}</p>
+        <p className="text-[11px] font-semibold text-Blue truncate">{name}</p>
         <p className="text-xs text-Gray-600 dark:text-dark-text truncate">{text}</p>
       </>
     );
@@ -89,7 +89,7 @@ export const ReplyQuote = memo(
         type="button"
         dir="auto"
         onClick={() => replyToId && onJump?.(replyToId)}
-        className="mb-1.5 block w-full text-start border-s-2 border-[#00A1F2] bg-Gray-50 dark:bg-Gray-800 rounded-e-lg px-2 py-1 cursor-pointer hover:bg-Gray-100 dark:hover:bg-Gray-700 focus-ring"
+        className="mb-1.5 block w-full text-start border-s-2 border-Blue bg-Gray-50 dark:bg-Gray-800 rounded-e-lg px-2 py-1 cursor-pointer hover:bg-Gray-100 dark:hover:bg-Gray-700 focus-ring"
       >
         {inner}
       </button>
@@ -169,9 +169,7 @@ export const MyMessage = memo(
         <div
           dir="auto"
           className={`message-content py-2 px-2.5 border border-Gray-200 dark:border-Gray-700 rounded-lg overflow-hidden rounded-ee-none text-sm text-Gray-950 dark:text-white break-words${
-            markdown
-              ? ' markdown-content bg-[#00A1F2]/10 dark:bg-[#00A1F2]/15 border-[#00A1F2]/40'
-              : ''
+            markdown ? ' markdown-content bg-Blue/10 dark:bg-Blue/15 border-Blue/40' : ''
           }`}
         >
           {!isDeleted && body.meta?.replyToId && (

@@ -13,13 +13,14 @@ section.Toastify {
 }
 
 input.default-input {
-  @apply h-10 3xl:h-11 rounded-[15px] border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-transparent shadow-input w-full px-3 outline-hidden focus:border-[rgba(0,161,242,1)] focus:shadow-input-focus text-sm 3xl:text-base text-Gray-950 dark:text-white;
+  @apply h-10 3xl:h-11 rounded-[15px] border border-Gray-300 dark:border-Gray-800 bg-white dark:bg-transparent shadow-input w-full px-3 outline-hidden focus:border-Blue focus:shadow-input-focus text-sm 3xl:text-base text-Gray-950 dark:text-white;
 }
 
 input.polls-checkbox::before {
-  @apply absolute top-0 start-0 h-full w-full bg-center bg-no-repeat bg-contain opacity-0;
+  @apply absolute top-0 start-0 h-full w-full bg-white opacity-0;
   content: '';
-  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABLSURBVHgBzY3RCQAgCEStCRuhjRqhNmsUU1CIEK6/OjgU7p0SfSFm7uKme76BZVRxQqxfVo0zaP4SwhYOCzuEg9KEcFDC8FYq9FQL/ZxgpQrzp40AAAAASUVORK5CYII=);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6l2.5 2.5L10 3' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    center / contain no-repeat;
 }
 input.polls-checkbox:checked:before {
   @apply opacity-100!;
@@ -130,7 +131,7 @@ body[dir='rtl'] span.tooltip.tooltip-left::before {
   @apply absolute w-[30px] h-[30px] start-2;
 }
 .footer-podcast-button .lds-ripple div {
-  @apply border-2 border-solid border-[rgb(0,77,144)];
+  @apply border-2 border-solid border-primary-color;
   -webkit-animation: lds-ripple2 0.8s cubic-bezier(0, 0.2, 0.8, 1) infinite;
   animation: lds-ripple2 0.8s cubic-bezier(0, 0.2, 0.8, 1) infinite;
 }
@@ -442,7 +443,7 @@ body[dir='rtl'] .rtl\:microphone-rtl-left::before {
     @apply border-s-[3px] border-Gray-300 dark:border-Gray-600 ps-3 my-2 opacity-90;
   }
   & a {
-    @apply text-[#00A1F2] underline break-words;
+    @apply text-Blue underline break-words;
   }
   & code {
     @apply font-mono text-[0.85em] bg-Gray-100 dark:bg-Gray-800 rounded px-1 py-0.5;

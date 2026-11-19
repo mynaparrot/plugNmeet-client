@@ -205,7 +205,7 @@ const BreakoutRoomUsers = ({
                     <>
                       <MenuButton
                         disabled={isMoving}
-                        className="primary-button h-6 px-3 cursor-pointer text-xs font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="primary-button h-6 px-3 cursor-pointer text-xs font-semibold bg-Blue hover:bg-white border border-Blue2-600 rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {t('breakout-room.move')}
                       </MenuButton>
@@ -233,7 +233,7 @@ const BreakoutRoomUsers = ({
                 {variant === 'room' && !user.joined && (
                   <button
                     onClick={() => reInviteUser(user.name, user.id)}
-                    className="primary-button h-6 px-3 cursor-pointer text-xs font-semibold bg-Blue hover:bg-white border border-[#0088CC] rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="primary-button h-6 px-3 cursor-pointer text-xs font-semibold bg-Blue hover:bg-white border border-Blue2-600 rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={isLoading}
                   >
                     {t('breakout-room.invite')}
