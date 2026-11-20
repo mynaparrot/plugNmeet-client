@@ -11,6 +11,8 @@ import {
   updateIsMicMuted,
   updateShowMicrophoneModal,
 } from '../../../store/slices/bottomIconsActivitySlice';
+import { updateCanPlaybackAudio } from '../../../store/slices/sessionSlice';
+import { isAIAgentSessionRoom } from '../../../helpers/aiAgentSession';
 import MicMenu from './mic-menu';
 import MicrophoneModal from '../modals/microphone';
 import {
@@ -205,6 +207,17 @@ const MicrophoneIcon = () => {
         return;
       }
 
+      // Any close gesture of the picker is the user's click: use it to resume the
+      // room audio, so a listen-only join still hears the agent. A rejected
+      // startAudio() only leaves the flag alone, so the "Enable audio" fallback
+      // can still ask for a gesture.
+      if (!store.getState().session.canPlaybackAudio) {
+        currentRoom
+          .startAudio()
+          .then(() => dispatch(updateCanPlaybackAudio(true)))
+          .catch((e) => console.error('Failed to start audio playback:', e));
+      }
+
       const activeTrack = currentRoom.localParticipant.getTrackPublication(Track.Source.Microphone)
         ?.track as LocalAudioTrack | undefined;
 
@@ -305,6 +318,21 @@ const MicrophoneIcon = () => {
     didInitialAutoPublish.current = true;
     if (selectedAudioDevice) {
       sleep(500).then(() => onCloseMicrophoneModal(selectedAudioDevice));
+    } else {
+      // No device picked on a landing page (it is skipped in an AI Agent 1-on-1
+      // room): open the picker instead of publishing nothing, because closing it
+      // is the click that also unlocks audio playback.
+      const { session } = store.getState();
+      const isAutoOpen =
+        isAIAgentSessionRoom(session.currentRoom?.metadata) &&
+        !session.currentUser?.isRecorder &&
+        !isLocked &&
+        !hybrid;
+      if (isAutoOpen) {
+        // Nothing is published here, so there is nothing to wait for; opening the
+        // picker right away hides the "Enable audio" fallback from the first frame.
+        dispatch(updateShowMicrophoneModal(true));
+      }
     }
     //eslint-disable-next-line
   }, []);

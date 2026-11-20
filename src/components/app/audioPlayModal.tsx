@@ -1,9 +1,12 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useAppDispatch, useAppSelector } from '../../store';
 import { updateCanPlaybackAudio } from '../../store/slices/sessionSlice';
 import { getMediaServerConnRoom } from '../../helpers/livekit/utils';
+
+// Grace period before the overlay may paint
+const OVERLAY_RENDER_DELAY_MS = 600;
 
 /**
  * Browsers block audio autoplay until the user interacts with the page, so we
@@ -13,8 +16,20 @@ const AudioPlayModal = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const [isBusy, setIsBusy] = useState(false);
+  const [isRenderGateOpen, setIsRenderGateOpen] = useState(false);
   const canPlaybackAudio = useAppSelector((state) => state.session.canPlaybackAudio);
   const isRecorder = useAppSelector((state) => !!state.session.currentUser?.isRecorder);
+  const showMicrophoneModal = useAppSelector(
+    (state) => state.bottomIconsActivity.showMicrophoneModal,
+  );
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setIsRenderGateOpen(true);
+    }, OVERLAY_RENDER_DELAY_MS);
+
+    return () => window.clearTimeout(timeoutId);
+  }, []);
 
   const enableAudio = useCallback(async () => {
     setIsBusy(true);
@@ -31,7 +46,10 @@ const AudioPlayModal = () => {
   // The recorder always goes through the landing page, so a real user gesture
   // already happened as well as have "autoplay-policy=no-user-gesture-required";
   // a false "blocked" report must never cover the recording.
-  if (canPlaybackAudio || isRecorder) {
+  // The microphone picker already asks for the click that unlocks audio, so the
+  // fallback overlay stays hidden while it is open instead of stacking on it.
+  // The render gate keeps the overlay unrendered during the initial grace period.
+  if (!isRenderGateOpen || canPlaybackAudio || isRecorder || showMicrophoneModal) {
     return null;
   }
 
