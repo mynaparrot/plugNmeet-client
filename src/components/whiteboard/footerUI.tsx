@@ -16,6 +16,7 @@ import { addUserNotification } from '../../store/slices/roomSettingsSlice';
 import { broadcastCurrentPageNumber } from './helpers/handleRequests';
 import sendAPIRequest from '../../helpers/api/plugNmeetAPI';
 import { getWhiteboardController, saveWhiteboardLastPage } from './collab';
+import { isAIAgentSessionRoom } from '../../helpers/aiAgentSession';
 
 interface IFooterUIProps {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
@@ -41,12 +42,14 @@ const FooterUI = ({
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
-  const { currentUser, isAdmin, isRecorder } = useMemo(() => {
-    const currentUser = store.getState().session.currentUser;
+  const { currentUser, isAdmin, isRecorder, roomMetadata } = useMemo(() => {
+    const session = store.getState().session;
+    const currentUser = session.currentUser;
     return {
       currentUser,
       isAdmin: currentUser?.metadata?.isAdmin,
       isRecorder: currentUser?.isRecorder,
+      roomMetadata: session.currentRoom.metadata,
     };
   }, []);
 
@@ -188,7 +191,7 @@ const FooterUI = ({
           isAdmin && !isRecorder ? 'ltr:pl-3 rtl:pr-3 md:pl-12  md:rtl:pr-4' : 'ltr:pl-3 rtl:pr-3'
         } `}
       >
-        {isAdmin && !isRecorder && (
+        {isAdmin && !isRecorder && !isAIAgentSessionRoom(roomMetadata) && (
           <button
             type="button"
             className="presenter focus-ring"
