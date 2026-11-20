@@ -263,7 +263,10 @@
     "require-ssl-des": "Korzystanie z tej usługi wymaga bezpiecznego połączenia (SSL).",
     "insert-secret-key": "Wprowadź klucz zabezpieczeń",
     "insert-secret-help": "W tym zabezpieczonym spotkaniu wszyscy muszą używać tego samego klucza zabezpieczeń. W przypadku niezgodności połączenie nie będzie możliwe. Prawidłowy klucz zabezpieczeń należy uzyskać od organizatora spotkania.",
-    "save": "Zapisz"
+    "save": "Zapisz",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "Liczba uczestników: {{total}}",

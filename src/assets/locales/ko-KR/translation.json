@@ -263,7 +263,10 @@
     "require-ssl-des": "이 서비스를 사용하려면 보안(SSL) 연결이 필요합니다.",
     "insert-secret-key": "보안 키 입력",
     "insert-secret-help": "이 보안 회의에서는 모든 사람이 동일한 보안 키를 사용해야 합니다. 일치하지 않으면 연결할 수 없습니다. 회의 주최자로부터 올바른 보안 키를 받으십시오.",
-    "save": "저장"
+    "save": "저장",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "참가자 ({{total}})",

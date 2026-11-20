@@ -263,7 +263,10 @@
     "require-ssl-des": "Der kræves en sikker (SSL)-forbindelse for at bruge denne tjeneste.",
     "insert-secret-key": "Indtast sikkerhedsnøgle",
     "insert-secret-help": "I dette sikre møde skal alle bruge den samme sikkerhedsnøgle. Hvis den ikke stemmer, kan du ikke oprette forbindelse. Bed mødearrangøren om den korrekte sikkerhedsnøgle.",
-    "save": "Gem"
+    "save": "Gem",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "Deltagere ({{total}})",

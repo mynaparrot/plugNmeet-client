@@ -263,7 +263,10 @@
     "require-ssl-des": "Für die Nutzung dieses Dienstes ist eine sichere Verbindung (SSL) erforderlich.",
     "insert-secret-key": "Sicherheitsschlüssel eingeben",
     "insert-secret-help": "Für dieses sichere Meeting müssen alle Teilnehmer denselben Sicherheitsschlüssel verwenden. Wenn er nicht übereinstimmt, können Sie keine Verbindung herstellen. Bitte fordern Sie den korrekten Sicherheitsschlüssel vom Organisator des Meetings an.",
-    "save": "Speichern"
+    "save": "Speichern",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "Teilnehmer ({{total}})",

@@ -263,7 +263,10 @@
     "require-ssl-des": "このサービスを利用するには、安全な（SSL）接続が必要です。",
     "insert-secret-key": "セキュリティキーを入力",
     "insert-secret-help": "この安全な会議では、全員が同じセキュリティキーを使用する必要があります。一致しない場合、接続できません。会議の主催者から正しいセキュリティキーを入手してください。",
-    "save": "保存"
+    "save": "保存",
+    "error-boundary-title": "Something went wrong",
+    "error-boundary-text": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload"
   },
   "left-panel": {
     "participants": "参加者 ({{total}})",
