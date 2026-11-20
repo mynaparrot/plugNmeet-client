@@ -58,8 +58,15 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
   // Read once at mount: either the deployment disabled the landing page, or we just
   // switched rooms (breakout room / back to the main room) and must not show it again.
   // AI agent session rooms skip it too, so participants land straight in the room.
+  // The recorder/RTMP bot must always get it: recorder waits for #startupJoinModal
+  // and clicks #listenOnlyJoin to join the room.
   const [skipLanding] = useState(() => {
-    const metadata = store.getState().session.currentRoom.metadata;
+    const session = store.getState().session;
+    if (session.currentUser?.isRecorder) {
+      return false;
+    }
+
+    const metadata = session.currentRoom.metadata;
     return (
       getConfigValue<boolean>('disableLandingPage', false, 'DISABLE_LANDING_PAGE') ||
       consumeSkipLandingOnce() ||

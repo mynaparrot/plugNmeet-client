@@ -14,6 +14,7 @@ const AudioPlayModal = () => {
   const { t } = useTranslation();
   const [isBusy, setIsBusy] = useState(false);
   const canPlaybackAudio = useAppSelector((state) => state.session.canPlaybackAudio);
+  const isRecorder = useAppSelector((state) => !!state.session.currentUser?.isRecorder);
 
   const enableAudio = useCallback(async () => {
     setIsBusy(true);
@@ -27,7 +28,10 @@ const AudioPlayModal = () => {
     }
   }, [dispatch]);
 
-  if (canPlaybackAudio) {
+  // The recorder always goes through the landing page, so a real user gesture
+  // already happened as well as have "autoplay-policy=no-user-gesture-required";
+  // a false "blocked" report must never cover the recording.
+  if (canPlaybackAudio || isRecorder) {
     return null;
   }
 
