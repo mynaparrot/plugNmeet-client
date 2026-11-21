@@ -174,6 +174,10 @@ export class WhiteboardController {
   // Depth of `applyExternalElements` calls in flight. While > 0 the write is
   // not a participant edit: no vision notification and no `canWrite()` gate.
   private externalWriteDepth = 0;
+  // Whether the active doc holds programmatic (AI agent) content. Such content
+  // is persisted by the same save/retry/IDB path as presenter content, even
+  // though this client is not the presenter.
+  private hasExternalWrites = false;
   private readonly participantSceneListeners = new Set<() => void>();
 
   /**
@@ -186,6 +190,10 @@ export class WhiteboardController {
 
   private isCurrentUserPresenter = (): boolean =>
     !!store.getState().session.currentUser?.metadata?.isPresenter;
+
+  /** Presenter content and AI agent content are both worth persisting. */
+  private canPersistSessionData = (): boolean =>
+    this.isCurrentUserPresenter() || this.hasExternalWrites;
 
   /**
    * Whether `userId` is an online, approved presenter. Internal participants
@@ -278,8 +286,9 @@ export class WhiteboardController {
 
   /**
    * Whether an external writer may touch the canvas now: the CRDT doc holds the
-   * scope Redux points at, the live Excalidraw instance is wired, and the
-   * mounted canvas has finished painting that exact scope.
+   * scope Redux points at, the live Excalidraw instance is wired, the mounted
+   * canvas has finished painting that exact scope, and the canonical server
+   * snapshot of the page is confirmed (partial hydration is never written on).
    */
   isReadyForExternalWrite = (): boolean => {
     const settled = this.settledScope;
@@ -291,6 +300,7 @@ export class WhiteboardController {
       !!settled &&
       settled.fileId === this.fileId &&
       settled.page === this.page &&
+      !this.unconfirmedCanonicalKeys.has(this.pageKey(this.fileId, this.page)) &&
       this.isActiveScopeSettled()
     );
   };
@@ -386,9 +396,13 @@ export class WhiteboardController {
       api.updateScene({ appState: appStatePatch as never });
     }
 
+    const stamped = this.bumpExternalElementVersions(elements, elementsMap);
+
     this.externalWriteDepth++;
     try {
-      this.mergeElements(elements);
+      this.mergeElements(stamped);
+      // Everything in this doc now deserves the presenter's persistence path.
+      this.hasExternalWrites = true;
     } finally {
       this.externalWriteDepth--;
     }
@@ -396,11 +410,11 @@ export class WhiteboardController {
     if (api) {
       // New ink lands on top, known ids are replaced (undo restores), and none
       // of it may become a step in the human undo history.
-      const incoming = new Map(elements.map((element) => [element.id, element]));
+      const incoming = new Map(stamped.map((element) => [element.id, element]));
       const current = api.getSceneElements();
       const next = current.map((element) => incoming.get(element.id) ?? element);
       const known = new Set(current.map((element) => element.id));
-      for (const element of elements) {
+      for (const element of stamped) {
         if (!known.has(element.id)) {
           next.push(element);
         }
@@ -413,6 +427,33 @@ export class WhiteboardController {
     }
     return true;
   };
+
+  /**
+   * Lift externally produced elements past anything already stored under the
+   * same id (an element or a tombstone). Such a write is intentional - a
+   * programmatic draw, an undo, a replace - so `updateElementIfNewer` must not
+   * reject it, or the canvas would paint what the CRDT never accepted and the
+   * write would vanish on reload.
+   */
+  private bumpExternalElementVersions = (
+    elements: readonly ExcalidrawElement[],
+    elementsMap: Y.Map<string>,
+  ): ExcalidrawElement[] =>
+    elements.map((element) => {
+      const storedRaw = elementsMap.get(element.id);
+      if (!storedRaw) {
+        return element;
+      }
+      try {
+        const stored = JSON.parse(storedRaw) as ExcalidrawElement;
+        if (typeof stored.version === 'number' && (element.version ?? 1) <= stored.version) {
+          return { ...element, version: stored.version + 1, updated: Date.now() };
+        }
+      } catch {
+        // Malformed stored value: `mergeElements` overwrites it.
+      }
+      return element;
+    });
 
   /**
    * Pointer of a collaborator that is not a participant (the agent's laser).
@@ -567,7 +608,9 @@ export class WhiteboardController {
   /** Persist a programmatic write, which may come from a non-presenter client. */
   private saveAsExternalWriter = async () => {
     try {
-      await this._saveRemoteNow({ asExternalWriter: true });
+      // Same retry/backoff as presenter saves, plus the local IDB export cache.
+      await this.saveWithRetry();
+      await this.flushLocalSnapshot();
     } catch (e) {
       console.error('[WhiteboardController] failed to save external write', e);
     }
@@ -753,11 +796,11 @@ export class WhiteboardController {
     // when idle this no-ops via empty-diff. Unconfirmed content is stashed and
     // retried in the background.
     const confirmed = await this._saveRemoteNow({ forceCheckpoint: hadPendingSave });
-    if (!confirmed && this.doc && this.isCurrentUserPresenter()) {
+    if (!confirmed && this.doc && this.canPersistSessionData()) {
       this.stashPendingUpload(this.doc);
     }
-    // Track the last-seen live state in the local export cache (presenter-only;
-    // flushLocalSnapshot is a no-op for other roles).
+    // Track the last-seen live state in the local export cache (a no-op when
+    // this client holds neither presenter nor agent content).
     await this.flushLocalSnapshot();
 
     if (this.initialRequestRetryTimer) {
@@ -789,6 +832,8 @@ export class WhiteboardController {
     this.page = 0;
     this.settledScope = null;
     this.pendingAnnotations = 0;
+    // A new page starts clean: only a fresh external write marks it again.
+    this.hasExternalWrites = false;
   };
 
   /** Run `task` once every previously queued save has settled. */
@@ -807,9 +852,7 @@ export class WhiteboardController {
    * save" (empty diff, empty map, no longer presenter, page already switched).
    * `false` means the content is still local-only.
    */
-  private _saveRemoteNow = (
-    options: { forceCheckpoint?: boolean; asExternalWriter?: boolean } = {},
-  ): Promise<boolean> => {
+  private _saveRemoteNow = (options: { forceCheckpoint?: boolean } = {}): Promise<boolean> => {
     this.clearSaveTimers();
     this.flushAnnotations();
 
@@ -818,9 +861,8 @@ export class WhiteboardController {
     if (!this.config || !doc || !elementsMap || !this.fileId) {
       return Promise.resolve(true);
     }
-    // Presenter-only normally; a programmatic write is persisted even from a
-    // non-presenter (the caller is authorized for it).
-    if ((!this.isCurrentUserPresenter() && !options.asExternalWriter) || elementsMap.size === 0) {
+    // Presenter content, and agent content written into this doc, is persisted.
+    if (!this.canPersistSessionData() || elementsMap.size === 0) {
       return Promise.resolve(true);
     }
 
@@ -898,7 +940,7 @@ export class WhiteboardController {
   };
 
   private scheduleSaveRetry = () => {
-    if (this.saveRetryTimer || !this.doc || !this.isCurrentUserPresenter()) return;
+    if (this.saveRetryTimer || !this.doc || !this.canPersistSessionData()) return;
     const delay = backoffDelay(SAVE_RETRY_BASE_MS, SAVE_RETRY_MAX_MS, this.saveRetryAttempt);
     this.saveRetryTimer = setTimeout(() => {
       this.saveRetryTimer = null;
@@ -914,7 +956,7 @@ export class WhiteboardController {
    */
   flushBeforeSwitch = async (): Promise<boolean> => {
     const doc = this.doc;
-    if (!doc || !this.isCurrentUserPresenter()) {
+    if (!doc || !this.canPersistSessionData()) {
       return true; // nothing this user is allowed to persist
     }
     this.resetSaveRetry();
@@ -951,7 +993,7 @@ export class WhiteboardController {
   };
 
   private schedulePendingUploadRetry = (key: string, attempt = 0) => {
-    if (!this.isCurrentUserPresenter()) {
+    if (!this.canPersistSessionData()) {
       // Not authoritative any more: never overwrite the new presenter's state.
       this.pendingPageUploads.delete(key);
       return;
@@ -974,7 +1016,7 @@ export class WhiteboardController {
     if (!pending) {
       return;
     }
-    if (!this.isCurrentUserPresenter()) {
+    if (!this.canPersistSessionData()) {
       this.pendingPageUploads.delete(key);
       return;
     }
@@ -1000,7 +1042,7 @@ export class WhiteboardController {
    * to the local IDB export cache.
    */
   flushLocalSnapshot = async () => {
-    if (!this.isCurrentUserPresenter() || !this.doc || !this.fileId) return;
+    if (!this.canPersistSessionData() || !this.doc || !this.fileId) return;
     await saveWhiteboardPageSnapshot(this.fileId, this.page, Y.encodeStateAsUpdate(this.doc));
   };
 

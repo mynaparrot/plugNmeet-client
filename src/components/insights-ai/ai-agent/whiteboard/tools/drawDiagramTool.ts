@@ -262,6 +262,79 @@ const formatSkeletons = (skeletons: readonly unknown[]): unknown[] =>
     };
   });
 
+const asRecord = (value: unknown): Record<string, unknown> | null =>
+  value && typeof value === 'object' ? (value as Record<string, unknown>) : null;
+
+/**
+ * `@excalidraw/mermaid-to-excalidraw` names elements after the Mermaid markup
+ * itself: a node `A` keeps the id `A` and an arrow from `A` to `B` the id
+ * `A_B`. Two diagrams therefore reuse the same ids, so the CRDT drops the
+ * second diagram (an element with that id already exists, often as a
+ * tombstone) and one of two arrows between the same pair of nodes is lost.
+ * Every id, binding and group is namespaced per call instead.
+ */
+const namespaceMermaidSkeletons = (skeletons: readonly unknown[]): unknown[] => {
+  const prefix = `${agentElementId()}_`;
+  const idMap = new Map<string, string>();
+  const usedIds = new Set<string>();
+  const newIds: (string | undefined)[] = [];
+
+  skeletons.forEach((skeleton, index) => {
+    const oldId = asRecord(skeleton)?.id;
+    if (typeof oldId !== 'string') {
+      return;
+    }
+    // A repeated id (a second `A_B` edge) gets a distinct one, so the converter
+    // cannot drop it.
+    const newId = usedIds.has(oldId) ? `${prefix}${oldId}_${usedIds.size}` : `${prefix}${oldId}`;
+    usedIds.add(oldId);
+    if (!idMap.has(oldId)) {
+      idMap.set(oldId, newId);
+    }
+    newIds[index] = newId;
+  });
+
+  const mapId = (value: unknown): string | undefined =>
+    typeof value === 'string' ? (idMap.get(value) ?? `${prefix}${value}`) : undefined;
+
+  /** `{ id }` bindings (`start`, `end`) follow the renamed node. */
+  const remapBinding = (value: unknown): Record<string, unknown> | undefined => {
+    const binding = asRecord(value);
+    const id = mapId(binding?.id);
+    return binding && id ? { ...binding, id } : undefined;
+  };
+
+  return skeletons.map((skeleton, index) => {
+    const record = asRecord(skeleton);
+    if (!record) {
+      return skeleton;
+    }
+    const containerId = mapId(record.containerId);
+    const start = remapBinding(record.start);
+    const end = remapBinding(record.end);
+    // Groups of two diagrams must never merge into one group.
+    const groupIds = Array.isArray(record.groupIds)
+      ? record.groupIds.map((group) => `${prefix}${String(group)}`)
+      : undefined;
+    const boundElements = Array.isArray(record.boundElements)
+      ? record.boundElements.map((bound) => {
+          const id = mapId(asRecord(bound)?.id);
+          return id ? { ...(bound as object), id } : bound;
+        })
+      : undefined;
+
+    return {
+      ...record,
+      id: newIds[index] ?? agentElementId(),
+      ...(containerId !== undefined ? { containerId } : {}),
+      ...(start ? { start } : {}),
+      ...(end ? { end } : {}),
+      ...(groupIds ? { groupIds } : {}),
+      ...(boundElements ? { boundElements } : {}),
+    };
+  });
+};
+
 type NativeDiagram = { elements: ExcalidrawElement[]; files: BinaryFileData[] } | { error: string };
 
 /**
@@ -287,7 +360,7 @@ const parseWithMermaidLibrary = async (mermaid: string): Promise<NativeDiagram> 
     );
 
     const elements = attachImageFiles(
-      await toExcalidrawElements(formatSkeletons(skeletons), TOOL_NAME),
+      await toExcalidrawElements(namespaceMermaidSkeletons(formatSkeletons(skeletons)), TOOL_NAME),
       files,
     );
     return elements.length > 0

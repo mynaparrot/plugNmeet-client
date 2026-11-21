@@ -467,11 +467,6 @@ export const fitInsideAnchor = (size: Size, anchor: BBox, padding = INSIDE_PADDI
   };
 };
 
-export const centeredInFrame = (frame: BBox, size: Size): { x: number; y: number } => ({
-  x: round(frame.x + (frame.width - size.width) / 2),
-  y: round(frame.y + (frame.height - size.height) / 2),
-});
-
 export const LAYOUT_MODES = [
   'free_space',
   'inside_element',
@@ -567,7 +562,9 @@ export const resolvePlacement = (
     return clampToA4Bounds(avoidCollisions(freeBoxes, start, size), size, frame);
   }
   if (layout === 'page_center') {
-    return clampToA4Bounds(avoidCollisions(boxes, centeredInFrame(frame, size), size), size, frame);
+    // The page centre is where a reader starts: horizontally centred, but at the
+    // top of the A4 page, never in its vertical middle.
+    return clampToA4Bounds(centeredFreeSlot(boxes, frame, size), size, frame);
   }
 
   // Free space fills the page the participant is looking at, horizontally first:
@@ -624,6 +621,12 @@ export const resolveExplicitOrFreePlacement = (
 
   const x = Number(rawX);
   const y = Number(rawY);
+  // The A4 page sits far below the scene origin, so a guess of `y >= 0` on an
+  // empty board means the model assumed a page-relative origin: neither
+  // coordinate is usable and the block belongs at the top of the page.
+  if (boxes.length === 0 && Number.isFinite(y) && y >= 0 && minFrameY(frame) < 0) {
+    return resolvePlacement(boxes, frame, size, layout, anchor ?? undefined, options);
+  }
   if (Number.isFinite(x) && Number.isFinite(y) && inFrameNeighbourhood(frame, x, y)) {
     const topLeft = { x: round(x), y: round(y) };
     if (boxes.some((box) => isInsideContainer(box, size, topLeft))) {

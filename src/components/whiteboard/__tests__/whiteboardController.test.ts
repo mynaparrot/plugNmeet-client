@@ -57,7 +57,11 @@ vi.mock('../../../helpers/utils', () => ({
   base64ToUint8: (value: string) => new Uint8Array(Buffer.from(value, 'base64')),
   isUserRecorder: (userId: string) => userId.startsWith('recorder'),
   isInternalParticipant: (userId?: string) =>
-    !!userId && (userId.startsWith('recorder') || userId.startsWith('pnm_agent_')),
+    !!userId &&
+    (userId.startsWith('recorder') ||
+      userId.startsWith('pnm_agent-') ||
+      userId.startsWith('pnm_tts_agent-') ||
+      userId.startsWith('pnm_agent_')),
 }));
 
 vi.mock('../../../helpers/libs/idb', () => ({
@@ -82,10 +86,14 @@ import {
   SYNC_TARGET_TIMEOUT_MS,
   SequentialSyncRequest,
 } from '../../../helpers/collab-sync/sequentialSyncRequest';
-import { loadWhiteboardPageSnapshot } from '../collab/whiteboardPersistence';
+import {
+  loadWhiteboardPageSnapshot,
+  saveWhiteboardPageSnapshot,
+} from '../collab/whiteboardPersistence';
 import {
   SAVE_ACK_TIMEOUT_MS,
   SAVE_MAX_WAIT_MS,
+  SAVE_RETRY_BASE_MS,
   SessionDataSyncState,
   decompress,
 } from '../../../helpers/collab-sync/sessionDataSync';
@@ -142,6 +150,8 @@ const makeController = () => {
         zenModeEnabled: false,
         gridSize: null,
       }),
+      getSceneElements: () => [],
+      updateScene: vi.fn(),
     } as never,
     roomSid: 'room-sid',
     onRemoteUpdate: () => undefined,
@@ -880,6 +890,112 @@ describe('external write readiness', () => {
 
     controller.setCanvasSettled({ fileId: 'file2', page: 1 });
     expect(controller.isReadyForExternalWrite()).toBe(false);
+  });
+});
+
+describe('agent-only room (no human presenter)', () => {
+  /** The only presenter is an internal participant, so nobody answers a sync. */
+  const agentOnly = () =>
+    setup([{ userId: 'me' }, { userId: 'pnm_agent-ai_agent-1', isPresenter: true }]);
+
+  const inkUpdate = () => {
+    const doc = new Y.Doc();
+    doc.getMap<string>('elements').set('agent-ink', JSON.stringify(el('agent-ink')));
+    return Y.encodeStateAsUpdate(doc);
+  };
+
+  it('hydrates the page from the server because no presenter can answer a sync', async () => {
+    const controller = agentOnly();
+
+    const syncing = controller.sync('file1', 1, { hydrate: true });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(JSON.parse(conn.sendMessageToSystemWorker.mock.calls[0][0].msg).key).toBe('file1_1');
+
+    controller.handleSessionDataResponse(header('file1_1'), inkUpdate());
+    await vi.advanceTimersByTimeAsync(0);
+    await vi.advanceTimersByTimeAsync(SAVE_ACK_TIMEOUT_MS); // the diff fetch times out
+    await syncing;
+
+    // The server snapshot is in the doc, so a reload paints what was written.
+    expect(controller.getElements().map((element) => element.id)).toEqual(['agent-ink']);
+  });
+
+  it('keeps an external write unready while the canonical snapshot is unconfirmed', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const controller = agentOnly();
+
+    const syncing = controller.sync('file1', 1, { hydrate: true });
+    await vi.advanceTimersByTimeAsync(SAVE_ACK_TIMEOUT_MS);
+    await vi.advanceTimersByTimeAsync(SAVE_ACK_TIMEOUT_MS);
+    await vi.advanceTimersByTimeAsync(SAVE_ACK_TIMEOUT_MS);
+    await syncing;
+    expect(warn).toHaveBeenCalled();
+
+    // Settled canvas, but the doc is only partially hydrated: never write on it.
+    controller.setCanvasSettled({ fileId: 'file1', page: 1 });
+    expect(controller.isReadyForExternalWrite()).toBe(false);
+
+    controller.handleSessionDataResponse(header('file1_1'), inkUpdate());
+    await vi.advanceTimersByTimeAsync(0);
+    expect(controller.isReadyForExternalWrite()).toBe(true);
+  });
+
+  it('saves agent content written by a non-presenter and mirrors it into IDB', async () => {
+    const controller = agentOnly();
+    await controller.sync('file1', 1, { hydrate: false });
+    controller.setCanvasSettled({ fileId: 'file1', page: 1 });
+    expect(controller.isReadyForExternalWrite()).toBe(true);
+
+    expect(controller.applyExternalElements([el('a1')])).toBe(true);
+    await vi.advanceTimersByTimeAsync(0);
+
+    // The write reaches SESSION_DATA even though this client is no presenter.
+    expect(saveHeaders()[0].key).toBe('file1_1');
+    expect(docFrom(0).has('a1')).toBe(true);
+
+    // The ack is lost: the export cache still gets the state and the same
+    // backoff retry a presenter save would get is armed.
+    await vi.advanceTimersByTimeAsync(SAVE_ACK_TIMEOUT_MS);
+    expect(saveWhiteboardPageSnapshot).toHaveBeenCalledWith('file1', 1, expect.any(Uint8Array));
+
+    conn.sendMessageToCoreWorker.mockClear();
+    await vi.advanceTimersByTimeAsync(SAVE_RETRY_BASE_MS + SAVE_ACK_TIMEOUT_MS);
+    expect(saveHeaders().map((call) => call.key)).toContain('file1_1');
+  });
+});
+
+describe('external write version bump', () => {
+  const element = (id: string, version: number, isDeleted = false) =>
+    ({ id, version, versionNonce: 1, isDeleted }) as never;
+
+  it('lifts an applied element past a newer element or tombstone in the map', async () => {
+    const controller = setup([{ userId: 'me' }]);
+    await controller.sync('file1', 1, { hydrate: false });
+    controller.setCanvasSettled({ fileId: 'file1', page: 1 });
+
+    // An element and a tombstone already sit in the map with a higher version:
+    // without the bump the write is silently rejected, painted on the canvas
+    // anyway, and gone after a reload.
+    const doc = (controller as unknown as { doc: Y.Doc }).doc;
+    const map = doc.getMap<string>('elements');
+    map.set('kept', JSON.stringify(element('kept', 9)));
+    map.set('tomb', JSON.stringify(element('tomb', 7, true)));
+
+    expect(controller.applyExternalElements([element('kept', 1), element('tomb', 2)])).toBe(true);
+
+    const stored = controller.getElements();
+    expect(stored.find((entry) => entry.id === 'kept')?.version).toBe(10);
+    expect(stored.find((entry) => entry.id === 'tomb')).toMatchObject({
+      isDeleted: false,
+      version: 8,
+    });
+
+    // The persisted page carries them as well, so every peer paints them.
+    await vi.advanceTimersByTimeAsync(0);
+    expect(saveHeaders()[0].key).toBe('file1_1');
+    const persisted = docFrom(0);
+    expect(JSON.parse(persisted.get('kept')!).version).toBe(10);
+    expect(JSON.parse(persisted.get('tomb')!)).toMatchObject({ isDeleted: false, version: 8 });
   });
 });
 

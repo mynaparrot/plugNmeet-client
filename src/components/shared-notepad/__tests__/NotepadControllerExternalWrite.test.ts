@@ -45,7 +45,11 @@ vi.mock('../../../helpers/utils', () => ({
   isUserRecorder: (userId: string) => userId === 'RECORDER_BOT' || userId === 'RTMP_BOT',
   isInternalParticipant: (userId?: string) =>
     !!userId &&
-    (userId === 'RECORDER_BOT' || userId === 'RTMP_BOT' || userId.startsWith('pnm_agent_')),
+    (userId === 'RECORDER_BOT' ||
+      userId === 'RTMP_BOT' ||
+      userId.startsWith('pnm_agent-') ||
+      userId.startsWith('pnm_tts_agent-') ||
+      userId.startsWith('pnm_agent_')),
 }));
 
 import { NotepadController, NOTEPAD_SNAPSHOT_KEY } from '../NotepadController';

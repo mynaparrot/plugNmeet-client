@@ -295,6 +295,11 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     [excalidrawAPI, controller, addBoundaryToElements, showA4Boundary],
   );
 
+  // Read by the controller on every write: a permission change must never
+  // re-configure (and so tear down) the session.
+  const canEditRef = useRef(canEdit);
+  canEditRef.current = canEdit;
+
   // Wire the yjs controller to this room's NATS transport and role.
   useEffect(() => {
     if (!excalidrawAPI) {
@@ -316,7 +321,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         }
         applySceneToExcalidraw({ init: false });
       },
-      canWrite: () => canEdit,
+      canWrite: () => canEditRef.current,
     });
     setWhiteboardExcalidrawAPI(excalidrawAPI);
 
@@ -327,7 +332,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       controller.setCanvasSettled(null);
       controller.configure(null);
     };
-  }, [excalidrawAPI, controller, roomSid, canEdit, applySceneToExcalidraw, isControllerAtTarget]);
+  }, [excalidrawAPI, controller, roomSid, applySceneToExcalidraw, isControllerAtTarget]);
 
   // Resync the active CRDT doc after reconnects and when the tab becomes
   // visible again (state-vector handshake with the room).
@@ -348,13 +353,16 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
   }, []);
 
   // Presenter only: backfill missing page snapshots and register the room's
-  // office files (authoritative page counts for a promoted presenter).
+  // office files. Without a human presenter (an agent-only room) this client has
+  // to register the files itself, so page counts are available to everyone.
   useEffect(() => {
     if (isPresenter) {
       void getWhiteboardController().backfillMissingPages();
+    }
+    if (isPresenter || isAiWorkspaceControlled || !controller.hasPresenterOnline()) {
       void registerRoomWhiteboardFiles(roomId);
     }
-  }, [isPresenter, roomId]);
+  }, [isPresenter, isAiWorkspaceControlled, controller, roomId]);
 
   const resetWhiteboardState = useCallback((excalidrawAPI: ExcalidrawImperativeAPI) => {
     excalidrawAPI.updateScene({
@@ -492,7 +500,12 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
           controller.setCanvasSettled(null);
           resetWhiteboardState(excalidrawAPI);
         },
-        sync: (next) => controller.sync(next.fileId, next.page, { hydrate: !!isPresenter }),
+        // Without an online presenter nobody would answer a peer sync, so the
+        // server snapshot is the only way to hydrate the new page.
+        sync: (next) =>
+          controller.sync(next.fileId, next.page, {
+            hydrate: !!isPresenter || !controller.hasPresenterOnline(),
+          }),
         paint: () => applySceneToExcalidraw({ init: true }),
         // Office pages are presenter-only and idempotent: existing CRDT content needs no insert.
         loadOfficePage: (next, stillCurrent) =>
@@ -613,7 +626,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       applySceneToExcalidraw({ init: true });
       const elements = excalidrawAPI.getSceneElements();
       const pageInfo = resolvePageInfoFromElements(elements);
-      if (isPresenter) {
+      // The guide is local chrome: hydrated elements need it just as much as a
+      // fresh presenter scene, or an AI-agent session draws off the A4 frame.
+      if (showA4Boundary) {
         excalidrawAPI.updateScene({
           elements: addBoundaryToElements(elements, pageInfo),
           captureUpdate: CaptureUpdateAction.NEVER,
@@ -632,6 +647,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
     [
       excalidrawAPI,
       isPresenter,
+      showA4Boundary,
       controller,
       navigation,
       addBoundaryToElements,

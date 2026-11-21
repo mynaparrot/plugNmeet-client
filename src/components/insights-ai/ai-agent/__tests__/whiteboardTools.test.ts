@@ -218,6 +218,7 @@ import {
   wrapTextToWidth,
 } from '../whiteboard/agentElements';
 import type { AgentHistoryEntry } from '../whiteboard/agentHistory';
+import { OPEN_SETTLE_MS } from '../whiteboard/boardSession';
 import {
   agentHistorySize,
   clearAgentHistory,
@@ -1299,17 +1300,42 @@ describe('reconcileConvertedBlocks', () => {
 
 describe('ensureBoardOpen', () => {
   it('opens the whiteboard and hides the shared notepad before drawing', async () => {
+    vi.useFakeTimers();
     roomState.current = {
       ...buildRoomState(),
       bottomIconsActivity: { isActiveWhiteboard: false, isActiveSharedNotePad: true },
     };
 
-    const result = await executeWhiteboardWriteContentTool({ blocks: [{ text: 'hello' }] });
+    const pending = executeWhiteboardWriteContentTool({ blocks: [{ text: 'hello' }] });
+    await vi.advanceTimersByTimeAsync(OPEN_SETTLE_MS + 100);
+    const result = await pending;
 
     expect(result.ok).toBe(true);
     expect(dispatch).toHaveBeenCalledTimes(2);
     expect(dispatch.mock.calls[0][0]).toEqual(updateIsActiveSharedNotePad(false));
     expect(dispatch.mock.calls[1][0]).toEqual(updateIsActiveWhiteboard(true));
+    vi.useRealTimers();
+  });
+
+  it('lets a freshly opened board settle for two seconds before drawing', async () => {
+    vi.useFakeTimers();
+    roomState.current = {
+      ...buildRoomState(),
+      bottomIconsActivity: { isActiveWhiteboard: false, isActiveSharedNotePad: false },
+    };
+
+    const pending = executeWhiteboardWriteContentTool({ blocks: [{ text: 'hello' }] });
+
+    // The canvas is already ready, but the board is still settling.
+    await vi.advanceTimersByTimeAsync(OPEN_SETTLE_MS - 200);
+    expect(board.controller.applyExternalElements).not.toHaveBeenCalled();
+
+    await vi.advanceTimersByTimeAsync(300);
+    const result = await pending;
+
+    expect(result.ok).toBe(true);
+    expect(board.controller.applyExternalElements).toHaveBeenCalledTimes(1);
+    vi.useRealTimers();
   });
 
   it('does not touch surface state when the board is already open', async () => {
@@ -1352,7 +1378,8 @@ describe('ensureBoardOpen', () => {
       board.api = api;
       board.controller.getSnapshot.mockReturnValue({ fileId: 'default', page: 1 });
     }, 120);
-    await vi.advanceTimersByTimeAsync(400);
+    // The canvas appears after 120ms; the settle window still has to run out.
+    await vi.advanceTimersByTimeAsync(OPEN_SETTLE_MS + 100);
     const result = await pending;
 
     expect(result.ok).toBe(true);
@@ -1383,7 +1410,7 @@ describe('ensureBoardOpen', () => {
     await vi.advanceTimersByTimeAsync(300);
     expect(board.controller.applyExternalElements).not.toHaveBeenCalled();
 
-    await vi.advanceTimersByTimeAsync(400);
+    await vi.advanceTimersByTimeAsync(OPEN_SETTLE_MS);
     const result = await pending;
 
     expect(result.ok).toBe(true);
@@ -1472,12 +1499,38 @@ describe('layoutEngine placement', () => {
     });
   });
 
-  it('never centres a second block on top of the first', () => {
+  it('starts a page_center block at the top of the page, never its vertical middle', () => {
     const first = resolvePlacement([], frame, size, 'page_center');
     const second = resolvePlacement([{ ...first, ...size }], frame, size, 'page_center');
 
-    expect(first).toEqual({ x: 500, y: 350 });
-    expect(second.y).toBeGreaterThanOrEqual(first.y + size.height + BLOCK_GAP);
+    // Horizontally centred on the page, but at the top of it.
+    expect(first).toEqual({ x: 500, y: frame.y + FRAME_PADDING });
+    // The next one uses the free space beside it before stacking below.
+    expect(second).toEqual({ x: 500 + size.width + BLOCK_GAP, y: frame.y + FRAME_PADDING });
+  });
+
+  it('puts the first drawing at the top of the A4 page even when the model says page_center', () => {
+    const a4 = getBoardFrame([]);
+    const placed = resolvePlacement([], a4, size, 'page_center');
+
+    expect(placed.y).toBe(a4.y + FRAME_PADDING);
+    expect(placed.x + size.width / 2).toBe(a4.x + a4.width / 2);
+  });
+
+  it('ignores a page-relative guess on an empty board and starts at the top', () => {
+    const a4 = getBoardFrame([]);
+    // The model assumed (0, 0) is the top-left of the page: 100px down is
+    // nowhere near the top of the A4 page, so the whole guess is unusable.
+    const placed = resolveExplicitOrFreePlacement([], a4, size, 100, 100);
+
+    expect(placed).toEqual({ x: a4.x + FRAME_PADDING, y: a4.y + FRAME_PADDING });
+  });
+
+  it('keeps an explicit coordinate that matches the real scene', () => {
+    const a4 = getBoardFrame([]);
+    const placed = resolveExplicitOrFreePlacement([], a4, size, a4.x + 200, a4.y + 300);
+
+    expect(placed).toEqual({ x: a4.x + 200, y: a4.y + 300 });
   });
 
   it('stacks repeated below_element placements instead of overlapping', () => {
@@ -2411,10 +2464,14 @@ describe('whiteboard_draw_diagram', () => {
 
     expect(result.ok).toBe(true);
     const written = lastWritten();
-    // Both boxes survive with their internal ids, the arrow keeps its bindings.
-    expect(written.map((el) => el.id)).toEqual(expect.arrayContaining(['mermaid-a', 'mermaid-b']));
+    // Both boxes survive with their namespaced ids, the arrow keeps its bindings.
+    const ids = written.map((el) => el.id as string);
+    const boxA = ids.find((id) => id.startsWith('ai_') && id.endsWith('_mermaid-a'));
+    const boxB = ids.find((id) => id.startsWith('ai_') && id.endsWith('_mermaid-b'));
+    expect(boxA).toBeTruthy();
+    expect(boxB).toBeTruthy();
     const arrow = written.find((el) => el.type === 'arrow');
-    expect(arrow).toMatchObject({ start: { id: 'mermaid-a' }, end: { id: 'mermaid-b' } });
+    expect(arrow).toMatchObject({ start: { id: boxA }, end: { id: boxB } });
     // Diagrams registered files reach the Excalidraw API.
     expect((board.api as { addFiles: ReturnType<typeof vi.fn> }).addFiles).toHaveBeenCalledTimes(1);
     // And the whole thing moved into the A4 frame, not left at 2000/-600:
@@ -2592,11 +2649,133 @@ describe('whiteboard_draw_diagram', () => {
 
     await executeWhiteboardDrawDiagramTool({ mermaid: 'flowchart LR\n  A', scale: 0.5 });
 
-    const caption = lastWritten().find((el) => el.id === 'native-caption')!;
+    const caption = lastWritten().find((el) => String(el.id).endsWith('_native-caption'))!;
     // Half the scale: the text shrinks with the box that holds it.
     expect(caption.fontSize).toBe(10);
     expect(caption.width).toBe(100);
     expect(caption.height).toBe(20);
+  });
+
+  it('namespaces the Mermaid ids of every diagram so the second one never collides', async () => {
+    // What `parseMermaidToExcalidraw` really returns: raw markup names as ids.
+    const flow = () => ({
+      elements: [
+        {
+          id: 'A',
+          type: 'rectangle',
+          x: 0,
+          y: 0,
+          width: 100,
+          height: 60,
+          label: { text: 'Start' },
+        },
+        {
+          id: 'A_B',
+          type: 'arrow',
+          x: 100,
+          y: 30,
+          width: 80,
+          height: 0,
+          points: [
+            [0, 0],
+            [80, 0],
+          ],
+          start: { id: 'A' },
+          end: { id: 'B' },
+        },
+        {
+          id: 'B',
+          type: 'rectangle',
+          x: 180,
+          y: 0,
+          width: 100,
+          height: 60,
+          label: { text: 'End' },
+        },
+      ],
+    });
+    hoisted.parseMermaid.mockResolvedValueOnce(flow()).mockResolvedValueOnce(flow());
+
+    await executeWhiteboardDrawDiagramTool({ mermaid: 'flowchart LR\n  A --> B' });
+    const first = lastWritten();
+    board.scene = writtenElements();
+    await executeWhiteboardDrawDiagramTool({ mermaid: 'flowchart LR\n  A --> B' });
+    const second = lastWritten();
+
+    const nodeId = (written: FakeElement[], text: string) =>
+      written.find(
+        (el) =>
+          el.type === 'rectangle' && (el.label as { text?: string } | undefined)?.text === text,
+      )?.id;
+    const firstIds = [nodeId(first, 'Start'), nodeId(first, 'End')];
+    const secondIds = [nodeId(second, 'Start'), nodeId(second, 'End')];
+
+    // A reused `A`/`B` would be a tombstoned element in the CRDT, so the whole
+    // second diagram would be dropped after a reload.
+    expect(firstIds.every((id) => String(id).startsWith('ai_'))).toBe(true);
+    expect(secondIds.every((id) => String(id).startsWith('ai_'))).toBe(true);
+    for (const id of secondIds) {
+      expect(firstIds).not.toContain(id);
+    }
+
+    // The arrow of each diagram keeps pointing at the nodes of its own diagram.
+    const arrow = (written: FakeElement[]) => written.find((el) => el.type === 'arrow');
+    expect(arrow(second)).toMatchObject({ start: { id: secondIds[0] }, end: { id: secondIds[1] } });
+    expect(arrow(first)).toMatchObject({ start: { id: firstIds[0] }, end: { id: firstIds[1] } });
+  });
+
+  it('keeps both arrows when two edges connect the same pair of nodes', async () => {
+    const edge = {
+      id: 'A_B',
+      type: 'arrow',
+      x: 100,
+      y: 30,
+      width: 80,
+      height: 0,
+      points: [
+        [0, 0],
+        [80, 0],
+      ],
+      start: { id: 'A' },
+      end: { id: 'B' },
+    };
+    hoisted.parseMermaid.mockResolvedValueOnce({
+      elements: [
+        {
+          id: 'A',
+          type: 'rectangle',
+          x: 0,
+          y: 0,
+          width: 100,
+          height: 60,
+          label: { text: 'Start' },
+        },
+        {
+          id: 'B',
+          type: 'rectangle',
+          x: 180,
+          y: 0,
+          width: 100,
+          height: 60,
+          label: { text: 'End' },
+        },
+        edge,
+        { ...edge },
+      ],
+    });
+
+    await executeWhiteboardDrawDiagramTool({ mermaid: 'flowchart LR\n  A --> B\n  A --> B' });
+
+    const written = lastWritten();
+    const arrows = written.filter((el) => el.type === 'arrow');
+    // Both edges arrive with the id `A_B`: they must not collapse into one.
+    expect(arrows).toHaveLength(2);
+    expect(new Set(arrows.map((el) => el.id)).size).toBe(2);
+    const nodes = written.filter((el) => el.type === 'rectangle').map((el) => el.id);
+    for (const arrow of arrows) {
+      expect(nodes).toContain((arrow.start as { id: string }).id);
+      expect(nodes).toContain((arrow.end as { id: string }).id);
+    }
   });
 
   it('reports a syntax error when nothing can be parsed', async () => {

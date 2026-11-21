@@ -44,7 +44,11 @@ vi.mock('../../../helpers/utils', () => ({
   isUserRecorder: (userId: string) => userId === 'RECORDER_BOT' || userId === 'RTMP_BOT',
   isInternalParticipant: (userId?: string) =>
     !!userId &&
-    (userId === 'RECORDER_BOT' || userId === 'RTMP_BOT' || userId.startsWith('pnm_agent_')),
+    (userId === 'RECORDER_BOT' ||
+      userId === 'RTMP_BOT' ||
+      userId.startsWith('pnm_agent-') ||
+      userId.startsWith('pnm_tts_agent-') ||
+      userId.startsWith('pnm_agent_')),
 }));
 
 import { NOTEPAD_SNAPSHOT_KEY, NotepadController } from '../NotepadController';
@@ -478,7 +482,9 @@ describe('peer sync requests', () => {
   it('asks one peer at a time: presenter first, internal participants skipped', async () => {
     const controller = await ready([
       { userId: 'RECORDER_BOT' },
-      { userId: 'pnm_agent_ai_agent-1', presenter: true },
+      // Both the real b-server id and the legacy underscore form are internal.
+      { userId: 'pnm_agent-ai_agent-1', presenter: true },
+      { userId: 'pnm_agent_ai_agent-2', presenter: true },
       { userId: 'u1' },
       { userId: 'pres', presenter: true },
     ]);

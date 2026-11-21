@@ -392,12 +392,22 @@ export const isUserRecorder = (userId: string) => {
   return userId === 'RECORDER_BOT' || userId === 'RTMP_BOT';
 };
 
-/** Prefix of the synthetic participants b-server creates for an AI agent. */
-export const AGENT_USER_ID_PREFIX = 'pnm_agent_';
+/** Prefixes of the synthetic participants b-server creates for agents. */
+export const AGENT_USER_ID_PREFIX = 'pnm_agent-';
+export const TTS_AGENT_USER_ID_PREFIX = 'pnm_tts_agent-';
+/** Underscore form used by older builds and test fixtures. */
+const LEGACY_AGENT_USER_ID_PREFIX = 'pnm_agent_';
+
+const INTERNAL_USER_ID_PREFIXES = [
+  AGENT_USER_ID_PREFIX,
+  TTS_AGENT_USER_ID_PREFIX,
+  LEGACY_AGENT_USER_ID_PREFIX,
+];
 
 /** Mirrors b-server's `config.IsUserIdInternal` (bots and AI agent participants). */
 export const isInternalParticipant = (userId?: string): boolean =>
-  !!userId && (isUserRecorder(userId) || userId.startsWith(AGENT_USER_ID_PREFIX));
+  !!userId &&
+  (isUserRecorder(userId) || INTERNAL_USER_ID_PREFIXES.some((p) => userId.startsWith(p)));
 
 export const isValidHttpUrl = (url: string) => {
   try {

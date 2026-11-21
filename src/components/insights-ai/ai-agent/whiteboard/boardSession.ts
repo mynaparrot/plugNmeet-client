@@ -16,6 +16,8 @@ const OPEN_TIMEOUT_MS = 10000;
 const OPEN_POLL_MS = 50;
 /** Background-tab fallback so a probe never hangs on a missing animation frame. */
 const FRAME_FALLBACK_MS = 50;
+/** A freshly opened board settles late: lazy chunks, fonts and the A4 fit. */
+export const OPEN_SETTLE_MS = 2000;
 
 /** Canvas instances that already passed the probe for a `(fileId, page)`. */
 let probed: { api: ExcalidrawImperativeAPI; fileId: string; page: number } | null = null;
@@ -137,6 +139,14 @@ const waitForCanvas = async (): Promise<boolean> => {
   return false;
 };
 
+/** Waits out whatever is left of the settle window of a just-opened board. */
+const settleOpen = async (openedAt: number): Promise<void> => {
+  const remaining = OPEN_SETTLE_MS - (Date.now() - openedAt);
+  if (remaining > 0) {
+    await new Promise((resolve) => setTimeout(resolve, remaining));
+  }
+};
+
 /**
  * Brings the whiteboard up on this client. The floating shared notepad is closed
  * in the same step: only one surface stays open, so the participant looks at
@@ -150,7 +160,10 @@ export const ensureWhiteboardSurface = async (): Promise<string | null> => {
   if (store.getState().bottomIconsActivity.isActiveSharedNotePad) {
     store.dispatch(updateIsActiveSharedNotePad(false));
   }
-  if (!store.getState().bottomIconsActivity.isActiveWhiteboard) {
+  // A board that has to be opened keeps moving after the canvas exists.
+  const wasActive = store.getState().bottomIconsActivity.isActiveWhiteboard;
+  const openedAt = Date.now();
+  if (!wasActive) {
     store.dispatch(updateIsActiveWhiteboard(true));
   }
 
@@ -159,6 +172,14 @@ export const ensureWhiteboardSurface = async (): Promise<string | null> => {
   const ready = await waitForCanvas();
   if (!ready) {
     return 'The whiteboard is not open on this device right now.';
+  }
+
+  if (!wasActive) {
+    await settleOpen(openedAt);
+    // The canvas may have been remounted or re-scoped while it settled.
+    if (!boardMounted() || !(await verifyCanvasPaintReady())) {
+      return 'The whiteboard is not open on this device right now.';
+    }
   }
   return null;
 };
