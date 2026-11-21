@@ -7,7 +7,12 @@ import {
 } from '../../../../../store/slices/whiteboard';
 import { A4_BOUNDARY_GUIDE_ID } from '../../../../whiteboard/helpers/constants';
 import { ensureBoardOpen, type BoardContext } from '../agentElements';
-import { clearAgentHistory, hydrateAgentHistory, popAgentAction } from '../agentHistory';
+import {
+  agentHistorySize,
+  clearAgentHistory,
+  hydrateAgentHistory,
+  popAgentAction,
+} from '../agentHistory';
 
 /** Lets Excalidraw's `setViewport` animation finish before the scroll is sent. */
 const VIEWPORT_SETTLE_MS = 400;
@@ -76,9 +81,19 @@ const switchOfficeFile = (args: Record<string, unknown>): Record<string, unknown
  * element it overwrote is restored. Participant work is never touched.
  */
 const undoLastAgentAction = (board: BoardContext): Record<string, unknown> => {
-  const entry = popAgentAction();
+  // Undo is page-scoped: an action of another page must stay undoable there.
+  const snapshot = board.controller.getSnapshot();
+  const entry = snapshot
+    ? popAgentAction({ fileId: snapshot.fileId, page: snapshot.page })
+    : popAgentAction();
   if (!entry) {
-    return { ok: false, error: 'There is no agent action left to undo.' };
+    return {
+      ok: false,
+      error:
+        agentHistorySize() > 0
+          ? 'There is no agent action to undo on this page.'
+          : 'There is no agent action left to undo.',
+    };
   }
 
   const current = new Map(board.controller.getElements().map((el) => [el.id, el]));

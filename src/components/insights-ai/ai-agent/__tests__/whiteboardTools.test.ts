@@ -28,7 +28,9 @@ type FakeElement = Record<string, unknown> & {
 
 const hoisted = vi.hoisted(() => {
   const controller = {
-    applyExternalElements: vi.fn((_elements: unknown[] = [], _appState?: unknown) => true),
+    applyExternalElements: vi.fn(
+      (_elements: unknown[] = [], _appState?: unknown, _options?: { persistNow?: boolean }) => true,
+    ),
     getElements: vi.fn((): unknown[] => []),
     getSnapshot: vi.fn(() => ({ fileId: 'default', page: 1 }) as unknown),
     isReadyForExternalWrite: vi.fn(() => !!controller.getSnapshot()),
@@ -297,6 +299,12 @@ const lastWritten = (): FakeElement[] => {
   const calls = board.controller.applyExternalElements.mock.calls;
   return (calls[calls.length - 1]?.[0] ?? []) as unknown as FakeElement[];
 };
+
+/** The `persistNow` flag of every write, in order. */
+const persistFlags = (): (boolean | undefined)[] =>
+  board.controller.applyExternalElements.mock.calls.map(
+    (call) => (call[2] as { persistNow?: boolean } | undefined)?.persistNow,
+  );
 
 const revealedIds = (): string[] => {
   const call = board.controller.revealElementsInViewport.mock.calls[0];
@@ -2349,6 +2357,41 @@ describe('whiteboard_draw_freehand_svg', () => {
       board.controller.applyExternalElements.mock.invocationCallOrder[0],
     );
   });
+
+  it('persists an animated drawing once instead of once per stroke', async () => {
+    vi.useFakeTimers();
+    const pending = executeWhiteboardDrawFreehandSvgTool({
+      svg: '<svg><path d="M0 0 L40 0"/><path d="M0 40 L40 40"/><path d="M0 80 L40 80"/></svg>',
+      x: 100,
+      y: 200,
+      animate: true,
+      render_as: 'strokes',
+    });
+    await vi.advanceTimersByTimeAsync(1000);
+    await pending;
+
+    // Every stroke still reaches the CRDT, but only the last one pays for a save.
+    expect(persistFlags()).toEqual([false, false, true]);
+    vi.useRealTimers();
+  });
+
+  it('persists on the closing commit when the drawing carries text', async () => {
+    vi.useFakeTimers();
+    const pending = executeWhiteboardDrawFreehandSvgTool({
+      svg: '<svg><path d="M0 0 L40 0"/><path d="M0 40 L40 40"/><text x="0" y="40">A</text></svg>',
+      x: 100,
+      y: 200,
+      animate: true,
+      render_as: 'strokes',
+    });
+    await vi.advanceTimersByTimeAsync(1000);
+    await pending;
+
+    const flags = persistFlags();
+    expect(flags.filter((flag) => flag === true)).toHaveLength(1);
+    expect(flags[flags.length - 1]).toBe(true);
+    vi.useRealTimers();
+  });
 });
 
 describe('whiteboard_draw_diagram', () => {
@@ -3044,6 +3087,30 @@ describe('whiteboard_manage_board', () => {
     const undo = await executeWhiteboardManageBoardTool({ action: 'undo_last_agent_action' });
     expect(undo.ok).toBe(false);
     expect(board.controller.applyExternalElements).not.toHaveBeenCalled();
+  });
+
+  it('keeps undo scoped to the page the action was written on', async () => {
+    await executeWhiteboardDrawShapesTool({
+      shapes: [{ type: 'rectangle', x: 10, y: 20, width: 100, height: 50 }],
+    });
+    expect(agentHistorySize()).toBe(1);
+
+    // The board the agent writes to now is page 2.
+    board.controller.getSnapshot.mockReturnValue({ fileId: 'default', page: 2 });
+    board.controller.applyExternalElements.mockClear();
+
+    const elsewhere = await executeWhiteboardManageBoardTool({ action: 'undo_last_agent_action' });
+    expect(elsewhere.ok).toBe(false);
+    expect(String(elsewhere.error)).toContain('this page');
+    expect(board.controller.applyExternalElements).not.toHaveBeenCalled();
+    expect(agentHistorySize()).toBe(1);
+
+    // Back on page 1 the action it belongs to is still undoable.
+    board.controller.getSnapshot.mockReturnValue({ fileId: 'default', page: 1 });
+    const undo = await executeWhiteboardManageBoardTool({ action: 'undo_last_agent_action' });
+    expect(undo.ok).toBe(true);
+    expect(undo.undone_tool).toBe('whiteboard_draw_shapes');
+    expect(agentHistorySize()).toBe(0);
   });
 
   it('zooms to the requested elements', async () => {

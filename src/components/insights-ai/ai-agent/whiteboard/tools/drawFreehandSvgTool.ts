@@ -807,9 +807,19 @@ const drawSvgStrokes = async (
     // Bring the whole drawing into view first, so the strokes appear on screen
     // instead of off-canvas.
     context.controller.revealElementsInViewport(all);
+    // The text and the label close the animation: they persist for it when they
+    // exist, otherwise the last stroke does.
+    const tail = [...textElements, ...labelElements];
     // Stroke by stroke, so the room sees the drawing happening.
-    for (const element of strokeElements) {
-      if (!commitAgentElements(context, [element], { toolName: TOOL_NAME, record: false })) {
+    for (const [strokeIndex, element] of strokeElements.entries()) {
+      if (
+        !commitAgentElements(context, [element], {
+          toolName: TOOL_NAME,
+          record: false,
+          // One save for the whole animation instead of one per stroke.
+          persistNow: tail.length === 0 && strokeIndex === strokeElements.length - 1,
+        })
+      ) {
         return invalid('The whiteboard refused the write.');
       }
       // The pen follows the stroke, so the animation reads as being drawn.
@@ -819,14 +829,21 @@ const drawSvgStrokes = async (
       });
       await delay(STROKE_DELAY_MS);
     }
-    const tail = [...textElements, ...labelElements];
     const committed =
       tail.length === 0 ||
-      commitAgentElements(context, tail, { toolName: TOOL_NAME, record: false });
+      commitAgentElements(context, tail, { toolName: TOOL_NAME, record: false, persistNow: true });
     if (!committed) {
       return invalid('The whiteboard refused the write.');
     }
-    pushAgentAction({ toolName: TOOL_NAME, createdAt: Date.now(), added: all, replaced: [] });
+    const snapshot = context.controller.getSnapshot();
+    pushAgentAction({
+      toolName: TOOL_NAME,
+      createdAt: Date.now(),
+      fileId: snapshot?.fileId,
+      page: snapshot?.page,
+      added: all,
+      replaced: [],
+    });
     // Intermediate strokes carry no cue, so the finished drawing gets one pass
     // of the laser before the pointer retracts.
     traceElementsWithLaser(context, all);

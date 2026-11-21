@@ -385,6 +385,7 @@ export class WhiteboardController {
   applyExternalElements = (
     elements: readonly ExcalidrawElement[],
     appStatePatch?: Record<string, unknown>,
+    options?: { persistNow?: boolean },
   ): boolean => {
     const { doc, elementsMap } = this;
     if (!doc || !elementsMap || !this.fileId || elements.length === 0) {
@@ -422,7 +423,10 @@ export class WhiteboardController {
       api.updateScene({ elements: next, captureUpdate: 'NEVER' });
     }
 
-    if (!this.isCurrentUserPresenter()) {
+    // An animation loop writes one step at a time: the caller suppresses the
+    // save per step and flushes once at the end (`persistNow: false`). The CRDT
+    // delta already reached the peers and the debounced save is still armed.
+    if (!this.isCurrentUserPresenter() && options?.persistNow !== false) {
       void this.saveAsExternalWriter();
     }
     return true;
@@ -605,8 +609,11 @@ export class WhiteboardController {
 
   private isExternalWrite = (): boolean => this.externalWriteDepth > 0;
 
-  /** Persist a programmatic write, which may come from a non-presenter client. */
-  private saveAsExternalWriter = async () => {
+  /**
+   * Persist a programmatic write, which may come from a non-presenter client.
+   * Public so a batched writer (an animation loop) can flush once at its end.
+   */
+  saveAsExternalWriter = async () => {
     try {
       // Same retry/backoff as presenter saves, plus the local IDB export cache.
       await this.saveWithRetry();

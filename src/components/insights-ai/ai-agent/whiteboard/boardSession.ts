@@ -29,8 +29,15 @@ export const whiteboardEnabled = (): boolean =>
  * Whether the mounted board can be written to: the CRDT doc settled on the
  * page Redux points at and the live Excalidraw instance is wired.
  */
-export const boardMounted = (): boolean =>
-  !!getWhiteboardController().isReadyForExternalWrite() && !!getWhiteboardExcalidrawAPI();
+export const boardMounted = (): boolean => {
+  const ready =
+    !!getWhiteboardController().isReadyForExternalWrite() && !!getWhiteboardExcalidrawAPI();
+  // A closed board keeps its probe behind: the next mount is a new canvas.
+  if (!ready) {
+    probed = null;
+  }
+  return ready;
+};
 
 /** One animation frame; headless environments have no paint to wait for. */
 const nextFrame = (): Promise<void> => {
@@ -95,8 +102,10 @@ const buildProbe = async (background: string): Promise<ExcalidrawElement | null>
  */
 export const verifyCanvasPaintReady = async (): Promise<boolean> => {
   const api = getWhiteboardExcalidrawAPI();
-  const snapshot = getWhiteboardController().getSnapshot();
-  if (!api || !snapshot) {
+  const controller = getWhiteboardController();
+  const snapshot = controller.getSnapshot();
+  // The probe is only worth trusting for a live canvas in the current scope.
+  if (!api || !snapshot || !controller.isReadyForExternalWrite()) {
     return false;
   }
   if (probed?.api === api && probed.fileId === snapshot.fileId && probed.page === snapshot.page) {

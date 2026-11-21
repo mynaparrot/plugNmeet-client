@@ -57,7 +57,8 @@ import {
   registerRoomWhiteboardFiles,
   uploadCanvasBinaryFile,
 } from './helpers/handleFiles';
-import { getWhiteboardController } from './collab';
+import { getWhiteboardController, loadWhiteboardLastPage, saveWhiteboardLastPage } from './collab';
+import { setWhiteboardCurrentPage } from '../../store/slices/whiteboard';
 import type { WhiteboardPresence } from './collab/types';
 import {
   LatestNavigationQueue,
@@ -554,6 +555,8 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       settledTargetRef.current = target;
       controller.setCanvasSettled(target);
       revealPreparedPage();
+      // Remember where this device is, so a reload lands on the same page.
+      void saveWhiteboardLastPage(target.fileId, target.page);
       return true;
     },
     [
@@ -596,6 +599,9 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       const { currentWhiteboardOfficeFileId, currentPage } = store.getState().whiteboard;
       let target: NavigationTarget = { fileId: currentWhiteboardOfficeFileId, page: currentPage };
 
+      // Only a human presenter on another client dictates the page here.
+      let followingPresenter = false;
+
       if (isPresenter) {
         // Broadcast the active file id (control message); scene content syncs via yjs.
         await broadcastCurrentFileId(target.fileId, target.page);
@@ -610,10 +616,30 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
         if (!isCurrent()) {
           return;
         }
+        followingPresenter = !!donor?.page && controller.hasPresenterOnline();
         target = {
           fileId: donor?.fileId ?? currentWhiteboardOfficeFileId,
           page: donor?.page ?? currentPage,
         };
+      }
+
+      // Nobody holds this client on a page (presenter, or no human presenter to
+      // follow): come back to the page this device left off on.
+      if (!followingPresenter) {
+        const savedPage = await loadWhiteboardLastPage(target.fileId);
+        const { totalPages } = store.getState().whiteboard;
+        if (
+          typeof savedPage === 'number' &&
+          savedPage >= 1 &&
+          savedPage <= totalPages &&
+          savedPage !== target.page
+        ) {
+          target = { ...target, page: savedPage };
+          dispatch(setWhiteboardCurrentPage(savedPage));
+        }
+        if (!isCurrent()) {
+          return;
+        }
       }
 
       // Hydrate from the server when no presenter is online to answer a peer sync.
@@ -643,6 +669,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       }
       settledTargetRef.current = target;
       controller.setCanvasSettled(target);
+      void saveWhiteboardLastPage(target.fileId, target.page);
     },
     [
       excalidrawAPI,
@@ -650,6 +677,7 @@ const Whiteboard = ({ onReadyExcalidrawAPI }: WhiteboardProps) => {
       showA4Boundary,
       controller,
       navigation,
+      dispatch,
       addBoundaryToElements,
       restoreOrScrollToBoundary,
       applySceneToExcalidraw,

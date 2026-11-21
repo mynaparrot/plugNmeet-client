@@ -76,6 +76,8 @@ vi.mock('../collab/whiteboardPersistence', () => ({
   listWhiteboardPages: vi.fn(async () => []),
   loadWhiteboardPageSnapshot: vi.fn(async () => undefined),
   saveWhiteboardPageSnapshot: vi.fn(async () => undefined),
+  loadWhiteboardLastPage: vi.fn(async () => undefined),
+  saveWhiteboardLastPage: vi.fn(async () => undefined),
 }));
 
 import { store } from '../../../store';

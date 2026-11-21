@@ -14,11 +14,17 @@ const AGENT_HISTORY_IDB_KEY = '__ai_agent_history__';
 export type AgentHistoryEntry = {
   toolName: string;
   createdAt: number;
+  /** Page the action was written to; older entries predate the scope. */
+  fileId?: string;
+  page?: number;
   /** Elements the action created, exactly as they were written. */
   added: ExcalidrawElement[];
   /** Elements the action overwrote, with the value to restore. */
   replaced: { before: ExcalidrawElement; after: ExcalidrawElement }[];
 };
+
+/** The page an action belongs to: undo only ever touches the current one. */
+export type AgentHistoryScope = { fileId: string; page: number };
 
 const history: AgentHistoryEntry[] = [];
 
@@ -58,12 +64,31 @@ export const pushAgentAction = (entry: AgentHistoryEntry) => {
   void persistHistory();
 };
 
-/** Removes and returns the newest entry: undo consumes it. */
-export const popAgentAction = (): AgentHistoryEntry | undefined => {
-  const entry = history.pop();
-  if (entry) {
-    void persistHistory();
+/**
+ * Removes and returns the newest entry: undo consumes it. With a scope only the
+ * newest entry of that page is undone, so an undo on one page never eats the
+ * action of another.
+ */
+export const popAgentAction = (scope?: AgentHistoryScope): AgentHistoryEntry | undefined => {
+  let index = history.length - 1;
+  if (scope) {
+    index = -1;
+    for (let i = history.length - 1; i >= 0; i--) {
+      const entry = history[i];
+      if (
+        entry.fileId === undefined ||
+        (entry.fileId === scope.fileId && entry.page === scope.page)
+      ) {
+        index = i;
+        break;
+      }
+    }
   }
+  if (index < 0) {
+    return undefined;
+  }
+  const [entry] = history.splice(index, 1);
+  void persistHistory();
   return entry;
 };
 

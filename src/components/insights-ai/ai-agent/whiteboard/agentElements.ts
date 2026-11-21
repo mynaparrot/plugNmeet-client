@@ -629,6 +629,11 @@ export type CommitOptions = {
   scrollToContent?: boolean;
   /** Defaults to `record !== false`: only finished actions get the agent's pointer. */
   laserCue?: boolean;
+  /**
+   * Whether this write is persisted right away. Defaults to `record !== false`:
+   * an animation loop writes many steps and only its last one pays for a save.
+   */
+  persistNow?: boolean;
 };
 
 /**
@@ -667,18 +672,25 @@ export const commitAgentElements = (
     .filter((element) => existing.has(element.id))
     .map((element) => ({ before: existing.get(element.id)!, after: element }));
 
+  const record = options.record !== false;
+
   beginAgentWhiteboardTool();
   let ok = false;
   try {
-    ok = board.controller.applyExternalElements(tagged);
+    ok = board.controller.applyExternalElements(tagged, undefined, {
+      persistNow: options.persistNow ?? record,
+    });
   } finally {
     endAgentWhiteboardTool();
   }
 
-  if (ok && options.record !== false) {
+  if (ok && record) {
+    const snapshot = board.controller.getSnapshot();
     pushAgentAction({
       toolName: options.toolName,
       createdAt: Date.now(),
+      fileId: snapshot?.fileId,
+      page: snapshot?.page,
       added: [...tagged],
       replaced,
     });
