@@ -35,6 +35,32 @@
     $('launch-label').textContent = busy ? busyLabel : idleLabel;
   }
 
+  // Leave a clean UI behind when the room redirects, so a browser "Back"
+  // (including a bfcache restore) does not show a stale launch status.
+  function resetLaunchUi() {
+    const status = $('status');
+    if (status) {
+      status.hidden = true;
+      status.dataset.kind = 'info';
+    }
+    const statusText = $('status-text');
+    if (statusText) statusText.textContent = '';
+    const statusIcon = $('status-icon');
+    if (statusIcon) statusIcon.innerHTML = '';
+
+    const agent = document.body.dataset.page === 'agent';
+    setBusyState(
+      false,
+      agent ? 'Launching session…' : 'Joining room…',
+      agent ? 'Launch AI session' : 'Enter room',
+    );
+  }
+
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) resetLaunchUi();
+  });
+  window.addEventListener('pagehide', resetLaunchUi);
+
   const THEME_KEY = 'plugnmeet-demo-theme';
 
   function initTheme() {
@@ -75,6 +101,30 @@
     });
   }
 
+  const DEMO_CREDENTIALS = {
+    serverUrl: 'https://demo.plugnmeet.com',
+    apiKey: 'plugnmeet',
+    apiSecret: 'zumyyYWqv7KR2kUqvYdq4z4sXg7XTBD2ljT6',
+  };
+
+  function wireDemoCredentials() {
+    const button = $('demo-creds');
+    const serverInput = $('server_url');
+    if (!button || !serverInput) return;
+
+    serverInput.placeholder = serverUrl() || 'https://your-server.com';
+    button.addEventListener('click', () => {
+      serverInput.value = DEMO_CREDENTIALS.serverUrl;
+      $('api_key').value = DEMO_CREDENTIALS.apiKey;
+      $('api_secret').value = DEMO_CREDENTIALS.apiSecret;
+      const original = button.textContent;
+      button.textContent = 'Filled';
+      window.setTimeout(() => {
+        button.textContent = original;
+      }, 1400);
+    });
+  }
+
   const randomRoom = () => 'room-' + Math.random().toString(36).slice(2, 8);
   const randomName = () => 'user-' + Math.floor(Math.random() * 100);
 
@@ -98,17 +148,17 @@
       .join('');
   }
 
-  async function request(apiKey, secretKey, body, method) {
+  async function request(apiKey, secretKey, body, method, baseUrl) {
     const raw = JSON.stringify(body);
     const signature = await hashSignature(secretKey, raw);
-    const base = serverUrl();
+    const base = (baseUrl || serverUrl()).replace(/\/$/, '');
     if (!base) {
       throw new Error('plugNmeet server URL is not configured.');
     }
 
     let response;
     try {
-      response = await fetch(base.replace(/\/$/, '') + '/auth/' + method, {
+      response = await fetch(base + '/auth/' + method, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -346,7 +396,8 @@
       };
     }
 
-    const sendRequest = (body, method) => request(API_KEY, API_SECRET, body, method);
+    const sendRequest = (body, method) =>
+      request(API_KEY, API_SECRET, body, method, value('server_url'));
 
     async function launch(event) {
       event.preventDefault();
@@ -854,7 +905,8 @@
       return new Promise((resolve) => window.setTimeout(resolve, ms));
     }
 
-    const sendRequest = (body, method) => request(API_KEY, API_SECRET, body, method);
+    const sendRequest = (body, method) =>
+      request(API_KEY, API_SECRET, body, method, value('server_url'));
 
     async function launch(event) {
       event.preventDefault();
@@ -1067,6 +1119,7 @@
   }
 
   initTheme();
+  wireDemoCredentials();
 
   const page = document.body.dataset.page;
   if (page === 'agent') initAgent();

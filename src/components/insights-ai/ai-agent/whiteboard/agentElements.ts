@@ -1,11 +1,12 @@
 import type { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 import type { ExcalidrawElementSkeleton } from '@excalidraw/excalidraw/element/transform';
-import type { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
+import type { BinaryFileData, ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types';
 
 import { store } from '../../../../store';
 import { aiAgentSelector } from '../../../../store/slices/aiAgentSlice';
 import { getWhiteboardController, type WhiteboardController } from '../../../whiteboard/collab';
 import { getWhiteboardExcalidrawAPI } from '../../../whiteboard/helpers/liveScene';
+import { traceElementsWithLaser } from './agentLaser';
 import { pushAgentAction } from './agentHistory';
 import { ensureWhiteboardSurface, whiteboardEnabled } from './boardSession';
 import { getBoardFrame, toBBox, unionBBox, type BBox } from './layoutEngine';
@@ -581,12 +582,53 @@ export const ensureBoardOpen = async (): Promise<BoardLookup> => {
   return error ? { error } : requireBoard();
 };
 
+/** Cap on a decode: a test double (or a stalled browser) may never fire `onload`. */
+const IMAGE_DECODE_TIMEOUT_MS = 250;
+
+const withTimeout = async <T>(work: Promise<T>, ms: number): Promise<T | null> => {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<null>((resolve) => {
+    timer = setTimeout(() => resolve(null), ms);
+  });
+  try {
+    return await Promise.race([work, timeout]);
+  } finally {
+    clearTimeout(timer);
+  }
+};
+
+/**
+ * Hands an inline image's bytes to Excalidraw and primes its decode cache, so
+ * the picture paints without a file the local canvas never received.
+ *
+ * Call it again once the `image` element is committed: `addFiles` drops the
+ * cache entry of every file it registers, and an element whose file is missing
+ * from the scene files stays blank until something re-decodes it.
+ */
+export const registerAgentImageFiles = async (
+  api: BoardContext['api'],
+  files: readonly BinaryFileData[],
+): Promise<void> => {
+  if (!api?.addFiles || files.length === 0) {
+    return;
+  }
+  const { preloadHtmlImage, primeExcalidrawImageCache } =
+    await import('../../../whiteboard/helpers/handleFiles');
+  await Promise.all(
+    files.map((file) => withTimeout(preloadHtmlImage(file.dataURL), IMAGE_DECODE_TIMEOUT_MS)),
+  );
+  api.addFiles([...files]);
+  primeExcalidrawImageCache(api, files);
+};
+
 export type CommitOptions = {
   toolName: string;
   /** False for intermediate steps of an animated drawing. */
   record?: boolean;
   /** Defaults to `record !== false`: intermediate steps never move the viewport. */
   scrollToContent?: boolean;
+  /** Defaults to `record !== false`: only finished actions get the agent's pointer. */
+  laserCue?: boolean;
 };
 
 /**
@@ -646,6 +688,11 @@ export const commitAgentElements = (
   // following this client from another scroll position.
   if (ok && (options.scrollToContent ?? options.record !== false)) {
     board.controller.revealElementsInViewport(tagged);
+  }
+
+  // Point at what was just written, so the eye follows the agent's own work.
+  if (ok && (options.laserCue ?? options.record !== false)) {
+    traceElementsWithLaser(board, tagged);
   }
   return ok;
 };

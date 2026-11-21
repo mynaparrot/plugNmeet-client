@@ -14,11 +14,13 @@ import {
   invalid,
   measureText,
   nextSceneIndex,
+  registerAgentImageFiles,
   resolveStrokeColor,
   toExcalidrawElements,
   type BoardContext,
 } from '../agentElements';
 import { pushAgentAction } from '../agentHistory';
+import { pointAgentLaserAt, traceElementsWithLaser } from '../agentLaser';
 import {
   anchoredElementId,
   findAnchorBox,
@@ -688,8 +690,9 @@ const insertSvgImage = async (
     created: Date.now(),
   } as BinaryFileData;
 
-  // Registered before the element lands, so the local canvas paints it at once.
-  context.api.addFiles([fileData]);
+  // Decoded and registered before the element lands, so the local canvas paints
+  // it on the first render instead of waiting for a decode of missing bytes.
+  await registerAgentImageFiles(context.api, [fileData]);
 
   const data = asCustomData({
     ...agentCustomData(TOOL_NAME),
@@ -718,6 +721,9 @@ const insertSvgImage = async (
   if (elements.length === 0 || !commitAgentElements(context, elements, { toolName: TOOL_NAME })) {
     return invalid('The whiteboard refused the write.');
   }
+  // Re-register now that the element is in the scene: it has to paint on this
+  // canvas too, not only on peers reading the bytes from `customData.fileUrl`.
+  await registerAgentImageFiles(context.api, [fileData]);
   return drawnResult(elements);
 };
 
@@ -806,6 +812,11 @@ const drawSvgStrokes = async (
       if (!commitAgentElements(context, [element], { toolName: TOOL_NAME, record: false })) {
         return invalid('The whiteboard refused the write.');
       }
+      // The pen follows the stroke, so the animation reads as being drawn.
+      pointAgentLaserAt(context, {
+        x: element.x + element.width / 2,
+        y: element.y + element.height / 2,
+      });
       await delay(STROKE_DELAY_MS);
     }
     const tail = [...textElements, ...labelElements];
@@ -816,6 +827,9 @@ const drawSvgStrokes = async (
       return invalid('The whiteboard refused the write.');
     }
     pushAgentAction({ toolName: TOOL_NAME, createdAt: Date.now(), added: all, replaced: [] });
+    // Intermediate strokes carry no cue, so the finished drawing gets one pass
+    // of the laser before the pointer retracts.
+    traceElementsWithLaser(context, all);
     return drawnResult(all);
   }
 

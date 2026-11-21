@@ -1,4 +1,5 @@
 import type { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
+import type { BinaryFileData } from '@excalidraw/excalidraw/types';
 
 import {
   AGENT_FONT_FAMILY,
@@ -11,6 +12,7 @@ import {
   formatWhiteboardText,
   invalid,
   measureText,
+  registerAgentImageFiles,
   toExcalidrawElements,
   type BoardContext,
 } from '../agentElements';
@@ -260,7 +262,7 @@ const formatSkeletons = (skeletons: readonly unknown[]): unknown[] =>
     };
   });
 
-type NativeDiagram = { elements: ExcalidrawElement[] } | { error: string };
+type NativeDiagram = { elements: ExcalidrawElement[]; files: BinaryFileData[] } | { error: string };
 
 /**
  * Real Mermaid rendering through `@excalidraw/mermaid-to-excalidraw`: every
@@ -272,10 +274,7 @@ type NativeDiagram = { elements: ExcalidrawElement[] } | { error: string };
  * and it measures text with DOM APIs, so any environment failure falls back to
  * the built-in flowchart layout below.
  */
-const parseWithMermaidLibrary = async (
-  mermaid: string,
-  board: BoardContext,
-): Promise<NativeDiagram> => {
+const parseWithMermaidLibrary = async (mermaid: string): Promise<NativeDiagram> => {
   try {
     const { parseMermaidToExcalidraw } = await import('@excalidraw/mermaid-to-excalidraw');
     const { elements: skeletons, files } = await parseMermaidToExcalidraw(mermaid);
@@ -283,17 +282,17 @@ const parseWithMermaidLibrary = async (
       return { error: 'the Mermaid markup produced no shapes' };
     }
 
-    // Embedded images (diagram types rendered as a picture) need their binaries
-    // registered before the elements land in the scene.
-    if (files && Object.keys(files).length > 0 && board.api?.addFiles) {
-      board.api.addFiles(Object.values(files));
-    }
+    const imageFiles = Object.values(files ?? {}).filter((file): file is BinaryFileData =>
+      Boolean(file?.dataURL),
+    );
 
     const elements = attachImageFiles(
       await toExcalidrawElements(formatSkeletons(skeletons), TOOL_NAME),
       files,
     );
-    return elements.length > 0 ? { elements } : { error: 'the Mermaid markup produced no shapes' };
+    return elements.length > 0
+      ? { elements, files: imageFiles }
+      : { error: 'the Mermaid markup produced no shapes' };
   } catch (e) {
     return { error: e instanceof Error ? e.message : String(e) };
   }
@@ -542,7 +541,7 @@ export const executeWhiteboardDrawDiagramTool = async (
   const anchorId = anchoredElementId(layout, args.anchor_element_id);
   const anchor = findAnchorBox(context.elements, args.anchor_element_id);
 
-  const native = await parseWithMermaidLibrary(mermaid, context);
+  const native = await parseWithMermaidLibrary(mermaid);
   if ('elements' in native) {
     const raw = unionBBox(native.elements.map(toBBox));
     const effectiveScale = fitToA4Width(scale, raw.width * scale, context.frame);
@@ -564,6 +563,9 @@ export const executeWhiteboardDrawDiagramTool = async (
     if (!commitAgentElements(context, positioned, { toolName: TOOL_NAME })) {
       return invalid('The whiteboard refused the write.');
     }
+    // Diagram types rendered as a picture carry their bytes in the element, so
+    // the image element has to be in the scene before its file is registered.
+    await registerAgentImageFiles(context.api, native.files);
     return drawnResult(positioned);
   }
 

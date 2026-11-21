@@ -198,6 +198,13 @@ vi.mock('../../../../helpers/libs/idb', () => ({
   idbGet,
 }));
 
+// The canvas image helpers pull in browser-only modules (i18n reads `window` on
+// load); the tools only need the registration call the fake API records.
+vi.mock('../../../whiteboard/helpers/handleFiles', () => ({
+  preloadHtmlImage: vi.fn(async () => null),
+  primeExcalidrawImageCache: vi.fn(() => false),
+}));
+
 import {
   updateIsActiveSharedNotePad,
   updateIsActiveWhiteboard,
@@ -2088,6 +2095,8 @@ describe('whiteboard_draw_freehand_svg', () => {
     expect(addFiles).toHaveBeenCalledWith([
       expect.objectContaining({ id: image?.fileId, mimeType: 'image/svg+xml' }),
     ]);
+    // Registered before the element lands and again once it is in the scene.
+    expect(addFiles).toHaveBeenCalledTimes(2);
     expect(written.some((el) => el.type === 'text')).toBe(true);
     expect(written.some((el) => el.type === 'freedraw')).toBe(false);
   });
@@ -2685,6 +2694,125 @@ describe('whiteboard_laser_point', () => {
       motion: { kind: 'circle_element', target_element_id: 'nope' },
     });
     expect(result.ok).toBe(false);
+  });
+});
+
+describe('automatic laser cue', () => {
+  /** Padded union of the last commit, so the trail can be checked against it. */
+  const writtenBox = () => {
+    const boxes = lastWritten().map((el) => ({
+      x: Number(el.x),
+      y: Number(el.y),
+      right: Number(el.x) + Number(el.width),
+      bottom: Number(el.y) + Number(el.height),
+    }));
+    const x = Math.min(...boxes.map((box) => box.x));
+    const y = Math.min(...boxes.map((box) => box.y));
+    const right = Math.max(...boxes.map((box) => box.right));
+    const bottom = Math.max(...boxes.map((box) => box.bottom));
+    return { x, y, right, bottom, height: bottom - y };
+  };
+
+  const retracts = (): unknown[][] =>
+    board.controller.setExternalCollaboratorPointer.mock.calls.filter((call) => call[2] === null);
+
+  it('sweeps one straight line under a single line of writing', async () => {
+    vi.useFakeTimers();
+    await executeWhiteboardWriteContentTool({ blocks: [{ text: 'The past simple tense' }] });
+    const box = writtenBox();
+    // One line of prose, so the cue underlines it.
+    expect(box.height).toBeLessThanOrEqual(56);
+    vi.advanceTimersByTime(4000);
+
+    const first = board.controller.setExternalCollaboratorPointer.mock.calls.find(
+      (call) => call[2] !== null,
+    );
+    expect(first?.[0]).toBe('ai_agent_pointer');
+    expect(first?.[1]).toBe('Tutor');
+    expect(first?.[2]).toMatchObject({ tool: 'laser' });
+    expect(first?.[3]).toBe('#e03131');
+
+    const points = laserPoints();
+    const xs = points.map((point) => point.x);
+    const baseline = Math.round(box.bottom + 6);
+    // Every point sits on one straight line right below the words: no curve.
+    expect(new Set(points.map((point) => point.y))).toEqual(new Set([baseline]));
+    // The trail starts left of the block and stops just past its right edge.
+    expect(points[0]).toMatchObject({ x: Math.round(box.x - 4), y: baseline });
+    expect(points[points.length - 1]).toMatchObject({ x: Math.round(box.right + 4), y: baseline });
+    expect(Math.min(...xs)).toBeLessThanOrEqual(box.x - 4);
+    expect(Math.max(...xs)).toBeGreaterThanOrEqual(box.right + 4);
+    // It stays under the text line instead of cutting through the glyphs.
+    expect(Math.min(...points.map((point) => point.y))).toBeGreaterThanOrEqual(box.bottom);
+    // The commit already revealed the block; a second scroll would yank the page.
+    expect(board.controller.revealBBoxInViewport).not.toHaveBeenCalled();
+    expect(retracts().length).toBeGreaterThan(0);
+    vi.useRealTimers();
+  });
+
+  it('circles a multi-line text block instead of drawing a finished hook', async () => {
+    vi.useFakeTimers();
+    await executeWhiteboardWriteContentTool({
+      blocks: [{ text: 'The past simple tense\nnames a finished action\none line at a time' }],
+    });
+    const box = writtenBox();
+    expect(box.height).toBeGreaterThan(56);
+    vi.advanceTimersByTime(4000);
+
+    const points = laserPoints();
+    expect(Math.min(...points.map((point) => point.x))).toBeLessThan(box.x);
+    expect(Math.max(...points.map((point) => point.x))).toBeGreaterThan(box.right);
+    expect(Math.min(...points.map((point) => point.y))).toBeLessThan(box.y);
+    expect(Math.max(...points.map((point) => point.y))).toBeGreaterThan(box.bottom);
+    vi.useRealTimers();
+  });
+
+  it('loops around a drawing instead of sweeping through it', async () => {
+    vi.useFakeTimers();
+    await executeWhiteboardDrawShapesTool({
+      shapes: [{ type: 'rectangle', label: 'Box', width: 140, height: 90 }],
+    });
+    const box = writtenBox();
+    vi.advanceTimersByTime(4000);
+
+    const points = laserPoints();
+    expect(Math.min(...points.map((point) => point.x))).toBeLessThan(box.x);
+    expect(Math.max(...points.map((point) => point.x))).toBeGreaterThan(box.right);
+    expect(Math.min(...points.map((point) => point.y))).toBeLessThan(box.y);
+    expect(Math.max(...points.map((point) => point.y))).toBeGreaterThan(box.bottom);
+    vi.useRealTimers();
+  });
+
+  it('follows each animated stroke and cues once when the drawing is finished', async () => {
+    vi.useFakeTimers();
+    const pending = executeWhiteboardDrawFreehandSvgTool({
+      svg: '<svg><path d="M0 0 L40 0"/><path d="M0 40 L40 40"/></svg>',
+      x: 100,
+      y: 200,
+      animate: true,
+      render_as: 'strokes',
+    });
+    await vi.advanceTimersByTimeAsync(600);
+    await pending;
+
+    // The pointer moves onto each stroke as it lands.
+    const strokeCentres = board.controller.applyExternalElements.mock.calls
+      .map((call) => ((call[0] ?? []) as unknown as FakeElement[])[0])
+      .filter((el) => el?.type === 'freedraw')
+      .map(
+        (el) =>
+          `${Math.round(Number(el.x) + Number(el.width) / 2)},${Math.round(Number(el.y) + Number(el.height) / 2)}`,
+      );
+    expect(strokeCentres).toHaveLength(2);
+    expect(laserPoints().map((point) => `${point.x},${point.y}`)).toEqual(
+      expect.arrayContaining(strokeCentres),
+    );
+    // Intermediate strokes never scroll; only the commit before them did.
+    expect(board.controller.revealBBoxInViewport).not.toHaveBeenCalled();
+
+    await vi.advanceTimersByTimeAsync(4000);
+    expect(retracts().length).toBeGreaterThan(0);
+    vi.useRealTimers();
   });
 });
 

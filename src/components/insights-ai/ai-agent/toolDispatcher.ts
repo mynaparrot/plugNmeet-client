@@ -69,6 +69,10 @@ const sendToolResult = (
 ) => {
   const conn = getNatsConn();
   if (!conn) {
+    console.warn('[AIAgentToolDispatcher] cannot send tool result: NATS connection unavailable', {
+      tool: call.toolName,
+      callId: call.callId,
+    });
     return;
   }
 
@@ -100,12 +104,40 @@ const processToolCall = async (payload: string) => {
   // Only the selected delegate answers; an empty target means everyone may.
   const currentUserId = store.getState().session.currentUser?.userId;
   if (call.targetUserId && call.targetUserId !== currentUserId) {
+    console.debug('[AIAgentToolDispatcher] skipping tool call targeted to another user', {
+      tool: call.toolName,
+      callId: call.callId,
+      targetUserId: call.targetUserId,
+      currentUserId,
+    });
     return;
   }
 
+  console.debug('[AIAgentToolDispatcher] executing tool', {
+    tool: call.toolName,
+    callId: call.callId,
+  });
+
   const startedAt = Date.now();
   const { ok, resultJson, error } = await runHandler(call);
-  sendToolResult(call, ok, resultJson, error, Date.now() - startedAt);
+  const durationMs = Date.now() - startedAt;
+
+  if (ok) {
+    console.debug('[AIAgentToolDispatcher] tool completed', {
+      tool: call.toolName,
+      callId: call.callId,
+      durationMs,
+    });
+  } else {
+    console.warn('[AIAgentToolDispatcher] tool failed', {
+      tool: call.toolName,
+      callId: call.callId,
+      durationMs,
+      error,
+    });
+  }
+
+  sendToolResult(call, ok, resultJson, error, durationMs);
 };
 
 // The whiteboard tools register themselves here (and start the vision loop), so

@@ -118,6 +118,14 @@
               <span class="hint">plugNmeet API credentials</span>
             </div>
             <div class="grid grid-2">
+              <div class="field" style="grid-column: 1 / -1">
+                <label for="server_url">plugNmeet server URL</label>
+                <div class="input-row">
+                  <input type="url" id="server_url" placeholder="https://your-server.com" />
+                  <button class="btn-mini" type="button" id="demo-creds">Demo credentials</button>
+                </div>
+                <p class="sub">Leave empty to use the configured server. Demo fills demo.plugnmeet.com.</p>
+              </div>
               <div class="field">
                 <label for="api_key">API key <span class="req">*</span></label>
                 <input type="text" id="api_key" name="api_key" placeholder="pnm_api_key" required />
