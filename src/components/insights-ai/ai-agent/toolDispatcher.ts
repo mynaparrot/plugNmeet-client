@@ -10,7 +10,7 @@ import {
 import { store } from '../../../store';
 import { getNatsConn } from '../../../helpers/nats';
 import { executeNotepadReadTool, executeNotepadWriteTool } from './shared-notepad/notepadTool';
-import { executePublishChatMessageTool, PUBLISH_CHAT_MESSAGE_TOOL } from './chatTool';
+import { executePublishChatMessageTool, PUBLISH_CHAT_MESSAGE_TOOL } from './chat/chatTool';
 import { registerClientApiTools } from './clientApiTools';
 import { registerWhiteboardAgentTools } from './whiteboard';
 

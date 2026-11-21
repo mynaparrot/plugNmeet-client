@@ -89,23 +89,23 @@ export const formatAIAgentElapsed = (startedAtMs?: number, nowMs: number = Date.
 
 export interface IStatusBarVisibility {
   isSessionRoom: boolean;
-  isModerator: boolean;
+  /** A moderator or an authorized participant of a 1-on-1 session. */
+  canControl: boolean;
   agent: IAIAgentState | null;
 }
 
 /**
- * The bar lives in AI session rooms only. Moderators see it before a start so
- * they can launch the agent; everyone else sees it once the agent is running,
- * which is also when their controls (pause/resume) first appear - so the pill
- * never changes width after it shows up.
+ * The bar lives in AI session rooms only. Whoever may drive the session sees it
+ * before a start so they can launch the agent, and again once the agent stops so
+ * they can start it over; everyone else sees it once the agent is running.
  */
 export const shouldShowAIAgentStatusBar = ({
   isSessionRoom,
-  isModerator,
+  canControl,
   agent,
 }: IStatusBarVisibility): boolean => {
   if (!isSessionRoom) {
     return false;
   }
-  return isModerator || isAIAgentRunning(agent);
+  return canControl || isAIAgentRunning(agent);
 };

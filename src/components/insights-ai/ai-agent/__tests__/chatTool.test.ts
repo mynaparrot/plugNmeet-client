@@ -19,7 +19,7 @@ vi.mock('../../ai-text-chat/helpers/renderMarkdown', () => ({
   renderMarkdown: (raw: string) => `<p>${raw.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')}</p>`,
 }));
 
-import { executePublishChatMessageTool } from '../chatTool';
+import { executePublishChatMessageTool } from '../chat/chatTool';
 
 const setChatFeatures = (features?: { isAllow: boolean }) => {
   hoisted.roomState.current = {

@@ -252,27 +252,40 @@ describe('formatAIAgentElapsed', () => {
 describe('ai agent status bar visibility', () => {
   it('shows the bar only inside an AI session room', () => {
     expect(
-      shouldShowAIAgentStatusBar({ isSessionRoom: false, isModerator: true, agent: agentState() }),
+      shouldShowAIAgentStatusBar({ isSessionRoom: false, canControl: true, agent: agentState() }),
     ).toBe(false);
     expect(
-      shouldShowAIAgentStatusBar({ isSessionRoom: false, isModerator: true, agent: null }),
+      shouldShowAIAgentStatusBar({ isSessionRoom: false, canControl: true, agent: null }),
     ).toBe(false);
   });
 
-  it('shows the bar for moderators before the agent starts', () => {
+  it('shows the bar for whoever may control the agent before it starts', () => {
+    expect(shouldShowAIAgentStatusBar({ isSessionRoom: true, canControl: true, agent: null })).toBe(
+      true,
+    );
+  });
+
+  it('keeps the bar for the participant after the agent stopped, so they can start it again', () => {
+    expect(shouldShowAIAgentStatusBar({ isSessionRoom: true, canControl: true, agent: null })).toBe(
+      true,
+    );
     expect(
-      shouldShowAIAgentStatusBar({ isSessionRoom: true, isModerator: true, agent: null }),
+      shouldShowAIAgentStatusBar({
+        isSessionRoom: true,
+        canControl: true,
+        agent: agentState({ state: AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_STOPPED }),
+      }),
     ).toBe(true);
   });
 
-  it('waits for a running agent before showing the bar to students', () => {
+  it('waits for a running agent before showing the bar to everyone else', () => {
     expect(
-      shouldShowAIAgentStatusBar({ isSessionRoom: true, isModerator: false, agent: null }),
+      shouldShowAIAgentStatusBar({ isSessionRoom: true, canControl: false, agent: null }),
     ).toBe(false);
     expect(
       shouldShowAIAgentStatusBar({
         isSessionRoom: true,
-        isModerator: false,
+        canControl: false,
         agent: agentState({
           state: AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_STOPPED,
         }),
@@ -281,7 +294,7 @@ describe('ai agent status bar visibility', () => {
     expect(
       shouldShowAIAgentStatusBar({
         isSessionRoom: true,
-        isModerator: false,
+        canControl: false,
         agent: agentState(),
       }),
     ).toBe(true);

@@ -12,6 +12,7 @@ import TextBoxArea from './textBoxArea';
 import { useAiTextChat } from '../useAiTextChat';
 import { PopupCloseSVGIcon } from '../../../../assets/Icons/PopupCloseSVGIcon';
 import { ScrollToBottomIconSVG } from '../../../../assets/Icons/ScrollToBottom';
+import { cleanHtmlForChat } from '../../../../helpers/utils';
 import { getAIAgentDisplayName, isAIAgentRunning } from '../../ai-agent/ui/statusModel';
 import {
   isAIAgentAutoStart,
@@ -35,6 +36,7 @@ const InsightsAiTextChat = () => {
   const { finalMessages, interimMessage, isAwaitingResponse, send } = useAiTextChat();
 
   const isAgentChat = useAppSelector(selectIsAIAgentChatEnabled);
+  const isAdmin = useAppSelector((state) => !!state.session.currentUser?.metadata?.isAdmin);
   const aiName = isAgentChat
     ? getAIAgentDisplayName(agent, agentFeatures?.agentDisplayName)
     : t('insights.ai-text-chat.name');
@@ -63,6 +65,18 @@ const InsightsAiTextChat = () => {
     }
     return messages;
   }, [parsedFinalMessages, interimMessage]);
+
+  const welcomeTitle = isAgentChat
+    ? t('insights.ai-text-chat.welcome.agent-title', { name: aiName })
+    : t('insights.ai-text-chat.welcome.assistant-title');
+
+  const welcomeDesc = useMemo(() => {
+    const desc = isAgentChat
+      ? t('insights.ai-text-chat.welcome.agent-desc')
+      : t('insights.ai-text-chat.welcome.assistant-desc') +
+        (isAdmin ? t('insights.ai-text-chat.welcome.moderator-desc') : '');
+    return cleanHtmlForChat(desc);
+  }, [isAgentChat, isAdmin, t]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -176,6 +190,16 @@ const InsightsAiTextChat = () => {
                   onScroll={handleScroll}
                 >
                   <div>
+                    <div className="my-2.5 rounded-xl border border-Gray-200 bg-white p-3.5 text-xs text-Gray-700 md:text-sm dark:border-Gray-700 dark:bg-dark-secondary dark:text-Gray-200">
+                      <div className="mb-2 text-sm font-semibold text-Gray-950 dark:text-white">
+                        {welcomeTitle}
+                      </div>
+                      <div
+                        dir="auto"
+                        className="message-content break-words"
+                        dangerouslySetInnerHTML={{ __html: welcomeDesc }}
+                      />
+                    </div>
                     {allMessages.map((msg) => {
                       if (!msg) return null;
 

@@ -1029,7 +1029,14 @@
       "enable-whiteboard-ai": "Enable AI in whiteboard",
       "enable-poll-ai": "Enable AI in polls",
       "feature-disabled": "AI features are not enabled for this room.",
-      "not-allowed": "You are not allowed to use this service."
+      "not-allowed": "You are not allowed to use this service.",
+      "welcome": {
+        "assistant-title": "Hi! I'm your AI Meeting Assistant",
+        "assistant-desc": "<p>Your private AI chat for this session. Only you can see this conversation.</p><ul><li>Ask questions, clarify concepts, or get step-by-step explanations</li><li>Draft notes, summarize discussions, or translate text</li><li>Paste text, code, or formulas for instant review</li></ul>",
+        "moderator-desc": "<p><strong>Moderator tools you can trigger by chat:</strong></p><ul><li>Create polls or quizzes and share results in public chat</li><li>Generate content on the Whiteboard or Shared Notepad</li><li>Post announcements, start timers, or manage room features</li></ul>",
+        "agent-title": "Chat with {{name}}",
+        "agent-desc": "<p>This chat is connected to your live AI Agent session — speak or type interchangeably.</p><ul><li>Type questions or answers whenever you prefer not to use your mic</li><li>Paste longer text, code, or exercises for the agent to walk through</li><li>Ask the agent to illustrate on the Whiteboard or write in the Shared Notepad</li><li>Receive written summaries, formulas, and structured notes from the agent</li></ul>"
+      }
     },
     "meeting-summarization": {
       "enable": "Enable meeting summarization",
@@ -1216,7 +1223,6 @@
   },
   "ai-agent": {
     "controls": "AI Assistant controls",
-    "controls-short": "Controls",
     "start": "Start AI Assistant",
     "pause": "Pause",
     "resume": "Resume",

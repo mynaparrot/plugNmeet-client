@@ -12,6 +12,7 @@ import {
 import Tooltip from '../../../../helpers/ui/tooltip';
 import { Microphone } from '../../../../assets/Icons/Microphone';
 import { MicrophoneOff } from '../../../../assets/Icons/MicrophoneOff';
+import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
 import { applyAIAgentState } from '../agentState';
 import { getAIAgentStatus, isAIAgentLiveState } from '../api';
 import { getAIAgentAllowedParticipantIds, isAIAgentSessionRoom } from '../../featureGate';
@@ -82,7 +83,7 @@ const AIAgentStatusBar = () => {
     };
   }, [isSessionRoom, agent]);
 
-  if (!shouldShowAIAgentStatusBar({ isSessionRoom, isModerator, agent })) {
+  if (!shouldShowAIAgentStatusBar({ isSessionRoom, canControl, agent })) {
     return null;
   }
 
@@ -102,28 +103,36 @@ const AIAgentStatusBar = () => {
         aria-hidden="true"
         className={clsx('w-2 h-2 rounded-full shrink-0', TONE_DOT_CLASSES[status.tone])}
       />
-      <span
-        title={agentName}
-        className={clsx('max-w-36 truncate font-medium', DRAG_HANDLE_CLASSES)}
-      >
-        {agentName}
-      </span>
-      <span aria-hidden="true" className="text-Gray-400 dark:text-Gray-500">
-        ·
-      </span>
+      <Tooltip text={agentName} position="bottom">
+        <span
+          aria-label={agentName}
+          className={clsx(
+            'w-5 h-5 rounded-md bg-Blue/10 dark:bg-Blue/20 text-Blue dark:text-white inline-flex items-center justify-center shrink-0',
+            DRAG_HANDLE_CLASSES,
+          )}
+        >
+          <AiIconSVG classes="h-3.5 w-3.5" />
+        </span>
+      </Tooltip>
       <span
         aria-live="polite"
         title={displayStatus}
-        className={clsx('max-w-36 truncate text-Gray-600 dark:text-Gray-300', DRAG_HANDLE_CLASSES)}
+        className={clsx(
+          'max-w-24 sm:max-w-36 truncate text-Gray-600 dark:text-Gray-300',
+          DRAG_HANDLE_CLASSES,
+        )}
       >
         {displayStatus}
       </span>
       {elapsedTime && (
         <>
-          <span aria-hidden="true" className="text-Gray-400 dark:text-Gray-500">
+          <span aria-hidden="true" className="hidden sm:inline text-Gray-400 dark:text-Gray-500">
             ·
           </span>
-          <span dir="ltr" className="tabular-nums font-medium text-Gray-700 dark:text-Gray-200">
+          <span
+            dir="ltr"
+            className="hidden sm:inline tabular-nums font-medium text-Gray-700 dark:text-Gray-200"
+          >
             {elapsedTime}
           </span>
         </>
@@ -147,9 +156,10 @@ const AIAgentStatusBar = () => {
       </Tooltip>
       {canControl && (
         <AIAgentControlPanel
-          isModerator={isModerator}
           canControl={canControl}
           elapsedTime={elapsedTime}
+          agentName={agentName}
+          statusLabel={displayStatus}
         />
       )}
     </div>

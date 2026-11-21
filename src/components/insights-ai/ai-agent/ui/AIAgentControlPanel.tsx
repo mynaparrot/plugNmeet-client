@@ -16,26 +16,30 @@ import {
   stopAIAgent,
 } from '../api';
 import { isAIAgentPaused, isAIAgentRunning } from './statusModel';
+import { AiIconSVG } from '../../../../assets/Icons/AiIconSVG';
 import { DropdownIconSVG } from '../../../../assets/Icons/DropdownIconSVG';
 
 const buttonClass =
-  'h-7 px-2.5 rounded-md text-xs font-medium transition-colors cursor-pointer focus-ring disabled:opacity-50 disabled:cursor-not-allowed';
+  'h-8 px-3 rounded-lg text-xs font-medium transition-colors cursor-pointer focus-ring disabled:opacity-50 disabled:cursor-not-allowed';
 
 interface IAIAgentControlPanelProps {
-  isModerator: boolean;
   canControl: boolean;
   /** Live connected timer from the status bar; null when nothing is running. */
   elapsedTime: string | null;
+  agentName: string;
+  /** Localized current status; shown while no timer is running yet. */
+  statusLabel: string;
 }
 
 /**
- * Start/pause/resume/stop controls. Moderators get every action; a student in
- * a 1-on-1 session may only pause and resume a running agent.
+ * Start/pause/resume/stop controls for everyone the server lets drive the
+ * session: a moderator, or the participant of a 1-on-1 AI session.
  */
 const AIAgentControlPanel = ({
-  isModerator,
   canControl,
   elapsedTime,
+  agentName,
+  statusLabel,
 }: IAIAgentControlPanelProps) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
@@ -66,7 +70,7 @@ const AIAgentControlPanel = ({
     }
   };
 
-  const showStart = isModerator && !isRunning;
+  const showStart = canControl && !isRunning;
   const showPauseResume = canControl && isRunning;
 
   if (!showStart && !showPauseResume) {
@@ -77,28 +81,39 @@ const AIAgentControlPanel = ({
     <Popover className="relative">
       <PopoverButton
         aria-label={t('ai-agent.controls')}
-        className="h-6 px-1.5 flex items-center gap-0.5 rounded-md text-[11px] font-medium text-Gray-700 dark:text-dark-text hover:bg-Gray-100 dark:hover:bg-Gray-700 cursor-pointer focus-ring"
+        className="w-6 h-6 shrink-0 flex items-center justify-center rounded-md text-Gray-700 dark:text-dark-text hover:bg-Gray-100 dark:hover:bg-Gray-700 cursor-pointer focus-ring transition-transform data-[open]:rotate-180"
       >
-        {t('ai-agent.controls-short')}
         <DropdownIconSVG />
       </PopoverButton>
 
       <PopoverPanel
         anchor="bottom end"
         transition
-        className="z-9999 w-48 p-2.5 mt-1.5 rounded-lg bg-white dark:bg-dark-secondary2 border border-Gray-200 dark:border-Gray-700 shadow-lg transition data-[closed]:opacity-0 data-[closed]:scale-95"
+        className="z-9999 w-64 p-3.5 mt-1.5 rounded-xl bg-white dark:bg-dark-secondary2 border border-Gray-200 dark:border-Gray-700 shadow-lg transition data-[closed]:opacity-0 data-[closed]:scale-95"
       >
-        <div className="flex flex-col gap-2">
-          {showPauseResume && elapsedTime && (
-            <div className="flex items-baseline justify-between gap-2 pb-2 border-b border-Gray-200 dark:border-Gray-700">
-              <span className="text-[11px] font-medium text-Gray-600 dark:text-Gray-300">
-                {t('ai-agent.connected-time')}
+        <div className="flex flex-col gap-2.5">
+          <div className="flex items-center gap-2.5 pb-3 border-b border-Gray-200 dark:border-Gray-700">
+            <span className="w-8 h-8 rounded-lg bg-Blue/10 dark:bg-Blue/20 text-Blue dark:text-white flex items-center justify-center shrink-0">
+              <AiIconSVG classes="h-4 w-4" />
+            </span>
+            <div className="min-w-0 flex-1 flex flex-col gap-0.5">
+              <span className="text-xs font-semibold text-Gray-950 dark:text-white truncate">
+                {agentName}
               </span>
-              <span dir="ltr" className="text-xs font-semibold tabular-nums">
-                {elapsedTime}
+              <span className="text-[11px] font-medium text-Gray-600 dark:text-Gray-300 truncate">
+                {showPauseResume && elapsedTime ? (
+                  <>
+                    {t('ai-agent.connected-time')}:{' '}
+                    <span dir="ltr" className="tabular-nums">
+                      {elapsedTime}
+                    </span>
+                  </>
+                ) : (
+                  statusLabel
+                )}
               </span>
             </div>
-          )}
+          </div>
           {showStart && (
             <button
               type="button"
@@ -110,7 +125,7 @@ const AIAgentControlPanel = ({
             </button>
           )}
           {showPauseResume && (
-            <div className="flex gap-2">
+            <div className="flex gap-2.5">
               <button
                 type="button"
                 disabled={isBusy}
@@ -122,16 +137,14 @@ const AIAgentControlPanel = ({
               >
                 {isPaused ? t('ai-agent.resume') : t('ai-agent.pause')}
               </button>
-              {isModerator && (
-                <button
-                  type="button"
-                  disabled={isBusy}
-                  onClick={() => run(() => stopAIAgent('host_stopped'))}
-                  className={clsx(buttonClass, 'flex-1 bg-Red-600 text-white hover:bg-Red-700')}
-                >
-                  {t('ai-agent.stop')}
-                </button>
-              )}
+              <button
+                type="button"
+                disabled={isBusy}
+                onClick={() => run(() => stopAIAgent())}
+                className={clsx(buttonClass, 'flex-1 bg-Red-600 text-white hover:bg-Red-700')}
+              >
+                {t('ai-agent.stop')}
+              </button>
             </div>
           )}
         </div>

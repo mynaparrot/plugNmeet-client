@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
@@ -18,16 +18,29 @@ import {
   TICK_INTERVAL_MS,
   type CountdownTimerStatus,
 } from '../utils';
+import { isAIAgentSessionRoom } from '../../../helpers/aiAgentSession';
 
 const useCountdownTimerState = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
+  // all static data
+  const { isAdmin, isRecorder, isAIAgentSession } = useMemo(() => {
+    const session = store.getState().session;
+    const isAdmin = session.currentUser?.metadata?.isAdmin;
+    const isRecorder = session.currentUser?.isRecorder;
+    const isAIAgentSession = isAIAgentSessionRoom(session.currentRoom.metadata);
+
+    return {
+      isAdmin,
+      isRecorder,
+      isAIAgentSession,
+    };
+  }, []);
+
   const timerFeatures = useAppSelector(
     (state) => state.session.currentRoom.metadata?.roomFeatures?.countdownTimerFeatures,
   );
-  const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
-  const isRecorder = store.getState().session.currentUser?.isRecorder;
 
   const status = (timerFeatures?.status || 'idle') as CountdownTimerStatus;
   const endTime = Number(timerFeatures?.endTime ?? 0);
@@ -113,6 +126,7 @@ const useCountdownTimerState = () => {
   return {
     isAdmin: !!isAdmin,
     isRecorder: !!isRecorder,
+    isAIAgentSession,
     isAllow: !!timerFeatures?.isAllow,
     isActive: !!timerFeatures?.isActive,
     status,

@@ -23,6 +23,7 @@ const CountdownTimer = () => {
   const {
     isAdmin,
     isRecorder,
+    isAIAgentSession,
     isAllow,
     isActive,
     formattedTime,
@@ -44,49 +45,50 @@ const CountdownTimer = () => {
   const badgeState: ITimerBadgeState = { isIdle, isPaused, isUrgent, isFinished };
   const badgeClasses = getTimerBadgeClasses(badgeState);
 
-  const badge = isAdmin ? (
-    <Popover className="relative">
-      <PopoverButton
+  const badge =
+    isAdmin && !isAIAgentSession ? (
+      <Popover className="relative">
+        <PopoverButton
+          aria-label={t('countdown-timer.aria-label')}
+          className={clsx(
+            'group cursor-pointer focus-ring countdown-timer-drag-handle max-md:cursor-move max-md:touch-none',
+            badgeClasses,
+          )}
+        >
+          <TimerBadgeContent {...badgeState} formattedTime={formattedTime} showChevron />
+        </PopoverButton>
+        <PopoverPanel
+          anchor="bottom start"
+          transition
+          className="w-80 max-w-[calc(100vw-2rem)] p-3 rounded-md shadow-lg z-50 bg-white dark:bg-dark-primary border border-Gray-100 dark:border-Gray-700 focus:outline-hidden [--anchor-gap:8px] transition ease-out data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150"
+        >
+          <AdminPanel
+            isIdle={isIdle}
+            isPaused={isPaused}
+            isFinished={isFinished}
+            formattedTime={formattedTime}
+            isLoading={isLoading}
+            onStart={(durationSeconds) => void startTimer(durationSeconds)}
+            onPause={pauseTimer}
+            onResume={resumeTimer}
+            onExtend={extendTimer}
+            onEndTimer={stopTimer}
+          />
+        </PopoverPanel>
+      </Popover>
+    ) : (
+      <div
+        role="timer"
+        aria-live="off"
         aria-label={t('countdown-timer.aria-label')}
         className={clsx(
-          'group cursor-pointer focus-ring countdown-timer-drag-handle max-md:cursor-move max-md:touch-none',
+          'countdown-timer-drag-handle max-md:cursor-move max-md:touch-none',
           badgeClasses,
         )}
       >
-        <TimerBadgeContent {...badgeState} formattedTime={formattedTime} showChevron />
-      </PopoverButton>
-      <PopoverPanel
-        anchor="bottom start"
-        transition
-        className="w-80 max-w-[calc(100vw-2rem)] p-3 rounded-md shadow-lg z-50 bg-white dark:bg-dark-primary border border-Gray-100 dark:border-Gray-700 focus:outline-hidden [--anchor-gap:8px] transition ease-out data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150"
-      >
-        <AdminPanel
-          isIdle={isIdle}
-          isPaused={isPaused}
-          isFinished={isFinished}
-          formattedTime={formattedTime}
-          isLoading={isLoading}
-          onStart={(durationSeconds) => void startTimer(durationSeconds)}
-          onPause={pauseTimer}
-          onResume={resumeTimer}
-          onExtend={extendTimer}
-          onEndTimer={stopTimer}
-        />
-      </PopoverPanel>
-    </Popover>
-  ) : (
-    <div
-      role="timer"
-      aria-live="off"
-      aria-label={t('countdown-timer.aria-label')}
-      className={clsx(
-        'countdown-timer-drag-handle max-md:cursor-move max-md:touch-none',
-        badgeClasses,
-      )}
-    >
-      <TimerBadgeContent {...badgeState} formattedTime={formattedTime} />
-    </div>
-  );
+        <TimerBadgeContent {...badgeState} formattedTime={formattedTime} />
+      </div>
+    );
 
   return (
     <Draggable

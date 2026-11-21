@@ -1,7 +1,7 @@
-import { getNatsConn } from '../../../helpers/nats';
-import { store } from '../../../store';
-import { renderMarkdown } from '../ai-text-chat/helpers/renderMarkdown';
-import type { AIAgentToolHandler } from './toolDispatcher';
+import { getNatsConn } from '../../../../helpers/nats';
+import { store } from '../../../../store';
+import { renderMarkdown } from '../../ai-text-chat/helpers/renderMarkdown';
+import type { AIAgentToolHandler } from '../toolDispatcher';
 
 export const PUBLISH_CHAT_MESSAGE_TOOL = 'publish_chat_message';
 
