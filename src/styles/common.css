@@ -481,9 +481,73 @@ body[dir='rtl'] .rtl\:microphone-rtl-left::before {
   transition: none !important;
 }
 
-/* Fenced code blocks inside regular chat bubbles. Same dark block look as
-   markdown-content, scoped to chat so AI styles stay untouched. */
+/* Rendered message bodies in the regular chat bubbles. Tailwind Preflight zeroes
+   out heading, list, table and paragraph defaults, so restore a compact
+   typography scale here. Only descendant rules are used because the same class
+   also tags plain-text subtitle/transcript lines. */
 .message-content {
+  & p {
+    @apply my-1.5;
+  }
+  /* single-paragraph chat messages should not gain extra bubble padding */
+  & p:first-child {
+    @apply mt-0;
+  }
+  & p:last-child {
+    @apply mb-0;
+  }
+  & h1 {
+    @apply text-base font-bold mt-3 mb-1.5;
+  }
+  & h2 {
+    @apply text-[15px] font-bold mt-3 mb-1.5;
+  }
+  & h3 {
+    @apply text-sm font-semibold mt-2.5 mb-1;
+  }
+  & h4,
+  & h5,
+  & h6 {
+    @apply text-sm font-semibold mt-2 mb-1;
+  }
+  & ul {
+    @apply list-disc ps-5 my-1.5;
+  }
+  & ol {
+    @apply list-decimal ps-5 my-1.5;
+  }
+  & li {
+    @apply my-0.5;
+  }
+  & li > p {
+    @apply my-0.5;
+  }
+  & ul,
+  & ol {
+    & ul,
+    & ol {
+      @apply my-0.5 ps-4;
+    }
+  }
+  & blockquote {
+    @apply border-s-[3px] border-Gray-300 dark:border-Gray-600 ps-3 my-2 opacity-90;
+  }
+  /* file attachment cards carry their own link styling */
+  & a:not(.attachment-message) {
+    @apply text-Blue underline break-words;
+  }
+  & table {
+    @apply my-2 block overflow-x-auto text-xs;
+  }
+  & th {
+    @apply border border-Gray-200 dark:border-Gray-700 bg-Gray-50 dark:bg-Gray-800 px-2 py-1 font-semibold text-start;
+  }
+  & td {
+    @apply border border-Gray-200 dark:border-Gray-700 px-2 py-1;
+  }
+  & hr {
+    @apply my-3 border-t border-Gray-200 dark:border-Gray-700;
+  }
   & pre {
     @apply my-2 p-3 rounded-lg overflow-x-auto text-xs text-gray-100 bg-code-block leading-normal font-mono whitespace-pre;
   }

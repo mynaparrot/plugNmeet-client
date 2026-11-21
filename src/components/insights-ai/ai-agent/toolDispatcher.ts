@@ -10,6 +10,7 @@ import {
 import { store } from '../../../store';
 import { getNatsConn } from '../../../helpers/nats';
 import { executeNotepadReadTool, executeNotepadWriteTool } from './shared-notepad/notepadTool';
+import { executePublishChatMessageTool, PUBLISH_CHAT_MESSAGE_TOOL } from './chatTool';
 import { registerClientApiTools } from './clientApiTools';
 import { registerWhiteboardAgentTools } from './whiteboard';
 
@@ -21,6 +22,7 @@ export type AIAgentToolHandler = (
 const toolHandlers = new Map<string, AIAgentToolHandler>([
   ['notepad_write', executeNotepadWriteTool],
   ['notepad_read', executeNotepadReadTool],
+  [PUBLISH_CHAT_MESSAGE_TOOL, executePublishChatMessageTool],
 ]);
 
 /**
