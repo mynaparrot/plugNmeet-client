@@ -47,6 +47,12 @@ const hoisted = vi.hoisted(() => {
     board,
     dispatch: vi.fn(),
     conn: { sendMessageToSystemWorker: vi.fn() },
+    // Conversion happens in the fake Excalidraw below; recording the order lets
+    // a test prove the webfonts are loaded first, and `shrinkText` makes the
+    // fake converter measure with the narrower fallback font, as a real
+    // conversion does before the hand-drawn webfont is ready.
+    order: [] as string[],
+    shrinkText: { value: false },
     roomState: { current: {} as Record<string, unknown> },
     parseMermaid: vi.fn(
       async (
@@ -59,7 +65,7 @@ const hoisted = vi.hoisted(() => {
   };
 });
 
-const { board, conn, dispatch, roomState } = hoisted;
+const { board, conn, dispatch, order, roomState, shrinkText } = hoisted;
 
 const buildRoomState = () => ({
   session: {
@@ -119,8 +125,22 @@ vi.mock('../../../whiteboard/helpers/liveScene', () => ({
 // becomes a separate bound text element (with a fresh id and no customData) the
 // way the real converter does it, and the exporter has no canvas here.
 vi.mock('@excalidraw/excalidraw', () => ({
-  convertToExcalidrawElements: (skeletons: Record<string, unknown>[]) =>
-    skeletons.flatMap((skeleton) => {
+  convertToExcalidrawElements: (skeletons: Record<string, unknown>[]) => {
+    hoisted.order.push('convert');
+    return skeletons.flatMap((skeleton) => {
+      if (skeleton.type === 'text' && hoisted.shrinkText.value) {
+        // What `newTextElement` bakes in when `ctx.measureText` runs against
+        // the CSS fallback font instead of the hand-drawn one.
+        const text = String(skeleton.text ?? '');
+        const fontSize = Number(skeleton.fontSize ?? 20);
+        return [
+          {
+            ...skeleton,
+            width: Math.round(text.length * fontSize * 0.3),
+            height: Math.round(fontSize * 1.25),
+          },
+        ];
+      }
       const label = skeleton.label as { text?: string } | undefined;
       if (!label?.text) {
         return [skeleton];
@@ -140,7 +160,8 @@ vi.mock('@excalidraw/excalidraw', () => ({
           containerId: skeleton.id,
         },
       ];
-    }),
+    });
+  },
   exportScene: vi.fn(async () => {
     throw new Error('no canvas in tests');
   }),
@@ -182,9 +203,12 @@ import {
   updateIsActiveWhiteboard,
 } from '../../../../store/slices/bottomIconsActivitySlice';
 import {
+  AGENT_FONT_FAMILY,
   formatWhiteboardText,
   measureText,
   resolveContrastingStrokeColor,
+  toExcalidrawElements,
+  wrapTextToWidth,
 } from '../whiteboard/agentElements';
 import type { AgentHistoryEntry } from '../whiteboard/agentHistory';
 import {
@@ -198,6 +222,7 @@ import {
   BLOCK_GAP,
   FRAME_PADDING,
   MAX_A4_PAGES,
+  centeredFreeSlot,
   clampToA4Bounds,
   fitInsideAnchor,
   getBoardFrame,
@@ -233,7 +258,10 @@ import {
 import { executeWhiteboardDrawShapesTool } from '../whiteboard/tools/drawShapesTool';
 import { executeWhiteboardLaserPointTool } from '../whiteboard/tools/laserPointTool';
 import { executeWhiteboardManageBoardTool } from '../whiteboard/tools/manageBoardTool';
-import { executeWhiteboardWriteContentTool } from '../whiteboard/tools/writeContentTool';
+import {
+  executeWhiteboardWriteContentTool,
+  reconcileConvertedBlocks,
+} from '../whiteboard/tools/writeContentTool';
 
 const element = (over: Partial<FakeElement> = {}): ExcalidrawElement =>
   ({
@@ -275,6 +303,10 @@ const laserPoints = (): { x: number; y: number }[] =>
 
 beforeEach(() => {
   vi.clearAllMocks();
+  // The fake converter is stateful: a test that forces fallback measurements
+  // must not change how the next one converts.
+  order.length = 0;
+  shrinkText.value = false;
   clearAgentHistory();
   roomState.current = buildRoomState();
   board.scene = [];
@@ -592,6 +624,123 @@ describe('formatWhiteboardText', () => {
   });
 });
 
+describe('text measurement and wrapping', () => {
+  it('measures glyph classes the way the hand-drawn font is drawn', () => {
+    const narrow = measureText('ill', 60);
+    const wide = measureText('MW', 60);
+    const cjk = measureText('数学', 60);
+
+    // Narrow glyphs stay well below a wide capital, and CJK takes a full em.
+    expect(narrow.width).toBeLessThan(wide.width);
+    expect(wide.width).toBe(102);
+    expect(cjk.width).toBe(120);
+    // Excalidraw breathes more than a plain UI font: 1.35 line height.
+    expect(measureText('one\ntwo', 20).height).toBe(54);
+    // An empty string still reports a box that can hold a caret.
+    expect(measureText('', 20)).toEqual({ width: 40, height: 27 });
+  });
+
+  it('wraps at word boundaries and keeps the lines that were given', () => {
+    const wrapped = wrapTextToWidth('one two three four', 20, 80);
+
+    const lines = wrapped.split('\n');
+    // Every line fits, and no word is cut in half.
+    for (const line of lines) {
+      expect(measureText(line, 20).width).toBeLessThanOrEqual(80);
+      expect(line.trim()).toBe(line);
+      expect(line.split(' ').every((word) => ['one', 'two', 'three', 'four'].includes(word))).toBe(
+        true,
+      );
+    }
+    expect(lines.join(' ')).toBe('one two three four');
+
+    // An explicit line break survives, and short text is left alone.
+    expect(wrapTextToWidth('a\nb', 20, 80)).toBe('a\nb');
+    expect(wrapTextToWidth('short', 20, 400)).toBe('short');
+  });
+
+  it('breaks a single word that is wider than the line', () => {
+    const wrapped = wrapTextToWidth('x'.repeat(30), 20, 100);
+    const lines = wrapped.split('\n');
+
+    expect(lines.length).toBeGreaterThan(1);
+    for (const line of lines) {
+      expect(measureText(line, 20).width).toBeLessThanOrEqual(100);
+    }
+    // Nothing is lost while breaking.
+    expect(lines.join('')).toBe('x'.repeat(30));
+  });
+});
+
+describe('agent text box sizing', () => {
+  it('loads the hand-drawn webfonts before converting skeletons', async () => {
+    const load = vi.fn(async (font: string) => {
+      order.push(`font:${font}`);
+      return [];
+    });
+    const scope = globalThis as { document?: unknown };
+    const previous = scope.document;
+    scope.document = { fonts: { load } };
+    try {
+      await toExcalidrawElements([
+        { id: 'ai_text', type: 'text', x: 0, y: 0, text: 'Hello', fontSize: 20 },
+      ]);
+    } finally {
+      scope.document = previous;
+    }
+
+    // Measuring before the webfont exists bakes a narrower width in, so both
+    // hand-drawn families are awaited before the conversion runs.
+    expect(load).toHaveBeenCalledWith('20px Excalifont');
+    expect(load).toHaveBeenCalledWith('20px Virgil');
+    expect(order).toEqual(['font:20px Excalifont', 'font:20px Virgil', 'convert']);
+  });
+
+  it('never leaves standalone text narrower than the hand-drawn metrics', async () => {
+    shrinkText.value = true;
+    const text = 'A shared space to meet, learn, and collaborate';
+    const elements = await toExcalidrawElements([
+      {
+        id: 'ai_text',
+        type: 'text',
+        x: 0,
+        y: 0,
+        text,
+        fontSize: 20,
+        fontFamily: AGENT_FONT_FAMILY,
+        textAlign: 'left',
+      },
+    ]);
+
+    const [element] = elements as unknown as { width: number; height: number }[];
+    const metrics = measureText(text, 20);
+    // Excalidraw's fallback measurement clipped the line mid-character; the
+    // floored box keeps the whole sentence inside the element's canvas.
+    expect(element.width).toBeGreaterThanOrEqual(metrics.width);
+    expect(element.height).toBeGreaterThanOrEqual(metrics.height);
+  });
+
+  it('leaves a centred bound label to the container that sizes it', async () => {
+    shrinkText.value = true;
+    const elements = (await toExcalidrawElements([
+      {
+        id: 'ai_card',
+        type: 'rectangle',
+        x: 0,
+        y: 0,
+        width: 320,
+        height: 180,
+        label: { text: 'A shared space to meet', fontSize: 18, fontFamily: AGENT_FONT_FAMILY },
+      },
+    ])) as unknown as { type: string; width: number; containerId?: string }[];
+
+    const label = elements.find((entry) => entry.type === 'text');
+    // Widening a centred label would shift it out of the middle of its card.
+    expect(label?.containerId).toBe('ai_card');
+    expect(label?.width).toBe(320);
+  });
+});
+
 describe('whiteboard_write_content', () => {
   it('writes tagged, positioned blocks and reports the bounding box', async () => {
     const result = await executeWhiteboardWriteContentTool({
@@ -745,7 +894,7 @@ describe('whiteboard_write_content', () => {
     // No separator lines any more: every cell is a bordered rectangle.
     expect(written.some((el) => el.type === 'line')).toBe(false);
     for (const cell of cells) {
-      expect(cell.label).toMatchObject({ text: expect.any(String), fontFamily: 1 });
+      expect(cell.label).toMatchObject({ text: expect.any(String), fontFamily: AGENT_FONT_FAMILY });
       expect(cell.fillStyle).toBe('solid');
       expect(cell.strokeWidth).toBe(1);
     }
@@ -935,7 +1084,7 @@ describe('whiteboard_write_content', () => {
 
   it('wraps sticky notes onto a new row once the width is used up', async () => {
     const text = 'x'.repeat(40);
-    const padding = 36;
+    const padding = 44;
 
     await executeWhiteboardWriteContentTool({
       style: 'sticky_note',
@@ -963,7 +1112,7 @@ describe('whiteboard_write_content', () => {
     const right = frame.x + frame.width - FRAME_PADDING;
     board.scene = [element({ id: 'column', x: left, y: top, width: 400, height: 120 })];
 
-    // 234px per card: two fit in the gap the left column leaves (696px).
+    // 267px per card: two fit in the gap the left column leaves (696px).
     const text = 'x'.repeat(18);
     await executeWhiteboardWriteContentTool({
       style: 'sticky_note',
@@ -985,6 +1134,67 @@ describe('whiteboard_write_content', () => {
     expect(cards[3].x).toBe(cards[1].x);
   });
 
+  it('wraps a long body line inside the page instead of running off it', async () => {
+    const frame = getBoardFrame([]);
+    const long = 'Present perfect continuous describes an action that started in the past. '.repeat(
+      3,
+    );
+
+    await executeWhiteboardWriteContentTool({ style: 'body', blocks: [{ text: long }] });
+
+    const text = writtenElements().find((el) => el.type === 'text');
+    expect(String(text?.text)).toContain('\n');
+    expect(Number(text?.width)).toBeLessThanOrEqual(maxA4ContentWidth(frame));
+    for (const line of String(text?.text).split('\n')) {
+      expect(measureText(line, 20).width).toBeLessThanOrEqual(maxA4ContentWidth(frame));
+    }
+  });
+
+  it('writes text at the coordinates the model measured under a design', async () => {
+    const frame = getBoardFrame([]);
+
+    await executeWhiteboardWriteContentTool({
+      style: 'body',
+      x: frame.x + 300,
+      y: frame.y + 200,
+      blocks: [{ text: 'caption' }],
+    });
+
+    const text = writtenElements().find((el) => el.type === 'text');
+    expect(Number(text?.x)).toBe(Math.round(frame.x + 300));
+    expect(Number(text?.y)).toBe(Math.round(frame.y + 200));
+  });
+
+  it('centres a comparison table on the board', async () => {
+    const frame = getBoardFrame([]);
+
+    await executeWhiteboardWriteContentTool({
+      style: 'comparison_table',
+      blocks: [{ columns: ['Tense', 'Form'] }],
+    });
+
+    const cells = writtenElements().filter((el) => el.type === 'rectangle');
+    const left = Math.min(...cells.map((cell) => Number(cell.x)));
+    const right = Math.max(...cells.map((cell) => Number(cell.x) + Number(cell.width)));
+    expect(Math.round((left + right) / 2)).toBe(Math.round(frame.x + frame.width / 2));
+  });
+
+  it('keeps a highlight box as large as the text Excalidraw measured', async () => {
+    await executeWhiteboardWriteContentTool({
+      style: 'body',
+      blocks: [{ text: 'Note it down', emphasis: 'highlight' }],
+    });
+
+    const written = writtenElements();
+    const text = written.find((el) => el.type === 'text');
+    const box = written.find((el) => el.type === 'rectangle');
+    // The mark is re-fitted to the converted text, so it can never be too small.
+    expect(Number(box?.width)).toBe(Number(text?.width) + 12);
+    expect(Number(box?.height)).toBe(Number(text?.height) + 8);
+    expect(Number(box?.x)).toBe(Number(text?.x) - 6);
+    expect(Number(box?.y)).toBe(Number(text?.y) - 4);
+  });
+
   it('writes LaTeX maths as Unicode Excalidraw can actually render', async () => {
     await executeWhiteboardWriteContentTool({
       blocks: [
@@ -1003,6 +1213,80 @@ describe('whiteboard_write_content', () => {
     for (const text of texts) {
       expect(text).not.toMatch(/[$\\{}]/);
     }
+  });
+});
+
+describe('reconcileConvertedBlocks', () => {
+  const converted = (over: Record<string, unknown>): ExcalidrawElement =>
+    ({ ...element(), ...over }) as unknown as ExcalidrawElement;
+  const find = (elements: ExcalidrawElement[], id: string) =>
+    elements.find((el) => el.id === id) as FakeElement;
+
+  it('pushes the blocks below down when Excalidraw wraps a line taller', () => {
+    // Texts are measured by Excalidraw during the conversion: this one came out
+    // 27px taller than the estimate, so everything below it has to move.
+    const out = reconcileConvertedBlocks(
+      [
+        converted({ id: 'text-1', type: 'text', x: 20, y: 40, width: 100, height: 54 }),
+        converted({ id: 'next', type: 'rectangle', x: 20, y: 79, width: 100, height: 40 }),
+      ],
+      [
+        { ids: ['text-1'], y: 40, height: 27, textId: 'text-1' },
+        { ids: ['next'], y: 79, height: 40 },
+      ],
+    );
+
+    expect(find(out, 'next').y).toBe(79 + 27);
+  });
+
+  it('keeps a table row flush and centres the cell text in the grown row', () => {
+    const out = reconcileConvertedBlocks(
+      [
+        converted({ id: 'cell-a', type: 'rectangle', x: 20, y: 40, width: 140, height: 44 }),
+        converted({ id: 'cell-b', type: 'rectangle', x: 160, y: 40, width: 140, height: 70 }),
+        converted({
+          id: 'label-b',
+          type: 'text',
+          x: 170,
+          y: 50,
+          width: 100,
+          height: 30,
+          containerId: 'cell-b',
+        }),
+      ],
+      [{ ids: ['cell-a', 'cell-b'], y: 40, height: 44, row: true }],
+    );
+
+    // The short cell grows to the tallest one, so the borders stay a grid.
+    expect(find(out, 'cell-a')).toMatchObject({ y: 40, height: 70 });
+    expect(find(out, 'cell-b')).toMatchObject({ y: 40, height: 70 });
+    expect(find(out, 'label-b').y).toBe(60);
+  });
+
+  it('moves an underline with the block it marks', () => {
+    const out = reconcileConvertedBlocks(
+      [
+        converted({ id: 'up', type: 'text', x: 20, y: 40, width: 100, height: 27 }),
+        converted({ id: 'line', type: 'line', x: 20, y: 71, width: 100, height: 0 }),
+        converted({ id: 'text-2', type: 'text', x: 20, y: 200, width: 100, height: 54 }),
+        converted({ id: 'underline', type: 'line', x: 20, y: 254, width: 100, height: 0 }),
+      ],
+      [
+        { ids: ['up'], y: 40, height: 27, textId: 'up' },
+        {
+          ids: ['text-2', 'underline'],
+          y: 200,
+          height: 37,
+          textId: 'text-2',
+          underlineId: 'underline',
+        },
+      ],
+    );
+
+    // The second block starts where it was planned, not where the shift ended.
+    expect(find(out, 'text-2').y).toBe(200);
+    expect(find(out, 'underline').y).toBe(200 + 54 + 4);
+    expect(find(out, 'underline').width).toBe(100);
   });
 });
 
@@ -1362,6 +1646,68 @@ describe('layoutEngine placement', () => {
     expect(placed).toEqual({ x: 40 + 400 + BLOCK_GAP, y: 40 });
   });
 
+  it('centres a drawing and moves it left as it grows wider', () => {
+    const centred = (width: number) =>
+      resolvePlacement([], frame, { width, height: 100 }, 'free_space', undefined, {
+        centered: true,
+      });
+
+    // A narrow drawing sits on the middle line of the board.
+    expect(centred(200)).toEqual({ x: 500, y: 40 });
+    // A wider one grows both ways from that line...
+    expect(centred(700).x).toBe(250);
+    // ...until a page-wide one touches the guide on both sides.
+    expect(centred(maxA4ContentWidth(frame)).x).toBe(frame.x + FRAME_PADDING);
+    for (const width of [200, 700, maxA4ContentWidth(frame)]) {
+      const placed = centred(width);
+      expect(placed.x).toBeGreaterThanOrEqual(frame.x + FRAME_PADDING);
+      expect(placed.x + width).toBeLessThanOrEqual(frame.x + frame.width - FRAME_PADDING);
+    }
+  });
+
+  it('uses the free space beside existing work before stacking a drawing below it', () => {
+    const column = { x: 40, y: 40, width: 600, height: 120 };
+    const size = { width: 200, height: 100 };
+
+    // The middle of the page is taken by the left column: the drawing goes right of it.
+    const placed = resolvePlacement([column], frame, size, 'free_space', undefined, {
+      centered: true,
+    });
+    expect(placed).toEqual({ x: 40 + 600 + BLOCK_GAP, y: 40 });
+
+    // Repeated drawings keep growing towards the right, never back onto the page.
+    const second = centeredFreeSlot([column, { ...placed, ...size }], frame, size);
+    expect(second.x).toBe(40 + 600 + BLOCK_GAP + 200 + BLOCK_GAP);
+    expect(second.y).toBe(40);
+  });
+
+  it('widens the stack below when a drawing cannot fit beside the content', () => {
+    const column = { x: 40, y: 40, width: 400, height: 120 };
+    const placed = resolvePlacement(
+      [column],
+      frame,
+      { width: 700, height: 100 },
+      'free_space',
+      undefined,
+      {
+        centered: true,
+      },
+    );
+
+    // 400px left over is too narrow for 700px: it centres itself on the next row.
+    expect(placed).toEqual({ x: 250, y: 40 + 120 + BLOCK_GAP });
+  });
+
+  it('leaves prose left-aligned, because text is read from the left margin', () => {
+    const size = { width: 200, height: 100 };
+
+    expect(resolvePlacement([], frame, size)).toEqual({ x: 40, y: 40 });
+    expect(resolveExplicitOrFreePlacement([], frame, size, undefined, undefined)).toEqual({
+      x: 40,
+      y: 40,
+    });
+  });
+
   it('never crosses the A4 width, even for a block wider than a page', () => {
     const wide = { width: 2000, height: 100 };
     const placed = resolvePlacement([], frame, wide);
@@ -1667,6 +2013,39 @@ describe('whiteboard_draw_shapes', () => {
 
     expect(lastWritten()[0].strokeColor).toBe('#1e1e1e');
   });
+
+  it('centres a free shape and grows it until its label fits', async () => {
+    const frame = getBoardFrame([]);
+
+    await executeWhiteboardDrawShapesTool({
+      shapes: [{ type: 'rectangle', label: 'Photosynthesis in plants' }],
+    });
+
+    const [shape] = lastWritten();
+    const metrics = measureText('Photosynthesis in plants', 20);
+    // Wider than the 200px default, because the label is wider than that.
+    expect(Number(shape.width)).toBeGreaterThanOrEqual(metrics.width);
+    expect(Number(shape.height)).toBeGreaterThanOrEqual(metrics.height);
+    expect(shape.label).toMatchObject({ fontSize: 20, fontFamily: AGENT_FONT_FAMILY });
+    // A shape with no anchor starts on the middle line of the board (rounding an
+    // odd width may land a pixel off it).
+    expect(
+      Math.abs(Number(shape.x) + Number(shape.width) / 2 - (frame.x + frame.width / 2)),
+    ).toBeLessThanOrEqual(1);
+  });
+
+  it('shrinks the label instead of spilling out of a wrapped element', async () => {
+    board.scene = [element({ id: 'target-1', x: 300, y: 400, width: 120, height: 40 })];
+
+    await executeWhiteboardDrawShapesTool({
+      shapes: [{ type: 'rectangle', target_element_id: 'target-1', label: 'a very long label' }],
+    });
+
+    const [shape] = lastWritten();
+    // The box follows the target, so only the font may adapt.
+    expect(shape).toMatchObject({ x: 284, y: 384, width: 152, height: 72 });
+    expect((shape.label as { fontSize: number }).fontSize).toBeLessThan(20);
+  });
 });
 
 describe('whiteboard_draw_freehand_svg', () => {
@@ -1870,6 +2249,28 @@ describe('whiteboard_draw_freehand_svg', () => {
     expect(strokes).toHaveLength(1);
   });
 
+  it('centres a free illustration and its caption on the board', async () => {
+    const frame = getBoardFrame([]);
+
+    await executeWhiteboardDrawFreehandSvgTool({
+      svg: '<svg><polygon points="50,10 10,50 90,50"/></svg>',
+      label: 'a house',
+    });
+
+    const written = writtenElements();
+    const image = written.find((el) => el.type === 'image');
+    expect(image).toBeTruthy();
+    expect(Math.round(Number(image?.x) + Number(image?.width) / 2)).toBe(
+      Math.round(frame.x + frame.width / 2),
+    );
+
+    const caption = written.find((el) => el.type === 'text');
+    expect(Number(caption?.x)).toBeGreaterThan(Number(image?.x));
+    expect(Math.round(Number(caption?.x) + Number(caption?.width) / 2)).toBe(
+      Math.round(Number(image?.x) + Number(image?.width) / 2),
+    );
+  });
+
   it('reveals the whole drawing before the animated strokes start', async () => {
     await executeWhiteboardDrawFreehandSvgTool({
       svg: '<svg><path d="M0 0 L40 0"/><path d="M0 40 L40 40"/></svg>',
@@ -2007,9 +2408,12 @@ describe('whiteboard_draw_diagram', () => {
     expect(arrow).toMatchObject({ start: { id: 'mermaid-a' }, end: { id: 'mermaid-b' } });
     // Diagrams registered files reach the Excalidraw API.
     expect((board.api as { addFiles: ReturnType<typeof vi.fn> }).addFiles).toHaveBeenCalledTimes(1);
-    // And the whole thing moved into the A4 frame, not left at 2000/-600.
-    const bbox = result.bbox as { x: number; y: number };
-    expect(bbox.x).toBe(20);
+    // And the whole thing moved into the A4 frame, not left at 2000/-600:
+    // a 320px wide diagram starts centred on the page instead of at the margin.
+    const frame = getBoardFrame([]);
+    const bbox = result.bbox as { x: number; y: number; width: number };
+    expect(bbox.x).toBe(Math.round(frame.x + (frame.width - bbox.width) / 2));
+    expect(bbox.x).toBe(420);
     expect(bbox.y).toBe(-687);
   });
 
@@ -2098,6 +2502,92 @@ describe('whiteboard_draw_diagram', () => {
     const bbox = result.bbox as { x: number; y: number };
     expect(bbox.x).toBe(100);
     expect(bbox.y).toBeGreaterThanOrEqual(100 + 200);
+  });
+
+  it('centres a flowchart chain on the board instead of the left margin', async () => {
+    const frame = getBoardFrame([]);
+
+    await executeWhiteboardDrawDiagramTool({ mermaid: 'flowchart TD\n  A[One] --> B[Two]' });
+
+    const nodes = lastWritten().filter((el) => el.type === 'rectangle');
+    expect(nodes).toHaveLength(2);
+    // One node per rank: every rank sits on the same middle line.
+    const centres = new Set(nodes.map((el) => Math.round(Number(el.x) + Number(el.width) / 2)));
+    expect(centres.size).toBe(1);
+    expect([...centres][0]).toBe(Math.round(frame.x + frame.width / 2));
+  });
+
+  it('spreads a branching tree symmetrically around the middle line', async () => {
+    await executeWhiteboardDrawDiagramTool({
+      mermaid: 'flowchart TD\n  A[Root] --> B[Left]\n  A --> C[Right]',
+    });
+
+    const nodes = lastWritten().filter((el) => el.type === 'rectangle');
+    const node = (label: string) =>
+      nodes.find((el) => (el.label as { text: string }).text === label)!;
+    const centre = (el: FakeElement) => Number(el.x) + Number(el.width) / 2;
+
+    // The root stays centred and its children mirror each other below it.
+    expect(centre(node('Left')) + centre(node('Right'))).toBeGreaterThanOrEqual(
+      2 * centre(node('Root')) - 2,
+    );
+    expect(centre(node('Left')) + centre(node('Right'))).toBeLessThanOrEqual(
+      2 * centre(node('Root')) + 2,
+    );
+    expect(node('Left').y).toBe(node('Right').y);
+  });
+
+  it('makes a node big enough for its label before the arrows are routed', async () => {
+    await executeWhiteboardDrawDiagramTool({
+      mermaid: 'flowchart TD\n  A[Artificial Intelligence] --> B[Go]',
+    });
+
+    const nodes = lastWritten().filter((el) => el.type === 'rectangle');
+    const labelled = nodes.find((el) =>
+      String((el.label as { text: string }).text).startsWith('Artificial'),
+    )!;
+    const metrics = measureText('Artificial Intelligence', 18);
+
+    // The default 180px node would wrap this label after the arrows were drawn.
+    expect(Number(labelled.width)).toBeGreaterThan(180);
+    expect(Number(labelled.width)).toBeGreaterThanOrEqual(metrics.width);
+    expect(labelled.label).toMatchObject({ fontSize: 18, fontFamily: AGENT_FONT_FAMILY });
+    // Both nodes keep the same size, so the ranks stay aligned.
+    expect(new Set(nodes.map((el) => el.height)).size).toBe(1);
+  });
+
+  it('shrinks the text of a downscaled native diagram with its boxes', async () => {
+    hoisted.parseMermaid.mockResolvedValueOnce({
+      elements: [
+        {
+          id: 'native-box',
+          type: 'rectangle',
+          x: 2000,
+          y: -600,
+          width: 400,
+          height: 200,
+          label: { text: 'Start', fontSize: 20 },
+        },
+        {
+          id: 'native-caption',
+          type: 'text',
+          x: 2000,
+          y: -380,
+          width: 200,
+          height: 40,
+          text: 'Start',
+          fontSize: 20,
+        },
+      ],
+    });
+
+    await executeWhiteboardDrawDiagramTool({ mermaid: 'flowchart LR\n  A', scale: 0.5 });
+
+    const caption = lastWritten().find((el) => el.id === 'native-caption')!;
+    // Half the scale: the text shrinks with the box that holds it.
+    expect(caption.fontSize).toBe(10);
+    expect(caption.width).toBe(100);
+    expect(caption.height).toBe(20);
   });
 
   it('reports a syntax error when nothing can be parsed', async () => {

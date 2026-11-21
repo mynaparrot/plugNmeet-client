@@ -432,10 +432,19 @@ export class WhiteboardController {
     if (elements.length === 0) {
       return false;
     }
-    const minX = Math.min(...elements.map((element) => element.x));
-    const minY = Math.min(...elements.map((element) => element.y));
-    const maxX = Math.max(...elements.map((element) => element.x + element.width));
-    const maxY = Math.max(...elements.map((element) => element.y + element.height));
+    // An arrow or a line carries signed dimensions, so the bounds are normalized.
+    const minX = Math.min(
+      ...elements.map((element) => Math.min(element.x, element.x + element.width)),
+    );
+    const minY = Math.min(
+      ...elements.map((element) => Math.min(element.y, element.y + element.height)),
+    );
+    const maxX = Math.max(
+      ...elements.map((element) => Math.max(element.x, element.x + element.width)),
+    );
+    const maxY = Math.max(
+      ...elements.map((element) => Math.max(element.y, element.y + element.height)),
+    );
     return this.revealBBoxInViewport({ x: minX, y: minY, width: maxX - minX, height: maxY - minY });
   };
 

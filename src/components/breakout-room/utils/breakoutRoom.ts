@@ -131,6 +131,41 @@ export const canLeaveBreakoutRoom = (metadata?: IRoomMetadata, isAdmin = false):
   !isAdmin && isPerUserAISessionRoom(metadata);
 
 /**
+ * Translation keys for the leave/end controls of the current room context.
+ *
+ * A learner of a 1-on-1 AI session room does not leave a meeting, they end
+ * their session: the AI agent leaves too, which frees the room for the next
+ * user. Everyone else keeps the plain leave/end-meeting wording.
+ */
+export interface EndActionUi {
+  /** footer icon tooltip and aria-label */
+  footerLabelKey: string;
+  /** header menu item label */
+  menuLabelKey: string;
+  /** confirmation modal title */
+  titleKey: string;
+  /** confirmation modal text */
+  textKey: string;
+}
+
+export const getEndActionUi = (metadata?: IRoomMetadata, isAdmin = false): EndActionUi => {
+  if (!isAdmin && isPerUserAISessionRoom(metadata)) {
+    return {
+      footerLabelKey: 'header.menus.end-ai-session',
+      menuLabelKey: 'header.menus.end-ai-session',
+      titleKey: 'header.menus.alert.end-ai-session-title',
+      textKey: 'header.menus.alert.end-ai-session',
+    };
+  }
+  return {
+    footerLabelKey: isAdmin ? 'header.menus.end' : 'header.menus.logout',
+    menuLabelKey: 'header.menus.logout',
+    titleKey: 'header.menus.alert.confirm',
+    textKey: 'header.menus.alert.logout',
+  };
+};
+
+/**
  * Auto-return the current user from a (ended) breakout room to the main room.
  *
  * Used by the NATS handlers when a breakout room ends while the user is still

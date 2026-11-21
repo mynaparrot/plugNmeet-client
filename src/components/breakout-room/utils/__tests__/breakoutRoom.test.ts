@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { create } from '@bufbuild/protobuf';
 import { AIAgentSessionMode, RoomMetadataSchema } from 'plugnmeet-protocol-js';
+import en from '../../../../assets/locales/en/translation.json';
 
 // `../breakoutRoom` also contains the auto-return flow, which pulls in the
 // redux store, the RTK query api and i18n (all of which expect a browser).
@@ -28,6 +29,7 @@ const {
   canAccessBreakoutRooms,
   canLeaveBreakoutRoom,
   canReturnToMainRoom,
+  getEndActionUi,
   isAgenticSessionsMode,
 } = await import('../breakoutRoom');
 
@@ -236,6 +238,75 @@ describe('canReturnToMainRoom', () => {
 
   it('is true for every other breakout room', () => {
     expect(canReturnToMainRoom(breakoutMetadata(false))).toBe(true);
+  });
+});
+
+describe('getEndActionUi', () => {
+  const leaveCopy = {
+    footerLabelKey: 'header.menus.logout',
+    menuLabelKey: 'header.menus.logout',
+    titleKey: 'header.menus.alert.confirm',
+    textKey: 'header.menus.alert.logout',
+  };
+
+  it('keeps the plain leave wording for a learner in a normal room', () => {
+    expect(getEndActionUi(roomMetadata({}))).toEqual(leaveCopy);
+    expect(getEndActionUi(undefined)).toEqual(leaveCopy);
+  });
+
+  it('offers the admin end option outside breakout rooms', () => {
+    expect(getEndActionUi(roomMetadata({}), true)).toEqual({
+      ...leaveCopy,
+      footerLabelKey: 'header.menus.end',
+    });
+  });
+
+  it('keeps the plain leave wording for a learner returned from a normal breakout room', () => {
+    expect(getEndActionUi(breakoutMetadata(false))).toEqual(leaveCopy);
+    expect(getEndActionUi(breakoutMetadata(false, false))).toEqual(leaveCopy);
+  });
+
+  it('lets the observing admin fall back to their own end wording in a 1-on-1 room', () => {
+    // an admin only observes someone else's session and returns to the main
+    // room instead, so they never see the learner's end-session copy
+    expect(getEndActionUi(breakoutMetadata(true), true)).toEqual({
+      ...leaveCopy,
+      footerLabelKey: 'header.menus.end',
+    });
+  });
+
+  it('turns the learner action of a 1-on-1 AI session room into ending the session', () => {
+    expect(getEndActionUi(breakoutMetadata(true))).toEqual({
+      footerLabelKey: 'header.menus.end-ai-session',
+      menuLabelKey: 'header.menus.end-ai-session',
+      titleKey: 'header.menus.alert.end-ai-session-title',
+      textKey: 'header.menus.alert.end-ai-session',
+    });
+  });
+
+  it('uses translation keys that exist in the English locale', () => {
+    const lookup = (key: string) =>
+      key
+        .split('.')
+        .reduce<unknown>(
+          (node, part) => (node as Record<string, unknown> | undefined)?.[part],
+          en as unknown,
+        );
+
+    const contexts: Array<[ReturnType<typeof roomMetadata> | undefined, boolean]> = [
+      [roomMetadata({}), false],
+      [roomMetadata({}), true],
+      [breakoutMetadata(false), false],
+      [breakoutMetadata(true), true],
+      [breakoutMetadata(true), false],
+    ];
+    for (const [meta, admin] of contexts) {
+      const ui = getEndActionUi(meta, admin);
+      for (const key of Object.values(ui)) {
+        expect(lookup(key), key).toEqual(expect.any(String));
+        expect(lookup(key), key).not.toBe('');
+      }
+    }
   });
 });
 

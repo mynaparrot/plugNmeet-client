@@ -1,6 +1,7 @@
 import type { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 
 import {
+  AGENT_FONT_FAMILY,
   agentCustomData,
   agentElementId,
   asCustomData,
@@ -9,6 +10,7 @@ import {
   ensureBoardOpen,
   formatWhiteboardText,
   invalid,
+  measureText,
   resolveContrastingStrokeColor,
   resolveFillColor,
   toExcalidrawElements,
@@ -39,6 +41,10 @@ const SHAPE_TYPES = ['rectangle', 'ellipse', 'diamond', 'arrow', 'line'] as cons
 const FILL_STYLES = ['hachure', 'cross-hatch', 'solid'] as const;
 const DEFAULT_WIDTH = 200;
 const DEFAULT_HEIGHT = 120;
+const LABEL_FONT_SIZE = 20;
+/** Room a label needs between itself and the border of its shape. */
+const LABEL_MARGIN = 24;
+const MIN_LABEL_FONT_SIZE = 12;
 
 type ShapeType = (typeof SHAPE_TYPES)[number];
 
@@ -119,6 +125,26 @@ const readShapes = (raw: unknown): ShapeInput[] | null => {
   }
 
   return shapes.length > 0 ? shapes : null;
+};
+
+/** Smallest shape that holds its label without Excalidraw wrapping it. */
+const labelBox = (label: string): { width: number; height: number } => {
+  const metrics = measureText(label, LABEL_FONT_SIZE);
+  return {
+    width: metrics.width + LABEL_MARGIN,
+    height: metrics.height + LABEL_MARGIN,
+  };
+};
+
+/** A label forced into a shape it does not fit in shrinks instead of spilling. */
+const labelFontSizeFor = (shape: { width: number; height: number }, label: string): number => {
+  const natural = measureText(label, LABEL_FONT_SIZE);
+  const fit = Math.min(
+    1,
+    (shape.width - LABEL_MARGIN) / Math.max(natural.width, 1),
+    (shape.height - LABEL_MARGIN) / Math.max(natural.height, 1),
+  );
+  return Math.max(MIN_LABEL_FONT_SIZE, Math.round(LABEL_FONT_SIZE * Math.max(0.5, fit)));
 };
 
 const bboxOf = (board: BoardContext, id?: string): BBox | null => {
@@ -261,8 +287,12 @@ export const executeWhiteboardDrawShapesTool = async (
         height: Math.round(linear.height),
       };
     } else {
+      const label = shape.label ? labelBox(shape.label) : null;
       const size = fitInside(
-        { width: shape.width ?? DEFAULT_WIDTH, height: shape.height ?? DEFAULT_HEIGHT },
+        {
+          width: Math.max(shape.width ?? DEFAULT_WIDTH, label?.width ?? 0),
+          height: Math.max(shape.height ?? DEFAULT_HEIGHT, label?.height ?? 0),
+        },
         layout,
         anchor,
       );
@@ -274,6 +304,7 @@ export const executeWhiteboardDrawShapesTool = async (
         shape.y,
         layout,
         anchor,
+        { centered: true },
       );
       geometry = { x: position.x, y: position.y, width: size.width, height: size.height };
     }
@@ -298,7 +329,12 @@ export const executeWhiteboardDrawShapesTool = async (
       skeleton.fillStyle = shape.fillStyle;
     }
     if (shape.label) {
-      skeleton.label = { text: shape.label, fontFamily: 1 };
+      // An arrow's label sits along the line, not inside a box.
+      skeleton.label = {
+        text: shape.label,
+        fontSize: isUnderline(shape) ? LABEL_FONT_SIZE : labelFontSizeFor(geometry, shape.label),
+        fontFamily: AGENT_FONT_FAMILY,
+      };
     }
     if (start) {
       skeleton.start = { id: shape.startElementId };

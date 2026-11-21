@@ -105,7 +105,7 @@ const RoomsPanel = () => {
               : t('breakout-room.rooms-panel-title')}
           </p>
         </div>
-        <div className="breakout-rooms-panel-wrapper min-h-[90px] relative p-3 3xl:p-5">
+        <div className="breakout-rooms-panel-wrapper min-h-[90px] relative p-3 3xl:p-5 flex flex-col gap-3">
           {isLoading && !data && (
             <div className="absolute text-center top-1/2 -translate-y-1/2 z-999 start-0 end-0 m-auto pointer-events-none">
               <LoadingIcon
@@ -149,26 +149,41 @@ const RoomsPanel = () => {
               <div
                 key={room.id}
                 className={clsx(
-                  'flex items-center justify-between gap-3 py-2 border-b border-Gray-200 dark:border-Gray-800',
-                  assignedToMe &&
-                    '-mx-2 px-2 rounded-lg bg-Blue/5 dark:bg-Blue/10 ring-1 ring-inset ring-Blue/40',
+                  'relative flex items-center gap-3 rounded-2xl border p-3.5 transition-all duration-200',
+                  assignedToMe
+                    ? 'border-Blue/25 bg-linear-to-br from-Blue/10 to-transparent shadow-sm hover:shadow-md dark:from-Blue/15'
+                    : 'border-Gray-200 bg-white shadow-sm hover:border-Blue2-500/50 hover:shadow-md dark:border-Gray-800 dark:bg-transparent',
                 )}
               >
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <p className="text-sm 3xl:text-base text-Gray-950 dark:text-white font-medium truncate">
+                {assignedToMe && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-y-2 start-1 w-[3px] rounded-full bg-Blue"
+                  />
+                )}
+                <div className="min-w-0 flex-1">
+                  <div className="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-1">
+                    <p
+                      className="min-w-0 truncate text-sm font-semibold text-Gray-950 dark:text-white 3xl:text-base"
+                      title={room.title}
+                    >
                       {room.title}
                     </p>
                     {assignedToMe && (
-                      <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-Blue/10 text-Blue dark:bg-Blue/20 dark:text-Blue2-50 border border-Blue/20">
+                      <span className="inline-flex h-5 shrink-0 items-center rounded-full border border-Blue/20 bg-Blue/10 px-2 text-[11px] font-semibold leading-none text-Blue2-800 dark:border-Blue/30 dark:bg-Blue/20 dark:text-Blue2-50">
                         {t('breakout-room.assigned-to-you')}
+                      </span>
+                    )}
+                    {current && (
+                      <span className="inline-flex h-5 shrink-0 items-center rounded-full bg-primary-color px-2 text-[11px] font-semibold leading-none text-white">
+                        {t('breakout-room.current-room')}
                       </span>
                     )}
                   </div>
                   {room.enableAiAgent ? (
-                    <div className="flex flex-wrap items-center gap-1.5 text-xs opacity-80 dark:opacity-90">
+                    <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[11px] text-Gray-600 dark:text-Gray-300">
                       <span
-                        className="inline-flex items-center gap-1.5 min-w-0"
+                        className="inline-flex min-w-0 items-center gap-1.5 rounded-full bg-Gray-50 px-2 py-1 dark:bg-white/10"
                         title={
                           learnerJoined
                             ? t('breakout-room.user-joined')
@@ -177,7 +192,7 @@ const RoomsPanel = () => {
                       >
                         <span
                           className={clsx(
-                            'w-2 h-2 rounded-full shrink-0',
+                            'h-2 w-2 shrink-0 rounded-full',
                             learnerJoined ? 'bg-Green-700' : 'bg-Red-600',
                           )}
                         />
@@ -185,11 +200,8 @@ const RoomsPanel = () => {
                           {learner?.name || t('breakout-room.unassigned')}
                         </span>
                       </span>
-                      <span aria-hidden="true" className="opacity-50">
-                        ·
-                      </span>
                       <span
-                        className="inline-flex items-center gap-1.5 shrink-0"
+                        className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-Gray-50 px-2 py-1 dark:bg-white/10"
                         title={
                           agentOnline
                             ? t('breakout-room.agent-online')
@@ -198,7 +210,7 @@ const RoomsPanel = () => {
                       >
                         <span
                           className={clsx(
-                            'w-2 h-2 rounded-full shrink-0',
+                            'h-2 w-2 shrink-0 rounded-full',
                             agentOnline ? 'bg-Green-700' : 'bg-Red-600',
                           )}
                         />
@@ -206,33 +218,26 @@ const RoomsPanel = () => {
                       </span>
                     </div>
                   ) : (
-                    <p className="text-xs opacity-70 dark:opacity-80 dark:text-white truncate">
+                    <p className="mt-1 text-[11px] truncate text-Gray-600 dark:text-Gray-300">
                       {t('breakout-room.joined-count', { count: joinedCount })}
                     </p>
                   )}
                   {aiContext && (
                     <p
-                      className="text-[11px] text-Gray-600 dark:text-Gray-300 truncate"
+                      className="mt-1.5 line-clamp-2 text-[11px] leading-snug text-Gray-600 dark:text-Gray-300"
                       title={aiContext}
                     >
                       {aiContext}
                     </p>
                   )}
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  {current && (
-                    <span className="text-xs font-medium px-2 py-1 rounded-[10px] bg-primary-color text-white">
-                      {t('breakout-room.current-room')}
-                    </span>
-                  )}
-                  <button
-                    className="primary-button h-7 px-5 cursor-pointer text-sm font-medium bg-Blue hover:bg-white border border-Blue2-600 rounded-[15px] text-white hover:text-Gray-950 transition-all duration-300 shadow-button-shadow disabled:opacity-50 disabled:cursor-not-allowed"
-                    onClick={() => handleJoin(room.id)}
-                    disabled={current || joinResult.isLoading}
-                  >
-                    {t('breakout-room.join')}
-                  </button>
-                </div>
+                <button
+                  className="primary-button h-8 shrink-0 cursor-pointer rounded-lg border border-Blue2-600 bg-Blue px-3.5 text-xs font-semibold text-white shadow-button-shadow transition-all duration-300 hover:bg-white hover:text-Gray-950 disabled:cursor-not-allowed disabled:opacity-50"
+                  onClick={() => handleJoin(room.id)}
+                  disabled={current || joinResult.isLoading}
+                >
+                  {t('breakout-room.join')}
+                </button>
               </div>
             );
           })}

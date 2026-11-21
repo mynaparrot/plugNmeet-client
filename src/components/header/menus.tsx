@@ -8,7 +8,7 @@ import {
   updateShowRoomSettingsModal,
 } from '../../store/slices/roomSettingsSlice';
 import { getConnectionQualityColor } from '../../helpers/utils';
-import { canLeaveBreakoutRoom } from '../breakout-room/utils/breakoutRoom';
+import { canLeaveBreakoutRoom, getEndActionUi } from '../breakout-room/utils/breakoutRoom';
 import { ConnectionStatusPanel } from './connectionStatus';
 
 interface IHeaderMenusProps {
@@ -25,6 +25,7 @@ const HeaderMenus = ({ onOpenAlert, onOpenExportHub }: IHeaderMenusProps) => {
   const isAdmin = useAppSelector((state) => !!state.session.currentUser?.metadata?.isAdmin);
   // a learner of a 1-on-1 AI session room has no way back, so they need a way out
   const canLeaveBreakout = canLeaveBreakoutRoom(metadata, isAdmin);
+  const endAction = getEndActionUi(metadata, isAdmin);
   const [showConnectionStats, setShowConnectionStats] = useState(false);
   const overallQuality = useAppSelector((state) => state.session.overallConnectionQuality);
   const overallColor = useMemo(() => {
@@ -124,7 +125,7 @@ const HeaderMenus = ({ onOpenAlert, onOpenExportHub }: IHeaderMenusProps) => {
             onClick={() => onOpenAlert('logout')}
           >
             <i className="pnm-logout text-primary-color dark:text-Blue2-500 text-lg me-2 transition ease-in" />
-            {t('header.menus.logout')}
+            {t(endAction.menuLabelKey)}
           </button>
         </MenuItem>
       )}

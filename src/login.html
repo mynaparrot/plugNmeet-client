@@ -4,706 +4,297 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
-    <!-- <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
-      crossorigin="anonymous"
-    /> -->
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta
+      name="description"
+      content="Create or join a plugNmeet room. Sign in as an admin or participant with your API key and secret."
+    />
+    <title>Login · plugNmeet</title>
     <script src="./assets/config.js"></script>
     <link rel="icon" type="image/x-icon" href="./assets/imgs/favicon.ico" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      input:-webkit-autofill,
-      input:-webkit-autofill:hover,
-      input:-webkit-autofill:focus,
-      input:-webkit-autofill:active {
-        -webkit-box-shadow: 0 0 0 1000px white inset !important;
-        -webkit-text-fill-color: #000 !important;
-      }
-      * {
-        padding: 0;
-        margin: 0;
-        box-sizing: border-box;
-        font-family: 'Inter', sans-serif;
-      }
-      body {
-        height: 100%;
-        display: flex;
-        background-color: #f0f6fc;
-      }
-      html {
-        height: 100%;
-      }
-      .container {
-        margin: auto;
-        width: 100%;
-        max-width: 1000px;
-        padding: 40px 20px;
-      }
-
-      input,
-      select {
-        border-radius: 15px;
-        border: 1px solid var(--Gray-300, #c2daf2);
-        background: var(--White, #fff);
-        box-shadow: 0px 1px 2px 0px rgba(0, 43, 64, 0.05);
-        padding: 10px 14px;
-        width: 100%;
-        outline: none;
-        font-size: 16px;
-      }
-      label {
-        display: block;
-        font-size: 16px;
-        font-weight: 500;
-        color: #233240;
-        margin-bottom: 8px;
-      }
-      input:focus,
-      select:focus {
-        box-shadow: 0px 0px 0px 4px rgba(124, 206, 247, 0.25);
-        border-color: rgba(0, 161, 242, 1);
-      }
-      form#loginForm {
-        background-color: #fff;
-        padding: 40px 30px 30px;
-        border-radius: 24px;
-      }
-      .inputs-wrapper {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 25px 20px;
-      }
-      .btn {
-        height: 40px;
-        border-radius: 15px;
-        box-shadow:
-          0px 2px 2px 0px rgba(255, 255, 255, 0.3) inset,
-          0px 1px 2px 0px rgba(0, 43, 64, 0.05);
-        min-width: 140px;
-        font-size: 16px;
-        font-weight: 600;
-        color: #fff;
-        cursor: pointer;
-        transition: all 0.3s ease-in;
-      }
-      .btn-danger {
-        border: 1px solid var(--Red-600, #c00);
-        background: var(--Red-400, #fa3232);
-      }
-      .btn-primary {
-        border: 1px solid var(--Blue-600, #08c);
-        background: var(--Blue-500, #00a1f2);
-      }
-      .btn-secondary {
-        border: 1px solid var(--Gray-400, #999);
-        background: var(--Gray-500, #666);
-      }
-      .btn-danger:hover {
-        background-color: #cc0000;
-      }
-      .btn-primary:hover {
-        background-color: #08c;
-      }
-      .btn-secondary:hover {
-        background-color: #555;
-      }
-      form#loginForm .buttons {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-top: 22px;
-      }
-      h5.card-title {
-        font-size: 22px;
-        text-align: center;
-        margin-bottom: 20px;
-        font-weight: 500;
-      }
-      select {
-        background-color: rgb(255, 255, 255);
-        background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/PgoKCjwhLS0gTGljZW5zZTogUEQuIE1hZGUgYnkgaWNvbnM4OiBodHRwczovL2dpdGh1Yi5jb20vaWNvbnM4L3dpbmRvd3MtMTAtaWNvbnMgLS0+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgCgkgdmlld0JveD0iMCAwIDMyIDMyIiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHBvbHlsaW5lIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlOiMwMDAwMDA7c3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLW1pdGVybGltaXQ6MTA7IiBwb2ludHM9IjI4LjUsMTEuNSAxNiwyNCAzLjUsMTEuNSAiLz4KPC9zdmc+);
-        background-repeat: no-repeat;
-        background-size: 16px 12px;
-        appearance: none;
-        background-position: right 0.75rem center;
-      }
-      .logo {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 10px;
-      }
-      .logo img {
-        height: 55px;
-      }
-      select {
-        appearance: none;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M5.516 7.548l4.484 4.487 4.484-4.487L15.484 8.5 10 14l-5.484-5.5z'/></svg>");
-        background-repeat: no-repeat;
-        background-position: right 10px center;
-        padding-right: 30px;
-      }
-      .input-group {
-        display: flex;
-        gap: 10px;
-      }
-      @media screen and (max-width: 767px) {
-        .inputs-wrapper {
-          grid-template-columns: 1fr;
-        }
-
-        .container {
-          margin: auto;
-          width: 100%;
-          max-width: 1000px;
-          padding: 40px 20px;
-        }
-
-        input,
-        select {
-          border-radius: 15px;
-          border: 1px solid var(--Gray-300, #c2daf2);
-          background: var(--White, #fff);
-          box-shadow: 0px 1px 2px 0px rgba(0, 43, 64, 0.05);
-          padding: 10px 14px;
-          width: 100%;
-          outline: none;
-          font-size: 16px;
-        }
-
-        label {
-          display: block;
-          font-size: 16px;
-          font-weight: 500;
-          color: #233240;
-          margin-bottom: 8px;
-        }
-
-        input:focus,
-        select:focus {
-          box-shadow: 0px 0px 0px 4px rgba(124, 206, 247, 0.25);
-          border-color: rgba(0, 161, 242, 1);
-        }
-
-        form#loginForm {
-          background-color: #fff;
-          padding: 40px 30px 30px;
-          border-radius: 24px;
-        }
-
-        .inputs-wrapper {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 25px 20px;
-        }
-
-        .btn {
-          height: 40px;
-          border-radius: 15px;
-          box-shadow:
-            0px 2px 2px 0px rgba(255, 255, 255, 0.3) inset,
-            0px 1px 2px 0px rgba(0, 43, 64, 0.05);
-          min-width: 140px;
-          font-size: 16px;
-          font-weight: 600;
-          color: #fff;
-          cursor: pointer;
-          transition: all 0.3s ease-in;
-        }
-
-        .btn-danger {
-          border: 1px solid var(--Red-600, #c00);
-          background: var(--Red-400, #fa3232);
-        }
-
-        .btn-primary {
-          border: 1px solid var(--Blue-600, #08c);
-          background: var(--Blue-500, #00a1f2);
-        }
-
-        .btn-danger:hover {
-          background-color: #cc0000;
-        }
-
-        .btn-primary:hover {
-          background-color: #08c;
-        }
-
-        form#loginForm .buttons {
-          display: flex;
-          justify-content: flex-end;
-          gap: 10px;
-          margin-top: 22px;
-        }
-
-        h5.card-title {
-          font-size: 22px;
-          text-align: center;
-          margin-bottom: 20px;
-          font-weight: 500;
-        }
-
-        select {
-          background-color: rgb(255, 255, 255);
-          background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/PgoKCjwhLS0gTGljZW5zZTogUEQuIE1hZGUgYnkgaWNvbnM4OiBodHRwczovL2dpdGh1Yi5jb20vaWNvbnM4L3dpbmRvd3MtMTAtaWNvbnMgLS0+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgCgkgdmlld0JveD0iMCAwIDMyIDMyIiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHBvbHlsaW5lIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlOiMwMDAwMDA7c3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLW1pdGVybGltaXQ6MTA7IiBwb2ludHM9IjI4LjUsMTEuNSAxNiwyNCAzLjUsMTEuNSAiLz4KPC9zdmc+);
-          background-repeat: no-repeat;
-          background-size: 16px 12px;
-          appearance: none;
-          background-position: right 0.75rem center;
-        }
-
-        .logo {
-          display: flex;
-          justify-content: center;
-          margin-bottom: 10px;
-        }
-
-        .logo img {
-          height: 55px;
-        }
-
-        @media screen and (max-width: 767px) {
-          .inputs-wrapper {
-            grid-template-columns: 1fr;
-          }
-
-          input,
-          select {
-            padding: 7px 14px;
-          }
-
-          label {
-            font-size: 14px;
-          }
-
-          .btn {
-            min-width: 130px;
-            height: 38px;
-            font-size: 15px;
-          }
-
-          form#loginForm {
-            padding: 40px 15px 30px;
-          }
-        }
-      }
-
-      @media (prefers-color-scheme: dark) {
-        body {
-          background-color: #01102b;
-        }
-        body form#loginForm {
-          background-color: #001222;
-          border: 1px solid #4d6680;
-        }
-        body label {
-          color: #fff;
-        }
-        body input,
-        body select {
-          background-color: transparent !important;
-          color: #fff;
-        }
-        select {
-          color: #fff;
-          background-color: #111;
-
-          background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 20 20' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M5.516 7.548l4.484 4.487 4.484-4.487L15.484 8.5 10 14l-5.484-5.5z'/></svg>");
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="./assets/demo/demo.css" />
   </head>
-  <body>
-    <div class="container">
-      <div class="logo">
-        <img src="./assets/imgs/main-logo-light.png" alt="main-logo" />
-      </div>
-      <div class="form">
-        <form action="#" method="POST" id="loginForm">
-          <div class="inputs-wrapper">
-            <div class="item">
-              <label for="api_key" class="form-label">plugNmeet API Key</label>
-              <input
-                type="text"
-                name="api_key"
-                id="api_key"
-                value=""
-                required
-                class="form-control"
-              />
-            </div>
-            <div class="item">
-              <label for="api_secret" class="form-label">plugNmeet API Secret</label>
-              <input
-                type="password"
-                name="api_secret"
-                id="api_secret"
-                value=""
-                required
-                class="form-control"
-              />
-            </div>
-            <div class="item">
-              <label for="room_id_select" class="form-label">Room</label>
-              <div id="room-selection">
-                <div class="input-group">
-                  <select class="form-select" id="room_id_select">
-                    <option value="room01">Room 1</option>
-                    <option value="room02">Room 2</option>
-                    <option value="room03">Room 3</option>
-                    <option value="room04">Room 4</option>
-                    <option value="room05">Room 5</option>
-                    <option value="room06">Room 6</option>
-                    <option value="room07">Room 7</option>
-                    <option value="room08">Room 8</option>
-                    <option value="room09">Room 9</option>
-                    <option value="room10">Room 10</option>
-                    <option value="room11">Room 11</option>
-                    <option value="room12">Room 12</option>
-                    <option value="room13">Room 13</option>
-                    <option value="room14">Room 14</option>
-                    <option value="room15">Room 15</option>
-                  </select>
-                  <button class="btn btn-secondary" type="button" id="show-custom-room">
-                    Custom
-                  </button>
-                </div>
-              </div>
-              <div id="room-custom" style="display: none">
-                <div class="input-group">
-                  <input type="text" id="room_id_input" class="form-control" />
-                  <button class="btn btn-secondary" type="button" id="random-room">Random</button>
-                  <button class="btn btn-secondary" type="button" id="show-room-list">List</button>
-                </div>
-              </div>
-            </div>
-            <div class="item select-wrap">
-              <label for="user_type" class="form-label">User type</label>
-              <select class="form-select" id="user_type" name="user_type">
-                <option value="admin">Admin</option>
-                <option value="participant">Participant</option>
-              </select>
-            </div>
-            <div class="item">
-              <label for="name" class="form-label">Name</label>
-              <div class="input-group">
-                <input type="text" name="name" id="name" required class="form-control" />
-                <button class="btn btn-secondary" type="button" id="random-name">Random</button>
-              </div>
-            </div>
-            <div class="item">
-              <label for="user_id" class="form-label">User Id</label>
-              <div class="input-group">
-                <input type="text" name="user_id" id="user_id" required class="form-control" />
-                <button class="btn btn-secondary" type="button" id="random-user-id">Random</button>
-              </div>
-            </div>
+  <body data-page="standard">
+    <header class="topbar">
+      <a class="brand" href="./login.html">
+        <img class="logo-light" src="./assets/imgs/main-logo-light.png" alt="plugNmeet" />
+        <img class="logo-dark" src="./assets/imgs/main-logo-dark.png" alt="plugNmeet" />
+        <span class="brand-divider"></span>
+        <span class="brand-tag">Room access</span>
+      </a>
+      <nav class="mode-tabs" aria-label="Login mode">
+        <a class="mode-tab is-active" href="./login.html" aria-current="page">Standard</a>
+        <a class="mode-tab" href="./login-agent.html">AI agent</a>
+      </nav>
+      <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch to dark theme">
+        <span class="theme-option is-active" data-theme="light" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.9 4.9 1.4 1.4" /><path d="m17.7 17.7 1.4 1.4" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m4.9 19.1 1.4-1.4" /><path d="m17.7 6.3 1.4-1.4" /></svg>
+        </span>
+        <span class="theme-option" data-theme="dark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
+        </span>
+      </button>
+    </header>
+
+    <main class="shell">
+      <aside class="hero">
+        <span class="eyebrow"><span class="pulse-dot"></span> Standard room access</span>
+        <h1>Your room is <span class="grad">one click away</span>.</h1>
+        <p class="lede">
+          Create a fresh meeting or join an active one. Standard rooms include the full plugNmeet
+          toolkit, and every request is signed in your browser.
+        </p>
+
+        <div class="room-card">
+          <div class="room-orb">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v16" /><path d="M2 21h20" /><path d="M13 12h.01" /><path d="M8 21v-4h4v4" /></svg>
           </div>
-          <div class="buttons">
-            <button class="btn btn-primary" type="submit">Submit</button>
-            <button class="btn btn-danger" type="reset">Reset</button>
+          <div class="room-meta">
+            <strong id="hero-room">room01</strong>
+            <span><span class="live-dot"></span><span id="hero-role">Admin</span> access · standard room</span>
+          </div>
+          <span class="enter-badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="M13 6l6 6-6 6" /></svg>
+          </span>
+        </div>
+
+        <ul class="feature-list capability-grid">
+          <li>
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7" /><path d="M21 3v6h-6" /></svg></span>
+            <div><strong>Create or join</strong><span>Reuse a live room or start a new one</span></div>
+          </li>
+          <li>
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h18v14H3z" /><path d="M7 21h10" /><path d="M7 13l3-3 3 3 3-3" /></svg></span>
+            <div><strong>Whiteboard &amp; notepad</strong><span>Sketches, uploaded files and live shared notes</span></div>
+          </li>
+          <li>
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /><path d="M8 10h8" /><path d="M8 14h5" /></svg></span>
+            <div><strong>Chat, polls &amp; files</strong><span>Group chat, file sharing, quizzes and reactions</span></div>
+          </li>
+          <li>
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h13v12H3z" /><path d="M16 10l5-3v10l-5-3" /></svg></span>
+            <div><strong>Webcams &amp; screen share</strong><span>Cameras, mics, sharing and cloud recording</span></div>
+          </li>
+          <li>
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.9" /><path d="M16 3.1a4 4 0 0 1 0 7.8" /></svg></span>
+            <div><strong>Breakout rooms</strong><span>Split everyone into small working groups</span></div>
+          </li>
+          <li>
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="M9 12l2 2 4-4" /></svg></span>
+            <div><strong>Secure by design</strong><span>Roles, browser-signed requests and optional E2EE</span></div>
+          </li>
+        </ul>
+
+        <div class="hero-stats">
+          <div><b>15</b><span>ready presets</span></div>
+          <div><b>2</b><span>access roles</span></div>
+          <div><b>1</b><span>click to enter</span></div>
+        </div>
+
+        <p class="hero-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 8v4" /><path d="M12 16h.01" /></svg>
+          Need a private 1-on-1 AI session for every visitor? Open the
+          <a href="./login-agent.html">AI agent launcher</a>.
+        </p>
+      </aside>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <p class="kicker">Access console</p>
+            <h2>Step into a room</h2>
+          </div>
+          <span class="mode-pill"><span class="dot"></span>STANDARD ROOM</span>
+        </div>
+
+        <form id="loginForm" autocomplete="off" novalidate>
+          <section class="section">
+            <div class="section-head">
+              <span class="step">1</span>
+              <h3>Connection</h3>
+              <span class="hint">plugNmeet API credentials</span>
+            </div>
+            <div class="grid grid-2">
+              <div class="field">
+                <label for="api_key">API key <span class="req">*</span></label>
+                <input type="text" id="api_key" name="api_key" placeholder="pnm_api_key" required />
+              </div>
+              <div class="field">
+                <label for="api_secret">API secret <span class="req">*</span></label>
+                <div class="input-row">
+                  <input type="password" id="api_secret" name="api_secret" placeholder="••••••••••••" required />
+                  <button class="btn-mini" type="button" id="toggle-secret" aria-label="Show API secret">Show</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-head">
+              <span class="step">2</span>
+              <h3>Room</h3>
+              <span class="hint">Preset or custom id</span>
+            </div>
+            <div class="grid grid-2">
+              <div class="field">
+                <label>Room source</label>
+                <div class="segmented" role="radiogroup" aria-label="Room source">
+                  <label><input type="radio" name="room_mode" value="preset" checked /><span>Preset</span></label>
+                  <label><input type="radio" name="room_mode" value="custom" /><span>Custom</span></label>
+                </div>
+                <p class="sub">Custom rooms open on a random id by default.</p>
+              </div>
+              <div class="field" id="room-preset">
+                <label for="room_id_select">Room</label>
+                <select id="room_id_select">
+                  <option value="room01">Room 1</option>
+                  <option value="room02">Room 2</option>
+                  <option value="room03">Room 3</option>
+                  <option value="room04">Room 4</option>
+                  <option value="room05">Room 5</option>
+                  <option value="room06">Room 6</option>
+                  <option value="room07">Room 7</option>
+                  <option value="room08">Room 8</option>
+                  <option value="room09">Room 9</option>
+                  <option value="room10">Room 10</option>
+                  <option value="room11">Room 11</option>
+                  <option value="room12">Room 12</option>
+                  <option value="room13">Room 13</option>
+                  <option value="room14">Room 14</option>
+                  <option value="room15">Room 15</option>
+                </select>
+              </div>
+              <div class="field" id="room-custom" hidden>
+                <label for="room_id_input">Custom room id</label>
+                <div class="input-row">
+                  <input type="text" id="room_id_input" placeholder="room-..." />
+                  <button class="btn-mini" type="button" id="random-room">Random</button>
+                  <button class="btn-mini" type="button" id="list-room">List</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-head">
+              <span class="step">3</span>
+              <h3>Participant</h3>
+              <span class="hint">Used for the join token</span>
+            </div>
+            <div class="grid grid-2">
+              <div class="field">
+                <label>User type</label>
+                <div class="segmented" role="radiogroup" aria-label="User type">
+                  <label><input type="radio" name="user_type" value="admin" checked /><span>Admin</span></label>
+                  <label><input type="radio" name="user_type" value="participant" /><span>Participant</span></label>
+                </div>
+                <p class="sub">Admins manage the room; participants join it.</p>
+              </div>
+              <div class="field">
+                <label for="name">Name <span class="req">*</span></label>
+                <div class="input-row">
+                  <input type="text" id="name" name="name" required />
+                  <button class="btn-mini" type="button" id="random-name">Random</button>
+                </div>
+              </div>
+              <div class="field" style="grid-column: 1 / -1">
+                <label for="user_id">User ID <span class="req">*</span></label>
+                <div class="input-row">
+                  <input type="text" id="user_id" name="user_id" required />
+                  <button class="btn-mini" type="button" id="random-user-id">Random</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-head">
+              <span class="step">4</span>
+              <h3>Security</h3>
+              <span class="hint">End-to-end encryption</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="e2ee_enabled" />
+              <span class="track"><span class="thumb"></span></span>
+              <span class="switch-text">End-to-end encryption<small>Media, chat and whiteboard stay encrypted on the server</small></span>
+            </label>
+            <div id="e2ee_fields" class="switch-grid" style="margin-top: 10px" hidden>
+              <label class="switch">
+                <input type="checkbox" id="e2ee_self_insert" />
+                <span class="track"><span class="thumb"></span></span>
+                <span class="switch-text">Self-insert key<small>Each participant types the same passphrase</small></span>
+              </label>
+              <label class="switch">
+                <input type="checkbox" id="e2ee_chat" checked />
+                <span class="track"><span class="thumb"></span></span>
+                <span class="switch-text">Encrypt chat<small>Chat messages are encrypted end-to-end</small></span>
+              </label>
+              <label class="switch">
+                <input type="checkbox" id="e2ee_whiteboard" checked />
+                <span class="track"><span class="thumb"></span></span>
+                <span class="switch-text">Encrypt whiteboard<small>Drawings and notes stay private</small></span>
+              </label>
+            </div>
+            <div class="field" id="e2ee_key_field" style="margin-top: 10px" hidden>
+              <label for="e2ee_key">Server-managed key</label>
+              <input type="text" id="e2ee_key" placeholder="Leave empty to generate a random key" />
+              <p class="sub">Delivered to participants automatically when they join.</p>
+            </div>
+            <div class="notice" id="e2ee_notice" style="margin-top: 10px" hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 8v4" /><path d="M12 16h.01" /></svg>
+              Self-insert keeps the passphrase off the server. Cloud recording, transcription, AI summaries and SIP
+              dial-in are disabled for the room. Share one passphrase with everyone who joins.
+            </div>
+          </section>
+
+          <details class="preview">
+            <summary>
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6" /></svg>
+              <span class="grow">Room payload preview</span>
+              <button type="button" class="copy-btn" id="copy-preview">Copy JSON</button>
+            </summary>
+            <pre id="preview"></pre>
+          </details>
+
+          <div class="publish">
+            <div id="status" class="status" data-kind="info" role="status" aria-live="polite" hidden>
+              <span class="status-icon" id="status-icon"></span>
+              <span id="status-text"></span>
+            </div>
+
+            <div class="summary" aria-hidden="true">
+              <span class="summary-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg>
+                <b id="sum-role">Admin</b>
+              </span>
+              <span class="summary-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v16" /><path d="M2 21h20" /><path d="M13 12h.01" /></svg>
+                <b id="sum-room">room01</b>
+              </span>
+              <span class="summary-item" id="sum-e2ee" hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
+                <b>E2EE</b>
+              </span>
+            </div>
+
+            <div class="actions">
+              <button class="btn-launch" type="submit" id="launch-btn">
+                <span id="launch-label">Enter room</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="M13 6l6 6-6 6" /></svg>
+              </button>
+              <button class="btn-reset" type="reset" id="reset-btn">Reset</button>
+            </div>
+
+            <p class="fineprint">
+              Active rooms are joined as-is. New rooms are created with the standard feature set.
+              Press <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>Enter</kbd> to continue.
+            </p>
           </div>
         </form>
-      </div>
-    </div>
+      </section>
+    </main>
 
-    <script type="text/javascript">
-      const loginForm = document.getElementById('loginForm');
-      let API_KEY, API_SECRET;
-      document.getElementById('user_id').value = Date.now();
-      document.getElementById('name').value = 'user-' + Math.floor(Math.random() * 100);
-      const toUrl = window.location.href.replace(/\/login.*$/i, '');
-
-      const roomSelection = document.getElementById('room-selection');
-      const roomCustom = document.getElementById('room-custom');
-      let useCustomRoom = false;
-
-      document.getElementById('show-custom-room').addEventListener('click', () => {
-        roomSelection.style.display = 'none';
-        roomCustom.style.display = 'block';
-        useCustomRoom = true;
-        document.getElementById('room_id_input').value =
-          'room-' + Math.random().toString(36).substring(7);
-      });
-
-      document.getElementById('random-room').addEventListener('click', () => {
-        document.getElementById('room_id_input').value =
-          'room-' + Math.random().toString(36).substring(7);
-      });
-
-      document.getElementById('show-room-list').addEventListener('click', () => {
-        roomSelection.style.display = 'block';
-        roomCustom.style.display = 'none';
-        useCustomRoom = false;
-      });
-
-      document.getElementById('random-name').addEventListener('click', () => {
-        document.getElementById('name').value = 'user-' + Math.floor(Math.random() * 100);
-      });
-
-      document.getElementById('random-user-id').addEventListener('click', () => {
-        document.getElementById('user_id').value = Date.now();
-      });
-
-      loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const data = new FormData(e.target);
-        let roomId;
-        if (useCustomRoom) {
-          roomId = document.getElementById('room_id_input').value;
-        } else {
-          roomId = document.getElementById('room_id_select').value;
-        }
-
-        const roomInfo = {
-          room_id: roomId,
-          empty_timeout: 60 * 60 * 2,
-          metadata: {
-            room_title: 'Demo room',
-            welcome_message:
-              'Welcome to plugNmeet!<br /> To share microphone click mic icon from bottom left side.',
-            //webhook_url: "http://example.com",
-            //logout_url: "http://example.com",
-            room_features: {
-              allow_webcams: true,
-              mute_on_start: false,
-              allow_screen_share: true,
-              admin_only_webcams: false,
-              allow_view_other_webcams: true,
-              allow_view_other_users_list: true,
-              room_duration: 0,
-              enable_analytics: true,
-              allow_virtual_bg: true,
-              allow_raise_hand: true,
-              allow_reactions: true,
-              recording_features: {
-                is_allow: true,
-                is_allow_cloud: true,
-                is_allow_local: true,
-                enable_auto_cloud_recording: false,
-                only_record_admin_webcams: false,
-              },
-              external_broadcasting_features: {
-                is_allow: true,
-                is_allow_rtmp: true,
-              },
-              chat_features: {
-                is_allow: true,
-                is_allow_file_upload: true,
-                max_file_size: 50,
-                allowed_file_types: ['jpg', 'png', 'zip', 'pdf'],
-              },
-              shared_note_pad_features: {
-                is_allow: true,
-              },
-              whiteboard_features: {
-                is_allow: true,
-              },
-              external_media_player_features: {
-                is_allow: true,
-              },
-              waiting_room_features: {
-                is_active: true,
-              },
-              breakout_room_features: {
-                is_allow: true,
-                allowed_number_rooms: 6,
-              },
-              display_external_link_features: {
-                is_allow: true,
-              },
-              ingress_features: {
-                is_allow: true,
-              },
-              polls_features: {
-                is_allow: true,
-              },
-              sip_dial_in_features: {
-                is_allow: true,
-                // enable_dial_in_on_create: true,
-                // hide_phone_number: false,
-              },
-              countdown_timer_features: {
-                is_allow: true,
-              },
-              insights_features: {
-                is_allow: true,
-                transcription_features: {
-                  is_allow: true,
-                  is_allow_translation: true,
-                  is_allow_speech_synthesis: true,
-                },
-                chat_translation_features: {
-                  is_allow: true,
-                },
-                ai_features: {
-                  is_allow: true,
-                  ai_text_chat_features: {
-                    is_allow: true,
-                  },
-                  meeting_summarization_features: {
-                    is_allow: true,
-                  },
-                },
-                ai_agent_features: {
-                  is_allow: true,
-                  agent_display_name: 'AI Practice Assistant',
-                  topic: 'General Practice & Product Demo',
-                  system_prompt:
-                    'You are an interactive practice assistant and product guide inside a plugNmeet room. Keep spoken responses concise (1-3 sentences), use the whiteboard and shared notepad to illustrate concepts when helpful, and create quick polls or quizzes to check understanding.',
-                  auto_join_on_first_participant: false,
-                  allow_whiteboard_write: true,
-                  allow_vision_capture: true,
-                  allow_polls: true,
-                  allow_chat_message: true,
-                  allow_notepad_write: true,
-                  strict_topic_enforcement: false,
-                  max_session_seconds: 1800,
-                  mcpServers: {
-                    'plugnmeet-docs': {
-                      url: 'https://docs-mcp.plugnmeet.org/mcp',
-                    },
-                  },
-                },
-              },
-              end_to_end_encryption_features: {
-                is_enabled: false,
-                included_chat_messages: false,
-                // this may use more CPU for the user end.
-                // do not enable it unless really necessary
-                included_whiteboard: false,
-                // if true then user will have to insert
-                // shared key manually
-                enabled_self_insert_encryption_key: false,
-              },
-            },
-            // default_lock_settings: {
-            //     lock_microphone: true,
-            //     lock_screen_sharing: true,
-            //     lock_webcam: true,
-            //     lock_chat_file_share: true,
-            //     lock_chat_send_message: true
-            // }
-          },
-        };
-
-        const userInfo = {
-          is_admin: data.get('user_type') === 'admin',
-          name: data.get('name'),
-          user_id: data.get('user_id'),
-          /*user_metadata: {
-                  record_webcam: false,
-                  preferred_lang: "bn-BD",
-              }*/
-        };
-
-        API_KEY = data.get('api_key');
-        API_SECRET = data.get('api_secret');
-
-        processRequest(roomInfo, userInfo);
-      });
-
-      processRequest = async (roomInfo, userInfo) => {
-        // let's check if room is active or not
-        const isRoomActiveReq = {
-          room_id: roomInfo.room_id,
-        };
-
-        const res = await sendRequest(isRoomActiveReq, 'room/isRoomActive');
-        if (!res.status) {
-          alert(res.msg);
-        }
-        let isRoomActive = res.is_active;
-
-        // if not active then we'll create
-        if (!isRoomActive) {
-          const roomCreateRes = await sendRequest(roomInfo, 'room/create');
-          if (!roomCreateRes.status) {
-            alert(roomCreateRes.msg);
-            return;
-          }
-          isRoomActive = roomCreateRes.status;
-        }
-
-        // if room active then we'll join
-        if (isRoomActive) {
-          const getJoinTokenReq = {
-            room_id: roomInfo.room_id,
-            user_info: userInfo,
-          };
-
-          const roomJoinRes = await sendRequest(getJoinTokenReq, 'room/getJoinToken');
-
-          if (roomJoinRes.status) {
-            window.location.href = toUrl + '/?access_token=' + roomJoinRes.token;
-          } else {
-            alert(roomJoinRes.msg);
-          }
-        }
-      };
-
-      sendRequest = async (body, method) => {
-        const b = JSON.stringify(body);
-        const signature = await getHashSignature(API_SECRET, b);
-
-        let headers = {
-          'Content-Type': 'application/json',
-          'API-KEY': API_KEY,
-          'HASH-SIGNATURE': signature,
-        };
-
-        let serverUrl = window.PLUG_N_MEET_SERVER_URL;
-        if (typeof window.plugNmeetConfig !== 'undefined') {
-          serverUrl = window.plugNmeetConfig.serverUrl;
-        }
-
-        const response = await fetch(serverUrl + '/auth/' + method, {
-          method: 'POST',
-          headers: headers,
-          body: b,
-        });
-
-        if (response.status !== 200) {
-          alert(response.statusText);
-          console.log(response.json());
-          return;
-        }
-
-        return await response.json();
-      };
-
-      // copied from https://stackoverflow.com/a/76117805/1281864
-      const getHashSignature = async (secretKey, message, algorithm = 'SHA-256') => {
-        // Convert the message and secretKey to Uint8Array
-        const encoder = new TextEncoder();
-        const messageUint8Array = encoder.encode(message);
-        const keyUint8Array = encoder.encode(secretKey);
-
-        // Import the secretKey as a CryptoKey
-        const cryptoKey = await window.crypto.subtle.importKey(
-          'raw',
-          keyUint8Array,
-          { name: 'HMAC', hash: algorithm },
-          false,
-          ['sign'],
-        );
-
-        // Sign the message with HMAC and the CryptoKey
-        const signature = await window.crypto.subtle.sign('HMAC', cryptoKey, messageUint8Array);
-
-        // Convert the signature ArrayBuffer to a hex string
-        const hashArray = Array.from(new Uint8Array(signature));
-        return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-      };
-    </script>
+    <script src="./assets/demo/demo.js"></script>
   </body>
 </html>

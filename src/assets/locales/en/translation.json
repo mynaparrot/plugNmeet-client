@@ -152,10 +152,13 @@
       "toggle-theme": "Toggle theme",
       "logout": "Leave Meeting",
       "end": "End meeting",
+      "end-ai-session": "End Session",
       "alert": {
         "confirm": "Are you sure?",
         "logout": "You are about to leave the meeting.",
         "end": "You are about to end the meeting for everyone.",
+        "end-ai-session-title": "End AI Session?",
+        "end-ai-session": "You are about to end your AI session. The AI Assistant will also leave and the session will be closed.",
         "leave-or-end-title": "Leave or end meeting?",
         "end-for-everyone": "End Meeting for Everyone",
         "logout-desc": "You will leave the meeting. Other participants can continue the session.",

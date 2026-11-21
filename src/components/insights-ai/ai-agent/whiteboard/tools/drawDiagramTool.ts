@@ -1,6 +1,7 @@
 import type { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 
 import {
+  AGENT_FONT_FAMILY,
   agentCustomData,
   agentElementId,
   asCustomData,
@@ -9,6 +10,7 @@ import {
   ensureBoardOpen,
   formatWhiteboardText,
   invalid,
+  measureText,
   toExcalidrawElements,
   type BoardContext,
 } from '../agentElements';
@@ -29,6 +31,12 @@ const TOOL_NAME = 'whiteboard_draw_diagram';
 
 const NODE_WIDTH = 180;
 const NODE_HEIGHT = 72;
+/** A node grows with its label, up to the width a whole column may take. */
+const MAX_NODE_WIDTH = 360;
+const NODE_FONT_SIZE = 18;
+const EDGE_FONT_SIZE = 16;
+/** Room around a node label: bound text keeps 5px each side, plus the border. */
+const NODE_TEXT_MARGIN = 32;
 const COLUMN_GAP = 60;
 const ROW_GAP = 70;
 
@@ -184,10 +192,49 @@ const fitToA4Width = (scale: number, scaledWidth: number, frame: BBox): number =
 };
 
 /** Unscaled width the built-in flowchart layout needs at scale 1. */
-const flowchartUnitWidth = (diagram: Diagram, maxPerRank: number, maxRank: number): number =>
-  diagram.direction === 'TD'
-    ? maxPerRank * NODE_WIDTH + Math.max(maxPerRank - 1, 0) * COLUMN_GAP
-    : (maxRank + 1) * (NODE_WIDTH + COLUMN_GAP);
+const flowchartUnitWidth = (
+  direction: Diagram['direction'],
+  maxPerRank: number,
+  maxRank: number,
+  nodeWidth: number,
+): number =>
+  direction === 'TD'
+    ? maxPerRank * nodeWidth + Math.max(maxPerRank - 1, 0) * COLUMN_GAP
+    : (maxRank + 1) * nodeWidth + maxRank * COLUMN_GAP;
+
+/** Lines a node label needs when it wraps inside the node. */
+const labelLines = (label: string, fontSize: number, width: number): number =>
+  label
+    .split('\n')
+    .reduce(
+      (sum, line) =>
+        sum + Math.max(1, Math.ceil(measureText(line, fontSize).width / Math.max(40, width))),
+      0,
+    );
+
+/**
+ * Node size at scale 1, measured from the labels: Excalidraw wraps a bound label
+ * inside its container, so a wide label needs a wider node and a long one a
+ * taller node. Otherwise the node would grow after the arrows were routed.
+ */
+const baseNodeSize = (nodes: readonly DiagramNode[]): { width: number; height: number } => {
+  const widest = Math.max(...nodes.map((node) => measureText(node.label, NODE_FONT_SIZE).width));
+  const width = Math.min(
+    MAX_NODE_WIDTH,
+    Math.max(NODE_WIDTH, Math.round(widest) + NODE_TEXT_MARGIN),
+  );
+  const lines = Math.max(
+    ...nodes.map((node) => labelLines(node.label, NODE_FONT_SIZE, width - NODE_TEXT_MARGIN)),
+  );
+  return {
+    width,
+    height: Math.max(NODE_HEIGHT, Math.round(lines * NODE_FONT_SIZE * 1.35) + NODE_TEXT_MARGIN),
+  };
+};
+
+/** Labels stay legible when a diagram is scaled down, so they shrink with it. */
+const scaledFontSize = (base: number, scale: number): number =>
+  Math.max(12, Math.round(base * scale));
 
 /**
  * Mermaid passes its labels straight through, LaTeX included: text and bound
@@ -307,12 +354,17 @@ const positionDiagram = (
 
   return elements.map((element) => {
     const points = (element as { points?: readonly (readonly number[])[] }).points;
+    const fontSize = (element as { fontSize?: unknown }).fontSize;
     return {
       ...element,
       x: mapX(element.x),
       y: mapY(element.y),
       width: mapSize(element.width),
       height: mapSize(element.height),
+      // Text has to shrink with its container, or it is clipped inside it.
+      ...(typeof fontSize === 'number'
+        ? { fontSize: Math.max(10, Math.round(fontSize * scale)) }
+        : {}),
       ...(points
         ? { points: points.map(([x, y]) => [Math.round(x * scale), Math.round(y * scale)]) }
         : {}),
@@ -340,23 +392,28 @@ const buildFlowchart = async (
 
   const maxPerRank = Math.max(...[...perRank.values()].map((ids) => ids.length));
   const maxRank = Math.max(...ranks.values());
+  // The node size comes from the labels, before anything is placed: a node that
+  // grows later would tear the arrows apart.
+  const base = baseNodeSize(diagram.nodes);
   const scale = fitToA4Width(
     requestedScale,
-    flowchartUnitWidth(diagram, maxPerRank, maxRank) * requestedScale,
+    flowchartUnitWidth(diagram.direction, maxPerRank, maxRank, base.width) * requestedScale,
     board.frame,
   );
   // Floored, so a fitted diagram always lands inside the A4 content width.
-  const nodeWidth = Math.floor(NODE_WIDTH * scale);
-  const nodeHeight = Math.floor(NODE_HEIGHT * scale);
+  const nodeWidth = Math.floor(base.width * scale);
+  const nodeHeight = Math.floor(base.height * scale);
+  const columnGap = Math.round(COLUMN_GAP * scale);
+  const rowGap = Math.round(ROW_GAP * scale);
   const totalWidth = Math.round(
     diagram.direction === 'TD'
-      ? maxPerRank * nodeWidth + (maxPerRank - 1) * COLUMN_GAP * scale
-      : (maxRank + 1) * (nodeWidth + COLUMN_GAP * scale),
+      ? maxPerRank * nodeWidth + (maxPerRank - 1) * columnGap
+      : (maxRank + 1) * nodeWidth + maxRank * columnGap,
   );
   const totalHeight = Math.round(
     diagram.direction === 'TD'
-      ? (maxRank + 1) * (nodeHeight + ROW_GAP * scale)
-      : maxPerRank * nodeHeight + (maxPerRank - 1) * COLUMN_GAP * scale,
+      ? (maxRank + 1) * nodeHeight + maxRank * rowGap
+      : maxPerRank * nodeHeight + (maxPerRank - 1) * rowGap,
   );
 
   const origin = resolveExplicitOrFreePlacement(
@@ -367,23 +424,33 @@ const buildFlowchart = async (
     rawY,
     layout,
     anchor,
+    { centered: true },
   );
 
-  // Position every node first: the arrows need both centres.
+  // Position every node first: the arrows need both centres. Every rank is
+  // centred on the diagram's own width, so a chain stays on the middle line and
+  // a branching tree spreads symmetrically around it.
   const positions = new Map<string, { x: number; y: number }>();
   for (const [rank, ids] of perRank) {
+    if (diagram.direction === 'TD') {
+      const rankWidth = ids.length * nodeWidth + (ids.length - 1) * columnGap;
+      const startX = origin.x + (totalWidth - rankWidth) / 2;
+      ids.forEach((id, index) => {
+        positions.set(id, {
+          x: Math.round(startX + index * (nodeWidth + columnGap)),
+          y: Math.round(origin.y + rank * (nodeHeight + rowGap)),
+        });
+      });
+      continue;
+    }
+
+    const rankHeight = ids.length * nodeHeight + (ids.length - 1) * rowGap;
+    const startY = origin.y + (totalHeight - rankHeight) / 2;
     ids.forEach((id, index) => {
-      if (diagram.direction === 'TD') {
-        positions.set(id, {
-          x: Math.round(origin.x + index * (nodeWidth + COLUMN_GAP * scale)),
-          y: Math.round(origin.y + rank * (nodeHeight + ROW_GAP * scale)),
-        });
-      } else {
-        positions.set(id, {
-          x: Math.round(origin.x + rank * (nodeWidth + COLUMN_GAP * scale)),
-          y: Math.round(origin.y + index * (nodeHeight + COLUMN_GAP * scale)),
-        });
-      }
+      positions.set(id, {
+        x: Math.round(origin.x + rank * (nodeWidth + columnGap)),
+        y: Math.round(startY + index * (nodeHeight + rowGap)),
+      });
     });
   }
 
@@ -406,7 +473,11 @@ const buildFlowchart = async (
       backgroundColor: 'transparent',
       fillStyle: 'solid',
       strokeWidth: 2,
-      label: { text: node.label, fontFamily: 1 },
+      label: {
+        text: node.label,
+        fontSize: scaledFontSize(NODE_FONT_SIZE, scale),
+        fontFamily: AGENT_FONT_FAMILY,
+      },
       customData: data,
     };
   });
@@ -433,7 +504,15 @@ const buildFlowchart = async (
       strokeWidth: 2,
       start: { id: ids.get(edge.from) },
       end: { id: ids.get(edge.to) },
-      ...(edge.label ? { label: { text: edge.label, fontFamily: 1 } } : {}),
+      ...(edge.label
+        ? {
+            label: {
+              text: edge.label,
+              fontSize: scaledFontSize(EDGE_FONT_SIZE, scale),
+              fontFamily: AGENT_FONT_FAMILY,
+            },
+          }
+        : {}),
       customData: data,
     });
   }
@@ -478,6 +557,7 @@ export const executeWhiteboardDrawDiagramTool = async (
       args.y,
       layout,
       anchor,
+      { centered: true },
     );
     const positioned = positionDiagram(native.elements, effectiveScale, origin);
 

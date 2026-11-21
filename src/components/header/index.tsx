@@ -20,16 +20,19 @@ import ConnectionStatus from './connectionStatus';
 import MediaDegradationBanner from './mediaDegradationBanner';
 import ConfirmationModal from '../../helpers/ui/confirmationModal';
 import BackToMainBtn from '../breakout-room/backToMainBtn';
+import { getEndActionUi } from '../breakout-room/utils/breakoutRoom';
 import { APP_LAYOUT_CLASSES } from '../../helpers/dimensions';
 
 const Header = () => {
   const roomTitle = useAppSelector((state) => state.session.currentRoom.metadata?.roomTitle);
+  const metadata = useAppSelector((state) => state.session.currentRoom.metadata);
+  const isAdmin = useAppSelector((state) => !!state.session.currentUser?.metadata?.isAdmin);
   const isRecorder = store.getState().session.currentUser?.isRecorder;
 
   const { t } = useTranslation();
+  const endAction = getEndActionUi(metadata, isAdmin);
   const [title, setTitle] = useState<string>('');
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [modalText, setModalText] = useState('');
   const [onConfirm, setOnConfirm] = useState<() => void>(() => () => {});
   const [showExportHub, setShowExportHub] = useState<boolean>(false);
 
@@ -44,10 +47,9 @@ const Header = () => {
       const conn = getNatsConn();
       await conn.leaveRoom('notifications.user-logged-out');
     };
-    setModalText(t('header.menus.alert.logout'));
     setOnConfirm(() => confirm);
     setShowModal(true);
-  }, [t]);
+  }, []);
 
   return (
     !isRecorder && (
@@ -111,8 +113,8 @@ const Header = () => {
             onConfirm();
             setShowModal(false);
           }}
-          title={t('header.menus.alert.confirm')}
-          text={modalText}
+          title={t(endAction.titleKey)}
+          text={t(endAction.textKey)}
         />
         <RoomSettings />
         <KeyboardShortcuts />

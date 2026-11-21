@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { create, fromBinary, toBinary } from '@bufbuild/protobuf';
@@ -6,38 +6,27 @@ import { CommonResponseSchema, RoomEndAPIReqSchema } from 'plugnmeet-protocol-js
 import clsx from 'clsx';
 import RadioOptions from '../../../helpers/ui/radioOptions';
 
-import { store, useAppSelector } from '../../../store';
+import { useAppSelector } from '../../../store';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
 import { getNatsConn } from '../../../helpers/nats';
 import Modal from '../../../helpers/ui/modal';
 import ConfirmationModal from '../../../helpers/ui/confirmationModal';
 import { EndMeetingIconSVG } from '../../../assets/Icons/EndMeetingIconSVG';
-import { canLeaveBreakoutRoom } from '../../breakout-room/utils/breakoutRoom';
+import { canLeaveBreakoutRoom, getEndActionUi } from '../../breakout-room/utils/breakoutRoom';
 
 const EndMeetingButton = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [alertText, setAlertText] = useState<string>('');
   const [isBusy, setIsBusy] = useState<boolean>(false);
   const [selectedAction, setSelectedAction] = useState<'end' | 'leave'>('end');
 
   const { t } = useTranslation();
   const conn = getNatsConn();
-  const { isAdmin, roomId, showTooltip } = useMemo(() => {
-    const session = store.getState().session;
-    return {
-      isAdmin: session.currentUser?.metadata?.isAdmin,
-      roomId: session.currentRoom.roomId,
-      showTooltip: session.userDeviceType === 'desktop',
-    };
-  }, []);
+  const isAdmin = useAppSelector((state) => !!state.session.currentUser?.metadata?.isAdmin);
+  const roomId = useAppSelector((state) => state.session.currentRoom.roomId);
+  const metadata = useAppSelector((state) => state.session.currentRoom.metadata);
+  const showTooltip = useAppSelector((state) => state.session.userDeviceType === 'desktop');
 
   function open() {
-    if (isAdmin) {
-      setAlertText(t('header.menus.alert.end').toString());
-    } else {
-      setAlertText(t('header.menus.alert.logout').toString());
-    }
-
     setSelectedAction('end');
     setIsOpen(true);
   }
@@ -88,10 +77,10 @@ const EndMeetingButton = () => {
     setIsOpen(false);
   }, [isBusy, roomId, t]);
 
-  const metadata = useAppSelector((state) => state.session.currentRoom.metadata);
   const isBreakoutRoom = !!metadata?.isBreakoutRoom;
   // a learner of a 1-on-1 AI session room has no way back, so they need a way out
-  const canLeaveBreakout = canLeaveBreakoutRoom(metadata, !!isAdmin);
+  const canLeaveBreakout = canLeaveBreakoutRoom(metadata, isAdmin);
+  const endAction = getEndActionUi(metadata, isAdmin);
 
   if (isBreakoutRoom && !canLeaveBreakout) {
     return null;
@@ -110,7 +99,7 @@ const EndMeetingButton = () => {
     },
   );
 
-  const tooltipText = isAdmin ? t('header.menus.end') : t('header.menus.logout');
+  const tooltipText = t(endAction.footerLabelKey);
 
   const renderAdminButtons = () => (
     <div className="flex items-center justify-end gap-2">
@@ -191,8 +180,8 @@ const EndMeetingButton = () => {
           show={isOpen}
           onClose={() => setIsOpen(false)}
           onConfirm={handleLeave}
-          title={t('header.menus.alert.confirm')}
-          text={alertText}
+          title={t(endAction.titleKey)}
+          text={t(endAction.textKey)}
         />
       )}
     </>

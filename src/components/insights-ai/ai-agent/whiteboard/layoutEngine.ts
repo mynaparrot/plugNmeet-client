@@ -343,6 +343,61 @@ export const nextFreeSlot = (
   };
 };
 
+/** The horizontal centre a block of `size` has on the board. */
+const centeredX = (frame: BBox, size: Size): number =>
+  round(frame.x + (frame.width - size.width) / 2);
+
+/**
+ * Free slot for something people read as a drawing: a diagram, a table, a card.
+ * Those start from the middle of the board and spread outwards, so a narrow
+ * drawing sits centred and a wide one moves left until it touches the guide.
+ * When the middle is taken, the free space on that row is used before stacking
+ * down, and the space beside the blocker is tried before its far side.
+ */
+export const centeredFreeSlot = (
+  boxes: readonly BBox[],
+  frame: BBox,
+  size: Size,
+): { x: number; y: number } => {
+  const minX = minFrameX(frame);
+  const maxX = maxFrameX(frame);
+  const minY = minFrameY(frame);
+  const x = Math.min(Math.max(centeredX(frame, size), minX), Math.max(minX, maxX - size.width));
+
+  if (size.width <= maxX - minX) {
+    const freeBottoms = boxes.map((box) => round(box.y + box.height + BLOCK_GAP));
+    const ys = uniqueSorted(
+      [minY, ...boxes.map((box) => round(box.y)), ...freeBottoms].filter((y) => y >= minY),
+    );
+    const xs = uniqueSorted(
+      [
+        minX,
+        ...boxes.flatMap((box) => [round(box.x), round(box.x + box.width + BLOCK_GAP)]),
+      ].filter((candidate) => candidate >= minX && candidate + size.width <= maxX),
+    );
+
+    for (const y of ys) {
+      const centred = { x, y, width: size.width, height: size.height };
+      if (!boxes.some((box) => overlaps(centred, box))) {
+        return { x, y };
+      }
+      // Right of the blocker first, so repeated drawings grow towards the right.
+      for (const candidateX of [...xs].sort((a, b) => b - a)) {
+        const candidate = { x: candidateX, y, width: size.width, height: size.height };
+        if (!boxes.some((box) => overlaps(candidate, box))) {
+          return { x: candidateX, y };
+        }
+      }
+    }
+  }
+
+  // Nothing free on a row: stack below everything, still centred.
+  return {
+    x,
+    y: Math.max(minY, ...boxes.map((box) => round(box.y + box.height + BLOCK_GAP))),
+  };
+};
+
 /** The right column is an offset inside the frame, never absolute scene x. */
 export const rightColumnX = (frame: BBox): number =>
   round(frame.x + Math.max(FRAME_PADDING, Math.min(RIGHT_COLUMN_X, frame.width / 2)));
@@ -454,6 +509,14 @@ export const anchoredElementId = (layout: LayoutMode, rawId?: unknown): string |
   return id || undefined;
 };
 
+export type PlacementOptions = {
+  /**
+   * Drawings (a diagram, a table, a card) are centred on the board, prose fills
+   * it from the left margin. Free space is left-aligned unless asked otherwise.
+   */
+  centered?: boolean;
+};
+
 /**
  * Resolve where a new block goes. Unknown anchors degrade to free space instead
  * of failing: a misplaced block is recoverable, a failed tool call is not.
@@ -465,6 +528,7 @@ export const resolvePlacement = (
   size: Size,
   layout: LayoutMode = 'free_space',
   anchor?: BBox,
+  options: PlacementOptions = {},
 ): { x: number; y: number } => {
   const freeBoxes = withoutAnchor(boxes, anchor);
 
@@ -508,7 +572,10 @@ export const resolvePlacement = (
 
   // Free space fills the page the participant is looking at, horizontally first:
   // the free space right of existing content is used before stacking down.
-  return clampToA4Bounds(nextFreeSlot(boxes, frame, size), size, frame);
+  const slot = options.centered
+    ? centeredFreeSlot(boxes, frame, size)
+    : nextFreeSlot(boxes, frame, size);
+  return clampToA4Bounds(slot, size, frame);
 };
 
 /** Slack around the frame before a guessed coordinate is simply wrong. */
@@ -549,9 +616,10 @@ export const resolveExplicitOrFreePlacement = (
   rawY?: unknown,
   layout: LayoutMode = 'free_space',
   anchor?: BBox | null,
+  options: PlacementOptions = {},
 ): { x: number; y: number } => {
   if (anchor && layout !== 'free_space') {
-    return resolvePlacement(boxes, frame, size, layout, anchor);
+    return resolvePlacement(boxes, frame, size, layout, anchor, options);
   }
 
   const x = Number(rawX);
@@ -564,7 +632,7 @@ export const resolveExplicitOrFreePlacement = (
     return clampToA4Bounds(avoidCollisions(boxes, topLeft, size, maxFrameX(frame)), size, frame);
   }
 
-  return resolvePlacement(boxes, frame, size, layout, anchor ?? undefined);
+  return resolvePlacement(boxes, frame, size, layout, anchor ?? undefined, options);
 };
 
 /** Bounding box of the element a placement is anchored to, when it exists. */

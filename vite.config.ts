@@ -92,6 +92,7 @@ function getStaticFilesToCopy(): ViteStaticCopyOptions {
         src: [
           'assets/audio',
           'assets/backgrounds',
+          'assets/demo',
           'assets/imgs',
           'assets/locales',
           'assets/lti',
@@ -100,6 +101,11 @@ function getStaticFilesToCopy(): ViteStaticCopyOptions {
         ].filter(Boolean),
         dest: 'assets/',
         rename: { stripBase: 1 },
+      },
+      {
+        // Demo pages load the self-hosted Inter file directly.
+        src: 'assets/fonts/InterVariable.woff2',
+        dest: 'assets/fonts/',
       },
       {
         src: `${noiseSuppressorPkg}/dist/gtcrn/workletProcessor.js`,
@@ -123,7 +129,7 @@ function getStaticFilesToCopy(): ViteStaticCopyOptions {
         rename: { stripBase: true, name: 'licenses/web-noise-suppressor-LICENSE.txt' },
       },
       {
-        src: 'login.html',
+        src: ['login.html', 'login-agent.html'],
         dest: './',
       },
     ],

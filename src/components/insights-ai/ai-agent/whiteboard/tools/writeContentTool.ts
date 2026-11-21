@@ -1,6 +1,7 @@
 import type { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 
 import {
+  AGENT_FONT_FAMILY,
   agentCustomData,
   agentElementId,
   asCustomData,
@@ -14,6 +15,7 @@ import {
   resolveFillColor,
   resolveStrokeColor,
   toExcalidrawElements,
+  wrapTextToWidth,
   type BoardContext,
 } from '../agentElements';
 import {
@@ -22,9 +24,10 @@ import {
   anchoredElementId,
   maxA4ContentWidth,
   readLayout,
-  resolvePlacement,
+  resolveExplicitOrFreePlacement,
   sceneBoxes,
   toBBox,
+  type Size,
 } from '../layoutEngine';
 import { isAgentElement } from '../sceneGraph';
 
@@ -56,8 +59,18 @@ const CELL_PADDING_Y = 24;
 const MIN_ROW_HEIGHT = 44;
 /** Vertical gap between two blocks. */
 const BLOCK_SPACING = 12;
-/** Inner padding of a sticky note or vocabulary card, on every side. */
-const CARD_PADDING = 18;
+/**
+ * Inner padding of a sticky note or vocabulary card, on every side. Excalidraw
+ * keeps 5px of its own around bound text, so the card has to be wider than its
+ * text by more than that or the label wraps unexpectedly.
+ */
+const CARD_PADDING = 22;
+/** A card stays readable: a longer paragraph wraps inside the note. */
+const MAX_CARD_TEXT_WIDTH = 640;
+/** Extent of a highlight or underline beyond the text it marks. */
+const HIGHLIGHT_PAD_X = 6;
+const HIGHLIGHT_PAD_Y = 4;
+const UNDERLINE_GAP = 4;
 
 const asString = (value: unknown): string => (typeof value === 'string' ? value.trim() : '');
 
@@ -171,6 +184,29 @@ const isCardStyle = (style: string): boolean =>
 const bodyFontSizeOf = (block: Block, fontSize: number): number =>
   block.emphasis === 'bold' ? Math.round(fontSize * 1.15) : fontSize;
 
+/** Text blocks wrap inside the page, cards wrap inside their own column. */
+const isProse = (style: string): boolean => !isCardStyle(style) && style !== 'comparison_table';
+
+const wrapBlocks = (
+  blocks: readonly Block[],
+  style: string,
+  fontSize: number,
+  availableWidth: number,
+): Block[] => {
+  const pageWidth = Math.max(120, availableWidth);
+  const maxWidth = isCardStyle(style)
+    ? Math.min(pageWidth - CARD_PADDING * 2, MAX_CARD_TEXT_WIDTH)
+    : pageWidth;
+
+  return blocks.map((block) => {
+    if (isTableRow(block, style)) {
+      return block;
+    }
+    const text = wrapTextToWidth(block.text, bodyFontSizeOf(block, fontSize), maxWidth);
+    return text === block.text ? block : { ...block, text };
+  });
+};
+
 type CardSize = { width: number; height: number };
 
 /** A card is its text plus the padding on both sides, in both directions. */
@@ -212,6 +248,42 @@ const flowCards = (
   }
 
   return { slots, width, height: y + rowHeight };
+};
+
+type PlacedCards = { origin: { x: number; y: number }; flow: ReturnType<typeof flowCards> };
+
+/**
+ * A row of cards has to wrap before it knows where it lands: the space beside
+ * an existing column fits fewer cards than the whole page. Both candidates are
+ * placed and the one that reaches the highest row wins, so a narrow grid beside
+ * the content beats a wide grid that only fits below it.
+ */
+const chooseCardFlow = (
+  sizes: readonly CardSize[],
+  place: (size: Size) => { x: number; y: number },
+  frameRight: number,
+  pageWidth: number,
+): PlacedCards | null => {
+  if (sizes.length === 0) {
+    return null;
+  }
+
+  const probe = place({
+    width: Math.max(...sizes.map((size) => size.width)),
+    height: Math.max(...sizes.map((size) => size.height)),
+  });
+  const narrow = flowCards(sizes, frameRight - probe.x);
+  const narrowOrigin = place({ width: narrow.width, height: narrow.height });
+
+  const wide = flowCards(sizes, pageWidth);
+  if (wide.width === narrow.width) {
+    return { origin: narrowOrigin, flow: narrow };
+  }
+
+  const wideOrigin = place({ width: wide.width, height: wide.height });
+  return wideOrigin.y <= narrowOrigin.y
+    ? { origin: wideOrigin, flow: wide }
+    : { origin: narrowOrigin, flow: narrow };
 };
 
 type TableLayout = { columnWidths: number[]; rowHeights: number[]; width: number };
@@ -311,12 +383,20 @@ const renderTableRow = (
       backgroundColor,
       fillStyle: 'solid',
       strokeWidth: 1,
-      label: { text: cells[column] ?? '', fontSize, fontFamily: 1 },
+      label: { text: cells[column] ?? '', fontSize, fontFamily: AGENT_FONT_FAMILY },
       customData: data,
     };
     cellX += width;
     return skeleton;
   });
+};
+
+type RenderedBlock = {
+  skeletons: unknown[];
+  height: number;
+  textId?: string;
+  highlightId?: string;
+  underlineId?: string;
 };
 
 /**
@@ -332,7 +412,7 @@ const renderBlock = (
   fontSize: number,
   strokeColor: string,
   data: unknown,
-): { skeletons: unknown[]; height: number } => {
+): RenderedBlock => {
   const skeletons: unknown[] = [];
 
   const bodyFontSize = bodyFontSizeOf(block, fontSize);
@@ -352,20 +432,24 @@ const renderBlock = (
       fillStyle: 'solid',
       strokeWidth: 1,
       roundness: { type: 3 },
-      label: { text: block.text, fontSize, fontFamily: 1 },
+      label: { text: block.text, fontSize: bodyFontSize, fontFamily: AGENT_FONT_FAMILY },
       customData: data,
     });
     return { skeletons, height: card.height };
   }
 
-  if (block.emphasis === 'highlight') {
+  const textId = agentElementId();
+  const highlightId = block.emphasis === 'highlight' ? agentElementId() : undefined;
+  const underlineId = block.emphasis === 'underline' ? agentElementId() : undefined;
+
+  if (highlightId) {
     skeletons.push({
-      id: agentElementId(),
+      id: highlightId,
       type: 'rectangle',
-      x: x - 6,
-      y: y - 4,
-      width: metrics.width + 12,
-      height: metrics.height + 8,
+      x: x - HIGHLIGHT_PAD_X,
+      y: y - HIGHLIGHT_PAD_Y,
+      width: metrics.width + HIGHLIGHT_PAD_X * 2,
+      height: metrics.height + HIGHLIGHT_PAD_Y * 2,
       strokeColor: 'transparent',
       backgroundColor: resolveFillColor('yellow'),
       fillStyle: 'solid',
@@ -375,7 +459,7 @@ const renderBlock = (
   }
 
   skeletons.push({
-    id: agentElementId(),
+    id: textId,
     type: 'text',
     x,
     y,
@@ -383,19 +467,19 @@ const renderBlock = (
     height: metrics.height,
     text: block.text,
     fontSize: bodyFontSize,
-    fontFamily: 1,
+    fontFamily: AGENT_FONT_FAMILY,
     strokeColor,
     textAlign: 'left',
     verticalAlign: 'top',
     customData: data,
   });
 
-  if (block.emphasis === 'underline') {
+  if (underlineId) {
     skeletons.push({
-      id: agentElementId(),
+      id: underlineId,
       type: 'line',
       x,
-      y: y + metrics.height + 4,
+      y: y + metrics.height + UNDERLINE_GAP,
       width: metrics.width,
       height: 0,
       strokeColor,
@@ -404,7 +488,119 @@ const renderBlock = (
     });
   }
 
-  return { skeletons, height: blockHeight(block, fontSize) };
+  return { skeletons, height: blockHeight(block, fontSize), textId, highlightId, underlineId };
+};
+
+/** One block of the batch, kept so the converted result can be reconciled. */
+type BlockPlan = {
+  /** Skeleton ids of the block, so a shift moves all of it. */
+  ids: string[];
+  /** Planned top of the block. */
+  y: number;
+  /** Planned height of the block. */
+  height: number;
+  /** A row of a table: its cells are kept flush instead of shifted. */
+  row?: boolean;
+  textId?: string;
+  highlightId?: string;
+  underlineId?: string;
+};
+
+const skeletonId = (skeleton: unknown): string => String((skeleton as { id?: unknown }).id ?? '');
+
+const containerIdOf = (element: ExcalidrawElement): string | null =>
+  (element as { containerId?: string | null }).containerId ?? null;
+
+/**
+ * Excalidraw measures and wraps text itself while the skeletons are converted,
+ * so a line can come out taller than estimated. Highlights, underlines, table
+ * rows and the blocks below are re-fitted to that real geometry: a mark is
+ * never smaller than its text, a grid stays flush, and nothing overlaps.
+ */
+export const reconcileConvertedBlocks = (
+  elements: readonly ExcalidrawElement[],
+  plans: readonly BlockPlan[],
+): ExcalidrawElement[] => {
+  const byId = new Map(elements.map((element) => [element.id, element]));
+  const labels = new Map<string, ExcalidrawElement>();
+  for (const element of elements) {
+    const containerId = containerIdOf(element);
+    if (containerId) {
+      labels.set(containerId, element);
+    }
+  }
+
+  const move = (id: string, dy: number) => {
+    const element = byId.get(id);
+    if (element && dy !== 0) {
+      byId.set(id, { ...element, y: element.y + dy } as ExcalidrawElement);
+    }
+  };
+  const place = (id: string, patch: Partial<ExcalidrawElement>) => {
+    const element = byId.get(id);
+    if (element) {
+      byId.set(id, { ...element, ...patch } as ExcalidrawElement);
+    }
+  };
+
+  let shift = 0;
+  for (const plan of plans) {
+    for (const id of plan.ids) {
+      move(id, shift);
+      const label = labels.get(id);
+      if (label) {
+        move(label.id, shift);
+      }
+    }
+
+    if (plan.row) {
+      const cells = plan.ids.map((id) => byId.get(id)).filter((cell) => !!cell);
+      if (cells.length > 0) {
+        const height = Math.max(...cells.map((cell) => cell.height));
+        const top = plan.y + shift;
+        for (const cell of cells) {
+          place(cell.id, { y: top, height });
+          const label = labels.get(cell.id);
+          if (label) {
+            // The cell text stays centred when its row grows.
+            place(label.id, { y: Math.round(top + (height - label.height) / 2) });
+          }
+        }
+        shift += Math.max(0, height - plan.height);
+      }
+      continue;
+    }
+
+    const text = plan.textId ? byId.get(plan.textId) : undefined;
+    if (text) {
+      if (plan.highlightId) {
+        place(plan.highlightId, {
+          x: text.x - HIGHLIGHT_PAD_X,
+          y: text.y - HIGHLIGHT_PAD_Y,
+          width: text.width + HIGHLIGHT_PAD_X * 2,
+          height: text.height + HIGHLIGHT_PAD_Y * 2,
+        });
+      }
+      if (plan.underlineId) {
+        place(plan.underlineId, {
+          x: text.x,
+          y: text.y + text.height + UNDERLINE_GAP,
+          width: text.width,
+        });
+      }
+    }
+
+    const bottom = Math.max(
+      plan.y + shift,
+      ...plan.ids.map((id) => {
+        const element = byId.get(id);
+        return element ? element.y + element.height : 0;
+      }),
+    );
+    shift += Math.max(0, Math.round(bottom - (plan.y + shift) - plan.height));
+  }
+
+  return elements.map((element) => byId.get(element.id) ?? element);
 };
 
 /**
@@ -417,14 +613,15 @@ export const executeWhiteboardWriteContentTool = async (
   const style = (STYLES as readonly string[]).includes(String(args.style))
     ? String(args.style)
     : 'body';
-  const blocks =
+  const read =
     readBlocks(args.blocks, style === 'comparison_table') ??
     readBlocks(args.rows, style === 'comparison_table');
-  if (!blocks) {
+  if (!read) {
     return invalid(
       'blocks must be a non-empty array of { text } or { columns } objects (or pass rows for a table).',
     );
   }
+  let blocks: Block[] = read;
   const layout = readLayout(args.layout);
 
   const requestedFont = Number(args.font_size);
@@ -456,10 +653,15 @@ export const executeWhiteboardWriteContentTool = async (
     ? resolveContrastingStrokeColor(args.color, participantAnchor.strokeColor)
     : resolveStrokeColor(args.color);
 
+  const pageWidth = maxA4ContentWidth(context.frame);
+  // Prose stays inside the page: long sentences are wrapped before they are
+  // measured, so a block never starts wider than the guide.
+  blocks = wrapBlocks(blocks, style, fontSize, pageWidth);
+
   const table = buildTableLayout(
     blocks.filter((block) => isTableRow(block, style)),
     fontSize,
-    maxA4ContentWidth(context.frame),
+    pageWidth,
   );
 
   const cardSizes = isCardStyle(style) ? blocks.map((block) => cardSize(block, fontSize)) : [];
@@ -468,24 +670,19 @@ export const executeWhiteboardWriteContentTool = async (
   const existingBoxes = sceneBoxes(context.elements, anchoredElementId(layout, anchorId));
   const frameRight = Math.round(context.frame.x + context.frame.width - FRAME_PADDING);
 
-  // Cards wrap inside the free width they land in, which is only known once the
-  // origin is placed. Probing with the largest single card finds that column
-  // first (e.g. the gap right of a left-hand column) instead of measuring the
-  // whole row against the full A4 width and being pushed below the content.
-  const probeOrigin =
-    cardSizes.length > 0
-      ? resolvePlacement(
-          existingBoxes,
-          context.frame,
-          {
-            width: Math.max(...cardSizes.map((size) => size.width)),
-            height: Math.max(...cardSizes.map((size) => size.height)),
-          },
-          layout,
-          anchor ?? undefined,
-        )
-      : null;
-  let cardFlow = probeOrigin ? flowCards(cardSizes, frameRight - probeOrigin.x) : null;
+  // Drawings start from the middle of the board; prose fills it from the left.
+  const placement = { centered: !ANCHORED_LAYOUTS.includes(layout) && !isProse(style) };
+  const place = (size: Size, rawX?: unknown, rawY?: unknown) =>
+    resolveExplicitOrFreePlacement(
+      existingBoxes,
+      context.frame,
+      size,
+      rawX,
+      rawY,
+      layout,
+      anchor,
+      placement,
+    );
 
   let rowIndex = 0;
   const heights = blocks.map((block) =>
@@ -494,13 +691,6 @@ export const executeWhiteboardWriteContentTool = async (
       : blockHeight(block, fontSize),
   );
 
-  const contentWidth =
-    cardFlow?.width ??
-    Math.max(
-      ...blocks.map((block) =>
-        isTableRow(block, style) ? table.width : textWidth(block, fontSize),
-      ),
-    );
   // Rows of one table share their border, so only the edges of the grid and any
   // block that is not a table row get the usual gap.
   const gapAfter = (index: number): number => {
@@ -511,31 +701,60 @@ export const executeWhiteboardWriteContentTool = async (
     return isTableRow(blocks[index], style) && isTableRow(next, style) ? 0 : BLOCK_SPACING;
   };
 
+  let cardFlow = chooseCardFlow(cardSizes, place, frameRight, pageWidth);
+
+  const contentWidth =
+    cardFlow?.flow.width ??
+    Math.max(
+      ...blocks.map((block) =>
+        isTableRow(block, style) ? table.width : textWidth(block, fontSize),
+      ),
+    );
   const contentHeight =
-    cardFlow?.height ?? heights.reduce((sum, height, index) => sum + height + gapAfter(index), 0);
+    cardFlow?.flow.height ??
+    heights.reduce((sum, height, index) => sum + height + gapAfter(index), 0);
 
-  const origin = resolvePlacement(
-    existingBoxes,
-    context.frame,
-    { width: contentWidth, height: contentHeight },
-    layout,
-    anchor ?? undefined,
-  );
+  const origin =
+    cardFlow?.origin ?? place({ width: contentWidth, height: contentHeight }, args.x, args.y);
 
-  // The origin may land somewhere else than the probe: cards then wrap inside
-  // the width that is actually left, so none of them crosses the A4 right edge.
-  if (cardFlow && probeOrigin && origin.x !== probeOrigin.x) {
-    cardFlow = flowCards(cardSizes, frameRight - origin.x);
+  // A card grid may still be wider than the space its origin leaves (a clamped
+  // origin, for example): it wraps inside what is really there.
+  if (cardFlow && origin.x + cardFlow.flow.width > frameRight) {
+    cardFlow = {
+      origin,
+      flow: flowCards(cardSizes, Math.max(120, frameRight - origin.x)),
+    };
+  }
+
+  // Text that has to share the page with existing content wraps again inside
+  // the width the origin actually leaves.
+  if (isProse(style)) {
+    const available = Math.min(pageWidth, frameRight - origin.x);
+    if (available < pageWidth) {
+      blocks = wrapBlocks(blocks, style, fontSize, available);
+    }
   }
 
   const data = asCustomData(agentCustomData(TOOL_NAME));
   const skeletons: unknown[] = [];
+  const plans: BlockPlan[] = [];
   let cursorY = origin.y;
   rowIndex = 0;
 
   for (const [index, block] of blocks.entries()) {
+    const plan = (rendered: RenderedBlock, height: number, row = false): BlockPlan => ({
+      ids: rendered.skeletons.map(skeletonId),
+      y: cursorY,
+      height,
+      ...(row ? { row } : {}),
+      ...(rendered.textId ? { textId: rendered.textId } : {}),
+      ...(rendered.highlightId ? { highlightId: rendered.highlightId } : {}),
+      ...(rendered.underlineId ? { underlineId: rendered.underlineId } : {}),
+    });
+
     if (cardFlow) {
-      const slot = cardFlow.slots[index];
+      const slot = cardFlow.flow.slots[index];
+      // A card sizes itself with padding, so it needs no reconciliation.
       skeletons.push(
         ...renderBlock(
           block,
@@ -551,20 +770,35 @@ export const executeWhiteboardWriteContentTool = async (
     }
 
     if (isTableRow(block, style)) {
-      skeletons.push(
-        ...renderTableRow(block, origin.x, cursorY, rowIndex, table, fontSize, strokeColor, data),
-      );
-      cursorY += (table.rowHeights[rowIndex] ?? MIN_ROW_HEIGHT) + gapAfter(index);
+      const height = table.rowHeights[rowIndex] ?? MIN_ROW_HEIGHT;
+      const rendered: RenderedBlock = {
+        skeletons: renderTableRow(
+          block,
+          origin.x,
+          cursorY,
+          rowIndex,
+          table,
+          fontSize,
+          strokeColor,
+          data,
+        ),
+        height,
+      };
+      plans.push(plan(rendered, height, true));
+      skeletons.push(...rendered.skeletons);
+      cursorY += height + gapAfter(index);
       rowIndex++;
       continue;
     }
 
     const rendered = renderBlock(block, origin.x, cursorY, style, fontSize, strokeColor, data);
+    plans.push(plan(rendered, rendered.height));
     skeletons.push(...rendered.skeletons);
     cursorY += rendered.height + gapAfter(index);
   }
 
-  const elements: ExcalidrawElement[] = await toExcalidrawElements(skeletons, TOOL_NAME);
+  const converted: ExcalidrawElement[] = await toExcalidrawElements(skeletons, TOOL_NAME);
+  const elements = reconcileConvertedBlocks(converted, plans);
 
   if (!commitAgentElements(context, elements, { toolName: TOOL_NAME })) {
     return invalid('The whiteboard refused the write.');

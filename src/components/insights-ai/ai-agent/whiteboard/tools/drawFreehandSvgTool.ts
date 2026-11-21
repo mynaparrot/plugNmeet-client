@@ -2,6 +2,7 @@ import type { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 import type { BinaryFileData } from '@excalidraw/excalidraw/types';
 
 import {
+  AGENT_FONT_FAMILY,
   agentCustomData,
   agentElementId,
   asCustomData,
@@ -583,10 +584,13 @@ const toSvgDocument = (
   return { markup: formatSvgTextTags(markup), width, height };
 };
 
-/** Label text below a drawing, so callers can place it under either render mode. */
+/**
+ * Label text below a drawing, so callers can place it under either render mode.
+ * A caption sits centred under its picture, like a figure caption.
+ */
 const labelSkeleton = (
   label: string,
-  origin: { x: number; y: number },
+  origin: { x: number; y: number; width: number },
   top: number,
   strokeColor: string,
   customData: never,
@@ -599,13 +603,13 @@ const labelSkeleton = (
     {
       id: agentElementId(),
       type: 'text',
-      x: origin.x,
+      x: origin.x + Math.max(0, Math.round((origin.width - metrics.width) / 2)),
       y: origin.y + top + 12,
       width: metrics.width,
       height: metrics.height,
       text: label,
       fontSize: 18,
-      fontFamily: 1,
+      fontFamily: AGENT_FONT_FAMILY,
       strokeColor,
       textAlign: 'left',
       verticalAlign: 'top',
@@ -644,6 +648,7 @@ const resolveSvgPlacement = (
     input.args.y,
     layout,
     anchor,
+    { centered: true },
   );
   return { ...origin, ...fitted };
 };
@@ -776,7 +781,7 @@ const drawSvgStrokes = async (
       height: Math.max(1, Math.round(text.height * scale)),
       text: text.text,
       fontSize: Math.max(8, Math.round(text.fontSize * scale)),
-      fontFamily: 1,
+      fontFamily: AGENT_FONT_FAMILY,
       strokeColor: input.strokeColor,
       textAlign: 'left',
       verticalAlign: 'top',

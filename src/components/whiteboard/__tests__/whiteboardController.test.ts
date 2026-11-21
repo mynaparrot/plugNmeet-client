@@ -1527,6 +1527,17 @@ describe('viewport reveal', () => {
     });
   });
 
+  it('normalizes the box of arrows and lines drawn with negative sizes', () => {
+    setStoreState([{ userId: 'me' }]);
+    const { controller } = viewport(appState(0));
+    const reveal = vi.spyOn(controller, 'revealBBoxInViewport');
+
+    // An arrow drawn right-to-left and bottom-to-top carries signed dimensions.
+    controller.revealElementsInViewport([{ x: 900, y: 860, width: -800, height: -20 }] as never);
+
+    expect(reveal).toHaveBeenCalledWith({ x: 100, y: 840, width: 800, height: 20 });
+  });
+
   it('leaves the viewport alone when the content is already visible', () => {
     setStoreState([{ userId: 'me' }]);
     const { controller, updateScene } = viewport(appState(0));

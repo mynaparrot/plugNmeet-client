@@ -34,6 +34,12 @@ export const resolveStrokeColor = (name?: unknown): string =>
   STROKE_COLORS[String(name ?? 'black')] ?? STROKE_COLORS.black;
 
 /**
+ * Excalifont: Excalidraw's default hand-drawn font, so agent text looks like the
+ * rest of the board instead of falling back to the narrower `sans-serif`.
+ */
+export const AGENT_FONT_FAMILY = 5;
+
+/**
  * Colour for a mark or correction that sits on top of, or beside, a
  * participant's element. A mark in the participant's own colour is invisible
  * as feedback, so a missing or `black` choice becomes red and an exact match
@@ -119,6 +125,74 @@ const withAgentData = (
   return { ...data, ai_agent: { ...current, batchId } };
 };
 
+const FONT_PRELOAD_TIMEOUT_MS = 300;
+
+const delay = (ms: number): Promise<void> =>
+  new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+
+/**
+ * Excalidraw measures a text element once, at conversion time, with whatever
+ * font faces are loaded at that moment. A measurement taken before the
+ * hand-drawn webfont arrives bakes the narrower fallback width into the
+ * element, and the webfont then paints past the element's offscreen canvas and
+ * cuts the line off mid-character. Waiting for the faces, with a short cap so a
+ * slow or blocked font request cannot stall a tool call, avoids that.
+ */
+const loadAgentFonts = async (): Promise<void> => {
+  if (typeof document === 'undefined' || typeof document.fonts?.load !== 'function') {
+    return;
+  }
+  try {
+    await Promise.race([
+      Promise.all([document.fonts.load('20px Excalifont'), document.fonts.load('20px Virgil')]),
+      delay(FONT_PRELOAD_TIMEOUT_MS),
+    ]);
+  } catch {
+    // Offline, or no font face set to load into: the width floor below keeps
+    // the text box wide enough for what actually gets painted.
+  }
+};
+
+type TextElementFields = {
+  type: string;
+  text: string;
+  fontSize: number;
+  textAlign?: string;
+  containerId?: string | null;
+};
+
+/**
+ * Excalidraw paints a text element into a canvas only `width + fontSize / 2`
+ * wide, and its own `measureText` can come back narrower than the hand-drawn
+ * font's glyphs. Left-aligned standalone text draws from the canvas origin, so
+ * a wider box only adds room on the right and can never clip: keep the box at
+ * least as large as the metrics the board was laid out with.
+ *
+ * Centred and right-aligned text are left alone (a wider box would move the
+ * glyphs), as is bound text, whose container sizes and centres it and whose
+ * canvas already carries 20px of padding.
+ */
+const floorTextSize = (element: ExcalidrawElement): ExcalidrawElement => {
+  const text = element as unknown as TextElementFields;
+  if (text.type !== 'text' || text.containerId) {
+    return element;
+  }
+  if (text.textAlign === 'center' || text.textAlign === 'right') {
+    return element;
+  }
+  const metrics = measureText(text.text, text.fontSize);
+  if (metrics.width <= element.width && metrics.height <= element.height) {
+    return element;
+  }
+  return {
+    ...element,
+    width: Math.max(element.width, metrics.width),
+    height: Math.max(element.height, metrics.height),
+  } as ExcalidrawElement;
+};
+
 /**
  * Builds real Excalidraw elements from shorthand skeletons. Loaded on demand so
  * importing the tool registry never drags the editor bundle into the page.
@@ -130,6 +204,7 @@ export const toExcalidrawElements = async (
   skeletons: unknown[],
   toolName?: string,
 ): Promise<ExcalidrawElement[]> => {
+  await loadAgentFonts();
   const { convertToExcalidrawElements } = await import('@excalidraw/excalidraw');
   const elements = convertToExcalidrawElements(skeletons as ExcalidrawElementSkeleton[], {
     regenerateIds: false,
@@ -140,7 +215,7 @@ export const toExcalidrawElements = async (
     .find(hasAgentTag);
   const fallback: CustomData = batchData ?? (toolName ? agentCustomData(toolName) : undefined);
   if (!fallback) {
-    return elements;
+    return elements.map(floorTextSize);
   }
 
   const byId = new Map(elements.map((element) => [element.id, element]));
@@ -160,7 +235,7 @@ export const toExcalidrawElements = async (
       customData: asCustomData({ ...existing, ...source }),
     } as ExcalidrawElement);
   }
-  return tagged;
+  return tagged.map(floorTextSize);
 };
 
 /**
@@ -368,14 +443,105 @@ export const formatWhiteboardText = (raw: string): string => {
   return text;
 };
 
+/** Line height Excalidraw uses for the hand-drawn (Virgil) font. */
+const LINE_HEIGHT = 1.35;
+
+/**
+ * Width of one glyph in the hand-drawn font, relative to the font size. The
+ * values are deliberately generous: a box that is too small makes Excalidraw
+ * wrap or clip the text, while a slightly too large one only adds whitespace.
+ */
+const glyphWidth = (char: string): number => {
+  const code = char.codePointAt(0) ?? 0;
+  if (char === ' ') {
+    return 0.3;
+  }
+  // CJK, emoji and other full-width scripts take a full em.
+  if (code > 0x2e7f) {
+    return 1;
+  }
+  if (/[iljI.,:;'`!|()[\]]/.test(char)) {
+    return 0.35;
+  }
+  if (/[mwMW@%&]/.test(char)) {
+    return 0.85;
+  }
+  // Digits and capitals are wider than lowercase letters in Virgil.
+  if (char === char.toUpperCase()) {
+    return 0.72;
+  }
+  return 0.62;
+};
+
 /** Rough text box size: no canvas measuring is available outside the editor. */
 export const measureText = (text: string, fontSize: number): { width: number; height: number } => {
   const lines = text.split('\n');
-  const longest = lines.reduce((max, line) => Math.max(max, line.length), 0);
+  const widest = lines.reduce(
+    (max, line) =>
+      Math.max(
+        max,
+        [...line].reduce((sum, char) => sum + glyphWidth(char), 0),
+      ),
+    0,
+  );
   return {
-    width: Math.max(40, Math.round(longest * fontSize * 0.55)),
-    height: Math.max(fontSize, Math.round(lines.length * fontSize * 1.3)),
+    width: Math.max(40, Math.round(widest * fontSize)),
+    height: Math.max(fontSize, Math.round(lines.length * fontSize * LINE_HEIGHT)),
   };
+};
+
+/** Breaks one line that is wider than `maxWidth`, at word boundaries. */
+const wrapLine = (line: string, fontSize: number, maxWidth: number): string[] => {
+  const fits = (value: string) => measureText(value, fontSize).width <= maxWidth;
+  if (fits(line)) {
+    return [line];
+  }
+
+  const wrapped: string[] = [];
+  let current = '';
+  for (const word of line.split(/\s+/).filter(Boolean)) {
+    const candidate = current ? `${current} ${word}` : word;
+    if (fits(candidate)) {
+      current = candidate;
+      continue;
+    }
+    if (current) {
+      wrapped.push(current);
+      current = '';
+    }
+    if (fits(word)) {
+      current = word;
+      continue;
+    }
+    // A single word that is wider than the line is broken by characters.
+    let chunk = '';
+    for (const char of word) {
+      if (chunk && !fits(chunk + char)) {
+        wrapped.push(chunk);
+        chunk = '';
+      }
+      chunk += char;
+    }
+    current = chunk;
+  }
+  if (current) {
+    wrapped.push(current);
+  }
+  return wrapped.length > 0 ? wrapped : [line];
+};
+
+/**
+ * Wraps prose to the width the board gives it, so long text stays inside the
+ * page instead of running past the guide. Existing line breaks are preserved.
+ */
+export const wrapTextToWidth = (text: string, fontSize: number, maxWidth: number): string => {
+  if (!text || maxWidth <= 0) {
+    return text;
+  }
+  return text
+    .split('\n')
+    .flatMap((line) => wrapLine(line, fontSize, maxWidth))
+    .join('\n');
 };
 
 export type BoardContext = {
