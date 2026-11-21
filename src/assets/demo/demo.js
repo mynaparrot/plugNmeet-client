@@ -29,6 +29,27 @@
     }
   }
 
+  // Checks room state and, when asked, ends an active room so the new
+  // configuration can be applied. Returns whether the room is still active.
+  async function prepareRoom(sendRequest, roomId, recreate) {
+    showStatus('info', 'Checking room status…');
+    const activeRes = await sendRequest({ room_id: roomId }, 'room/isRoomActive');
+    if (activeRes && activeRes.status === false) {
+      throw new Error(activeRes.msg || 'Could not check the room.');
+    }
+
+    const isActive = !!(activeRes && activeRes.is_active);
+    if (!isActive || !recreate) return isActive;
+
+    showStatus('info', 'Ending the active room…');
+    const endRes = await sendRequest({ room_id: roomId }, 'room/endRoom');
+    if (endRes && endRes.status === false) {
+      throw new Error(endRes.msg || 'Could not end the active room.');
+    }
+    await new Promise((resolve) => window.setTimeout(resolve, 1200));
+    return false;
+  }
+
   function setBusyState(busy, busyLabel, idleLabel) {
     $('launch-btn').disabled = busy;
     $('reset-btn').disabled = busy;
@@ -425,18 +446,15 @@
 
       setBusy(true);
       try {
-        showStatus('info', 'Checking room status…');
-        const activeRes = await sendRequest({ room_id: roomId }, 'room/isRoomActive');
-        if (activeRes && activeRes.status === false) {
-          throw new Error(activeRes.msg || 'Could not check the room.');
-        }
-
-        if (!(activeRes && activeRes.is_active)) {
+        const isActive = await prepareRoom(sendRequest, roomId, $('recreate_room').checked);
+        if (!isActive) {
           showStatus('info', 'Creating the room…');
           const createRes = await sendRequest(buildRoomInfo(roomId), 'room/create');
           if (!createRes || createRes.status === false) {
             throw new Error((createRes && createRes.msg) || 'Room creation failed.');
           }
+        } else {
+          showStatus('info', 'Room is already active — joining with its existing configuration…');
         }
 
         showStatus('info', 'Issuing a join token…');
@@ -901,10 +919,6 @@
       previewTimer = window.setTimeout(updatePreview, 180);
     }
 
-    function delay(ms) {
-      return new Promise((resolve) => window.setTimeout(resolve, ms));
-    }
-
     const sendRequest = (body, method) =>
       request(API_KEY, API_SECRET, body, method, value('server_url'));
 
@@ -936,20 +950,11 @@
 
       setBusy(true);
       try {
-        showStatus('info', 'Checking room status…');
-        const activeRes = await sendRequest({ room_id: roomInfo.room_id }, 'room/isRoomActive');
-        let isActive = !!(activeRes && activeRes.is_active);
-
-        if (isActive && $('recreate_room').checked) {
-          showStatus('info', 'Ending the active room…');
-          const endRes = await sendRequest({ room_id: roomInfo.room_id }, 'room/endRoom');
-          if (endRes && endRes.status === false) {
-            throw new Error(endRes.msg || 'Could not end the active room.');
-          }
-          isActive = false;
-          await delay(1200);
-        }
-
+        const isActive = await prepareRoom(
+          sendRequest,
+          roomInfo.room_id,
+          $('recreate_room').checked,
+        );
         if (!isActive) {
           showStatus('info', 'Creating the AI agent room…');
           const createRes = await sendRequest(roomInfo, 'room/create');

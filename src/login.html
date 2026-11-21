@@ -182,6 +182,11 @@
                 </div>
               </div>
             </div>
+            <label class="switch" style="margin-top: 12px">
+              <input type="checkbox" id="recreate_room" />
+              <span class="track"><span class="thumb"></span></span>
+              <span class="switch-text">Recreate an active room<small>Ends the existing session before applying this config</small></span>
+            </label>
           </section>
 
           <section class="section">
@@ -295,7 +300,8 @@
             </div>
 
             <p class="fineprint">
-              Active rooms are joined as-is. New rooms are created with the standard feature set.
+              Active rooms are joined as-is unless you recreate them. New rooms are created with the standard
+              feature set.
               Press <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>Enter</kbd> to continue.
             </p>
           </div>
