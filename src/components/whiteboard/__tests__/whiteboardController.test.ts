@@ -955,14 +955,20 @@ describe('agent-only room (no human presenter)', () => {
     expect(saveHeaders()[0].key).toBe('file1_1');
     expect(docFrom(0).has('a1')).toBe(true);
 
-    // The ack is lost: the export cache still gets the state and the same
-    // backoff retry a presenter save would get is armed.
+    // The ack is lost: the export cache still gets the state, but only the
+    // presenter retries a failed save in the background.
     await vi.advanceTimersByTimeAsync(SAVE_ACK_TIMEOUT_MS);
     expect(saveWhiteboardPageSnapshot).toHaveBeenCalledWith('file1', 1, expect.any(Uint8Array));
 
     conn.sendMessageToCoreWorker.mockClear();
     await vi.advanceTimersByTimeAsync(SAVE_RETRY_BASE_MS + SAVE_ACK_TIMEOUT_MS);
-    expect(saveHeaders().map((call) => call.key)).toContain('file1_1');
+    expect(saveHeaders()).toHaveLength(0);
+
+    // The next external write re-arms the save, which also carries the content
+    // whose ack was lost.
+    controller.applyExternalElements([el('a2')]);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(saveHeaders()).toHaveLength(1);
   });
 });
 

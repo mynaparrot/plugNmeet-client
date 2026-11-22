@@ -935,7 +935,11 @@ export class WhiteboardController {
       this.resetSaveRetry();
       return;
     }
-    this.scheduleSaveRetry();
+    // Only the presenter retries a failed save in the background. A non-presenter (agent) failure is picked up
+    // by its next write instead, so a write the room no longer authorizes is never re-sent on a timer.
+    if (this.isCurrentUserPresenter()) {
+      this.scheduleSaveRetry();
+    }
   };
 
   private resetSaveRetry = () => {
