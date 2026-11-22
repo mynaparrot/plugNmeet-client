@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 /*
- * `notepad_write` / `notepad_read` run in the delegate's browser: the server has
- * already activated the notepad, but the metadata broadcast and the lazily
- * mounted editor both arrive later. Only the store, the controller and the
- * scene push are stubbed.
+ * `notepad_write` / `notepad_read` run in the delegate's browser: for a write the
+ * server has already activated the notepad, but the metadata broadcast and the
+ * lazily mounted editor both arrive later. A read may also run while the pad is
+ * still inactive. Only the store, the controller and the scene push are stubbed.
  */
 
 const hoisted = vi.hoisted(() => ({
@@ -225,13 +225,37 @@ describe('notepad_read', () => {
     expect(controller.sync).not.toHaveBeenCalled();
   });
 
-  it('opens the pad, then returns the blocks split by author', async () => {
+  it('returns an empty read instead of waiting when the pad is inactive', async () => {
+    vi.useFakeTimers();
+    setNotepadFeatures({ isAllow: true, isActive: false });
+    controller.readContent.mockReturnValue(snapshot);
+
+    // No timer is advanced: an inactive pad must not make the read wait.
+    const res = await executeNotepadReadTool({});
+
+    expect(res).toEqual({
+      ok: true,
+      markdown: '',
+      total_blocks: 0,
+      participant_count: 0,
+      agent_count: 0,
+      participant_blocks: [],
+      agent_blocks: [],
+    });
+    expect(controller.sync).not.toHaveBeenCalled();
+    expect(dispatch).not.toHaveBeenCalled();
+    expect(pushScene).not.toHaveBeenCalled();
+    vi.useRealTimers();
+  });
+
+  it('returns the blocks split by author without opening the pad', async () => {
     setNotepadFeatures({ isAllow: true, isActive: true });
     controller.readContent.mockReturnValue(snapshot);
 
     const res = await executeNotepadReadTool({});
 
-    expect(dispatch).toHaveBeenCalledWith({ type: 'notepad-active', payload: true });
+    // Reading in the background must not pop the pad open for the participant.
+    expect(dispatch).not.toHaveBeenCalled();
     expect(controller.sync).toHaveBeenCalled();
     expect(pushScene).toHaveBeenCalledWith('notepad_read');
     expect(res).toMatchObject({
@@ -271,6 +295,7 @@ describe('notepad_read', () => {
     const res = await pending;
 
     expect(res).toMatchObject({ ok: true, participant_count: 1 });
+    expect(dispatch).not.toHaveBeenCalled();
     vi.useRealTimers();
   });
 

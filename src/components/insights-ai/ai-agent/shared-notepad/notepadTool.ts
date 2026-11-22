@@ -24,6 +24,7 @@ const FRAME_FALLBACK_MS = 50;
 
 const NOT_ALLOWED = 'The shared notepad is not allowed in this room.';
 const NOT_OPENED = 'The shared notepad could not be opened in this room.';
+const NOT_READABLE = 'The shared notepad could not be read right now.';
 
 const isWriteMode = (value: unknown): value is NotepadExternalWriteMode =>
   typeof value === 'string' && (WRITE_MODES as string[]).includes(value);
@@ -56,7 +57,22 @@ const nextFrame = (): Promise<void> => {
   });
 };
 
-/** Activates the pad for this client and waits until it can be read or written. */
+/** Syncs the lazily mounted editor and waits until it is usable. */
+const prepareController = async (
+  controller: NotepadController,
+  ready: (controller: NotepadController) => boolean,
+): Promise<boolean> => {
+  await controller.sync();
+  if (!(await waitUntil(() => ready(controller)))) {
+    return false;
+  }
+  // The editor registers its reader/applier before its DOM view has painted;
+  // the call must not land on an empty view.
+  await nextFrame();
+  return true;
+};
+
+/** Activates the pad for this client and waits until it can be written. */
 const openNotepad = async (
   ready: (controller: NotepadController) => boolean,
 ): Promise<{ controller: NotepadController; error?: string }> => {
@@ -73,13 +89,9 @@ const openNotepad = async (
 
   store.dispatch(updateIsActiveSharedNotePad(true));
 
-  await controller.sync();
-  if (!(await waitUntil(() => ready(controller)))) {
+  if (!(await prepareController(controller, ready))) {
     return { controller, error: NOT_OPENED };
   }
-  // The editor registers its applier before its DOM view has painted; the write
-  // must not land on an empty view.
-  await nextFrame();
   return { controller };
 };
 
@@ -162,18 +174,37 @@ export const executeNotepadWriteTool = async (
 /**
  * `notepad_read` client tool: reports the notepad split by author, so the agent
  * can review what the participant wrote or changed against its own prompts.
+ * Reading runs in the background, so it never opens or activates the pad.
  */
 export const executeNotepadReadTool = async (
   _args: Record<string, unknown>,
 ): Promise<Record<string, unknown>> => {
-  const { controller, error } = await openNotepad((c) => c.isReadyForExternalRead());
-  if (error) {
-    return { ok: false, error };
+  const features = notepadFeatures();
+  if (!features?.isAllow) {
+    return { ok: false, error: NOT_ALLOWED };
+  }
+  // Nothing to read before the server activates the pad, and waiting for it
+  // would block the turn.
+  if (!features.isActive) {
+    return {
+      ok: true,
+      markdown: '',
+      total_blocks: 0,
+      participant_count: 0,
+      agent_count: 0,
+      participant_blocks: [],
+      agent_blocks: [],
+    };
+  }
+
+  const controller = getNotepadController();
+  if (!(await prepareController(controller, (c) => c.isReadyForExternalRead()))) {
+    return { ok: false, error: NOT_READABLE };
   }
 
   const content = controller.readContent();
   if (!content) {
-    return { ok: false, error: 'The shared notepad could not be read right now.' };
+    return { ok: false, error: NOT_READABLE };
   }
 
   // The server frames this as untrusted notepad data for the current turn.

@@ -83,7 +83,12 @@ const SharedNotePadIcon = () => {
       isInitialMount.current = false;
       return;
     }
-    if (isActiveSharedNotePad === isNotepadVisibleByPresenter) {
+    // Read the broadcast state instead of depending on it: the effect above
+    // applies a server visibility change on the next render, so a dependency
+    // here would echo that stale value back as a reverse request.
+    const isVisibleByPresenter =
+      !!store.getState().session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures?.visible;
+    if (isActiveSharedNotePad === isVisibleByPresenter) {
       return;
     }
 
@@ -97,7 +102,7 @@ const SharedNotePadIcon = () => {
       false,
       'application/protobuf',
     ).then();
-  }, [isActiveSharedNotePad, isNotepadVisibleByPresenter, canControlNotepad, roomId]);
+  }, [isActiveSharedNotePad, canControlNotepad, roomId]);
 
   const toggle = useCallback(async () => {
     if (isAiWorkspaceControlled) {
