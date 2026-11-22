@@ -304,7 +304,7 @@ aside {
   top: -5px;
 }
 
-.notepad-wrapper .inner {
+.notepad-wrapper:not(.notepad-side-panel) .inner {
   resize: both;
   overflow: auto;
 }

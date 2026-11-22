@@ -70,19 +70,23 @@ const inlineWithUnderline = (content: unknown[]): unknown[] => {
   return out;
 };
 
-const markdownUnderlineToBlocks = (block: Block): Block => {
+/** Rewrites `<u>` runs into inline styles and demotes H1 to H2, in one tree walk. */
+const normalizeBlock = (block: Block): Block => {
   const content = (block as { content?: unknown }).content;
-  const children = block.children.map(markdownUnderlineToBlocks);
-  if (!Array.isArray(content)) {
-    return { ...block, children } as Block;
-  }
+  const level = (block.props as { level?: unknown }).level;
+  const demote = block.type === 'heading' && level === 1;
 
-  return { ...block, content: inlineWithUnderline(content), children } as Block;
+  return {
+    ...block,
+    props: demote ? { ...block.props, level: 2 } : block.props,
+    ...(Array.isArray(content) ? { content: inlineWithUnderline(content) } : {}),
+    children: block.children.map(normalizeBlock),
+  } as Block;
 };
 
-/** Markdown -> blocks, with `<u>underlined</u>` turned into real inline styles. */
+/** Markdown -> blocks, with real underline styles and H1 demoted to H2. */
 export const parseMarkdownWithUnderline = (editor: BlockNoteEditor, markdown: string): Block[] =>
-  editor.tryParseMarkdownToBlocks(markdown).map(markdownUnderlineToBlocks);
+  editor.tryParseMarkdownToBlocks(markdown).map(normalizeBlock);
 
 /** Plain text of the runs BlockNote marked as underlined. */
 const underlinedTexts = (block: Block): string[] => {
@@ -195,7 +199,7 @@ export const createExternalWriteApplier =
 
       if (headingIndex === -1) {
         const toInsert = heading
-          ? parseMarkdownWithUnderline(editor, `## ${heading}\n\n${markdown}`)
+          ? parseMarkdownWithUnderline(editor, `### ${heading}\n\n${markdown}`)
           : blocks;
         insertAtEnd(editor, toInsert);
       } else {

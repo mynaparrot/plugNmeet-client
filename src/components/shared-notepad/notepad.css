@@ -10,6 +10,57 @@
   flex-direction: column;
 }
 
+/* Compact typography scale for the floating card and side panel. */
+.bn-container.notepad-editor .bn-editor {
+  padding-inline: 18px;
+  padding-block: 12px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.bn-container.notepad-editor .bn-block-content {
+  padding-block: 2px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.bn-container.notepad-editor .bn-block-content[data-content-type='heading'] {
+  --level: 1.25rem;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-top: 0.35rem;
+  margin-bottom: 0.15rem;
+}
+
+.bn-container.notepad-editor .bn-block-content[data-content-type='heading'][data-level='1'] {
+  --level: 1.25rem;
+  font-weight: 700;
+}
+
+.bn-container.notepad-editor .bn-block-content[data-content-type='heading'][data-level='2'] {
+  --level: 1.1rem;
+  font-weight: 600;
+}
+
+.bn-container.notepad-editor .bn-block-content[data-content-type='heading'][data-level='3'] {
+  --level: 0.975rem;
+  font-weight: 600;
+}
+
+.bn-container.notepad-editor .bn-block-content[data-content-type='heading'] h1,
+.bn-container.notepad-editor .bn-block-content[data-content-type='heading'] h2,
+.bn-container.notepad-editor .bn-block-content[data-content-type='heading'] h3 {
+  font-size: var(--level);
+  line-height: 1.35;
+}
+
+.bn-container.notepad-editor .bn-block-content[data-content-type='codeBlock'],
+.bn-container.notepad-editor .bn-block-content[data-content-type='codeBlock'] code,
+.bn-container.notepad-editor code {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
 /*
   Inside the pinned bar the toolbar is a flat, centered row instead of a
   floating pill. It fills the bar and wraps on narrow panels, so the buttons

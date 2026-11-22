@@ -166,7 +166,9 @@ export const ensureWhiteboardSurface = async (): Promise<string | null> => {
     return 'The whiteboard is not enabled in this room.';
   }
 
-  if (store.getState().bottomIconsActivity.isActiveSharedNotePad) {
+  // A docked notepad sits in the panel slot instead of covering the canvas.
+  const { isActiveSharedNotePad, isSharedNotepadDocked } = store.getState().bottomIconsActivity;
+  if (isActiveSharedNotePad && !isSharedNotepadDocked) {
     store.dispatch(updateIsActiveSharedNotePad(false));
   }
   // A board that has to be opened keeps moving after the canvas exists.

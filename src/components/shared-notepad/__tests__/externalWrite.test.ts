@@ -1,7 +1,11 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { BlockNoteEditor } from '@blocknote/core';
+import type { Block, BlockNoteEditor } from '@blocknote/core';
 
-import { createExternalWriteApplier, createNotepadContentReader } from '../helpers/externalWrite';
+import {
+  createExternalWriteApplier,
+  createNotepadContentReader,
+  parseMarkdownWithUnderline,
+} from '../helpers/externalWrite';
 
 /*
  * The applier reports which blocks an external write produced, and the reader
@@ -32,6 +36,8 @@ const headingBlock = (id: string, text: string, level = 2): StubBlock => ({
   content: [{ type: 'text', text }],
   children: [],
 });
+
+const headingLevelOf = (block: Block) => (block.props as { level?: number }).level;
 
 const plainText = (blocks: StubBlock[]) =>
   blocks.map((block) => block.content.map((item) => item.text).join('')).join('\n');
@@ -175,6 +181,23 @@ describe('createExternalWriteApplier', () => {
     expect(editor.replaceBlocks).not.toHaveBeenCalled();
   });
 
+  it('creates a level 3 heading for a section that does not exist yet', () => {
+    const editor = makeEditor([textBlock('old-1', 'old')]);
+
+    createExternalWriteApplier(asEditor(editor))({
+      mode: 'insert_section',
+      markdown: 'body',
+      heading: 'Recap',
+    });
+
+    const inserted = editor.document.filter((block) => block.id.startsWith('new-'));
+    expect(inserted.map((block) => [block.type, block.props.level])).toEqual([
+      ['heading', 3],
+      ['paragraph', undefined],
+    ]);
+    expect(plainText(inserted.slice(0, 1))).toBe('Recap');
+  });
+
   it('turns <u>underlined</u> markdown into underlined inline content', () => {
     const editor = makeEditor([textBlock('old-1', 'old')]);
 
@@ -209,6 +232,31 @@ describe('createExternalWriteApplier', () => {
     expect(editor.document[1].content).toEqual([
       { type: 'text', text: 'very wrong', styles: { bold: true, underline: true } },
     ]);
+  });
+});
+
+describe('parseMarkdownWithUnderline', () => {
+  it('demotes H1 to H2 while keeping H2 and H3 as written', () => {
+    const blocks = parseMarkdownWithUnderline(
+      asEditor(makeEditor([])),
+      '# Title\n## Section\n### Detail',
+    );
+
+    expect(blocks.map((block) => [block.type, headingLevelOf(block)])).toEqual([
+      ['heading', 2],
+      ['heading', 2],
+      ['heading', 3],
+    ]);
+  });
+
+  it('demotes a nested H1 as well', () => {
+    const editor = makeEditor([]);
+    const child = headingBlock('child', 'Nested', 1);
+    editor.tryParseMarkdownToBlocks = vi.fn(() => [textBlock('parent', 'p', [child])]) as never;
+
+    const blocks = parseMarkdownWithUnderline(asEditor(editor), 'x');
+
+    expect(headingLevelOf(blocks[0].children[0])).toBe(2);
   });
 });
 

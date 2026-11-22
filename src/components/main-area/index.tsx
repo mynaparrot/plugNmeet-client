@@ -12,6 +12,7 @@ import { useMainAreaState } from './hooks/useMainAreaState';
 import { useMainAreaCustomCSS } from './hooks/useMainAreaCustomCSS';
 import { APP_LAYOUT_CLASSES, MAIN_AREA_DIMENSIONS } from '../../helpers/dimensions';
 import { useSidePanelResize } from './hooks/useSidePanelResize';
+import { useSharedNotepad } from './hooks/useSharedNotepad';
 import { triggerRefreshWhiteboard } from '../../store/slices/whiteboard';
 import { updateIsSidePanelOpened } from '../../store/slices/roomSettingsSlice';
 
@@ -52,6 +53,8 @@ const MainArea = () => {
     columnCameraWidth,
     columnCameraPosition,
     activeSidePanel,
+    isActiveSharedNotePad,
+    isSharedNotepadDocked,
     hasScreenShareSubscribers,
     hasVideoSubscribers,
     isActiveWhiteboard,
@@ -96,8 +99,6 @@ const MainArea = () => {
   );
 
   const handleSidePanelToggled = useCallback(() => {
-    // This logic can be simplified now.
-    // We just need to know if *any* panel is open.
     const anyPanelIsOpen = store.getState().bottomIconsActivity.activeSidePanel !== null;
     dispatch(updateIsSidePanelOpened(anyPanelIsOpen));
 
@@ -106,14 +107,14 @@ const MainArea = () => {
     }
 
     if (anyPanelIsOpen && !isRecorder) {
-      // Save the user's current preference before forcing extended view off,
-      // so we can restore it when the panel closes.
-      extendedViewPreference.current =
-        store.getState().bottomIconsActivity.isEnabledExtendedVerticalCamView;
+      // Keep the original preference: panel-to-panel switches must not overwrite it.
+      if (!extendedViewPreference.current) {
+        extendedViewPreference.current =
+          store.getState().bottomIconsActivity.isEnabledExtendedVerticalCamView;
+      }
       dispatch(updateIsEnabledExtendedVerticalCamView(false));
     } else if (!anyPanelIsOpen && !isRecorder && extendedViewPreference.current) {
-      // Restore extended view only if the screen is wide enough to accommodate
-      // the side panel + extended strip + reasonable content area.
+      // Only restore when the screen can fit the extended strip next to the panel.
       const screenWidth = store.getState().bottomIconsActivity.screenWidth;
       if (screenWidth >= MAIN_AREA_DIMENSIONS.verticalWebcams.extendedRestoreMinWidth) {
         dispatch(updateIsEnabledExtendedVerticalCamView(true));
@@ -126,6 +127,8 @@ const MainArea = () => {
     isRecorder,
     onResizeEnd: isActiveWhiteboard ? () => debouncedRefresh() : undefined,
   });
+
+  const sharedNotepadElm = useSharedNotepad();
 
   const anyPanelActive = activeSidePanel !== null;
   const mainAreaClasses = `plugNmeet-app-main-area overflow-hidden relative flex flex-1 w-full ${customCSS} column-camera-width-${columnCameraWidth} column-camera-position-${columnCameraPosition} ${isResizing ? 'side-panel-resizing' : ''}`;
@@ -149,6 +152,27 @@ const MainArea = () => {
             hasVideoSubscribers={hasVideoSubscribers}
           />
         </div>
+        {sharedNotepadElm && (
+          <SidePanel
+            isActive={
+              isSharedNotepadDocked
+                ? isActiveSharedNotePad && activeSidePanel === 'SHARED_NOTEPAD'
+                : isActiveSharedNotePad
+            }
+            unmount={false}
+            isFloating={!isSharedNotepadDocked}
+            panelClass="shared-notepad-panel notepadMainParent"
+            ariaLabel={t('footer.modal.shared-notepad').toString()}
+            onToggle={handleSidePanelToggled}
+            dragHandleProps={dragHandleProps}
+            panelWidthForA11y={panelWidth}
+            onNudgeWidth={nudgeWidth}
+            onResetWidth={resetWidth}
+            anyPanelActive={anyPanelActive}
+          >
+            {sharedNotepadElm}
+          </SidePanel>
+        )}
         <SidePanel
           isActive={activeSidePanel === 'PARTICIPANTS'}
           panelClass="participants-panel"

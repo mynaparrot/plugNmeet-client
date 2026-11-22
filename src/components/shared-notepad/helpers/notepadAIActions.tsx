@@ -33,7 +33,7 @@ const NOTEPAD_AI_PROMPTS: Record<Exclude<NotepadAIAction, 'custom'>, (text: stri
 };
 
 const MARKDOWN_FORMATTING_INSTRUCTION =
-  'Format your response using Markdown when it improves clarity: use headings and subheadings for longer answers, bullet or numbered lists, bold/italic emphasis, and fenced code blocks for code.';
+  'Format your response using compact Markdown when it improves clarity: never use # (H1) headings — use ### (H3) or ## (H2) for section headings and **bold** for sub-labels, along with bullet or numbered lists, bold/italic emphasis, and fenced code blocks for code.';
 
 export const blockToPlainText = (block: Block): string => {
   const content = block.content;

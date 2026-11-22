@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { useSharedNotepad } from './hooks/useSharedNotepad';
 import { useWhiteboard } from './hooks/useWhiteboard';
 import { useExternalMediaPlayer } from './hooks/useExternalMediaPlayer';
 import { useDisplayExternalLink } from './hooks/useDisplayExternalLink';
@@ -39,7 +38,6 @@ const MainView = ({
     hasVideoSubscribers,
   });
 
-  const sharedNotepadElm = useSharedNotepad();
   useNotepadController();
   const insightsAiTextChatElm = useInsightsAiTextChat();
   const whiteboardElm = useWhiteboard(isActiveWhiteboard, hasScreenShareSubscribers, showVideoElms);
@@ -71,7 +69,6 @@ const MainView = ({
       >
         {videosComponentElm}
         {screenShareElementsElm}
-        {sharedNotepadElm}
         {insightsAiTextChatElm}
         {whiteboardElm}
         {translationTranscriptionElm}

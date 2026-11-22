@@ -10,6 +10,12 @@ export const useMainAreaState = () => {
   const columnCameraWidth = useAppSelector((state) => state.roomSettings.columnCameraWidth);
   const columnCameraPosition = useAppSelector((state) => state.roomSettings.columnCameraPosition);
   const activeSidePanel = useAppSelector((state) => state.bottomIconsActivity.activeSidePanel);
+  const isActiveSharedNotePad = useAppSelector(
+    (state) => state.bottomIconsActivity.isActiveSharedNotePad,
+  );
+  const isSharedNotepadDocked = useAppSelector(
+    (state) => state.bottomIconsActivity.isSharedNotepadDocked,
+  );
   const isActiveScreenSharingView = useAppSelector(
     (state) => state.roomSettings.activeScreenSharingView,
   );
@@ -51,6 +57,8 @@ export const useMainAreaState = () => {
     columnCameraWidth,
     columnCameraPosition,
     activeSidePanel,
+    isActiveSharedNotePad,
+    isSharedNotepadDocked,
     isActiveScreenSharingView,
     hasScreenShareSubscribers,
     isActiveWebcamsView,

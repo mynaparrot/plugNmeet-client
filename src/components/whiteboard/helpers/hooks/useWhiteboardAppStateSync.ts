@@ -8,6 +8,7 @@ import type { Theme } from '@excalidraw/excalidraw/element/types';
 import { debounce } from 'es-toolkit';
 
 import { useAppSelector } from '../../../../store';
+import { isWorkspaceControlledByAIAgent } from '../../../../helpers/aiAgentSession';
 import { A4_VIEWPORT_PADDING_LEFT } from '../../export-pdf/types';
 import { getA4WidthBasedZoom, getPageBoundaryMetrics, resolvePageInfoFromElements } from '../utils';
 
@@ -25,6 +26,7 @@ const useWhiteboardAppStateSync = ({
   isPresenter,
 }: IUseWhiteboardAppStateSync) => {
   const whiteboardAppState = useAppSelector((state) => state.whiteboard.whiteboardAppState);
+  const isAiWorkspaceControlled = useAppSelector(isWorkspaceControlledByAIAgent);
   const refreshWhiteboardSignal = useAppSelector(
     (state) => state.whiteboard.refreshWhiteboardSignal,
   );
@@ -97,16 +99,30 @@ const useWhiteboardAppStateSync = ({
     [],
   );
 
-  // Handle incoming AppState changes from the presenter
+  // Handle incoming AppState changes from the presenter. In a session run by
+  // the AI agent the local client owns its A4 fit instead (see below).
   useEffect(() => {
-    if (excalidrawAPI && !isPresenter && whiteboardAppState && isFollowing) {
+    if (
+      excalidrawAPI &&
+      !isPresenter &&
+      !isAiWorkspaceControlled &&
+      whiteboardAppState &&
+      isFollowing
+    ) {
       debouncedSync(excalidrawAPI, whiteboardAppState);
     }
 
     return () => {
       debouncedSync.cancel();
     };
-  }, [excalidrawAPI, isPresenter, whiteboardAppState, isFollowing, debouncedSync]);
+  }, [
+    excalidrawAPI,
+    isPresenter,
+    isAiWorkspaceControlled,
+    whiteboardAppState,
+    isFollowing,
+    debouncedSync,
+  ]);
 
   // Recalibrate the local viewport when refreshWhiteboardSignal is triggered.
   // refreshWhiteboardSignal happens on width change, sidebar open, webcam/screen sharing on/off etc.
@@ -165,10 +181,12 @@ const useWhiteboardAppStateSync = ({
     [refreshPresenterViewport],
   );
 
+  const ownsViewport = isPresenter || isAiWorkspaceControlled || !whiteboardAppState;
+
   useEffect(() => {
     if (
       excalidrawAPI &&
-      isPresenter &&
+      ownsViewport &&
       refreshWhiteboardSignal > 0 &&
       refreshWhiteboardSignal !== handledPresenterSignalRef.current
     ) {
@@ -179,7 +197,7 @@ const useWhiteboardAppStateSync = ({
     return () => {
       debouncedRefreshPresenterViewport.cancel();
     };
-  }, [excalidrawAPI, isPresenter, refreshWhiteboardSignal, debouncedRefreshPresenterViewport]);
+  }, [excalidrawAPI, ownsViewport, refreshWhiteboardSignal, debouncedRefreshPresenterViewport]);
 };
 
 export default useWhiteboardAppStateSync;

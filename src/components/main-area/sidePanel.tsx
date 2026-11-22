@@ -18,6 +18,8 @@ interface SidePanelProps {
   panelWidthForA11y?: number | null;
   onNudgeWidth?: (delta: number) => void;
   onResetWidth?: () => void;
+  unmount?: boolean;
+  isFloating?: boolean;
 }
 
 const SidePanel = ({
@@ -31,33 +33,45 @@ const SidePanel = ({
   panelWidthForA11y = null,
   onNudgeWidth,
   onResetWidth,
+  unmount = true,
+  isFloating = false,
 }: SidePanelProps) => {
-  // On panel switch the old panel unmounts instantly; a real close keeps the slide-out.
+  // On panel switch the old panel closes instantly; a real close keeps the slide-out.
   const instantLeave = !isActive && anyPanelActive;
+  const slide = isFloating || instantLeave ? '' : 'transform transition ease-in-out duration-300';
   return (
     <Transition
       show={isActive}
-      enter="transform transition ease-in-out duration-300"
-      enterFrom="translate-y-full md:translate-y-0 md:ltr:translate-x-full md:rtl:-translate-x-full"
-      enterTo="translate-y-0 md:translate-x-0"
-      leave={instantLeave ? '' : 'transform transition ease-in-out duration-300'}
-      leaveFrom={instantLeave ? '' : 'translate-y-0 md:translate-x-0'}
-      leaveTo={
-        instantLeave
+      unmount={unmount}
+      enter={isFloating ? '' : 'transform transition ease-in-out duration-300'}
+      enterFrom={
+        isFloating
           ? ''
           : 'translate-y-full md:translate-y-0 md:ltr:translate-x-full md:rtl:-translate-x-full'
+      }
+      enterTo={isFloating ? '' : 'translate-y-0 md:translate-x-0'}
+      leave={slide}
+      leaveFrom={slide ? 'translate-y-0 md:translate-x-0' : ''}
+      leaveTo={
+        slide
+          ? 'translate-y-full md:translate-y-0 md:ltr:translate-x-full md:rtl:-translate-x-full'
+          : ''
       }
       afterEnter={() => onToggle(true)}
       afterLeave={() => onToggle(false)}
     >
       <div
-        className={`${panelClass} group/sidepanel bottom-0 absolute w-full ${APP_LAYOUT_CLASSES.sidePanel.width} end-0 ${APP_LAYOUT_CLASSES.sidePanel.mobileHeight} md:h-full`}
+        className={
+          isFloating
+            ? `${panelClass} w-full absolute h-full z-10 top-0 left-0 pointer-events-none`
+            : `${panelClass} group/sidepanel bottom-0 absolute w-full ${APP_LAYOUT_CLASSES.sidePanel.width} end-0 ${APP_LAYOUT_CLASSES.sidePanel.mobileHeight} md:h-full`
+        }
         role="complementary"
         aria-label={ariaLabel}
       >
         {/* PC-only drag handle on the inner (start) edge. Hidden on
             mobile/tablet where the panel is a bottom sheet. */}
-        {dragHandleProps ? (
+        {!isFloating && dragHandleProps ? (
           <div
             role="separator"
             aria-orientation="vertical"

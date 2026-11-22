@@ -585,6 +585,8 @@
       "upload-background-image": "Upload background image",
       "shared-notepad": "Shared Notepad",
       "export-notepad": "Export Markdown",
+      "notepad-side-panel": "Dock to side panel",
+      "notepad-floating": "Floating window",
       "chose-virtual-bg": "Choose Background"
     }
   },

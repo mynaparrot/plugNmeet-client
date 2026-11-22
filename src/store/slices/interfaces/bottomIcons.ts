@@ -1,6 +1,12 @@
 export type DeviceOrientation = 'landscape' | 'portrait';
 
-export type SidePanelType = 'CHAT' | 'PARTICIPANTS' | 'POLLS' | 'BREAKOUT_ROOMS' | null;
+export type SidePanelType =
+  | 'CHAT'
+  | 'PARTICIPANTS'
+  | 'POLLS'
+  | 'BREAKOUT_ROOMS'
+  | 'SHARED_NOTEPAD'
+  | null;
 
 export interface IBottomIconsSlice {
   isActiveMicrophone: boolean;
@@ -9,6 +15,8 @@ export interface IBottomIconsSlice {
   isActiveRecording: boolean;
   isActiveScreenshare: boolean;
   isActiveSharedNotePad: boolean;
+  /** Docked pads live in the side panel slot, otherwise they float. */
+  isSharedNotepadDocked: boolean;
   isActiveWhiteboard: boolean;
   isActiveInsightsAiTextChat: boolean;
 

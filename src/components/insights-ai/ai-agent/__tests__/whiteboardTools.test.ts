@@ -1576,6 +1576,27 @@ describe('ensureBoardOpen', () => {
     vi.useRealTimers();
   });
 
+  it('keeps a docked shared notepad open', async () => {
+    vi.useFakeTimers();
+    roomState.current = {
+      ...buildRoomState(),
+      bottomIconsActivity: {
+        isActiveWhiteboard: false,
+        isActiveSharedNotePad: true,
+        isSharedNotepadDocked: true,
+      },
+    };
+
+    const pending = executeWhiteboardWriteContentTool({ blocks: [{ text: 'hello' }] });
+    await vi.advanceTimersByTimeAsync(OPEN_SETTLE_MS + 100);
+    const result = await pending;
+
+    expect(result.ok).toBe(true);
+    expect(dispatch).toHaveBeenCalledTimes(1);
+    expect(dispatch.mock.calls[0][0]).toEqual(updateIsActiveWhiteboard(true));
+    vi.useRealTimers();
+  });
+
   it('lets a freshly opened board settle for two seconds before drawing', async () => {
     vi.useFakeTimers();
     roomState.current = {

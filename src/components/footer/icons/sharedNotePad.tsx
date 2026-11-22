@@ -4,7 +4,10 @@ import { create, toBinary } from '@bufbuild/protobuf';
 import { ChangeVisibilityResSchema } from 'plugnmeet-protocol-js';
 
 import { store, useAppDispatch, useAppSelector } from '../../../store';
-import { updateIsActiveSharedNotePad } from '../../../store/slices/bottomIconsActivitySlice';
+import {
+  setActiveSidePanel,
+  updateIsActiveSharedNotePad,
+} from '../../../store/slices/bottomIconsActivitySlice';
 import { addUserNotification } from '../../../store/slices/roomSettingsSlice';
 import { SharedNotepadIconSVG } from '../../../assets/Icons/SharedNotepadIconSVG';
 import sendAPIRequest from '../../../helpers/api/plugNmeetAPI';
@@ -31,6 +34,10 @@ const SharedNotePadIcon = () => {
   const isActiveSharedNotePad = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveSharedNotePad,
   );
+  const isSharedNotepadDocked = useAppSelector(
+    (state) => state.bottomIconsActivity.isSharedNotepadDocked,
+  );
+  const activeSidePanel = useAppSelector((state) => state.bottomIconsActivity.activeSidePanel);
   const isNotepadEnabled = useAppSelector(
     (state) => !!state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures?.isActive,
   );
@@ -104,7 +111,22 @@ const SharedNotePadIcon = () => {
     ).then();
   }, [isActiveSharedNotePad, canControlNotepad, roomId]);
 
-  const toggle = useCallback(async () => {
+  // Docked, the pad is one of the side panels: the icon mirrors the panel, like Chat.
+  const isNotepadShown =
+    isActiveSharedNotePad && (!isSharedNotepadDocked || activeSidePanel === 'SHARED_NOTEPAD');
+
+  const toggle = useCallback(() => {
+    // Docked: the icon only drives the side panel slot, never room-wide visibility.
+    if (isActiveSharedNotePad && isSharedNotepadDocked) {
+      if (activeSidePanel !== 'SHARED_NOTEPAD') {
+        dispatch(setActiveSidePanel('SHARED_NOTEPAD'));
+        return;
+      }
+      if (isAiWorkspaceControlled || isPresenterPadInProgress) {
+        dispatch(setActiveSidePanel(null));
+        return;
+      }
+    }
     if (isAiWorkspaceControlled) {
       dispatch(
         addUserNotification({
@@ -125,13 +147,21 @@ const SharedNotePadIcon = () => {
     }
     isLocalAction.current = !isActiveSharedNotePad;
     dispatch(updateIsActiveSharedNotePad(!isActiveSharedNotePad));
-  }, [isActiveSharedNotePad, isAiWorkspaceControlled, isPresenterPadInProgress, dispatch, t]);
+  }, [
+    activeSidePanel,
+    isActiveSharedNotePad,
+    isAiWorkspaceControlled,
+    isPresenterPadInProgress,
+    isSharedNotepadDocked,
+    dispatch,
+    t,
+  ]);
 
   const tooltipText = isAiWorkspaceControlled
     ? t('ai-agent.notifications.workspace-controlled-by-ai')
     : isPresenterPadInProgress
       ? t('footer.notice.notepad-in-progress')
-      : isActiveSharedNotePad
+      : isNotepadShown
         ? t('footer.icons.hide-shared-notepad')
         : t('footer.icons.show-shared-notepad');
 
@@ -140,7 +170,7 @@ const SharedNotePadIcon = () => {
       <button
         type="button"
         className={`sharedNotePad hidden md:block relative footer-icon cursor-pointer w-11 3xl:w-[52px] h-11 3xl:h-[52px] rounded-[15px] 3xl:rounded-[18px] border-[3px] 3xl:border-4 focus-ring ${
-          isActiveSharedNotePad ? 'border-focus-ring dark:border-Gray-800' : 'border-transparent'
+          isNotepadShown ? 'border-focus-ring dark:border-Gray-800' : 'border-transparent'
         }`}
         onClick={toggle}
         aria-label={tooltipText.toString()}
@@ -148,9 +178,7 @@ const SharedNotePadIcon = () => {
         <div
           className={`footer-icon-bg h-full w-full flex items-center justify-center rounded-[12px] 3xl:rounded-[15px] border border-Gray-300 dark:border-Gray-700 shadow transition-all duration-300 hover:bg-gray-100 dark:hover:bg-Gray-700 text-Gray-950 dark:text-white ${
             showTooltip ? 'has-tooltip' : ''
-          } ${
-            isActiveSharedNotePad ? 'bg-gray-100 dark:bg-Gray-700' : 'bg-white dark:bg-Gray-800'
-          }`}
+          } ${isNotepadShown ? 'bg-gray-100 dark:bg-Gray-700' : 'bg-white dark:bg-Gray-800'}`}
         >
           <span className="tooltip">{tooltipText}</span>
           {(isAiWorkspaceControlled || isPresenterPadInProgress) && (

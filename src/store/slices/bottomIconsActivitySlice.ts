@@ -9,6 +9,7 @@ const initialState: IBottomIconsSlice = {
   isActiveRecording: false,
   isActiveScreenshare: false,
   isActiveSharedNotePad: false,
+  isSharedNotepadDocked: false,
   isActiveWhiteboard: false,
   isActiveInsightsAiTextChat: false,
 
@@ -83,7 +84,32 @@ const bottomIconsSlice = createSlice({
       }
     },
     updateIsActiveSharedNotePad: (state, action: PayloadAction<boolean>) => {
+      // Repeats must not re-open a docked panel the user switched away from.
+      if (state.isActiveSharedNotePad === action.payload) {
+        return;
+      }
       state.isActiveSharedNotePad = action.payload;
+      if (action.payload) {
+        // A docked pad lives in the side panel slot.
+        if (state.isSharedNotepadDocked) {
+          state.activeSidePanel = 'SHARED_NOTEPAD';
+        }
+      } else if (state.activeSidePanel === 'SHARED_NOTEPAD') {
+        state.activeSidePanel = null;
+      }
+    },
+    updateIsSharedNotepadDocked: (state, action: PayloadAction<boolean>) => {
+      if (state.isSharedNotepadDocked === action.payload) {
+        return;
+      }
+      state.isSharedNotepadDocked = action.payload;
+      if (action.payload) {
+        if (state.isActiveSharedNotePad) {
+          state.activeSidePanel = 'SHARED_NOTEPAD';
+        }
+      } else if (state.activeSidePanel === 'SHARED_NOTEPAD') {
+        state.activeSidePanel = null;
+      }
     },
     updateIsActiveWhiteboard: (state, action: PayloadAction<boolean>) => {
       state.isActiveWhiteboard = action.payload;
@@ -159,6 +185,7 @@ export const {
   updateIsActiveRecording,
   updateIsActiveScreenshare,
   updateIsActiveSharedNotePad,
+  updateIsSharedNotepadDocked,
   updateIsActiveWhiteboard,
   updateIsActiveInsightsAiTextChat,
   updateShowMicrophoneModal,

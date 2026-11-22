@@ -24,13 +24,14 @@ const { roomState, dispatch, controller, pushScene } = hoisted;
 
 type NotepadFeatures = { isAllow: boolean; isActive: boolean };
 
-const setNotepadFeatures = (features: NotepadFeatures) => {
+const setNotepadFeatures = (features: NotepadFeatures, activity?: Record<string, unknown>) => {
   roomState.current = {
     session: {
       currentRoom: {
         metadata: { roomFeatures: { sharedNotePadFeatures: features } },
       },
     },
+    ...(activity ? { bottomIconsActivity: activity } : {}),
   };
 };
 
@@ -70,6 +71,7 @@ vi.mock('../../../../store', () => ({
 
 vi.mock('../../../../store/slices/bottomIconsActivitySlice', () => ({
   updateIsActiveSharedNotePad: (payload: boolean) => ({ type: 'notepad-active', payload }),
+  setActiveSidePanel: (payload: string) => ({ type: 'side-panel', payload }),
 }));
 
 vi.mock('../../../shared-notepad/NotepadController', () => ({
@@ -127,6 +129,34 @@ describe('notepad_write', () => {
     );
     expect(res).toMatchObject({ ok: true, length: 12, mode: 'append' });
     vi.useRealTimers();
+  });
+
+  it('reopens a docked pad that another side panel had replaced', async () => {
+    setNotepadFeatures(
+      { isAllow: true, isActive: true },
+      {
+        isSharedNotepadDocked: true,
+        activeSidePanel: 'PARTICIPANTS',
+      },
+    );
+
+    await executeNotepadWriteTool({ mode: 'append', markdown: '# Notes' });
+
+    expect(dispatch).toHaveBeenCalledWith({ type: 'side-panel', payload: 'SHARED_NOTEPAD' });
+  });
+
+  it('leaves an already open pad panel alone, because the reducer would toggle it off', async () => {
+    setNotepadFeatures(
+      { isAllow: true, isActive: true },
+      {
+        isSharedNotepadDocked: true,
+        activeSidePanel: 'SHARED_NOTEPAD',
+      },
+    );
+
+    await executeNotepadWriteTool({ mode: 'append', markdown: '# Notes' });
+
+    expect(dispatch).not.toHaveBeenCalledWith({ type: 'side-panel', payload: 'SHARED_NOTEPAD' });
   });
 
   it('waits for the lazily mounted editor to register its applier', async () => {

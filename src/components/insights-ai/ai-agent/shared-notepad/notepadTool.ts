@@ -1,5 +1,8 @@
 import { store } from '../../../../store';
-import { updateIsActiveSharedNotePad } from '../../../../store/slices/bottomIconsActivitySlice';
+import {
+  setActiveSidePanel,
+  updateIsActiveSharedNotePad,
+} from '../../../../store/slices/bottomIconsActivitySlice';
 import {
   getNotepadController,
   type NotepadBlockSummary,
@@ -88,6 +91,13 @@ const openNotepad = async (
   }
 
   store.dispatch(updateIsActiveSharedNotePad(true));
+
+  // A docked pad lives in the side panel slot, so a participant who switched to
+  // participants/polls must see it come back instead of just turning active.
+  const activity = store.getState().bottomIconsActivity;
+  if (activity?.isSharedNotepadDocked && activity.activeSidePanel !== 'SHARED_NOTEPAD') {
+    store.dispatch(setActiveSidePanel('SHARED_NOTEPAD'));
+  }
 
   if (!(await prepareController(controller, ready))) {
     return { controller, error: NOT_OPENED };

@@ -94,15 +94,34 @@ const IconsInMenu = () => {
   const isActiveSharedNotePad = useAppSelector(
     (state) => state.bottomIconsActivity.isActiveSharedNotePad,
   );
+  const isSharedNotepadDocked = useAppSelector(
+    (state) => state.bottomIconsActivity.isSharedNotepadDocked,
+  );
+  const activeSidePanel = useAppSelector((state) => state.bottomIconsActivity.activeSidePanel);
   const isNotepadVisibleByPresenter = useAppSelector(
     (state) => !!state.session.currentRoom.metadata?.roomFeatures?.sharedNotePadFeatures?.visible,
   );
+  // Docked, the pad shares the panel slot, so the item mirrors the panel like Chat does.
+  const isNotepadShown =
+    isActiveSharedNotePad && (!isSharedNotepadDocked || activeSidePanel === 'SHARED_NOTEPAD');
+  const isPresenterPadInProgress = !isPresenter && isNotepadVisibleByPresenter;
   const toggleSharedNotePad = useCallback(() => {
+    // Docked: the item only drives the side panel slot, never room-wide visibility.
+    if (isActiveSharedNotePad && isSharedNotepadDocked) {
+      if (activeSidePanel !== 'SHARED_NOTEPAD') {
+        dispatch(setActiveSidePanel('SHARED_NOTEPAD'));
+        return;
+      }
+      if (isAiWorkspaceControlled || isPresenterPadInProgress) {
+        dispatch(setActiveSidePanel(null));
+        return;
+      }
+    }
     if (isAiWorkspaceControlled) {
       notifyWorkspaceControlled();
       return;
     }
-    if (!isPresenter && isNotepadVisibleByPresenter && isActiveSharedNotePad) {
+    if (isPresenterPadInProgress) {
       dispatch(
         addUserNotification({
           message: t('footer.notice.notepad-in-progress'),
@@ -115,9 +134,10 @@ const IconsInMenu = () => {
   }, [
     dispatch,
     isActiveSharedNotePad,
-    isNotepadVisibleByPresenter,
+    isPresenterPadInProgress,
     isAiWorkspaceControlled,
-    isPresenter,
+    isSharedNotepadDocked,
+    activeSidePanel,
     notifyWorkspaceControlled,
     t,
   ]);
@@ -206,11 +226,11 @@ const IconsInMenu = () => {
           onClick={toggleSharedNotePad}
           icon={<SharedNotepadIconSVG classes="" />}
           text={
-            isActiveSharedNotePad
+            isNotepadShown
               ? t('footer.icons.hide-shared-notepad')
               : t('footer.icons.show-shared-notepad')
           }
-          isActive={isActiveSharedNotePad}
+          isActive={isNotepadShown}
           customClass="md:hidden"
         />
       )}
