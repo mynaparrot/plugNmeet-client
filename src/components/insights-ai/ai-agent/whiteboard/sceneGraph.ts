@@ -1,7 +1,7 @@
 import type { ExcalidrawElement } from '@excalidraw/excalidraw/element/types';
 
 import { A4_BOUNDARY_GUIDE_ID } from '../../../whiteboard/helpers/constants';
-import { getBoardFrame, toBBox, type BBox } from './layoutEngine';
+import { batchIdOf, getBoardFrame, sceneGroups, toBBox, type BBox } from './layoutEngine';
 
 /** Hard cap on the number of elements one scene graph may describe. */
 export const MAX_SCENE_GRAPH_ELEMENTS = 200;
@@ -38,6 +38,8 @@ export type SceneWordSpan = {
 export type SceneGraphElement = {
   id: string;
   type: string;
+  /** The agent group (batch) this element belongs to, when it has one. */
+  group_id?: string;
   text: string | null;
   x: number;
   y: number;
@@ -54,6 +56,16 @@ export type SceneGraphElement = {
   bound?: { start?: string; end?: string };
 };
 
+/**
+ * One agent group as the board lays it out: a diagram, a table or a card group
+ * is a single block, and `anchor_element_id` is what a placement anchors to.
+ */
+export type SceneGraphGroup = BBox & {
+  group_id: string;
+  anchor_element_id: string;
+  element_ids: string[];
+};
+
 export type WhiteboardSceneGraph = {
   board: { file_id: string; page: number };
   viewport?: { x: number; y: number; width: number; height: number; zoom: number };
@@ -62,6 +74,7 @@ export type WhiteboardSceneGraph = {
   counts: { total: number; participant: number; agent: number };
   truncated?: boolean;
   omitted?: number;
+  groups?: SceneGraphGroup[];
   elements: SceneGraphElement[];
 };
 
@@ -79,6 +92,20 @@ const isAgentTagged = (element: ExcalidrawElement): boolean =>
 
 const containerIdOf = (element: ExcalidrawElement): string | null =>
   (element as { containerId?: string | null }).containerId ?? null;
+
+/** The group an element belongs to, following its container for a lost tag. */
+const groupIdOf = (
+  element: ExcalidrawElement,
+  byId: ReadonlyMap<string, ExcalidrawElement>,
+): string | null => {
+  const batchId = batchIdOf(element);
+  if (batchId) {
+    return batchId;
+  }
+  const containerId = containerIdOf(element);
+  const container = containerId ? byId.get(containerId) : undefined;
+  return container ? batchIdOf(container) : null;
+};
 
 /**
  * Agent-authored elements carry the tag; the id prefix is a cheap fallback and
@@ -297,10 +324,12 @@ const summarize = (
   byId: ReadonlyMap<string, ExcalidrawElement>,
 ): SceneGraphElement => {
   const author: SceneElementAuthor = isAgentElement(element, byId) ? 'agent' : 'participant';
+  const groupId = groupIdOf(element, byId);
   const text = clipText(boundTextOf(element, byId));
   const summary: SceneGraphElement = {
     id: element.id,
     type: element.type,
+    ...(groupId ? { group_id: groupId } : {}),
     text,
     x: Math.round(element.x),
     y: Math.round(element.y),
@@ -413,6 +442,25 @@ export const buildWhiteboardSceneGraph = (
     .filter((element) => element.author === 'agent')
     .map((element) => element.id);
 
+  // Every agent group of the reported elements as one block: the box a placement
+  // anchors to and the element id that names it.
+  const groups: SceneGraphGroup[] = [];
+  for (const group of sceneGroups(kept)) {
+    if (!group.batchId) {
+      continue;
+    }
+    const anchor = group.elements.find((element) => batchIdOf(element) === group.batchId);
+    if (!anchor) {
+      continue;
+    }
+    groups.push({
+      group_id: group.batchId,
+      anchor_element_id: anchor.id,
+      ...group.box,
+      element_ids: group.elements.map((element) => element.id),
+    });
+  }
+
   const graph: WhiteboardSceneGraph = {
     board: { file_id: fileId, page },
     ...(viewport ? { viewport } : {}),
@@ -424,6 +472,7 @@ export const buildWhiteboardSceneGraph = (
       agent: agentElementIds.length,
     },
     ...(omitted > 0 ? { truncated: true, omitted } : {}),
+    ...(groups.length > 0 ? { groups } : {}),
     elements: summaries,
   };
 

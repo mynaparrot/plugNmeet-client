@@ -11,6 +11,7 @@ import {
   formatWhiteboardText,
   invalid,
   measureText,
+  rebalanceAnchorForSideBySide,
   resolveContrastingStrokeColor,
   resolveFillColor,
   resolveStrokeColor,
@@ -20,13 +21,16 @@ import {
 } from '../agentElements';
 import {
   ANCHORED_LAYOUTS,
+  BLOCK_GAP,
   FRAME_PADDING,
+  MIN_SIDE_STRIP,
   anchoredElementId,
+  findAnchorBox,
+  findComponentElements,
   maxA4ContentWidth,
   readLayout,
   resolveExplicitOrFreePlacement,
   sceneBoxes,
-  toBBox,
   type Size,
 } from '../layoutEngine';
 import { isAgentElement } from '../sceneGraph';
@@ -158,8 +162,10 @@ const readBlocks = (raw: unknown, tableStyle: boolean): Block[] | null => {
   return blocks.length > 0 ? blocks : null;
 };
 
+/** The anchor element itself, or the first element of the group it names. */
 const findAnchor = (board: BoardContext, id: string): ExcalidrawElement | undefined =>
-  board.elements.find((element) => element.id === id);
+  board.elements.find((element) => element.id === id) ??
+  findComponentElements(board.elements, id)[0];
 
 /** A grid row: any block carrying cells, plus single-cell rows of a table. */
 const isTableRow = (block: Block, style: string): boolean => {
@@ -248,42 +254,6 @@ const flowCards = (
   }
 
   return { slots, width, height: y + rowHeight };
-};
-
-type PlacedCards = { origin: { x: number; y: number }; flow: ReturnType<typeof flowCards> };
-
-/**
- * A row of cards has to wrap before it knows where it lands: the space beside
- * an existing column fits fewer cards than the whole page. Both candidates are
- * placed and the one that reaches the highest row wins, so a narrow grid beside
- * the content beats a wide grid that only fits below it.
- */
-const chooseCardFlow = (
-  sizes: readonly CardSize[],
-  place: (size: Size) => { x: number; y: number },
-  frameRight: number,
-  pageWidth: number,
-): PlacedCards | null => {
-  if (sizes.length === 0) {
-    return null;
-  }
-
-  const probe = place({
-    width: Math.max(...sizes.map((size) => size.width)),
-    height: Math.max(...sizes.map((size) => size.height)),
-  });
-  const narrow = flowCards(sizes, frameRight - probe.x);
-  const narrowOrigin = place({ width: narrow.width, height: narrow.height });
-
-  const wide = flowCards(sizes, pageWidth);
-  if (wide.width === narrow.width) {
-    return { origin: narrowOrigin, flow: narrow };
-  }
-
-  const wideOrigin = place({ width: wide.width, height: wide.height });
-  return wideOrigin.y <= narrowOrigin.y
-    ? { origin: wideOrigin, flow: wide }
-    : { origin: narrowOrigin, flow: narrow };
 };
 
 type TableLayout = { columnWidths: number[]; rowHeights: number[]; width: number };
@@ -638,40 +608,83 @@ export const executeWhiteboardWriteContentTool = async (
 
   const anchorId = asString(args.anchor_element_id);
   const anchorElement = anchorId ? findAnchor(context, anchorId) : undefined;
-  const anchor = anchorElement ? toBBox(anchorElement) : null;
-  if (ANCHORED_LAYOUTS.includes(layout) && !anchorElement) {
+  const anchored = ANCHORED_LAYOUTS.includes(layout);
+  if (anchored && !anchorElement) {
     return invalid(`anchor_element_id "${anchorId}" was not found on this page.`);
   }
 
   // A correction written beside the participant's work has to read as feedback,
   // never as their own writing in their own colour.
   const participantAnchor =
-    ANCHORED_LAYOUTS.includes(layout) && anchorElement && !isAgentElement(anchorElement)
-      ? anchorElement
-      : null;
+    anchored && anchorElement && !isAgentElement(anchorElement) ? anchorElement : null;
   const strokeColor = participantAnchor
     ? resolveContrastingStrokeColor(args.color, participantAnchor.strokeColor)
     : resolveStrokeColor(args.color);
 
   const pageWidth = maxA4ContentWidth(context.frame);
+  const frameLeft = Math.round(context.frame.x + FRAME_PADDING);
+  const frameRight = Math.round(context.frame.x + context.frame.width - FRAME_PADDING);
+
+  const anchorBox = findAnchorBox(context.elements, anchorId, layout);
+  // A centred agent group is moved to the page edge when the new block needs the
+  // room beside it, so the pair shares a row instead of one dropping below.
+  const shift = anchorBox
+    ? rebalanceAnchorForSideBySide(
+        context,
+        layout,
+        anchorId,
+        isCardStyle(style)
+          ? Math.min(
+              pageWidth - anchorBox.width - BLOCK_GAP,
+              MAX_CARD_TEXT_WIDTH + CARD_PADDING * 2,
+            )
+          : MIN_SIDE_STRIP,
+      )
+    : null;
+  const anchor = shift?.anchor ?? anchorBox;
+  const scene = shift?.elements ?? context.elements;
+
+  // Width the anchor leaves beside it: cards and prose wrap inside that strip so
+  // they stay on the anchor's row instead of dropping below it.
+  const strip =
+    !anchor || (layout !== 'right_of_element' && layout !== 'left_of_element')
+      ? pageWidth
+      : layout === 'right_of_element'
+        ? frameRight - (anchor.x + anchor.width + BLOCK_GAP)
+        : anchor.x - BLOCK_GAP - frameLeft;
+
   // Prose stays inside the page: long sentences are wrapped before they are
   // measured, so a block never starts wider than the guide.
   blocks = wrapBlocks(blocks, style, fontSize, pageWidth);
+  const widestCard = isCardStyle(style)
+    ? Math.max(...blocks.map((block) => cardSize(block, fontSize).width))
+    : 0;
+  // A card grid only goes beside an anchor when its widest card fits the strip;
+  // a stack that cannot fit there drops below the anchor as one block.
+  const flowWidth = Math.max(
+    120,
+    Math.min(
+      pageWidth,
+      strip >= (isCardStyle(style) ? widestCard : MIN_SIDE_STRIP) ? strip : pageWidth,
+    ),
+  );
+  if (flowWidth < pageWidth) {
+    blocks = wrapBlocks(blocks, style, fontSize, flowWidth);
+  }
 
   const table = buildTableLayout(
     blocks.filter((block) => isTableRow(block, style)),
     fontSize,
-    pageWidth,
+    flowWidth,
   );
 
   const cardSizes = isCardStyle(style) ? blocks.map((block) => cardSize(block, fontSize)) : [];
-  // Anchored placement is measured against the anchor element itself, so the
-  // batch it belongs to may stay split; free space sees batches as one block.
-  const existingBoxes = sceneBoxes(context.elements, anchoredElementId(layout, anchorId));
-  const frameRight = Math.round(context.frame.x + context.frame.width - FRAME_PADDING);
+  // Only a block drawn inside an anchor splits its group; every other layout
+  // sees whole batches, so a placement never lands inside a diagram.
+  const existingBoxes = sceneBoxes(scene, anchoredElementId(layout, anchorId));
 
   // Drawings start from the middle of the board; prose fills it from the left.
-  const placement = { centered: !ANCHORED_LAYOUTS.includes(layout) && !isProse(style) };
+  const placement = { centered: !anchored && !isProse(style) };
   const place = (size: Size, rawX?: unknown, rawY?: unknown) =>
     resolveExplicitOrFreePlacement(
       existingBoxes,
@@ -701,30 +714,21 @@ export const executeWhiteboardWriteContentTool = async (
     return isTableRow(blocks[index], style) && isTableRow(next, style) ? 0 : BLOCK_SPACING;
   };
 
-  let cardFlow = chooseCardFlow(cardSizes, place, frameRight, pageWidth);
+  // Cards wrap inside the strip beside the anchor, so their first row shares the
+  // anchor's top instead of being pushed under it.
+  const cardFlow = isCardStyle(style) ? flowCards(cardSizes, flowWidth) : null;
 
   const contentWidth =
-    cardFlow?.flow.width ??
+    cardFlow?.width ??
     Math.max(
       ...blocks.map((block) =>
         isTableRow(block, style) ? table.width : textWidth(block, fontSize),
       ),
     );
   const contentHeight =
-    cardFlow?.flow.height ??
-    heights.reduce((sum, height, index) => sum + height + gapAfter(index), 0);
+    cardFlow?.height ?? heights.reduce((sum, height, index) => sum + height + gapAfter(index), 0);
 
-  const origin =
-    cardFlow?.origin ?? place({ width: contentWidth, height: contentHeight }, args.x, args.y);
-
-  // A card grid may still be wider than the space its origin leaves (a clamped
-  // origin, for example): it wraps inside what is really there.
-  if (cardFlow && origin.x + cardFlow.flow.width > frameRight) {
-    cardFlow = {
-      origin,
-      flow: flowCards(cardSizes, Math.max(120, frameRight - origin.x)),
-    };
-  }
+  const origin = place({ width: contentWidth, height: contentHeight }, args.x, args.y);
 
   // Text that has to share the page with existing content wraps again inside
   // the width the origin actually leaves.
@@ -753,7 +757,7 @@ export const executeWhiteboardWriteContentTool = async (
     });
 
     if (cardFlow) {
-      const slot = cardFlow.flow.slots[index];
+      const slot = cardFlow.slots[index];
       // A card sizes itself with padding, so it needs no reconciliation.
       skeletons.push(
         ...renderBlock(
@@ -799,10 +803,13 @@ export const executeWhiteboardWriteContentTool = async (
 
   const converted: ExcalidrawElement[] = await toExcalidrawElements(skeletons, TOOL_NAME);
   const elements = reconcileConvertedBlocks(converted, plans);
+  // A moved anchor group is committed with the new content: both groups land in
+  // one write, so the pair never shows a half-finished layout on a peer.
+  const changed = [...elements, ...(shift?.changes ?? [])];
 
-  if (!commitAgentElements(context, elements, { toolName: TOOL_NAME })) {
+  if (!commitAgentElements(context, changed, { toolName: TOOL_NAME })) {
     return invalid('The whiteboard refused the write.');
   }
 
-  return drawnResult(elements);
+  return drawnResult(elements, context.frame);
 };

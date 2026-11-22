@@ -234,6 +234,8 @@ import {
   MAX_A4_PAGES,
   centeredFreeSlot,
   clampToA4Bounds,
+  findAnchorBox,
+  findComponentElements,
   fitInsideAnchor,
   getBoardFrame,
   maxA4ContentWidth,
@@ -299,6 +301,18 @@ const lastWritten = (): FakeElement[] => {
   const calls = board.controller.applyExternalElements.mock.calls;
   return (calls[calls.length - 1]?.[0] ?? []) as unknown as FakeElement[];
 };
+
+/** The agent group (batch) an element was written in. */
+const agentBatchIdOf = (el: FakeElement): string | undefined =>
+  (el.customData as { ai_agent?: { batchId?: string } } | undefined)?.ai_agent?.batchId;
+
+/** Union box of a set of written elements, the way the tools measure a group. */
+const unionOf = (elements: readonly FakeElement[]) => ({
+  x: Math.min(...elements.map((el) => Number(el.x))),
+  y: Math.min(...elements.map((el) => Number(el.y))),
+  right: Math.max(...elements.map((el) => Number(el.x) + Number(el.width))),
+  bottom: Math.max(...elements.map((el) => Number(el.y) + Number(el.height))),
+});
 
 /** The `persistNow` flag of every write, in order. */
 const persistFlags = (): (boolean | undefined)[] =>
@@ -502,6 +516,39 @@ describe('buildWhiteboardSceneGraph', () => {
       height: 25,
     });
     expect(findWordBoxInElement(work, byId, 'missing')).toBeNull();
+  });
+
+  it('reports each agent group with its union box and its anchor element', () => {
+    const agent = (batchId: string) => ({
+      customData: { ai_agent: { sessionId: 's', toolName: 't', batchId, createdAt: 1 } },
+    });
+
+    const result = buildWhiteboardSceneGraph(
+      [
+        element({ id: 'ai_a', x: 100, y: 100, width: 100, height: 50, ...agent('batch-a') }),
+        element({ id: 'ai_b', x: 300, y: 100, width: 100, height: 50, ...agent('batch-a') }),
+        element({ id: 'loose', type: 'text', text: 'mine', x: 600, y: 100 }),
+      ],
+      'file-1',
+      1,
+    );
+
+    // Each element says which group it belongs to, so the model can anchor to it.
+    const byId = new Map(result.graph.elements.map((el) => [el.id, el]));
+    expect(byId.get('ai_b')?.group_id).toBe('batch-a');
+    expect(byId.get('loose')?.group_id).toBeUndefined();
+
+    expect(result.graph.groups).toEqual([
+      {
+        group_id: 'batch-a',
+        anchor_element_id: 'ai_a',
+        x: 100,
+        y: 100,
+        width: 300,
+        height: 50,
+        element_ids: ['ai_a', 'ai_b'],
+      },
+    ]);
   });
 
   it('reports only the elements inside the viewport when scope is viewport', () => {
@@ -944,7 +991,7 @@ describe('whiteboard_write_content', () => {
     expect(writtenElements().filter((el) => el.type === 'rectangle')).toHaveLength(5);
   });
 
-  it('places the whole table in the free space right of existing elements', async () => {
+  it('stacks the whole table below existing elements instead of into their right-hand gap', async () => {
     const frame = getBoardFrame([]);
     const left = frame.x + FRAME_PADDING;
     const top = frame.y + FRAME_PADDING;
@@ -957,12 +1004,11 @@ describe('whiteboard_write_content', () => {
 
     const cells = writtenElements().filter((el) => el.type === 'rectangle');
     expect(cells).toHaveLength(3);
-    // Horizontal first: the table uses the empty right-hand side of the page top.
-    expect(Math.min(...cells.map((cell) => Number(cell.x)))).toBeGreaterThanOrEqual(
-      left + 400 + BLOCK_GAP,
-    );
+    // A new topic is its own section: one row, below the old block, with a gap.
+    expect(new Set(cells.map((cell) => Number(cell.y))).size).toBe(1);
     for (const cell of cells) {
-      expect(Number(cell.y)).toBe(top);
+      expect(Number(cell.y)).toBeGreaterThanOrEqual(top + 120 + BLOCK_GAP);
+      expect(Number(cell.x)).toBeGreaterThanOrEqual(left);
       expect(Number(cell.x) + Number(cell.width)).toBeLessThanOrEqual(
         frame.x + frame.width - FRAME_PADDING,
       );
@@ -1121,14 +1167,13 @@ describe('whiteboard_write_content', () => {
     expect(cards[2].x).toBe(cards[0].x);
   });
 
-  it('wraps cards into the free space right of an existing left column', async () => {
+  it('stacks cards below an existing block instead of filling the gap beside it', async () => {
     const frame = getBoardFrame([]);
     const left = frame.x + FRAME_PADDING;
     const top = frame.y + FRAME_PADDING;
     const right = frame.x + frame.width - FRAME_PADDING;
     board.scene = [element({ id: 'column', x: left, y: top, width: 400, height: 120 })];
 
-    // 267px per card: two fit in the gap the left column leaves (696px).
     const text = 'x'.repeat(18);
     await executeWhiteboardWriteContentTool({
       style: 'sticky_note',
@@ -1137,17 +1182,141 @@ describe('whiteboard_write_content', () => {
 
     const cards = cardElements();
     expect(cards).toHaveLength(4);
-    // The cards stay at the top of the page, beside the column, never below it.
-    expect(Number(cards[0].y)).toBe(top);
+    // A new topic starts on a fresh row below the old block, never beside it.
     for (const card of cards) {
-      expect(Number(card.x)).toBeGreaterThanOrEqual(left + 400 + BLOCK_GAP);
+      expect(Number(card.y)).toBeGreaterThanOrEqual(top + 120 + BLOCK_GAP);
+      expect(Number(card.x)).toBeGreaterThanOrEqual(left);
       expect(Number(card.x) + Number(card.width)).toBeLessThanOrEqual(right);
     }
-    // A 2x2 grid in the gap instead of one column pushed below the left box.
-    expect(cards.filter((card) => card.y === cards[0].y)).toHaveLength(2);
-    expect(cards[2].x).toBe(cards[0].x);
-    expect(Number(cards[2].y)).toBeGreaterThan(Number(cards[0].y));
-    expect(cards[3].x).toBe(cards[1].x);
+    // The cards still read as one band, each one further right than the last.
+    for (let index = 1; index < cards.length; index++) {
+      expect(Number(cards[index].x)).toBeGreaterThanOrEqual(
+        Number(cards[index - 1].x) + Number(cards[index - 1].width),
+      );
+    }
+  });
+
+  it('places sticky notes beside the whole diagram, top-aligned and never below it', async () => {
+    const frame = getBoardFrame([]);
+    const diagram = await executeWhiteboardDrawDiagramTool({
+      mermaid:
+        'flowchart TD\n  A[Power Source] --> B[Main Hub]\n  B --> C[Device 1]\n  B --> D[Device 2]\n  B --> E[Device 3]',
+    });
+    expect(diagram.ok).toBe(true);
+    const drawn = writtenElements();
+    board.scene = drawn;
+    board.controller.applyExternalElements.mockClear();
+
+    // Anchored to the middle label of the diagram: the whole diagram is the anchor.
+    const hub = drawn.find(
+      (el) => (el.label as { text?: string } | undefined)?.text === 'Main Hub',
+    );
+    const result = await executeWhiteboardWriteContentTool({
+      style: 'sticky_note',
+      layout: 'right_of_element',
+      anchor_element_id: hub?.id,
+      blocks: [{ text: 'Plan' }, { text: 'Draft' }],
+    });
+
+    expect(result.ok).toBe(true);
+    const written = lastWritten();
+    const diagramNow = written.filter((el) => agentBatchIdOf(el) === diagram.groupId);
+    const cards = written.filter(
+      (el) => agentBatchIdOf(el) === result.groupId && el.type === 'rectangle',
+    );
+    expect(diagramNow.length).toBeGreaterThan(0);
+    expect(cards).toHaveLength(2);
+
+    // The centred diagram is moved to the left margin, so both groups pair up.
+    const box = unionOf(diagramNow);
+    expect(box.x).toBe(frame.x + FRAME_PADDING);
+    expect(box.right + BLOCK_GAP + 120).toBeLessThanOrEqual(frame.x + frame.width - FRAME_PADDING);
+
+    for (const card of cards) {
+      // Beside the whole diagram, never inside its hollow middle or below it.
+      expect(Number(card.x)).toBeGreaterThanOrEqual(box.right + BLOCK_GAP);
+      expect(Number(card.y)).toBeGreaterThanOrEqual(box.y);
+      expect(Number(card.y)).toBeLessThan(box.bottom);
+      expect(Number(card.x) + Number(card.width)).toBeLessThanOrEqual(
+        frame.x + frame.width - FRAME_PADDING,
+      );
+    }
+    // The first note shares the diagram's top edge instead of dropping below it.
+    expect(Number(cards[0].y)).toBe(box.y);
+  });
+
+  it('starts a new free-space section below the previous topic, never in its right gap', async () => {
+    const frame = getBoardFrame([]);
+    const left = frame.x + FRAME_PADDING;
+    const top = frame.y + FRAME_PADDING;
+    board.scene = [element({ id: 'previous', x: left, y: top, width: 300, height: 60 })];
+
+    await executeWhiteboardWriteContentTool({ style: 'body', blocks: [{ text: 'Next topic' }] });
+
+    const text = lastWritten().find((el) => el.type === 'text');
+    expect(Number(text?.x)).toBe(left);
+    expect(Number(text?.y)).toBe(top + 60 + BLOCK_GAP);
+  });
+
+  it('anchors to a whole group by batch id as well as by any of its elements', async () => {
+    const frame = getBoardFrame([]);
+    const agent = (batchId: string) => ({
+      customData: { ai_agent: { sessionId: 's', toolName: 't', batchId, createdAt: 1 } },
+    });
+    board.scene = [
+      element({
+        id: 'card-1',
+        x: frame.x + 200,
+        y: frame.y + 300,
+        width: 200,
+        height: 100,
+        ...agent('batch-7'),
+      }),
+      element({
+        id: 'card-2',
+        x: frame.x + 440,
+        y: frame.y + 300,
+        width: 200,
+        height: 100,
+        ...agent('batch-7'),
+      }),
+    ];
+
+    const placedAt: number[] = [];
+    for (const anchorId of ['batch-7', 'card-1', 'card-2']) {
+      board.controller.applyExternalElements.mockClear();
+      const result = await executeWhiteboardWriteContentTool({
+        layout: 'right_of_element',
+        anchor_element_id: anchorId,
+        blocks: [{ text: 'note' }],
+      });
+
+      expect(result.ok).toBe(true);
+      const text = lastWritten().find((el) => el.type === 'text');
+      // To the right of the entire group, not of the one card that was named.
+      expect(Number(text?.x)).toBe(frame.x + 640 + BLOCK_GAP);
+      expect(Number(text?.y)).toBe(frame.y + 300);
+      placedAt.push(Number(text?.x));
+    }
+    expect(new Set(placedAt).size).toBe(1);
+  });
+
+  it('reports the group, the anchor element and the printable page bounds', async () => {
+    const frame = getBoardFrame([]);
+    const result = await executeWhiteboardWriteContentTool({
+      style: 'body',
+      blocks: [{ text: 'Hello' }],
+    });
+
+    const [first] = lastWritten();
+    expect(result.groupId).toBe(agentBatchIdOf(first));
+    expect(result.anchorElementId).toBe(first.id);
+    expect(result.pageBounds).toEqual({
+      x: frame.x + FRAME_PADDING,
+      y: frame.y + FRAME_PADDING,
+      width: maxA4ContentWidth(frame),
+      height: frame.height * MAX_A4_PAGES - FRAME_PADDING * 2,
+    });
   });
 
   it('wraps a long body line inside the page instead of running off it', async () => {
@@ -1513,8 +1682,11 @@ describe('layoutEngine placement', () => {
 
     // Horizontally centred on the page, but at the top of it.
     expect(first).toEqual({ x: 500, y: frame.y + FRAME_PADDING });
-    // The next one uses the free space beside it before stacking below.
-    expect(second).toEqual({ x: 500 + size.width + BLOCK_GAP, y: frame.y + FRAME_PADDING });
+    // The next one is a new section below, not squeezed into the gap beside it.
+    expect(second).toEqual({
+      x: 500,
+      y: frame.y + FRAME_PADDING + size.height + BLOCK_GAP,
+    });
   });
 
   it('puts the first drawing at the top of the A4 page even when the model says page_center', () => {
@@ -1632,17 +1804,20 @@ describe('layoutEngine placement', () => {
       height: 100,
     }));
 
-  it('uses the free space right of the left column before stacking down', () => {
-    const placed = resolvePlacement(stacked(8), frame, size);
+  it('stacks a new section below the left column instead of into its right-hand gap', () => {
+    const column = stacked(8);
+    const placed = resolvePlacement(column, frame, size);
+    const bottom = Math.max(...column.map((box) => box.y + box.height));
 
-    expect(placed).toEqual({ x: 40 + 400 + BLOCK_GAP, y: 40 });
-    expect(placed.y + size.height).toBeLessThanOrEqual(frame.y + frame.height);
+    expect(placed).toEqual({ x: 40, y: bottom + BLOCK_GAP });
   });
 
-  it('uses the next free horizontal band beside existing columns', () => {
-    const placed = resolvePlacement([...stacked(8), ...rightColumn(7)], frame, size);
+  it('never stuffs a new section into the band beside two full columns', () => {
+    const boxes = [...stacked(8), ...rightColumn(7)];
+    const placed = resolvePlacement(boxes, frame, size);
+    const bottom = Math.max(...boxes.map((box) => box.y + box.height));
 
-    expect(placed).toEqual({ x: rightColumnX(frame) + 180 + BLOCK_GAP, y: 40 });
+    expect(placed).toEqual({ x: 40, y: bottom + BLOCK_GAP });
   });
 
   it('stacks below a wide block that leaves no horizontal room', () => {
@@ -1652,10 +1827,10 @@ describe('layoutEngine placement', () => {
     expect(placed.y).toBeGreaterThanOrEqual(40 + 8 * 124);
   });
 
-  it('fills the gap beside a short block before using the next row', () => {
+  it('puts a new topic on a fresh row below a short block', () => {
     const top = { x: 40, y: 40, width: 400, height: 100 };
 
-    expect(resolvePlacement([top], frame, size)).toEqual({ x: 40 + 400 + BLOCK_GAP, y: 40 });
+    expect(resolvePlacement([top], frame, size)).toEqual({ x: 40, y: 40 + 100 + BLOCK_GAP });
   });
 
   it('centres a block inside its anchor instead of pushing it out of the anchor', () => {
@@ -1708,10 +1883,12 @@ describe('layoutEngine placement', () => {
     });
   });
 
-  it('keeps filling the page top-right even when the left column runs three pages deep', () => {
+  it('stacks below a column that runs three pages deep, inside the printable pages', () => {
     const placed = resolvePlacement(stacked(24), frame, size);
+    const lastPageBottom = frame.y + frame.height * MAX_A4_PAGES - FRAME_PADDING - size.height;
 
-    expect(placed).toEqual({ x: 40 + 400 + BLOCK_GAP, y: 40 });
+    expect(placed.x).toBe(40);
+    expect(placed.y).toBe(lastPageBottom);
   });
 
   it('centres a drawing and moves it left as it grows wider', () => {
@@ -1733,23 +1910,23 @@ describe('layoutEngine placement', () => {
     }
   });
 
-  it('uses the free space beside existing work before stacking a drawing below it', () => {
+  it('stacks a drawing below existing work as a new centred section', () => {
     const column = { x: 40, y: 40, width: 600, height: 120 };
     const size = { width: 200, height: 100 };
 
-    // The middle of the page is taken by the left column: the drawing goes right of it.
+    // The middle of the page is taken by the left column: the drawing goes below it.
     const placed = resolvePlacement([column], frame, size, 'free_space', undefined, {
       centered: true,
     });
-    expect(placed).toEqual({ x: 40 + 600 + BLOCK_GAP, y: 40 });
+    expect(placed).toEqual({ x: 500, y: 40 + 120 + BLOCK_GAP });
 
-    // Repeated drawings keep growing towards the right, never back onto the page.
+    // Repeated drawings keep stacking down, each on its own section.
     const second = centeredFreeSlot([column, { ...placed, ...size }], frame, size);
-    expect(second.x).toBe(40 + 600 + BLOCK_GAP + 200 + BLOCK_GAP);
-    expect(second.y).toBe(40);
+    expect(second.x).toBe(500);
+    expect(second.y).toBe(placed.y + size.height + BLOCK_GAP);
   });
 
-  it('widens the stack below when a drawing cannot fit beside the content', () => {
+  it('centres a drawing that is wider than the space beside the content', () => {
     const column = { x: 40, y: 40, width: 400, height: 120 };
     const placed = resolvePlacement(
       [column],
@@ -1900,6 +2077,33 @@ describe('sceneBoxes grouping', () => {
 
     expect(boxes).toEqual([{ x: 1000, y: 100, ...NODE }]);
   });
+
+  it('finds a group by element id, batch id or Excalidraw group id', () => {
+    expect(findComponentElements(tree(), 'leaf-3')).toHaveLength(9);
+    expect(findComponentElements(tree(batch('batch-1')), 'batch-1')).toHaveLength(9);
+    expect(
+      findComponentElements(
+        [node('a', 0, 0, { groupIds: ['g1'] }), node('b', 200, 0, { groupIds: ['g1'] })],
+        'g1',
+      ),
+    ).toHaveLength(2);
+    expect(findComponentElements(tree(), 'missing')).toEqual([]);
+  });
+
+  it('anchors to the whole group for every layout except inside_element', () => {
+    // A wider middle label leaves a hollow top-right: the group box is the anchor.
+    expect(findAnchorBox(tree(), 'leaf-3', 'right_of_element')).toEqual(TREE_BOX);
+    expect(findAnchorBox(tree(), 'leaf-3', 'below_element')).toEqual(TREE_BOX);
+    expect(findAnchorBox(tree(batch('batch-1')), 'batch-1', 'right_of_element')).toEqual(TREE_BOX);
+    // Only a block drawn inside an anchor measures the element it was pointed at.
+    expect(findAnchorBox(tree(), 'leaf-3', 'inside_element')).toEqual({
+      x: 1480,
+      y: 444,
+      ...NODE,
+    });
+    expect(findAnchorBox(tree(), '')).toBeNull();
+    expect(findAnchorBox(tree(), 'missing')).toBeNull();
+  });
 });
 
 describe('resolveContrastingStrokeColor', () => {
@@ -1943,7 +2147,7 @@ describe('whiteboard_draw_shapes', () => {
     expect(shape.label).toMatchObject({ text: 'check this' });
   });
 
-  it('places shapes that come without coordinates right of stacked content', async () => {
+  it('places a shape below stacked content, as its own section', async () => {
     const frame = getBoardFrame([]);
     const left = frame.x + FRAME_PADDING;
     const top = frame.y + FRAME_PADDING;
@@ -1953,9 +2157,12 @@ describe('whiteboard_draw_shapes', () => {
 
     expect(result.ok).toBe(true);
     const [shape] = lastWritten();
-    // Horizontal first: the shape takes the empty right-hand side of the page top.
-    expect(shape.y).toBe(top);
-    expect(shape.x).toBeGreaterThanOrEqual(left + 400 + BLOCK_GAP);
+    // Below the old block with section spacing, never in the gap beside it.
+    expect(shape.y).toBe(top + 600 + BLOCK_GAP);
+    expect(shape.x).toBeGreaterThanOrEqual(left);
+    expect(Number(shape.x) + Number(shape.width)).toBeLessThanOrEqual(
+      frame.x + frame.width - FRAME_PADDING,
+    );
   });
 
   const work = () =>
@@ -2551,7 +2758,7 @@ describe('whiteboard_draw_diagram', () => {
     expect(image?.customData).toMatchObject({ fileUrl: dataURL, isOfficeFile: false });
   });
 
-  it('places a second diagram beside the first, in the free space of the page top', async () => {
+  it('stacks a second diagram below the first, as a new section', async () => {
     const first = await executeWhiteboardDrawDiagramTool({
       mermaid: 'flowchart TD\n  A[One] --> B[Two]',
     });
@@ -2562,38 +2769,41 @@ describe('whiteboard_draw_diagram', () => {
       mermaid: 'flowchart TD\n  C[Three] --> D[Four]',
     });
 
-    const before = first.bbox as { x: number; y: number; width: number };
-    const beside = second.bbox as { x: number; y: number };
-    // Horizontal first: same row as the first diagram, to its right.
-    expect(beside.y).toBe(before.y);
-    expect(beside.x).toBeGreaterThanOrEqual(before.x + before.width);
+    const before = first.bbox as { x: number; y: number; width: number; height: number };
+    const below = second.bbox as { x: number; y: number };
+    // A different topic is its own section: below the first diagram, with a gap.
+    expect(below.y).toBeGreaterThanOrEqual(before.y + before.height + BLOCK_GAP);
   });
 
   it('places a shape beside the whole diagram, never in its hollow top-right', async () => {
     const diagram = await executeWhiteboardDrawDiagramTool({
       mermaid:
         'flowchart TD\n  A[Power Source] --> B[Main Hub]\n  B --> C[Device 1]\n  B --> D[Device 2]\n  B --> E[Device 3]',
-      // Half scale leaves room for another block beside the diagram inside the
-      // A4 content width, so "beside the diagram" is actually reachable.
-      scale: 0.5,
     });
     expect(diagram.ok).toBe(true);
-    const diagramBox = diagram.bbox as { x: number; y: number; width: number; height: number };
     board.scene = writtenElements();
     board.controller.applyExternalElements.mockClear();
 
     const result = await executeWhiteboardDrawShapesTool({
       shapes: [{ type: 'rectangle', label: 'Component A', width: 100, height: 60 }],
+      layout: 'right_of_element',
+      anchor_element_id: diagram.anchorElementId,
     });
 
     expect(result.ok).toBe(true);
     const shape = lastWritten()[0];
-    // To the right of the entire diagram, not above Device 3 beside Power Source.
-    expect(Number(shape.x)).toBeGreaterThanOrEqual(diagramBox.x + diagramBox.width + BLOCK_GAP);
-    expect(Number(shape.y)).toBeGreaterThanOrEqual(diagramBox.y);
-    expect(Number(shape.y) + Number(shape.height)).toBeLessThanOrEqual(
-      diagramBox.y + diagramBox.height,
+    // The diagram has been moved to the left margin, so both fit side by side.
+    const diagramNow = lastWritten().filter(
+      (el) => agentBatchIdOf(el) === diagram.groupId && el.id !== shape.id,
     );
+    const diagramRight = Math.max(...diagramNow.map((el) => Number(el.x) + Number(el.width)));
+    const diagramTop = Math.min(...diagramNow.map((el) => Number(el.y)));
+    const diagramBottom = Math.max(...diagramNow.map((el) => Number(el.y) + Number(el.height)));
+
+    // To the right of the entire diagram, not above Device 3 beside Power Source.
+    expect(Number(shape.x)).toBeGreaterThanOrEqual(diagramRight + BLOCK_GAP);
+    expect(Number(shape.y)).toBeGreaterThanOrEqual(diagramTop);
+    expect(Number(shape.y) + Number(shape.height)).toBeLessThanOrEqual(diagramBottom);
   });
 
   it('places a diagram below the element it is anchored to', async () => {
@@ -3223,6 +3433,28 @@ describe('whiteboard_capture_snapshot', () => {
       },
     ]);
     expect(result.agent_elements).toMatchObject([{ id: 'ai_1', text: 'correction' }]);
+    // The tool result carries the groups with their anchor ids as well.
+    expect(result.groups).toEqual([]);
+  });
+
+  it('reports the agent groups a placement can anchor to', async () => {
+    await executeWhiteboardWriteContentTool({
+      style: 'sticky_note',
+      blocks: [{ text: 'one' }, { text: 'two' }],
+    });
+    const cards = writtenElements().filter((el) => el.type === 'rectangle');
+    board.scene = writtenElements();
+    board.controller.applyExternalElements.mockClear();
+
+    const result = await executeWhiteboardCaptureSnapshotTool({});
+
+    // Both notes are one block with one anchor element for later placements.
+    expect(result.groups).toMatchObject([
+      { group_id: agentBatchIdOf(cards[0]), anchor_element_id: cards[0].id },
+    ]);
+    expect((result.groups as { element_ids: string[] }[])[0].element_ids).toEqual(
+      cards.map((card) => card.id),
+    );
   });
 
   it('inspects metadata even when the room disables vision capture', async () => {

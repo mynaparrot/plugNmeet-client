@@ -11,12 +11,14 @@ import {
   formatWhiteboardText,
   invalid,
   measureText,
+  rebalanceAnchorForSideBySide,
   resolveContrastingStrokeColor,
   resolveFillColor,
   toExcalidrawElements,
   type BoardContext,
 } from '../agentElements';
 import {
+  MIN_SIDE_STRIP,
   anchoredElementId,
   clampToA4Bounds,
   findAnchorBox,
@@ -213,7 +215,19 @@ export const executeWhiteboardDrawShapesTool = async (
   const context = lookup.board;
 
   const data = asCustomData(agentCustomData(TOOL_NAME));
-  const byId = new Map(context.elements.map((element) => [element.id, element]));
+  // The model may set layout/anchor for the whole call or for one shape.
+  const topLayout = args.layout ?? args.placement;
+  const topAnchorId = asString(args.anchor_element_id);
+  // An anchor group centred on the page is moved to the edge when the shape
+  // needs the room beside it, so the mark sits next to it, not below it.
+  const shift = rebalanceAnchorForSideBySide(
+    context,
+    readLayout(topLayout),
+    topAnchorId,
+    MIN_SIDE_STRIP,
+  );
+  const board: BoardContext = shift ? { ...context, elements: shift.elements } : context;
+  const byId = new Map(board.elements.map((element) => [element.id, element]));
   const skeletons: unknown[] = [];
   const placedBoxes: BBox[] = [];
   // A shape anchored to one element of a batch is measured against that element,
@@ -223,23 +237,20 @@ export const executeWhiteboardDrawShapesTool = async (
   const boxesFor = (layout: LayoutMode, rawAnchorId?: string): BBox[] => {
     const anchorId = anchoredElementId(layout, rawAnchorId);
     const key = anchorId ?? '';
-    let scene = sceneBoxCache.get(key);
-    if (!scene) {
-      scene = sceneBoxes(context.elements, anchorId);
-      sceneBoxCache.set(key, scene);
+    let boxes = sceneBoxCache.get(key);
+    if (!boxes) {
+      boxes = sceneBoxes(board.elements, anchorId);
+      sceneBoxCache.set(key, boxes);
     }
-    return [...scene, ...placedBoxes];
+    return [...boxes, ...placedBoxes];
   };
-  // The model may set layout/anchor for the whole call or for one shape.
-  const topLayout = args.layout ?? args.placement;
-  const topAnchorId = asString(args.anchor_element_id);
 
   for (const shape of shapes) {
-    const start = bboxOf(context, shape.startElementId);
-    const end = bboxOf(context, shape.endElementId);
+    const start = bboxOf(board, shape.startElementId);
+    const end = bboxOf(board, shape.endElementId);
     const layout = readLayout(shape.layout ?? topLayout);
     const anchorId = shape.anchorElementId ?? topAnchorId;
-    const anchor = findAnchorBox(context.elements, anchorId);
+    const anchor = findAnchorBox(board.elements, anchorId, layout);
     const linear =
       shape.type === 'arrow' || shape.type === 'line' ? linearGeometry(shape, start, end) : null;
     const targetElement = shape.targetElementId ? byId.get(shape.targetElementId) : undefined;
@@ -347,9 +358,10 @@ export const executeWhiteboardDrawShapesTool = async (
   }
 
   const elements: ExcalidrawElement[] = await toExcalidrawElements(skeletons, TOOL_NAME);
-  if (!commitAgentElements(context, elements, { toolName: TOOL_NAME })) {
+  const changed = [...elements, ...(shift?.changes ?? [])];
+  if (!commitAgentElements(context, changed, { toolName: TOOL_NAME })) {
     return invalid('The whiteboard refused the write.');
   }
 
-  return drawnResult(elements);
+  return drawnResult(elements, context.frame);
 };

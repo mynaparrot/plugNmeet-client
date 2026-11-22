@@ -14,6 +14,7 @@ import {
   invalid,
   measureText,
   nextSceneIndex,
+  rebalanceAnchorForSideBySide,
   registerAgentImageFiles,
   resolveStrokeColor,
   toExcalidrawElements,
@@ -22,6 +23,7 @@ import {
 import { pushAgentAction } from '../agentHistory';
 import { pointAgentLaserAt, traceElementsWithLaser } from '../agentLaser';
 import {
+  MIN_SIDE_STRIP,
   anchoredElementId,
   findAnchorBox,
   fitInside,
@@ -640,7 +642,7 @@ const resolveSvgPlacement = (
   size: Size,
 ): { x: number; y: number; width: number; height: number } => {
   const layout = readLayout(input.args.layout);
-  const anchor = findAnchorBox(context.elements, input.args.anchor_element_id);
+  const anchor = findAnchorBox(context.elements, input.args.anchor_element_id, layout);
   const fitted = fitInside(size, layout, anchor);
   const origin = resolveExplicitOrFreePlacement(
     sceneBoxes(context.elements, anchoredElementId(layout, input.args.anchor_element_id)),
@@ -663,6 +665,7 @@ const resolveSvgPlacement = (
 const insertSvgImage = async (
   context: BoardContext,
   input: SvgDrawInput,
+  moved: readonly ExcalidrawElement[] = [],
 ): Promise<Record<string, unknown> | null> => {
   if (!context.api?.addFiles) {
     return null;
@@ -718,19 +721,23 @@ const insertSvgImage = async (
     TOOL_NAME,
   );
 
-  if (elements.length === 0 || !commitAgentElements(context, elements, { toolName: TOOL_NAME })) {
+  if (
+    elements.length === 0 ||
+    !commitAgentElements(context, [...elements, ...moved], { toolName: TOOL_NAME })
+  ) {
     return invalid('The whiteboard refused the write.');
   }
   // Re-register now that the element is in the scene: it has to paint on this
   // canvas too, not only on peers reading the bytes from `customData.fileUrl`.
   await registerAgentImageFiles(context.api, [fileData]);
-  return drawnResult(elements);
+  return drawnResult(elements, context.frame);
 };
 
 /** Draws the primitives one freedraw stroke at a time, like a hand sketch. */
 const drawSvgStrokes = async (
   context: BoardContext,
   input: SvgDrawInput,
+  moved: readonly ExcalidrawElement[] = [],
 ): Promise<Record<string, unknown>> => {
   const bounds = boundsOfDrawing(input.strokes, input.texts);
   const placed = resolveSvgPlacement(context, input, {
@@ -812,8 +819,10 @@ const drawSvgStrokes = async (
     const tail = [...textElements, ...labelElements];
     // Stroke by stroke, so the room sees the drawing happening.
     for (const [strokeIndex, element] of strokeElements.entries()) {
+      // A moved anchor group travels with the first stroke, so the animation
+      // starts from the layout the drawing was measured against.
       if (
-        !commitAgentElements(context, [element], {
+        !commitAgentElements(context, [element, ...(strokeIndex === 0 ? moved : [])], {
           toolName: TOOL_NAME,
           record: false,
           // One save for the whole animation instead of one per stroke.
@@ -836,24 +845,28 @@ const drawSvgStrokes = async (
       return invalid('The whiteboard refused the write.');
     }
     const snapshot = context.controller.getSnapshot();
+    const existing = new Map(context.elements.map((element) => [element.id, element]));
     pushAgentAction({
       toolName: TOOL_NAME,
       createdAt: Date.now(),
       fileId: snapshot?.fileId,
       page: snapshot?.page,
       added: all,
-      replaced: [],
+      // Undo has to put a moved anchor group back where it was.
+      replaced: moved
+        .filter((element) => existing.has(element.id))
+        .map((after) => ({ before: existing.get(after.id)!, after })),
     });
     // Intermediate strokes carry no cue, so the finished drawing gets one pass
     // of the laser before the pointer retracts.
     traceElementsWithLaser(context, all);
-    return drawnResult(all);
+    return drawnResult(all, context.frame);
   }
 
-  if (!commitAgentElements(context, all, { toolName: TOOL_NAME })) {
+  if (!commitAgentElements(context, [...all, ...moved], { toolName: TOOL_NAME })) {
     return invalid('The whiteboard refused the write.');
   }
-  return drawnResult(all);
+  return drawnResult(all, context.frame);
 };
 
 /**
@@ -879,6 +892,16 @@ export const executeWhiteboardDrawFreehandSvgTool = async (
     return invalid(lookup.error);
   }
   const context = lookup.board;
+  // An anchor group centred on the page is moved to the edge when the drawing
+  // needs the room beside it, so both blocks share one row.
+  const shift = rebalanceAnchorForSideBySide(
+    context,
+    readLayout(args.layout),
+    args.anchor_element_id,
+    MIN_SIDE_STRIP,
+  );
+  const board: BoardContext = shift ? { ...context, elements: shift.elements } : context;
+  const moved = shift?.changes ?? [];
 
   const requestedWidth = Number(args.stroke_width);
   const input: SvgDrawInput = {
@@ -898,7 +921,7 @@ export const executeWhiteboardDrawFreehandSvgTool = async (
     // A picture keeps every curve, fill and text of the markup, so it is the
     // default for illustrations. Without an API there is no way to register the
     // file, and the strokes below are the only fallback.
-    const drawn = await insertSvgImage(context, input);
+    const drawn = await insertSvgImage(board, input, moved);
     if (drawn) {
       return drawn;
     }
@@ -909,5 +932,5 @@ export const executeWhiteboardDrawFreehandSvgTool = async (
       'svg must contain at least one path, line, polyline, polygon, circle, ellipse, rect or text for a stroke drawing.',
     );
   }
-  return drawSvgStrokes(context, input);
+  return drawSvgStrokes(board, input, moved);
 };

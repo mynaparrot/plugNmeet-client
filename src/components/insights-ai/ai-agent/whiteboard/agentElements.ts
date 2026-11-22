@@ -9,7 +9,22 @@ import { getWhiteboardExcalidrawAPI } from '../../../whiteboard/helpers/liveScen
 import { traceElementsWithLaser } from './agentLaser';
 import { pushAgentAction } from './agentHistory';
 import { ensureWhiteboardSurface, whiteboardEnabled } from './boardSession';
-import { getBoardFrame, toBBox, unionBBox, type BBox } from './layoutEngine';
+import {
+  BLOCK_GAP,
+  FRAME_PADDING,
+  MAX_A4_PAGES,
+  batchIdOf,
+  findComponentElements,
+  getBoardFrame,
+  maxA4ContentWidth,
+  sameBox,
+  sceneBoxes,
+  toBBox,
+  unionBBox,
+  type BBox,
+  type LayoutMode,
+} from './layoutEngine';
+import { isAgentElement } from './sceneGraph';
 import { beginAgentWhiteboardTool, endAgentWhiteboardTool } from './useVisionSync';
 
 /** Palette names the tool schemas allow, mapped to Excalidraw colours. */
@@ -709,12 +724,113 @@ export const commitAgentElements = (
   return ok;
 };
 
-export type DrawnResult = { ok: true; elementIds: string[]; bbox: BBox };
+export type AnchorShift = {
+  /** The anchor group's box after the move. */
+  anchor: BBox;
+  /** The page as it will look once the group has moved, for collision checks. */
+  elements: ExcalidrawElement[];
+  /** Only the elements that actually moved, to commit with the new content. */
+  changes: ExcalidrawElement[];
+};
 
-export const drawnResult = (elements: readonly ExcalidrawElement[]): DrawnResult => ({
-  ok: true,
-  elementIds: elements.map((element) => element.id),
-  bbox: unionBBox(elements.map(toBBox)),
-});
+/**
+ * A centred agent group leaves no room beside it, so a side-by-side placement
+ * would drop below the group instead of sitting next to it. Moving that lone
+ * group to the page edge first lets both groups share one row.
+ *
+ * `neededWidth` is the width the caller wants beside the group; nothing moves
+ * when the group is already against the edge, when another group shares its
+ * band, or when even the edge would not leave that much room.
+ */
+export const rebalanceAnchorForSideBySide = (
+  board: BoardContext,
+  layout: LayoutMode,
+  rawId: unknown,
+  neededWidth: number,
+): AnchorShift | null => {
+  const toTheRight = layout === 'right_of_element';
+  if (!toTheRight && layout !== 'left_of_element') {
+    return null;
+  }
+  const group = findComponentElements(board.elements, rawId);
+  if (group.length === 0) {
+    return null;
+  }
+
+  const byId = new Map(board.elements.map((element) => [element.id, element]));
+  // Only the agent's own work is moved: a participant's layout is theirs.
+  if (!group.every((element) => isAgentElement(element, byId))) {
+    return null;
+  }
+
+  const anchor = unionBBox(group.map(toBBox));
+  const frame = board.frame;
+  const minX = Math.round(frame.x + FRAME_PADDING);
+  const maxX = Math.round(frame.x + frame.width - FRAME_PADDING);
+  const targetX = toTheRight ? minX : maxX - anchor.width;
+  const stripWidth = (x: number) =>
+    toTheRight ? maxX - (x + anchor.width + BLOCK_GAP) : x - minX - BLOCK_GAP;
+
+  if (Math.abs(targetX - anchor.x) < 1 || stripWidth(anchor.x) >= neededWidth) {
+    return null;
+  }
+  if (stripWidth(targetX) < neededWidth) {
+    return null;
+  }
+  // Another group already lives where the anchor would move: it would collide.
+  const blocked = sceneBoxes(board.elements).some(
+    (box) =>
+      !sameBox(box, anchor) &&
+      box.y < anchor.y + anchor.height &&
+      box.y + box.height > anchor.y &&
+      (toTheRight ? box.x < anchor.x : box.x + box.width > anchor.x + anchor.width),
+  );
+  if (blocked) {
+    return null;
+  }
+
+  const dx = targetX - anchor.x;
+  const changes: ExcalidrawElement[] = [];
+  for (const element of group) {
+    // Copy on write: a live CRDT element is never mutated in place.
+    changes.push({ ...element, x: element.x + dx } as ExcalidrawElement);
+  }
+  const movedById = new Map(changes.map((element) => [element.id, element]));
+  return {
+    anchor: { ...anchor, x: targetX },
+    elements: board.elements.map((element) => movedById.get(element.id) ?? element),
+    changes,
+  };
+};
+
+export type DrawnResult = {
+  ok: true;
+  /** The batch of everything this call drew, so later calls can anchor to it. */
+  groupId?: string;
+  /** The first element drawn, usable as `anchor_element_id` by later calls. */
+  anchorElementId?: string;
+  elementIds: string[];
+  bbox: BBox;
+  pageBounds: BBox;
+};
+
+export const drawnResult = (elements: readonly ExcalidrawElement[], frame?: BBox): DrawnResult => {
+  const page = frame ?? getBoardFrame(elements);
+  const groupId = elements[0] ? batchIdOf(elements[0]) : null;
+  return {
+    ok: true,
+    ...(groupId ? { groupId } : {}),
+    ...(elements[0] ? { anchorElementId: elements[0].id } : {}),
+    elementIds: elements.map((element) => element.id),
+    bbox:
+      elements.length > 0 ? unionBBox(elements.map(toBBox)) : { x: 0, y: 0, width: 0, height: 0 },
+    pageBounds: {
+      x: page.x + FRAME_PADDING,
+      y: page.y + FRAME_PADDING,
+      width: maxA4ContentWidth(page),
+      height: page.height * MAX_A4_PAGES - FRAME_PADDING * 2,
+    },
+  };
+};
 
 export const invalid = (error: string): { ok: false; error: string } => ({ ok: false, error });

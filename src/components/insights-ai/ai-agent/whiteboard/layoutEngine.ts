@@ -12,10 +12,12 @@ import { A4_BOUNDARY_GUIDE_ID } from '../../../whiteboard/helpers/constants';
 export type BBox = { x: number; y: number; width: number; height: number };
 export type Size = { width: number; height: number };
 
-/** Gap between two stacked blocks. */
-export const BLOCK_GAP = 24;
+/** Gap between two blocks, generous enough to read as separate sections. */
+export const BLOCK_GAP = 48;
 /** Inset from the A4 guide, so nothing sits on the red line. */
 export const FRAME_PADDING = 40;
+/** Narrowest strip a block still reads well in beside an anchor group. */
+export const MIN_SIDE_STRIP = 260;
 /** Offset of the right-hand column from the frame's left edge. */
 export const RIGHT_COLUMN_X = 620;
 /** The board scrolls down three printable A4 pages, never more. */
@@ -90,7 +92,8 @@ export const unionBBox = (boxes: readonly BBox[]): BBox => {
 /** Elements drawn as one stroke between two points bind the shapes they join. */
 const LINEAR_TYPES: ReadonlySet<string> = new Set(['arrow', 'line']);
 
-const batchIdOf = (element: ExcalidrawElement): string | null => {
+/** The agent batch an element was drawn in, when it carries one. */
+export const batchIdOf = (element: ExcalidrawElement): string | null => {
   const batchId = (element.customData as { ai_agent?: { batchId?: unknown } } | undefined)?.ai_agent
     ?.batchId;
   return typeof batchId === 'string' && batchId ? batchId : null;
@@ -227,7 +230,7 @@ export const sceneBoxes = (
   elements: readonly ExcalidrawElement[],
   ungroupedElementId?: string,
 ): BBox[] => {
-  const live = elements.filter((el) => !el.isDeleted && el.id !== A4_BOUNDARY_GUIDE_ID);
+  const live = liveElements(elements);
   const components = connectedComponents(live);
   const ungroupedComponent = ungroupedElementId
     ? (components.find((component) =>
@@ -246,6 +249,47 @@ export const sceneBoxes = (
   return boxes;
 };
 
+const liveElements = (elements: readonly ExcalidrawElement[]): ExcalidrawElement[] =>
+  elements.filter((el) => !el.isDeleted && el.id !== A4_BOUNDARY_GUIDE_ID);
+
+/** One connected group of the page: a diagram, a table, a card group or a lone element. */
+export type SceneGroup = { elements: ExcalidrawElement[]; box: BBox; batchId: string | null };
+
+/** Every live group on the page, each one measured as a single block. */
+export const sceneGroups = (elements: readonly ExcalidrawElement[]): SceneGroup[] => {
+  const live = liveElements(elements);
+  return connectedComponents(live).map((component) => {
+    const group = component.map((index) => live[index]);
+    return {
+      elements: group,
+      box: unionBBox(group.map(toBBox)),
+      batchId: group.map(batchIdOf).find((id): id is string => !!id) ?? null,
+    };
+  });
+};
+
+/**
+ * The live group holding `rawId`, which may be an element id, a `batchId` or an
+ * Excalidraw `groupId`. A diagram, a table or a card group is one group, so
+ * anchoring to any part of it anchors to the whole block.
+ */
+export const findComponentElements = (
+  elements: readonly ExcalidrawElement[],
+  rawId?: unknown,
+): ExcalidrawElement[] => {
+  const id = typeof rawId === 'string' ? rawId.trim() : '';
+  if (!id) {
+    return [];
+  }
+  const group = sceneGroups(elements).find((entry) =>
+    entry.elements.some(
+      (element) =>
+        element.id === id || batchIdOf(element) === id || groupIdsOf(element).includes(id),
+    ),
+  );
+  return group?.elements ?? [];
+};
+
 const overlaps = (a: BBox, b: BBox, gap = BLOCK_GAP) =>
   a.x < b.x + b.width + gap &&
   a.x + a.width + gap > b.x &&
@@ -253,7 +297,7 @@ const overlaps = (a: BBox, b: BBox, gap = BLOCK_GAP) =>
   a.y + a.height + gap > b.y;
 
 /** Two boxes covering the same area: the anchor is already in the scene list. */
-const sameBox = (a: BBox, b: BBox) =>
+export const sameBox = (a: BBox, b: BBox) =>
   a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height;
 
 /** Collision search ignores the anchor a block is placed relative to. */
@@ -295,64 +339,35 @@ export const avoidCollisions = (
   return { x, y };
 };
 
-const uniqueSorted = (values: readonly number[]): number[] =>
-  [...new Set(values)].sort((a, b) => a - b);
+/**
+ * Top of a new section: below everything already on the page, never squeezed
+ * into the gap beside or between earlier topics.
+ */
+const nextSectionY = (boxes: readonly BBox[], frame: BBox): number => {
+  const minY = minFrameY(frame);
+  if (boxes.length === 0) {
+    return minY;
+  }
+  return Math.max(minY, ...boxes.map((box) => round(box.y + box.height + BLOCK_GAP)));
+};
 
 /**
- * First free spot of `size` in the frame, scanned row by row: the horizontal
- * space left of and beside existing content is used before stacking further
- * down, so a short gap on the right never gets skipped.
+ * Slot of a new unanchored section: the left margin of a fresh row below
+ * everything that is already there.
  */
-export const nextFreeSlot = (
-  boxes: readonly BBox[],
-  frame: BBox,
-  size: Size,
-): { x: number; y: number } => {
-  const minX = minFrameX(frame);
-  const maxX = maxFrameX(frame);
-  const minY = minFrameY(frame);
-
-  if (size.width <= maxX - minX) {
-    const ys = uniqueSorted(
-      [
-        minY,
-        ...boxes.flatMap((box) => [round(box.y), round(box.y + box.height + BLOCK_GAP)]),
-      ].filter((y) => y >= minY),
-    );
-    const xs = uniqueSorted(
-      [
-        minX,
-        ...boxes.flatMap((box) => [round(box.x), round(box.x + box.width + BLOCK_GAP)]),
-      ].filter((x) => x >= minX && x + size.width <= maxX),
-    );
-
-    for (const y of ys) {
-      for (const x of xs) {
-        const candidate = { x, y, width: size.width, height: size.height };
-        if (!boxes.some((box) => overlaps(candidate, box))) {
-          return { x, y };
-        }
-      }
-    }
-  }
-
-  // Too wide for the free space, or no gap large enough: keep stacking down.
-  return {
-    x: minX,
-    y: Math.max(minY, ...boxes.map((box) => round(box.y + box.height + BLOCK_GAP))),
-  };
-};
+export const nextFreeSlot = (boxes: readonly BBox[], frame: BBox): { x: number; y: number } => ({
+  x: minFrameX(frame),
+  y: nextSectionY(boxes, frame),
+});
 
 /** The horizontal centre a block of `size` has on the board. */
 const centeredX = (frame: BBox, size: Size): number =>
   round(frame.x + (frame.width - size.width) / 2);
 
 /**
- * Free slot for something people read as a drawing: a diagram, a table, a card.
- * Those start from the middle of the board and spread outwards, so a narrow
- * drawing sits centred and a wide one moves left until it touches the guide.
- * When the middle is taken, the free space on that row is used before stacking
- * down, and the space beside the blocker is tried before its far side.
+ * Slot of a new centred section: the middle of the board for something people
+ * read as a drawing (a diagram, a table, a card), but always on a fresh row
+ * below the content that is already there.
  */
 export const centeredFreeSlot = (
   boxes: readonly BBox[],
@@ -361,41 +376,8 @@ export const centeredFreeSlot = (
 ): { x: number; y: number } => {
   const minX = minFrameX(frame);
   const maxX = maxFrameX(frame);
-  const minY = minFrameY(frame);
   const x = Math.min(Math.max(centeredX(frame, size), minX), Math.max(minX, maxX - size.width));
-
-  if (size.width <= maxX - minX) {
-    const freeBottoms = boxes.map((box) => round(box.y + box.height + BLOCK_GAP));
-    const ys = uniqueSorted(
-      [minY, ...boxes.map((box) => round(box.y)), ...freeBottoms].filter((y) => y >= minY),
-    );
-    const xs = uniqueSorted(
-      [
-        minX,
-        ...boxes.flatMap((box) => [round(box.x), round(box.x + box.width + BLOCK_GAP)]),
-      ].filter((candidate) => candidate >= minX && candidate + size.width <= maxX),
-    );
-
-    for (const y of ys) {
-      const centred = { x, y, width: size.width, height: size.height };
-      if (!boxes.some((box) => overlaps(centred, box))) {
-        return { x, y };
-      }
-      // Right of the blocker first, so repeated drawings grow towards the right.
-      for (const candidateX of [...xs].sort((a, b) => b - a)) {
-        const candidate = { x: candidateX, y, width: size.width, height: size.height };
-        if (!boxes.some((box) => overlaps(candidate, box))) {
-          return { x: candidateX, y };
-        }
-      }
-    }
-  }
-
-  // Nothing free on a row: stack below everything, still centred.
-  return {
-    x,
-    y: Math.max(minY, ...boxes.map((box) => round(box.y + box.height + BLOCK_GAP))),
-  };
+  return { x, y: nextSectionY(boxes, frame) };
 };
 
 /** The right column is an offset inside the frame, never absolute scene x. */
@@ -493,11 +475,12 @@ export const readLayout = (raw: unknown): LayoutMode =>
   (LAYOUT_MODES as readonly string[]).includes(String(raw)) ? (raw as LayoutMode) : 'free_space';
 
 /**
- * The element a placement is anchored to, or `undefined`. Free space ignores the
- * anchor entirely, so the page is then measured with whole batches merged.
+ * The element whose own box the page is then measured against. Only a block
+ * drawn *inside* an anchor splits its group; every other layout keeps whole
+ * groups merged, so an anchored block never lands in a gap inside a diagram.
  */
 export const anchoredElementId = (layout: LayoutMode, rawId?: unknown): string | undefined => {
-  if (!ANCHORED_LAYOUTS.includes(layout)) {
+  if (layout !== 'inside_element') {
     return undefined;
   }
   const id = typeof rawId === 'string' ? rawId.trim() : '';
@@ -552,14 +535,15 @@ export const resolvePlacement = (
       frame,
     );
   }
-  if ((layout === 'below_element' || layout === 'right_of_element') && anchor) {
+  if (layout === 'below_element' && anchor) {
+    return clampToA4Bounds(avoidCollisions(freeBoxes, belowBox(anchor), size), size, frame);
+  }
+  if (layout === 'right_of_element' && anchor) {
     // Placing beside the anchor must not push the block over the A4 right edge.
-    const sideBySide = layout === 'right_of_element';
-    const start =
-      sideBySide && rightOfBox(anchor).x + size.width <= maxFrameX(frame)
-        ? rightOfBox(anchor)
-        : belowBox(anchor);
-    return clampToA4Bounds(avoidCollisions(freeBoxes, start, size), size, frame);
+    const beside = rightOfBox(anchor);
+    const start = beside.x + size.width <= maxFrameX(frame) ? beside : belowBox(anchor);
+    // Minor adjustments stay on the anchor's row before the block drops below.
+    return clampToA4Bounds(avoidCollisions(freeBoxes, start, size, maxFrameX(frame)), size, frame);
   }
   if (layout === 'page_center') {
     // The page centre is where a reader starts: horizontally centred, but at the
@@ -567,11 +551,9 @@ export const resolvePlacement = (
     return clampToA4Bounds(centeredFreeSlot(boxes, frame, size), size, frame);
   }
 
-  // Free space fills the page the participant is looking at, horizontally first:
-  // the free space right of existing content is used before stacking down.
-  const slot = options.centered
-    ? centeredFreeSlot(boxes, frame, size)
-    : nextFreeSlot(boxes, frame, size);
+  // A new unanchored block is its own section: below the content that is
+  // already there, filled from the left margin or centred on the page.
+  const slot = options.centered ? centeredFreeSlot(boxes, frame, size) : nextFreeSlot(boxes, frame);
   return clampToA4Bounds(slot, size, frame);
 };
 
@@ -638,17 +620,27 @@ export const resolveExplicitOrFreePlacement = (
   return resolvePlacement(boxes, frame, size, layout, anchor ?? undefined, options);
 };
 
-/** Bounding box of the element a placement is anchored to, when it exists. */
+/**
+ * Bounding box a placement is anchored to. Anchoring to any element, `batchId`
+ * or `groupId` of a diagram, table or card group anchors to that whole group;
+ * only `inside_element` measures the single element it was pointed at.
+ */
 export const findAnchorBox = (
   elements: readonly ExcalidrawElement[],
   rawId?: unknown,
+  layout: LayoutMode = 'free_space',
 ): BBox | null => {
   const id = typeof rawId === 'string' ? rawId.trim() : '';
   if (!id) {
     return null;
   }
-  const anchor = elements.find((element) => element.id === id && !element.isDeleted);
-  return anchor ? toBBox(anchor) : null;
+  const component = findComponentElements(elements, id);
+  if (component.length === 0) {
+    return null;
+  }
+  const single =
+    layout === 'inside_element' ? component.find((element) => element.id === id) : undefined;
+  return single ? toBBox(single) : unionBBox(component.map(toBBox));
 };
 
 /** Shrinks `size` only when the block has to sit inside its anchor. */

@@ -205,6 +205,7 @@ export const captureWhiteboardSnapshot = async (
 const sceneSummary = (element: SceneGraphElement) => ({
   id: element.id,
   type: element.type,
+  ...(element.group_id ? { group_id: element.group_id } : {}),
   text: element.text,
   x: element.x,
   y: element.y,
@@ -253,6 +254,8 @@ export const executeWhiteboardCaptureSnapshotTool = async (
     page_bounds: graph.page_bounds,
     ...(graph.viewport ? { viewport: graph.viewport } : {}),
     include_image: includeImage && result.imageBytes > 0,
+    // Each group is one block with one anchor: what a placement can point at.
+    groups: graph.groups ?? [],
     participant_elements: graph.elements
       .filter((element) => element.author === 'participant')
       .map(sceneSummary),

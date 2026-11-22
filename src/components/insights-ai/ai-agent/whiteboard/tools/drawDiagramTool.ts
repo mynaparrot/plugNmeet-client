@@ -12,11 +12,13 @@ import {
   formatWhiteboardText,
   invalid,
   measureText,
+  rebalanceAnchorForSideBySide,
   registerAgentImageFiles,
   toExcalidrawElements,
   type BoardContext,
 } from '../agentElements';
 import {
+  MIN_SIDE_STRIP,
   anchoredElementId,
   findAnchorBox,
   maxA4ContentWidth,
@@ -612,15 +614,24 @@ export const executeWhiteboardDrawDiagramTool = async (
   const scale = readScale(args.scale);
   const layout = readLayout(args.layout);
   const anchorId = anchoredElementId(layout, args.anchor_element_id);
-  const anchor = findAnchorBox(context.elements, args.anchor_element_id);
+  // An anchor group centred on the page is moved to the edge when the diagram
+  // needs the room beside it, so both blocks share one row.
+  const shift = rebalanceAnchorForSideBySide(
+    context,
+    layout,
+    args.anchor_element_id,
+    MIN_SIDE_STRIP,
+  );
+  const board: BoardContext = shift ? { ...context, elements: shift.elements } : context;
+  const anchor = shift?.anchor ?? findAnchorBox(board.elements, args.anchor_element_id, layout);
 
   const native = await parseWithMermaidLibrary(mermaid);
   if ('elements' in native) {
     const raw = unionBBox(native.elements.map(toBBox));
-    const effectiveScale = fitToA4Width(scale, raw.width * scale, context.frame);
+    const effectiveScale = fitToA4Width(scale, raw.width * scale, board.frame);
     const origin = resolveExplicitOrFreePlacement(
-      sceneBoxes(context.elements, anchorId),
-      context.frame,
+      sceneBoxes(board.elements, anchorId),
+      board.frame,
       {
         width: Math.max(Math.round(raw.width * effectiveScale), NODE_WIDTH),
         height: Math.max(Math.round(raw.height * effectiveScale), NODE_HEIGHT),
@@ -633,13 +644,17 @@ export const executeWhiteboardDrawDiagramTool = async (
     );
     const positioned = positionDiagram(native.elements, effectiveScale, origin);
 
-    if (!commitAgentElements(context, positioned, { toolName: TOOL_NAME })) {
+    if (
+      !commitAgentElements(context, [...positioned, ...(shift?.changes ?? [])], {
+        toolName: TOOL_NAME,
+      })
+    ) {
       return invalid('The whiteboard refused the write.');
     }
     // Diagram types rendered as a picture carry their bytes in the element, so
     // the image element has to be in the scene before its file is registered.
     await registerAgentImageFiles(context.api, native.files);
-    return drawnResult(positioned);
+    return drawnResult(positioned, board.frame);
   }
 
   const diagram = parseMermaidDiagram(mermaid);
@@ -651,7 +666,7 @@ export const executeWhiteboardDrawDiagramTool = async (
 
   const elements = await buildFlowchart(
     diagram,
-    context,
+    board,
     scale,
     args.x,
     args.y,
@@ -659,9 +674,13 @@ export const executeWhiteboardDrawDiagramTool = async (
     anchor,
     anchorId,
   );
-  if (!commitAgentElements(context, elements, { toolName: TOOL_NAME })) {
+  if (
+    !commitAgentElements(context, [...elements, ...(shift?.changes ?? [])], {
+      toolName: TOOL_NAME,
+    })
+  ) {
     return invalid('The whiteboard refused the write.');
   }
 
-  return drawnResult(elements);
+  return drawnResult(elements, board.frame);
 };
