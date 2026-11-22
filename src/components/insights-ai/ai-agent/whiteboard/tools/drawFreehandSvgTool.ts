@@ -27,6 +27,7 @@ import {
   anchoredElementId,
   findAnchorBox,
   fitInside,
+  maxA4ContentWidth,
   readLayout,
   resolveExplicitOrFreePlacement,
   sceneBoxes,
@@ -44,7 +45,9 @@ const CURVE_SAMPLES = 10;
 const STRAIGHT_SAMPLES = 5;
 const MAX_STROKES = 24;
 /** Longest edge of an inserted picture, unless the model asks for a size. */
-const DEFAULT_IMAGE_SIZE = 320;
+const DEFAULT_IMAGE_SIZE = 480;
+/** Longest edge of a chart or labeled diagram, so its text stays readable. */
+const DEFAULT_LABELED_IMAGE_SIZE = 760;
 /** Delay between animated strokes, so it reads as drawing rather than a flash. */
 const STROKE_DELAY_MS = 90;
 /** Fallback size of an SVG `<text>` that declares no `font-size`. */
@@ -441,13 +444,16 @@ const boundsOfDrawing = (strokes: Point[][], texts: readonly SvgText[]) => {
   return points.length > 0 ? boundsOf([points]) : { minX: 0, minY: 0, width: 0, height: 0 };
 };
 
-const clampSize = (value: unknown, fallback: number): number => {
+/** A requested size inside the canvas limits, or null when none was asked for. */
+const requestedSize = (value: unknown): number | null => {
   const num = Number(value);
   if (!Number.isFinite(num) || num <= 0) {
-    return fallback;
+    return null;
   }
   return Math.min(MAX_SIZE, Math.max(MIN_SIZE, Math.round(num)));
 };
+
+const clampSize = (value: unknown, fallback: number): number => requestedSize(value) ?? fallback;
 
 const SVG_TAG = /<svg\b[^>]*>/i;
 
@@ -456,6 +462,23 @@ const svgAttr = (tag: string, name: string): string => {
   const match = new RegExp(`\\s${name}\\s*=\\s*["']([^"']*)["']`, 'i').exec(tag);
   return match ? match[1] : '';
 };
+
+/** Pixel attribute value, or 0 for a missing one or a relative size like `100%`. */
+const pixelAttr = (tag: string, name: string): number => {
+  const num = Number(svgAttr(tag, name));
+  return Number.isFinite(num) && num > 0 ? num : 0;
+};
+
+/**
+ * Forces a numeric pixel size on the root `<svg>` tag. Browsers rasterizing a
+ * `data:` URL without one fall back to the intrinsic 300x150 box, which shows as
+ * a tiny or blurry picture once Excalidraw draws it on the canvas.
+ */
+const withPixelSize = (tag: string, width: number, height: number): string =>
+  tag
+    // `\s` keeps `stroke-width` and friends untouched.
+    .replace(/\s(?:width|height)\s*=\s*(?:"[^"]*"|'[^']*')/gi, '')
+    .replace(/\s*(\/?)>$/, ` width="${width}" height="${height}"$1>`);
 
 const toBase64 = (value: string): string => {
   let binary = '';
@@ -530,14 +553,16 @@ const formatSvgTextTags = (markup: string): string =>
 /**
  * Makes the markup a self-contained SVG document: bare primitives get a wrapper
  * with a viewBox and visible line defaults, and an `<svg>` root gets the missing
- * `xmlns`/`viewBox` so a browser can decode it from a data URL.
+ * `xmlns`/`viewBox` so a browser can decode it from a data URL, plus an explicit
+ * pixel `width`/`height`. `width`/`height` describe the natural coordinate box,
+ * `attrWidth`/`attrHeight` the on-screen size the `<svg>` tag itself asked for.
  */
 const toSvgDocument = (
   svg: string,
   strokes: Point[][],
   strokeColor: string,
   strokeWidth: number,
-): { markup: string; width: number; height: number } => {
+): { markup: string; width: number; height: number; attrWidth?: number; attrHeight?: number } => {
   const measured = strokes.length > 0 ? boundsOf(strokes) : null;
   const box =
     measured && measured.width > 0 && measured.height > 0
@@ -562,14 +587,19 @@ const toSvgDocument = (
   const tag = open[0];
   const viewBox = svgAttr(tag, 'viewBox');
   const declared = viewBox.split(/[\s,]+/).map(Number);
+  const attrWidth = pixelAttr(tag, 'width') || undefined;
+  const attrHeight = pixelAttr(tag, 'height') || undefined;
+  // The aspect ratio always comes from the viewBox, never from the screen size
+  // the tag declares: `<svg viewBox="0 0 1600 900" width="1000" height="600">`
+  // keeps its 16:9 ratio whatever size the picture is drawn at.
   const width =
     (declared.length === 4 && declared[2] > 0 ? declared[2] : 0) ||
-    Number(svgAttr(tag, 'width')) ||
+    attrWidth ||
     measured?.width ||
     DEFAULT_IMAGE_SIZE;
   const height =
     (declared.length === 4 && declared[3] > 0 ? declared[3] : 0) ||
-    Number(svgAttr(tag, 'height')) ||
+    attrHeight ||
     measured?.height ||
     DEFAULT_IMAGE_SIZE;
 
@@ -580,12 +610,14 @@ const toSvgDocument = (
   if (!viewBox) {
     missing.push(`viewBox="${box ?? `0 0 ${width} ${height}`}"`);
   }
-  const markup =
-    missing.length === 0
-      ? svg
-      : svg.replace(tag, tag.replace(/\s*(\/?)>$/, ` ${missing.join(' ')}$1>`));
+  // The declared size was read above, so replacing it here only affects how the
+  // browser rasterizes the document, never the size the picture is drawn at.
+  const sized = withPixelSize(tag, width, height);
+  const root =
+    missing.length === 0 ? sized : sized.replace(/\s*(\/?)>$/, ` ${missing.join(' ')}$1>`);
+  const markup = root === tag ? svg : svg.replace(tag, () => root);
 
-  return { markup: formatSvgTextTags(markup), width, height };
+  return { markup: formatSvgTextTags(markup), width, height, attrWidth, attrHeight };
 };
 
 /**
@@ -658,6 +690,61 @@ const resolveSvgPlacement = (
 };
 
 /**
+ * Size of the picture. A size the model asked for wins, then the width/height the
+ * `<svg>` tag declares, then a readable default: a chart with labels needs more
+ * room than a small illustration. The aspect ratio of the document never
+ * changes, and the picture always fits inside the A4 content width.
+ */
+const resolveSvgImageSize = (
+  context: BoardContext,
+  input: SvgDrawInput,
+  document: { width: number; height: number; attrWidth?: number; attrHeight?: number },
+): Size => {
+  const maxWidth = maxA4ContentWidth(context.frame);
+  const aspect = document.width > 0 && document.height > 0 ? document.width / document.height : 1;
+  const fromWidth = (width: number): Size => ({
+    width: Math.round(width),
+    height: Math.max(MIN_SIZE, Math.round(width / aspect)),
+  });
+  const fromHeight = (height: number): Size => ({
+    width: Math.max(MIN_SIZE, Math.round(height * aspect)),
+    height: Math.round(height),
+  });
+
+  const requestedWidth = requestedSize(input.args.width);
+  const requestedHeight = requestedSize(input.args.height);
+  const declaredWidth = requestedSize(document.attrWidth);
+  const declaredHeight = requestedSize(document.attrHeight);
+
+  let size: Size;
+  if (requestedWidth && requestedHeight) {
+    size = { width: requestedWidth, height: requestedHeight };
+  } else if (requestedWidth) {
+    size = fromWidth(requestedWidth);
+  } else if (requestedHeight) {
+    size = fromHeight(requestedHeight);
+  } else if (declaredWidth) {
+    size = fromWidth(declaredWidth);
+  } else if (declaredHeight) {
+    size = fromHeight(declaredHeight);
+  } else {
+    const baseEdge =
+      input.texts.length > 0 || Math.max(document.width, document.height) >= 600
+        ? DEFAULT_LABELED_IMAGE_SIZE
+        : DEFAULT_IMAGE_SIZE;
+    size = aspect >= 1 ? fromWidth(baseEdge) : fromHeight(baseEdge);
+  }
+
+  if (size.width > maxWidth) {
+    size = {
+      width: maxWidth,
+      height: Math.max(MIN_SIZE, Math.round((size.height * maxWidth) / size.width)),
+    };
+  }
+  return { width: Math.max(MIN_SIZE, size.width), height: Math.max(MIN_SIZE, size.height) };
+};
+
+/**
  * Inserts the markup as one crisp `image` element whose binary data travels
  * inside the element itself (`customData.fileUrl`), so peers render it without a
  * server upload. Returns null when this canvas cannot register a file.
@@ -672,17 +759,7 @@ const insertSvgImage = async (
   }
 
   const document = toSvgDocument(input.svg, input.strokes, input.strokeColor, input.strokeWidth);
-  const aspect = document.height > 0 ? document.width / document.height : 1;
-  const placed = resolveSvgPlacement(context, input, {
-    width: clampSize(
-      input.args.width,
-      aspect >= 1 ? DEFAULT_IMAGE_SIZE : Math.round(DEFAULT_IMAGE_SIZE * aspect),
-    ),
-    height: clampSize(
-      input.args.height,
-      aspect >= 1 ? Math.round(DEFAULT_IMAGE_SIZE / aspect) : DEFAULT_IMAGE_SIZE,
-    ),
-  });
+  const placed = resolveSvgPlacement(context, input, resolveSvgImageSize(context, input, document));
 
   const fileId = agentElementId();
   const dataURL = `data:image/svg+xml;base64,${toBase64(document.markup)}`;

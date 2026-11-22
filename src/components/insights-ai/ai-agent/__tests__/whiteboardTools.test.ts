@@ -2491,6 +2491,56 @@ describe('whiteboard_draw_freehand_svg', () => {
     expect(written.some((el) => el.type === 'freedraw')).toBe(false);
   });
 
+  it('draws at the size the <svg> tag declares instead of shrinking to the default', async () => {
+    const result = await executeWhiteboardDrawFreehandSvgTool({
+      svg:
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1000" height="600">' +
+        '<rect x="0" y="0" width="1600" height="900"/>' +
+        '<text x="600" y="80">Website Traffic Sources</text></svg>',
+      x: 100,
+      y: 200,
+    });
+
+    expect(result.ok).toBe(true);
+    const image = writtenElements().find((el) => el.type === 'image');
+    // The declared width wins, while the 16:9 viewBox keeps the ratio: 563 high.
+    expect(image).toMatchObject({ width: 1000, height: 563 });
+  });
+
+  it('replaces a percentage root size with real pixels, so the data URL rasterizes sharp', async () => {
+    const result = await executeWhiteboardDrawFreehandSvgTool({
+      svg:
+        '<svg viewBox="0 0 800 600" width="100%" height="100%">' +
+        '<rect x="0" y="0" width="800" height="600" fill="#fff"/></svg>',
+      x: 100,
+      y: 200,
+    });
+
+    expect(result.ok).toBe(true);
+    const image = writtenElements().find((el) => el.type === 'image');
+    const { fileUrl } = (image?.customData ?? {}) as { fileUrl?: string };
+    const decoded = decodeSvgDataUrl(String(fileUrl));
+    // A percentage or a missing size makes the browser fall back to 300x150.
+    expect(decoded).toMatch(/<svg[^>]*\swidth="800"/);
+    expect(decoded).toMatch(/<svg[^>]*\sheight="600"/);
+    expect(decoded).not.toContain('100%');
+  });
+
+  it('gives a chart with labels a readable default width', async () => {
+    const result = await executeWhiteboardDrawFreehandSvgTool({
+      svg:
+        '<svg viewBox="0 0 800 500"><rect x="0" y="0" width="800" height="500" fill="#fff"/>' +
+        '<text x="40" y="60">Revenue by quarter</text>' +
+        '<rect x="40" y="100" width="120" height="300"/></svg>',
+      x: 100,
+      y: 200,
+    });
+
+    expect(result.ok).toBe(true);
+    const image = writtenElements().find((el) => el.type === 'image');
+    expect(image).toMatchObject({ width: 760, height: 475 });
+  });
+
   it('scales an illustration to fit and centre inside the anchor element', async () => {
     board.scene = [
       element({ id: 'circle_1', type: 'ellipse', x: 300, y: 200, width: 240, height: 240 }),
