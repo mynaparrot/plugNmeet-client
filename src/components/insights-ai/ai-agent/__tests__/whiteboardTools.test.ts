@@ -239,6 +239,7 @@ import {
   fitInsideAnchor,
   getBoardFrame,
   maxA4ContentWidth,
+  resolveAnchoredLayout,
   resolveExplicitOrFreePlacement,
   resolvePlacement,
   rightColumnSlot,
@@ -938,6 +939,87 @@ describe('whiteboard_write_content', () => {
     expect(result.ok).toBe(false);
     expect(String(result.error)).toContain('missing');
     expect(board.controller.applyExternalElements).not.toHaveBeenCalled();
+  });
+
+  it('still refuses an anchor id that names nothing beside existing content', async () => {
+    board.scene = [element({ id: 'work', x: 100, y: 200 })];
+
+    const result = await executeWhiteboardWriteContentTool({
+      layout: 'right_of_element',
+      anchor_element_id: 'missing',
+      blocks: [{ text: 'note' }],
+    });
+
+    expect(result.ok).toBe(false);
+    expect(String(result.error)).toContain('missing');
+    expect(board.controller.applyExternalElements).not.toHaveBeenCalled();
+  });
+
+  it('anchors to the group drawn last when the anchor id is omitted or "last"', async () => {
+    const frame = getBoardFrame([]);
+    const placements: string[] = [];
+
+    for (const anchor of [undefined, 'last', 'latest']) {
+      board.scene = [];
+      board.controller.applyExternalElements.mockClear();
+
+      // Request 1: the diagram a follow-up will be placed beside.
+      const diagram = await executeWhiteboardDrawDiagramTool({
+        mermaid:
+          'flowchart TD\n  A[Power Source] --> B[Main Hub]\n  B --> C[Device 1]\n  B --> D[Device 2]',
+      });
+      expect(diagram.ok).toBe(true);
+      board.scene = writtenElements();
+      board.controller.applyExternalElements.mockClear();
+
+      // Request 2 names no group: "right of" means the one just drawn.
+      const result = await executeWhiteboardWriteContentTool({
+        style: 'sticky_note',
+        layout: 'right_of_element',
+        ...(anchor ? { anchor_element_id: anchor } : {}),
+        blocks: [{ text: 'Plan' }, { text: 'Draft' }],
+      });
+
+      expect(result.ok).toBe(true);
+      const written = lastWritten();
+      const diagramNow = written.filter((el) => agentBatchIdOf(el) === diagram.groupId);
+      const cards = written.filter(
+        (el) => agentBatchIdOf(el) === result.groupId && el.type === 'rectangle',
+      );
+      expect(cards).toHaveLength(2);
+
+      // The centred diagram moves to the left margin, so both groups share a row.
+      const box = unionOf(diagramNow);
+      expect(box.x).toBe(frame.x + FRAME_PADDING);
+      expect(Number(cards[0].x)).toBeGreaterThanOrEqual(box.right + BLOCK_GAP);
+      expect(Number(cards[0].y)).toBe(box.y);
+      for (const card of cards) {
+        // Beside the whole diagram on its row, never inside its hollow middle.
+        expect(Number(card.y)).toBeGreaterThanOrEqual(box.y);
+        expect(Number(card.y)).toBeLessThan(box.bottom);
+        expect(Number(card.x) + Number(card.width)).toBeLessThanOrEqual(
+          frame.x + frame.width - FRAME_PADDING,
+        );
+      }
+      placements.push(`${Number(cards[0].x)},${Number(cards[0].y)}`);
+    }
+
+    // Omitting the anchor, "last" and "latest" all land in the same spot.
+    expect(new Set(placements).size).toBe(1);
+  });
+
+  it('starts a fresh section when a relative layout has no anchor on an empty board', async () => {
+    const frame = getBoardFrame([]);
+
+    const result = await executeWhiteboardWriteContentTool({
+      layout: 'right_of_element',
+      blocks: [{ text: 'Plan' }],
+    });
+
+    expect(result.ok).toBe(true);
+    const [text] = lastWritten();
+    expect(Number(text.x)).toBe(frame.x + FRAME_PADDING);
+    expect(Number(text.y)).toBe(frame.y + FRAME_PADDING);
   });
 
   it('renders a bordered grid for a multi-column comparison table', async () => {
@@ -2104,6 +2186,46 @@ describe('sceneBoxes grouping', () => {
     expect(findAnchorBox(tree(), '')).toBeNull();
     expect(findAnchorBox(tree(), 'missing')).toBeNull();
   });
+
+  it('resolves "last", "latest" and an omitted anchor to the newest group', () => {
+    const agent = (batchId: string, createdAt: number) => ({
+      customData: { ai_agent: { sessionId: 's', toolName: 't', batchId, createdAt } },
+    });
+    // The newest group is committed first, so only its timestamp can pick it.
+    const scene = [
+      node('new-1', 0, 0, agent('new', 200)),
+      node('new-2', 200, 0, agent('new', 200)),
+      node('old-1', 0, 300, agent('old', 100)),
+      node('old-2', 200, 300, agent('old', 100)),
+    ];
+
+    for (const id of ['last', 'latest', '']) {
+      expect(findComponentElements(scene, id, 'right_of_element').map((el) => el.id)).toEqual([
+        'new-1',
+        'new-2',
+      ]);
+      expect(findAnchorBox(scene, id, 'below_element')).toEqual({
+        x: 0,
+        y: 0,
+        width: 380,
+        height: 72,
+      });
+    }
+    // Only a relative layout reads an unnamed anchor: nothing else has one.
+    expect(findComponentElements(scene, '', 'free_space')).toEqual([]);
+    expect(findAnchorBox(scene, '', 'free_space')).toBeNull();
+    // An empty board leaves nothing to sit beside: the layout degrades.
+    expect(resolveAnchoredLayout([], 'right_of_element', 'last')).toBe('free_space');
+    expect(resolveAnchoredLayout(scene, 'right_of_element', 'last')).toBe('right_of_element');
+  });
+
+  it('breaks a timestamp tie by the group committed last in the scene', () => {
+    const scene = [node('first', 0, 0), node('second', 0, 300)];
+
+    expect(findComponentElements(scene, 'last', 'right_of_element').map((el) => el.id)).toEqual([
+      'second',
+    ]);
+  });
 });
 
 describe('resolveContrastingStrokeColor', () => {
@@ -2773,6 +2895,43 @@ describe('whiteboard_draw_diagram', () => {
     const below = second.bbox as { x: number; y: number };
     // A different topic is its own section: below the first diagram, with a gap.
     expect(below.y).toBeGreaterThanOrEqual(before.y + before.height + BLOCK_GAP);
+  });
+
+  it('draws the next diagram beside the group written last when no anchor is named', async () => {
+    const frame = getBoardFrame([]);
+    const notes = await executeWhiteboardWriteContentTool({
+      style: 'sticky_note',
+      blocks: [{ text: 'Plan' }],
+    });
+    expect(notes.ok).toBe(true);
+    board.scene = writtenElements();
+    board.controller.applyExternalElements.mockClear();
+
+    // No anchor_element_id: "right of" means the group request 1 just wrote.
+    const diagram = await executeWhiteboardDrawDiagramTool({
+      mermaid: 'flowchart TD\n  A[One] --> B[Two]',
+      layout: 'right_of_element',
+    });
+    expect(diagram.ok).toBe(true);
+
+    const noteBox = unionOf(
+      (board.scene as unknown as FakeElement[]).filter(
+        (el) => agentBatchIdOf(el) === notes.groupId,
+      ),
+    );
+    const nodes = lastWritten().filter(
+      (el) => agentBatchIdOf(el) === diagram.groupId && el.type === 'rectangle',
+    );
+    expect(nodes.length).toBeGreaterThan(0);
+
+    // Beside the block the previous request drew, sharing its top edge.
+    for (const node of nodes) {
+      expect(Number(node.x)).toBeGreaterThanOrEqual(noteBox.right + BLOCK_GAP);
+      expect(Number(node.x) + Number(node.width)).toBeLessThanOrEqual(
+        frame.x + frame.width - FRAME_PADDING,
+      );
+    }
+    expect(Math.min(...nodes.map((el) => Number(el.y)))).toBe(noteBox.y);
   });
 
   it('places a shape beside the whole diagram, never in its hollow top-right', async () => {

@@ -752,7 +752,8 @@ export const rebalanceAnchorForSideBySide = (
   if (!toTheRight && layout !== 'left_of_element') {
     return null;
   }
-  const group = findComponentElements(board.elements, rawId);
+  // An omitted or "last" anchor moves the group drawn most recently.
+  const group = findComponentElements(board.elements, rawId, layout);
   if (group.length === 0) {
     return null;
   }

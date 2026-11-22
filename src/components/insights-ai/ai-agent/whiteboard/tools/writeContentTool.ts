@@ -29,8 +29,10 @@ import {
   findComponentElements,
   maxA4ContentWidth,
   readLayout,
+  resolveAnchoredLayout,
   resolveExplicitOrFreePlacement,
   sceneBoxes,
+  type LayoutMode,
   type Size,
 } from '../layoutEngine';
 import { isAgentElement } from '../sceneGraph';
@@ -163,9 +165,13 @@ const readBlocks = (raw: unknown, tableStyle: boolean): Block[] | null => {
 };
 
 /** The anchor element itself, or the first element of the group it names. */
-const findAnchor = (board: BoardContext, id: string): ExcalidrawElement | undefined =>
+const findAnchor = (
+  board: BoardContext,
+  id: string,
+  layout: LayoutMode,
+): ExcalidrawElement | undefined =>
   board.elements.find((element) => element.id === id) ??
-  findComponentElements(board.elements, id)[0];
+  findComponentElements(board.elements, id, layout)[0];
 
 /** A grid row: any block carrying cells, plus single-cell rows of a table. */
 const isTableRow = (block: Block, style: string): boolean => {
@@ -592,7 +598,7 @@ export const executeWhiteboardWriteContentTool = async (
     );
   }
   let blocks: Block[] = read;
-  const layout = readLayout(args.layout);
+  const requestedLayout = readLayout(args.layout);
 
   const requestedFont = Number(args.font_size);
   const fontSize =
@@ -606,9 +612,14 @@ export const executeWhiteboardWriteContentTool = async (
   }
   const context = lookup.board;
 
+  // A relative layout with no anchor, or with "last"/"latest", is anchored to
+  // the group drawn most recently; on an empty board there is nothing to sit
+  // beside, so the block starts a fresh section instead of failing the call.
+  const layout = resolveAnchoredLayout(context.elements, requestedLayout, args.anchor_element_id);
   const anchorId = asString(args.anchor_element_id);
-  const anchorElement = anchorId ? findAnchor(context, anchorId) : undefined;
   const anchored = ANCHORED_LAYOUTS.includes(layout);
+  // An empty or "last" anchor is already resolved to the newest group.
+  const anchorElement = anchored ? findAnchor(context, anchorId, layout) : undefined;
   if (anchored && !anchorElement) {
     return invalid(`anchor_element_id "${anchorId}" was not found on this page.`);
   }

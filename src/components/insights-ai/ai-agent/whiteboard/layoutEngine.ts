@@ -268,15 +268,65 @@ export const sceneGroups = (elements: readonly ExcalidrawElement[]): SceneGroup[
   });
 };
 
+/** Anchor ids that mean "the group you drew last". */
+const LAST_ANCHOR_IDS: ReadonlySet<string> = new Set(['last', 'latest']);
+
+/**
+ * A relative layout that asked for the newest group instead of naming one: the
+ * anchor was omitted, left empty, or passed as `"last"` / `"latest"`.
+ */
+const wantsLastAnchor = (layout: LayoutMode, rawId?: unknown): boolean => {
+  if (layout === 'inside_element' || !ANCHORED_LAYOUTS.includes(layout)) {
+    return false;
+  }
+  const id = typeof rawId === 'string' ? rawId.trim().toLowerCase() : '';
+  return !id || LAST_ANCHOR_IDS.has(id);
+};
+
+const elementStamp = (element: ExcalidrawElement): number =>
+  (element.customData as { ai_agent?: { createdAt?: number } } | undefined)?.ai_agent?.createdAt ??
+  element.updated ??
+  0;
+
+/**
+ * The group drawn most recently: the component with the newest element
+ * timestamp, and for groups committed in the same millisecond the one placed
+ * last in the scene, because new work is appended after the old.
+ */
+const mostRecentGroup = (live: readonly ExcalidrawElement[]): ExcalidrawElement[] => {
+  let best: { group: ExcalidrawElement[]; stamp: number; last: number } | null = null;
+
+  for (const component of connectedComponents(live)) {
+    let stamp = 0;
+    for (const index of component) {
+      stamp = Math.max(stamp, elementStamp(live[index]));
+    }
+    const last = component[component.length - 1];
+    if (!best || stamp > best.stamp || (stamp === best.stamp && last > best.last)) {
+      best = { group: component.map((index) => live[index]), stamp, last };
+    }
+  }
+
+  return best?.group ?? [];
+};
+
 /**
  * The live group holding `rawId`, which may be an element id, a `batchId` or an
  * Excalidraw `groupId`. A diagram, a table or a card group is one group, so
  * anchoring to any part of it anchors to the whole block.
+ *
+ * For a relative layout, `"last"` / `"latest"` or an omitted id resolves to the
+ * group drawn most recently, so a follow-up request can be placed beside the
+ * block the previous request drew without naming it.
  */
 export const findComponentElements = (
   elements: readonly ExcalidrawElement[],
   rawId?: unknown,
+  layout: LayoutMode = 'free_space',
 ): ExcalidrawElement[] => {
+  if (wantsLastAnchor(layout, rawId)) {
+    return mostRecentGroup(liveElements(elements));
+  }
   const id = typeof rawId === 'string' ? rawId.trim() : '';
   if (!id) {
     return [];
@@ -630,18 +680,29 @@ export const findAnchorBox = (
   rawId?: unknown,
   layout: LayoutMode = 'free_space',
 ): BBox | null => {
-  const id = typeof rawId === 'string' ? rawId.trim() : '';
-  if (!id) {
-    return null;
-  }
-  const component = findComponentElements(elements, id);
+  const component = findComponentElements(elements, rawId, layout);
   if (component.length === 0) {
     return null;
   }
+  const id = typeof rawId === 'string' ? rawId.trim() : '';
   const single =
     layout === 'inside_element' ? component.find((element) => element.id === id) : undefined;
   return single ? toBBox(single) : unionBBox(component.map(toBBox));
 };
+
+/**
+ * The layout a call actually uses. A relative layout whose anchor was omitted or
+ * `"last"` has nothing to sit beside on an empty board, so it starts a fresh
+ * section instead of failing the call.
+ */
+export const resolveAnchoredLayout = (
+  elements: readonly ExcalidrawElement[],
+  layout: LayoutMode,
+  rawId?: unknown,
+): LayoutMode =>
+  wantsLastAnchor(layout, rawId) && findComponentElements(elements, rawId, layout).length === 0
+    ? 'free_space'
+    : layout;
 
 /** Shrinks `size` only when the block has to sit inside its anchor. */
 export const fitInside = (size: Size, layout: LayoutMode, anchor: BBox | null): Size =>
