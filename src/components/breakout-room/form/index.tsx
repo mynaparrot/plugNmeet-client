@@ -13,7 +13,10 @@ import DndRoomBox from './dndRoomBox';
 import { store, useAppDispatch, useAppSelector } from '../../../store';
 import { RoomType, UserType } from './types';
 import { BreakoutRoomMessage } from '..';
-import { selectBasicParticipants } from '../../../store/slices/participantSlice';
+import {
+  participantsSelector,
+  selectBasicParticipants,
+} from '../../../store/slices/participantSlice';
 import useStorePreviousInt from '../../../helpers/hooks/useStorePreviousInt';
 import { updateBreakoutRoomDroppedUser } from '../../../store/slices/breakoutRoomSlice';
 import { buildWhiteboardShare, useWhiteboardShareState } from './useWhiteboardShareState';
@@ -133,6 +136,41 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
     );
   }, [totalRooms, preTotalRooms]);
 
+  // The learner's handoff summary from the join token's user metadata.
+  const getUserPreviousContext = useCallback(
+    (userId: string): string =>
+      participantsSelector
+        .selectById(store.getState(), userId)
+        ?.metadata?.previousSessionContext?.trim() ?? '',
+    [],
+  );
+
+  // Prefills each 1-on-1 room's context with its assigned learner's handoff summary.
+  // `assignedRoomId` is refreshed even if the teacher edited the box.
+  const syncRoomAiContexts = useCallback(
+    (nextUsers: Array<UserType>, assignedRoomId = 0) => {
+      setRoomAiContexts((prev) => {
+        let changed = false;
+        const next = { ...prev };
+        nextUsers.forEach((u) => {
+          if (u.roomId <= 0) return;
+          const hasContext = !!next[u.roomId]?.trim();
+          if (hasContext && u.roomId !== assignedRoomId) return;
+          const context = getUserPreviousContext(u.id);
+          if (next[u.roomId] === context) return;
+          changed = true;
+          if (context) {
+            next[u.roomId] = context;
+          } else {
+            delete next[u.roomId];
+          }
+        });
+        return changed ? next : prev;
+      });
+    },
+    [getUserPreviousContext],
+  );
+
   const toggleEnableAiAgent = (checked: boolean) => {
     setEnableAiAgent(checked);
     if (checked) {
@@ -140,17 +178,17 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
       setAllowSelfSelect(false);
       // Keep at most one user per room: extra users go back to the main room.
       const seenRooms = new Set<number>();
-      setUsers((prev) =>
-        prev.map((u) => {
-          if (u.roomId > 0) {
-            if (seenRooms.has(u.roomId)) {
-              return { ...u, roomId: 0 };
-            }
-            seenRooms.add(u.roomId);
+      const nextUsers = users.map((u) => {
+        if (u.roomId > 0) {
+          if (seenRooms.has(u.roomId)) {
+            return { ...u, roomId: 0 };
           }
-          return u;
-        }),
-      );
+          seenRooms.add(u.roomId);
+        }
+        return u;
+      });
+      setUsers(nextUsers);
+      syncRoomAiContexts(nextUsers);
     }
   };
 
@@ -194,6 +232,9 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
     });
 
     setUsers(newUsers);
+    if (enableAiAgent && droppedUser.roomId > 0) {
+      syncRoomAiContexts(newUsers, droppedUser.roomId);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [droppedUser]); // users/enableAiAgent are intentionally omitted
 
@@ -214,6 +255,7 @@ const FromElems = ({ createBreakoutRooms, isLoading, setMessage }: IFromElemsPro
         u.roomId = idx < tmpRooms.length ? tmpRooms[idx].id : 0;
       });
       setUsers(tmp);
+      syncRoomAiContexts(tmp);
       return;
     }
 

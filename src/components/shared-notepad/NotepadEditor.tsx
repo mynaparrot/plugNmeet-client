@@ -19,9 +19,7 @@ import { BlockNoteView } from '@blocknote/mantine';
 import { withCollaboration } from '@blocknote/core/yjs';
 import { filterSuggestionItems } from '@blocknote/core/extensions';
 
-// @ts-ignore
 import '@blocknote/core/fonts/inter.css';
-// @ts-ignore
 import '@blocknote/mantine/style.css';
 import './notepad.css';
 

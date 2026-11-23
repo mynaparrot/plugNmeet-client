@@ -804,9 +804,6 @@
         );
       }
 
-      const context = value('previous_session_context');
-      if (context) features.previous_session_context = context;
-
       const servers = mcpServers();
       if (Object.keys(servers).length) features.mcp_servers = servers;
 
@@ -876,11 +873,16 @@
       if (!name) throw new Error('Enter the participant name.');
       if (!userId) throw new Error('Enter the participant user ID.');
       if (!currentRoomId()) throw new Error('Enter a room id.');
-      return {
+      const userInfo = {
         is_admin: userType === 'admin',
         name,
         user_id: userId,
       };
+      const previousContext = value('previous_session_context');
+      if (previousContext) {
+        userInfo.user_metadata = { previous_session_context: previousContext };
+      }
+      return userInfo;
     }
 
     function humanDuration(seconds) {
@@ -904,8 +906,15 @@
       if (!$('preview')) return;
       updateSummary();
       try {
+        const room = buildRoomInfo();
+        let userInfo;
+        try {
+          userInfo = buildUserInfo();
+        } catch {
+          // the participant fields are not filled in yet
+        }
         previewEl.textContent = JSON.stringify(
-          { room_id: currentRoomId(), metadata: buildRoomInfo().metadata },
+          { room_id: room.room_id, user_info: userInfo, metadata: room.metadata },
           null,
           2,
         );

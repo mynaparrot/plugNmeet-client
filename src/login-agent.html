@@ -221,6 +221,11 @@
                 </div>
               </div>
             </div>
+            <div class="field" style="margin-top: 14px">
+              <label for="previous_session_context">Previous session context</label>
+              <textarea id="previous_session_context" rows="3" placeholder="Summary or continuation prompt from the last session"></textarea>
+              <p class="sub">Sent as <code>user_metadata.previous_session_context</code> on the join token.</p>
+            </div>
           </section>
 
           <section class="section">
@@ -546,14 +551,10 @@
           <details class="fold">
             <summary>
               <span class="step">10</span>
-              <span class="fold-title"><h3>Advanced</h3><span>Continuity and room lifecycle</span></span>
+              <span class="fold-title"><h3>Advanced</h3><span>Room lifecycle</span></span>
               <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6" /></svg>
             </summary>
             <div class="fold-body">
-              <div class="field">
-                <label for="previous_session_context">Previous session context</label>
-                <textarea id="previous_session_context" rows="3" placeholder="Summary or continuation prompt from the last session"></textarea>
-              </div>
               <label class="switch" style="margin-top: 12px">
                 <input type="checkbox" id="recreate_room" />
                 <span class="track"><span class="thumb"></span></span>
