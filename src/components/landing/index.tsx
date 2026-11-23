@@ -55,21 +55,28 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
 
   const hybrid = isHybridMode();
   const logo = useLogo();
-  // Read once at mount: either the deployment disabled the landing page, or we just
-  // switched rooms (breakout room / back to the main room) and must not show it again.
-  // AI agent session rooms skip it too, so participants land straight in the room.
-  // The recorder/RTMP bot must always get it: recorder waits for #startupJoinModal
-  // and clicks #listenOnlyJoin to join the room.
+  // Read once at mount. The recorder/RTMP bot and waiting-room users must always get the landing page;
+  // everyone else skips it when disabled, after a room switch, or in AI agent session rooms.
   const [skipLanding] = useState(() => {
+    // consumed unconditionally so a stale one-shot flag never leaks
+    const skipOnce = consumeSkipLandingOnce();
+
     const session = store.getState().session;
     if (session.currentUser?.isRecorder) {
       return false;
     }
 
     const metadata = session.currentRoom.metadata;
+    if (
+      metadata?.roomFeatures?.waitingRoomFeatures?.isActive ||
+      session.currentUser?.metadata?.waitForApproval
+    ) {
+      return false;
+    }
+
     return (
       getConfigValue<boolean>('disableLandingPage', false, 'DISABLE_LANDING_PAGE') ||
-      consumeSkipLandingOnce() ||
+      skipOnce ||
       isAIAgentSessionRoom(metadata) ||
       isAutoPerUserAISessionRoom(metadata)
     );
@@ -121,11 +128,9 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
     }
   }, [roomConnectionStatus, t, dispatch, setIsAppReady]);
 
-  // Connect straight away instead of waiting for the user to approve devices when
-  // the landing page is skipped (disabled by the deployment or a room switch).
-  // waitForApproval === true must keep the waiting room view instead.
+  // A skipped landing page connects straight away; waiting-room users are never skipped.
   useEffect(() => {
-    if (waitForApproval !== false || isReadyToConn || !skipLanding) {
+    if (!skipLanding || isReadyToConn || waitForApproval) {
       return;
     }
     setShowLoadingMsg(t('landing.connecting-media-server'));
@@ -202,9 +207,7 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
         ? t('landing.enable-cam-btn')
         : t('landing.enable-mic-btn');
 
-  // Never flash the device setup card when the landing page is skipped: render the
-  // plain loading page from the very first paint. The waiting room view (approval)
-  // must still be shown.
+  // Render the plain loading page from the first paint when skipping, but never hide the waiting-room view.
   if (skipLanding && !waitForApproval) {
     return <Loading text={showLoadingMsg ?? t('landing.connecting-media-server')} />;
   }

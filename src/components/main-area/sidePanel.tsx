@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useCallback, useState } from 'react';
 import { Transition } from '@headlessui/react';
 import {
   SIDE_PANEL_MAX_WIDTH,
@@ -22,6 +22,8 @@ interface SidePanelProps {
   isFloating?: boolean;
 }
 
+let rememberedIsExpanded = false;
+
 const SidePanel = ({
   isActive,
   anyPanelActive,
@@ -36,6 +38,23 @@ const SidePanel = ({
   unmount = true,
   isFloating = false,
 }: SidePanelProps) => {
+  const [isExpanded, setIsExpanded] = useState(rememberedIsExpanded);
+  const [prevIsActive, setPrevIsActive] = useState(isActive);
+
+  if (prevIsActive !== isActive) {
+    setPrevIsActive(isActive);
+    if (isActive && isExpanded !== rememberedIsExpanded) {
+      setIsExpanded(rememberedIsExpanded);
+    }
+  }
+
+  const toggleExpanded = useCallback(() => {
+    setIsExpanded((prev) => {
+      rememberedIsExpanded = !prev;
+      return rememberedIsExpanded;
+    });
+  }, []);
+
   // On panel switch the old panel closes instantly; a real close keeps the slide-out.
   const instantLeave = !isActive && anyPanelActive;
   const slide = isFloating || instantLeave ? '' : 'transform transition ease-in-out duration-300';
@@ -64,7 +83,9 @@ const SidePanel = ({
         className={
           isFloating
             ? `${panelClass} w-full absolute h-full z-10 top-0 left-0 pointer-events-none`
-            : `${panelClass} group/sidepanel bottom-0 absolute w-full ${APP_LAYOUT_CLASSES.sidePanel.width} end-0 ${APP_LAYOUT_CLASSES.sidePanel.mobileHeight} md:h-full`
+            : `${panelClass} group/sidepanel bottom-0 absolute w-full ${APP_LAYOUT_CLASSES.sidePanel.width} end-0 ${
+                isExpanded ? 'h-full z-40' : APP_LAYOUT_CLASSES.sidePanel.mobileHeight
+              } md:h-full transition-[height] duration-200 ease-in-out`
         }
         role="complementary"
         aria-label={ariaLabel}
@@ -109,6 +130,28 @@ const SidePanel = ({
               className="absolute top-0 bottom-0 start-1/2 w-[3px] -translate-x-1/2 rtl:translate-x-1/2 rounded bg-transparent transition-colors group-hover/sidepanel:bg-Gray-300 dark:group-hover/sidepanel:bg-Gray-700 focus-visible:bg-Blue2-500"
             />
           </div>
+        ) : null}
+        {!isFloating ? (
+          <button
+            type="button"
+            onClick={toggleExpanded}
+            aria-expanded={isExpanded}
+            aria-label={isExpanded ? 'Collapse panel' : 'Expand panel'}
+            className="md:hidden absolute top-1.5 start-1/2 ltr:-translate-x-1/2 rtl:translate-x-1/2 z-50 flex items-center justify-center w-8 h-6 rounded-full bg-Gray-100/90 dark:bg-Gray-800/90 border border-Gray-300 dark:border-Gray-700 text-Gray-700 dark:text-Gray-200 shadow-xs cursor-pointer focus-ring"
+          >
+            <svg
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+              className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+            >
+              <path d="M4 10l4-4 4 4" />
+            </svg>
+          </button>
         ) : null}
         {children}
       </div>

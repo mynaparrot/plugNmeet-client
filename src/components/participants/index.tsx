@@ -104,7 +104,7 @@ const ParticipantsComponent = () => {
   );
 
   return (
-    <div className="side-panel-bg-color relative z-10 w-full bg-Gray-25 dark:bg-dark-primary border-s border-Gray-200 dark:border-Gray-800 h-full">
+    <div className="side-panel-bg-color relative z-10 w-full bg-Gray-25 dark:bg-dark-primary border-s border-Gray-200 dark:border-Gray-800 h-full flex flex-col">
       <button
         ref={closeBtnRef}
         type="button"
@@ -114,8 +114,8 @@ const ParticipantsComponent = () => {
       >
         <CloseIconSVG />
       </button>
-      <div className="inner-wrapper relative z-20 w-full">
-        <div className="top flex items-center h-10 px-3 3xl:px-5">
+      <div className="inner-wrapper relative z-20 w-full flex flex-1 flex-col min-h-0">
+        <div className="top shrink-0 flex items-center h-10 px-3 3xl:px-5">
           <p className="min-w-0 truncate text-sm text-Gray-950 dark:text-white font-medium leading-tight">
             {t('left-panel.participants', {
               total: participants.length,
@@ -133,7 +133,7 @@ const ParticipantsComponent = () => {
             </button>
           )}
         </div>
-        <div className="search-participants-wrap h-[55px] flex items-center px-3 3xl:px-5 border-y border-Gray-200 dark:border-Gray-800">
+        <div className="search-participants-wrap shrink-0 h-[55px] flex items-center px-3 3xl:px-5 border-y border-Gray-200 dark:border-Gray-800">
           <div className="w-full relative">
             <div className="search-icon text-Gray-600 dark:text-white absolute top-1/2 -translate-y-1/2 start-3 3xl:start-4 pointer-events-none">
               <SearchIconSVG />
@@ -150,7 +150,7 @@ const ParticipantsComponent = () => {
           </div>
         </div>
 
-        <div ref={outerRef as any} className="scrollBar overflow-auto h-[calc(100vh-240px)]">
+        <div ref={outerRef as any} className="scrollBar overflow-auto flex-1 min-h-0">
           <ul
             className="all-participants-wrap px-2 xl:px-3 3xl:px-5 list-none"
             ref={innerRef as any}

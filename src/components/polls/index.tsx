@@ -14,7 +14,7 @@ const PollsComponent = () => {
   const isAdmin = store.getState().session.currentUser?.metadata?.isAdmin;
 
   return (
-    <div className="side-panel-bg-color relative z-10 w-full bg-Gray-25 dark:bg-dark-primary border-s border-Gray-200 dark:border-Gray-800 h-full">
+    <div className="side-panel-bg-color relative z-10 w-full bg-Gray-25 dark:bg-dark-primary border-s border-Gray-200 dark:border-Gray-800 h-full flex flex-col">
       <button
         type="button"
         aria-label={t('close').toString()}
@@ -23,8 +23,8 @@ const PollsComponent = () => {
       >
         <CloseIconSVG />
       </button>
-      <div className="inner-wrapper relative z-20 w-full">
-        <div className="top flex items-center h-10 3xl:h-14 px-3 3xl:px-5 border-b border-Gray-200 dark:border-Gray-800">
+      <div className="inner-wrapper relative z-20 w-full flex flex-1 flex-col min-h-0">
+        <div className="top shrink-0 flex items-center h-10 3xl:h-14 px-3 3xl:px-5 border-b border-Gray-200 dark:border-Gray-800">
           <p className="text-sm 3xl:text-base text-Gray-950 dark:text-white font-medium leading-tight">
             {t('polls.title')}
           </p>

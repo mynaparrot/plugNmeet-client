@@ -18,7 +18,7 @@ const PollsList = () => {
 
   return (
     <div
-      className="polls-list-wrapper relative overflow-auto scrollBar px-3 3xl:px-5 pt-2 xl:pt-3 h-[204px] md:h-[calc(100vh-220px)] 3xl:h-[calc(100vh-277px)]"
+      className="polls-list-wrapper relative flex-1 min-h-0 overflow-auto scrollBar px-3 3xl:px-5 pt-2 xl:pt-3"
       tabIndex={0}
       aria-label="Polls list"
     >
