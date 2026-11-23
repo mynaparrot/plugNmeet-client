@@ -116,25 +116,22 @@ const SharedNotePadIcon = () => {
     isActiveSharedNotePad && (!isSharedNotepadDocked || activeSidePanel === 'SHARED_NOTEPAD');
 
   const toggle = useCallback(() => {
-    // Docked: the icon only drives the side panel slot, never room-wide visibility.
-    if (isActiveSharedNotePad && isSharedNotepadDocked) {
-      if (activeSidePanel !== 'SHARED_NOTEPAD') {
+    // An AI-run workspace only drives the side panel slot: room-wide visibility stays with the agent.
+    if (isAiWorkspaceControlled) {
+      if (!isActiveSharedNotePad) {
+        dispatch(updateIsActiveSharedNotePad(true));
+      } else {
+        dispatch(setActiveSidePanel('SHARED_NOTEPAD'));
+      }
+      return;
+    }
+    // Docked, the pad shares the panel slot: reopen it, or let the click fall through
+    // to the room-wide visibility request when this user may close the pad.
+    if (isSharedNotepadDocked && isActiveSharedNotePad) {
+      if (activeSidePanel !== 'SHARED_NOTEPAD' || isPresenterPadInProgress) {
         dispatch(setActiveSidePanel('SHARED_NOTEPAD'));
         return;
       }
-      if (isAiWorkspaceControlled || isPresenterPadInProgress) {
-        dispatch(setActiveSidePanel(null));
-        return;
-      }
-    }
-    if (isAiWorkspaceControlled) {
-      dispatch(
-        addUserNotification({
-          message: t('ai-agent.notifications.workspace-controlled-by-ai'),
-          typeOption: 'warning',
-        }),
-      );
-      return;
     }
     if (isPresenterPadInProgress) {
       dispatch(
@@ -157,9 +154,8 @@ const SharedNotePadIcon = () => {
     t,
   ]);
 
-  const tooltipText = isAiWorkspaceControlled
-    ? t('ai-agent.notifications.workspace-controlled-by-ai')
-    : isPresenterPadInProgress
+  const tooltipText =
+    isPresenterPadInProgress && !isSharedNotepadDocked
       ? t('footer.notice.notepad-in-progress')
       : isNotepadShown
         ? t('footer.icons.hide-shared-notepad')
@@ -181,7 +177,7 @@ const SharedNotePadIcon = () => {
           } ${isNotepadShown ? 'bg-gray-100 dark:bg-Gray-700' : 'bg-white dark:bg-Gray-800'}`}
         >
           <span className="tooltip">{tooltipText}</span>
-          {(isAiWorkspaceControlled || isPresenterPadInProgress) && (
+          {isPresenterPadInProgress && !isSharedNotepadDocked && (
             <i
               aria-hidden="true"
               className="pnm-lock primaryColor absolute top-1 end-1 text-[10px]"

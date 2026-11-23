@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 
 import { store, useAppDispatch, useAppSelector } from '../../store';
 import {
+  setActiveSidePanel,
   updateIsActiveSharedNotePad,
   updateIsSharedNotepadDocked,
 } from '../../store/slices/bottomIconsActivitySlice';
@@ -83,8 +84,9 @@ const SharedNotepad = () => {
     );
   }, [isAiWorkspaceControlled, wasEditable, editable, dispatch, t]);
 
-  // While the agent (or a remote presenter) owns the pad, only they may close it.
-  const hideCloseButton = isAiWorkspaceControlled || (!isPresenter && isNotepadVisibleByPresenter);
+  // Docked, the close button only closes the side panel, like Chat and Participants.
+  // A floating pad opened by a remote presenter stays theirs to close.
+  const hideCloseButton = !isSharedNotepadDocked && !isPresenter && isNotepadVisibleByPresenter;
 
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
 
@@ -118,9 +120,24 @@ const SharedNotepad = () => {
     }
   }, [isActiveSharedNotePad]);
 
+  // Closing a pad this user may not close (agent-run, or a remote presenter's docked pad)
+  // only closes the local side panel; otherwise the close applies to the whole room.
   const minimizePad = useCallback(() => {
-    dispatch(updateIsActiveSharedNotePad(false));
-  }, [dispatch]);
+    if (
+      isAiWorkspaceControlled ||
+      (isSharedNotepadDocked && !isPresenter && isNotepadVisibleByPresenter)
+    ) {
+      dispatch(setActiveSidePanel(null));
+    } else {
+      dispatch(updateIsActiveSharedNotePad(false));
+    }
+  }, [
+    dispatch,
+    isAiWorkspaceControlled,
+    isSharedNotepadDocked,
+    isPresenter,
+    isNotepadVisibleByPresenter,
+  ]);
 
   const modeClass = (sidePanel: string, floating: string) =>
     isSharedNotepadDocked ? sidePanel : floating;
