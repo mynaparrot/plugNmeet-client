@@ -1273,6 +1273,11 @@
       "whiteboard-unlocked": "The AI Assistant unlocked the whiteboard — you can draw now.",
       "notepad-unlocked": "The AI Assistant unlocked the shared notepad — you can write now.",
       "waiting-for-session-slot": "All AI sessions are currently full. You are in the waiting room and will enter automatically as soon as a slot becomes available."
+    },
+    "waiting-queue": {
+      "position": "Your queue number: #{{position}} of {{total}}",
+      "expected-join_one": "Expected joining in ~{{count}} min",
+      "expected-join_other": "Expected joining in ~{{count}} mins"
     }
   }
 }

@@ -430,7 +430,7 @@ export default class HandleParticipants {
 
   private decodeMetadata(data: string): ICurrentUserMetadata {
     try {
-      return fromJsonString(UserMetadataSchema, data);
+      return fromJsonString(UserMetadataSchema, data, { ignoreUnknownFields: true });
     } catch (e) {
       console.error(e);
     }

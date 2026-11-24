@@ -93,6 +93,9 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
     (state) =>
       state.session.currentRoom.metadata?.roomFeatures?.waitingRoomFeatures?.waitingRoomMsg,
   );
+  const waitingQueueInfo = useAppSelector(
+    (state) => state.session.currentUser?.metadata?.waitingQueueInfo,
+  );
   const lockMicrophone = useAppSelector(
     (state) => state.session.currentUser?.metadata?.lockSettings?.lockMicrophone,
   );
@@ -123,6 +126,25 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
 
   // A queued AI session starts in the waiting room, so it never flashes the join prompt.
   const autoWaiting = !!waitForApproval && isAutoPerUserRoom;
+  const queuePosition = autoWaiting ? Number(waitingQueueInfo?.position ?? 0) : 0;
+  const queueTotalWaiting = Number(waitingQueueInfo?.totalWaiting ?? 0);
+  const queueTurnAt = Number(waitingQueueInfo?.estimatedTurnAt ?? 0);
+  const queueWaitSeconds = Number(waitingQueueInfo?.estimatedWaitSeconds ?? 0);
+  const [nowTs, setNowTs] = useState(() => Date.now());
+
+  // The server only pushes on change, so tick locally to keep the ETA counting down.
+  useEffect(() => {
+    if (queuePosition < 1) {
+      return;
+    }
+    const id = setInterval(() => setNowTs(Date.now()), 15000);
+    return () => clearInterval(id);
+  }, [queuePosition]);
+
+  const queueWaitMinutes = useMemo(() => {
+    const waitMs = queueTurnAt > 0 ? queueTurnAt - nowTs : queueWaitSeconds * 1000;
+    return Math.max(1, Math.ceil(waitMs / 60000));
+  }, [queueTurnAt, queueWaitSeconds, nowTs]);
   const [showLoadingMsg, setShowLoadingMsg] = useState<string | undefined>(() =>
     autoWaiting ? t('landing.waiting-for-approval-title') : undefined,
   );
@@ -229,32 +251,6 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
     return <Loading text={showLoadingMsg ?? t('landing.connecting-media-server')} />;
   }
 
-  // A queued AI session only needs the waiting message, not the device picker.
-  if (isStartup && autoWaiting) {
-    return (
-      <div
-        id="startupJoinModal"
-        role="dialog"
-        aria-modal="true"
-        aria-label={t('landing.waiting-for-approval-title')}
-        className="absolute w-full join-the-audio-popup bg-Gray-100 dark:bg-dark-primary min-h-full flex items-center justify-center p-5 scrollBar"
-      >
-        <div className="m-auto w-full max-w-lg bg-Gray-50 dark:bg-dark-secondary border border-Gray-300 dark:border-Gray-700 rounded-2xl p-6 sm:p-10 text-center">
-          <h3 className="font-bold text-lg sm:text-xl 3xl:text-2xl text-Gray-950 dark:text-white leading-snug pb-2 flex items-center justify-center gap-2">
-            <LoadingIcon
-              className={'inline h-5 w-5 text-Gray-200 animate-spin'}
-              fillColor={'#004D90'}
-            />
-            {t('landing.waiting-for-approval-title')}
-          </h3>
-          <p className="text-sm 3xl:text-base text-Gray-800 dark:text-white/90">
-            {waitingRoomMessage || t('ai-agent.notifications.waiting-for-session-slot')}
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     isStartup && (
       <div
@@ -273,7 +269,32 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
           </div>
           <div className="wrapper bg-Gray-50 dark:bg-dark-secondary  pt-4 sm:pt-8 3xl:pt-11 pb-4 sm:pb-10 3xl:pb-14 px-4 sm:px-8 3xl:px-12 flex flex-wrap">
             <div className="left relative z-20 bg-Gray-25 dark:bg-Gray-800 shadow-box1 border border-Gray-200 dark:border-Gray-700 p-2 w-full md:w-1/2 rounded-2xl mb-5 sm:mb-0">
-              {!isWebcamAllowed && !hybrid ? (
+              {autoWaiting ? (
+                // A queued AI session has no device of its own, so the stage shows the
+                // logo plus the queue status, mirroring the mic-only card below.
+                <div className="camera rounded-lg overflow-hidden w-full h-56 sm:h-72 3xl:h-80 bg-Gray-50 dark:bg-dark-secondary flex flex-col items-center justify-center gap-3 px-5 text-center">
+                  <img
+                    src={logo}
+                    alt="logo"
+                    className={`object-contain ${queuePosition > 0 ? 'max-w-[45%] max-h-[28%]' : 'max-w-[55%] max-h-[38%]'}`}
+                  />
+                  {queuePosition > 0 && (
+                    <>
+                      <div className="flex max-w-full items-center gap-2 rounded-full border border-Gray-200 dark:border-Gray-700 bg-white dark:bg-dark-secondary2 px-3.5 py-1.5 shadow-sm">
+                        <span className="truncate text-xs font-semibold text-Gray-800 dark:text-white">
+                          {t('ai-agent.waiting-queue.position', {
+                            position: queuePosition,
+                            total: queueTotalWaiting,
+                          })}
+                        </span>
+                      </div>
+                      <p className="max-w-[20rem] text-xs leading-relaxed text-Gray-600 dark:text-white/70 font-medium">
+                        {t('ai-agent.waiting-queue.expected-join', { count: queueWaitMinutes })}
+                      </p>
+                    </>
+                  )}
+                </div>
+              ) : !isWebcamAllowed && !hybrid ? (
                 // Mic-only room: keep the same stage height as the webcam view so
                 // both columns stay balanced, and surface the mic status here.
                 <div className="camera rounded-lg overflow-hidden w-full h-56 sm:h-72 3xl:h-80 bg-Gray-50 dark:bg-dark-secondary flex flex-col items-center justify-center gap-3 px-5 text-center">
@@ -323,7 +344,7 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
                 </div>
               )}
               <div className="micro-cam-wrap flex justify-center py-5 gap-5 empty:hidden">
-                {!hybrid && (
+                {!hybrid && !autoWaiting && (
                   <>
                     {lockMicrophone ? (
                       <div className="microphone-wrap relative cursor-not-allowed shadow-IconBox border border-Red-200 rounded-2xl h-11 w-11 flex items-center justify-center transition-all duration-300 text-Gray-950">
