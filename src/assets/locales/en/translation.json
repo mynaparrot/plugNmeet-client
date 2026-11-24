@@ -910,6 +910,10 @@
     "join-prompt-cam-locked": "The camera is disabled for this meeting. You can enable your microphone or join as a listener.",
     "join-prompt-both-locked": "The microphone and camera are disabled for this meeting. Please join as a listener.",
     "join-prompt-hybrid": "You're all set! You can manage your camera and microphone once you're in the meeting. Click 'Join' to get started.",
+    "audio-only-prompt": "Check your microphone below — you can change it anytime during the meeting.",
+    "audio-only-no-mic": "No microphone selected",
+    "audio-only-mic-locked": "Microphone disabled",
+    "audio-only-mic-locked-prompt": "Your microphone is disabled for this meeting. You can listen to the discussion.",
     "enable-mic-cam-btn": "Enable Microphone and Camera",
     "enable-mic-btn": "Enable Microphone",
     "enable-cam-btn": "Enable Camera",
@@ -1267,7 +1271,8 @@
     "notifications": {
       "workspace-controlled-by-ai": "The AI Assistant controls the whiteboard and shared notepad during this session. Ask the AI Assistant to open, close, or unlock them.",
       "whiteboard-unlocked": "The AI Assistant unlocked the whiteboard — you can draw now.",
-      "notepad-unlocked": "The AI Assistant unlocked the shared notepad — you can write now."
+      "notepad-unlocked": "The AI Assistant unlocked the shared notepad — you can write now.",
+      "waiting-for-session-slot": "All AI sessions are currently full. You are in the waiting room and will enter automatically as soon as a slot becomes available."
     }
   }
 }

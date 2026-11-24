@@ -23,6 +23,7 @@ import { showBrowserNotification } from './utils';
 const UserNotifications = () => {
   const { t } = useTranslation();
   const toastId = useRef<number | string>('toastId');
+  const activeToastId = useRef<number | string | undefined>(undefined);
   const dispatch = useAppDispatch();
   const userNotifications = useAppSelector((state) => state.roomSettings.userNotifications);
   const hasUnreadNotifications = useAppSelector(
@@ -40,6 +41,13 @@ const UserNotifications = () => {
     [userNotifications],
   );
 
+  const dismissToast = useCallback(() => {
+    if (activeToastId.current !== undefined) {
+      toast.dismiss(activeToastId.current);
+      activeToastId.current = undefined;
+    }
+  }, []);
+
   const displayToast = useCallback(
     (message: string | ReactElement, notification: UserNotification) => {
       // Modal notifications are presented by the alert dialog effect instead.
@@ -47,7 +55,7 @@ const UserNotifications = () => {
         return;
       }
 
-      toast(message, {
+      activeToastId.current = toast(message, {
         type: notification.typeOption,
         autoClose: notification.autoClose,
         toastId: notification.newInstance ? undefined : toastId.current,
@@ -73,10 +81,18 @@ const UserNotifications = () => {
 
     switch (lastNotif.notificationCat) {
       case 'new-poll-created':
-        toastElm = <NewPoll key={lastNotif.created} createdAt={lastNotif.created} />;
+        toastElm = (
+          <NewPoll key={lastNotif.created} createdAt={lastNotif.created} onClose={dismissToast} />
+        );
         break;
       case 'breakout-room-invitation':
-        toastElm = <NewBreakoutRoom key={lastNotif.created} createdAt={lastNotif.created} />;
+        toastElm = (
+          <NewBreakoutRoom
+            key={lastNotif.created}
+            createdAt={lastNotif.created}
+            onClose={dismissToast}
+          />
+        );
         break;
       default:
         toastElm = <GenericNotification key={lastNotif.created} notification={lastNotif} />;
@@ -190,13 +206,13 @@ const UserNotifications = () => {
                       case 'new-poll-created':
                         return (
                           <li key={notif.created}>
-                            <NewPoll createdAt={notif.created} onClosePopover={close} />
+                            <NewPoll createdAt={notif.created} onClose={close} />
                           </li>
                         );
                       case 'breakout-room-invitation':
                         return (
                           <li key={notif.created}>
-                            <NewBreakoutRoom createdAt={notif.created} onClosePopover={close} />
+                            <NewBreakoutRoom createdAt={notif.created} onClose={close} />
                           </li>
                         );
                       default:

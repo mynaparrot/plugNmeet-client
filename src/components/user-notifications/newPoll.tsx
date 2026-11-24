@@ -8,19 +8,17 @@ import ActionButton from '../../helpers/ui/actionButton';
 
 interface INewPollProps {
   createdAt: number | undefined;
-  onClosePopover?: () => void;
+  onClose?: () => void;
 }
 
-const NewPoll = ({ createdAt, onClosePopover }: INewPollProps) => {
+const NewPoll = ({ createdAt, onClose }: INewPollProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
   const openPollsPanel = useCallback(() => {
     dispatch(setActiveSidePanel('POLLS'));
-    if (onClosePopover) {
-      onClosePopover();
-    }
-  }, [dispatch, onClosePopover]);
+    onClose?.();
+  }, [dispatch, onClose]);
 
   const formatDate = (timeStamp?: number) => {
     const date = new Date(timeStamp ?? 0);

@@ -186,23 +186,28 @@ export default class HandleSystemData {
             // a duplicate event must not re-trigger.
             if (token && !this.hasHandledUserMoved) {
               this.hasHandledUserMoved = true;
-              // An empty/missing targetRoomId means moving to the main room.
-              const roomLabel = parsed.targetRoomId
-                ? parsed.title
-                : i18n.t('breakout-room.main-room');
-              store.dispatch(
-                addUserNotification({
-                  message: i18n.t('breakout-room.user-moved', {
-                    room: roomLabel,
-                  }),
-                  typeOption: 'info',
-                  autoClose: false,
-                }),
-              );
-              // Give the user a moment to read the notification before redirecting.
-              setTimeout(() => {
+              if (store.getState().session.currentUser?.metadata?.waitForApproval) {
+                // waiting-room users enter the new room immediately
                 window.location.replace(buildAccessTokenUrl(token));
-              }, 2000);
+              } else {
+                // An empty/missing targetRoomId means moving to the main room.
+                const roomLabel = parsed.targetRoomId
+                  ? parsed.title
+                  : i18n.t('breakout-room.main-room');
+                store.dispatch(
+                  addUserNotification({
+                    message: i18n.t('breakout-room.user-moved', {
+                      room: roomLabel,
+                    }),
+                    typeOption: 'info',
+                    autoClose: false,
+                  }),
+                );
+                // Give the user a moment to read the notification before redirecting.
+                setTimeout(() => {
+                  window.location.replace(buildAccessTokenUrl(token));
+                }, 2000);
+              }
             }
           } catch {
             // malformed payload — ignore

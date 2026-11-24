@@ -14,6 +14,7 @@ import { roomConnectionStatus } from '../app/helper';
 import { getNatsConn } from '../../helpers/nats';
 import { useMediaDevices } from './hooks/useMediaDevices';
 import { MicrophoneOff } from '../../assets/Icons/MicrophoneOff';
+import { Microphone } from '../../assets/Icons/Microphone';
 import { CameraOff } from '../../assets/Icons/CameraOff';
 import { LoadingIcon } from '../../assets/Icons/Loading';
 import { getConfigValue } from '../../helpers/utils';
@@ -83,6 +84,8 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
   });
 
   const isStartup = useAppSelector((state) => state.session.isStartup);
+  const roomMetadata = useAppSelector((state) => state.session.currentRoom.metadata);
+  const isAutoPerUserRoom = isAutoPerUserAISessionRoom(roomMetadata);
   const waitForApproval = useAppSelector(
     (state) => state.session.currentUser?.metadata?.waitForApproval,
   );
@@ -112,8 +115,20 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
     disableMic,
   } = useMediaDevices();
 
-  const [showLoadingMsg, setShowLoadingMsg] = useState<string | undefined>(undefined);
-  const [isReadyToConn, setIsReadyToConn] = useState<boolean | undefined>(undefined);
+  // Mic-only rooms show the picked mic name on the audio-only stage.
+  const selectedAudioLabel = useMemo(
+    () => audioDevices.find((device) => device.id === selectedAudioDevice)?.label,
+    [audioDevices, selectedAudioDevice],
+  );
+
+  // A queued AI session starts in the waiting room, so it never flashes the join prompt.
+  const autoWaiting = !!waitForApproval && isAutoPerUserRoom;
+  const [showLoadingMsg, setShowLoadingMsg] = useState<string | undefined>(() =>
+    autoWaiting ? t('landing.waiting-for-approval-title') : undefined,
+  );
+  const [isReadyToConn, setIsReadyToConn] = useState<boolean | undefined>(() =>
+    autoWaiting ? true : undefined,
+  );
 
   useEffect(() => {
     switch (roomConnectionStatus) {
@@ -137,21 +152,23 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
     setIsReadyToConn(true);
   }, [t, waitForApproval, isReadyToConn, skipLanding]);
 
+  // A queued AI session enters the waiting room on its own, without a join click.
   useEffect(() => {
-    if (waitForApproval) {
+    if (autoWaiting) {
+      setShowLoadingMsg(t('landing.waiting-for-approval-title'));
+      setIsReadyToConn(true);
+    } else if (waitForApproval) {
       if (typeof isReadyToConn !== 'undefined') {
         setShowLoadingMsg(t('landing.waiting-for-approval-title'));
       }
-    } else {
-      if (isReadyToConn) {
-        const conn = getNatsConn();
-        if (conn) {
-          setShowLoadingMsg(t('landing.connecting-media-server'));
-          void conn.requestMediaServerData();
-        }
+    } else if (isReadyToConn) {
+      const conn = getNatsConn();
+      if (conn) {
+        setShowLoadingMsg(t('landing.connecting-media-server'));
+        void conn.requestMediaServerData();
       }
     }
-  }, [t, waitForApproval, isReadyToConn]);
+  }, [t, waitForApproval, isReadyToConn, autoWaiting]);
 
   const openConn = useCallback(() => {
     if (!hybrid) {
@@ -212,6 +229,32 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
     return <Loading text={showLoadingMsg ?? t('landing.connecting-media-server')} />;
   }
 
+  // A queued AI session only needs the waiting message, not the device picker.
+  if (isStartup && autoWaiting) {
+    return (
+      <div
+        id="startupJoinModal"
+        role="dialog"
+        aria-modal="true"
+        aria-label={t('landing.waiting-for-approval-title')}
+        className="absolute w-full join-the-audio-popup bg-Gray-100 dark:bg-dark-primary min-h-full flex items-center justify-center p-5 scrollBar"
+      >
+        <div className="m-auto w-full max-w-lg bg-Gray-50 dark:bg-dark-secondary border border-Gray-300 dark:border-Gray-700 rounded-2xl p-6 sm:p-10 text-center">
+          <h3 className="font-bold text-lg sm:text-xl 3xl:text-2xl text-Gray-950 dark:text-white leading-snug pb-2 flex items-center justify-center gap-2">
+            <LoadingIcon
+              className={'inline h-5 w-5 text-Gray-200 animate-spin'}
+              fillColor={'#004D90'}
+            />
+            {t('landing.waiting-for-approval-title')}
+          </h3>
+          <p className="text-sm 3xl:text-base text-Gray-800 dark:text-white/90">
+            {waitingRoomMessage || t('ai-agent.notifications.waiting-for-session-slot')}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     isStartup && (
       <div
@@ -230,7 +273,34 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
           </div>
           <div className="wrapper bg-Gray-50 dark:bg-dark-secondary  pt-4 sm:pt-8 3xl:pt-11 pb-4 sm:pb-10 3xl:pb-14 px-4 sm:px-8 3xl:px-12 flex flex-wrap">
             <div className="left relative z-20 bg-Gray-25 dark:bg-Gray-800 shadow-box1 border border-Gray-200 dark:border-Gray-700 p-2 w-full md:w-1/2 rounded-2xl mb-5 sm:mb-0">
-              {(isWebcamAllowed || hybrid) && (
+              {!isWebcamAllowed && !hybrid ? (
+                // Mic-only room: keep the same stage height as the webcam view so
+                // both columns stay balanced, and surface the mic status here.
+                <div className="camera rounded-lg overflow-hidden w-full h-56 sm:h-72 3xl:h-80 bg-Gray-50 dark:bg-dark-secondary flex flex-col items-center justify-center gap-3 px-5 text-center">
+                  <img src={logo} alt="logo" className="max-w-[45%] max-h-[28%] object-contain" />
+                  <div className="flex max-w-full items-center gap-2 rounded-full border border-Gray-200 dark:border-Gray-700 bg-white dark:bg-dark-secondary2 px-3 py-1.5 shadow-sm">
+                    <span
+                      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${lockMicrophone ? 'bg-Red-50 text-Red-600' : 'bg-Blue2-50 text-Blue2-600 dark:text-white'}`}
+                    >
+                      {lockMicrophone ? (
+                        <MicrophoneOff classes="h-4 w-4" />
+                      ) : (
+                        <Microphone classes="h-4 w-auto" />
+                      )}
+                    </span>
+                    <span className="truncate text-xs font-semibold text-Gray-800 dark:text-white">
+                      {lockMicrophone
+                        ? t('landing.audio-only-mic-locked')
+                        : selectedAudioLabel || t('landing.audio-only-no-mic')}
+                    </span>
+                  </div>
+                  <p className="max-w-[20rem] text-xs leading-relaxed text-Gray-600 dark:text-white/70">
+                    {lockMicrophone
+                      ? t('landing.audio-only-mic-locked-prompt')
+                      : t('landing.audio-only-prompt')}
+                  </p>
+                </div>
+              ) : (
                 <div
                   className={`camera rounded-lg overflow-hidden w-full h-56 sm:h-72 3xl:h-80 ${hybrid ? 'bg-transparent' : 'bg-Gray-950'}`}
                 >
@@ -301,7 +371,12 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
                         {t('landing.waiting-for-approval-title')}
                       </h3>
                       <p className="text-sm 3xl:text-base text-Gray-800 dark:text-white/90 md:ps-7">
-                        {waitingRoomMessage || t('notifications.waiting-for-approval')}
+                        {waitingRoomMessage ||
+                          t(
+                            isAutoPerUserRoom
+                              ? 'ai-agent.notifications.waiting-for-session-slot'
+                              : 'notifications.waiting-for-approval',
+                          )}
                       </p>
                     </div>
                   ) : (

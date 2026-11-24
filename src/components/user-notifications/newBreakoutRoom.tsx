@@ -11,10 +11,10 @@ import { isAutoPerUserAISessionRoom } from '../../helpers/aiAgentSession';
 
 interface NewBreakoutRoomProps {
   createdAt?: number;
-  onClosePopover?: () => void;
+  onClose?: () => void;
 }
 
-const NewBreakoutRoom = ({ createdAt, onClosePopover }: NewBreakoutRoomProps) => {
+const NewBreakoutRoom = ({ createdAt, onClose }: NewBreakoutRoomProps) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
@@ -34,10 +34,8 @@ const NewBreakoutRoom = ({ createdAt, onClosePopover }: NewBreakoutRoomProps) =>
 
   const openBreakoutRoomsPanel = useCallback(() => {
     dispatch(setActiveSidePanel('BREAKOUT_ROOMS'));
-    if (onClosePopover) {
-      onClosePopover();
-    }
-  }, [dispatch, onClosePopover]);
+    onClose?.();
+  }, [dispatch, onClose]);
 
   const formatDate = (timeStamp?: number) => {
     const date = new Date(timeStamp ?? 0);

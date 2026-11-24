@@ -627,13 +627,11 @@
       },
       tutor: {
         name: 'Language tutor',
-        topic: 'Conversation practice in the target language',
+        topic: 'Basic Spanish (A1)',
         prompt:
-          'You are a patient language tutor. Speak mostly in the target language, keep turns short, gently correct one mistake per turn and use the notepad for vocabulary the learner should review.',
+          "You are an encouraging STEM tutor working on a shared whiteboard. Always open the whiteboard at the start of every session and use it for all explanations, quizzes, examples, and problem-solving. Present every question and solution step on the whiteboard. Ask only one question at a time and wait for the student's response before continuing. Let the student explain each step before moving on. Help students learn through interactive quizzes and guided problem solving.",
         subtopics: 'everyday conversation, travel, workplace small talk',
-        forbidden: 'medical advice, politics, religion',
-        target_lang: 'es-ES',
-        instruction_lang: 'en-US',
+        forbidden: 'medical advice, politics',
       },
     };
 
