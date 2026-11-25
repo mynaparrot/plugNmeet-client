@@ -265,6 +265,37 @@
                 <textarea id="forbidden_topics" rows="3" placeholder="e.g. medical advice, politics"></textarea>
               </div>
             </div>
+
+            <div class="grid grid-2" style="margin-top: 14px">
+              <div class="field" style="grid-column: 1 / -1">
+                <label>Mandatory activity rules</label>
+                <p class="sub">
+                  Minimum work the agent must complete during a session. Leave a count at 0 to skip
+                  that requirement.
+                </p>
+              </div>
+              <div class="field">
+                <label for="min_whiteboard_drawings">Min whiteboard drawings</label>
+                <input type="number" id="min_whiteboard_drawings" min="0" max="20" value="0" />
+              </div>
+              <div class="field">
+                <label for="min_quizzes">Min quizzes / polls</label>
+                <input type="number" id="min_quizzes" min="0" max="20" value="0" />
+              </div>
+              <div class="field">
+                <label for="min_notepad_entries">Min notepad entries</label>
+                <input type="number" id="min_notepad_entries" min="0" max="20" value="0" />
+              </div>
+              <div class="field">
+                <label for="min_participant_exercises">Min participant exercises</label>
+                <input type="number" id="min_participant_exercises" min="0" max="20" value="0" />
+              </div>
+              <div class="field" style="grid-column: 1 / -1">
+                <label for="required_milestones">Required milestones (one per line, in order)</label>
+                <textarea id="required_milestones" rows="3" placeholder="e.g. Warm-up review&#10;Guided example&#10;Independent exercise"></textarea>
+                <p class="sub">Up to 16 milestones, kept in the order entered.</p>
+              </div>
+            </div>
           </section>
 
           <section class="section">
@@ -311,6 +342,50 @@
                   <input type="range" id="speaking_rate" min="0.5" max="2" step="0.1" value="1" />
                   <output class="range-value" id="speaking_rate_value">1.0×</output>
                 </div>
+              </div>
+            </div>
+
+            <div class="switch-grid" style="margin-top: 12px">
+              <label class="switch">
+                <input type="checkbox" id="avatar_enabled" />
+                <span class="track"><span class="thumb"></span></span>
+                <span class="switch-text">Video avatar<small>Real-time avatar presence</small></span>
+              </label>
+            </div>
+
+            <div id="avatar-fields" class="grid grid-2" style="margin-top: 12px" hidden>
+              <div class="field">
+                <label for="avatar_provider">Avatar provider</label>
+                <select id="avatar_provider">
+                  <option value="">Server default</option>
+                  <option value="beyond_presence">Beyond Presence</option>
+                  <option value="anam">Anam</option>
+                  <option value="simli">Simli</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="avatar_id">Avatar ID</label>
+                <input type="text" id="avatar_id" placeholder="Server default avatar ID" />
+              </div>
+              <div class="field">
+                <label for="max_avatar_minutes">Avatar budget (minutes)</label>
+                <input type="number" id="max_avatar_minutes" min="0" max="240" value="0" />
+                <p class="sub">0 uses the session/server default. Maximum 240.</p>
+              </div>
+              <div class="field">
+                <label for="avatar_api_key">API key</label>
+                <input type="password" id="avatar_api_key" placeholder="Optional BYOK avatar API key" />
+                <p class="sub">Leave empty to use the server-configured provider key.</p>
+              </div>
+              <div class="field">
+                <label for="avatar_endpoint">Endpoint</label>
+                <input type="url" id="avatar_endpoint" placeholder="https://gateway.example.com" />
+                <p class="sub">Optional custom gateway base URL for the avatar provider.</p>
+              </div>
+              <div class="field">
+                <label for="avatar_auth_header">Auth header</label>
+                <input type="text" id="avatar_auth_header" placeholder="Provider default (e.g. x-api-key)" />
+                <p class="sub">Optional header name used to send the API key.</p>
               </div>
             </div>
           </section>

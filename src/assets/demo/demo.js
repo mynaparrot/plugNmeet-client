@@ -608,6 +608,12 @@
           'You are a product demo guide inside a plugNmeet room. Walk the visitor through the product in short, spoken steps, answer questions in 1-3 sentences, sketch flows on the whiteboard and use quick polls to confirm understanding.',
         subtopics: 'product overview, core workflows, pricing basics',
         forbidden: 'legal advice, competitor speculation',
+        rules: {
+          min_whiteboard_drawings: 2,
+          min_quizzes: 2,
+          min_participant_exercises: 1,
+          required_milestones: 'Product overview\nCore workflow walkthrough\nRecap & next steps',
+        },
       },
       support: {
         name: 'Support triage agent',
@@ -632,6 +638,13 @@
           "You are an encouraging STEM tutor working on a shared whiteboard. Always open the whiteboard at the start of every session and use it for all explanations, quizzes, examples, and problem-solving. Present every question and solution step on the whiteboard. Ask only one question at a time and wait for the student's response before continuing. Let the student explain each step before moving on. Help students learn through interactive quizzes and guided problem solving.",
         subtopics: 'everyday conversation, travel, workplace small talk',
         forbidden: 'medical advice, politics',
+        rules: {
+          min_whiteboard_drawings: 5,
+          min_quizzes: 3,
+          min_notepad_entries: 1,
+          min_participant_exercises: 4,
+          required_milestones: 'Warm-up review\nGuided example\nIndependent exercise\nRecap',
+        },
       },
     };
 
@@ -660,6 +673,11 @@
 
     function syncByok() {
       $('byok_fields').disabled = !$('byok_enabled').checked;
+      updatePreview();
+    }
+
+    function syncAvatar() {
+      $('avatar-fields').hidden = !$('avatar_enabled').checked;
       updatePreview();
     }
 
@@ -732,6 +750,40 @@
         if (v) provider[key] = v;
       }
       return provider;
+    }
+
+    function avatarConfig() {
+      if (!$('avatar_enabled').checked) return null;
+      const cfg = { is_enabled: true };
+      const provider = value('avatar_provider');
+      if (provider) cfg.provider = provider;
+      const avatarId = value('avatar_id');
+      if (avatarId) cfg.avatar_id = avatarId;
+      const maxMinutes = clamp(Math.round(number('max_avatar_minutes', 0)), 0, 240);
+      if (maxMinutes > 0) cfg.max_avatar_minutes = maxMinutes;
+      const apiKey = value('avatar_api_key');
+      if (apiKey) cfg.api_key = apiKey;
+      const endpoint = value('avatar_endpoint');
+      if (endpoint) cfg.endpoint = endpoint;
+      const authHeader = value('avatar_auth_header');
+      if (authHeader) cfg.auth_header = authHeader;
+      return cfg;
+    }
+
+    function activityRules() {
+      const rules = {};
+      for (const key of [
+        'min_whiteboard_drawings',
+        'min_quizzes',
+        'min_notepad_entries',
+        'min_participant_exercises',
+      ]) {
+        const count = clamp(Math.round(number(key, 0)), 0, 20);
+        if (count > 0) rules[key] = count;
+      }
+      const milestones = csv('required_milestones').slice(0, 16);
+      if (milestones.length) rules.required_milestones = milestones;
+      return Object.keys(rules).length ? rules : null;
     }
 
     function agentFeatures() {
@@ -807,6 +859,12 @@
 
       const provider = customProvider();
       if (provider) features.custom_provider = provider;
+
+      const avatar = avatarConfig();
+      if (avatar) features.avatar = avatar;
+
+      const rules = activityRules();
+      if (rules) features.activity_rules = rules;
 
       return features;
     }
@@ -995,6 +1053,7 @@
     syncRoomMode();
     syncWebFetch();
     syncByok();
+    syncAvatar();
     updatePreview();
 
     document.querySelectorAll('input[name="room_mode"]').forEach((input) => {
@@ -1005,6 +1064,7 @@
     });
     $('allow_web_fetch').addEventListener('change', syncWebFetch);
     $('byok_enabled').addEventListener('change', syncByok);
+    $('avatar_enabled').addEventListener('change', syncAvatar);
     $('speaking_rate').addEventListener('input', () => {
       syncSpeakingRate();
       schedulePreview();
@@ -1036,6 +1096,12 @@
         $('forbidden_topics').value = preset.forbidden || '';
         $('target_lang').value = preset.target_lang || '';
         $('instruction_lang').value = preset.instruction_lang || '';
+        const rules = preset.rules || {};
+        $('min_whiteboard_drawings').value = rules.min_whiteboard_drawings || 0;
+        $('min_quizzes').value = rules.min_quizzes || 0;
+        $('min_notepad_entries').value = rules.min_notepad_entries || 0;
+        $('min_participant_exercises').value = rules.min_participant_exercises || 0;
+        $('required_milestones').value = rules.required_milestones || '';
         $('hero-agent-name').textContent = preset.name;
         document.querySelectorAll('[data-preset]').forEach((b) => b.classList.remove('active'));
         btn.classList.add('active');
@@ -1124,6 +1190,7 @@
         syncRoomMode();
         syncWebFetch();
         syncByok();
+        syncAvatar();
         syncSpeakingRate();
         updatePreview();
       }, 0);
