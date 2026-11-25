@@ -62,10 +62,13 @@ const Header = () => {
           <div className="left md:relative z-20 flex flex-1 items-center gap-2 md:gap-2.5 lg:gap-5 justify-start">
             <HeaderLogo />
             <DarkThemeSwitcher />
-            <div className="max-md:absolute max-md:top-full max-md:start-3 max-md:mt-1.5 md:relative">
+            {/* Mobile: both pills share the same full-width origin under the header, matching
+                #main-area exactly so react-draggable's `bounds` math lines up; px-3 keeps the
+                default positions 12px off the edges. */}
+            <div className="max-md:absolute max-md:top-full max-md:inset-x-0 max-md:px-3 max-md:mt-1.5 max-md:pointer-events-none md:relative">
               <CountdownTimer />
             </div>
-            <div className="max-md:absolute max-md:top-full max-md:end-3 max-md:mt-1.5 md:relative">
+            <div className="max-md:absolute max-md:top-full max-md:inset-x-0 max-md:px-3 max-md:mt-1.5 max-md:pointer-events-none max-md:flex max-md:justify-end md:relative">
               <AIAgentStatusBar />
             </div>
           </div>

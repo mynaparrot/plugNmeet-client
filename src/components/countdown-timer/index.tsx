@@ -98,7 +98,7 @@ const CountdownTimer = () => {
       disabled={!isMobile}
       allowMobileScroll={true}
     >
-      <div ref={nodeRef} className="inline-block">
+      <div ref={nodeRef} className="inline-block max-md:pointer-events-auto">
         {badge}
       </div>
     </Draggable>

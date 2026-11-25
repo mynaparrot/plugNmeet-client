@@ -904,6 +904,7 @@
   "landing": {
     "connecting-media-server": "Connecting to the meeting...",
     "modal-title": "Microphone and Camera Preferences",
+    "waiting-room-title": "Waiting Room",
     "ready-to-join": "Ready to join?",
     "join-prompt": "Set up your devices now, or join as a listener. You can always control your microphone and camera later during the meeting.",
     "join-prompt-mic-locked": "The microphone is disabled for this meeting. You can enable your camera or join as a listener.",
@@ -1170,7 +1171,10 @@
       "invalid-path": "The file path is not valid.",
       "not-found": "The file could not be found.",
       "only-presenter": "Only the presenter can perform this task.",
-      "unexpected": "Something went wrong. Please try again."
+      "unexpected": "Something went wrong. Please try again.",
+      "upload-in-progress": "Another whiteboard file upload is already in progress for this room.",
+      "invalid-document-link": "The document link is not a valid URL.",
+      "conversion-failed": "The file could not be converted."
     },
     "notifications": {
       "conversion-started": "The file is being converted. It will be available in the whiteboard file list once it is ready."
@@ -1195,7 +1199,9 @@
       "user-not-found": "The user could not be found.",
       "room-id-not-allowed": "This room ID is not allowed.",
       "preassigned-limit": "Too many pre-assigned breakout rooms.",
-      "preassigned-user": "A user is pre-assigned to multiple breakout rooms."
+      "preassigned-user": "A user is pre-assigned to multiple breakout rooms.",
+      "no-online-user": "No user is online in the room.",
+      "no-online-admin": "No administrator is online in the room."
     }
   },
   "user": {
@@ -1224,7 +1230,18 @@
       "room-sid-required": "The room information is missing, so the recording task cannot be started.",
       "rtmp-url-required": "An RTMP URL is required to start RTMP streaming.",
       "invalid-rtmp-url": "Only rtmp and rtmps URLs are allowed.",
-      "operation-failed": "The recording request could not be completed. Please try again."
+      "operation-failed": "The recording request could not be completed. Please try again.",
+      "not-found": "The recording could not be found.",
+      "requested-not-found": "One or more of the requested recordings could not be found.",
+      "fetch-failed": "The recordings could not be fetched.",
+      "update-failed": "The recording could not be updated.",
+      "delete-failed": "The recording could not be deleted.",
+      "merge-failed": "The recordings could not be merged.",
+      "merge-in-progress": "A recording merge is already in progress for this room.",
+      "merge-min-recordings": "At least two recordings are required to merge.",
+      "download-token-failed": "The download link could not be created.",
+      "max-recorder-limit-reached": "The maximum number of concurrent recorder tasks has been reached.",
+      "max-storage-capacity-exceeded": "The maximum allowed storage capacity has been exceeded."
     }
   },
   "ai-agent": {
@@ -1265,8 +1282,10 @@
       "user-not-allowed": "You are not allowed to join this AI session.",
       "sessions-full": "All AI sessions are currently full. Please try again shortly.",
       "allowed-users-required": "At least one allowed participant ID is required for controlled AI sessions.",
+      "auto-gen-user-id-unsupported": "Auto-generated user IDs cannot be enabled for controlled AI sessions.",
       "workspace-controlled": "The AI Assistant controls the whiteboard and shared notepad during this session. Ask the AI Assistant to open, close, or unlock them.",
-      "generic": "Something went wrong. Please try again."
+      "generic": "Something went wrong. Please try again.",
+      "invalid-mcp-server": "An MCP server configuration is invalid or not allowed."
     },
     "notifications": {
       "workspace-controlled-by-ai": "The AI Assistant controls the whiteboard and shared notepad during this session. Ask the AI Assistant to open, close, or unlock them.",
@@ -1275,9 +1294,45 @@
       "waiting-for-session-slot": "All AI sessions are currently full. You are in the waiting room and will enter automatically as soon as a slot becomes available."
     },
     "waiting-queue": {
-      "position": "Your queue number: #{{position}} of {{total}}",
+      "position-label": "Your queue position",
+      "you-are-next": "You're next",
       "expected-join_one": "Expected joining in ~{{count}} min",
       "expected-join_other": "Expected joining in ~{{count}} mins"
+    }
+  },
+  "auth": {
+    "errors": {
+      "api-key-missing": "API key is missing",
+      "api-key-invalid": "API key is invalid",
+      "signature-missing": "Hash signature is missing",
+      "signature-invalid": "Hash signature could not be verified",
+      "room-id-header-missing": "Room-Id header is missing"
+    }
+  },
+  "artifact": {
+    "errors": {
+      "invalid-request": "Your artifact request could not be validated.",
+      "not-found": "The artifact could not be found.",
+      "fetch-failed": "The artifacts could not be fetched.",
+      "delete-failed": "The artifact could not be deleted.",
+      "not-downloadable": "This artifact type is not downloadable.",
+      "no-downloadable-file": "The artifact does not have a downloadable file.",
+      "delete-not-allowed": "Deleting this artifact type is not allowed.",
+      "download-token-failed": "The download link could not be created."
+    }
+  },
+  "analytics": {
+    "errors": {
+      "fetch-failed": "The analytics could not be fetched.",
+      "invalid-request": "Your analytics request could not be validated.",
+      "not-found": "The analytics file could not be found.",
+      "delete-failed": "The analytics file could not be deleted.",
+      "download-token-failed": "The download link could not be created."
+    }
+  },
+  "ingress": {
+    "errors": {
+      "not-allowed": "You are not allowed to create an ingress for this room."
     }
   }
 }

@@ -23,6 +23,7 @@ import { isAIAgentSessionRoom, isAutoPerUserAISessionRoom } from '../../helpers/
 
 import MicrophoneIcon from './microphone';
 import WebcamIcon from './webcam';
+import QueueStatus from './queueStatus';
 import WebcamPreview from '../footer/modals/webcam/webcamPreview';
 import Loading from '../extra-pages/Loading';
 import { isHybridMode } from '../../helpers/nativeBridge';
@@ -84,8 +85,9 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
   });
 
   const isStartup = useAppSelector((state) => state.session.isStartup);
-  const roomMetadata = useAppSelector((state) => state.session.currentRoom.metadata);
-  const isAutoPerUserRoom = isAutoPerUserAISessionRoom(roomMetadata);
+  const isAutoPerUserRoom = useAppSelector((state) =>
+    isAutoPerUserAISessionRoom(state.session.currentRoom.metadata),
+  );
   const waitForApproval = useAppSelector(
     (state) => state.session.currentUser?.metadata?.waitForApproval,
   );
@@ -93,8 +95,10 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
     (state) =>
       state.session.currentRoom.metadata?.roomFeatures?.waitingRoomFeatures?.waitingRoomMsg,
   );
-  const waitingQueueInfo = useAppSelector(
-    (state) => state.session.currentUser?.metadata?.waitingQueueInfo,
+  // Queue updates are handled inside QueueStatus; the parent only needs to know
+  // whether a queue position exists to size the logo and render the card.
+  const hasWaitingQueue = useAppSelector(
+    (state) => Number(state.session.currentUser?.metadata?.waitingQueueInfo?.position ?? 0) > 0,
   );
   const lockMicrophone = useAppSelector(
     (state) => state.session.currentUser?.metadata?.lockSettings?.lockMicrophone,
@@ -126,31 +130,13 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
 
   // A queued AI session starts in the waiting room, so it never flashes the join prompt.
   const autoWaiting = !!waitForApproval && isAutoPerUserRoom;
-  const queuePosition = autoWaiting ? Number(waitingQueueInfo?.position ?? 0) : 0;
-  const queueTotalWaiting = Number(waitingQueueInfo?.totalWaiting ?? 0);
-  const queueTurnAt = Number(waitingQueueInfo?.estimatedTurnAt ?? 0);
-  const queueWaitSeconds = Number(waitingQueueInfo?.estimatedWaitSeconds ?? 0);
-  const [nowTs, setNowTs] = useState(() => Date.now());
-
-  // The server only pushes on change, so tick locally to keep the ETA counting down.
-  useEffect(() => {
-    if (queuePosition < 1) {
-      return;
-    }
-    const id = setInterval(() => setNowTs(Date.now()), 15000);
-    return () => clearInterval(id);
-  }, [queuePosition]);
-
-  const queueWaitMinutes = useMemo(() => {
-    const waitMs = queueTurnAt > 0 ? queueTurnAt - nowTs : queueWaitSeconds * 1000;
-    return Math.max(1, Math.ceil(waitMs / 60000));
-  }, [queueTurnAt, queueWaitSeconds, nowTs]);
   const [showLoadingMsg, setShowLoadingMsg] = useState<string | undefined>(() =>
     autoWaiting ? t('landing.waiting-for-approval-title') : undefined,
   );
   const [isReadyToConn, setIsReadyToConn] = useState<boolean | undefined>(() =>
     autoWaiting ? true : undefined,
   );
+  const isWaitingView = !!waitForApproval && !!showLoadingMsg;
 
   useEffect(() => {
     switch (roomConnectionStatus) {
@@ -265,7 +251,7 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
             id="startup-modal-title"
             className="head bg-white dark:bg-dark-secondary  h-[50px] 3xl:h-[60px] px-3 sm:px-5 flex justify-center sm:justify-start text-center sm:text-start items-center text-Gray-950 dark:text-white text-sm sm:text-base 3xl:text-lg font-medium border-b border-Gray-200 dark:border-Gray-700"
           >
-            {t('landing.modal-title')}
+            {isWaitingView ? t('landing.waiting-room-title') : t('landing.modal-title')}
           </div>
           <div className="wrapper bg-Gray-50 dark:bg-dark-secondary  pt-4 sm:pt-8 3xl:pt-11 pb-4 sm:pb-10 3xl:pb-14 px-4 sm:px-8 3xl:px-12 flex flex-wrap">
             <div className="left relative z-20 bg-Gray-25 dark:bg-Gray-800 shadow-box1 border border-Gray-200 dark:border-Gray-700 p-2 w-full md:w-1/2 rounded-2xl mb-5 sm:mb-0">
@@ -276,23 +262,9 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
                   <img
                     src={logo}
                     alt="logo"
-                    className={`object-contain ${queuePosition > 0 ? 'max-w-[45%] max-h-[28%]' : 'max-w-[55%] max-h-[38%]'}`}
+                    className={`object-contain ${hasWaitingQueue ? 'max-w-[45%] max-h-[24%]' : 'max-w-[55%] max-h-[38%]'}`}
                   />
-                  {queuePosition > 0 && (
-                    <>
-                      <div className="flex max-w-full items-center gap-2 rounded-full border border-Gray-200 dark:border-Gray-700 bg-white dark:bg-dark-secondary2 px-3.5 py-1.5 shadow-sm">
-                        <span className="truncate text-xs font-semibold text-Gray-800 dark:text-white">
-                          {t('ai-agent.waiting-queue.position', {
-                            position: queuePosition,
-                            total: queueTotalWaiting,
-                          })}
-                        </span>
-                      </div>
-                      <p className="max-w-[20rem] text-xs leading-relaxed text-Gray-600 dark:text-white/70 font-medium">
-                        {t('ai-agent.waiting-queue.expected-join', { count: queueWaitMinutes })}
-                      </p>
-                    </>
-                  )}
+                  {hasWaitingQueue && <QueueStatus />}
                 </div>
               ) : !isWebcamAllowed && !hybrid ? (
                 // Mic-only room: keep the same stage height as the webcam view so
@@ -381,7 +353,12 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
             </div>
             <div className="right w-full md:w-1/2 md:ps-8 3xl:ps-16 sm:py-8 flex items-center">
               {showLoadingMsg ? (
-                <div className="inner waiting-room-contents relative md:-mt-10 w-full">
+                <div
+                  role="status"
+                  aria-live="polite"
+                  aria-atomic="true"
+                  className="inner waiting-room-contents relative md:-mt-10 w-full"
+                >
                   {waitForApproval ? (
                     <div className="texts text-center md:text-start">
                       <h3 className="font-bold text-lg md:text-xl 3xl:text-2xl text-Gray-950 dark:text-white leading-snug pb-2 flex items-center justify-center md:justify-start gap-2">
@@ -391,7 +368,7 @@ const Landing = ({ setIsAppReady, roomConnectionStatus }: StartupJoinModalProps)
                         />
                         {t('landing.waiting-for-approval-title')}
                       </h3>
-                      <p className="text-sm 3xl:text-base text-Gray-800 dark:text-white/90 md:ps-7">
+                      <p className="max-w-prose text-sm leading-relaxed 3xl:text-base text-Gray-800 dark:text-white/90 md:ps-7">
                         {waitingRoomMessage ||
                           t(
                             isAutoPerUserRoom

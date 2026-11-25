@@ -98,7 +98,12 @@ const AIAgentStatusBar = () => {
   const muteLabel = isLocalMuted ? t('ai-agent.unmute-locally') : t('ai-agent.mute-locally');
 
   const bar = (
-    <div className="ai-agent-status-bar flex items-center gap-1.5 h-8 ps-2.5 pe-1 rounded-[10px] bg-Gray-50 dark:bg-Gray-800 border border-Gray-200 dark:border-Gray-700 text-xs text-Gray-950 dark:text-white">
+    <div
+      className={clsx(
+        'ai-agent-status-bar flex items-center gap-1.5 h-8 ps-2.5 pe-1 rounded-[10px] bg-Gray-50 dark:bg-Gray-800 border border-Gray-200 dark:border-Gray-700 text-xs text-Gray-950 dark:text-white',
+        DRAG_HANDLE_CLASSES,
+      )}
+    >
       <span
         aria-hidden="true"
         className={clsx('w-2 h-2 rounded-full shrink-0', TONE_DOT_CLASSES[status.tone])}
@@ -106,10 +111,7 @@ const AIAgentStatusBar = () => {
       <Tooltip text={agentName} position="bottom">
         <span
           aria-label={agentName}
-          className={clsx(
-            'w-5 h-5 rounded-md bg-Blue/10 dark:bg-Blue/20 text-Blue dark:text-white inline-flex items-center justify-center shrink-0',
-            DRAG_HANDLE_CLASSES,
-          )}
+          className="w-5 h-5 rounded-md bg-Blue/10 dark:bg-Blue/20 text-Blue dark:text-white inline-flex items-center justify-center shrink-0"
         >
           <AiIconSVG classes="h-3.5 w-3.5" />
         </span>
@@ -117,10 +119,7 @@ const AIAgentStatusBar = () => {
       <span
         aria-live="polite"
         title={displayStatus}
-        className={clsx(
-          'max-w-24 sm:max-w-36 truncate text-Gray-600 dark:text-Gray-300',
-          DRAG_HANDLE_CLASSES,
-        )}
+        className="max-w-24 sm:max-w-36 truncate text-Gray-600 dark:text-Gray-300"
       >
         {displayStatus}
       </span>
@@ -171,9 +170,10 @@ const AIAgentStatusBar = () => {
       bounds="#main-area"
       disabled={!isMobile}
       handle=".ai-agent-drag-handle"
+      cancel="button"
       allowMobileScroll={true}
     >
-      <div ref={nodeRef} className="inline-block">
+      <div ref={nodeRef} className="inline-block max-md:pointer-events-auto">
         {bar}
       </div>
     </Draggable>
