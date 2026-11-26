@@ -2664,7 +2664,8 @@ describe('whiteboard_draw_freehand_svg', () => {
         '<rect x="10" y="10" width="50" height="40" fill="#fff" onload="alert(1)"' +
         ' onerror="alert(2)" onmouseover="alert(3)"/>' +
         '<a href="javascript:alert(1)" xlink:href="vbscript:msgbox(1)">' +
-        '<path d="M0 0 L30 30" stroke="#000" fill="none"/></a>' +
+        '<path d="M40 40 L60 60" stroke="#f00" fill="none"/></a>' +
+        '<path d="M0 0 L30 30" stroke="#000" fill="none"/>' +
         '<image href="data:text/html;base64,PHNjcmlwdD4=" width="10" height="10"/>' +
         '<rect x="0" y="0" width="5" height="5" style="fill:url(javascript:alert(1))"/>' +
         '</svg>',
@@ -2679,11 +2680,14 @@ describe('whiteboard_draw_freehand_svg', () => {
 
     expect(markup).not.toMatch(/<script|foreignObject|javascript:|vbscript:|data:text\/html/i);
     expect(markup).not.toMatch(/\son[a-z0-9_-]+\s*=/i);
+    expect(markup).not.toMatch(/<\/?a\b|<image\b/i);
 
     // The valid parts of the markup survive untouched.
     expect(markup).toContain('viewBox="0 0 100 100"');
     expect(markup).toContain('<rect x="10" y="10" width="50" height="40" fill="#fff"');
     expect(markup).toContain('<path d="M0 0 L30 30" stroke="#000" fill="none"/>');
+    // The anchor wrapper is gone, the shape it held is drawn.
+    expect(markup).toContain('<path d="M40 40 L60 60" stroke="#f00" fill="none"/>');
   });
 
   it('sanitizes markup without touching valid shapes and attributes', () => {
@@ -2691,8 +2695,8 @@ describe('whiteboard_draw_freehand_svg', () => {
       '<svg viewBox="0 0 10 10">' +
         '<SCRIPT type="text/javascript">alert(1)</SCRIPT>' +
         '<rect x="1" y="2" width="3" height="4" fill="#fff" onclick="steal()"/>' +
+        '<rect x="2" y="3" width="1" height="1" fill="url(#clean)"/>' +
         '<a xlink:href=" JaVaScRiPt&#58;alert(1)"/>' +
-        '<use href="#clean"/>' +
         '<style>.a{background:url(#clean)}</style>' +
         '</svg>',
     );
@@ -2700,8 +2704,76 @@ describe('whiteboard_draw_freehand_svg', () => {
     expect(svg).not.toMatch(/script|onclick|javascript/i);
     expect(svg).not.toMatch(/\son[a-z0-9_-]+\s*=/i);
     expect(svg).toContain('<rect x="1" y="2" width="3" height="4" fill="#fff"');
-    expect(svg).toContain('href="#clean"');
+    expect(svg).toContain('fill="url(#clean)"');
     expect(svg).toContain('background:url(#clean)');
+    // A self-closing anchor holds nothing and is unwrapped to nothing.
+    expect(svg).not.toMatch(/<\/?a\b/i);
+  });
+
+  it('unwraps anchors instead of deleting the shapes inside them', () => {
+    const svg = sanitizeSvgMarkup(
+      '<svg><a href="javascript:alert(1)" xlink:href="vbscript:msgbox(1)">' +
+        '<path d="M0 0 L30 30" stroke="#000" fill="none"/></a></svg>',
+    );
+
+    expect(svg).not.toMatch(/<\/?a\b/i);
+    expect(svg).not.toMatch(/javascript:|vbscript:/i);
+    expect(svg).toContain('<path d="M0 0 L30 30" stroke="#000" fill="none"/>');
+  });
+
+  it('keeps use references that point at a local id only', () => {
+    const svg = sanitizeSvgMarkup(
+      '<svg><defs><path id="clean" d="M0 0 L2 2"/></defs>' +
+        '<use href="#clean"/><use xlink:href="#clean"/>' +
+        '<use href="https://tracker.test/sprite.svg#icon"/></svg>',
+    );
+
+    expect(svg).toContain('<use href="#clean"/>');
+    expect(svg).toContain('<use xlink:href="#clean"/>');
+    expect(svg).not.toMatch(/tracker\.test/i);
+    // The remote reference loses its target, the tag itself draws nothing.
+    expect(svg).toContain('<use/>');
+  });
+
+  it('strips nested script tags that only fall apart in a later pass', () => {
+    const svg = sanitizeSvgMarkup(
+      '<svg><scr<script>ipt>alert(1)</scr</script>ipt>' +
+        '<script><script>alert(2)</script></script>' +
+        '<rect x="1" y="1" width="2" height="2"/></svg>',
+    );
+
+    expect(svg).not.toMatch(/script/i);
+    expect(svg).toContain('<rect x="1" y="1" width="2" height="2"/>');
+  });
+
+  it('drops animation and image elements that can point at another document', () => {
+    const svg = sanitizeSvgMarkup(
+      '<svg><animate attributeName="href" to="javascript:alert(1)"/>' +
+        '<animateMotion dur="1s"/><animateTransform attributeName="transform"/>' +
+        '<set attributeName="onmouseover" to="alert(1)"/>' +
+        '<image href="https://tracker.test/pixel.png" width="1" height="1"/>' +
+        '<use href="https://tracker.test/sprite.svg#icon"/>' +
+        '<rect x="1" y="1" width="2" height="2"/></svg>',
+    );
+
+    expect(svg).not.toMatch(/<(?:animate|animateMotion|animateTransform|set|image)\b/i);
+    expect(svg).not.toMatch(/tracker\.test/);
+    expect(svg).toContain('<rect x="1" y="1" width="2" height="2"/>');
+  });
+
+  it('keeps only same-document fragment URLs in urls and style blocks', () => {
+    const svg = sanitizeSvgMarkup(
+      '<svg><linearGradient id="g1"/>' +
+        '<rect x="1" y="1" width="2" height="2" fill="url(#g1)"' +
+        ' filter="url(https://tracker.test/f.svg#x)"/>' +
+        '<style>.a{fill:url(#g1)}@import url(https://tracker.test/x.css);' +
+        '.b{fill:url(https://tracker.test/y.svg)}</style></svg>',
+    );
+
+    expect(svg).toContain('fill="url(#g1)"');
+    expect(svg).toContain('.a{fill:url(#g1)}');
+    expect(svg).not.toMatch(/tracker\.test/i);
+    expect(svg).not.toMatch(/@import/i);
   });
 
   it('strips dangerous markup before sampling strokes as well', async () => {

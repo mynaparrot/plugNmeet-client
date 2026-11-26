@@ -488,28 +488,20 @@ const toBase64 = (value: string): string => {
   return btoa(binary);
 };
 
-/** Elements that can run code or navigate away, removed together with their contents. */
-const DANGEROUS_TAGS = [
-  'script',
-  'foreignObject',
-  'iframe',
-  'object',
-  'embed',
-  'applet',
-  'meta',
-  'link',
-];
+/**
+ * Elements that can run code or pull remote content, removed together with
+ * their contents.
+ */
+// oxfmt-ignore
+const DANGEROUS_TAGS = ['script', 'foreignObject', 'iframe', 'object', 'embed', 'applet', 'meta', 'link', 'base', 'image', 'feImage', 'audio', 'video', 'canvas', 'animate', 'animateMotion', 'animateTransform', 'set'];
 
 const EVENT_HANDLER = /\son[a-z0-9_-]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi;
 const URI_ATTRIBUTE = /\s(?:xlink:href|href|src)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/gi;
-const SCRIPT_URI = /(?:javascript|vbscript|data:text\/html)/i;
+/** A same-document fragment (`#id`) is the only URI a drawing may point at. */
+const FRAGMENT_URI = /^#[A-Za-z0-9_.:-]+$/;
 const CSS_URL = /\burl\s*\(\s*['"]?[^)]*['"]?\s*\)/gi;
-
-/** Drops whitespace and control characters, which browsers ignore inside a URL. */
-const stripBlanks = (value: string): string =>
-  Array.from(value)
-    .filter((char) => char > ' ')
-    .join('');
+const CSS_FRAGMENT_URL = /^url\(\s*['"]?#[A-Za-z0-9_.:-]+['"]?\s*\)$/i;
+const CSS_IMPORT = /@import\b[^;{}]*;?/gi;
 
 /** Reads through whitespace and entities, so `&#106;avascript:` cannot slip past. */
 const decodeUriValue = (value: string): string =>
@@ -519,27 +511,50 @@ const decodeUriValue = (value: string): string =>
     .replace(/&colon;?/gi, ':')
     .replace(/&[a-z]+;?/gi, '');
 
-const isScriptUri = (value: string): boolean => SCRIPT_URI.test(stripBlanks(decodeUriValue(value)));
+const isFragmentUri = (value: string): boolean => FRAGMENT_URI.test(decodeUriValue(value).trim());
 
-/**
- * Removes script, foreign content, inline handlers and script URLs from the
- * model's markup before it is wrapped or encoded into a `data:` URL. The schema
- * only asks for a shape, so the markup itself is never trusted.
- */
-export const sanitizeSvgMarkup = (raw: string): string => {
+/** One pass of removals; nested or malformed tags need the caller to repeat it. */
+const stripDangerousMarkup = (raw: string): string => {
   let svg = raw;
   for (const tag of DANGEROUS_TAGS) {
     svg = svg
       // Paired tags first: their contents have to go with them.
       .replace(new RegExp(`<${tag}\\b[^>]*>[\\s\\S]*?<\\/${tag}\\s*>`, 'gi'), '')
-      .replace(new RegExp(`<${tag}\\b[^>]*\\/?>`, 'gi'), '');
+      .replace(new RegExp(`<${tag}\\b[^>]*\\/?>`, 'gi'), '')
+      // Closing tags a nested removal left behind.
+      .replace(new RegExp(`<\\/${tag}[^>]*>`, 'gi'), '');
   }
-  svg = svg.replace(EVENT_HANDLER, '');
-  svg = svg.replace(URI_ATTRIBUTE, (match, ...groups) => {
-    const value = String(groups[0] ?? groups[1] ?? groups[2] ?? '');
-    return isScriptUri(value) ? '' : match;
-  });
-  return svg.replace(CSS_URL, (match) => (isScriptUri(match) ? '' : match));
+  // An anchor is only a link wrapper: drop the tag, keep the shapes it holds.
+  svg = svg.replace(/<a\b[^>]*>/gi, '').replace(/<\/a\b[^>]*>/gi, '');
+  return (
+    svg
+      .replace(EVENT_HANDLER, '')
+      .replace(URI_ATTRIBUTE, (match, ...groups) => {
+        const value = String(groups[0] ?? groups[1] ?? groups[2] ?? '');
+        return isFragmentUri(value) ? match : '';
+      })
+      // Only a gradient, marker or clip reference may stay: no remote payloads.
+      .replace(CSS_URL, (match) =>
+        CSS_FRAGMENT_URL.test(decodeUriValue(match).trim()) ? match : '',
+      )
+      .replace(CSS_IMPORT, '')
+  );
+};
+
+/**
+ * Removes script, remote content, inline handlers and external URLs from the
+ * model's markup before it is wrapped or encoded into a `data:` URL. The schema
+ * only asks for a shape, so the markup itself is never trusted. The pass repeats
+ * until nothing changes, so `<scr<script>ipt>` cannot survive by reassembling.
+ */
+export const sanitizeSvgMarkup = (raw: string): string => {
+  let svg = raw;
+  let previous: string;
+  do {
+    previous = svg;
+    svg = stripDangerousMarkup(svg);
+  } while (svg !== previous);
+  return svg;
 };
 
 /** The picture is rendered by a browser too, so its `<text>` is normalized as well. */
