@@ -45,6 +45,27 @@ const snapshot = {
   ],
 };
 
+/** The same pad after the participant typed a little more. */
+const editedSnapshot = {
+  ...snapshot,
+  markdown: '# Notes\n1. I have gone',
+  blocks: [
+    snapshot.blocks[0],
+    { ...snapshot.blocks[1], text: '1. I have gone', markdown: '1. I have gone' },
+  ],
+  participantBlocks: [
+    { ...snapshot.participantBlocks[0], text: '1. I have gone', markdown: '1. I have gone' },
+  ],
+};
+
+/** A pad that only holds the agent's own prompts. */
+const agentOnlySnapshot = {
+  markdown: '# Notes',
+  blocks: [snapshot.blocks[0]],
+  externalBlocks: [snapshot.externalBlocks[0]],
+  participantBlocks: [],
+};
+
 const buildState = ({ agent = true, notepadAllow = true } = {}) => ({
   session: {
     currentUser: { userId: 'me' },
@@ -76,6 +97,8 @@ vi.mock('../../../shared-notepad/NotepadController', () => ({
 }));
 
 import {
+  beginAgentNotepadTool,
+  endAgentNotepadTool,
   initNotepadAgentSync,
   notifyNotepadParticipantEdit,
   pushNotepadScene,
@@ -84,18 +107,19 @@ import {
 
 const edit = () => controller.listener?.();
 
-const sentMessage = () =>
-  JSON.parse(
-    (
-      conn.sendMessageToSystemWorker.mock.calls as unknown as [{ msg: string; event: number }][]
-    )[0][0].msg,
-  ) as {
+/** The wire message of the latest push. */
+const sentMessage = () => {
+  const calls = conn.sendMessageToSystemWorker.mock.calls as unknown as [
+    { msg: string; event: number },
+  ][];
+  return JSON.parse(calls[calls.length - 1][0].msg) as {
     event: number;
     fileId: string;
     page: number;
     reason: string;
     sceneGraphJson: string;
   };
+};
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -135,6 +159,7 @@ describe('notepad agent sync', () => {
     expect(conn.sendMessageToSystemWorker).toHaveBeenCalledTimes(1);
 
     // Second edit right after the push: deferred, not dropped.
+    controller.content = editedSnapshot;
     edit();
     vi.advanceTimersByTime(1600);
     expect(conn.sendMessageToSystemWorker).toHaveBeenCalledTimes(1);
@@ -190,5 +215,104 @@ describe('notepad agent sync', () => {
 
     expect(pushNotepadScene('notepad_read')).toBe(false);
     expect(conn.sendMessageToSystemWorker).not.toHaveBeenCalled();
+  });
+
+  it('skips the push when participant text did not change', () => {
+    edit();
+    vi.advanceTimersByTime(1600);
+    expect(conn.sendMessageToSystemWorker).toHaveBeenCalledTimes(1);
+
+    // An anti-entropy sync or an agent write re-fires the listener with the
+    // same participant text: the model already knows it.
+    edit();
+    vi.advanceTimersByTime(10000);
+    expect(conn.sendMessageToSystemWorker).toHaveBeenCalledTimes(1);
+  });
+
+  it('skips the push when the notepad only holds agent text', () => {
+    controller.content = agentOnlySnapshot;
+
+    edit();
+    vi.advanceTimersByTime(10000);
+
+    expect(conn.sendMessageToSystemWorker).not.toHaveBeenCalled();
+  });
+
+  it('pushes when participant text changes after a previous push', () => {
+    edit();
+    vi.advanceTimersByTime(1600);
+    expect(conn.sendMessageToSystemWorker).toHaveBeenCalledTimes(1);
+
+    controller.content = editedSnapshot;
+    edit();
+    vi.advanceTimersByTime(10000);
+
+    expect(conn.sendMessageToSystemWorker).toHaveBeenCalledTimes(2);
+    const scene = JSON.parse(sentMessage().sceneGraphJson) as {
+      elements: { id: string; text: string }[];
+    };
+    expect(scene.elements[1].id).toBe('b2');
+    expect(scene.elements[1].text).toContain('1. I have gone');
+  });
+
+  it('pushes when the participant deletes everything it wrote', () => {
+    edit();
+    vi.advanceTimersByTime(1600);
+    expect(conn.sendMessageToSystemWorker).toHaveBeenCalledTimes(1);
+
+    controller.content = agentOnlySnapshot;
+    edit();
+    vi.advanceTimersByTime(10000);
+
+    expect(conn.sendMessageToSystemWorker).toHaveBeenCalledTimes(2);
+    const scene = JSON.parse(sentMessage().sceneGraphJson) as {
+      counts: { participant: number };
+    };
+    expect(scene.counts.participant).toBe(0);
+  });
+});
+
+describe('notepad agent tool guard', () => {
+  it('cancels an armed push and ignores edits while a tool writes', () => {
+    edit();
+    vi.advanceTimersByTime(600);
+
+    beginAgentNotepadTool();
+    vi.advanceTimersByTime(10000);
+    expect(conn.sendMessageToSystemWorker).not.toHaveBeenCalled();
+
+    // Mounting, hydration and the agent write itself all fire the listener.
+    edit();
+    vi.advanceTimersByTime(10000);
+    expect(conn.sendMessageToSystemWorker).not.toHaveBeenCalled();
+
+    endAgentNotepadTool();
+    vi.advanceTimersByTime(10000);
+    expect(conn.sendMessageToSystemWorker).not.toHaveBeenCalled();
+  });
+
+  it('resumes pushing after the tool ends', () => {
+    beginAgentNotepadTool();
+    endAgentNotepadTool();
+
+    edit();
+    vi.advanceTimersByTime(1600);
+
+    expect(conn.sendMessageToSystemWorker).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps nested tools silent until the outermost one ends', () => {
+    beginAgentNotepadTool();
+    beginAgentNotepadTool();
+    endAgentNotepadTool();
+
+    edit();
+    vi.advanceTimersByTime(10000);
+    expect(conn.sendMessageToSystemWorker).not.toHaveBeenCalled();
+
+    endAgentNotepadTool();
+    edit();
+    vi.advanceTimersByTime(1600);
+    expect(conn.sendMessageToSystemWorker).toHaveBeenCalledTimes(1);
   });
 });

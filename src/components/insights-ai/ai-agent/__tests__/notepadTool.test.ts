@@ -11,6 +11,8 @@ const hoisted = vi.hoisted(() => ({
   roomState: { current: {} as Record<string, unknown> },
   dispatch: vi.fn(),
   pushScene: vi.fn(() => true),
+  beginTool: vi.fn(),
+  endTool: vi.fn(),
   controller: {
     sync: vi.fn(async () => undefined),
     isReadyForExternalWrite: vi.fn(() => true),
@@ -20,7 +22,7 @@ const hoisted = vi.hoisted(() => ({
   },
 }));
 
-const { roomState, dispatch, controller, pushScene } = hoisted;
+const { roomState, dispatch, controller, pushScene, beginTool, endTool } = hoisted;
 
 type NotepadFeatures = { isAllow: boolean; isActive: boolean };
 
@@ -80,6 +82,8 @@ vi.mock('../../../shared-notepad/NotepadController', () => ({
 
 vi.mock('../shared-notepad/notepadSync', () => ({
   pushNotepadScene: hoisted.pushScene,
+  beginAgentNotepadTool: hoisted.beginTool,
+  endAgentNotepadTool: hoisted.endTool,
 }));
 
 import { executeNotepadReadTool, executeNotepadWriteTool } from '../shared-notepad/notepadTool';
@@ -239,6 +243,36 @@ describe('notepad_write', () => {
     const res = await executeNotepadWriteTool({ mode: 'append', markdown: '# Notes' });
 
     expect(res).toMatchObject({ ok: true, participant_count: 1, agent_count: 1 });
+  });
+
+  it('keeps the participant sync loop silenced for the whole write', async () => {
+    setNotepadFeatures({ isAllow: true, isActive: true });
+    controller.readContent.mockReturnValue(snapshot);
+
+    await executeNotepadWriteTool({ mode: 'append', markdown: '# Notes' });
+
+    expect(beginTool).toHaveBeenCalledTimes(1);
+    expect(endTool).toHaveBeenCalledTimes(1);
+    // Mounting and hydrating the pad happens between the two, and both look
+    // like participant edits to the sync loop.
+    const writeAt = controller.applyExternalWrite.mock.invocationCallOrder[0];
+    expect(beginTool.mock.invocationCallOrder[0]).toBeLessThan(writeAt);
+    expect(endTool.mock.invocationCallOrder[0]).toBeGreaterThan(writeAt);
+  });
+
+  it('releases the guard even when the pad never opens', async () => {
+    vi.useFakeTimers();
+    setNotepadFeatures({ isAllow: true, isActive: true });
+    controller.isReadyForExternalWrite.mockReturnValue(false);
+
+    const pending = executeNotepadWriteTool({ mode: 'append', markdown: '# Notes' });
+    await vi.advanceTimersByTimeAsync(9000);
+    const res = await pending;
+    vi.useRealTimers();
+
+    expect(res).toMatchObject({ ok: false });
+    expect(controller.applyExternalWrite).not.toHaveBeenCalled();
+    expect(endTool).toHaveBeenCalledTimes(1);
   });
 });
 

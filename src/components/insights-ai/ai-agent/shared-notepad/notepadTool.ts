@@ -9,7 +9,7 @@ import {
   type NotepadController,
   type NotepadExternalWriteMode,
 } from '../../../shared-notepad/NotepadController';
-import { pushNotepadScene } from './notepadSync';
+import { beginAgentNotepadTool, endAgentNotepadTool, pushNotepadScene } from './notepadSync';
 
 const WRITE_MODES: NotepadExternalWriteMode[] = [
   'replace',
@@ -154,31 +154,38 @@ export const executeNotepadWriteTool = async (
     };
   }
 
-  const { controller, error } = await openNotepad((c) => c.isReadyForExternalWrite());
-  if (error) {
-    return { ok: false, length: 0, mode, error };
+  // Opening the pad mounts and hydrates it, which looks like a participant edit
+  // to the sync loop: keep the tool's own write out of the model's input.
+  beginAgentNotepadTool();
+  try {
+    const { controller, error } = await openNotepad((c) => c.isReadyForExternalWrite());
+    if (error) {
+      return { ok: false, length: 0, mode, error };
+    }
+
+    const res = controller.applyExternalWrite(
+      mode,
+      markdown,
+      typeof heading === 'string' && heading.trim() ? heading : undefined,
+      mode === 'replace_block' ? blockId : undefined,
+    );
+    const content = res.ok ? controller.readContent() : null;
+
+    return {
+      ok: res.ok,
+      length: res.length,
+      mode,
+      ...(content
+        ? {
+            participant_count: content.participantBlocks.length,
+            agent_count: content.externalBlocks.length,
+          }
+        : {}),
+      ...(res.error ? { error: res.error } : {}),
+    };
+  } finally {
+    endAgentNotepadTool();
   }
-
-  const res = controller.applyExternalWrite(
-    mode,
-    markdown,
-    typeof heading === 'string' && heading.trim() ? heading : undefined,
-    mode === 'replace_block' ? blockId : undefined,
-  );
-  const content = res.ok ? controller.readContent() : null;
-
-  return {
-    ok: res.ok,
-    length: res.length,
-    mode,
-    ...(content
-      ? {
-          participant_count: content.participantBlocks.length,
-          agent_count: content.externalBlocks.length,
-        }
-      : {}),
-    ...(res.error ? { error: res.error } : {}),
-  };
 };
 
 /**

@@ -73,11 +73,23 @@ export const buildNotepadSceneGraph = (content: NotepadContentSnapshot): Notepad
   };
 };
 
+/**
+ * Fingerprint of what the participants wrote. Agent writes and anti-entropy
+ * syncs leave it untouched, so they never look like a participant edit.
+ */
+const participantSignature = (content: NotepadContentSnapshot): string =>
+  content.blocks
+    .filter((block) => block.author !== 'external')
+    .map((block) => `${block.id}:${block.markdown}`)
+    .join('\n');
+
 const sendScene = (reason: string, content: NotepadContentSnapshot): boolean => {
   const conn = getNatsConn();
   if (!conn) {
     return false;
   }
+
+  lastPushedParticipantSignature = participantSignature(content);
 
   const scene = buildNotepadSceneGraph(content);
   const message = create(AIAgentWhiteboardSceneMsgSchema, {
@@ -118,8 +130,15 @@ const syncAllowed = (): boolean => {
   return !!aiAgentSelector(store.getState());
 };
 
+const PARTICIPANT_EDIT_REASON = 'notepad_participant_edit';
+
 let timer: ReturnType<typeof setTimeout> | null = null;
 let lastPushAt = 0;
+// Depth of agent notepad tools in flight: their writes must never feed back
+// into the model as participant input.
+let toolDepth = 0;
+// Participant content the model has already seen through a scene push.
+let lastPushedParticipantSignature = '';
 let stopListener: (() => void) | null = null;
 
 const cancelTimer = () => {
@@ -131,7 +150,20 @@ const cancelTimer = () => {
 
 const flush = (reason: string) => {
   timer = null;
-  if (!syncAllowed()) {
+  if (toolDepth > 0 || !syncAllowed()) {
+    return;
+  }
+
+  const content = getNotepadController().readContent();
+  if (!content) {
+    return;
+  }
+  // Only participant text is news to the model: an agent write or a sync event
+  // that leaves that text as it was pushed already must stay silent.
+  if (
+    reason === PARTICIPANT_EDIT_REASON &&
+    participantSignature(content) === lastPushedParticipantSignature
+  ) {
     return;
   }
 
@@ -142,7 +174,7 @@ const flush = (reason: string) => {
     return;
   }
 
-  if (pushNotepadScene(reason)) {
+  if (sendScene(reason, content)) {
     lastPushAt = Date.now();
   }
 };
@@ -152,12 +184,22 @@ const flush = (reason: string) => {
  * the 4 s floor is deferred instead of dropped, so the model still sees the
  * final state of a burst of typing.
  */
-export const notifyNotepadParticipantEdit = (reason = 'notepad_participant_edit') => {
-  if (!syncAllowed()) {
+export const notifyNotepadParticipantEdit = (reason = PARTICIPANT_EDIT_REASON) => {
+  if (toolDepth > 0 || !syncAllowed()) {
     return;
   }
   cancelTimer();
   timer = setTimeout(() => flush(reason), DEBOUNCE_MS);
+};
+
+/** Drops a push that is not sent yet (an agent tool is about to write). */
+export const beginAgentNotepadTool = () => {
+  toolDepth++;
+  cancelTimer();
+};
+
+export const endAgentNotepadTool = () => {
+  toolDepth = Math.max(0, toolDepth - 1);
 };
 
 /** Starts the automatic notepad loop. Idempotent and inert unless an agent is live. */
@@ -166,7 +208,7 @@ export const initNotepadAgentSync = () => {
     return;
   }
   stopListener = getNotepadController().onParticipantContentChange(() =>
-    notifyNotepadParticipantEdit('notepad_participant_edit'),
+    notifyNotepadParticipantEdit(PARTICIPANT_EDIT_REASON),
   );
 };
 
@@ -174,6 +216,8 @@ export const stopNotepadAgentSync = () => {
   cancelTimer();
   stopListener?.();
   stopListener = null;
+  toolDepth = 0;
+  lastPushedParticipantSignature = '';
   // A restarted loop starts with a clean rate-limit window.
   lastPushAt = 0;
 };
