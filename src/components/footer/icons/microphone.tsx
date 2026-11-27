@@ -12,7 +12,7 @@ import {
   updateShowMicrophoneModal,
 } from '../../../store/slices/bottomIconsActivitySlice';
 import { updateCanPlaybackAudio } from '../../../store/slices/sessionSlice';
-import { isAIAgentSessionRoom } from '../../../helpers/aiAgentSession';
+import { isAIAgentSessionObserver, isAIAgentSessionRoom } from '../../../helpers/aiAgentSession';
 import MicMenu from './mic-menu';
 import MicrophoneModal from '../modals/microphone';
 import {
@@ -65,6 +65,8 @@ const MicrophoneIcon = () => {
     (state) => state.session.currentUser?.metadata?.lockSettings?.lockMicrophone,
   );
   const isMicMuted = useAppSelector((state) => state.bottomIconsActivity.isMicMuted);
+  const roomMetadata = useAppSelector((state) => state.session.currentRoom?.metadata);
+  const currentUserId = useAppSelector((state) => state.session.currentUser?.userId);
   const selectedAudioDevice = useAppSelector((state) => state.roomSettings.selectedAudioDevice);
   const knownAudioDevices = useAppSelector((state) => state.roomSettings.audioDevices);
 
@@ -76,10 +78,16 @@ const MicrophoneIcon = () => {
     isMicMuted,
   );
 
+  // An observer of a 1-on-1 AI session (e.g. an admin) must stay muted.
+  const isObserver = useMemo(
+    () => isAIAgentSessionObserver(roomMetadata, currentUserId),
+    [roomMetadata, currentUserId],
+  );
+
   // Lock if not an admin & user-specific lock is set, or fall back to room default.
   const isLocked = useMemo(
-    () => !isAdmin && (isMicLock ?? defaultLock),
-    [isAdmin, isMicLock, defaultLock],
+    () => isObserver || (!isAdmin && (isMicLock ?? defaultLock)),
+    [isObserver, isAdmin, isMicLock, defaultLock],
   );
 
   // for change in mic lock setting
@@ -316,7 +324,7 @@ const MicrophoneIcon = () => {
       return;
     }
     didInitialAutoPublish.current = true;
-    if (selectedAudioDevice) {
+    if (selectedAudioDevice && !isLocked) {
       sleep(500).then(() => onCloseMicrophoneModal(selectedAudioDevice));
     } else {
       // No device picked on a landing page (it is skipped in an AI Agent 1-on-1

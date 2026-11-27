@@ -10,7 +10,8 @@ const EMPTY_MESSAGE = 'message must not be empty.';
 /**
  * Posts the agent's message into the room chat through this client, so it
  * appears exactly like a message typed here: `sendChatMsg` stores it locally and
- * broadcasts it over NATS. The chat panel stays closed on purpose.
+ * broadcasts it over NATS. The chat panel stays closed on purpose. The message
+ * is flagged as AI generated so the chat bubble can label it.
  */
 export const executePublishChatMessageTool: AIAgentToolHandler = async (args) => {
   const message =
@@ -43,7 +44,7 @@ export const executePublishChatMessageTool: AIAgentToolHandler = async (args) =>
   const toUserId = typeof args.to_user_id === 'string' ? args.to_user_id.trim() : '';
   const to = toUserId || 'public';
 
-  await conn.sendChatMsg(to, html);
+  await conn.sendChatMsg(to, html, { isAiGenerated: true });
 
   return { ok: true, sent: true, to };
 };

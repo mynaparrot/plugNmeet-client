@@ -9,6 +9,7 @@ import {
   hasInsightsAiSettingsTabs,
   isAIAgentAutoStart,
   isAIAgentChatEnabled,
+  isAIAgentSessionObserver,
   isAIAgentSessionRoom,
   isAutoPerUserAISessionRoom,
   isInsightsAiTextChatEnabled,
@@ -23,8 +24,17 @@ import {
 const metadata = (insightsFeatures: unknown, extra: Record<string, unknown> = {}): IRoomMetadata =>
   ({ roomFeatures: { insightsFeatures }, ...extra }) as unknown as IRoomMetadata;
 
-const buildState = (insightsFeatures: unknown) =>
-  ({ session: { currentRoom: { metadata: metadata(insightsFeatures) } } }) as unknown as RootState;
+const buildState = (
+  insightsFeatures: unknown,
+  userId?: string,
+  extra: Record<string, unknown> = {},
+) =>
+  ({
+    session: {
+      currentRoom: { metadata: metadata(insightsFeatures, extra) },
+      currentUser: { userId },
+    },
+  }) as unknown as RootState;
 
 const aiAgent = (overrides: Record<string, unknown> = {}) => ({
   isAllow: true,
@@ -199,6 +209,29 @@ describe('isAIAgentSessionRoom', () => {
   });
 });
 
+describe('isAIAgentSessionObserver', () => {
+  const sessionRoom = metadata(
+    { aiAgentFeatures: controlled(['user_1']) },
+    { isBreakoutRoom: true },
+  );
+
+  it('is off for the assigned participant', () => {
+    expect(isAIAgentSessionObserver(sessionRoom, 'user_1')).toBe(false);
+  });
+
+  it('is on for anyone else in the 1-on-1 room, an admin included', () => {
+    expect(isAIAgentSessionObserver(sessionRoom, 'admin_1')).toBe(true);
+  });
+
+  it('is off outside a 1-on-1 room and without a user', () => {
+    expect(
+      isAIAgentSessionObserver(metadata({ aiAgentFeatures: controlled(['user_1']) }), 'admin_1'),
+    ).toBe(false);
+    expect(isAIAgentSessionObserver(sessionRoom, undefined)).toBe(false);
+    expect(isAIAgentSessionObserver(undefined, 'admin_1')).toBe(false);
+  });
+});
+
 describe('isAIAgentChatEnabled', () => {
   it('requires the agent to own the room', () => {
     expect(isAIAgentChatEnabled(undefined)).toBe(false);
@@ -219,6 +252,16 @@ describe('isAIAgentChatEnabled', () => {
         ),
       ),
     ).toBe(false);
+  });
+
+  it('only lets the named participant of a 1-on-1 room talk to the agent', () => {
+    const sessionRoom = metadata(
+      { aiAgentFeatures: controlled(['user_1']) },
+      { isBreakoutRoom: true },
+    );
+    expect(isAIAgentChatEnabled(sessionRoom, 'user_1')).toBe(true);
+    // an admin dropping in is only observing
+    expect(isAIAgentChatEnabled(sessionRoom, 'admin_1')).toBe(false);
   });
 });
 
@@ -255,6 +298,16 @@ describe('isInsightsAiTextChatEnabled', () => {
         }),
       ),
     ).toBe(true);
+  });
+
+  it('closes the chat box for an observer of a 1-on-1 room', () => {
+    expect(
+      selectIsInsightsAiTextChatEnabled(
+        buildState({ aiAgentFeatures: controlled(['user_1']) }, 'admin_1', {
+          isBreakoutRoom: true,
+        }),
+      ),
+    ).toBe(false);
   });
 });
 

@@ -94,6 +94,32 @@ const sendToolResult = (
   );
 };
 
+// Re-delivered calls are dropped by id; the set is bounded so a long session
+// cannot grow it without limit (oldest id is evicted first).
+const MAX_SEEN_CALL_IDS = 256;
+const seenCallIds = new Set<string>();
+
+/** Test helper: forget the call ids seen so far. */
+export const resetToolDispatcherForTests = () => seenCallIds.clear();
+
+/** Returns false when this call id was already dispatched. */
+const rememberCallId = (callId: string): boolean => {
+  if (!callId) {
+    return true;
+  }
+  if (seenCallIds.has(callId)) {
+    return false;
+  }
+  seenCallIds.add(callId);
+  if (seenCallIds.size > MAX_SEEN_CALL_IDS) {
+    const oldest = seenCallIds.values().next().value;
+    if (oldest !== undefined) {
+      seenCallIds.delete(oldest);
+    }
+  }
+  return true;
+};
+
 const processToolCall = async (payload: string) => {
   let call: AIAgentToolCallMsg;
   try {
@@ -112,6 +138,37 @@ const processToolCall = async (payload: string) => {
       targetUserId: call.targetUserId,
       currentUserId,
     });
+    return;
+  }
+
+  if (!rememberCallId(call.callId)) {
+    console.debug('[AIAgentToolDispatcher] skipping duplicate tool call', {
+      tool: call.toolName,
+      callId: call.callId,
+    });
+    return;
+  }
+
+  const deadlineMs = Number(call.deadlineUnixMs) || 0;
+  if (deadlineMs > 0 && Date.now() > deadlineMs) {
+    console.warn('[AIAgentToolDispatcher] dropping expired tool call', {
+      tool: call.toolName,
+      callId: call.callId,
+    });
+    sendToolResult(call, false, '', 'Tool call expired before execution.', 0);
+    return;
+  }
+
+  // A call minted for another (already ended) agent session must not run here.
+  const activeSessionId = store.getState().aiAgent?.agent?.sessionId;
+  if (call.sessionId && activeSessionId && call.sessionId !== activeSessionId) {
+    console.warn('[AIAgentToolDispatcher] dropping tool call for an inactive session', {
+      tool: call.toolName,
+      callId: call.callId,
+      callSessionId: call.sessionId,
+      activeSessionId,
+    });
+    sendToolResult(call, false, '', 'Tool call belongs to an inactive session.', 0);
     return;
   }
 

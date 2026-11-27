@@ -59,7 +59,10 @@ export const useAiTextChat = () => {
       if (!text.trim()) return;
 
       const { session, aiAgent } = store.getState();
-      if (isAIAgentChatEnabled(session.currentRoom?.metadata) && !isAIAgentRunning(aiAgent.agent)) {
+      if (
+        isAIAgentChatEnabled(session.currentRoom?.metadata, session.currentUser?.userId) &&
+        !isAIAgentRunning(aiAgent.agent)
+      ) {
         toast(t('ai-agent.errors.session-not-started'), { type: 'error' });
         return;
       }

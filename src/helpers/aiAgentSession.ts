@@ -78,6 +78,18 @@ export const isAIAgentSessionRoom = (metadata?: IRoomMetadata): boolean =>
   !!metadata?.isBreakoutRoom && !!aiAgentOf(metadata)?.isAllow;
 
 /**
+ * Anyone in a 1-on-1 session room who is not one of its allowed participants is
+ * only observing (an admin dropping in, for example), so their mic stays locked.
+ */
+export const isAIAgentSessionObserver = (metadata?: IRoomMetadata, userId?: string): boolean => {
+  if (!isAIAgentSessionRoom(metadata) || !userId) {
+    return false;
+  }
+  const allowed = getAIAgentAllowedParticipantIds(metadata);
+  return allowed.length > 0 && !allowed.includes(userId);
+};
+
+/**
  * The whiteboard and shared notepad turn into pure automation while an AI agent
  * is around, in its own session room or in a per-user session of a normal room.
  */

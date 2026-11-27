@@ -43,9 +43,16 @@ describe('executePublishChatMessageTool', () => {
 
     expect(result).toEqual({ ok: true, sent: true, to: 'public' });
     expect(sendChatMsg).toHaveBeenCalledTimes(1);
-    const [to, html] = sendChatMsg.mock.calls[0];
+    const [to, html, meta] = sendChatMsg.mock.calls[0];
     expect(to).toBe('public');
     expect(html).toBe('<p><strong>Hello</strong> room</p>');
+    expect(meta).toEqual({ isAiGenerated: true });
+  });
+
+  it('flags every message as AI generated', async () => {
+    await executePublishChatMessageTool({ message: 'Hello', to_user_id: 'user-3' });
+
+    expect(sendChatMsg.mock.calls[0][2]).toEqual({ isAiGenerated: true });
   });
 
   it('sends a private message to the given participant', async () => {

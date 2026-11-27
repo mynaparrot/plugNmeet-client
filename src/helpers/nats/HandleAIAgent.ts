@@ -10,7 +10,5 @@ export default class HandleAIAgent {
     applyAIAgentStateJson(msg);
   };
 
-  public handleToolCall = (msg: string) => {
-    void handleAIAgentToolCall(msg);
-  };
+  public handleToolCall = (msg: string) => handleAIAgentToolCall(msg);
 }

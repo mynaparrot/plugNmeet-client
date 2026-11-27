@@ -6,13 +6,13 @@ import sanitizeHtml from 'sanitize-html';
  */
 const AI_MARKDOWN_SANITIZE_CONFIG: sanitizeHtml.IOptions = {
   // Markdown output only: no scripts, styles, event handlers or url-bearing
-  // attributes beyond this list; img covers model-embedded images.
+  // attributes beyond this list. Images are intentionally dropped so model
+  // output can never trigger a request to an arbitrary host.
   // oxfmt-ignore
-  allowedTags: ['b', 'i', 'strong', 'em', 'del', 'br', 'hr', 'a', 'span', 'div', 'p', 'ul', 'ol', 'li', 'code', 'pre', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'table', 'thead', 'tbody', 'tr', 'td', 'th', 'img'],
+  allowedTags: ['b', 'i', 'strong', 'em', 'del', 'br', 'hr', 'a', 'span', 'div', 'p', 'ul', 'ol', 'li', 'code', 'pre', 'blockquote', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'table', 'thead', 'tbody', 'tr', 'td', 'th'],
   allowedAttributes: {
     // target/rel are needed for the transformTags below to survive filtering
     a: ['href', 'title', 'target', 'rel'],
-    img: ['src', 'alt', 'title', 'width', 'height'],
     code: ['class', 'dir'],
     span: ['dir'],
     div: ['dir'],
@@ -40,11 +40,8 @@ const AI_MARKDOWN_SANITIZE_CONFIG: sanitizeHtml.IOptions = {
   allowedClasses: {
     code: [/^language-\S+$/],
   },
-  // Images are restricted to http(s); links may additionally use mailto.
+  // Links may use http(s) or mailto.
   allowedSchemes: ['http', 'https', 'mailto'],
-  allowedSchemesByTag: {
-    img: ['http', 'https'],
-  },
   // keep scheme-relative (//host) urls out, they'd bypass the scheme lists
   allowProtocolRelative: false,
   transformTags: {

@@ -773,7 +773,7 @@ export default class ConnectNats {
   public sendChatMsg = async (
     to: string,
     msg: string,
-    meta?: Omit<ChatMeta, '$typeName' | '$unknown'>,
+    meta?: Partial<Omit<ChatMeta, '$typeName' | '$unknown'>>,
   ) => {
     if (!this._nc || this._nc.isClosed()) {
       return;

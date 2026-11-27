@@ -34,7 +34,11 @@ vi.mock('../whiteboard', () => ({ registerWhiteboardAgentTools: vi.fn() }));
 // Same for the client API registry (browser-only dependencies).
 vi.mock('../clientApiTools', () => ({ registerClientApiTools: vi.fn() }));
 
-import { handleAIAgentToolCall, registerAIAgentToolHandler } from '../toolDispatcher';
+import {
+  handleAIAgentToolCall,
+  registerAIAgentToolHandler,
+  resetToolDispatcherForTests,
+} from '../toolDispatcher';
 
 type SentMessage = { event: number; msg: string };
 
@@ -50,23 +54,26 @@ const callJson = (
     argumentsJson: string;
     targetUserId: string;
     callId: string;
+    sessionId: string;
+    deadlineUnixMs: string;
   }> = {},
 ) =>
   toJsonString(
     AIAgentToolCallMsgSchema,
     create(AIAgentToolCallMsgSchema, {
-      sessionId: 'session-1',
+      sessionId: overrides.sessionId ?? 'session-1',
       callId: overrides.callId ?? 'call-1',
       toolName: overrides.toolName ?? 'notepad_write',
       argumentsJson: overrides.argumentsJson ?? '{"mode":"append","markdown":"hi"}',
       targetUserId: overrides.targetUserId ?? 'me',
-      deadlineUnixMs: '0',
+      deadlineUnixMs: overrides.deadlineUnixMs ?? '0',
       traceId: 'trace-1',
     }),
   );
 
 beforeEach(() => {
   vi.clearAllMocks();
+  resetToolDispatcherForTests();
   state.current = { session: { currentUser: { userId: 'me' } } };
   notepad.executeNotepadWriteTool.mockResolvedValue({ ok: true, length: 2, mode: 'append' });
 });
@@ -140,6 +147,38 @@ describe('handleAIAgentToolCall', () => {
     expect(result.ok).toBe(false);
     expect(result.error).toBe('The shared notepad is not active right now.');
     expect(JSON.parse(result.resultJson).ok).toBe(false);
+  });
+
+  it('ignores a call id that was already dispatched', async () => {
+    await handleAIAgentToolCall(callJson());
+    await handleAIAgentToolCall(callJson());
+
+    expect(notepad.executeNotepadWriteTool).toHaveBeenCalledTimes(1);
+    expect(sentMessages()).toHaveLength(1);
+  });
+
+  it('answers an expired call without running the tool', async () => {
+    await handleAIAgentToolCall(callJson({ deadlineUnixMs: String(Date.now() - 1000) }));
+
+    expect(notepad.executeNotepadWriteTool).not.toHaveBeenCalled();
+    const [result] = sentResults();
+    expect(result.ok).toBe(false);
+    expect(result.error).toBe('Tool call expired before execution.');
+    expect(result.durationMs).toBe('0');
+  });
+
+  it('answers a call from an inactive session without running the tool', async () => {
+    state.current = {
+      session: { currentUser: { userId: 'me' } },
+      aiAgent: { agent: { sessionId: 'session-2' } },
+    };
+
+    await handleAIAgentToolCall(callJson({ sessionId: 'session-1' }));
+
+    expect(notepad.executeNotepadWriteTool).not.toHaveBeenCalled();
+    const [result] = sentResults();
+    expect(result.ok).toBe(false);
+    expect(result.error).toBe('Tool call belongs to an inactive session.');
   });
 
   it('runs calls sequentially so client tools never interleave', async () => {

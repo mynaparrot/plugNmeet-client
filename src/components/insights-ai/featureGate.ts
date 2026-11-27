@@ -6,6 +6,7 @@ import {
   getAIAgentAllowedParticipantIds,
   getAIAgentMaxConcurrentSessions,
   isAIAgentAutoStart,
+  isAIAgentSessionObserver,
   isAIAgentSessionRoom,
   isAutoPerUserAISessionRoom,
 } from '../../helpers/aiAgentSession';
@@ -14,6 +15,7 @@ export {
   getAIAgentAllowedParticipantIds,
   getAIAgentMaxConcurrentSessions,
   isAIAgentAutoStart,
+  isAIAgentSessionObserver,
   isAIAgentSessionRoom,
   isAutoPerUserAISessionRoom,
 };
@@ -32,20 +34,26 @@ const selectRoomMetadata = (state: RootState): IRoomMetadata | undefined =>
 const aiAgentFeaturesOf = (metadata?: IRoomMetadata): IAIAgentFeatureFlags | undefined =>
   metadata?.roomFeatures?.insightsFeatures?.aiAgentFeatures;
 
-/** The AI Agent owns the chat box only inside its own session room. */
-export const isAIAgentChatEnabled = (metadata?: IRoomMetadata): boolean =>
-  isAIAgentSessionRoom(metadata) && aiAgentFeaturesOf(metadata)?.allowChatMessage !== false;
+const selectCurrentUserId = (state: RootState): string | undefined =>
+  state.session.currentUser?.userId;
+
+/** The AI Agent owns the chat box inside its own session room, but observers keep to public chat. */
+export const isAIAgentChatEnabled = (metadata?: IRoomMetadata, userId?: string): boolean =>
+  isAIAgentSessionRoom(metadata) &&
+  !isAIAgentSessionObserver(metadata, userId) &&
+  aiAgentFeaturesOf(metadata)?.allowChatMessage !== false;
 
 /** The AI Chat box is enabled by the standalone feature or by the AI Agent. */
-export const isInsightsAiTextChatEnabled = (metadata?: IRoomMetadata): boolean =>
-  metadata?.roomFeatures?.insightsFeatures?.aiFeatures?.aiTextChatFeatures?.isEnabled === true ||
-  isAIAgentChatEnabled(metadata);
+export const isInsightsAiTextChatEnabled = (metadata?: IRoomMetadata, userId?: string): boolean =>
+  (!isAIAgentSessionRoom(metadata) &&
+    metadata?.roomFeatures?.insightsFeatures?.aiFeatures?.aiTextChatFeatures?.isEnabled === true) ||
+  isAIAgentChatEnabled(metadata, userId);
 
 export const selectIsAIAgentChatEnabled = (state: RootState): boolean =>
-  isAIAgentChatEnabled(selectRoomMetadata(state));
+  isAIAgentChatEnabled(selectRoomMetadata(state), selectCurrentUserId(state));
 
 export const selectIsInsightsAiTextChatEnabled = (state: RootState): boolean =>
-  isInsightsAiTextChatEnabled(selectRoomMetadata(state));
+  isInsightsAiTextChatEnabled(selectRoomMetadata(state), selectCurrentUserId(state));
 
 export const selectInsightsAIAgentFeatures = (state: RootState): IAIAgentFeatureFlags | undefined =>
   aiAgentFeaturesOf(selectRoomMetadata(state));

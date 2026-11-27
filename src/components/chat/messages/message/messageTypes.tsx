@@ -132,6 +132,13 @@ const EditedMark = ({ editedAt, title }: { editedAt?: string; title?: string }) 
   );
 };
 
+const AiGeneratedBadge = () => (
+  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-Blue/10 dark:bg-Blue/20 text-Blue text-[10px] font-semibold tracking-wide">
+    <AiIconSVG classes="w-3 h-3" />
+    AI
+  </span>
+);
+
 interface IMyMessageProps extends IBubbleProps {
   markdown?: boolean;
 }
@@ -151,7 +158,10 @@ export const MyMessage = memo(
     return (
       <div className="content me w-[calc(100%-36px)] 3xl:w-[calc(100%-48px)] ms-auto relative">
         <div className="name min-h-5 flex items-center text-xs 3xl:text-sm text-Gray-800 dark:text-white font-medium pb-1.5 capitalize justify-between">
-          <p>{t('right-panel.you')}</p>
+          <p className="flex items-center gap-1">
+            {t('right-panel.you')}
+            {body.meta?.isAiGenerated && <AiGeneratedBadge />}
+          </p>
           <div className="flex items-center gap-1">
             <p className="time text-xs text-Gray-600 dark:text-dark-text">
               {formatDate(body.sentAt)}
@@ -215,9 +225,10 @@ export const OtherUserMessage = memo(
         <Avatar userId={body.fromUserId} name={body.fromName} />
         <div className="content w-[calc(100%-36px)] 3xl:w-[calc(100%-48px)] flex-1 relative">
           <div className="name min-h-5 flex items-center text-sm text-Gray-800 dark:text-white font-medium pb-1.5 capitalize justify-between">
-            <p>
+            <p className="flex items-center gap-1">
               {displayName}
               {!participantName && <span className="text-[10px] pl-1">(offline)</span>}
+              {body.meta?.isAiGenerated && <AiGeneratedBadge />}
             </p>
             <div className="flex items-center gap-1">
               <p className="time text-xs text-Gray-600">
