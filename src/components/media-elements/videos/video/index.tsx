@@ -6,6 +6,7 @@ import { LocalTrackPublication, RemoteTrackPublication } from 'livekit-client';
 import VideoElm from './videoElm';
 import PinWebcam from './pinWebcam';
 import MicStatus from './micStatus';
+import AIAgentTileStatus from './aiAgentTileStatus';
 import ConnectionStatus from './connectionStatus';
 import { sleep, generateAvatarInitial } from '../../../../helpers/utils';
 import Participant from './participant';
@@ -70,6 +71,7 @@ const VideoComponent = ({
       >
         <div className="camera-video-player">
           <MicStatus userId={userId} />
+          <AIAgentTileStatus userId={userId} />
           {showVideo ? (
             <VideoElm track={track} ref={videoRef} mirrored={isLocal} />
           ) : (

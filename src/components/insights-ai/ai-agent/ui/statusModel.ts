@@ -2,7 +2,7 @@ import { AIAgentRuntimeState } from 'plugnmeet-protocol-js';
 
 import type { IAIAgentState } from '../../../../store/slices/interfaces/aiAgent';
 
-export type AIAgentStatusTone = 'idle' | 'active' | 'busy' | 'paused';
+export type AIAgentStatusTone = 'idle' | 'active' | 'speaking' | 'busy' | 'paused';
 
 export interface IAIAgentStatusLabel {
   key: string;
@@ -16,7 +16,7 @@ const STATE_LABELS: Record<AIAgentRuntimeState, IAIAgentStatusLabel> = {
   },
   [AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_CONNECTING]: {
     key: 'ai-agent.state.connecting',
-    tone: 'active',
+    tone: 'busy',
   },
   [AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_LISTENING]: {
     key: 'ai-agent.state.listening',
@@ -28,7 +28,7 @@ const STATE_LABELS: Record<AIAgentRuntimeState, IAIAgentStatusLabel> = {
   },
   [AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_SPEAKING]: {
     key: 'ai-agent.state.speaking',
-    tone: 'active',
+    tone: 'speaking',
   },
   [AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_DRAWING]: {
     key: 'ai-agent.state.drawing',
@@ -57,6 +57,33 @@ export const isAIAgentRunning = (agent: IAIAgentState | null): boolean =>
   agent.state !== AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_STOPPED &&
   agent.state !== AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_UNSPECIFIED;
 
+/**
+ * The server can lag behind the media plane, so a listening or thinking agent
+ * whose audio is still audible (or flagged as speaking) reads as speaking until
+ * the track stops. A running tool keeps its own label.
+ */
+export const resolveAIAgentEffectiveState = (
+  agent: IAIAgentState | null,
+  isAgentAudioActive = false,
+): AIAgentRuntimeState => {
+  if (!agent) {
+    return AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_UNSPECIFIED;
+  }
+  if (agent.state === AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_LISTENING) {
+    return isAgentAudioActive || agent.isSpeaking
+      ? AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_SPEAKING
+      : agent.state;
+  }
+  if (
+    agent.state === AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_THINKING &&
+    isAgentAudioActive &&
+    !agent.toolInProgress
+  ) {
+    return AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_SPEAKING;
+  }
+  return agent.state;
+};
+
 export const isAIAgentPaused = (agent: IAIAgentState | null): boolean =>
   agent?.state === AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_PAUSED;
 
@@ -65,9 +92,83 @@ export const getAIAgentDisplayName = (
   configuredName?: string,
 ): string => agent?.agentName?.trim() || configuredName?.trim() || 'AI Assistant';
 
-/** `draw_shapes` -> `draw shapes`; empty when no tool is running. */
-export const formatAIAgentToolName = (tool?: string): string =>
-  (tool ?? '').trim().replace(/[_-]/g, ' ');
+const TOOL_LABELS: Record<string, string> = {
+  whiteboard_write_content: 'Writing on whiteboard',
+  whiteboard_draw_shapes: 'Drawing shapes',
+  whiteboard_draw_freehand_svg: 'Drawing on whiteboard',
+  whiteboard_draw_diagram: 'Drawing diagram',
+  whiteboard_laser_point: 'Pointing on whiteboard',
+  whiteboard_manage_board: 'Updating whiteboard',
+  whiteboard_capture_snapshot: 'Reading whiteboard',
+  notepad_write: 'Writing in notepad',
+  notepad_read: 'Reading notepad',
+  create_poll: 'Creating poll',
+  create_quiz: 'Creating quiz',
+  draft_quiz: 'Creating quiz',
+  publish_quiz: 'Creating quiz',
+  close_poll: 'Closing poll',
+  get_poll_results: 'Checking poll results',
+  send_ai_chat_message: 'Sending chat message',
+  publish_chat_message: 'Sending chat message',
+  fetch_external_knowledge: 'Searching knowledge base',
+  record_learning_progress: 'Recording progress',
+  get_room_info: 'Checking room info',
+  set_workspace_lock: 'Updating workspace lock',
+  manage_countdown_timer: 'Setting timer',
+  manage_external_media: 'Updating media player',
+  manage_recording: 'Updating recording',
+  create_breakout_rooms: 'Managing breakout rooms',
+  manage_breakout_rooms: 'Managing breakout rooms',
+  manage_participants: 'Managing participants',
+  configure_speech_to_text: 'Configuring transcription',
+  configure_chat_translation: 'Configuring translation',
+  configure_meeting_summarization: 'Configuring summarization',
+};
+
+/** Drops the internal `pnm_` / `ext_<server>_` namespace so only the action stays. */
+const withoutToolNamespace = (tool: string): string => {
+  const parts = tool.split('_');
+  if (parts[0] === 'pnm') parts.shift();
+  if (parts[0] === 'ext' && parts.length > 2) parts.splice(0, 2);
+  return parts.join('_');
+};
+
+/**
+ * Built-in tools read as an action (`whiteboard_write_content` -> `Writing on
+ * whiteboard`), anything else keeps its words: `draw_shapes` -> `draw shapes`.
+ * Empty when no tool is running.
+ */
+export const formatAIAgentToolName = (tool?: string): string => {
+  const name = (tool ?? '').trim();
+  if (!name) {
+    return '';
+  }
+  const label = TOOL_LABELS[name];
+  if (label) {
+    return label;
+  }
+  return withoutToolNamespace(name).replace(/[_-]+/g, ' ').trim();
+};
+
+/** States where the agent is visibly working rather than listening or talking. */
+export const isAIAgentBusyState = (state?: AIAgentRuntimeState): boolean =>
+  state === AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_THINKING ||
+  state === AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_DRAWING ||
+  state === AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_CONNECTING ||
+  state === AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_RECONNECTING;
+
+/** The running tool wins over the state label, except while the agent is talking. */
+export const getAIAgentDisplayStatusText = (
+  effectiveState: AIAgentRuntimeState,
+  statusLabel: string,
+  toolInProgress?: string,
+): string => {
+  const toolLabel = formatAIAgentToolName(toolInProgress);
+  if (toolLabel && effectiveState !== AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_SPEAKING) {
+    return toolLabel;
+  }
+  return statusLabel;
+};
 
 /**
  * Live "connected for" timer: `MM:SS`, switching to `HH:MM:SS` after an hour.

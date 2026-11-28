@@ -9,6 +9,7 @@ import {
   isAIAgentLocalMutedSelector,
   setAIAgentLocalMuted,
 } from '../../../../store/slices/aiAgentSlice';
+import { activeSpeakersSelector } from '../../../../store/slices/activeSpeakersSlice';
 import Tooltip from '../../../../helpers/ui/tooltip';
 import { Microphone } from '../../../../assets/Icons/Microphone';
 import { MicrophoneOff } from '../../../../assets/Icons/MicrophoneOff';
@@ -20,16 +21,18 @@ import AIAgentControlPanel from './AIAgentControlPanel';
 import { useAIAgentElapsedTime } from './useAIAgentElapsedTime';
 import {
   AIAgentStatusTone,
-  formatAIAgentToolName,
   getAIAgentDisplayName,
+  getAIAgentDisplayStatusText,
   getAIAgentStatusLabel,
   isAIAgentRunning,
+  resolveAIAgentEffectiveState,
   shouldShowAIAgentStatusBar,
 } from './statusModel';
 
 const TONE_DOT_CLASSES: Record<AIAgentStatusTone, string> = {
   idle: 'bg-Gray-500',
-  active: 'bg-Green-700 animate-pulse',
+  active: 'bg-Green-700',
+  speaking: 'bg-Green-700 animate-pulse',
   busy: 'bg-Blue animate-pulse',
   paused: 'bg-Red-400',
 };
@@ -66,6 +69,12 @@ const AIAgentStatusBar = () => {
   const isRunning = isAIAgentRunning(agent);
   const elapsedTime = useAIAgentElapsedTime(agent, isRunning);
 
+  // The agent's audio track can outlive the "speaking" state pushed by the server.
+  const agentUserId = agent?.agentUserId;
+  const isAgentAudioActive = useAppSelector((state) =>
+    agentUserId ? !!activeSpeakersSelector.selectById(state, agentUserId)?.isSpeaking : false,
+  );
+
   // Late joiners never saw the state the server published before they arrived.
   useEffect(() => {
     if (!isSessionRoom || agent) {
@@ -87,14 +96,16 @@ const AIAgentStatusBar = () => {
     return null;
   }
 
-  const status = isRunning
-    ? getAIAgentStatusLabel(agent?.state)
+  const effectiveState = isRunning ? resolveAIAgentEffectiveState(agent, isAgentAudioActive) : null;
+  const status = effectiveState
+    ? getAIAgentStatusLabel(effectiveState)
     : { key: 'ai-agent.state.not-started', tone: 'idle' as const };
   const statusLabel = t(status.key);
   const agentName = getAIAgentDisplayName(agent, configuredName);
-  const toolLabel = formatAIAgentToolName(agent?.toolInProgress);
-  // One fixed slot keeps the bar from jumping while a tool runs.
-  const displayStatus = toolLabel ? toolLabel : statusLabel;
+  // One fixed slot keeps the bar from jumping while a tool runs; talking wins over the tool name.
+  const displayStatus = effectiveState
+    ? getAIAgentDisplayStatusText(effectiveState, statusLabel, agent?.toolInProgress)
+    : statusLabel;
   const muteLabel = isLocalMuted ? t('ai-agent.unmute-locally') : t('ai-agent.mute-locally');
 
   const bar = (

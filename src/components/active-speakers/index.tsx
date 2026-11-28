@@ -1,10 +1,20 @@
 import React, { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { throttle } from 'es-toolkit';
 
 import { useAppSelector } from '../../store';
 import { getMediaServerConn } from '../../helpers/livekit/utils';
 import { APP_LAYOUT_CLASSES } from '../../helpers/dimensions';
 import { IActiveSpeaker } from '../../store/slices/interfaces/activeSpeakers';
+import { aiAgentSelector } from '../../store/slices/aiAgentSlice';
+import { activeSpeakersSelector } from '../../store/slices/activeSpeakersSlice';
+import { AiIconSVG } from '../../assets/Icons/AiIconSVG';
+import {
+  getAIAgentDisplayStatusText,
+  getAIAgentStatusLabel,
+  isAIAgentBusyState,
+  resolveAIAgentEffectiveState,
+} from '../insights-ai/ai-agent/ui/statusModel';
 import useActiveSpeakers from './useActiveSpeakers';
 
 const ACTIVE_SPEAKER_VIDEO_REARRANGE_DURATION = 8000;
@@ -28,13 +38,24 @@ const reOrderWebcams = throttle(
   { edges: ['leading'] },
 );
 
+const WORKING_DOT_DELAYS = [0, 150, 300];
+
 const ActiveSpeakers = ({ activeSidePanel }) => {
+  const { t } = useTranslation();
   const activeSpeakers = useActiveSpeakers();
   const focusActiveSpeakerWebcam = useAppSelector(
     (state) => state.roomSettings.focusActiveSpeakerWebcam,
   );
   const hasWebcamPages = useAppSelector((state) => state.roomSettings.hasWebcamPages);
+  const agent = useAppSelector(aiAgentSelector);
+  const agentUserId = agent?.agentUserId;
+  const isAgentAudioActive = useAppSelector((state) =>
+    agentUserId ? !!activeSpeakersSelector.selectById(state, agentUserId)?.isSpeaking : false,
+  );
   const room = getMediaServerConn();
+
+  const effectiveState = resolveAIAgentEffectiveState(agent, isAgentAudioActive);
+  const isAgentBusy = isAIAgentBusyState(effectiveState);
 
   const speakingParticipantIds = useMemo(
     () =>
@@ -58,10 +79,31 @@ const ActiveSpeakers = ({ activeSidePanel }) => {
   }, [speakingParticipantIds, room, focusActiveSpeakerWebcam, hasWebcamPages]);
 
   return (
-    activeSpeakers.length > 0 && (
+    (activeSpeakers.length > 0 || isAgentBusy) && (
       <div
         className={`active-speakers-wrap flex items-center justify-center absolute top-0 start-0 pointer-events-none ${activeSidePanel ? APP_LAYOUT_CLASSES.activeSpeakersOpen : 'w-full'}`}
       >
+        {isAgentBusy && (
+          <div className="ai-agent-activity m-1 px-3 py-1 text-[12px] font-medium rounded-2xl inline-flex items-center gap-1.5 bg-Blue text-white shadow-sm border border-Blue/20">
+            <AiIconSVG classes="h-3.5 w-3.5 shrink-0 animate-pulse" />
+            <span className="max-w-60 sm:max-w-72 truncate">
+              {getAIAgentDisplayStatusText(
+                effectiveState,
+                t(getAIAgentStatusLabel(effectiveState).key),
+                agent?.toolInProgress,
+              )}
+            </span>
+            <span aria-hidden="true" className="inline-flex items-center gap-0.5">
+              {WORKING_DOT_DELAYS.map((delay) => (
+                <span
+                  key={delay}
+                  className="w-1 h-1 rounded-full bg-white animate-pulse"
+                  style={{ animationDelay: `${delay}ms` }}
+                />
+              ))}
+            </span>
+          </div>
+        )}
         {activeSpeakers.map((speaker) => (
           <div
             key={speaker.userId}

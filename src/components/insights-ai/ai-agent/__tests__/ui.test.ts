@@ -32,9 +32,12 @@ import {
   formatAIAgentElapsed,
   formatAIAgentToolName,
   getAIAgentDisplayName,
+  getAIAgentDisplayStatusText,
   getAIAgentStatusLabel,
+  isAIAgentBusyState,
   isAIAgentPaused,
   isAIAgentRunning,
+  resolveAIAgentEffectiveState,
   shouldShowAIAgentStatusBar,
 } from '../ui/statusModel';
 import type { IAIAgentState } from '../../../../store/slices/interfaces/aiAgent';
@@ -205,6 +208,17 @@ describe('ai agent status model', () => {
     expect(getAIAgentStatusLabel(undefined).key).toBe('ai-agent.state.unknown');
   });
 
+  it('separates the listening and speaking tones', () => {
+    const tone = (state: AIAgentRuntimeState) => getAIAgentStatusLabel(state).tone;
+
+    expect(tone(AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_LISTENING)).toBe('active');
+    expect(tone(AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_SPEAKING)).toBe('speaking');
+    expect(tone(AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_THINKING)).toBe('busy');
+    expect(tone(AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_DRAWING)).toBe('busy');
+    expect(tone(AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_RECONNECTING)).toBe('busy');
+    expect(tone(AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_STOPPED)).toBe('idle');
+  });
+
   it('prefers the live agent name, then the configured one', () => {
     expect(getAIAgentDisplayName(agentState(), 'Configured')).toBe('Tutor');
     expect(getAIAgentDisplayName(agentState({ agentName: ' ' }), 'Configured')).toBe('Configured');
@@ -214,8 +228,116 @@ describe('ai agent status model', () => {
   it('humanises the running tool name', () => {
     expect(formatAIAgentToolName('draw_shapes')).toBe('draw shapes');
     expect(formatAIAgentToolName('polls-create')).toBe('polls create');
+    expect(formatAIAgentToolName('whiteboard-draw_diagram')).toBe('whiteboard draw diagram');
     expect(formatAIAgentToolName('  ')).toBe('');
     expect(formatAIAgentToolName(undefined)).toBe('');
+  });
+
+  it('gives built-in tools a friendly action label', () => {
+    expect(formatAIAgentToolName('whiteboard_write_content')).toBe('Writing on whiteboard');
+    expect(formatAIAgentToolName('whiteboard_draw_freehand_svg')).toBe('Drawing on whiteboard');
+    expect(formatAIAgentToolName('notepad_read')).toBe('Reading notepad');
+    expect(formatAIAgentToolName('get_poll_results')).toBe('Checking poll results');
+    expect(formatAIAgentToolName('send_ai_chat_message')).toBe('Sending chat message');
+  });
+
+  it('drops the internal namespace of an external tool', () => {
+    expect(formatAIAgentToolName('ext_docs_search_docs')).toBe('search docs');
+    expect(formatAIAgentToolName('pnm_whiteboard_wipe')).toBe('whiteboard wipe');
+  });
+
+  it('treats thinking, drawing and (re)connecting as busy', () => {
+    expect(isAIAgentBusyState(AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_THINKING)).toBe(true);
+    expect(isAIAgentBusyState(AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_DRAWING)).toBe(true);
+    expect(isAIAgentBusyState(AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_CONNECTING)).toBe(true);
+    expect(isAIAgentBusyState(AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_RECONNECTING)).toBe(true);
+
+    for (const state of [
+      undefined,
+      AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_LISTENING,
+      AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_SPEAKING,
+      AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_PAUSED,
+      AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_STOPPED,
+      AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_UNSPECIFIED,
+    ]) {
+      expect(isAIAgentBusyState(state)).toBe(false);
+    }
+  });
+
+  it('shows the running tool instead of the state label', () => {
+    const listening = AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_LISTENING;
+
+    expect(getAIAgentDisplayStatusText(listening, 'Listening', 'draw_shapes')).toBe('draw shapes');
+    expect(getAIAgentDisplayStatusText(listening, 'Listening', '  ')).toBe('Listening');
+    expect(getAIAgentDisplayStatusText(listening, 'Listening', undefined)).toBe('Listening');
+  });
+
+  it('keeps the state label while the agent is speaking', () => {
+    expect(
+      getAIAgentDisplayStatusText(
+        AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_SPEAKING,
+        'Speaking',
+        'draw_shapes',
+      ),
+    ).toBe('Speaking');
+  });
+});
+
+describe('resolveAIAgentEffectiveState', () => {
+  const speaking = AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_SPEAKING;
+
+  it('has no state without an agent', () => {
+    expect(resolveAIAgentEffectiveState(null)).toBe(
+      AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_UNSPECIFIED,
+    );
+    expect(resolveAIAgentEffectiveState(null, true)).toBe(
+      AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_UNSPECIFIED,
+    );
+  });
+
+  it('upgrades listening to speaking while the agent audio is still active', () => {
+    expect(resolveAIAgentEffectiveState(agentState(), true)).toBe(speaking);
+    expect(resolveAIAgentEffectiveState(agentState(), false)).toBe(
+      AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_LISTENING,
+    );
+  });
+
+  it('upgrades listening to speaking when the agent flags itself as speaking', () => {
+    expect(resolveAIAgentEffectiveState(agentState({ isSpeaking: true }))).toBe(speaking);
+  });
+
+  it('upgrades thinking to speaking while audio plays and no tool runs', () => {
+    const thinking = agentState({ state: AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_THINKING });
+
+    expect(resolveAIAgentEffectiveState(thinking, true)).toBe(speaking);
+    expect(resolveAIAgentEffectiveState(thinking, false)).toBe(
+      AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_THINKING,
+    );
+  });
+
+  it('keeps thinking while a tool is still running', () => {
+    expect(
+      resolveAIAgentEffectiveState(
+        agentState({
+          state: AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_THINKING,
+          toolInProgress: 'whiteboard_write_content',
+        }),
+        true,
+      ),
+    ).toBe(AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_THINKING);
+  });
+
+  it('leaves every other state untouched', () => {
+    for (const state of [
+      AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_DRAWING,
+      AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_PAUSED,
+      speaking,
+      AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_CONNECTING,
+      AIAgentRuntimeState.AI_AGENT_RUNTIME_STATE_STOPPED,
+    ]) {
+      expect(resolveAIAgentEffectiveState(agentState({ state }), true)).toBe(state);
+      expect(resolveAIAgentEffectiveState(agentState({ state }), false)).toBe(state);
+    }
   });
 });
 
