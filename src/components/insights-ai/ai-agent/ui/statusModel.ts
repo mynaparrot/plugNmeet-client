@@ -1,5 +1,6 @@
 import { AIAgentRuntimeState } from 'plugnmeet-protocol-js';
 
+import i18n from '../../../../helpers/i18n';
 import type { IAIAgentState } from '../../../../store/slices/interfaces/aiAgent';
 
 export type AIAgentStatusTone = 'idle' | 'active' | 'speaking' | 'busy' | 'paused';
@@ -93,36 +94,36 @@ export const getAIAgentDisplayName = (
 ): string => agent?.agentName?.trim() || configuredName?.trim() || 'AI Assistant';
 
 const TOOL_LABELS: Record<string, string> = {
-  whiteboard_write_content: 'Writing on whiteboard',
-  whiteboard_draw_shapes: 'Drawing shapes',
-  whiteboard_draw_freehand_svg: 'Drawing on whiteboard',
-  whiteboard_draw_diagram: 'Drawing diagram',
-  whiteboard_laser_point: 'Pointing on whiteboard',
-  whiteboard_manage_board: 'Updating whiteboard',
-  whiteboard_capture_snapshot: 'Reading whiteboard',
-  notepad_write: 'Writing in notepad',
-  notepad_read: 'Reading notepad',
-  create_poll: 'Creating poll',
-  create_quiz: 'Creating quiz',
-  draft_quiz: 'Creating quiz',
-  publish_quiz: 'Creating quiz',
-  close_poll: 'Closing poll',
-  get_poll_results: 'Checking poll results',
-  send_ai_chat_message: 'Sending chat message',
-  publish_chat_message: 'Sending chat message',
-  fetch_external_knowledge: 'Searching knowledge base',
-  record_learning_progress: 'Recording progress',
-  get_room_info: 'Checking room info',
-  set_workspace_lock: 'Updating workspace lock',
-  manage_countdown_timer: 'Setting timer',
-  manage_external_media: 'Updating media player',
-  manage_recording: 'Updating recording',
-  create_breakout_rooms: 'Managing breakout rooms',
-  manage_breakout_rooms: 'Managing breakout rooms',
-  manage_participants: 'Managing participants',
-  configure_speech_to_text: 'Configuring transcription',
-  configure_chat_translation: 'Configuring translation',
-  configure_meeting_summarization: 'Configuring summarization',
+  whiteboard_write_content: 'ai-agent.tool.writing-on-whiteboard',
+  whiteboard_draw_shapes: 'ai-agent.tool.drawing-shapes',
+  whiteboard_draw_freehand_svg: 'ai-agent.tool.drawing-on-whiteboard',
+  whiteboard_draw_diagram: 'ai-agent.tool.drawing-diagram',
+  whiteboard_laser_point: 'ai-agent.tool.pointing-on-whiteboard',
+  whiteboard_manage_board: 'ai-agent.tool.updating-whiteboard',
+  whiteboard_capture_snapshot: 'ai-agent.tool.reading-whiteboard',
+  notepad_write: 'ai-agent.tool.writing-in-notepad',
+  notepad_read: 'ai-agent.tool.reading-notepad',
+  create_poll: 'ai-agent.tool.creating-poll',
+  create_quiz: 'ai-agent.tool.creating-quiz',
+  draft_quiz: 'ai-agent.tool.creating-quiz',
+  publish_quiz: 'ai-agent.tool.creating-quiz',
+  close_poll: 'ai-agent.tool.closing-poll',
+  get_poll_results: 'ai-agent.tool.checking-poll-results',
+  send_ai_chat_message: 'ai-agent.tool.sending-chat-message',
+  publish_chat_message: 'ai-agent.tool.sending-chat-message',
+  fetch_external_knowledge: 'ai-agent.tool.searching-knowledge-base',
+  record_learning_progress: 'ai-agent.tool.recording-progress',
+  get_room_info: 'ai-agent.tool.checking-room-info',
+  set_workspace_lock: 'ai-agent.tool.updating-workspace-lock',
+  manage_countdown_timer: 'ai-agent.tool.setting-timer',
+  manage_external_media: 'ai-agent.tool.updating-media-player',
+  manage_recording: 'ai-agent.tool.updating-recording',
+  create_breakout_rooms: 'ai-agent.tool.managing-breakout-rooms',
+  manage_breakout_rooms: 'ai-agent.tool.managing-breakout-rooms',
+  manage_participants: 'ai-agent.tool.managing-participants',
+  configure_speech_to_text: 'ai-agent.tool.configuring-transcription',
+  configure_chat_translation: 'ai-agent.tool.configuring-translation',
+  configure_meeting_summarization: 'ai-agent.tool.configuring-summarization',
 };
 
 /** Drops the internal `pnm_` / `ext_<server>_` namespace so only the action stays. */
@@ -143,9 +144,9 @@ export const formatAIAgentToolName = (tool?: string): string => {
   if (!name) {
     return '';
   }
-  const label = TOOL_LABELS[name];
-  if (label) {
-    return label;
+  const labelKey = TOOL_LABELS[name];
+  if (labelKey) {
+    return i18n.t(labelKey);
   }
   return withoutToolNamespace(name).replace(/[_-]+/g, ' ').trim();
 };

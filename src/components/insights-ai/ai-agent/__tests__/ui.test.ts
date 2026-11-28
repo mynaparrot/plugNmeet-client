@@ -18,6 +18,8 @@ const api = vi.hoisted(() => ({ sendAPIRequest: vi.fn() }));
 
 vi.mock('../../../../helpers/api/plugNmeetAPI', () => ({ default: api.sendAPIRequest }));
 
+vi.mock('../../../../helpers/i18n', () => ({ default: { t: (key: string) => key } }));
+
 import {
   getAIAgentStatus,
   isAIAgentLiveState,
@@ -233,12 +235,18 @@ describe('ai agent status model', () => {
     expect(formatAIAgentToolName(undefined)).toBe('');
   });
 
-  it('gives built-in tools a friendly action label', () => {
-    expect(formatAIAgentToolName('whiteboard_write_content')).toBe('Writing on whiteboard');
-    expect(formatAIAgentToolName('whiteboard_draw_freehand_svg')).toBe('Drawing on whiteboard');
-    expect(formatAIAgentToolName('notepad_read')).toBe('Reading notepad');
-    expect(formatAIAgentToolName('get_poll_results')).toBe('Checking poll results');
-    expect(formatAIAgentToolName('send_ai_chat_message')).toBe('Sending chat message');
+  it('maps built-in tools to i18n labels', () => {
+    expect(formatAIAgentToolName('whiteboard_write_content')).toBe(
+      'ai-agent.tool.writing-on-whiteboard',
+    );
+    expect(formatAIAgentToolName('whiteboard_draw_freehand_svg')).toBe(
+      'ai-agent.tool.drawing-on-whiteboard',
+    );
+    expect(formatAIAgentToolName('notepad_read')).toBe('ai-agent.tool.reading-notepad');
+    expect(formatAIAgentToolName('get_poll_results')).toBe('ai-agent.tool.checking-poll-results');
+    expect(formatAIAgentToolName('send_ai_chat_message')).toBe(
+      'ai-agent.tool.sending-chat-message',
+    );
   });
 
   it('drops the internal namespace of an external tool', () => {
